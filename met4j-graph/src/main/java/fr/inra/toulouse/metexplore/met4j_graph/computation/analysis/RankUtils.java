@@ -1,0 +1,233 @@
+/*******************************************************************************
+ * Copyright INRA
+ * 
+ *  Contact: ludovic.cottret@toulouse.inra.fr
+ * 
+ * 
+ * This software is governed by the CeCILL license under French law and
+ * abiding by the rules of distribution of free software.  You can  use,
+ * modify and/ or redistribute the software under the terms of the CeCILL
+ * license as circulated by CEA, CNRS and INRIA at the following URL
+ * "http://www.cecill.info".
+ * 
+ * As a counterpart to the access to the source code and  rights to copy,
+ * modify and redistribute granted by the license, users are provided only
+ * with a limited warranty  and the software's author,  the holder of the
+ * economic rights,  and the successive licensors  have only  limited
+ * liability.
+ *  In this respect, the user's attention is drawn to the risks associated
+ * with loading,  using,  modifying and/or developing or reproducing the
+ * software by the user in light of its specific status of free software,
+ * that may mean  that it is complicated to manipulate,  and  that  also
+ * therefore means  that it is reserved for developers  and  experienced
+ * professionals having in-depth computer knowledge. Users are therefore
+ * encouraged to load and test the software's suitability as regards their
+ * requirements in conditions enabling the security of their systems and/or
+ * data to be ensured and,  more generally, to use and operate it in the
+ * same conditions as regards security.
+ *  The fact that you are presently reading this means that you have had
+ * knowledge of the CeCILL license and that you accept its terms.
+ ******************************************************************************/
+package fr.inra.toulouse.metexplore.met4j_graph.computation.analysis;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+
+import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
+import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
+
+
+/**
+ * provide static method to build reaction ranking from graph edges' score, and measure distance/dissimilarity between two ranking
+ * @author clement
+ */
+public class RankUtils {
+	
+	/**
+	 * Instantiates a new compare ranking.
+	 */
+	public RankUtils() {}
+	
+	/**
+	 * compute the kendall Tau coefficient between 2 ranking.
+	 * i.e. the number of discordant pairs
+	 *
+	 * @param r1 the first ranking
+	 * @param r2 the second ranking
+	 * @return the kendall Tau coefficient
+	 */
+	public static double kendallTau(int[] r1, int[] r2){
+		if(r1.length!=r2.length){
+			System.err.println("rankings must have same number of elements");
+			return Double.NaN;
+		}
+		double kendall=0;
+		for(int i=0; i<r1.length; i++){
+			for(int j=i+1; j<r1.length; j++){
+				if((r1[i]<r1[j] && r2[i]>r2[j]) || (r1[i]>r1[j] && r2[i]<r2[j])){
+					kendall++;
+				}
+			}
+		}
+		
+		// normalize the kendall coeff by the total number of unordered pairs, i.e. the maximal number of discordant pairs
+		// k=0 : same ranking, k=1 : inverted ranking
+		kendall = (kendall/new Integer((r1.length*(r1.length-1))/2));
+		return kendall;
+	}
+		
+	/**
+	 * compute the Spearman's rank correlation coefficient
+	 *
+	 * @param r1 the first ranking
+	 * @param r2 the second ranking
+	 * @return the Spearman rank coefficient
+	 */
+	public static double SpearmanRankCoeff(int[] r1, int[] r2){
+		if(r1.length!=r2.length){
+			System.err.println("rankings must have same number of elements");
+			return Double.NaN;
+		}
+		
+		double distSum = 0;
+		for(int i=0; i<r1.length; i++){
+			distSum+=Math.pow(r1[i]-r2[i], 2);
+		}
+		
+		// p = 1 - 6*Sum(d²)/n(n²-1)
+		double spearCoeff = 1 - ((6*distSum) / (r1.length*(Math.pow(r1.length, 2)-1)));
+		return spearCoeff;
+	}
+	
+	
+	/**
+	 * Computes reaction ranks from edges score.
+	 *
+	 * @param g the graph
+	 * @return the hash map
+	 */
+	public static HashMap<String, Integer> computeRank(CompoundGraph g){
+		HashMap<String, Double> reactionScoreMap = new HashMap<String, Double>();
+		for(ReactionEdge e : g.edgeSet()){
+			String reactionId = e.getReaction().getId();
+			if(reactionScoreMap.containsKey(reactionId)){
+				reactionScoreMap.put(reactionId, reactionScoreMap.get(reactionId)+g.getEdgeScore(e));
+			}else{
+				reactionScoreMap.put(reactionId,g.getEdgeScore(e));
+			}
+		}
+		return computeRank(reactionScoreMap);
+	}
+	
+	
+	
+	/**
+	 * Computes ranks from hashmap with entity identifier as key and score as value.
+	 * @param <T>
+	 *
+	 * @param map the score map
+	 * @return the rank map
+	 */
+	public static <T> HashMap<T, Integer> computeRank(HashMap<T, Double> map){
+		HashMap<T, Integer> reactionRankMap = new HashMap<T, Integer>();
+		
+		List<T> reactions = getOrderedList(map);
+		Collections.sort(reactions, new ScoreComparator<T>(map));
+		for(T rId : reactions){
+			reactionRankMap.put(rId, reactions.indexOf(rId));
+		}
+		return reactionRankMap;
+	}
+	
+	/**
+	 * Return an ordered list of values, given a map with score associated to each value
+	 * @param <T>
+	 *
+	 * @param map the score map
+	 * @return the ordered list of keys
+	 */
+	public static <T> List<T> getOrderedList(HashMap<T, Double> map){
+		ArrayList<T> keys = new ArrayList<T>(map.keySet());
+		Collections.sort(keys, new ScoreComparator<T>(map));
+		return keys;
+	}
+	
+	
+	/**
+	 * compute the kendall Tau coefficient between 2 score maps.
+	 * i.e. the number of discordant pairs
+	 *
+	 * @param r1 the first ranking
+	 * @param r2 the second ranking
+	 * @return the kendall Tau coefficient
+	 */
+	public static double kendallTau(HashMap<String, Integer> r1, HashMap<String, Integer> r2){
+		if(!r1.keySet().equals(r2.keySet())){
+			System.err.println("rankings must involve same set of elements");
+			return Double.NaN;
+		}
+		int i=0;
+		int[] r1array = new int[r1.size()];
+		int[] r2array = new int[r1.size()];
+		for(String id : r1.keySet()){
+			r1array[i]=r1.get(id);
+			r2array[i]=r2.get(id);
+			i++;
+		}
+		return kendallTau(r1array,r2array);
+	}
+	
+	/**
+	 * compute the Spearman rank correlation coefficient  between 2 score maps.
+	 *
+	 * @param r1 the first ranking
+	 * @param r2 the second ranking
+	 * @return the Spearman rank coefficient
+	 */
+	public static double SpearmanRankCoeff(HashMap<String, Integer> r1, HashMap<String, Integer> r2){
+		if(!r1.keySet().equals(r2.keySet())){
+			System.err.println("rankings must involve same set of elements");
+			return Double.NaN;
+		}
+		int i=0;
+		int[] r1array = new int[r1.size()];
+		int[] r2array = new int[r1.size()];
+		for(String id : r1.keySet()){
+			r1array[i]=r1.get(id);
+			r2array[i]=r2.get(id);
+			i++;
+		}
+		return SpearmanRankCoeff(r1array,r2array);
+	}
+	
+	/**
+	 * The Class ScoreComparator.
+	 * @param <T>
+	 */
+	static class ScoreComparator<T> implements Comparator<T>{
+		
+		/** The reaction score map. */
+		HashMap<T, Double> reactionScoreMap;
+		
+		/**
+		 * Instantiates a new score comparator.
+		 *
+		 * @param reactionScoreMap the reaction score map
+		 */
+		public ScoreComparator(HashMap<T, Double> reactionScoreMap){
+			this.reactionScoreMap=reactionScoreMap;
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+		 */
+		@Override
+		public int compare(T o1, T o2) {
+			return -Double.compare(reactionScoreMap.get(o1),reactionScoreMap.get(o2));
+		}
+		
+	}
+}

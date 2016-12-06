@@ -1,0 +1,13 @@
+a abed d	3.0
+b abed d	3.0	
+e abed d	3.0	
+c ade d	2.0
+c ade a	2.0
+a cad e	1.0
+d cad e	1.0
+e eca c	5.0
+e eca a	5.0
+e wrongRid a	6.0
+wrongEdgeIdFormat	6.0
+wrongLineFormat
+e wrongScoreFormat a	wrongScoreFormat

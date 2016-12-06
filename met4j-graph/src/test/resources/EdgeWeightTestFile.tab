@@ -1,0 +1,15 @@
+a	b	abd	0.1
+b	c	bxc	0.2
+a	d	abd	0.3
+d	e	de	0.7
+e	f	efb	0.4
+f	c	fc	0.8
+b	x	bxc	0.5
+e	b	efb	0.6
+y	c	fyc	foo
+y	c	fyc	0.9
+foo
+foo	c	fyc	0.9
+y	foo	fyc	0.9
+y	c	foo	0.9
+y	c	fyc	1.0

@@ -8,9 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <groupId>fr.inra.toulouse.metexplore</groupId>
   <artifactId>met4j-chemUtils</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>met4j-chemUtils</name>

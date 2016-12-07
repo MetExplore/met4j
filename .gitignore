@@ -1,0 +1,6 @@
+target/
+jsbml.log
+.project
+.classpath
+.settings/
+*~

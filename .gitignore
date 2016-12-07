@@ -3,4 +3,5 @@ jsbml.log
 .project
 .classpath
 .settings/
+*.log
 *~

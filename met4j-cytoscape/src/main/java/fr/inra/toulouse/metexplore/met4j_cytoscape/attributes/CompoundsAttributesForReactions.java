@@ -83,9 +83,6 @@ public class CompoundsAttributesForReactions extends GenericAttributeHandler {
 
 		HashMap<String, BioChemicalReaction> reactions = this.getNetwork().getBiochemicalReactionList();
 
-		System.err.println(this.getNetwork().networkAsString());
-		
-		
 		for (BioChemicalReaction reaction : reactions.values()) {
 			HashMap<String, BioPhysicalEntity> compounds = new HashMap<String, BioPhysicalEntity>();
 

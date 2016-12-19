@@ -90,7 +90,7 @@ public class CompoundsAttributesForReactionsTest {
 	 * @throws IOException
 	 */
 	@Test
-	public void testCompoundsAttributesForReactions() throws IOException {
+	public void testGetAttributes() throws IOException {
 
 		BioNetwork network = new BioNetwork();
 

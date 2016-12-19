@@ -88,7 +88,7 @@ public class BioChemicalReaction extends BioConversion {
 	private String go= null;
 	private String goTerm= null;
 
-	private String reversibility = null;
+	private String reversibility = "irreversible-left-to-right";
 	private HashMap<String, BioPhysicalEntity> listOfPrimarySubstrates;
 	private HashMap<String, BioPhysicalEntity> listOfPrimaryProducts;
 

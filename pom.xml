@@ -17,6 +17,7 @@
     <module>met4j-graph</module>
     <module>met4j-report</module>
     <module>met4j-toolbox</module>
+    <module>met4j-cytoscape</module>
   </modules>
 
   <description>A java library dedicated to metabolic network analysis</description>

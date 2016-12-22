@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -941,14 +942,21 @@ public class BioChemicalReaction extends BioConversion {
 
 		out = "";
 
-		for (BioPhysicalEntityParticipant l : this.getLeftParticipantList().values()) {
+		TreeSet<String> left = new TreeSet<String>(
+				this.getLeftParticipantList().keySet());
+
+		for (String id : left) {
+			
+			BioPhysicalEntityParticipant l = this.getLeftParticipantList().get(id);
+			
 			nb++;
 			if (nb > 1) {
 				out = out.concat(" + ");
 			}
 
-			out = out + l.getStoichiometricCoefficient() + " "
-					+ StringUtils.getNotFormattedString(l.getPhysicalEntity().getName()) + "["
+			String coeff = l.getStoichiometricCoefficient().equals("1") ? "" : l.getStoichiometricCoefficient()+" ";
+
+			out = out + coeff + StringUtils.getNotFormattedString(l.getPhysicalEntity().getName()) + "["
 					+ l.getPhysicalEntity().getCompartment().getId() + "]";
 
 		}
@@ -964,14 +972,22 @@ public class BioChemicalReaction extends BioConversion {
 		}
 
 		nb = 0;
-		for (BioPhysicalEntityParticipant r : this.getRightParticipantList().values()) {
+
+		TreeSet<String> right = new TreeSet<String>(
+				this.getRightParticipantList().keySet());
+
+		for (String id : right) {
+			
+			BioPhysicalEntityParticipant r = this.getRightParticipantList().get(id);
+			
 			nb++;
 			if (nb > 1) {
 				out = out.concat(" + ");
 			}
 
-			out = out + r.getStoichiometricCoefficient() + " "
-					+ StringUtils.getNotFormattedString(r.getPhysicalEntity().getName()) + "["
+			String coeff = r.getStoichiometricCoefficient().equals("1") ? "" : r.getStoichiometricCoefficient()+" ";
+
+			out = out + coeff + StringUtils.getNotFormattedString(r.getPhysicalEntity().getName()) + "["
 					+ r.getPhysicalEntity().getCompartment().getId() + "]";
 		}
 

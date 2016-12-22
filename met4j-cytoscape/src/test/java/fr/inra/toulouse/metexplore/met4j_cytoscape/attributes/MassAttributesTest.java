@@ -73,10 +73,10 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
  * @author lcottret
  *
  */
-public class MassAttributeTest {
+public class MassAttributesTest {
 
 	/**
-	 * Test method for {@link fr.inra.toulouse.metexplore.met4j_cytoscape.attributes.MassAttribute#getAttributes()}.
+	 * Test method for {@link fr.inra.toulouse.metexplore.met4j_cytoscape.attributes.MassAttributes#getAttributes()}.
 	 */
 	@Test
 	public void testGetAttributes() {
@@ -96,7 +96,7 @@ public class MassAttributeTest {
 		ref.put("A-cpd", "1000");
 		ref.put("B-cpd", "d23G");
 
-		MassAttribute converter = new MassAttribute(network, false);
+		MassAttributes converter = new MassAttributes(network, false);
 
 		HashMap<String, String> map = converter.getAttributes();
 
@@ -106,7 +106,7 @@ public class MassAttributeTest {
 		ref.put("A__45__cpd", "1000");
 		ref.put("B__45__cpd", "d23G");
 
-		converter = new MassAttribute(network, true);
+		converter = new MassAttributes(network, true);
 
 		map = converter.getAttributes();
 

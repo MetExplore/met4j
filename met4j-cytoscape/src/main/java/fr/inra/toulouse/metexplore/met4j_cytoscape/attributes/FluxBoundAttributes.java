@@ -60,57 +60,56 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_cytoscape.attributes;
 
-import static org.junit.Assert.*;
-
 import java.util.HashMap;
 
-import org.junit.Test;
-
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 /**
  * @author lcottret
  *
  */
-public class MassAttributeTest {
+public class FluxBoundAttributes extends GenericAttributeHandler {
+
+	private Boolean lowerBound = true;
 
 	/**
-	 * Test method for {@link fr.inra.toulouse.metexplore.met4j_cytoscape.attributes.MassAttribute#getAttributes()}.
+	 * @param network
+	 * @param sbmlCoded
+	 * @param lowerBound
+	 *            : if true, get the lower bounds, if false get the upper bounds
 	 */
-	@Test
-	public void testGetAttributes() {
-		
-		BioNetwork network = new BioNetwork();
+	public FluxBoundAttributes(BioNetwork network, Boolean sbmlCoded, Boolean lowerBound) {
+		super(network, sbmlCoded);
 
-		BioPhysicalEntity cpd1 = new BioPhysicalEntity("A-cpd");
-		BioPhysicalEntity cpd2 = new BioPhysicalEntity("B-cpd");
+		this.lowerBound = lowerBound;
 
-		cpd1.setMolecularWeight("1000");
-		cpd2.setMolecularWeight("d23G");
+	}
 
-		network.addPhysicalEntity(cpd1);
-		network.addPhysicalEntity(cpd2);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see fr.inra.toulouse.metexplore.met4j_cytoscape.attributes.
+	 * GenericAttributeHandler#getAttributes()
+	 */
+	@Override
+	public HashMap<String, String> getAttributes() {
+		HashMap<String, String> res = new HashMap<String, String>();
 
-		HashMap<String, String> ref = new HashMap<String, String>();
-		ref.put("A-cpd", "1000");
-		ref.put("B-cpd", "d23G");
+		HashMap<String, BioChemicalReaction> reactions = this.getNetwork().getBiochemicalReactionList();
 
-		MassAttribute converter = new MassAttribute(network, false);
+		for (BioChemicalReaction reaction : reactions.values()) {
 
-		HashMap<String, String> map = converter.getAttributes();
+			String flux = this.lowerBound ? reaction.getLowerBound().getValue() : reaction.getUpperBound().getValue();
 
-		assertEquals("mass maps are not equal", ref, map);
+			String id = this.getSbmlCoded() ? StringUtils.sbmlEncode(reaction.getId()) : reaction.getId();
 
-		ref.clear();
-		ref.put("A__45__cpd", "1000");
-		ref.put("B__45__cpd", "d23G");
+			res.put(id, flux);
 
-		converter = new MassAttribute(network, true);
+		}
 
-		map = converter.getAttributes();
-
-		assertEquals("mass maps (with sbml coded) are not equal", ref, map);
+		return res;
 	}
 
 }

@@ -46,9 +46,9 @@ import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
  * Get compound mass attribute
  *
  */
-public class MassAttribute extends GenericAttributeHandler {
+public class MassAttributes extends GenericAttributeHandler {
 
-	public MassAttribute(BioNetwork network,Boolean sbmlCoded)  {
+	public MassAttributes(BioNetwork network,Boolean sbmlCoded)  {
 		super(network, sbmlCoded);
 	}
 	

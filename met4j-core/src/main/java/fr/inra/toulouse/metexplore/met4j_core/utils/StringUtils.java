@@ -390,6 +390,20 @@ public class StringUtils {
         	
         }
         
+        REGEX = "<[^>]*>";
+        
+        pattern = Pattern.compile(REGEX);
+        matcher = pattern.matcher(id2);
+        
+        while(matcher.find()) {
+        	
+        	String str = matcher.group();
+        	
+        	id2 = id2.replace(str, "");
+        	
+        	matcher = pattern.matcher(id2);
+        	
+		}
         
         REGEX = "&[^;]*;";
         
@@ -426,6 +440,7 @@ public class StringUtils {
         id2 = id2.replaceAll("prime;", "");
         id2 = id2.replaceAll("mdash;", "");
         id2 = id2.replaceAll(";", "");
+        
         
         
         

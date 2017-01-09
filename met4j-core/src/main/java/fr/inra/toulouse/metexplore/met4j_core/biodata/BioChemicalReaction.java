@@ -546,7 +546,7 @@ public class BioChemicalReaction extends BioConversion {
 				}
 			}
 
-			this.getLowerBound().value = "0.0";
+			this.getLowerBound().value = "0";
 
 		} else {
 			reversibility = "reversible";
@@ -942,19 +942,19 @@ public class BioChemicalReaction extends BioConversion {
 
 		out = "";
 
-		TreeSet<String> left = new TreeSet<String>(
-				this.getLeftParticipantList().keySet());
+		TreeSet<String> left = new TreeSet<String>(this.getLeftParticipantList().keySet());
 
 		for (String id : left) {
-			
+
 			BioPhysicalEntityParticipant l = this.getLeftParticipantList().get(id);
-			
+
 			nb++;
 			if (nb > 1) {
 				out = out.concat(" + ");
 			}
 
-			String coeff = l.getStoichiometricCoefficient().equals("1") ? "" : l.getStoichiometricCoefficient()+" ";
+			String coeff = l.getStoichiometricCoefficient().equals("1")
+					|| l.getStoichiometricCoefficient().equals("1.0") ? "" : l.getStoichiometricCoefficient() + " ";
 
 			out = out + coeff + StringUtils.getNotFormattedString(l.getPhysicalEntity().getName()) + "["
 					+ l.getPhysicalEntity().getCompartment().getId() + "]";
@@ -973,19 +973,19 @@ public class BioChemicalReaction extends BioConversion {
 
 		nb = 0;
 
-		TreeSet<String> right = new TreeSet<String>(
-				this.getRightParticipantList().keySet());
+		TreeSet<String> right = new TreeSet<String>(this.getRightParticipantList().keySet());
 
 		for (String id : right) {
-			
+
 			BioPhysicalEntityParticipant r = this.getRightParticipantList().get(id);
-			
+
 			nb++;
 			if (nb > 1) {
 				out = out.concat(" + ");
 			}
 
-			String coeff = r.getStoichiometricCoefficient().equals("1") ? "" : r.getStoichiometricCoefficient()+" ";
+			String coeff = r.getStoichiometricCoefficient().equals("1")
+					|| r.getStoichiometricCoefficient().equals("1.0") ? "" : r.getStoichiometricCoefficient() + " ";
 
 			out = out + coeff + StringUtils.getNotFormattedString(r.getPhysicalEntity().getName()) + "["
 					+ r.getPhysicalEntity().getCompartment().getId() + "]";

@@ -375,7 +375,6 @@ public class StringUtils {
 		String id2 = id;
 		
 		String REGEX = "&lt;[^\"&gt;\"]*&gt;";
-//		String REGEX = "&[^;]*;[^&]*&[^;]*;";
 		
 		Pattern pattern = Pattern.compile(REGEX);
         Matcher matcher = pattern.matcher(id2);

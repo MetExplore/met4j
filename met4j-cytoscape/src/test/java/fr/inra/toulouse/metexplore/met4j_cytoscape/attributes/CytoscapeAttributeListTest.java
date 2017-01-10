@@ -59,8 +59,6 @@ public class CytoscapeAttributeListTest {
 
 		CytoscapeAttributeList c = new CytoscapeAttributeList("toto", map);
 
-		System.err.println(c.getName());
-
 		assertNotNull("Map attributes must be not null ", c.getMap_attributes());
 		assertNotNull("Name must be not null ", c.getName());
 

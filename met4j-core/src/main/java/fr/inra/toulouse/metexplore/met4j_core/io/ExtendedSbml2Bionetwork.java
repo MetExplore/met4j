@@ -402,8 +402,8 @@ public class ExtendedSbml2Bionetwork {
 
 			String ec = reaction.getAttribute("ec");
 
-			if (ec == null) {
-				ec = "";
+			if (ec == null || ec.equals("")) {
+				ec = "NA";
 			}
 
 			rxn.setEcNumber(ec);

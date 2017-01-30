@@ -33,6 +33,7 @@ package fr.inra.toulouse.metexplore.met4j_graph;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -105,6 +106,34 @@ public class TestAStar {
 		System.out.println(bestPath);
 		
 		assertTrue("wrong path",Arrays.asList(expectedPath).containsAll(bestPath));
+	}
+	
+	@Test
+	public void testGetBestPathUnion() {
+		
+		ReactionEdge[] expectedPath = {ad,de,ef,fc};
+		HashSet<BioPhysicalEntity> sourceSet = new HashSet<BioPhysicalEntity>();
+		sourceSet.add(a);
+		sourceSet.add(c);
+		List<ReactionEdge> bestPath = (new AStar<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g, new ChemicalSimilarityHeuristic())).getBestPathUnionList(g, sourceSet);
+		
+		assertNotNull("No path found", bestPath);
+		System.out.println(bestPath);
+		
+		assertTrue("wrong path",Arrays.asList(expectedPath).containsAll(bestPath));
+		
+		HashSet<BioPhysicalEntity> targetSet = new HashSet<BioPhysicalEntity>();
+		sourceSet.remove(c);
+		targetSet.add(c);
+		
+		bestPath = (new AStar<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g, new ChemicalSimilarityHeuristic())).getBestPathUnionList(g, sourceSet, targetSet);
+		
+		assertNotNull("No path found", bestPath);
+		System.out.println(bestPath);
+		
+		assertTrue("wrong path",Arrays.asList(expectedPath).containsAll(bestPath));
+		
+		
 	}
 	
 }

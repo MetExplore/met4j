@@ -41,8 +41,10 @@ import org.junit.Test;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.algo.EigenVectorCentrality;
+import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjancyMatrix;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
+import fr.inra.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 
 
 /**
@@ -52,7 +54,6 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 public class TestEigenVectorCentrality {
 
 	public static CompoundGraph graph;
-	
 
 	@BeforeClass
 	public static void init(){
@@ -252,6 +253,64 @@ public class TestEigenVectorCentrality {
 			System.out.println(pg.adjancyMatrix.getRowIndexMap().get(k)+" "+observedEC[k]+" "+expectedEC[k]);
 		}
 		assertArrayEquals(expectedEC, observedEC, 0.001);
+	}
+	
+	/**
+	 * Test the page rank with prior.
+	 */
+	@Test
+	public void testPageRankWithPrior3() {
+		CompoundGraph graph = new CompoundGraph();
+		BioPhysicalEntity a = new BioPhysicalEntity("a");graph.addVertex(a);
+		BioPhysicalEntity e = new BioPhysicalEntity("e");graph.addVertex(e);
+		BioPhysicalEntity d = new BioPhysicalEntity("d");graph.addVertex(d);
+		BioPhysicalEntity b = new BioPhysicalEntity("b");graph.addVertex(b);
+		BioPhysicalEntity c = new BioPhysicalEntity("c");graph.addVertex(c);
+		ReactionEdge ba = new ReactionEdge(b, a, new BioChemicalReaction("ba")); graph.addEdge(b, a, ba); graph.setEdgeWeight(ba, 1.0);
+		ReactionEdge ae = new ReactionEdge(a, e, new BioChemicalReaction("ae")); graph.addEdge(a, e, ae); graph.setEdgeWeight(ae, 1.0);
+		ReactionEdge ca = new ReactionEdge(c, a, new BioChemicalReaction("ca")); graph.addEdge(c, a, ca); graph.setEdgeWeight(ca, 0.5);
+		ReactionEdge cd = new ReactionEdge(c, d, new BioChemicalReaction("cd")); graph.addEdge(c, d, cd); graph.setEdgeWeight(cd, 0.5);
+		ReactionEdge db = new ReactionEdge(d, b, new BioChemicalReaction("db")); graph.addEdge(d, b, db); graph.setEdgeWeight(db, 1.0);
+		ReactionEdge ec = new ReactionEdge(e, c, new BioChemicalReaction("ec")); graph.addEdge(e, c, ec); graph.setEdgeWeight(ec, 0.2);
+		ReactionEdge eb = new ReactionEdge(e, b, new BioChemicalReaction("eb")); graph.addEdge(e, b, eb); graph.setEdgeWeight(eb, 0.4);
+		ReactionEdge ed = new ReactionEdge(e, d, new BioChemicalReaction("ed")); graph.addEdge(e, d, ed); graph.setEdgeWeight(ed, 0.4);
+		
+		BioMatrix adj = new ComputeAdjancyMatrix<BioPhysicalEntity, ReactionEdge, CompoundGraph>(graph).getAdjancyMatrix();
+		
+		EigenVectorCentrality<BioPhysicalEntity, ReactionEdge, CompoundGraph> pg;
+		try {
+			pg = new EigenVectorCentrality<BioPhysicalEntity,ReactionEdge,CompoundGraph>(adj);
+			HashMap<String, Double> seeds = new HashMap<String, Double>();
+			HashMap<String, Double> weights = new HashMap<String, Double>();
+//			double p = 1.0/graph.vertexSet().size();
+			for(BioPhysicalEntity entity: graph.vertexSet()){
+				if(entity==a){
+					seeds.put(entity.getId(), 1.0);
+				}else{
+					seeds.put(entity.getId(), 0.0);
+				}
+				weights.put(entity.getId(), 1.0/graph.vertexSet().size());
+//				seeds.put(entity.getId(), p);
+			}
+			System.out.println(pg.adjancyMatrix.getRowIndexMap());
+			pg.adjancyMatrix.print();
+//			pg.addScalingFactor(0.9);
+			pg.addJumpProb(weights, 0.1);
+			pg.adjancyMatrix.print();
+			HashMap<String, Double> result = pg.powerIteration(seeds, 20, 0.001);
+			
+			double[] expectedEC = {0.27,0.26,0.15,0.25,0.07};
+			double[] observedEC = new double[result.keySet().size()];
+			
+			for(int i : pg.adjancyMatrix.getRowIndexMap().keySet()){
+				observedEC[i] = result.get(pg.adjancyMatrix.getRowIndexMap().get(i));
+			}
+			assertArrayEquals(expectedEC, observedEC, 0.01);
+		
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
 	}
 	
 }

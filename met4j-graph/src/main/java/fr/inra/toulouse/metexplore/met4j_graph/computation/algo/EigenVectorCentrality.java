@@ -70,17 +70,6 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 		adjancyMatrix=adjC.getAdjancyMatrix();
 	}
 	
-	/**
-	 * Instantiates a new eigen vector centrality computor.
-	 *
-	 * @param g the graph
-	 * @param matrixClass the matrix class
-	 * @throws Exception
-	 */
-	public EigenVectorCentrality(G g, Class<?> matrixClass) throws Exception{
-		ComputeAdjancyMatrix<V,E,G> adjC = new ComputeAdjancyMatrix<V,E,G>(g, matrixClass);
-		adjancyMatrix=adjC.getAdjancyMatrix();
-	}
 	
 	/**
 	 * Instantiates a new eigen vector centrality computor.

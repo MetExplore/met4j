@@ -358,7 +358,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @param weighted if the graph is weighted
 	 * @return the minimum shortest path distance
 	 */
-	public HashMap<V, Double> getMinSpDistance(G g, Set<V> sources, Set<V> targets,boolean weighted){
+	public HashMap<V, Double> getMinSpDistance(Set<V> sources, Set<V> targets,boolean weighted){
 		CompressedGraph<V, E> closureGraph = getMetricClosureGraph(targets,sources,weighted);
 		HashMap<V, Double> minSpDist = new HashMap<V, Double>();
 		for(V node : sources){

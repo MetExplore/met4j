@@ -107,6 +107,26 @@ public class TestSteinerTreeApprox {
 		
 		assertTrue("wrong path",Arrays.asList(expectedPath).containsAll(treeList));
 	}
+	
+	
+	/**
+	 * Test the steiner tree list.
+	 */
+	@Test
+	public void testSteinerTreeList2(){
+		HashSet<BioPhysicalEntity> noi = new HashSet<BioPhysicalEntity>();
+		noi.add(a);noi.add(b);noi.add(c);noi.add(d);noi.add(e);
+		
+		ReactionEdge[] expectedPath = {ey, yx, ay, ed, cx, xb};
+		SteinerTreeApprox<BioPhysicalEntity, ReactionEdge, CompoundGraph> steinerComputer 
+			= new SteinerTreeApprox<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g);
+		List<ReactionEdge> treeList = steinerComputer.getSteinerTreeList(noi,noi, true);
+		
+		assertNotNull("No path found", treeList);
+		System.out.println(treeList);
+		
+		assertTrue("wrong path",Arrays.asList(expectedPath).containsAll(treeList));
+	}
 
 //	/**
 //	 * Test the steiner tree sub graph.

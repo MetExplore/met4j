@@ -45,7 +45,7 @@ import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_graph.computation.algo.randomWalks.RandomWalk;
+import fr.inra.toulouse.metexplore.met4j_graph.computation.algo.RandomWalk;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.weighting.StochasticWeightPolicy;

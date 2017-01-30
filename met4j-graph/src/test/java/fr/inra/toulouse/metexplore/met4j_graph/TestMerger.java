@@ -13,6 +13,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.parallel.MergedGraph;
@@ -53,11 +54,14 @@ public class TestMerger {
 		b2.setInchi("InChI=1S/C4H10NO6P/c5-3(4(6)7)1-2-11-12(8,9)10/h3H,1-2,5H2,(H,6,7)(H2,8,9,10)/t3-/m0/s1");
 		g.addVertex(b2);bn.addPhysicalEntity(b2);
 		
-		
+		BioProtein p1 = new BioProtein("p1");
+		bn.addProtein(p1);
+				
 		BioChemicalReaction r1 = new BioChemicalReaction("ab1");r1.setReversibility(false);
 		bn.addBiochemicalReaction(r1);
 		r1.addLeftParticipant(new BioPhysicalEntityParticipant(a1));
 		r1.addRightParticipant(new BioPhysicalEntityParticipant(b1));
+		r1.addEnz(p1);
 		BioChemicalReaction r2 = new BioChemicalReaction("ab2");r2.setReversibility(false);
 		bn.addBiochemicalReaction(r2);
 		r2.addLeftParticipant(new BioPhysicalEntityParticipant(a1));

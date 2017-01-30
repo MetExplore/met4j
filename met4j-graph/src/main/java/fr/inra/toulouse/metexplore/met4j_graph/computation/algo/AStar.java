@@ -199,7 +199,11 @@ public class AStar<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V 
 		for(V start : nodeOfInterest){
 			for(V end : nodeOfInterest){
 				if(start!=end){
-					best.addAll(findBestPath(start,end));
+					
+					List<E> bestPaths = findBestPath(start,end);
+					if(bestPaths!=null && !bestPaths.isEmpty()){
+						best.addAll(findBestPath(start,end));
+					}
 				}
 			}
 		}

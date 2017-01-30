@@ -149,6 +149,34 @@ public class TestShortestPaths {
 		assertTrue("wrong weighted path", res.containsAll(Arrays.asList(expectedLightestPath)));
 	}
 	
+	@Test(expected=IllegalArgumentException.class)
+	public void testGetShortestNoStartException() {
+		ShortestPath<BioPhysicalEntity, ReactionEdge, CompoundGraph> pathSearch = new ShortestPath<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g);
+		BioPath<BioPhysicalEntity,ReactionEdge> path = pathSearch.getShortest(new BioPhysicalEntity("u"), c);
+		System.out.println(path);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testGetShortestNoTargetException() {
+		ShortestPath<BioPhysicalEntity, ReactionEdge, CompoundGraph> pathSearch = new ShortestPath<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g);
+		BioPath<BioPhysicalEntity,ReactionEdge> path = pathSearch.getShortest(a, new BioPhysicalEntity("u"));
+		System.out.println(path);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testGetUndirectedShortestNoStartException() {
+		ShortestPath<BioPhysicalEntity, ReactionEdge, CompoundGraph> pathSearch = new ShortestPath<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g);
+		BioPath<BioPhysicalEntity,ReactionEdge> path = pathSearch.getShortestAsUndirected(new BioPhysicalEntity("u"), c);
+		System.out.println(path);
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testGetUndirectedShortestNoTargetException() {
+		ShortestPath<BioPhysicalEntity, ReactionEdge, CompoundGraph> pathSearch = new ShortestPath<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g);
+		BioPath<BioPhysicalEntity,ReactionEdge> path = pathSearch.getShortestAsUndirected(a, new BioPhysicalEntity("u"));
+		System.out.println(path);
+	}
+	
 	@Test
 	public void testGetShortestundirected() {
 		ReactionEdge[] expectedPath = {bc, ab};
@@ -206,7 +234,8 @@ public class TestShortestPaths {
 //		ReactionEdge cy = new ReactionEdge(c,y,r3);g2.addEdge(c, y, cy);g2.setEdgeWeight(cy, 1.0);
 //
 //		ReactionEdge[] expectedPath = {xa,ad,de,ec,cy};
-//		BioPath path = ShortestPath.getShortest(g2, x,y);
+//		ValidShortestPath vsp = new ValidShortestPath(g2);
+//		BioPath<BioPhysicalEntity, ReactionEdge> path = vsp.getShortest(x,y);
 //		assertNotNull(path);
 //		List<ReactionEdge> sp = path.getEdgeList();
 //		for(ReactionEdge edge : sp){
@@ -215,8 +244,9 @@ public class TestShortestPaths {
 //		
 //		
 //		assertTrue("wrong path", Arrays.asList(expectedPath).containsAll(sp));
-//
 //	}
+
+
 	
 	/**
 	 * Test the get k shortest.
@@ -277,6 +307,54 @@ public class TestShortestPaths {
 		List<ReactionEdge> res = new ArrayList<ReactionEdge>(subNet.edgeSet());
 		assertTrue("wrong path", Arrays.asList(expectedPath).containsAll(res));
 		assertTrue("wrong path", res.containsAll(Arrays.asList(expectedPath)));
+	}
+	
+	/**
+	 * Test the get min distance computation
+	 */
+	@Test	
+	public void testGetMinSpDistance(){
+		ShortestPath<BioPhysicalEntity, ReactionEdge, CompoundGraph> sp = new ShortestPath<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g);
+		HashSet<BioPhysicalEntity> sources = new HashSet<BioPhysicalEntity>();
+		HashSet<BioPhysicalEntity> targets = new HashSet<BioPhysicalEntity>();
+		sources.add(c);
+		targets.add(a);
+		targets.add(d);
+		HashMap<BioPhysicalEntity, Double> min = sp.getMinSpDistance(sources, targets, false);
+		
+		assertNotNull(min);
+		assertTrue(min.containsKey(c));
+		assertEquals(2.0, min.get(c), Double.MIN_VALUE);
+		
+		HashMap<BioPhysicalEntity, Double> min2 = sp.getMinSpDistance(sources, targets, true);
+		
+		assertNotNull(min2);
+		assertTrue(min2.containsKey(c));
+		assertEquals(2.0, min2.get(c), Double.MIN_VALUE);
+	}
+	
+	/**
+	 * Test the get average distance computation
+	 */
+	@Test	
+	public void testGetAverageSpDistance(){
+		ShortestPath<BioPhysicalEntity, ReactionEdge, CompoundGraph> sp = new ShortestPath<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g);
+		HashSet<BioPhysicalEntity> sources = new HashSet<BioPhysicalEntity>();
+		HashSet<BioPhysicalEntity> targets = new HashSet<BioPhysicalEntity>();
+		sources.add(c);
+		targets.add(a);
+		targets.add(d);
+		HashMap<BioPhysicalEntity, Double> avg = sp.getAverageSpDistance(sources, targets, false);
+		
+		assertNotNull(avg);
+		assertTrue(avg.containsKey(c));
+		assertEquals(2.5, avg.get(c), Double.MIN_VALUE);
+		
+		HashMap<BioPhysicalEntity, Double> avg2 = sp.getAverageSpDistance(sources, targets, true);
+		
+		assertNotNull(avg2);
+		assertTrue(avg2.containsKey(c));
+		assertEquals(2.5, avg2.get(c), Double.MIN_VALUE);
 	}
 	
 	/**

@@ -30,12 +30,12 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_graph.computation.analysis;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjancyMatrix;
-
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
@@ -89,7 +89,7 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 		Set<V> neighbors2 = g.neighborListOf(v2);
 		for(V n : neighbors1){
 			if(neighbors2.contains(n)){
-				aaIndex+=(1/Math.log(g.degreeOf(n)));
+				aaIndex+=(1/Math.log10(g.degreeOf(n)));
 			}
 		}
 		return aaIndex;
@@ -103,7 +103,8 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 	 */
 	public double getSaltonIndex(V v1, V v2){
 		double commonNeighbor = this.getCommonNeighbor(v1, v2);
-		double salton = commonNeighbor/Math.sqrt(g.degreeOf(v1)*g.degreeOf(v2));
+		double salton = commonNeighbor/Math.sqrt(g.neighborListOf(v1).size()*g.neighborListOf(v2).size());
+		//note that using degree here can cause false results if graph is directed, and one neighbor is connected through both incoming and outgoing edges
 		return salton;
 	}
 	
@@ -114,7 +115,7 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 	 * @return
 	 */
 	public double getLocalClusteringCoeff(V v1){
-		Set<V> neighbors = g.neighborListOf(v1);
+		ArrayList<V> neighbors = new ArrayList<V>(g.neighborListOf(v1));
 		double numberOfNeighbors = neighbors.size();
 		if(numberOfNeighbors==1 || numberOfNeighbors==0) return 0;
 		double connectedNeighbors = 0;
@@ -127,6 +128,30 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 		double clusteringCoeff = connectedNeighbors/(numberOfNeighbors*(numberOfNeighbors-1));
 		return clusteringCoeff;
 	}
+	
+	/**
+	 * Compute the local clustering coefficient, which is for a vertex the number of edges between vertices of its neighborhood
+	 * divided by the expected maximum number of edges that could exist between them (if the neighborhood was a clique)
+	 * @param v1 the vertex
+	 * @return
+	 */
+	public double getUndirectedLocalClusteringCoeff(V v1){
+		ArrayList<V> neighbors = new ArrayList<V>(g.neighborListOf(v1));
+		double numberOfNeighbors = neighbors.size();
+		if(numberOfNeighbors==1 || numberOfNeighbors==0) return 0;
+		double connectedNeighbors = 0;
+		for(int i=0; i<neighbors.size(); i++){
+			V n1 = neighbors.get(i);
+			for(int j=i; j<neighbors.size(); j++){
+				V n2 = neighbors.get(j);
+				if(n1!=n2 && g.areConnected(n1, n2)) connectedNeighbors++;
+			}
+		}
+		
+		double clusteringCoeff = (2*connectedNeighbors)/(numberOfNeighbors*(numberOfNeighbors-1));
+		return clusteringCoeff;
+	}	
+
 	
 	/**
 	 * Compute the Katz index

@@ -202,6 +202,32 @@ public class TestGraphCentrality {
 		assertEquals(0.56/5, starCloseness.get(d), 0.01);
 		assertEquals(0.56/5, starCloseness.get(e), 0.01);
 		assertEquals(0.56/5, starCloseness.get(f), 0.01);
+		
+		toyCloseness = toyMeasure.getCloseness(toyMeasure.getAllShortestPaths());
+		linearCloseness = linearMeasure.getCloseness(linearMeasure.getAllShortestPaths());
+		starCloseness= starMeasure.getCloseness(starMeasure.getAllShortestPaths());
+		
+		assertEquals((0.55/6.0)/2, toyCloseness.get(a), 0.01);
+		assertEquals((0.6/6.0)/2, toyCloseness.get(b), 0.01);
+		assertEquals((0.55/6.0)/2, toyCloseness.get(c), 0.01);
+		assertEquals((0.4/6.0)/2, toyCloseness.get(d), 0.01);
+		assertEquals((0.4/6.0)/2, toyCloseness.get(e), 0.01);
+		assertEquals((0.4/6.0)/2, toyCloseness.get(f), 0.01);
+		assertEquals((0.4/6.0)/2, toyCloseness.get(g), 0.01);
+		
+		assertEquals((0.4/4.0)/2, linearCloseness.get(a), 0.01);
+		assertEquals((0.57/4.0)/2, linearCloseness.get(b), 0.01);
+		assertEquals((0.67/4.0)/2, linearCloseness.get(c), 0.01);
+		assertEquals((0.57/4.0)/2, linearCloseness.get(d), 0.01);
+		assertEquals((0.4/4.0)/2, linearCloseness.get(e), 0.01);
+		
+		assertEquals((1.0/5)/2, starCloseness.get(a), 0.01);
+		assertEquals((0.56/5)/2, starCloseness.get(b), 0.01);
+		assertEquals((0.56/5)/2, starCloseness.get(c), 0.01);
+		assertEquals((0.56/5)/2, starCloseness.get(d), 0.01);
+		assertEquals((0.56/5)/2, starCloseness.get(e), 0.01);
+		assertEquals((0.56/5)/2, starCloseness.get(f), 0.01);
+		
 	}
 
 	@Test
@@ -230,6 +256,34 @@ public class TestGraphCentrality {
 		assertEquals(9.0, starBetweenness.get(d), 0.00000001);
 		assertEquals(9.0, starBetweenness.get(e), 0.00000001);
 		assertEquals(9.0, starBetweenness.get(f), 0.00000001);
+	}
+	
+	@Test
+	public void testEccentricity() {
+		Map<BioPhysicalEntity, Double> toyEccentricity = toyMeasure.getEccentricity(toyMeasure.getAllShortestPaths());
+		Map<BioPhysicalEntity, Double> linearEccentricity = linearMeasure.getEccentricity(linearMeasure.getAllShortestPaths());
+		Map<BioPhysicalEntity, Double> starEccentricity = starMeasure.getEccentricity(starMeasure.getAllShortestPaths());
+		
+		assertEquals(3.0, toyEccentricity.get(a), 0.00000001);
+		assertEquals(2.0, toyEccentricity.get(b), 0.00000001);
+		assertEquals(3.0, toyEccentricity.get(c), 0.00000001);
+		assertEquals(4.0, toyEccentricity.get(d), 0.00000001);
+		assertEquals(4.0, toyEccentricity.get(e), 0.00000001);
+		assertEquals(4.0, toyEccentricity.get(f), 0.00000001);
+		assertEquals(4.0, toyEccentricity.get(g), 0.00000001);
+		
+		assertEquals(4.0, linearEccentricity.get(a), 0.00000001);
+		assertEquals(3.0, linearEccentricity.get(b), 0.00000001);
+		assertEquals(2.0, linearEccentricity.get(c), 0.00000001);
+		assertEquals(3.0, linearEccentricity.get(d), 0.00000001);
+		assertEquals(4.0, linearEccentricity.get(e), 0.00000001);
+		
+		assertEquals(1.0, starEccentricity.get(a), 0.00000001);
+		assertEquals(2.0, starEccentricity.get(b), 0.00000001);
+		assertEquals(2.0, starEccentricity.get(c), 0.00000001);
+		assertEquals(2.0, starEccentricity.get(d), 0.00000001);
+		assertEquals(2.0, starEccentricity.get(e), 0.00000001);
+		assertEquals(2.0, starEccentricity.get(f), 0.00000001);
 	}
 	
 	@Test

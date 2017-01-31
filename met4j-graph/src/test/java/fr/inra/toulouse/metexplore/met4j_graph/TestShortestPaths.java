@@ -424,7 +424,7 @@ public class TestShortestPaths {
 		noi.add(a);noi.add(b);noi.add(c);noi.add(d);noi.add(e);
 		ShortestPath<BioPhysicalEntity, ReactionEdge, CompoundGraph> pathSearch = new ShortestPath<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g);
 
-		CompressedGraph<BioPhysicalEntity, ReactionEdge> cg = pathSearch.getMetricClosureGraph(noi,noi,false);
+		CompressedGraph<BioPhysicalEntity, ReactionEdge, CompoundGraph> cg = pathSearch.getMetricClosureGraph(noi,noi,false);
 		
 		for(BioPhysicalEntity e1 : noi){
 			for(BioPhysicalEntity e2 : noi){

@@ -457,48 +457,9 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	
 	public abstract E copyEdge(E edge);
 	public abstract EdgeFactory<V, E> getEdgeFactory();
+	
 //	public abstract GraphFactory<V, E, ? extends BioGraph<V,E>> getGraphFactory();
 	
-	/**
-	 * write Sif file
-	 * @author ludo
-	 * 
-	 * @param filename
-	 * @param sbmlEncode
-	 * @throws IOException
-	 */
-	public void writeSif(String filename, Boolean sbmlEncode) throws IOException {
-		
-		FileWriter fw = new FileWriter(filename);
-		
-		for(V node : this.vertexSet()) {
-			
-			String nodeId = node.getId();
-			if(sbmlEncode) {
-				nodeId = StringUtils.sbmlEncode(nodeId);
-			}
-			
-			if(this.neighborListOf(node).isEmpty()) {
-				// Orphan node
-				fw.write(nodeId+"\n");
-			}
-			else {
-				for(E outgoingEdge : this.outgoingEdgesOf(node)) {
-					
-					V successor = outgoingEdge.getV2();
-					String successorId = successor.getId();
-					if(sbmlEncode) {
-						successorId = StringUtils.sbmlEncode(successorId);
-					}
-					
-					fw.write(nodeId+"\tlinkedWith\t"+successorId+"\n");
-				}
-				
-				
-			}
-		}
-		fw.close();
-	}
 
 	
 //	/**

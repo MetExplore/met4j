@@ -30,11 +30,11 @@ public class TestGraphLocalMeasure {
 		d = new BioPhysicalEntity("d"); g.addVertex(d);
 		e = new BioPhysicalEntity("e"); g.addVertex(e);
 		ab = new ReactionEdge(a,b,new BioChemicalReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 1.0);
-		ac = new ReactionEdge(a,b,new BioChemicalReaction("ac"));g.addEdge(a, c, ac);g.setEdgeWeight(ac, 1.0);
-		ae = new ReactionEdge(a,b,new BioChemicalReaction("ae"));g.addEdge(a, e, ae);g.setEdgeWeight(ae, 1.0);
-		ea = new ReactionEdge(a,b,new BioChemicalReaction("ea"));g.addEdge(e, a, ea);g.setEdgeWeight(ea, 1.0);
-		ec = new ReactionEdge(a,b,new BioChemicalReaction("ec"));g.addEdge(e, c, ec);g.setEdgeWeight(ec, 1.0);
-		ed = new ReactionEdge(a,b,new BioChemicalReaction("ed"));g.addEdge(e, d, ed);g.setEdgeWeight(ed, 1.0);
+		ac = new ReactionEdge(a,c,new BioChemicalReaction("ac"));g.addEdge(a, c, ac);g.setEdgeWeight(ac, 1.0);
+		ae = new ReactionEdge(a,e,new BioChemicalReaction("ae"));g.addEdge(a, e, ae);g.setEdgeWeight(ae, 1.0);
+		ea = new ReactionEdge(e,a,new BioChemicalReaction("ea"));g.addEdge(e, a, ea);g.setEdgeWeight(ea, 1.0);
+		ec = new ReactionEdge(e,c,new BioChemicalReaction("ec"));g.addEdge(e, c, ec);g.setEdgeWeight(ec, 1.0);
+		ed = new ReactionEdge(e,d,new BioChemicalReaction("ed"));g.addEdge(e, d, ed);g.setEdgeWeight(ed, 1.0);
 		measure = new GraphLocalMeasure<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g);
 
 	}

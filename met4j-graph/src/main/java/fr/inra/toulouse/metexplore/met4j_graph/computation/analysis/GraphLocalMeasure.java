@@ -144,9 +144,10 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 			V n1 = neighbors.get(i);
 			for(int j=i; j<neighbors.size(); j++){
 				V n2 = neighbors.get(j);
-				if(n1!=n2 && g.areConnected(n1, n2)) connectedNeighbors++;
+				if(n1!=n2 && (g.areConnected(n1, n2) || g.areConnected(n2, n1))) connectedNeighbors++;
 			}
 		}
+		
 		
 		double clusteringCoeff = (2*connectedNeighbors)/(numberOfNeighbors*(numberOfNeighbors-1));
 		return clusteringCoeff;

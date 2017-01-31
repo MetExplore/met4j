@@ -28,28 +28,16 @@
  *  The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL license and that you accept its terms.
  ******************************************************************************/
-package fr.inra.toulouse.metexplore.met4j_graph.core.compressed;
-
-import java.util.ArrayList;
+package fr.inra.toulouse.metexplore.met4j_graph.core.bipartite;
 
 import org.jgrapht.EdgeFactory;
 
-import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
-import fr.inra.toulouse.metexplore.met4j_graph.core.BioPath;
-import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
-public class PathEdgeFactory<V extends BioEntity,E extends Edge<V>> implements EdgeFactory<V, PathEdge<V,E>> {
-	BioGraph<V,E> g;
-	
-	public 	PathEdgeFactory(BioGraph<V,E> g){
-		this.g=g;
-	}
-	
+public class BipartiteEdgeFactory implements EdgeFactory<BioEntity, BipartiteEdge> {
+
 	@Override
-	public PathEdge<V, E> createEdge(V arg0, V arg1) {
-		BioPath<V, E> path = new BioPath<V, E>(g, arg0, arg1, new ArrayList<E>(), 0.0);
-		PathEdge<V, E> edge = new PathEdge<V, E>(arg0, arg1, path);
-		return edge;
+	public BipartiteEdge createEdge(BioEntity arg0, BioEntity arg1) {
+		return new BipartiteEdge(arg0, arg1,false);
 	}
 }

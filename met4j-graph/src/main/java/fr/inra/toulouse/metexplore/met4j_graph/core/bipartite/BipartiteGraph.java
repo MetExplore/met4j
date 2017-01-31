@@ -1,6 +1,33 @@
-/*
+/*******************************************************************************
+ * Copyright INRA
  * 
- */
+ *  Contact: ludovic.cottret@toulouse.inra.fr
+ * 
+ * 
+ * This software is governed by the CeCILL license under French law and
+ * abiding by the rules of distribution of free software.  You can  use,
+ * modify and/ or redistribute the software under the terms of the CeCILL
+ * license as circulated by CEA, CNRS and INRIA at the following URL
+ * "http://www.cecill.info".
+ * 
+ * As a counterpart to the access to the source code and  rights to copy,
+ * modify and redistribute granted by the license, users are provided only
+ * with a limited warranty  and the software's author,  the holder of the
+ * economic rights,  and the successive licensors  have only  limited
+ * liability.
+ *  In this respect, the user's attention is drawn to the risks associated
+ * with loading,  using,  modifying and/or developing or reproducing the
+ * software by the user in light of its specific status of free software,
+ * that may mean  that it is complicated to manipulate,  and  that  also
+ * therefore means  that it is reserved for developers  and  experienced
+ * professionals having in-depth computer knowledge. Users are therefore
+ * encouraged to load and test the software's suitability as regards their
+ * requirements in conditions enabling the security of their systems and/or
+ * data to be ensured and,  more generally, to use and operate it in the
+ * same conditions as regards security.
+ *  The fact that you are presently reading this means that you have had
+ * knowledge of the CeCILL license and that you accept its terms.
+ ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_graph.core.bipartite;
 
 import java.util.HashSet;
@@ -19,7 +46,7 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 	private static final long serialVersionUID = -8285420874595144901L;
 
 	public BipartiteGraph() {
-		super(BipartiteEdge.class);
+		super(new BipartiteEdgeFactory());
 	}
 
 	public static GraphFactory<BioEntity, BipartiteEdge, BipartiteGraph> getFactory(){
@@ -50,12 +77,7 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 
 	@Override
 	public EdgeFactory<BioEntity, BipartiteEdge> getEdgeFactory() {
-		return new EdgeFactory<BioEntity, BipartiteEdge>() {
-			@Override
-			public BipartiteEdge createEdge(BioEntity arg0, BioEntity arg1) {
-				return new BipartiteEdge(arg0, arg1,false);
-			}
-		};
+		return new BipartiteEdgeFactory();
 	}
 
 	@Override
@@ -98,6 +120,10 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 	 *  Newly added elements will be flagged as "side" compounds.
 	 */
 	public void addMissingCompoundAsSide(){
+		HashSet<BioPhysicalEntity> sideCompoundToAdd = new HashSet<BioPhysicalEntity>();
+		HashSet<BipartiteEdge> edgesToAdd = new HashSet<BipartiteEdge>();
+		
+		
 		//add side compounds
 		for(BioEntity v : this.vertexSet()){
 			
@@ -107,12 +133,12 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 				//check all substrates
 				for(BioPhysicalEntity s : r.getListOfSubstrates().values()){
 					//add compound if missing
-					if(!this.containsVertex(s)){
+					if(!this.containsVertex(s) && !sideCompoundToAdd.contains(s)){
 						s.setIsSide(true);
-						this.addVertex(s);
+						sideCompoundToAdd.add(s);
 						BipartiteEdge edge = new BipartiteEdge(s,r);
 						edge.setSide(true);
-						this.addEdge(s, r, edge);
+						edgesToAdd.add(edge);
 					//else add edge if missing
 					}else if(!this.containsEdge(s, r)){
 						BipartiteEdge edge = new BipartiteEdge(s,r);
@@ -121,18 +147,18 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 						}else{
 							edge.setSide(true);
 						}
-						this.addEdge(s, r, edge);
+						edgesToAdd.add(edge);
 					}
 				}
 				//check all products
 				for(BioPhysicalEntity p : r.getListOfProducts().values()){
 					//add compound if missing
-					if(!this.containsVertex(p)){
+					if(!this.containsVertex(p) && !sideCompoundToAdd.contains(p)){
 						p.setIsSide(true);
-						this.addVertex(p);
+						sideCompoundToAdd.add(p);
 						BipartiteEdge edge = new BipartiteEdge(r,p);
 						edge.setSide(true);
-						this.addEdge(r, p, edge);
+						edgesToAdd.add(edge);
 					//else add edge if missing	
 					}else if(!this.containsEdge(r, p)){
 						BipartiteEdge edge = new BipartiteEdge(r,p);
@@ -141,10 +167,17 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 						}else{
 							edge.setSide(true);
 						}
-						this.addEdge(r, p, edge);
+						edgesToAdd.add(edge);
 					}
 				}
 			}
+		}
+		
+		for(BioPhysicalEntity sideCompounds : sideCompoundToAdd){
+			this.addVertex(sideCompounds);
+		}
+		for(BipartiteEdge e : edgesToAdd){
+			this.addEdge(e.getV1(), e.getV2(), e);
 		}
 	}
 	

@@ -59,7 +59,7 @@ public class ReactionGraph extends BioGraph<BioChemicalReaction, CompoundEdge> {
 	 * Instantiates a new bio graph.
 	 */
 	public ReactionGraph() {
-		super(edgeFactory);
+		super(new CompoundEdgeFactory());
 	}
 	
 	/**
@@ -118,13 +118,13 @@ public class ReactionGraph extends BioGraph<BioChemicalReaction, CompoundEdge> {
 	 * @param r the reaction
 	 */
 	public void addEdgesFromCompound(BioPhysicalEntity c){
-		for(BioChemicalReaction sub : c.getReactionsAsSubstrate().values()){
-			if(this.hasVertex(sub.getId())){
-				for(BioChemicalReaction prd : c.getReactionsAsProduct().values()){
-					if(this.hasVertex(prd.getId())){
-						if(sub!=prd){
-							CompoundEdge edge = new CompoundEdge(sub, prd, c);
-							this.addEdge(sub, prd, edge);
+		for(BioChemicalReaction in : c.getReactionsAsProduct().values()){
+			if(this.hasVertex(in.getId())){
+				for(BioChemicalReaction out : c.getReactionsAsSubstrate().values()){
+					if(this.hasVertex(out.getId())){
+						if(in!=out){
+							CompoundEdge edge = new CompoundEdge(in, out, c);
+							this.addEdge(in, out, edge);
 						}
 					}
 				}
@@ -152,15 +152,7 @@ public class ReactionGraph extends BioGraph<BioChemicalReaction, CompoundEdge> {
 
 	@Override
 	public EdgeFactory<BioChemicalReaction, CompoundEdge> getEdgeFactory() {
-		return new EdgeFactory<BioChemicalReaction, CompoundEdge>() {
-
-			@Override
-			public CompoundEdge createEdge(BioChemicalReaction arg0,
-					BioChemicalReaction arg1) {
-				return new CompoundEdge(arg0, arg1, new BioPhysicalEntity(""));
-			}
-			
-		};
+		return new CompoundEdgeFactory();
 	}
 
 	@Override

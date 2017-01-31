@@ -32,13 +32,10 @@ package fr.inra.toulouse.metexplore.met4j_graph.core.pathway;
 
 
 
-import java.util.HashSet;
-
 import org.jgrapht.EdgeFactory;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 
 /**
  * The Class PathwayGraph allow to build a directed graph representing connections between pathways in a bionetwork.
@@ -60,12 +57,7 @@ public class PathwayGraph extends BioGraph<BioPathway,PathwayGraphEdge>{
 	 * Instantiates a new pathway graph.
 	 */
 	public PathwayGraph() {
-		super(new EdgeFactory<BioPathway, PathwayGraphEdge>() {
-			@Override
-			public PathwayGraphEdge createEdge(BioPathway arg0, BioPathway arg1) {
-				return new PathwayGraphEdge(arg0, arg1, new HashSet<BioPhysicalEntity>());
-			}
-		});
+		super(new PathwayGraphEdgeFactory());
 	}
 	
 	
@@ -77,12 +69,7 @@ public class PathwayGraph extends BioGraph<BioPathway,PathwayGraphEdge>{
 	
 	@Override
 	public EdgeFactory<BioPathway, PathwayGraphEdge> getEdgeFactory() {
-		return new EdgeFactory<BioPathway, PathwayGraphEdge>() {
-			@Override
-			public PathwayGraphEdge createEdge(BioPathway arg0, BioPathway arg1) {
-				return new PathwayGraphEdge(arg0, arg1, new HashSet<BioPhysicalEntity>());
-			}
-		};
+		return new PathwayGraphEdgeFactory();
 	}
 
 

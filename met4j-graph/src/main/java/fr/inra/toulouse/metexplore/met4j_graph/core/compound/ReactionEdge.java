@@ -31,7 +31,6 @@
 package fr.inra.toulouse.metexplore.met4j_graph.core.compound;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Objects;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;

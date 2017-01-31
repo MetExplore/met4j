@@ -30,7 +30,6 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_graph.core.compound;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -60,7 +59,7 @@ public class CompoundGraph extends BioGraph<BioPhysicalEntity, ReactionEdge> {
 	 * Instantiates a new bio graph.
 	 */
 	public CompoundGraph() {
-		super(edgeFactory);
+		super(new ReactionEdgeFactory());
 	}
 	
 	/**
@@ -131,7 +130,7 @@ public class CompoundGraph extends BioGraph<BioPhysicalEntity, ReactionEdge> {
 	}
 	
 	/**
-	 * Adds the edges from reaction.
+	 * Adds the edges from reaction. If a substrate or a product is not present in the network it will be ignored
 	 *
 	 * @param r the reaction
 	 */
@@ -153,21 +152,6 @@ public class CompoundGraph extends BioGraph<BioPhysicalEntity, ReactionEdge> {
 	}
 	
 	/**
-	 * Remove all edges which p-value is over a given threshold
-	 *
-	 * @param alpha the alpha
-	 */
-	public void pvalueFilter(double alpha){
-		ArrayList<ReactionEdge> edgesToRemove = new ArrayList<ReactionEdge>();
-		for (ReactionEdge e : this.edgeSet()){
-			if (e.getPvalue()>alpha){
-				edgesToRemove.add(e);
-			}
-		}
-		this.removeAllEdges(edgesToRemove);
-	}
-	
-	/**
 	 * Gets edge from source, target and associated reaction.
 	 *
 	 * @param sourceVertex the source vertex
@@ -186,15 +170,7 @@ public class CompoundGraph extends BioGraph<BioPhysicalEntity, ReactionEdge> {
 
 	@Override
 	public EdgeFactory<BioPhysicalEntity, ReactionEdge> getEdgeFactory() {
-		return new EdgeFactory<BioPhysicalEntity, ReactionEdge>() {
-
-			@Override
-			public ReactionEdge createEdge(BioPhysicalEntity arg0,
-					BioPhysicalEntity arg1) {
-				return new ReactionEdge(arg0, arg1, new BioChemicalReaction());
-			}
-			
-		};
+		return new ReactionEdgeFactory();
 	}
 
 	@Override

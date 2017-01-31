@@ -96,7 +96,7 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 		terminal.removeAll(unfound);
 		
 		ArrayList<E> list = new ArrayList<E>();
-		CompressedGraph<V, E> cg = (new ShortestPath<V,E,G>(g)).getMetricClosureGraph(terminal, terminal, weighted);
+		CompressedGraph<V, E, G> cg = (new ShortestPath<V,E,G>(g)).getMetricClosureGraph(terminal, terminal, weighted);
 		PrimMinimumSpanningTree<V, PathEdge<V,E>> prim = new PrimMinimumSpanningTree<V, PathEdge<V,E>>(cg);
 		Set<PathEdge<V,E>> mst = prim.getMinimumSpanningTreeEdgeSet();
 		for(PathEdge<V,E> edge : mst){

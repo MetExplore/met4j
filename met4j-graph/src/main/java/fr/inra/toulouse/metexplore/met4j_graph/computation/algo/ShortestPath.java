@@ -311,8 +311,8 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @param weighted if the graph is weighted
 	 * @return the metric closure graph
 	 */
-	public CompressedGraph<V, E> getMetricClosureGraph(Set<V> sources, Set<V> targets,boolean weighted){
-		CompressedGraph<V, E> cg = new CompressedGraph<V, E>(g);
+	public CompressedGraph<V, E, G> getMetricClosureGraph(Set<V> sources, Set<V> targets,boolean weighted){
+		CompressedGraph<V, E, G> cg = new CompressedGraph<V, E, G>(g);
 		for(V v : sources){
 			cg.addVertex(v);
 		}
@@ -359,7 +359,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @return the minimum shortest path distance
 	 */
 	public HashMap<V, Double> getMinSpDistance(Set<V> sources, Set<V> targets,boolean weighted){
-		CompressedGraph<V, E> closureGraph = getMetricClosureGraph(targets,sources,weighted);
+		CompressedGraph<V, E, G> closureGraph = getMetricClosureGraph(targets,sources,weighted);
 		HashMap<V, Double> minSpDist = new HashMap<V, Double>();
 		for(V node : sources){
 			if(closureGraph.containsVertex(node)){
@@ -389,7 +389,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @return the average shortest path distance
 	 */
 	public HashMap<V, Double> getAverageSpDistance(Set<V> sources, Set<V> targets,boolean weighted){
-		CompressedGraph<V, E> closureGraph = getMetricClosureGraph(targets,sources,weighted);
+		CompressedGraph<V, E, G> closureGraph = getMetricClosureGraph(targets,sources,weighted);
 		HashMap<V, Double> avgSpDist = new HashMap<V, Double>();
 		for(V node : sources){
 			if(closureGraph.containsVertex(node)){

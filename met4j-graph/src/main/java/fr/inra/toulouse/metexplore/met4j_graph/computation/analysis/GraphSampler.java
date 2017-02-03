@@ -269,9 +269,11 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 					rowSum+=rand;
 				}
 			}
-
-			for(int j=0;j<RandTransitionMatrix.numCols();j++){
-				RandTransitionMatrix.set(i, j, RandTransitionMatrix.get(i, j)/rowSum);
+			
+			if(rowSum>0.0){
+				for(int j=0;j<RandTransitionMatrix.numCols();j++){
+					RandTransitionMatrix.set(i, j, RandTransitionMatrix.get(i, j)/rowSum);
+				}
 			}
 		}
 		

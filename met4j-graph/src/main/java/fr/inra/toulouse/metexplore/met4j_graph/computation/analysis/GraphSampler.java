@@ -65,9 +65,12 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 	 *
 	 * @return the random vertex
 	 */
-	public V getRandomVertex(){
+	public V getRandomVertex() throws IllegalArgumentException{
+		if(g.vertexSet().size()<1){
+			throw new IllegalArgumentException("requested sample size greater than population size");
+		}
+		
 		ArrayList<V> vertices = new ArrayList<V>(g.vertexSet());
-		assert(!vertices.isEmpty());
 		int rand = new Random().nextInt(vertices.size());
 		return vertices.get(rand);
 	}
@@ -94,14 +97,17 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 //	}	
 	
 	/**
- * Gets a random vertex list.
- *
- * @param n the size of the sample
- * @return the random vertex list
- */
-public HashSet<V> getRandomVertexList(int n){
+	 * Gets a random vertex list.
+	 *
+	 * @param n the size of the sample
+	 * @return the random vertex list
+	 */
+	public HashSet<V> getRandomVertexList(int n) throws IllegalArgumentException{
+		if(g.vertexSet().size()<n){
+			throw new IllegalArgumentException("requested sample size greater than population size");
+		}
+		
 		ArrayList<V> vertices = new ArrayList<V>(g.vertexSet());
-		assert(vertices.size()>=n);
 		HashSet<V> randomList = new HashSet<V>();
 		Random random = new Random();
 		
@@ -114,7 +120,7 @@ public HashSet<V> getRandomVertexList(int n){
 		return randomList;
 	}
 	
-	//TODO test
+
 	/**
 	 * Gets a random vertex list in given compartment.
 	 *
@@ -122,14 +128,20 @@ public HashSet<V> getRandomVertexList(int n){
 	 * @param comp the compartment
 	 * @return the random vertex list in given compartment
 	 */
-	public HashSet<V> getRandomVertexListinComp(int n, String comp){
+	public HashSet<V> getRandomVertexListinComp(int n, String comp) throws IllegalArgumentException{
+			
 		ArrayList<V> vertices = new ArrayList<V>();
 		for(V entity : g.vertexSet()){
 			if(entity.getCompartment().getId().equals(comp)){
 				vertices.add(entity);
 			}
 		}
-		assert(vertices.size()>=n);
+
+		if(vertices.size()<n){
+			throw new IllegalArgumentException("requested sample size greater than compartment size");
+		}
+		
+		
 		HashSet<V> randomList = new HashSet<V>();
 		Random random = new Random();
 		
@@ -149,8 +161,17 @@ public HashSet<V> getRandomVertexList(int n){
 	 * @param scope the scope
 	 * @return the random vertex list in scope
 	 */
-	public HashSet<V> getRandomVertexListinScope(int n, int scope){
-		ArrayList<V> vertices = new ArrayList<V>(g.vertexSet());
+	public HashSet<V> getRandomVertexListinScope(int n, int scope) throws IllegalArgumentException{
+		if(g.vertexSet().size()<n){
+			throw new IllegalArgumentException("requested sample size greater than population size");
+		}
+		return getRandomVertexListinScope(n,scope,g.vertexSet());
+	}
+		
+		
+		
+	private HashSet<V> getRandomVertexListinScope(int n, int scope, Set<V> elements) throws IllegalArgumentException{
+		ArrayList<V> vertices = new ArrayList<V>(elements);
 		HashSet<V> randomList = new HashSet<V>();
 		Random random = new Random();
 		
@@ -186,7 +207,12 @@ public HashSet<V> getRandomVertexList(int n){
 		}
 		
 		if(verticesInScope.size()<n){
-			return getRandomVertexListinScope(n, scope);
+			Set<V> newElement = new HashSet<V>(elements);
+			newElement.remove(choosenOne);
+			if(newElement.isEmpty()){
+				throw new IllegalArgumentException("sample size incompatible with given scope");
+			}
+			return getRandomVertexListinScope(n, scope, newElement);
 		}
 		
 		//get random in scope
@@ -205,7 +231,11 @@ public HashSet<V> getRandomVertexList(int n){
 	 * @param n the size of the sample
 	 * @return the random edge list
 	 */
-	public HashSet<E> getRandomEdgeList(int n){
+	public HashSet<E> getRandomEdgeList(int n) throws IllegalArgumentException{
+		if(g.edgeSet().size()<n){
+			throw new IllegalArgumentException("requested sample size greater than population size");
+		}
+		
 		ArrayList<E> edges = new ArrayList<E>(g.edgeSet());
 		HashSet<E> randomList = new HashSet<E>();
 		Random random = new Random();

@@ -1156,7 +1156,7 @@ public class BioNetwork {
 				id = StringUtils.sbmlEncode(id);
 			}
 
-			out = out.concat(id+" = "+rxn.getEquation(encodeSbml) + "\n");
+			out = out.concat(id+" = "+rxn.getEquation() + "\n");
 		}
 
 		for (BioPhysicalEntity cpd : this.getPhysicalEntityList().values()) {
@@ -1179,13 +1179,13 @@ public class BioNetwork {
 		return this.networkAsString(false);
 	}
 
-	public String printNetworkForHuman(Boolean encodeSbml) {
+	public String printNetworkForHuman() {
 
 		String out = "";
 
 		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
 				.values()) {
-			out = out.concat(rxn.getEquationForHuman(encodeSbml) + "\n");
+			out = out.concat(rxn.getEquationForHuman() + "\n");
 		}
 
 		for (BioPhysicalEntity cpd : this.getPhysicalEntityList().values()) {

@@ -812,11 +812,8 @@ public class BioChemicalReaction extends BioConversion {
 		return (this.listOfPrimaryProducts);
 	}
 
-	public String getEquation() {
-		return this.getEquation(false);
-	}
 
-	public String getEquation(Boolean encodeSbml) {
+	public String getEquation() {
 
 		int nb = 0;
 
@@ -856,7 +853,7 @@ public class BioChemicalReaction extends BioConversion {
 
 	}
 
-	public String getEquationForHuman(Boolean encodeSbml) {
+	public String getEquationForHuman() {
 
 		int nb = 0;
 

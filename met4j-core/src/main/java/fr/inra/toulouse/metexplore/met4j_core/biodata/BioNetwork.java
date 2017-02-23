@@ -98,8 +98,6 @@ public class BioNetwork {
 
 	private HashMap<String,String> unusedSBMLData=new HashMap<String,String>();
 
-	private QualitativeModel qualModel;
-
 	/**
 	 * Constructor from scratch
 	 */
@@ -2896,14 +2894,6 @@ public class BioNetwork {
 
 	public void addUnusedSBMLdata(String id,String data){
 		this.unusedSBMLData.put(id, data);
-	}
-
-	public QualitativeModel getQualModel() {
-		return qualModel;
-	}
-
-	public void setQualModel(QualitativeModel qualModel) {
-		this.qualModel = qualModel;
 	}
 
 	public HashMap<String, BioEntity> getModifiersList() {

@@ -52,8 +52,6 @@ public class BioEntity {
 	
 	private String sboterm;
 	
-	private BioAnnotation entityAnnot;	
-	
 	private Notes entityNotes;
 	
 	private HashMap<String,Set<BioRef>> refs;
@@ -360,14 +358,6 @@ public class BioEntity {
 	 */
 	public void addPmid(String pmid) {
 		this.pmids.add(pmid);
-	}
-
-	public BioAnnotation getEntityAnnot() {
-		return entityAnnot;
-	}
-
-	public void setEntityAnnot(BioAnnotation entityAnnot) {
-		this.entityAnnot = entityAnnot;
 	}
 
 	public Notes getEntityNotes() {

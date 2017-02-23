@@ -92,8 +92,6 @@ public class BioNetwork {
 
 	private String sboterm;
 
-	private BioAnnotation modelAnnot;
-
 	private Notes modelNotes;
 
 	private HashMap<String, BioUnitDefinition> unitDefinitions = new HashMap<String, BioUnitDefinition>();
@@ -2878,14 +2876,6 @@ public class BioNetwork {
 
 	public void setSboterm(String sboterm) {
 		this.sboterm = sboterm;
-	}
-
-	public BioAnnotation getModelAnnot() {
-		return modelAnnot;
-	}
-
-	public void setModelAnnot(BioAnnotation modelAnnot) {
-		this.modelAnnot = modelAnnot;
 	}
 
 	public Notes getModelNotes() {

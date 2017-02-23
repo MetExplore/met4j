@@ -96,7 +96,6 @@ public class BioCompartment {
 	
 	private String sboterm;
 	
-	private BioAnnotation compartAnnot;	
 	private Notes compartNotes;
 	
 	private Boolean flagedAsUpdate=false;
@@ -217,16 +216,8 @@ public class BioCompartment {
 		this.constant = constant;
 	}
 
-	public BioAnnotation getCompartAnnot() {
-		return compartAnnot;
-	}
-
 	public Notes getCompartNotes() {
 		return compartNotes;
-	}
-
-	public void setCompartAnnot(BioAnnotation compartAnnot) {
-		this.compartAnnot = compartAnnot;
 	}
 
 	public void setCompartNotes(Notes compartNotes) {

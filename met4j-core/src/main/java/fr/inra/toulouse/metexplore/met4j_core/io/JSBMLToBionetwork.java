@@ -77,7 +77,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioAnnotation;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartmentType;
@@ -250,7 +249,7 @@ public class JSBMLToBionetwork {
 
 		if (!StringUtils.isVoid(jSBMLmodel.getMetaId())){
 			try{
-				bioNetwork.setModelAnnot(new BioAnnotation(jSBMLmodel.getMetaId(),jSBMLmodel.getAnnotationString()));
+//				bioNetwork.setModelAnnot(new BioAnnotation(jSBMLmodel.getMetaId(),jSBMLmodel.getAnnotationString()));
 				bioNetwork.setModelNotes(new Notes(jSBMLmodel.getNotesString()));
 			}catch(XMLStreamException e){
 				e.printStackTrace();
@@ -427,15 +426,15 @@ public class JSBMLToBionetwork {
 				}
 				bionetCompart.setSpatialDimensions((int) jSBMLCompart.getSpatialDimensions());
 
-				if (jSBMLCompart.isSetAnnotation()){
-					BioAnnotation bionetCompartAnnot = null;
-					try {
-						bionetCompartAnnot = new BioAnnotation(jSBMLCompart.getMetaId(),jSBMLCompart.getAnnotationString());
-					} catch (XMLStreamException e) {
-						e.printStackTrace();
-					}
-					bionetCompart.setCompartAnnot(bionetCompartAnnot);
-				}
+//				if (jSBMLCompart.isSetAnnotation()){
+//					BioAnnotation bionetCompartAnnot = null;
+//					try {
+//						bionetCompartAnnot = new BioAnnotation(jSBMLCompart.getMetaId(),jSBMLCompart.getAnnotationString());
+//					} catch (XMLStreamException e) {
+//						e.printStackTrace();
+//					}
+//					bionetCompart.setCompartAnnot(bionetCompartAnnot);
+//				}
 				if (jSBMLCompart.isSetNotes()){
 					Notes bionetCompartNotes = null;
 					try {
@@ -482,9 +481,9 @@ public class JSBMLToBionetwork {
 				BioChemicalReaction bionetReaction= new BioChemicalReaction(reactionId,reactionName);
 
 				bionetReaction.setSboterm(jSBMLReaction.getSBOTermID());
-				if(jSBMLReaction.isSetAnnotation()){
-					bionetReaction.setEntityAnnot(new BioAnnotation(jSBMLReaction.getMetaId(),jSBMLReaction.getAnnotationString()));
-				}
+//				if(jSBMLReaction.isSetAnnotation()){
+//					bionetReaction.setEntityAnnot(new BioAnnotation(jSBMLReaction.getMetaId(),jSBMLReaction.getAnnotationString()));
+//				}
 
 				if (jSBMLReaction.isSetFast()){
 					bionetReaction.setSpontaneous(new Boolean(jSBMLReaction.getFast()).toString());
@@ -748,10 +747,10 @@ public class JSBMLToBionetwork {
 						}
 
 
-						if (jSBMLSpecie.isSetAnnotation()){
-							unusedProtein.setEntityAnnot(new BioAnnotation(jSBMLSpecie.getMetaId(),jSBMLSpecie.getAnnotationString()));
-							parseMetaboliteAnnot(unusedProtein);
-						}
+//						if (jSBMLSpecie.isSetAnnotation()){
+//							unusedProtein.setEntityAnnot(new BioAnnotation(jSBMLSpecie.getMetaId(),jSBMLSpecie.getAnnotationString()));
+//							parseMetaboliteAnnot(unusedProtein);
+//						}
 
 						parseIDForGene(unusedProtein);
 
@@ -793,10 +792,10 @@ public class JSBMLToBionetwork {
 						}
 
 
-						if (jSBMLSpecie.isSetAnnotation()){
-							unusedComplex.setEntityAnnot(new BioAnnotation(jSBMLSpecie.getMetaId(),jSBMLSpecie.getAnnotationString()));			
-							parseMetaboliteAnnot(unusedComplex);
-						}
+//						if (jSBMLSpecie.isSetAnnotation()){
+//							unusedComplex.setEntityAnnot(new BioAnnotation(jSBMLSpecie.getMetaId(),jSBMLSpecie.getAnnotationString()));			
+//							parseMetaboliteAnnot(unusedComplex);
+//						}
 
 						if (jSBMLSpecie.isSetNotes()){
 							unusedComplex.setEntityNotes(new Notes(jSBMLSpecie.getNotesString()));
@@ -847,10 +846,10 @@ public class JSBMLToBionetwork {
 				bionetSpecies.addInitialQuantity("Concentration", jSBMLSpecie.getInitialConcentration());
 			}
 
-			if(jSBMLSpecie.isSetAnnotation()){
-				bionetSpecies.setEntityAnnot(new BioAnnotation(jSBMLSpecie.getMetaId(),jSBMLSpecie.getAnnotationString()));
-				parseMetaboliteAnnot(bionetSpecies);
-			}
+//			if(jSBMLSpecie.isSetAnnotation()){
+//				bionetSpecies.setEntityAnnot(new BioAnnotation(jSBMLSpecie.getMetaId(),jSBMLSpecie.getAnnotationString()));
+//				parseMetaboliteAnnot(bionetSpecies);
+//			}
 
 			if (jSBMLSpecie.isSetCharge()){
 				bionetSpecies.setCharge(jSBMLSpecie.getCharge()+"");
@@ -924,10 +923,10 @@ public class JSBMLToBionetwork {
 				}
 
 
-				if (jSBMLModifierSpecies.isSetAnnotation()){
-					proteinModifier.setEntityAnnot(new BioAnnotation(jSBMLModifierSpecies.getMetaId(),jSBMLModifierSpecies.getAnnotationString()));
-					parseMetaboliteAnnot(proteinModifier);
-				}
+//				if (jSBMLModifierSpecies.isSetAnnotation()){
+//					proteinModifier.setEntityAnnot(new BioAnnotation(jSBMLModifierSpecies.getMetaId(),jSBMLModifierSpecies.getAnnotationString()));
+//					parseMetaboliteAnnot(proteinModifier);
+//				}
 
 				parseIDForGene(proteinModifier);
 
@@ -967,10 +966,10 @@ public class JSBMLToBionetwork {
 				}
 
 
-				if (jSBMLModifierSpecies.isSetAnnotation()){
-					complexModifier.setEntityAnnot(new BioAnnotation(jSBMLModifierSpecies.getMetaId(),jSBMLModifierSpecies.getAnnotationString()));			
-					parseMetaboliteAnnot(complexModifier);
-				}
+//				if (jSBMLModifierSpecies.isSetAnnotation()){
+//					complexModifier.setEntityAnnot(new BioAnnotation(jSBMLModifierSpecies.getMetaId(),jSBMLModifierSpecies.getAnnotationString()));			
+//					parseMetaboliteAnnot(complexModifier);
+//				}
 
 				//check if all the genes are retrieved
 				complexModifier.getIsGeneticallyPossible();
@@ -1167,10 +1166,10 @@ public class JSBMLToBionetwork {
 						bionetProt.addInitialQuantity("Concentration", jSBMLProt.getInitialConcentration());
 					}
 
-					if (jSBMLProt.isSetAnnotation()){
-						bionetProt.setEntityAnnot(new BioAnnotation(jSBMLProt.getMetaId(),jSBMLProt.getAnnotationString()));
-						parseMetaboliteAnnot(bionetProt);
-					}
+//					if (jSBMLProt.isSetAnnotation()){
+//						bionetProt.setEntityAnnot(new BioAnnotation(jSBMLProt.getMetaId(),jSBMLProt.getAnnotationString()));
+//						parseMetaboliteAnnot(bionetProt);
+//					}
 
 					parseIDForGene(bionetProt);
 
@@ -1241,34 +1240,34 @@ public class JSBMLToBionetwork {
 		if(Pattern.compile("^.+_\\w$", Pattern.CASE_INSENSITIVE).matcher(geneId).matches()) geneId=geneId.substring(0,geneId.length()-2);
 		geneId=geneId.replaceAll("_", ".");
 
-		if ( (bionetProt.getEntityAnnot()!=null) ){
-
-			HashSet<String> geneNames=bionetProt.getEntityAnnot().getEncodedBy();
-
-			if (!geneNames.isEmpty()){
-				for ( String name :geneNames){
-
-					BioGene newGene=this.getBioNetwork().getGeneList().get(geneId);
-					if (newGene==null){
-						newGene=new BioGene(geneId,name);
-						newGene.setSboterm("SBO:0000335");
-						this.getBioNetwork().addGene(newGene);
-					}
-					bionetProt.addGene(newGene);
-				}
-			}else{
-
-				BioGene newGene=this.getBioNetwork().getGeneList().get(geneId);
-				if (newGene==null){
-					newGene=new BioGene(geneId,geneId);
-					newGene.setSboterm("SBO:0000335");
-					this.getBioNetwork().addGene(newGene);
-				}
-
-				bionetProt.addGene(newGene);
-			}
-		}
-		else{
+//		if ( (bionetProt.getEntityAnnot()!=null) ){
+//
+//			HashSet<String> geneNames=bionetProt.getEntityAnnot().getEncodedBy();
+//
+//			if (!geneNames.isEmpty()){
+//				for ( String name :geneNames){
+//
+//					BioGene newGene=this.getBioNetwork().getGeneList().get(geneId);
+//					if (newGene==null){
+//						newGene=new BioGene(geneId,name);
+//						newGene.setSboterm("SBO:0000335");
+//						this.getBioNetwork().addGene(newGene);
+//					}
+//					bionetProt.addGene(newGene);
+//				}
+//			}else{
+//
+//				BioGene newGene=this.getBioNetwork().getGeneList().get(geneId);
+//				if (newGene==null){
+//					newGene=new BioGene(geneId,geneId);
+//					newGene.setSboterm("SBO:0000335");
+//					this.getBioNetwork().addGene(newGene);
+//				}
+//
+//				bionetProt.addGene(newGene);
+//			}
+//		}
+//		else{
 			BioGene newGene=this.getBioNetwork().getGeneList().get(geneId);
 			if (newGene==null){
 				newGene=new BioGene(geneId,geneId);
@@ -1277,8 +1276,8 @@ public class JSBMLToBionetwork {
 			}
 
 			bionetProt.addGene(newGene);
-
-		}
+//
+//		}
 
 	}
 
@@ -1773,64 +1772,65 @@ public class JSBMLToBionetwork {
 
 	}
 
-	/**
-	 * parse annotations field, extract dbId + dbName
-	 * @param bionetSpecies
-	 */
-	public void parseMetaboliteAnnot(BioPhysicalEntity bionetSpecies) {
-		BioAnnotation annot = bionetSpecies.getEntityAnnot();
-
-		if(annot.getXMLasString()!=null){
-			
-			String ref = annot.getXMLasString().replaceAll(">\\s*<", "><");
-//			System.out.println(ref);
-			String regex1=".*?<bqbiol:([^>]+)><rdf:Bag>(.*?)</rdf:Bag>.*";
-			String regex2=".*?<rdf:li rdf:resource=\"http://identifiers.org/([^/]+)/([^\"]+)\"/>.*";
-
-			Matcher m=Pattern.compile(regex1).matcher(ref);
-
-			while (m.matches()){
-				String relation=m.group(1);
-
-				String links=m.group(2);
-				Matcher m2=Pattern.compile(regex2).matcher(links);
-
-				while (m2.matches()){
-
-					String dbName=m2.group(1);
-					String dbId=m2.group(2);
-					if(!bionetSpecies.hasRef(dbName, dbId)){
-						bionetSpecies.addRef(dbName, dbId, 1, relation , "SBML File");
-					}
-					if(dbName.equals("inchi")){
-						bionetSpecies.setInchi(dbId);
-					}
-					links=links.replace(dbName+"/"+dbId, "");
-
-					m2=Pattern.compile(regex2).matcher(links);
-				}
-				ref=ref.replaceFirst("<bqbiol:([^>]+)><rdf:Bag>", "");
-				m=Pattern.compile(regex1).matcher(ref);
-			}
-			
-			String regex3=".*?<in:inchi xmlns:in=[^>]+>([^<]+)</in:inchi>.*";
-			m=Pattern.compile(regex3).matcher(ref);
-			if (m.matches() && m.group(1).startsWith("InChI=")){
-				
-				bionetSpecies.addRef("inchi", m.group(1), 1, "is" , "SBML File");
-				bionetSpecies.setInchi(m.group(1));
-			}
-			
-			
-			
-		}
+//	/**
+//	 * parse annotations field, extract dbId + dbName
+//	 * @param bionetSpecies
+//	 */
+//	public void parseMetaboliteAnnot(BioPhysicalEntity bionetSpecies) {
+//		BioAnnotation annot = bionetSpecies.getEntityAnnot();
+//
+//		if(annot.getXMLasString()!=null){
+//			
+//			String ref = annot.getXMLasString().replaceAll(">\\s*<", "><");
+////			System.out.println(ref);
+//			String regex1=".*?<bqbiol:([^>]+)><rdf:Bag>(.*?)</rdf:Bag>.*";
+//			String regex2=".*?<rdf:li rdf:resource=\"http://identifiers.org/([^/]+)/([^\"]+)\"/>.*";
+//
+//			Matcher m=Pattern.compile(regex1).matcher(ref);
+//
+//			while (m.matches()){
+//				String relation=m.group(1);
+//
+//				String links=m.group(2);
+//				Matcher m2=Pattern.compile(regex2).matcher(links);
+//
+//				while (m2.matches()){
+//
+//					String dbName=m2.group(1);
+//					String dbId=m2.group(2);
+//					if(!bionetSpecies.hasRef(dbName, dbId)){
+//						bionetSpecies.addRef(dbName, dbId, 1, relation , "SBML File");
+//					}
+//					if(dbName.equals("inchi")){
+//						bionetSpecies.setInchi(dbId);
+//					}
+//					links=links.replace(dbName+"/"+dbId, "");
+//
+//					m2=Pattern.compile(regex2).matcher(links);
+//				}
+//				ref=ref.replaceFirst("<bqbiol:([^>]+)><rdf:Bag>", "");
+//				m=Pattern.compile(regex1).matcher(ref);
+//			}
+//			
+//			String regex3=".*?<in:inchi xmlns:in=[^>]+>([^<]+)</in:inchi>.*";
+//			m=Pattern.compile(regex3).matcher(ref);
+//			if (m.matches() && m.group(1).startsWith("InChI=")){
+//				
+//				bionetSpecies.addRef("inchi", m.group(1), 1, "is" , "SBML File");
+//				bionetSpecies.setInchi(m.group(1));
+//			}
+//			
+//			
+//			
+//		}
+		
 //		if (bionetSpecies.getRefs().containsKey("inchi")){
 //			System.err.println("specie has "+bionetSpecies.getRefs("inchi").size()+" inchi(s)");
 //		}else{
 //			System.err.println("specie has no inchi");
 //		}
 
-	}
+//	}
 
 
 	/**

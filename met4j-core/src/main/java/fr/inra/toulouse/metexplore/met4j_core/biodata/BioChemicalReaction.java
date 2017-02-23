@@ -1558,21 +1558,6 @@ public class BioChemicalReaction extends BioConversion {
 	}
 
 	/**
-	 * format a reaction id in the pallson way (R_***)
-	 */
-	public void formatIdByPalsson() {
-		String id = this.getId();
-
-		if (!id.startsWith("R_")) {
-			id = "R_" + id;
-		}
-
-		this.setId(id);
-
-		return;
-	}
-
-	/**
 	 * Compute the atom balances
 	 * 
 	 * @return

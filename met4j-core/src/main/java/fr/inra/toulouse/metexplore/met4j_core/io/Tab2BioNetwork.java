@@ -279,7 +279,20 @@ public class Tab2BioNetwork extends File2BioNetwork{
 		return flag;
 	}
 	
-	
+	/**
+	 * format a reaction id in the pallson way (R_***)
+	 */
+	public void formatIdByPalsson(BioChemicalReaction reaction) {
+		String id = reaction.getId();
+
+		if (!id.startsWith("R_")) {
+			id = "R_" + id;
+		}
+
+		reaction.setId(id);
+
+		return;
+	}
 	
 	/**
 	 * Fill the network from formulas in the file
@@ -334,7 +347,7 @@ public class Tab2BioNetwork extends File2BioNetwork{
 				reaction = new BioChemicalReaction(id);
 
 				if(this.addPalssonReaction) {
-					reaction.formatIdByPalsson();
+					formatIdByPalsson(reaction);
 				}
 				
 

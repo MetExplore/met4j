@@ -47,7 +47,7 @@ public class BioPhysicalEntity extends BioEntity {
 	
 	private String molecularWeight = "NA";
 	private String chemicalFormula = "NA";
-	private BioChemicalStructure structure;
+	
 	private String type = "NA";	
 	private Boolean isCofactor=false;
 	
@@ -153,12 +153,6 @@ public class BioPhysicalEntity extends BioEntity {
 	}
 	public void setChemicalFormula(String chemicalFormula) {
 		this.chemicalFormula = chemicalFormula;
-	}
-	public BioChemicalStructure getStructure() {
-		return structure;
-	}
-	public void setStructure(BioChemicalStructure structure) {
-		this.structure = structure;
 	}
 	public String getMolecularWeight() {
 		return molecularWeight;

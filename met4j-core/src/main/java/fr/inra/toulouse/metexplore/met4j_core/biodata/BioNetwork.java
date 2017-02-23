@@ -74,8 +74,6 @@ public class BioNetwork {
 
 	private HashMap<String, BioTransport> transportList = new HashMap<String, BioTransport>();
 
-	private HashMap<String, BioTransportWithBiochemicalReaction> transportWithBiochemicalReactionList = new HashMap<String, BioTransportWithBiochemicalReaction>();
-
 	private HashMap<String, BioCompartment> compartments = new HashMap<String, BioCompartment>();
 
 	private HashMap<String, BioCompartmentType> listOfCompartmentType= new HashMap<String, BioCompartmentType>();
@@ -798,24 +796,6 @@ public class BioNetwork {
 		this.transportList.put(o.getId(), o);
 	}
 
-	/**
-	 * @return Returns the transportWithBiochemicalReactionList.
-	 */
-	public HashMap<String, BioTransportWithBiochemicalReaction> getTransportWithBiochemicalReactionList() {
-		return transportWithBiochemicalReactionList;
-	}
-
-	/**
-	 * Add a transport with bioche mical reactionin the list
-	 * 
-	 * @param o
-	 *            the object to add
-	 */
-	public void addTransportWithBiochemicalReaction(
-			BioTransportWithBiochemicalReaction o) {
-		this.transportWithBiochemicalReactionList.put(o.getId(), o);
-		this.biochemicalReactionList.put(o.getId(), o);
-	}
 
 	/**
 	 * @return Returns the geneList.
@@ -1642,10 +1622,6 @@ public class BioNetwork {
 		this.transportList = transportList;
 	}
 
-	public void setTransportWithBiochemicalReactionList(
-			HashMap<String, BioTransportWithBiochemicalReaction> transportWithBiochemicalReactionList) {
-		this.transportWithBiochemicalReactionList = transportWithBiochemicalReactionList;
-	}
 
 	public Boolean isEmpty() {
 

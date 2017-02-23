@@ -39,6 +39,8 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.hamcrest.core.SubstringMatcher;
+
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 
@@ -1425,82 +1427,21 @@ public class BioChemicalReaction extends BioConversion {
 	 * @return true if the reaction is a transport reaction
 	 */
 	public Boolean isTransportReaction() {
-
-		Boolean flag = false;
-
-		Set<String> compartmentLefts = new HashSet<String>();
-		Set<String> compartmentRights = new HashSet<String>();
-
-		HashMap<String, String> lefts_cpt = new HashMap<String, String>();
-		HashMap<String, String> rights_cpt = new HashMap<String, String>();
-
-		for (BioPhysicalEntityParticipant bpe : this.getLeftParticipantList()
-				.values()) {
-
-			BioPhysicalEntity cpd = bpe.getPhysicalEntity();
-
-			BioCompartment cpt = cpd.getCompartment();
-
-			String cpdId = cpd.getId();
-			String cptId = cpt.getId();
-
-			String PalssonSuffix = "_" + cptId.substring(0, 1).toLowerCase();
-			String MetExploreSuffix = "_IN_" + cptId;
-
-			cpdId = cpdId.replaceAll(PalssonSuffix + "$", "");
-			cpdId = cpdId.replaceAll(MetExploreSuffix + "$", "");
-
-			lefts_cpt.put(cpdId, cptId);
-
-			compartmentLefts.add(cpt.getId());
-
+		
+		HashSet<BioCompartment> compartmnts = new HashSet<BioCompartment>();
+		for(BioPhysicalEntity s : this.getLeftList().values()){
+			compartmnts.add(s.getCompartment());
 		}
-
-		for (BioPhysicalEntityParticipant bpe : this.getRightParticipantList()
-				.values()) {
-
-			BioPhysicalEntity cpd = bpe.getPhysicalEntity();
-
-			BioCompartment cpt = cpd.getCompartment();
-
-			String cpdId = cpd.getId();
-			String cptId = cpt.getId();
-
-			String PalssonSuffix = "_" + cptId.substring(0, 1).toLowerCase();
-			String MetExploreSuffix = "_IN_" + cptId;
-
-			cpdId = cpdId.replaceAll(PalssonSuffix + "$", "");
-			cpdId = cpdId.replaceAll(MetExploreSuffix + "$", "");
-
-			rights_cpt.put(cpdId, cptId);
-
-			compartmentRights.add(cpt.getId());
-
+		for(BioPhysicalEntity p : this.getRightList().values()){
+			compartmnts.add(p.getCompartment());
 		}
-
-		Set<String> compartments = new HashSet<String>();
-
-		compartments.addAll(compartmentRights);
-		compartments.addAll(compartmentLefts);
-
-		if (compartments.size() != compartmentLefts.size()
-				|| compartments.size() != compartmentRights.size()) {
-			flag = true;
-		} else {
-			for (String cpdId : lefts_cpt.keySet()) {
-				String cptId = lefts_cpt.get(cpdId);
-
-				if (rights_cpt.containsKey(cpdId)) {
-					String cptId2 = rights_cpt.get(cpdId);
-
-					if (!cptId.equals(cptId2)) {
-						flag = true;
-					}
-				}
-			}
+		
+		if(compartmnts.size()>1){
+			return true;
+		}else{
+			return false;
 		}
-
-		return flag;
+		
 	}
 
 	/**

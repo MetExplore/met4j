@@ -44,7 +44,7 @@ import java.util.Iterator;
  * ever.
  */
 
-public class BioConversion extends BioPhysicalInteraction {
+public class BioConversion extends BioInteraction {
 
 	public HashMap<String, BioPhysicalEntityParticipant> leftParticipantList = new HashMap<String, BioPhysicalEntityParticipant>();
 	public HashMap<String, BioPhysicalEntityParticipant> rightParticipantList = new HashMap<String, BioPhysicalEntityParticipant>();

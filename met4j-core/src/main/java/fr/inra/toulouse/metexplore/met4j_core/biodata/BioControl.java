@@ -39,7 +39,7 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
  * be a small molecule that inhibits a pathway by an unknown mechanism.
  */
 
-public class BioControl extends BioPhysicalInteraction {
+public class BioControl extends BioInteraction {
 
 	/**
 	 * Defines the nature of the control relationship between the CONTROLLER and

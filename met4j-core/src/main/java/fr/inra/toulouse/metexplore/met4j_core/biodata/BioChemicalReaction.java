@@ -76,7 +76,6 @@ public class BioChemicalReaction extends BioConversion {
 	private HashMap<String, BioPhysicalEntity> enzList = new HashMap<String, BioPhysicalEntity>();
 	private HashMap<String, BioPhysicalEntity> listOfSubstrates = new HashMap<String, BioPhysicalEntity>();
 	private HashMap<String, BioPhysicalEntity> listOfProducts = new HashMap<String, BioPhysicalEntity>();
-	private HashMap<String, BioEntity> listOfModifiers = new HashMap<String, BioEntity>();
 	
 	private String go= null;
 	private String goTerm= null;
@@ -1221,18 +1220,6 @@ public class BioChemicalReaction extends BioConversion {
 
 	public void setKineticFormula(String kineticFormula) {
 		KineticFormula = kineticFormula;
-	}
-
-	public HashMap<String, BioEntity> getListOfModifiers() {
-		return listOfModifiers;
-	}
-	
-	public void addModifier(BioEntity modifier) {
-		this.listOfModifiers.put(modifier.getId(), modifier);
-	}
-
-	public void setListOfModifiers(HashMap<String, BioEntity> listOfModifiers) {
-		this.listOfModifiers = listOfModifiers;
 	}
 
 }

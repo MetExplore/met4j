@@ -50,6 +50,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.Comment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.Flux;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.Notes;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.UnitSbml;
+import fr.inra.toulouse.metexplore.met4j_core.utils.BioChemicalReactionUtils;
 import fr.inra.toulouse.metexplore.met4j_core.utils.JSBMLUtils;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
@@ -763,10 +764,10 @@ public class BioNetworkToJSBML {
 
 		//get the GA information and compare it to the reaction's enzyme list 
 		m = Pattern.compile(".*[> ]+GENE.{0,1}ASSOCIATION:\\s+([^<]+)<.*").matcher(oldNotes);
-		if( m.matches() && !StringUtils.isVoid(bionetReaction.getGPR().get(0))){
-			oldNotes=oldNotes.replaceAll("GENE.{0,1}ASSOCIATION:\\s+"+escapeSpecialRegexChars(m.group(1)), "GENE ASSOCIATION: "+bionetReaction.getGPR().get(0));
-		}else if (!StringUtils.isVoid(bionetReaction.getGPR().get(0))){
-			notesToAppend+="<p>GENE_ASSOCIATION: "+bionetReaction.getGPR().get(0)+"</p>";
+		if( m.matches() && !StringUtils.isVoid(BioChemicalReactionUtils.getGPR(bionetReaction).get(0))){
+			oldNotes=oldNotes.replaceAll("GENE.{0,1}ASSOCIATION:\\s+"+escapeSpecialRegexChars(m.group(1)), "GENE ASSOCIATION: "+BioChemicalReactionUtils.getGPR(bionetReaction).get(0));
+		}else if (!StringUtils.isVoid(BioChemicalReactionUtils.getGPR(bionetReaction).get(0))){
+			notesToAppend+="<p>GENE_ASSOCIATION: "+BioChemicalReactionUtils.getGPR(bionetReaction).get(0)+"</p>";
 		}
 
 
@@ -1111,7 +1112,7 @@ public class BioNetworkToJSBML {
 		}
 		notes+="</p>\n";
 
-		notes+="<p>GENE_ASSAOCIATION: "+bionetReaction.getGPR().get(0)+"</p>\n";
+		notes+="<p>GENE_ASSAOCIATION: "+BioChemicalReactionUtils.getGPR(bionetReaction).get(0)+"</p>\n";
 
 		notes+="<p>EC NUMBER: "+bionetReaction.getEcNumber()+"</p>\n";
 

@@ -63,6 +63,7 @@ import fr.inra.toulouse.metexplore.met4j_core.mock.DummyKeggHuman;
 import fr.inra.toulouse.metexplore.met4j_core.mock.DummyRecon2modelv02;
 import fr.inra.toulouse.metexplore.met4j_core.mock.DummySbml;
 import fr.inra.toulouse.metexplore.met4j_core.mock.TestUtils;
+import fr.inra.toulouse.metexplore.met4j_core.utils.BioChemicalReactionUtils;
 
 
 /**
@@ -144,8 +145,8 @@ public class TestJSBMLToBionetwork {
 			assertEquals("error in reaction SBO term :", r0.getSboterm(), r.getSboterm());
 			assertEquals("error in reaction name :", r0.getName(), r.getName());
 			assertEquals("error in reaction reversibility :", r0.isReversible(), r.isReversible());
-			for(String g0 : r0.getListOfGenes().keySet()){
-				assertTrue("error in reaction genes", r.getListOfGenes().containsKey(g0));
+			for(String g0 : BioChemicalReactionUtils.getListOfGenesFromReaction(r0).keySet()){
+				assertTrue("error in reaction genes", BioChemicalReactionUtils.getListOfGenesFromReaction(r).containsKey(g0));
 			}
 			for(String p0 : r0.getPathwayList().keySet()){
 				assertTrue("error in reaction pathway", r.getPathwayList().containsKey(p0));
@@ -173,7 +174,7 @@ public class TestJSBMLToBionetwork {
 			for(BioPhysicalEntity p : r.getRightList().values()){
 				assertTrue("error in reaction: product not found in Bionetwork", bn.getPhysicalEntityList().containsValue(p));
 			}
-			for(BioGene g : r.getListOfGenes().values()){
+			for(BioGene g : BioChemicalReactionUtils.getListOfGenesFromReaction(r).values()){
 				assertTrue("error in reaction: gene not found in Bionetwork "+r.getId(), bn.getGeneList().containsValue(g));
 			}
 			for(BioPathway path : r.getPathwayList().values()){

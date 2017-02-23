@@ -30,16 +30,11 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.hamcrest.core.SubstringMatcher;
 
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
@@ -82,10 +77,6 @@ public class BioChemicalReaction extends BioConversion {
 	private HashMap<String, BioPhysicalEntity> listOfSubstrates = new HashMap<String, BioPhysicalEntity>();
 	private HashMap<String, BioPhysicalEntity> listOfProducts = new HashMap<String, BioPhysicalEntity>();
 	private HashMap<String, BioEntity> listOfModifiers = new HashMap<String, BioEntity>();
-
-	private Boolean isGeneticallyPossible = null; // To indicate if all the
-													// genes coding for at least
-													// one enzyme are present
 	
 	private String go= null;
 	private String goTerm= null;
@@ -305,34 +296,6 @@ public class BioChemicalReaction extends BioConversion {
 	}
 
 	/**
-	 * Comparison with another reaction : if the substrates and the products
-	 * have the same id, return true
-	 */
-	public Boolean isRedundantWith(BioChemicalReaction rxn) {
-
-		Set<String> listOfOtherSubstrates = rxn.getLeftList().keySet();
-		Set<String> listOfOtherProducts = rxn.getRightList().keySet();
-
-		if (this.getReversiblity().equalsIgnoreCase(rxn.getReversiblity())
-				&& listOfOtherProducts.equals(this.getRightList().keySet())
-				&& listOfOtherSubstrates.equals(this.getLeftList().keySet())) {
-			return true;
-		}
-
-		if (this.getReversiblity().equalsIgnoreCase("reversible")
-				&& rxn.getReversiblity().equalsIgnoreCase("reversible")
-				&& ((this.getLeftList().keySet().equals(listOfOtherSubstrates) && this
-						.getRightList().keySet().equals(listOfOtherProducts)) || (this
-						.getLeftList().keySet().equals(listOfOtherProducts) && this
-						.getRightList().keySet().equals(listOfOtherSubstrates)))) {
-			return true;
-		}
-
-		return false;
-
-	}
-
-	/**
 	 * @return Returns the deltaG.
 	 */
 	public String getDeltaG() {
@@ -440,7 +403,8 @@ public class BioChemicalReaction extends BioConversion {
 	public void setEnzrxnsList(HashMap<String, BioCatalysis> enzrxnsList) {
 		this.enzrxnsList = enzrxnsList;
 	}
-
+	
+	//TODO : remove?
 	public void copyEnzrxnsList(HashMap<String, BioCatalysis> list) {
 
 		this.setEnzrxnsList(new HashMap<String, BioCatalysis>());
@@ -451,55 +415,6 @@ public class BioChemicalReaction extends BioConversion {
 		}
 	}
 
-	/**
-	 * 
-	 */
-	public void setIsGeneticallyPossible() {
-		if (isGeneticallyPossible != null) {
-			return;
-		} else {
-			isGeneticallyPossible = false;
-
-			if (this.getSpontaneous() != null) {
-				isGeneticallyPossible = true;
-				return;
-			} else {
-				ArrayList<BioPhysicalEntity> liste = new ArrayList<BioPhysicalEntity>(
-						enzList.values());
-
-				for (int i = 0; i < liste.size(); i++) {
-
-					BioPhysicalEntity enzyme = liste.get(i);
-					String classe = enzyme.getClass().getSimpleName();
-
-					if (classe.compareTo("BioProtein") == 0) {
-						if (((BioProtein) enzyme).getGeneList().size() > 0) {
-							isGeneticallyPossible = true;
-							return;
-						}
-					} else if (classe.compareTo("BioComplex") == 0) {
-						if (((BioComplex) enzyme).getIsGeneticallyPossible() == true) {
-							isGeneticallyPossible = true;
-							return;
-						}
-					}
-				}
-			}
-		}
-
-		isGeneticallyPossible = false;
-		return;
-	}
-
-	/**
-	 * @return Returns the isGeneticallyPossible.
-	 */
-	public Boolean getIsGeneticallyPossible() {
-		if (isGeneticallyPossible == null) {
-			setIsGeneticallyPossible();
-		}
-		return isGeneticallyPossible;
-	}
 
 	/**
 	 * 
@@ -578,6 +493,7 @@ public class BioChemicalReaction extends BioConversion {
 
 	}
 
+	//TODO : define reversibility as boolean only
 	public void setReversibility(String rev) {
 
 		reversibility = rev;
@@ -688,54 +604,7 @@ public class BioChemicalReaction extends BioConversion {
 
 	}
 
-	/**
-	 * Test the reaction : - if onlyPrimaries = true, test if the reaction
-	 * occurs in a metabolic pathway, i.e. if the primary compounds can be
-	 * adressed - if keepHolderClassCpd = false, test if any substrate or
-	 * product of the reaction is a generic compound (e.g "an aldehyde").
-	 */
 
-	public Boolean testReaction() {
-		return this.testReaction(false, true);
-	}
-
-	public Boolean testReaction(Boolean onlyPrimaries,
-			Boolean keepHolderClassCpd) {
-
-		if (onlyPrimaries == true) {
-			if (this.getPathwayList().size() == 0) {
-				return false;
-			}
-
-			if ((this.getPrimaryLeftParticipantList().size() == 0)
-					|| (this.getPrimaryRightParticipantList().size() == 0)) {
-				System.err.println("[Warning] The " + this.getId()
-						+ " has a problem with its primary compounds");
-				return false;
-			}
-
-			if (keepHolderClassCpd == false) {
-				if (this.getDoesItContainClassPrimaryCpd() == true) {
-					return false;
-				}
-			}
-		} else {
-
-			if ((this.getLeftParticipantList().size() == 0)
-					|| (this.getRightParticipantList().size() == 0)) {
-				System.err.println("[Warning] the " + this.getId()
-						+ " has a problem with its compounds");
-				return false;
-			}
-
-			if (keepHolderClassCpd == false) {
-				if (this.getDoesItContainClassCpd() == true) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
 
 	/**
 	 * Set the list of substrates of the reaction. if the reaction is
@@ -1125,168 +994,6 @@ public class BioChemicalReaction extends BioConversion {
 	}
 
 	/**
-	 * 
-	 * @return a ArrayList<String> corresponding to the association between
-	 *         genes and between proteins that enable the catalysis of the
-	 *         reaction Ex : res.get(0) g1 and ( g2 or g3 ) res.get(1) p1 and p2
-	 */
-	public ArrayList<String> getGPR() {
-
-		String geneStr = "";
-		String protStr = "";
-		ArrayList<String> res = new ArrayList<String>();
-
-		int j = 0;
-
-		for (Iterator<String> iterEnz = enzList.keySet().iterator(); iterEnz
-				.hasNext();) {
-			j++;
-
-			if (j > 1) {
-				protStr = protStr + " or ";
-				geneStr = geneStr + " or ";
-			}
-
-			BioPhysicalEntity enzyme = enzList.get(iterEnz.next());
-
-			String classe = enzyme.getClass().getSimpleName();
-
-			HashMap<String, BioGene> listOfGenes = new HashMap<String, BioGene>();
-
-			HashMap<String, BioProtein> listOfProteins = new HashMap<String, BioProtein>();
-
-			if (classe.compareTo("BioProtein") == 0) {
-				listOfProteins.put(enzyme.getId(), (BioProtein) enzyme);
-
-				listOfGenes = ((BioProtein) enzyme).getGeneList();
-
-			} else if (classe.compareTo("BioComplex") == 0) {
-
-				listOfGenes = ((BioComplex) enzyme).getGeneList();
-
-				HashMap<String, BioPhysicalEntity> componentList = ((BioComplex) enzyme)
-						.getAllComponentList();
-
-				for (Iterator<String> iterComponent = componentList.keySet()
-						.iterator(); iterComponent.hasNext();) {
-
-					BioPhysicalEntity component = componentList
-							.get(iterComponent.next());
-
-					if (component.getClass().getSimpleName()
-							.compareTo("BioProtein") == 0) {
-						listOfProteins.put(component.getId(),
-								(BioProtein) component);
-					}
-
-				}
-			}
-			int k = 0;
-
-			geneStr = geneStr + "( ";
-
-			for (Iterator<String> iterGene = listOfGenes.keySet().iterator(); iterGene
-					.hasNext();) {
-				k++;
-
-				if (k > 1) {
-					geneStr = geneStr + " and ";
-				}
-
-				BioGene gene = listOfGenes.get(iterGene.next());
-
-				geneStr = geneStr + StringUtils.htmlEncode(gene.getName());
-			}
-
-			geneStr = geneStr + " )";
-
-			protStr = protStr + "( ";
-
-			k = 0;
-
-			for (Iterator<String> iterProt = listOfProteins.keySet().iterator(); iterProt
-					.hasNext();) {
-				k++;
-				if (k > 1) {
-					protStr = protStr + " and ";
-				}
-
-				BioProtein prot = listOfProteins.get(iterProt.next());
-				protStr = protStr + StringUtils.htmlEncode(prot.getName());
-			}
-
-			protStr = protStr + " )";
-
-		}
-
-		res.add(geneStr);
-		res.add(protStr);
-
-		return res;
-
-	}
-
-	/**
-	 * Returns the genes catalysing the reaction
-	 * 
-	 * @return a HashMap
-	 */
-	public HashMap<String, BioGene> getListOfGenes() {
-
-		HashMap<String, BioGene> genes = new HashMap<String, BioGene>();
-
-		for (Iterator<String> iterEnz = enzList.keySet().iterator(); iterEnz
-				.hasNext();) {
-
-			BioPhysicalEntity enzyme = enzList.get(iterEnz.next());
-
-			String classe = enzyme.getClass().getSimpleName();
-
-			if (classe.compareTo("BioProtein") == 0) {
-				genes.putAll(((BioProtein) enzyme).getGeneList());
-			} else if (classe.compareTo("BioComplex") == 0) {
-
-				HashMap<String, BioPhysicalEntity> componentList = ((BioComplex) enzyme)
-						.getAllComponentList();
-
-				for (Iterator<String> iterComponent = componentList.keySet()
-						.iterator(); iterComponent.hasNext();) {
-
-					BioPhysicalEntity component = componentList
-							.get(iterComponent.next());
-
-					if (component.getClass().getSimpleName()
-							.compareTo("BioProtein") == 0) {
-						genes.putAll(((BioProtein) component).getGeneList());
-					}
-				}
-			}
-		}
-
-		return genes;
-
-	}
-
-	/**
-	 * Returns the names of the genes catalysing the reaction
-	 * 
-	 * @return a HashMap
-	 */
-	public Set<String> getListOfGeneNames() {
-
-		HashMap<String, BioGene> genes = this.getListOfGenes();
-
-		Set<String> geneNames = new HashSet<String>();
-
-		for (BioGene gene : genes.values()) {
-			geneNames.add(gene.getName());
-		}
-
-		return geneNames;
-
-	}
-
-	/**
 	 * Add a side compound
 	 * 
 	 * @param cpdId
@@ -1496,165 +1203,6 @@ public class BioChemicalReaction extends BioConversion {
 		}
 
 		return type;
-	}
-
-	/**
-	 * Compute the atom balances
-	 * 
-	 * @return
-	 */
-	public HashMap<String, Double> computeAtomBalances() {
-
-		HashMap<String, Double> balances = new HashMap<String, Double>();
-
-		for (BioPhysicalEntityParticipant bpe : this.getLeftParticipantList()
-				.values()) {
-
-			String stoStr = bpe.getStoichiometricCoefficient();
-
-			Double sto = 0.0;
-
-			try {
-				sto = Double.parseDouble(stoStr);
-			} catch (NumberFormatException e) {
-				System.err.println("Stoichiometry not valid in the reaction "
-						+ this.getId());
-				return new HashMap<String, Double>();
-			}
-
-			String formula = bpe.getPhysicalEntity().getChemicalFormula();
-
-			if (formula.equals("NA")) {
-				System.err.println("No formula for "
-						+ bpe.getPhysicalEntity().getId() + " in "
-						+ this.getId());
-				return new HashMap<String, Double>();
-			}
-
-			String REGEX = "[A-Z]{1}[a-z]*[0-9]*";
-
-			Pattern pattern = Pattern.compile(REGEX);
-			Matcher matcher = pattern.matcher(formula);
-
-			while (matcher.find()) {
-				String group = matcher.group(0);
-
-				String REGEX2 = "([A-Z]{1}[a-z]*)([0-9]*)";
-
-				Pattern pattern2 = Pattern.compile(REGEX2);
-				Matcher matcher2 = pattern2.matcher(group);
-
-				matcher2.find();
-
-				String atom = matcher2.group(1);
-
-				String numStr = matcher2.group(2);
-
-				if (numStr.equals("")) {
-					numStr = "1.0";
-				}
-
-				Double number = Double.parseDouble(numStr);
-
-				if (!balances.containsKey(atom)) {
-					balances.put(atom, sto * number);
-				} else {
-					balances.put(atom, balances.get(atom) + sto * number);
-				}
-
-			}
-
-		}
-
-		for (BioPhysicalEntityParticipant bpe : this.getRightParticipantList()
-				.values()) {
-
-			String stoStr = bpe.getStoichiometricCoefficient();
-
-			Double sto = 0.0;
-
-			try {
-				sto = Double.parseDouble(stoStr);
-			} catch (NumberFormatException e) {
-				System.err.println("Stoichiometry not valid in the reaction "
-						+ this.getId());
-				return new HashMap<String, Double>();
-			}
-
-			String formula = bpe.getPhysicalEntity().getChemicalFormula();
-
-			if (formula.equals("NA")) {
-				System.err.println("No formula for "
-						+ bpe.getPhysicalEntity().getId() + " in "
-						+ this.getId());
-				return new HashMap<String, Double>();
-			}
-
-			String REGEX = "[A-Z]{1}[a-z]*[0-9]*";
-
-			Pattern pattern = Pattern.compile(REGEX);
-			Matcher matcher = pattern.matcher(formula);
-
-			while (matcher.find()) {
-				String group = matcher.group(0);
-
-				String REGEX2 = "([A-Z]{1}[a-z]*)([0-9]*)";
-
-				Pattern pattern2 = Pattern.compile(REGEX2);
-				Matcher matcher2 = pattern2.matcher(group);
-
-				matcher2.find();
-
-				String atom = matcher2.group(1);
-
-				String numStr = matcher2.group(2);
-
-				if (numStr.equals("")) {
-					numStr = "1.0";
-				}
-
-				Double number = Double.parseDouble(numStr);
-
-				if (!balances.containsKey(atom)) {
-					balances.put(atom, -sto * number);
-				} else {
-					balances.put(atom, balances.get(atom) + -sto * number);
-				}
-
-			}
-
-		}
-
-		System.err.println(balances);
-
-		return balances;
-
-	}
-
-	/**
-	 * Checks if a reaction is balanced
-	 * 
-	 * @return
-	 */
-	public Boolean isBalanced() {
-
-		Double sum = 0.0;
-
-		HashMap<String, Double> balances = this.computeAtomBalances();
-
-		if (balances.size() == 0) {
-			return false;
-		}
-
-		for (Double value : balances.values()) {
-			sum = sum + value;
-		}
-
-		if (sum != 0.0) {
-			return false;
-		} else {
-			return true;
-		}
 	}
 
 	public HashMap<String, Flux> getListOfAdditionalFluxParam() {

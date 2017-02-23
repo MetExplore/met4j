@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.inra.toulouse.metexplore.met4j_core.utils.BioChemicalReactionUtils;
 import fr.inra.toulouse.metexplore.met4j_core.utils.Counter;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
@@ -1568,7 +1569,7 @@ public class BioNetwork {
 					BioChemicalReaction rxn2 = reactions.get(j);
 					if (this.getBiochemicalReactionList().containsKey(
 							rxn2.getId())) {
-						if (rxn2.isRedundantWith(rxn1)) {
+						if (BioChemicalReactionUtils.areRedundant(rxn2,rxn1)) {
 							identical = true;
 							this.removeBioChemicalReaction(rxn2.getId());
 							id = id + "__or__" + rxn2.getId();
@@ -1945,7 +1946,7 @@ public class BioNetwork {
 		for (BioChemicalReaction reaction : this.getBiochemicalReactionList()
 				.values()) {
 
-			HashMap<String, BioGene> genes = reaction.getListOfGenes();
+			HashMap<String, BioGene> genes = BioChemicalReactionUtils.getListOfGenesFromReaction(reaction);
 
 			if (genes.containsKey(geneId)) {
 				reactions.add(reaction.getId());
@@ -2557,7 +2558,7 @@ public class BioNetwork {
 
 			String id = rxn.getId();
 
-			HashMap<String, Double> balance = rxn.computeAtomBalances();
+			HashMap<String, Double> balance = BioChemicalReactionUtils.computeAtomBalances(rxn);
 
 			balances.put(id, balance);
 		}

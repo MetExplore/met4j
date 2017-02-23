@@ -48,6 +48,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.Flux;
+import fr.inra.toulouse.metexplore.met4j_core.utils.BioChemicalReactionUtils;
 
 
 
@@ -121,7 +122,7 @@ public class BioNetwork2SurreyFBA extends BioNetwork2File {
 				ubValue = ub.value;
 			}
 			
-			String rule = rxn.getGPR().get(0);
+			String rule = BioChemicalReactionUtils.getGPR(rxn).get(0);
 			
 			int nb = 0;
 			String equationWithIds = "";

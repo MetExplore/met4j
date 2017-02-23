@@ -40,6 +40,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.utils.BioChemicalReactionUtils;
 
 
 
@@ -108,7 +109,7 @@ public class BioNetwork2File {
 			
 			BioChemicalReaction reaction = totalListOfReactions.get(iterReaction.next());
 			
-			if(reaction.testReaction(this.getOnlyPrimaries(), this.getKeepHolderClassCpd()) == true)  {
+			if(BioChemicalReactionUtils.testReaction(reaction, this.getOnlyPrimaries(), this.getKeepHolderClassCpd()) == true)  {
 				
 				this.addReaction(reaction);
 				if(this.getOnlyPrimaries() == true) {

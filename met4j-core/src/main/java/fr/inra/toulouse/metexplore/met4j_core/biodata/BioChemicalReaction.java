@@ -1706,51 +1706,6 @@ public class BioChemicalReaction extends BioConversion {
 	}
 
 	/**
-	 * 
-	 * TODO : Remove from parsebionet and put it in MetExploreJava
-	 * create the reaction's Participant (left or right) in an hashmap. this map
-	 * will have to be assigned to the left or right participant after the
-	 * method call.
-	 * 
-	 * @param parts
-	 * @param network
-	 * @return
-	 */
-	public static HashMap<String, BioPhysicalEntityParticipant> setReactionParticipantFromSQl(
-			String[] parts, BioNetwork network) {
-
-		HashMap<String, BioPhysicalEntityParticipant> partMap = new HashMap<String, BioPhysicalEntityParticipant>();
-
-		for (String part : parts) {
-			String[] attributes = part.split("\\|");
-			BioPhysicalEntityParticipant lparti = new BioPhysicalEntityParticipant(
-					network.getPhysicalEntityList().get(attributes[0]),
-					attributes[1]);
-			// set the participant's attributes
-			if (attributes[2].equals("1")) {
-				lparti.setIsCofactor(true);
-			} else {
-				lparti.setIsCofactor(false);
-			}
-
-			if (attributes[3].equals("1")) {
-				lparti.setIsPrimaryCompound(false);
-			} else {
-				lparti.setIsPrimaryCompound(true);
-			}
-
-			if (attributes[4].equals("1")) {
-				lparti.setIsConstant(true);
-			} else {
-				lparti.setIsConstant(false);
-			}
-
-			partMap.put(lparti.getId(), lparti);
-		}
-		return partMap;
-	}
-
-	/**
 	 * Checks if a reaction is balanced
 	 * 
 	 * @return

@@ -527,40 +527,6 @@ public class BioNetwork {
 
 	}
 
-	public String getNewReactionId(String prefix) {
-
-		String id;
-
-		int n = 1;
-
-		id = prefix + n;
-
-		while (this.getBiochemicalReactionList().containsKey(id)) {
-			n++;
-			id = prefix + n;
-		}
-
-		return id;
-
-	}
-
-	public String getNewMetaboliteId(String prefix, String suffix) {
-
-		String id;
-
-		int n = 1;
-
-		id = prefix + n + suffix;
-
-		while (this.getPhysicalEntityList().containsKey(id)) {
-			n++;
-			id = prefix + n + suffix;
-		}
-
-		return id;
-
-	}
-
 	/**
 	 * @param cpd
 	 * @return the list of reactionNodes which involves the compound cpd as
@@ -1121,36 +1087,42 @@ public class BioNetwork {
 	}
 
 	/**
-	 * Adds an exchange reaction to a metabolite
-	 * 
-	 * @param cpdId
-	 * @param withExternal
-	 * @param suffix
-	 * @param compartmentId
+	 * Add external reaction producing a metabolide
+	 * @param cpdId metabolite identifier
+	 * @param withExternal if the external compound should be added
+	 * @param ExternalCpdId the external compound identifier (ignored if withExternal set to false)
+	 * @param ExchangeReactionId the exchange reaction identifier
+	 * @param ExternalCompartmentId the external reaction identifier
+	 * @return 
 	 */
-	public String addExchangeReactionToMetabolite(String cpdId,
-			Boolean withExternal, String suffix, String compartmentId) {
+	public void addExchangeReactionToMetabolite (String cpdId,
+			Boolean withExternal, String ExternalCpdId, String ExchangeReactionId, String ExternalCompartmentId) 
+					throws IllegalArgumentException{
 
 		if (!this.getPhysicalEntityList().containsKey(cpdId)) {
-			return null;
+			throw new IllegalArgumentException("compound "+cpdId+" not in network");
+		}
+		if (this.getBiochemicalReactionList().containsKey(ExchangeReactionId)){
+			throw new IllegalArgumentException("reaction id "+ExchangeReactionId+" already used");
+		}
+		if (this.getBiochemicalReactionList().containsKey(ExternalCpdId)){
+			throw new IllegalArgumentException("compound id "+ExternalCpdId+" already used");
 		}
 
-		BioChemicalReaction rxn = new BioChemicalReaction(
-				this.getNewReactionId("R_EX_"));
+		BioChemicalReaction rxn = new BioChemicalReaction(ExchangeReactionId);
 
 		if (withExternal) {
-			BioPhysicalEntity cpd = new BioPhysicalEntity(
-					this.getNewMetaboliteId("M_", suffix));
+			BioPhysicalEntity cpd = new BioPhysicalEntity(ExternalCpdId);
 
 			BioCompartment compartment;
 
-			if (this.getCompartments().containsKey(compartmentId)) {
-				compartment = this.getCompartments().get(compartmentId);
+			if (this.getCompartments().containsKey(ExternalCompartmentId)) {
+				compartment = this.getCompartments().get(ExternalCompartmentId);
 			} else {
-				if (compartmentId == null || compartmentId.equals("")) {
-					compartmentId = "NA";
+				if (ExternalCompartmentId == null || ExternalCompartmentId.equals("")) {
+					ExternalCompartmentId = "NA";
 				}
-				compartment = new BioCompartment(compartmentId, compartmentId);
+				compartment = new BioCompartment(ExternalCompartmentId, ExternalCompartmentId);
 
 				this.addCompartment(compartment);
 
@@ -1167,7 +1139,7 @@ public class BioNetwork {
 
 		this.addBiochemicalReaction(rxn);
 
-		return rxn.getId();
+		return;
 
 	}
 

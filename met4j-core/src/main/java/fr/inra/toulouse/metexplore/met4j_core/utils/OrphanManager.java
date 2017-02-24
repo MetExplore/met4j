@@ -128,15 +128,17 @@ public class OrphanManager {
 	 *                metabolites will be added
 	 */
 	public void addExchangeReactionsToOrphans(Boolean withExternal,
-			String suffix, String compartmentId) {
+			String externalCompoundSuffix, String exchangeReactionSuffix, String ExternalCompartmentId) {
 	
 
 		HashMap<String, BioPhysicalEntity> orphans = getOrphanMetabolites(bn);
 
 		for (BioPhysicalEntity orphan : orphans.values()) {
 
-			bn.addExchangeReactionToMetabolite(orphan.getId(), withExternal,
-					suffix, compartmentId);
+			bn.addExchangeReactionToMetabolite(orphan.getId(), withExternal, 
+					orphan.getId()+externalCompoundSuffix,
+					orphan.getId()+exchangeReactionSuffix,
+					ExternalCompartmentId);
 		}
 	}
 }

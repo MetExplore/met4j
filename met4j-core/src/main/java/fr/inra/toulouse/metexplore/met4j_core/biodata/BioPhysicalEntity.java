@@ -30,12 +30,7 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 /**
  * @author ludo

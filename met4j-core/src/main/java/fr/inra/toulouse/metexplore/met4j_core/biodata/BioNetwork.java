@@ -74,8 +74,6 @@ public class BioNetwork {
 
 	private HashMap<String, BioPhysicalEntity> enzymes = null;
 
-	private ArrayList<String> errorList;
-
 	private String id = "NA";
 
 	private String name = "NA";
@@ -184,31 +182,6 @@ public class BioNetwork {
 	 */
 	public void addPathway(BioPathway o) {
 		this.pathwayList.put(o.getId(), o);
-	}
-
-	/**
-	 * @return Returns the errorList.
-	 */
-	public ArrayList<String> getErrorList() {
-		return errorList;
-	}
-
-	/**
-	 * @param errorList
-	 *            The errorList to set.
-	 */
-	public void setErrorList(ArrayList<String> errorList) {
-		this.errorList = errorList;
-	}
-
-	/**
-	 * Add an error in the list
-	 * 
-	 * @param o
-	 *            the object to add
-	 */
-	public void addError(String message) {
-		this.errorList.add(message);
 	}
 
 	/**

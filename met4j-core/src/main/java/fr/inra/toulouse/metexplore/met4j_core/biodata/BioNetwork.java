@@ -60,8 +60,6 @@ public class BioNetwork {
 	private HashMap<String, BioPathway> pathwayList = new HashMap<String, BioPathway>();
 
 	private HashMap<String, BioPhysicalEntity> physicalEntityList = new HashMap<String, BioPhysicalEntity>();
-
-	private HashMap<String, BioEntity> modifiersList = new HashMap<String, BioEntity>();
 	
 	private HashMap<String, BioComplex> complexList = new HashMap<String, BioComplex>();
 
@@ -2872,17 +2870,5 @@ public class BioNetwork {
 	public void addUnusedSBMLdata(String id,String data){
 		this.unusedSBMLData.put(id, data);
 	}
-
-	public HashMap<String, BioEntity> getModifiersList() {
-		return modifiersList;
-	}
-	public void addModifier(BioEntity modifier) {
-		this.modifiersList.put(modifier.getId(), modifier);
-	}
-	public void setModifiersList(HashMap<String, BioEntity> modifiersList) {
-		this.modifiersList = modifiersList;
-	}
-
-
 
 }

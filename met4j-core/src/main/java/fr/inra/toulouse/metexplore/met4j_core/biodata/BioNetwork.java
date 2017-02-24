@@ -1269,56 +1269,6 @@ public class BioNetwork {
 	}
 
 	/**
-	 * Tests an objective function
-	 * 
-	 * @param obj
-	 * @return
-	 */
-	public Boolean testObjectiveFunction(String obj) {
-
-		Boolean flag = true;
-
-		// The objective function has the following format : 1 R1 + 2.5 R3
-
-		String tab[] = obj.split(" \\+ ");
-
-		for (String member : tab) {
-
-			String tab2[] = member.split(" ");
-
-			String reactionId;
-
-			if (tab2.length == 1) {
-				reactionId = tab2[0];
-			} else if (tab2.length == 2) {
-				reactionId = tab2[1];
-				String coeff = tab2[0];
-
-				try {
-					Double.parseDouble(coeff);
-				} catch (NumberFormatException e) {
-					System.err.println(coeff + " is not a double");
-					return false;
-				}
-
-			} else {
-				System.err.println("Objective function badly formatted");
-				return false;
-			}
-
-			if (!this.getBiochemicalReactionList().containsKey(reactionId)) {
-				System.err.println("The reaction " + reactionId
-						+ " is not in the network");
-				return false;
-			}
-
-		}
-
-		return flag;
-
-	}
-
-	/**
 	 * Returns the list of exchange reactions for a metabolite
 	 * 
 	 * @param cpdId
@@ -1348,29 +1298,6 @@ public class BioNetwork {
 		}
 
 		return ex_reactions;
-
-	}
-
-	/**
-	 * Compute the atom balances for all the reactions
-	 * 
-	 * @return
-	 */
-	public HashMap<String, HashMap<String, Double>> computeBalanceAllReactions() {
-
-		HashMap<String, HashMap<String, Double>> balances = new HashMap<String, HashMap<String, Double>>();
-
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
-				.values()) {
-
-			String id = rxn.getId();
-
-			HashMap<String, Double> balance = BioChemicalReactionUtils.computeAtomBalances(rxn);
-
-			balances.put(id, balance);
-		}
-
-		return balances;
 
 	}
 

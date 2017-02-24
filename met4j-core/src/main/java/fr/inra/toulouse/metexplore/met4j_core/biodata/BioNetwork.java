@@ -34,10 +34,6 @@
  */
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -1503,7 +1499,6 @@ public class BioNetwork {
 				System.err.println("The reaction " + reactionId
 						+ " is not in the network");
 				return false;
-				import fr.inra.toulouse.metexplore.met4j_core.utils.Counter;
 			}
 
 		}

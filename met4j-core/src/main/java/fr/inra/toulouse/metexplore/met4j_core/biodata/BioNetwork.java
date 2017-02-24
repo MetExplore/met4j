@@ -34,7 +34,6 @@
  */
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -789,65 +788,7 @@ public class BioNetwork {
 
 	}
 
-	/**
-	 * Write the network as a list of reactions If a compound doesn't occur in
-	 * any reaction, it will be indicated at the end.
-	 */
-	public String networkAsString(Boolean encodeSbml) {
 
-		String out = "";
-
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
-				.values()) {
-
-			String id = rxn.getId();
-			if(encodeSbml)
-			{
-				id = StringUtils.sbmlEncode(id);
-			}
-
-			out = out.concat(id+" = "+rxn.getEquation() + "\n");
-		}
-
-		for (BioPhysicalEntity cpd : this.getPhysicalEntityList().values()) {
-			if (cpd.getReactionsAsSubstrate().size() == 0
-					&& cpd.getReactionsAsProduct().size() == 0) {
-
-				if (encodeSbml) {
-					out = out
-							.concat(StringUtils.sbmlEncode(cpd.getId()) + "\n");
-				} else {
-					out = out.concat(cpd.getId() + "\n");
-				}
-			}
-		}
-
-		return out;
-	}
-
-	public String networkAsString() {
-		return this.networkAsString(false);
-	}
-
-	public String printNetworkForHuman() {
-
-		String out = "";
-
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
-				.values()) {
-			out = out.concat(rxn.getEquationForHuman() + "\n");
-		}
-
-		for (BioPhysicalEntity cpd : this.getPhysicalEntityList().values()) {
-			if (cpd.getReactionsAsSubstrate().size() == 0
-					&& cpd.getReactionsAsProduct().size() == 0) {
-
-				out = out.concat(StringUtils.htmlEncode(cpd.getName()) + "\n");
-			}
-		}
-
-		return out;
-	}
 
 	public void setBiochemicalReactionList(
 			HashMap<String, BioChemicalReaction> biochemicalReactionList) {
@@ -882,7 +823,6 @@ public class BioNetwork {
 	public void setTransportList(HashMap<String, BioTransport> transportList) {
 		this.transportList = transportList;
 	}
-
 
 	public Boolean isEmpty() {
 

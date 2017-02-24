@@ -1538,130 +1538,7 @@ public class BioNetwork {
 
 	}
 
-	/**
-	 * 
-	 * Iteratively removes the dead reactions
-	 * 
-	 * @return
-	 */
-	public Collection<BioChemicalReaction> trim() {
-		HashSet<BioChemicalReaction> allRemovedReactions = new HashSet<BioChemicalReaction>();
-		Collection<BioChemicalReaction> removed = removeOrphanReactions();
-		while (!removed.isEmpty()) {
-			allRemovedReactions.addAll(removed);
-			removed = removeOrphanReactions();
-		}
-		return allRemovedReactions;
-	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	private Collection<BioChemicalReaction> removeOrphanReactions() {
-		HashSet<BioChemicalReaction> removedReactions = new HashSet<BioChemicalReaction>();
-
-		HashMap<String, BioPhysicalEntity> orphans = this
-				.getOrphanMetabolites();
-
-		for (BioPhysicalEntity metabolite : orphans.values()) {
-
-			HashMap<String, BioChemicalReaction> reactionsP = new HashMap<String, BioChemicalReaction>(
-					metabolite.getReactionsAsProduct());
-			for (BioChemicalReaction reaction : reactionsP.values()) {
-				if (this.getBiochemicalReactionList().containsKey(
-						reaction.getId())) {
-					removedReactions.add(reaction);
-					this.removeBioChemicalReaction(reaction.getId());
-				}
-			}
-
-			HashMap<String, BioChemicalReaction> reactionsS = new HashMap<String, BioChemicalReaction>(
-					metabolite.getReactionsAsSubstrate());
-
-			for (BioChemicalReaction reaction : reactionsS.values()) {
-				if (this.getBiochemicalReactionList().containsKey(
-						reaction.getId())) {
-					removedReactions.add(reaction);
-					this.removeBioChemicalReaction(reaction.getId());
-				}
-			}
-		}
-
-		return removedReactions;
-	}
-
-	/**
-	 * Methods inspired from Surrey FBA, the aim is to get the orphan
-	 * metabolites. An orphan is an internal metabolite
-	 * (boundaryCondition==false) and not produced or not consumed
-	 * 
-	 * @return
-	 */
-	public HashMap<String, BioPhysicalEntity> getOrphanMetabolites() {
-		HashMap<String, BioPhysicalEntity> orphanMetabolites = new HashMap<String, BioPhysicalEntity>();
-
-		for (BioPhysicalEntity cpd : this.getPhysicalEntityList().values()) {
-			if (!cpd.getBoundaryCondition()) {
-				HashMap<String, BioChemicalReaction> reactions = new HashMap<String, BioChemicalReaction>();
-
-				// HashMap<String, BioChemicalReaction> reactionsP =
-				// this.getListOfReactionsAsProduct(cpd.getId());
-				HashMap<String, BioChemicalReaction> reactionsP = cpd
-						.getReactionsAsProduct();
-				// HashMap<String, BioChemicalReaction> reactionsS =
-				// this.getListOfReactionsAsSubstrate(cpd.getId());
-				HashMap<String, BioChemicalReaction> reactionsS = cpd
-						.getReactionsAsSubstrate();
-
-				reactions.putAll(reactionsP);
-				reactions.putAll(reactionsS);
-
-				Set<String> rp = reactionsP.keySet();
-				rp.retainAll(this.getBiochemicalReactionList().keySet());
-				Set<String> rs = reactionsS.keySet();
-				rs.retainAll(this.getBiochemicalReactionList().keySet());
-
-				Set<String> rxns = reactions.keySet();
-
-				rxns.retainAll(this.getBiochemicalReactionList().keySet());
-
-				if (rxns.size() < 2) {
-					orphanMetabolites.put(cpd.getId(), cpd);
-				} else {
-					if (rp.size() == 0 || rs.size() == 0) {
-						orphanMetabolites.put(cpd.getId(), cpd);
-					}
-				}
-			}
-		}
-
-		return orphanMetabolites;
-	}
-
-	/**
-	 * Create exchange reactions for each orphan metabolite
-	 * 
-	 * @param withExternal
-	 *            . Boolean. if true, create an external metabolite
-	 * @param suffix
-	 *            to add at the end of the external metabolite
-	 * @compartmentId : the id of the compartment in which the external
-	 *                metabolites will be added
-	 */
-	public void addExchangeReactionsToOrphans(Boolean withExternal,
-			String suffix, String compartmentId) {
-
-		HashMap<String, BioPhysicalEntity> orphans = this
-				.getOrphanMetabolites();
-
-		for (BioPhysicalEntity orphan : orphans.values()) {
-
-			this.addExchangeReactionToMetabolite(orphan.getId(), withExternal,
-					suffix, compartmentId);
-
-		}
-	}
 
 	/**
 	 * Adds an exchange reaction to a metabolite
@@ -1713,10 +1590,6 @@ public class BioNetwork {
 		return rxn.getId();
 
 	}
-
-
-
-
 
 	/**
 	 * Returns the list of pathways where a compound is involved

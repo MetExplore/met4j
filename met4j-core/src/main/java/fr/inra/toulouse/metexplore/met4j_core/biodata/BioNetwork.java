@@ -1419,55 +1419,6 @@ public class BioNetwork {
 		this.enzymes = null;
 	}
 
-	/**
-	 * Finds a commpartement by its ID in the compartements lists
-	 * @param Sid : String, Identifier of the compartment
-	 * @return cmp : BioCompartment
-	 */
-	public BioCompartment findbioCompartmentInList(String Sid){
-
-		if( this.compartments == null){
-			return null;
-		}
-		else{
-			for (BioCompartment cmp: this.getCompartments().values()){
-				if(cmp.getId().equals(Sid)){
-					return cmp;
-				}
-			}
-			return null;
-		}
-	}
-
-	public BioCompartmentType findbioCompartmentTypeInList(String Sid){
-
-		if( this.listOfCompartmentType == null){
-			return null;
-		}
-		else{
-			for (BioCompartmentType compartType: this.getListOfCompartmentType().values()){
-				if(compartType.getId().equals(Sid)){
-					return compartType;
-				}
-			}
-			return null;
-		}
-	}
-
-	public BioUnitDefinition findUnitInUnitDefinituin(String UnitSid){
-		if( this.unitDefinitions == null){
-			return null;
-		}
-		else{
-			for (BioUnitDefinition unitdef: this.getUnitDefinitions().values()){
-				if(unitdef.getId().equals(UnitSid)){
-					return unitdef;
-				}
-			}
-			return null;
-		}
-	}
-
 	public HashMap<String, BioCompartmentType> getListOfCompartmentType() {
 		return listOfCompartmentType;
 	}

@@ -93,7 +93,6 @@ public class BioNetwork {
 
 	private HashMap<String, BioUnitDefinition> unitDefinitions = new HashMap<String, BioUnitDefinition>();
 
-	private HashMap<String,String> unusedSBMLData=new HashMap<String,String>();
 
 	/**
 	 * Constructor from scratch
@@ -2857,18 +2856,6 @@ public class BioNetwork {
 
 	public void setModelNotes(Notes modelNotes) {
 		this.modelNotes = modelNotes;
-	}
-
-	public HashMap<String, String> getUnusedSBMLData() {
-		return unusedSBMLData;
-	}
-
-	public void setUnusedSBMLData(HashMap<String, String> unusedSBMLData) {
-		this.unusedSBMLData = unusedSBMLData;
-	}
-
-	public void addUnusedSBMLdata(String id,String data){
-		this.unusedSBMLData.put(id, data);
 	}
 
 }

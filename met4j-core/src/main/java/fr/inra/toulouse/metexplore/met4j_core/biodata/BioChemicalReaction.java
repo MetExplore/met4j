@@ -80,9 +80,6 @@ public class BioChemicalReaction extends BioConversion {
 	private String go= null;
 	private String goTerm= null;
 
-	private String go = null;
-	private String goTerm = null;
-
 	private String reversibility = "irreversible-left-to-right";
 	private HashMap<String, BioPhysicalEntity> listOfPrimarySubstrates;
 	private HashMap<String, BioPhysicalEntity> listOfPrimaryProducts;
@@ -208,7 +205,6 @@ public class BioChemicalReaction extends BioConversion {
 
 		this.setLowerBound(rxn.getLowerBound());
 		this.setUpperBound(rxn.getUpperBound());
-		this.setEntityNotes(rxn.getEntityNotes());
 		for (String db : rxn.getRefs().keySet()) {
 			for (BioRef ref : rxn.getRefs().get(db)) {
 				this.addRef(ref);

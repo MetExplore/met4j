@@ -96,8 +96,6 @@ public class BioCompartment {
 	
 	private String sboterm;
 	
-	private Notes compartNotes;
-	
 	private Boolean flagedAsUpdate=false;
 	private Boolean flagedAsInsert=false;
 	private Boolean flagedAsConflict=false;
@@ -214,14 +212,6 @@ public class BioCompartment {
 
 	public void setConstant(boolean constant) {
 		this.constant = constant;
-	}
-
-	public Notes getCompartNotes() {
-		return compartNotes;
-	}
-
-	public void setCompartNotes(Notes compartNotes) {
-		this.compartNotes = compartNotes;
 	}
 
 	public Boolean getFlagedAsUpdate() {

@@ -52,8 +52,6 @@ public class BioEntity {
 	
 	private String sboterm;
 	
-	private Notes entityNotes;
-	
 	private HashMap<String,Set<BioRef>> refs;
 	//private HashMap<String, HashMap<String, Integer>> refs; // {DB name : {DB id : confidence level}}
 	
@@ -358,14 +356,6 @@ public class BioEntity {
 	 */
 	public void addPmid(String pmid) {
 		this.pmids.add(pmid);
-	}
-
-	public Notes getEntityNotes() {
-		return entityNotes;
-	}
-
-	public void setEntityNotes(Notes entityNotes) {
-		this.entityNotes = entityNotes;
 	}
 	
 	public void addRef(String dbName, String dbId, int confidenceLevel, String relation, String origin){

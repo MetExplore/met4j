@@ -169,7 +169,6 @@ public class BioPhysicalEntity extends BioEntity {
 		this.setChemicalFormula(pe.getChemicalFormula());
 		this.setBoundaryCondition(pe.getBoundaryCondition());
 		this.setInchi(pe.getInchi());
-		this.setEntityNotes(pe.getEntityNotes());
 		for(String db : pe.getRefs().keySet()){
 			for(BioRef ref : pe.getRefs().get(db)){
 				this.addRef(ref);

@@ -84,7 +84,6 @@ public class BioNetwork {
 
 	private String sboterm;
 
-	private Notes modelNotes;
 
 	private HashMap<String, BioUnitDefinition> unitDefinitions = new HashMap<String, BioUnitDefinition>();
 
@@ -1672,14 +1671,6 @@ public class BioNetwork {
 
 	public void setSboterm(String sboterm) {
 		this.sboterm = sboterm;
-	}
-
-	public Notes getModelNotes() {
-		return modelNotes;
-	}
-
-	public void setModelNotes(Notes modelNotes) {
-		this.modelNotes = modelNotes;
 	}
 
 }

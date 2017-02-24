@@ -465,7 +465,7 @@ public class BioNetworkUtils {
 	 * 
 	 * @return
 	 */
-	public Boolean haveTheSameReactions(BioNetwork network1 ,BioNetwork network2) {
+	public static Boolean haveTheSameReactions(BioNetwork network1 ,BioNetwork network2) {
 
 		Set<String> rxnIds = network1.getBiochemicalReactionList().keySet();
 		Set<String> otherRxnIds = network2.getBiochemicalReactionList()

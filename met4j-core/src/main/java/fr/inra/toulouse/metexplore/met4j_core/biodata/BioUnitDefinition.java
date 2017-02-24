@@ -35,7 +35,6 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 import java.util.HashMap;
 
-//import net.sf.saxon.functions.Unordered;
 
 /**
  * @author ludo

@@ -49,8 +49,6 @@ public class BioConversion extends BioInteraction {
 	public HashMap<String, BioPhysicalEntityParticipant> leftParticipantList = new HashMap<String, BioPhysicalEntityParticipant>();
 	public HashMap<String, BioPhysicalEntityParticipant> rightParticipantList = new HashMap<String, BioPhysicalEntityParticipant>();
 
-//	private HashMap<String, BioPhysicalEntity> rightList = new HashMap<String, BioPhysicalEntity>();
-
 	private String spontaneous = null;
 
 	public HashMap<String, BioPhysicalEntityParticipant> primaryLeftParticipantList = new HashMap<String, BioPhysicalEntityParticipant>();

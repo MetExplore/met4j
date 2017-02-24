@@ -1079,7 +1079,6 @@ public class BioChemicalReaction extends BioConversion {
 
 		compartments.addAll(compartmentRights);
 		compartments.addAll(compartmentLefts);
-		// System.err.println("--------"+compartments);
 
 		if (compartments.size() == 2 && compartments.get(0).getId().equals(compartments.get(1).getId())) {
 			compartment = compartments.get(0);

@@ -110,43 +110,7 @@ public class BioNetwork {
 
 		}
 	}
-
-	public void printBioNetworkSizeToErr(){
-
-		System.err.println("Size of "+this.getId()+" :");
-
-		System.err.println(this.getUnitDefinitions().size()+" unit def");
-		System.err.println(this.getCompartments().size()+" Comparts");
-		System.err.println(this.getGeneList().size()+" genes");
-		System.err.println(this.getProteinList().size()+" proteins");
-		System.err.println(this.getEnzList().size()+" enzymes");
-		System.err.println(this.getPathwayList().size()+" pathways");
-		System.err.println(this.getBiochemicalReactionList().size()+" reactions");
-		System.err.println(this.getPhysicalEntityList().size()+" metabolites");
-
-	}
-
-
-
-	public void printBioNetworkSizeToOut(){
-
-		System.out.println("Size of "+this.getId()+" :");
-
-		System.out.println(this.getUnitDefinitions().size()+" unit def");
-		System.out.println(this.getCompartments().size()+" Comparts");
-		System.out.println(this.getGeneList().size()+" genes");
-		System.out.println(this.getProteinList().size()+" proteins");
-		System.out.println(this.getEnzList().size()+" enzymes");
-		System.out.println(this.getPathwayList().size()+" pathways");
-		System.out.println(this.getBiochemicalReactionList().size()+" reactions");
-		System.out.println(this.getPhysicalEntityList().size()+" metabolites");
-
-	}
-
-
-
-
-
+	
 	/**
 	 * Filter the holes, i.e. the reactions not spontaneous and not associated
 	 * with an enzyme
@@ -518,7 +482,6 @@ public class BioNetwork {
 	public BioPhysicalEntity getBioPhysicalEntityById(String id) {
 		BioPhysicalEntity entity = null;
 		for (BioPhysicalEntity metabolite : getPhysicalEntityList().values()) {
-			// System.err.println("ID "+metabolite.getId()+" -- "+metabolite.getName());
 			if (StringUtils.sbmlEncode(metabolite.getId()).equals(id)) {
 				entity = metabolite;
 				break;

@@ -28,9 +28,7 @@ public class MetaboliteFileToBioNetwork extends AnnotationFile2BioNetwork {
 
 		MetaboliteFileToBioNetwork mtbfile2bn=new MetaboliteFileToBioNetwork("annot",file,"","'",false,"[","]",",","x");
 		
-		mtbfile2bn.convertFile();		
-		
-		mtbfile2bn.getBioNetwork().printBioNetworkSizeToErr();
+		mtbfile2bn.convertFile();
 	}
 	
 	

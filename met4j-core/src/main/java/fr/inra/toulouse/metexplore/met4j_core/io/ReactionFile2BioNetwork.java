@@ -46,23 +46,7 @@ public class ReactionFile2BioNetwork extends AnnotationFile2BioNetwork {
 		ReactionFile2BioNetwork rxnfile2bn=new ReactionFile2BioNetwork("annot",file,"","'","->","<->",false,
 				";","[","]",true,"(",")",false,"x","[","]");
 
-		rxnfile2bn.convertFile();		
-
-		rxnfile2bn.getBioNetwork().printBioNetworkSizeToErr();
-//		System.err.println(rxnfile2bn.getBioNetwork().getUnitDefinitions().size()+" unit def");
-//		System.err.println(rxnfile2bn.getBioNetwork().getCompartments().size()+" Comparts");
-//		System.err.println(rxnfile2bn.getBioNetwork().getGeneList().size()+" genes added");
-//		System.err.println(rxnfile2bn.getBioNetwork().getProteinList().size()+" proteins added");
-//		System.err.println(rxnfile2bn.getBioNetwork().getEnzList().size()+" enzymes added");
-//		System.err.println(rxnfile2bn.getBioNetwork().getPathwayList().size()+" pathway added");
-//		System.err.println(rxnfile2bn.getBioNetwork().getBiochemicalReactionList().size()+" reaction added to network");
-//		System.err.println(rxnfile2bn.getBioNetwork().getPhysicalEntityList().size()+" metabolites added");
-
-//		for(BioChemicalReaction rxn:rxnfile2bn.getBioNetwork().getBiochemicalReactionList().values()){
-//
-//			System.err.println(rxn.getId()+" is "+rxn.getReversiblity());
-//		}
-
+		rxnfile2bn.convertFile();
 	}
 
 

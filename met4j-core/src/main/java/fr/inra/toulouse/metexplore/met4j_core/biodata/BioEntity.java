@@ -33,7 +33,6 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 
@@ -53,8 +52,6 @@ public class BioEntity {
 	private String sboterm;
 	
 	private HashMap<String,Set<BioRef>> refs;
-	//private HashMap<String, HashMap<String, Integer>> refs; // {DB name : {DB id : confidence level}}
-	
 
 	private Boolean flagedAsUpdate=false;
 	private String isUpdateOf;
@@ -431,46 +428,6 @@ public class BioEntity {
 		return total;
 		
 	}
-	
-	
-//	/**
-//	 * Test if this BioEntity is equal to the BioEntity passed in parameters, based on ids, 
-//	 * names, compartments' ids and reference (number and content)
-//	 * @param ent
-//	 * @return boolean
-//	 */
-//	@Override
-//	public boolean equals(Object obj){
-//		
-//		if (this==obj){
-//			return true;
-//		}
-//        if (obj instanceof BioEntity) {
-//        	BioEntity ent = ((BioEntity) obj);
-//			if (!this.getId().equals(ent.getId())) return false;
-//			if (!this.getName().equals(ent.getName())) return false;
-//			if (!this.getCompartment().getId().equals(ent.getCompartment().getId())) return false;
-//			
-//			if (this.countRef()!=ent.countRef()) return false;
-//			
-//			for (String ent1DBNames:this.refs.keySet()){
-//				if (!ent.getRefs().containsKey(ent1DBNames)) return false;
-//				else{
-//					for( BioRef ref:this.refs.get(ent1DBNames)){
-//						if(! ent.hasRef(ref)) return false;
-//					}
-//				}
-//			}
-//			return true;
-//        }else{
-//        	return false;
-//        }
-//	}
-//	
-//	@Override
-//    public int hashCode() {
-//		return Objects.hash(this.getId(),this.getName(),this.getCompartment().getId(),this.getRefs());
-//	}
 	
 	public void setRefs(HashMap<String, Set<BioRef>> refs){
 		this.refs=refs;

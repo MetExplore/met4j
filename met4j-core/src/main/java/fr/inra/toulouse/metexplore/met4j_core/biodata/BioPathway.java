@@ -31,11 +31,7 @@
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.HashMap;
-
-
 
 /**
  * A set or series of interactions, often forming a network, which biologists
@@ -44,8 +40,6 @@ import java.util.HashMap;
  */
 
 public class BioPathway extends BioEntity {
-
-//	private HashMap<String, BioPathwayStep> pathwayComponents = new HashMap<String, BioPathwayStep>();
 	
 	private HashMap<String, BioPathway> superPathways = new HashMap<String, BioPathway> ();
 	private HashMap<String, BioPathway>  subPathways = new HashMap<String, BioPathway> ();
@@ -72,44 +66,6 @@ public class BioPathway extends BioEntity {
 		this.setPrimaryCompounds(new ArrayList<String>());
 		this.getPrimaryCompounds().addAll(in.getPrimaryCompounds());
 	}
-	
-	/**
-	 * @return Returns the pathwayComponents.
-	 */
-//	public HashMap<String, BioPathwayStep> getPathwayComponents() {
-//		return pathwayComponents;
-//	}
-	
-	/**
-	 * @param the pathway step to add
-	 */
-//	public void addPathwayComponent(BioPathwayStep o) {
-//		this.pathwayComponents.put(o.getId(), o);
-//	}
-	
-	/**
-	 * @param the interaction to add
-	 */
-//	public void addPathwayComponent(BioInteraction o) {
-//		BioPathwayStep pathwayStep = new BioPathwayStep(o);
-//		this.addPathwayComponent(pathwayStep);
-//	}
-	
-	/**
-	 * Returns the list of all interactions present in all pathwayStep
-	 */
-//	public HashMap<String, BioInteraction> getListOfInteractions () {
-//		
-//		HashMap<String, BioInteraction> totalListOfInteractions = new HashMap<String, BioInteraction>();
-//		
-//		for(BioPathwayStep step : this.getPathwayComponents().values()) {
-//			HashMap<String, BioInteraction> listOfInteractions = step.getStepInteractions();
-//			totalListOfInteractions.putAll(listOfInteractions);
-//		}
-//		
-//		return totalListOfInteractions;
-//		
-//	}
 	
 
 	/**
@@ -223,17 +179,6 @@ public class BioPathway extends BioEntity {
 		this.reactions.put(reaction.getId(), reaction);
 		
 	}
-
-//	public void copyPathwayComponents(
-//			HashMap<String, BioPathwayStep> pathwayComponents) {
-//		
-//		this.pathwayComponents = new HashMap<String, BioPathwayStep>();
-//		
-//		for(BioPathwayStep bps : pathwayComponents.values()) {
-//			BioPathwayStep newBps = new BioPathwayStep(bps);
-//			this.addPathwayComponent(newBps);
-//		}
-//	}
 	
 	
 

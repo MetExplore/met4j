@@ -238,28 +238,6 @@ public class BioPhysicalEntity extends BioEntity {
 		this.caas = caas;
 	}
 
-	/**
-	 * format a metabolite id in the pallson way (M_***_c)
-	 */
-	public void formatIdByPalsson () {
-		
-		String id = this.getId();
-		
-		if(! id.startsWith("M_")) {
-			id = "M_"+id;
-		}
-		
-		String compartmentId = this.getCompartment().getId();
-		
-		if(! id.endsWith("_"+compartmentId)) {
-			id = id+"_"+compartmentId;
-		}
-		
-		this.setId(id);
-		
-		return;
-	}
-
 	public Boolean getConstant() {
 		return constant;
 	}

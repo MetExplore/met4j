@@ -295,6 +295,28 @@ public class Tab2BioNetwork extends File2BioNetwork{
 	}
 	
 	/**
+	 * format a metabolite id in the pallson way (M_***_c)
+	 */
+	public void formatIdByPalsson (BioPhysicalEntity compound) {
+		
+		String id = compound.getId();
+		
+		if(! id.startsWith("M_")) {
+			id = "M_"+id;
+		}
+		
+		String compartmentId = compound.getCompartment().getId();
+		
+		if(! id.endsWith("_"+compartmentId)) {
+			id = id+"_"+compartmentId;
+		}
+		
+		compound.setId(id);
+		
+		return;
+	}
+	
+	/**
 	 * Fill the network from formulas in the file
 	 * @param fileIn
 	 * @throws IOException 
@@ -527,6 +549,7 @@ public class Tab2BioNetwork extends File2BioNetwork{
 			}
 			
 		}
+		br.close();
 
 		System.err.println(bn.getBiochemicalReactionList().size()+" reactions, "+bn.getPhysicalEntityList().size()+ " metabolites and "+bn.getCompartments().size()+" compartments created");
 		
@@ -585,7 +608,7 @@ public class Tab2BioNetwork extends File2BioNetwork{
 			}
 			
 			if(this.addPalssonMetabolite) {
-				cpd.formatIdByPalsson();
+				this.formatIdByPalsson(cpd);
 			}
 			
 			bn.addPhysicalEntity(cpd);

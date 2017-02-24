@@ -133,13 +133,11 @@ public class BioNetworkToJSBML {
 
 		for (int i = 0; i < sbmlDoc.getErrorLog().getNumErrors(); i++ ){
 			if (sbmlDoc.getErrorLog().getError(i).isError() || sbmlDoc.getErrorLog().getError(i).isFatal()){
-//				System.err.println(sbmlDoc.getErrorLog().getError(i).getMessage());
 				failedConsistency=true;
 			}
 		}
 
 		if(!failedConsistency){
-			//System.err.println("File Exported");
 
 			if (this.processing){
 				this.getWriter().write(this.getSbmlDoc(), filename+".unprocessed");
@@ -318,11 +316,9 @@ public class BioNetworkToJSBML {
 		LibSBMLSpecie.setName(bioEnt.getName());
 		LibSBMLSpecie.setBoundaryCondition(bioEnt.getBoundaryCondition());
 		if(bioEnt.getCompartment()==null){
-//			System.err.println(bioEnt.getClass().getSimpleName()+" '"+bioEnt.getId()+"' named '"+bioEnt.getName()+"' a un compartiment null");
 			LibSBMLSpecie.setCompartment(bioEnt.getCompartment().getId());
 		}
 		else if(bioEnt.getCompartment().getId()==null)	{
-//			System.err.println(bioEnt.getClass().getSimpleName()+" '"+bioEnt.getId()+"' named '"+bioEnt.getName()+"' a un compartiment dont l'id est null");
 			LibSBMLSpecie.setCompartment(bioEnt.getCompartment().getId());
 		}
 		else{
@@ -594,9 +590,7 @@ public class BioNetworkToJSBML {
 					UBound.setUnits(bionetReaction.getUpperBound().unitDefinition.getId());
 				}
 				for(Entry<String, Flux> moreParam:bionetReaction.getListOfAdditionalFluxParam().entrySet()){
-					
-//					System.err.println("param : "+moreParam.getKey()+" in reaction "+bionetReaction.getId());
-					
+										
 					LocalParameter param=Kinetic.createLocalParameter();
 					param.setId(moreParam.getKey());
 					param.setValue(Double.parseDouble(moreParam.getValue().value));

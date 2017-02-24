@@ -75,7 +75,6 @@ public class BioNetwork2TabulatedFile extends BioNetwork2File {
 			}
 			for(BioChemicalReaction reaction: this.getListOfReactions().values())
 			{
-				//System.err.println(reaction.getCompartment());
 				for(int i=0;i<attributes.length;i++)
 				{
 					if(i<attributes.length-1)

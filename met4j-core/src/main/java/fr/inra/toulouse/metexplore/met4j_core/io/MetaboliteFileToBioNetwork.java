@@ -21,16 +21,6 @@ public class MetaboliteFileToBioNetwork extends AnnotationFile2BioNetwork {
 	private String compartSep=",";
 	
 	private String defCompId="x";
-
-	public static void main(String[] args){
-
-		String file="/home/bmerlet/Téléchargements/TrypanocycMetabolites.csv";
-
-		MetaboliteFileToBioNetwork mtbfile2bn=new MetaboliteFileToBioNetwork("annot",file,"","'",false,"[","]",",","x");
-		
-		mtbfile2bn.convertFile();
-	}
-	
 	
 	
 	public MetaboliteFileToBioNetwork(String netId, String file, String Flag,String txtsep, boolean palsson,String compSt,

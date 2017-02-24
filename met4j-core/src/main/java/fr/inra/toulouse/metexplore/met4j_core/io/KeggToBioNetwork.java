@@ -55,37 +55,6 @@ public class KeggToBioNetwork {
 	}
 
 	/**
-	 * Main for testing class
-	 * @param args
-	 */
-	public static void main(String[] args){
-
-		KeggToBioNetwork ktbn=new KeggToBioNetwork("hsa");
-
-		//ktbn.getEntityDataHasHash("C01290");
-
-
-		try {
-			ktbn.createBionetworkFromKegg();
-
-			System.err.println(ktbn.bioNetwork.getUnitDefinitions().size()+" unit def");
-			System.err.println(ktbn.bioNetwork.getGeneList().size()+" genes added");
-			System.err.println(ktbn.bioNetwork.getProteinList().size()+" proteins added");
-			System.err.println(ktbn.bioNetwork.getPathwayList().size()+" pathway added");
-			System.err.println(ktbn.bioNetwork.getBiochemicalReactionList().size()+" reaction added to network");
-			System.err.println(ktbn.bioNetwork.getPhysicalEntityList().size()+" metabolites added");
-
-
-		} catch (Exception e){
-			ktbn.bioNetwork=null;
-			e.printStackTrace();
-		}
-
-
-
-	}
-
-	/**
 	 * 
 	 */
 	public void createBionetworkFromKegg()  {

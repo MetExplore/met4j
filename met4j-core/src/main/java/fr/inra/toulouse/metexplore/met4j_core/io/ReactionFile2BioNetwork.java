@@ -38,18 +38,6 @@ public class ReactionFile2BioNetwork extends AnnotationFile2BioNetwork {
 	public String CompartEnd;
 
 
-
-	public static void main(String[] args){
-
-		String file="/home/bmerlet/Téléchargements/TrypanocycReaction.csv";
-
-		ReactionFile2BioNetwork rxnfile2bn=new ReactionFile2BioNetwork("annot",file,"","'","->","<->",false,
-				";","[","]",true,"(",")",false,"x","[","]");
-
-		rxnfile2bn.convertFile();
-	}
-
-
 	public ReactionFile2BioNetwork(String netId, String file, String Flag, String textsep, String irrRxn, String revRxn, boolean palsson,
 			String pSep,String pListSt,String pListEnd, boolean logic, String GprSt, String GprEnd, boolean noComp, String defCompId, String stComp, String endComp) {
 

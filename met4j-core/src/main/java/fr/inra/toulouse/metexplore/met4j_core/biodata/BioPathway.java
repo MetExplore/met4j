@@ -60,7 +60,6 @@ public class BioPathway extends BioEntity {
 	
 	public BioPathway(BioPathway in) {
 		super(in);
-//		this.copyPathwayComponents(in.getPathwayComponents());
 		this.copySuperPathways(in.getSuperPathways());
 		this.copySubPathways(in.getSubPathways());
 		this.setPrimaryCompounds(new ArrayList<String>());

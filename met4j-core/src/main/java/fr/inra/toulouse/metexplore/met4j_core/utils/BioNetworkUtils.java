@@ -34,7 +34,6 @@ public class BioNetworkUtils {
 		// GET ALL THE REACTIONS
 		for (BioChemicalReaction reaction : originalNetwork.getBiochemicalReactionList()
 				.values()) {
-			// System.out.println(reaction.getEnzList().keySet());
 			if (reaction.getCompartment() != null) {
 				if (compartments.contains(reaction.getCompartment().getId())) {
 					/*
@@ -89,11 +88,6 @@ public class BioNetworkUtils {
 		// BioNetwork subNet=new BioNetwork(this,reactions,compounds);
 
 		BioNetwork subNet = new BioNetwork(listOfReactions);
-		/*
-		 * for(BioChemicalReaction reaction:
-		 * subNet.getBiochemicalReactionList().values()) {
-		 * System.out.println(reaction.getEnzList().keySet()); }
-		 */
 		// ADD THE COMPARTMENTS TO THE NETWORK
 		/*
 		 * for(String compId : this.getCompartments().keySet()) {

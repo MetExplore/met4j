@@ -43,7 +43,7 @@ import java.util.Set;
 
 public class BioEntity {
 	
-	private String id;
+	private final String id;
 	private String name;
 	private String shortName;
 	private ArrayList<String> synonyms = new ArrayList<String>();
@@ -98,8 +98,8 @@ public class BioEntity {
 	
 	
 	public BioEntity(BioEntity in) {
+		this.id = in.getId();
 		this.setAvailability(in.getAvailability());
-		this.setId(in.getId());
 		this.setName(in.getName());
 		this.setShortName(in.getName());
 		this.setSynonyms(new ArrayList<String>());
@@ -113,18 +113,9 @@ public class BioEntity {
 		this.setAttributes(in.getAttributes());
 	}
 	
-	public BioEntity() {
-		super();
-		this.setIsHolderClass(false);
-		this.setCompartment(new BioCompartment("NA", "NA"));
-		this.setPmids(new HashSet<String>());
-		this.setRefs(new HashMap<String, Set<BioRef>>());
-		this.setAttributes(new HashMap<String, Object>());
-	}
-	
 	public BioEntity(String id, String name) {
 		
-		this.setId(id);
+		this.id=id;
 		this.setName(name);
 		this.setIsHolderClass(false);
 		this.setCompartment(new BioCompartment("NA", "NA"));
@@ -135,7 +126,7 @@ public class BioEntity {
 	
 	
 	public BioEntity(String id) {
-		this.setId(id);
+		this.id=id;
 		this.setName(id);
 		this.setIsHolderClass(false);
 		this.setCompartment(new BioCompartment("NA", "NA"));
@@ -246,13 +237,6 @@ public class BioEntity {
 	 */
 	public String getId() {
 		return id;
-	}
-
-	/**
-	 * @param id The id to set.
-	 */
-	public void setId(String id) {
-		this.id = id.replace("\"", "");
 	}
 
 	/**

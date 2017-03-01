@@ -60,10 +60,6 @@ public class BioConversion extends BioInteraction {
 	private Boolean doesItContainClassCpd = null;
 	private Boolean doesItContainClassPrimaryCpd = null;
 
-	public BioConversion() {
-		super();
-	}
-
 	public BioConversion(String id) {
 		super(id);
 	}

@@ -54,11 +54,6 @@ public class BioInteraction extends BioEntity {
 		super(id, name);
 	}
 	
-	
-	public BioInteraction() {
-		super();
-	}
-	
 	public BioInteraction(BioInteraction in) {
 		super(in);
 		this.copyParticipantList(in.getParticipantList());

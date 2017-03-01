@@ -164,14 +164,6 @@ public class BioChemicalReaction extends BioConversion {
 		this.goTerm = goTerm;
 	}
 
-	/**
-	 * To build a reaction in a network
-	 */
-	public BioChemicalReaction() {
-		super();
-
-	}
-
 	public BioChemicalReaction(String id) {
 		super(id);
 

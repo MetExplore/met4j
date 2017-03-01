@@ -1235,11 +1235,6 @@ public class BioNetwork {
 
 	}
 
-
-	public void resetEnzyme(){
-		this.enzymes = null;
-	}
-
 	public HashMap<String, BioCompartmentType> getListOfCompartmentType() {
 		return listOfCompartmentType;
 	}

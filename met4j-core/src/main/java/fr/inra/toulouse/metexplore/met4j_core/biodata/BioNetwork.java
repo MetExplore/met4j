@@ -1173,37 +1173,6 @@ public class BioNetwork {
 	}
 
 	/**
-	 * Replace all the compartments by one compartment "NA" If the suffix is
-	 * "_IN_*", it is removed
-	 * 
-	 */
-	public void removeCompartments() {
-
-		// We replace all the compartments by one not specified
-		BioCompartment cptNA = new BioCompartment("NA", "NA");
-		this.setCompartments(new HashMap<String, BioCompartment>());
-		this.addCompartment(cptNA);
-
-		HashMap<String, BioPhysicalEntity> cpds = new HashMap<String, BioPhysicalEntity>(
-				this.getPhysicalEntityList());
-
-		for (BioPhysicalEntity cpd : cpds.values()) {
-
-			this.getPhysicalEntityList().remove(cpd.getId());
-
-			String newId = cpd.getId().replaceAll("_IN_.*", "");
-
-			cpd.setId(newId);
-
-			cpd.setCompartment(cptNA);
-
-			this.addPhysicalEntity(cpd);
-
-		}
-
-	}
-
-	/**
 	 * Returns the list of exchange reactions for a metabolite
 	 * 
 	 * @param cpdId

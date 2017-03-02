@@ -60,15 +60,9 @@ public class BioPhysicalEntity extends BioEntity {
 	
 	private String caas="NA";
 	
-
-
-	/*
-	 * New attributes to fit to sbml specification 
-	 */
-	private Boolean constant=false;
-	private String substanceUnits;
-	private HashMap<String, Double> initialQuantity=new HashMap<String, Double>();
-	private Boolean hasOnlySubstanceUnit=false;
+	private HashMap<String, BioChemicalReaction> reactionsAsSubstrate = new HashMap<String, BioChemicalReaction>();
+	private HashMap<String, BioChemicalReaction> reactionsAsProduct = new HashMap<String, BioChemicalReaction>();
+	
 	
 	public Boolean getBoundaryCondition() {
 		return boundaryCondition;
@@ -78,10 +72,6 @@ public class BioPhysicalEntity extends BioEntity {
 		this.boundaryCondition = boundaryCondition;
 	}
 
-
-	private HashMap<String, BioChemicalReaction> reactionsAsSubstrate = new HashMap<String, BioChemicalReaction>();
-	private HashMap<String, BioChemicalReaction> reactionsAsProduct = new HashMap<String, BioChemicalReaction>();
-	
 	public void addReactionAsSubstrate(BioChemicalReaction rxn) {
 		this.reactionsAsSubstrate.put(rxn.getId(), rxn);
 	}
@@ -230,42 +220,6 @@ public class BioPhysicalEntity extends BioEntity {
 
 	public void setCaas(String caas) {
 		this.caas = caas;
-	}
-
-	public Boolean getConstant() {
-		return constant;
-	}
-
-	public String getSubstanceUnits() {
-		return substanceUnits;
-	}
-
-	public HashMap<String, Double> getInitialQuantity() {
-		return initialQuantity;
-	}
-
-	public Boolean getHasOnlySubstanceUnit() {
-		return hasOnlySubstanceUnit;
-	}
-
-	public void setConstant(Boolean constant) {
-		this.constant = constant;
-	}
-
-	public void setSubstanceUnits(String substanceUnits) {
-		this.substanceUnits = substanceUnits;
-	}
-
-	public void setInitialQuantity(HashMap<String, Double> initialQuantity) {
-		this.initialQuantity = initialQuantity;
-	}
-	
-	public void addInitialQuantity(String type, Double value){
-		this.initialQuantity.put(type, value);
-	}
-
-	public void setHasOnlySubstanceUnit(Boolean hasOnlySubstanceUnit) {
-		this.hasOnlySubstanceUnit = hasOnlySubstanceUnit;
 	}
 	
 }

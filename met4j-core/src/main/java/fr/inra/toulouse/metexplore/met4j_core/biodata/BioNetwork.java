@@ -753,16 +753,6 @@ public class BioNetwork {
 		this.transportList = transportList;
 	}
 
-	public Boolean isEmpty() {
-
-		Boolean flag = false;
-
-		if (this.getPhysicalEntityList().size() == 0)
-			flag = true;
-
-		return flag;
-	}
-
 	public void addCompartment(BioCompartment compartment) {
 		this.compartments.put(compartment.getId(), compartment);
 	}

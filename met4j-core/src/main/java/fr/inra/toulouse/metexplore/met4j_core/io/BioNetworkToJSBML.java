@@ -50,7 +50,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.Comment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.Flux;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.Notes;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.UnitSbml;
-import fr.inra.toulouse.metexplore.met4j_core.utils.BioChemicalReactionUtils;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils;
 import fr.inra.toulouse.metexplore.met4j_core.utils.JSBMLUtils;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 

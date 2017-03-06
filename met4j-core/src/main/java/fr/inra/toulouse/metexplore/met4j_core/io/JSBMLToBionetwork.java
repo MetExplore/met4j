@@ -1561,7 +1561,7 @@ public class JSBMLToBionetwork {
 
 								newCplxCompoLoop:
 									for(Entry<String, String> geneProtRegex: protIDs_REGEX.entrySet()){
-										String geneN=geneProtRegex.getKey(), prot_REGEX=geneProtRegex.getValue();
+										String geneN=geneProtRegex.getKey(compounds), prot_REGEX=geneProtRegex.getValue();
 
 										for (BioProtein existingProtein:this.getBioNetwork().getProteinList().values()){
 											if(Pattern.compile(prot_REGEX, Pattern.CASE_INSENSITIVE).matcher(existingProtein.getId()).matches()){

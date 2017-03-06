@@ -1,4 +1,4 @@
-package fr.inra.toulouse.metexplore.met4j_core.utils;
+package fr.inra.toulouse.metexplore.met4j_core.biodata.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +14,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
+import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 public class BioChemicalReactionUtils {
 	
@@ -72,6 +73,47 @@ public class BioChemicalReactionUtils {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Returns the genes catalysing the reaction
+	 * TODO : add back to Reaction class, using lazy builder, ensure update when enzyme added
+	 * @return a HashMap
+	 */
+	public static HashMap<String, BioGene> getListOfGenesFromReaction(BioChemicalReaction r) {
+
+		HashMap<String, BioGene> genes = new HashMap<String, BioGene>();
+
+		for (Iterator<String> iterEnz = r.getEnzList().keySet().iterator(); iterEnz
+				.hasNext();) {
+
+			BioPhysicalEntity enzyme = r.getEnzList().get(iterEnz.next());
+
+			String classe = enzyme.getClass().getSimpleName();
+
+			if (classe.compareTo("BioProtein") == 0) {
+				genes.putAll(((BioProtein) enzyme).getGeneList());
+			} else if (classe.compareTo("BioComplex") == 0) {
+
+				HashMap<String, BioPhysicalEntity> componentList = ((BioComplex) enzyme)
+						.getAllComponentList();
+
+				for (Iterator<String> iterComponent = componentList.keySet()
+						.iterator(); iterComponent.hasNext();) {
+
+					BioPhysicalEntity component = componentList
+							.get(iterComponent.next());
+
+					if (component.getClass().getSimpleName()
+							.compareTo("BioProtein") == 0) {
+						genes.putAll(((BioProtein) component).getGeneList());
+					}
+				}
+			}
+		}
+
+		return genes;
+
 	}
 	
 	public static Boolean testReaction(BioChemicalReaction r) {
@@ -221,47 +263,6 @@ public class BioChemicalReactionUtils {
 		res.add(protStr);
 
 		return res;
-
-	}
-
-	/**
-	 * Returns the genes catalysing the reaction
-	 * TODO : add back to Reaction class, using lazy builder, ensure update when enzyme added
-	 * @return a HashMap
-	 */
-	public static HashMap<String, BioGene> getListOfGenesFromReaction(BioChemicalReaction r) {
-
-		HashMap<String, BioGene> genes = new HashMap<String, BioGene>();
-
-		for (Iterator<String> iterEnz = r.getEnzList().keySet().iterator(); iterEnz
-				.hasNext();) {
-
-			BioPhysicalEntity enzyme = r.getEnzList().get(iterEnz.next());
-
-			String classe = enzyme.getClass().getSimpleName();
-
-			if (classe.compareTo("BioProtein") == 0) {
-				genes.putAll(((BioProtein) enzyme).getGeneList());
-			} else if (classe.compareTo("BioComplex") == 0) {
-
-				HashMap<String, BioPhysicalEntity> componentList = ((BioComplex) enzyme)
-						.getAllComponentList();
-
-				for (Iterator<String> iterComponent = componentList.keySet()
-						.iterator(); iterComponent.hasNext();) {
-
-					BioPhysicalEntity component = componentList
-							.get(iterComponent.next());
-
-					if (component.getClass().getSimpleName()
-							.compareTo("BioProtein") == 0) {
-						genes.putAll(((BioProtein) component).getGeneList());
-					}
-				}
-			}
-		}
-
-		return genes;
 
 	}
 	

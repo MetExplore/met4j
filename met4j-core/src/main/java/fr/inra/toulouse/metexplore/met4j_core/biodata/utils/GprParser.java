@@ -1,4 +1,4 @@
-package fr.inra.toulouse.metexplore.met4j_core.utils;
+package fr.inra.toulouse.metexplore.met4j_core.biodata.utils;
 
 import java.util.ArrayList;
 
@@ -8,6 +8,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
+import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 public class GprParser {
 	

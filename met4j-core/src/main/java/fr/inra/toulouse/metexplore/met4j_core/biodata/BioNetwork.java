@@ -40,7 +40,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.inra.toulouse.metexplore.met4j_core.utils.BioChemicalReactionUtils;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 /**
@@ -1049,31 +1049,6 @@ public class BioNetwork {
 				this.removeBioChemicalReaction(reactionId);
 			}
 		}
-	}
-
-	/**
-	 * Returns the set of reactions catalysed by a gene
-	 * 
-	 * @param geneId
-	 *            : String
-	 * @return a Set of Strings TODO : test it
-	 */
-	public Set<String> getReactionsFromGene(String geneId) {
-
-		Set<String> reactions = new HashSet<String>();
-
-		for (BioChemicalReaction reaction : this.getBiochemicalReactionList()
-				.values()) {
-
-			HashMap<String, BioGene> genes = BioChemicalReactionUtils.getListOfGenesFromReaction(reaction);
-
-			if (genes.containsKey(geneId)) {
-				reactions.add(reaction.getId());
-			}
-		}
-
-		return reactions;
-
 	}
 
 	/**

@@ -1,15 +1,19 @@
-package fr.inra.toulouse.metexplore.met4j_core.utils;
+package fr.inra.toulouse.metexplore.met4j_core.biodata.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 
 public class BioNetworkUtils {
 	
@@ -214,6 +218,32 @@ public class BioNetworkUtils {
 		}
 		
 		return subNet;
+
+	}
+
+	
+	/**
+	 * Returns the set of reactions catalysed by a gene
+	 * 
+	 * @param geneId
+	 *            : String
+	 * @return a Set of Strings TODO : test it
+	 */
+	public static Set<String> getReactionsFromGene(BioNetwork bn, String geneId) {
+
+		Set<String> reactions = new HashSet<String>();
+
+		for (BioChemicalReaction reaction : bn.getBiochemicalReactionList()
+				.values()) {
+
+			HashMap<String, BioGene> genes = BioChemicalReactionUtils.getListOfGenesFromReaction(reaction);
+
+			if (genes.containsKey(geneId)) {
+				reactions.add(reaction.getId());
+			}
+		}
+
+		return reactions;
 
 	}
 	

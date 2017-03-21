@@ -78,7 +78,7 @@ public class Compute2DRank {
 		model = importModel(sbmlFilePath);
 		
 		createCompoundGraph(model);
-		setEdgeWeights(firstGraph, "edgeWeightsFilePaths");
+		setEdgeWeights(firstGraph, edgeWeightsFilePaths);
 		
 		createEdgeReversedGraph();
 		
@@ -97,7 +97,7 @@ public class Compute2DRank {
 		this.model = model;
 		
 		createCompoundGraph(model);
-		setEdgeWeights(firstGraph, "edgeWeightsFilePaths");
+		setEdgeWeights(firstGraph, edgeWeightsFilePaths);
 		
 		createEdgeReversedGraph();
 		

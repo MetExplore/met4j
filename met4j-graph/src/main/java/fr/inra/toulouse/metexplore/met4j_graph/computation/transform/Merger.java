@@ -517,7 +517,7 @@ public class Merger {
 		HashMap<Integer, BioChemicalReaction> uniqReaction = new HashMap<Integer, BioChemicalReaction>();
 		for(BioChemicalReaction r : bn.getBiochemicalReactionList().values()){
 			int hash = Objects.hash(r.getListOfSubstrates(),r.getListOfProducts());
-			System.out.println(r.getId());
+//			System.out.println(r.getId());
 			if (!uniqReaction.containsKey(hash)){
 				uniqReaction.put(hash, r);
 			}else{

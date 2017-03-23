@@ -66,7 +66,15 @@ public class Compute2DRank {
 	
 	HashMap<String, Double> globalVsPersonalizedPageRank;
 	HashMap<String, Double> globalVsPersonalizedCheiRank;
-	
+
+	public HashMap<String, Double> getPageRankScore() {
+		return pageRankScore;
+	}
+
+	public HashMap<String, Double> getCheiRankScore() {
+		return cheiRankScore;
+	}
+
 	/**
 	 * TODO : add custom parameters
 	 * @param sbmlFilePath path to the sbml file

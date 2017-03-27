@@ -18,6 +18,7 @@
     <module>met4j-report</module>
     <module>met4j-toolbox</module>
     <module>met4j-cytoscape</module>
+    <module>met4j-toolbox-test</module>
   </modules>
 
   <description>A java library dedicated to metabolic network analysis</description>
@@ -28,7 +29,7 @@
   </organization>
   
   <issueManagement>
-  	<url>http://vm-metexplore-dev.toulouse.inra.fr:3000/cfrainay/met4jTest/issues</url>
+  	<url>https://vm-metexplore-dev.toulouse.inra.fr:3000/cfrainay/met4jTest/issues</url>
   	<system>GitHub</system>
   </issueManagement>
   

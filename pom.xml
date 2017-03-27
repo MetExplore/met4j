@@ -19,6 +19,7 @@
     <module>met4j-toolbox</module>
     <module>met4j-cytoscape</module>
     <module>met4j-toolbox-test</module>
+    <module>met4j-reconstruction</module>
   </modules>
 
   <description>A java library dedicated to metabolic network analysis</description>

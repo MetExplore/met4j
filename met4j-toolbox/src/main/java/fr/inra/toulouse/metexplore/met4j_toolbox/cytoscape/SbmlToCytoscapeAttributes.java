@@ -52,7 +52,7 @@ import fr.inra.toulouse.metexplore.met4j_cytoscape.attributes.BioNetworkToAttrib
  */
 public class SbmlToCytoscapeAttributes extends AbstractSbmlApplication {
 
-	String description = "Writes a tabulated file with network attributes";
+	String description = "Writes a tabulated file with network attributes compatible with the SBML Cytoscape plugin";
 	
 	@Option(name="-out", usage="[network_attributes.tab] Cytoscape attribute file (tabulated format)")
 	private String out = "network_attributes.tab";

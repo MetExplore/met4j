@@ -50,8 +50,13 @@ public class SbmlToCytoscapeAttributesTest {
 		// testFile.deleteOnExit();
 
 		// Classical sbml, normal ids
+		// Get file from resources folder
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("test1.sbml").getFile());
 
-		String[] args = { "-s", "test1.sbml", "-out", testFile.getAbsolutePath() };
+		String path = file.getCanonicalPath();
+
+		String[] args = { "-s", path, "-out", testFile.getAbsolutePath() };
 
 		SbmlToCytoscapeAttributes.main(args);
 
@@ -81,7 +86,7 @@ public class SbmlToCytoscapeAttributesTest {
 
 		// Classical sbml, uncoded ids
 
-		String[] args2 = { "-s", "test1.sbml", "-out", testFile.getAbsolutePath(), "-decode" };
+		String[] args2 = { "-s", path, "-out", testFile.getAbsolutePath(), "-decode" };
 
 		SbmlToCytoscapeAttributes.main(args2);
 
@@ -110,8 +115,11 @@ public class SbmlToCytoscapeAttributesTest {
 		assertEquals("[Classical SBML with uncoded ids] Test and reference files are not equal", ref, test);
 
 		// Extended sbml, normal ids
+		// Get file from resources folder
+		file = new File(classLoader.getResource("test1.xml").getFile());
+		path = file.getCanonicalPath();
 
-		String[] args3 = { "-s", "test1.xml", "-out", testFile.getAbsolutePath(), "-ext" };
+		String[] args3 = { "-s", path, "-out", testFile.getAbsolutePath(), "-ext" };
 
 		SbmlToCytoscapeAttributes.main(args3);
 
@@ -141,7 +149,7 @@ public class SbmlToCytoscapeAttributesTest {
 
 		// Extended sbml, uncoded ids
 
-		String[] args4 = { "-s", "test1.xml", "-out", testFile.getAbsolutePath(), "-ext", "-decode" };
+		String[] args4 = { "-s", path, "-out", testFile.getAbsolutePath(), "-ext", "-decode" };
 
 		SbmlToCytoscapeAttributes.main(args4);
 
@@ -156,8 +164,8 @@ public class SbmlToCytoscapeAttributesTest {
 				+ "C__45__cpd\t" + "species\t" + "C\t" + "12.5\t" + "formulaC\t" + "(pathway)\t" + "NA\t" + "NA\t"
 				+ "cytosol\t" + "NA\t" + "NA\t" + "NA\t" + "NA\n"
 
-				+ "D__45__cpd\t" + "species\t" + "D\t" + "NA\t" + "NA\t" + "(pathway3)\t" + "NA\t" + "NA\t" + "cytosol\t"
-				+ "NA\t" + "NA\t" + "NA\t" + "NA\n"
+				+ "D__45__cpd\t" + "species\t" + "D\t" + "NA\t" + "NA\t" + "(pathway3)\t" + "NA\t" + "NA\t"
+				+ "cytosol\t" + "NA\t" + "NA\t" + "NA\t" + "NA\n"
 
 				+ "r1__45__rxn\t" + "reaction\t" + "R1\t" + "NA\t" + "A'[c] -> C[c]\t" + "(pathway)\t" + "1.1.1.1\t"
 				+ "false\t" + "(cytosol)\t" + "( gene1 )\t" + "( gene1 (TH) )\t" + "-1000.0\t" + "2.0\n"

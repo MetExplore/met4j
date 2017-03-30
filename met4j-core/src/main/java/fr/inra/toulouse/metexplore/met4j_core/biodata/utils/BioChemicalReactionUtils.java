@@ -8,11 +8,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
@@ -22,7 +22,7 @@ public class BioChemicalReactionUtils {
 	 * Comparison with another reaction : if the substrates and the products
 	 * have the same id, return true
 	 */
-	public static Boolean areRedundant(BioChemicalReaction r1, BioChemicalReaction r2) {
+	public static Boolean areRedundant(BioReaction r1, BioReaction r2) {
 
 		Set<String> listOfOtherSubstrates = r2.getLeftList().keySet();
 		Set<String> listOfOtherProducts = r2.getRightList().keySet();
@@ -49,7 +49,7 @@ public class BioChemicalReactionUtils {
 	/**
 	 * Indicate if all the genes coding for at least one enzyme are present
 	 */
-	public static boolean isGeneticallyPossible(BioChemicalReaction r) {
+	public static boolean isGeneticallyPossible(BioReaction r) {
 		if (r.getSpontaneous() != null) {
 				return true;
 		} else {
@@ -80,7 +80,7 @@ public class BioChemicalReactionUtils {
 	 * TODO : add back to Reaction class, using lazy builder, ensure update when enzyme added
 	 * @return a HashMap
 	 */
-	public static HashMap<String, BioGene> getListOfGenesFromReaction(BioChemicalReaction r) {
+	public static HashMap<String, BioGene> getListOfGenesFromReaction(BioReaction r) {
 
 		HashMap<String, BioGene> genes = new HashMap<String, BioGene>();
 
@@ -116,7 +116,7 @@ public class BioChemicalReactionUtils {
 
 	}
 	
-	public static Boolean testReaction(BioChemicalReaction r) {
+	public static Boolean testReaction(BioReaction r) {
 		return testReaction(r, false, true);
 	}
 
@@ -126,7 +126,7 @@ public class BioChemicalReactionUtils {
 	 * adressed - if keepHolderClassCpd = false, test if any substrate or
 	 * product of the reaction is a generic compound (e.g "an aldehyde").
 	 */
-	public static Boolean testReaction(BioChemicalReaction r, Boolean onlyPrimaries,
+	public static Boolean testReaction(BioReaction r, Boolean onlyPrimaries,
 			Boolean keepHolderClassCpd) {
 
 		if (onlyPrimaries == true) {
@@ -170,7 +170,7 @@ public class BioChemicalReactionUtils {
 	 *         genes and between proteins that enable the catalysis of the
 	 *         reaction Ex : res.get(0) g1 and ( g2 or g3 ) res.get(1) p1 and p2
 	 */
-	public static ArrayList<String> getGPR(BioChemicalReaction r) {
+	public static ArrayList<String> getGPR(BioReaction r) {
 
 		String geneStr = "";
 		String protStr = "";
@@ -271,11 +271,11 @@ public class BioChemicalReactionUtils {
 	 * 
 	 * @return
 	 */
-	public static HashMap<String, Double> computeAtomBalances(BioChemicalReaction r) {
+	public static HashMap<String, Double> computeAtomBalances(BioReaction r) {
 
 		HashMap<String, Double> balances = new HashMap<String, Double>();
 
-		for (BioPhysicalEntityParticipant bpe : r.getLeftParticipantList()
+		for (BioParticipant bpe : r.getLeftParticipantList()
 				.values()) {
 
 			String stoStr = bpe.getStoichiometricCoefficient();
@@ -334,7 +334,7 @@ public class BioChemicalReactionUtils {
 
 		}
 
-		for (BioPhysicalEntityParticipant bpe : r.getRightParticipantList()
+		for (BioParticipant bpe : r.getRightParticipantList()
 				.values()) {
 
 			String stoStr = bpe.getStoichiometricCoefficient();
@@ -404,7 +404,7 @@ public class BioChemicalReactionUtils {
 	 * 
 	 * @return
 	 */
-	public static Boolean isBalanced(BioChemicalReaction r) {
+	public static Boolean isBalanced(BioReaction r) {
 
 		Double sum = 0.0;
 

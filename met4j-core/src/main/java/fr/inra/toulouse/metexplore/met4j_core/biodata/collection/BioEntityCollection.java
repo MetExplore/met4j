@@ -28,12 +28,14 @@
  *  The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL license and that you accept its terms.
  ******************************************************************************/
-package fr.inra.toulouse.metexplore.met4j_core.biodata;
+package fr.inra.toulouse.metexplore.met4j_core.biodata.collection;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.stream.Collectors;
+
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 public class BioEntityCollection implements Collection<BioEntity> {
 	
@@ -42,9 +44,7 @@ public class BioEntityCollection implements Collection<BioEntity> {
 	
 	
 	public BioEntityCollection() {
-		
 		entities = new HashSet<BioEntity>();
-		
 	}
 	
 	
@@ -97,10 +97,6 @@ public class BioEntityCollection implements Collection<BioEntity> {
 			
 		return new BioEntityCollection(e);
 	}
-	
-	
-	
-	
 	
 	
 	public HashSet<BioEntity> getEntities() {
@@ -209,7 +205,6 @@ public class BioEntityCollection implements Collection<BioEntity> {
 	public void clear() {
 		this.entities.clear();
 	}
-	
 	
 
 }

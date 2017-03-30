@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.analysis.GraphSimilarity;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -29,19 +29,19 @@ public class TestGraphSimilarity {
 		BioPhysicalEntity e = new BioPhysicalEntity("e");g1.addVertex(e);g2.addVertex(e);
 		BioPhysicalEntity f = new BioPhysicalEntity("f");g2.addVertex(f);
 		
-		ReactionEdge ab = new ReactionEdge(a, b, new BioChemicalReaction());
+		ReactionEdge ab = new ReactionEdge(a, b, new BioReaction());
 		g1.addEdge(a, b, ab);
-		ReactionEdge bc = new ReactionEdge(b, c, new BioChemicalReaction());
+		ReactionEdge bc = new ReactionEdge(b, c, new BioReaction());
 		g1.addEdge(b, c, bc);
 		g2.addEdge(b, c, bc);
-		ReactionEdge cd1 = new ReactionEdge(c, d, new BioChemicalReaction());
-		ReactionEdge cd2 = new ReactionEdge(c, d, new BioChemicalReaction());
+		ReactionEdge cd1 = new ReactionEdge(c, d, new BioReaction());
+		ReactionEdge cd2 = new ReactionEdge(c, d, new BioReaction());
 		g1.addEdge(c, d, cd1);
 		g2.addEdge(c, d, cd2);
-		ReactionEdge de = new ReactionEdge(d, e, new BioChemicalReaction());
+		ReactionEdge de = new ReactionEdge(d, e, new BioReaction());
 		g1.addEdge(d, e, de);
 		g2.addEdge(d, e, de);
-		ReactionEdge ef = new ReactionEdge(e, f, new BioChemicalReaction());
+		ReactionEdge ef = new ReactionEdge(e, f, new BioReaction());
 		g2.addEdge(e, f, ef);
 	}
 	

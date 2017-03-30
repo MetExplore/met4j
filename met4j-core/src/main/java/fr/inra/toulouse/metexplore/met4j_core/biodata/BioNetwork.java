@@ -61,7 +61,7 @@ public class BioNetwork {
 
 	private HashMap<String, BioGene> geneList = new HashMap<String, BioGene>();
 
-	private HashMap<String, BioChemicalReaction> biochemicalReactionList = new HashMap<String, BioChemicalReaction>();
+	private HashMap<String, BioReaction> biochemicalReactionList = new HashMap<String, BioReaction>();
 
 	private HashMap<String, BioCatalysis> catalysisList = new HashMap<String, BioCatalysis>();
 
@@ -93,16 +93,16 @@ public class BioNetwork {
 	}
 
 	/**
-	 * Constructor from a list of {@link BioChemicalReaction} Duplicate
+	 * Constructor from a list of {@link BioReaction} Duplicate
 	 * reactions
 	 */
-	public BioNetwork(HashMap<String, BioChemicalReaction> listOfReactions) {
+	public BioNetwork(HashMap<String, BioReaction> listOfReactions) {
 
 		this.setId("BioNetwork" + (new Date()).getTime());
 
-		for (BioChemicalReaction rxn : listOfReactions.values()) {
+		for (BioReaction rxn : listOfReactions.values()) {
 
-			BioChemicalReaction newRxn = new BioChemicalReaction(rxn);
+			BioReaction newRxn = new BioReaction(rxn);
 			this.addBiochemicalReaction(newRxn);
 
 			this.addUnitDefinition(newRxn.getLowerBound().unitDefinition);
@@ -119,10 +119,10 @@ public class BioNetwork {
 
 	public void removeInfeasibleReactions() {
 
-		HashMap<String, BioChemicalReaction> reactions = new HashMap<String, BioChemicalReaction>(
+		HashMap<String, BioReaction> reactions = new HashMap<String, BioReaction>(
 				this.getBiochemicalReactionList());
 
-		for (BioChemicalReaction reaction : reactions.values()) {
+		for (BioReaction reaction : reactions.values()) {
 
 			if (reaction.isPossible() == false) {
 				this.removeBioChemicalReaction(reaction.getId());
@@ -203,18 +203,18 @@ public class BioNetwork {
 
 		if (this.getPhysicalEntityList().containsKey(id) == true) {
 
-			HashMap<String, BioChemicalReaction> RP = this
+			HashMap<String, BioReaction> RP = this
 					.getListOfReactionsAsProduct(id);
-			HashMap<String, BioChemicalReaction> RC = this
+			HashMap<String, BioReaction> RC = this
 					.getListOfReactionsAsSubstrate(id);
 
-			HashMap<String, BioChemicalReaction> reactions = new HashMap<String, BioChemicalReaction>();
+			HashMap<String, BioReaction> reactions = new HashMap<String, BioReaction>();
 			reactions.putAll(RP);
 			reactions.putAll(RC);
 
 			this.getPhysicalEntityList().remove(id);
 
-			for (BioChemicalReaction rxn : reactions.values()) {
+			for (BioReaction rxn : reactions.values()) {
 
 				Set<String> left = rxn.getLeftList().keySet();
 				Set<String> right = rxn.getRightList().keySet();
@@ -272,13 +272,13 @@ public class BioNetwork {
 	public void removeBioChemicalReaction(String id) {
 
 		if (this.getBiochemicalReactionList().containsKey(id) == true) {
-			BioChemicalReaction rxn = this.getBiochemicalReactionList().get(id);
+			BioReaction rxn = this.getBiochemicalReactionList().get(id);
 
 			HashMap<String, BioPhysicalEntity> left = rxn.getLeftList();
 			HashMap<String, BioPhysicalEntity> right = rxn.getRightList();
-			HashMap<String, BioPhysicalEntityParticipant> leftP = rxn
+			HashMap<String, BioParticipant> leftP = rxn
 					.getLeftParticipantList();
-			HashMap<String, BioPhysicalEntityParticipant> rightP = rxn
+			HashMap<String, BioParticipant> rightP = rxn
 					.getRightParticipantList();
 
 			this.getBiochemicalReactionList().remove(id);
@@ -287,7 +287,7 @@ public class BioNetwork {
 			leftAndRight.putAll(left);
 			leftAndRight.putAll(right);
 
-			HashMap<String, BioPhysicalEntityParticipant> leftAndRightP = new HashMap<String, BioPhysicalEntityParticipant>();
+			HashMap<String, BioParticipant> leftAndRightP = new HashMap<String, BioParticipant>();
 			leftAndRightP.putAll(leftP);
 			leftAndRightP.putAll(rightP);
 
@@ -340,7 +340,7 @@ public class BioNetwork {
 	/**
 	 * @return Returns the biochemicalReactionList.
 	 */
-	public HashMap<String, BioChemicalReaction> getBiochemicalReactionList() {
+	public HashMap<String, BioReaction> getBiochemicalReactionList() {
 		return biochemicalReactionList;
 	}
 
@@ -350,7 +350,7 @@ public class BioNetwork {
 	 * @param o
 	 *            the object to add
 	 */
-	public void addBiochemicalReaction(BioChemicalReaction o) {
+	public void addBiochemicalReaction(BioReaction o) {
 		
 		//add reaction's substrate to model if not already set
 		for (BioPhysicalEntity cpd : o.getLeftList().values()) {
@@ -503,16 +503,16 @@ public class BioNetwork {
 	 * @return the list of reactionNodes which involves the compound cpd as
 	 *         substrate
 	 */
-	public HashMap<String, BioChemicalReaction> getListOfReactionsAsSubstrate(
+	public HashMap<String, BioReaction> getListOfReactionsAsSubstrate(
 			String cpd) {
 
-		HashMap<String, BioChemicalReaction> reactionsAsSubstrate = new HashMap<String, BioChemicalReaction>();
+		HashMap<String, BioReaction> reactionsAsSubstrate = new HashMap<String, BioReaction>();
 
 		if (this.getPhysicalEntityList().containsKey(cpd) == false) {
 			return reactionsAsSubstrate;
 		}
 
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
+		for (BioReaction rxn : this.getBiochemicalReactionList()
 				.values()) {
 
 			HashMap<String, BioPhysicalEntity> listOfSubstrates = rxn
@@ -533,16 +533,16 @@ public class BioNetwork {
 	 *         substrate
 	 */
 
-	public HashMap<String, BioChemicalReaction> getListOfReactionsAsPrimarySubstrate(
+	public HashMap<String, BioReaction> getListOfReactionsAsPrimarySubstrate(
 			String cpd) {
 
-		HashMap<String, BioChemicalReaction> reactionsAsSubstrate = new HashMap<String, BioChemicalReaction>();
+		HashMap<String, BioReaction> reactionsAsSubstrate = new HashMap<String, BioReaction>();
 
 		if (this.getPhysicalEntityList().containsKey(cpd) == false) {
 			return reactionsAsSubstrate;
 		}
 
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
+		for (BioReaction rxn : this.getBiochemicalReactionList()
 				.values()) {
 
 			HashMap<String, BioPhysicalEntity> listOfSubstrates = rxn
@@ -563,16 +563,16 @@ public class BioNetwork {
 	 *         product
 	 */
 
-	public HashMap<String, BioChemicalReaction> getListOfReactionsAsProduct(
+	public HashMap<String, BioReaction> getListOfReactionsAsProduct(
 			String cpd) {
 
-		HashMap<String, BioChemicalReaction> reactionsAsProduct = new HashMap<String, BioChemicalReaction>();
+		HashMap<String, BioReaction> reactionsAsProduct = new HashMap<String, BioReaction>();
 
 		if (this.getPhysicalEntityList().containsKey(cpd) == false) {
 			return reactionsAsProduct;
 		}
 
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
+		for (BioReaction rxn : this.getBiochemicalReactionList()
 				.values()) {
 
 			HashMap<String, BioPhysicalEntity> listOfProducts = rxn
@@ -593,16 +593,16 @@ public class BioNetwork {
 	 *         primary product
 	 */
 
-	public HashMap<String, BioChemicalReaction> getListOfReactionsAsPrimaryProduct(
+	public HashMap<String, BioReaction> getListOfReactionsAsPrimaryProduct(
 			String cpd) {
 
-		HashMap<String, BioChemicalReaction> reactionsAsProduct = new HashMap<String, BioChemicalReaction>();
+		HashMap<String, BioReaction> reactionsAsProduct = new HashMap<String, BioReaction>();
 
 		if (this.getPhysicalEntityList().containsKey(cpd) == false) {
 			return reactionsAsProduct;
 		}
 
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
+		for (BioReaction rxn : this.getBiochemicalReactionList()
 				.values()) {
 
 			HashMap<String, BioPhysicalEntity> listOfProducts = rxn
@@ -637,12 +637,12 @@ public class BioNetwork {
 	 * @return the list of the reactionNodes which have these left and right
 	 *         compounds
 	 */
-	public HashMap<String, BioChemicalReaction> reactionsWith(Set<String> left,
+	public HashMap<String, BioReaction> reactionsWith(Set<String> left,
 			Set<String> right) {
 
-		HashMap<String, BioChemicalReaction> listOfReactions = new HashMap<String, BioChemicalReaction>();
+		HashMap<String, BioReaction> listOfReactions = new HashMap<String, BioReaction>();
 
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
+		for (BioReaction rxn : this.getBiochemicalReactionList()
 				.values()) {
 
 			Set<String> l = rxn.getLeftList().keySet();
@@ -673,12 +673,12 @@ public class BioNetwork {
 	 * = B Returns : R1 : A +C -> B + D R2 : B + E -> A +F
 	 * 
 	 */
-	public HashMap<String, BioChemicalReaction> reactionsThatInvolvesAtLeast(
+	public HashMap<String, BioReaction> reactionsThatInvolvesAtLeast(
 			Set<String> set1, Set<String> set2) {
 
-		HashMap<String, BioChemicalReaction> listOfReactions = new HashMap<String, BioChemicalReaction>();
+		HashMap<String, BioReaction> listOfReactions = new HashMap<String, BioReaction>();
 
-		for (BioChemicalReaction reaction : this.getBiochemicalReactionList()
+		for (BioReaction reaction : this.getBiochemicalReactionList()
 				.values()) {
 
 			Set<String> lefts = reaction.getLeftList().keySet();
@@ -698,12 +698,12 @@ public class BioNetwork {
 	 * @param left
 	 * @return the list of the reactionNodes which have these substrates
 	 */
-	public HashMap<String, BioChemicalReaction> reactionsWithTheseSubstrates(
+	public HashMap<String, BioReaction> reactionsWithTheseSubstrates(
 			Set<String> left) {
 
-		HashMap<String, BioChemicalReaction> listOfReactions = new HashMap<String, BioChemicalReaction>();
+		HashMap<String, BioReaction> listOfReactions = new HashMap<String, BioReaction>();
 
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
+		for (BioReaction rxn : this.getBiochemicalReactionList()
 				.values()) {
 
 			Set<String> substrates = rxn.getListOfSubstrates().keySet();
@@ -720,7 +720,7 @@ public class BioNetwork {
 
 
 	public void setBiochemicalReactionList(
-			HashMap<String, BioChemicalReaction> biochemicalReactionList) {
+			HashMap<String, BioReaction> biochemicalReactionList) {
 		this.biochemicalReactionList = biochemicalReactionList;
 	}
 
@@ -792,7 +792,7 @@ public class BioNetwork {
 
 		for (String reactionId : reactionIds) {
 
-			BioChemicalReaction reaction = this.getBiochemicalReactionList()
+			BioReaction reaction = this.getBiochemicalReactionList()
 					.get(reactionId);
 
 			if (reaction.getHole()) {
@@ -811,12 +811,12 @@ public class BioNetwork {
 
 		for (String reactionId : reactionIds) {
 
-			BioChemicalReaction reaction = this.getBiochemicalReactionList()
+			BioReaction reaction = this.getBiochemicalReactionList()
 					.get(reactionId);
 
 			Boolean flag = false;
 
-			for (BioPhysicalEntityParticipant leftP : reaction
+			for (BioParticipant leftP : reaction
 					.getLeftParticipantList().values()) {
 				if (leftP.getPhysicalEntity().getIsHolderClass()) {
 					flag = true;
@@ -825,7 +825,7 @@ public class BioNetwork {
 			}
 
 			if (!flag) {
-				for (BioPhysicalEntityParticipant rightP : reaction
+				for (BioParticipant rightP : reaction
 						.getRightParticipantList().values()) {
 					if (rightP.getPhysicalEntity().getIsHolderClass()) {
 						flag = true;
@@ -850,13 +850,13 @@ public class BioNetwork {
 
 		for (String reactionId : reactionIds) {
 
-			BioChemicalReaction reaction = this.getBiochemicalReactionList()
+			BioReaction reaction = this.getBiochemicalReactionList()
 					.get(reactionId);
 
-			HashMap<String, BioPhysicalEntityParticipant> leftParticipants = new HashMap<String, BioPhysicalEntityParticipant>(
+			HashMap<String, BioParticipant> leftParticipants = new HashMap<String, BioParticipant>(
 					reaction.getLeftParticipantList());
 
-			for (BioPhysicalEntityParticipant bpe : leftParticipants.values()) {
+			for (BioParticipant bpe : leftParticipants.values()) {
 
 				if (bpe.getIsPrimaryCompound() == false) {
 					reaction.removeLeft(bpe.getPhysicalEntity().getId());
@@ -864,10 +864,10 @@ public class BioNetwork {
 
 			}
 
-			HashMap<String, BioPhysicalEntityParticipant> rightParticipants = new HashMap<String, BioPhysicalEntityParticipant>(
+			HashMap<String, BioParticipant> rightParticipants = new HashMap<String, BioParticipant>(
 					reaction.getRightParticipantList());
 
-			for (BioPhysicalEntityParticipant bpe : rightParticipants.values()) {
+			for (BioParticipant bpe : rightParticipants.values()) {
 
 				if (bpe.getIsPrimaryCompound() == false) {
 					reaction.removeRight(bpe.getPhysicalEntity().getId());
@@ -893,13 +893,13 @@ public class BioNetwork {
 
 		for (String reactionId : reactionIds) {
 
-			BioChemicalReaction reaction = this.getBiochemicalReactionList()
+			BioReaction reaction = this.getBiochemicalReactionList()
 					.get(reactionId);
 
-			HashMap<String, BioPhysicalEntityParticipant> leftParticipants = new HashMap<String, BioPhysicalEntityParticipant>(
+			HashMap<String, BioParticipant> leftParticipants = new HashMap<String, BioParticipant>(
 					reaction.getLeftParticipantList());
 
-			for (BioPhysicalEntityParticipant bpe : leftParticipants.values()) {
+			for (BioParticipant bpe : leftParticipants.values()) {
 
 				if (bpe.getIsCofactor() == true) {
 					reaction.removeLeft(bpe.getPhysicalEntity().getId());
@@ -907,10 +907,10 @@ public class BioNetwork {
 
 			}
 
-			HashMap<String, BioPhysicalEntityParticipant> rightParticipants = new HashMap<String, BioPhysicalEntityParticipant>(
+			HashMap<String, BioParticipant> rightParticipants = new HashMap<String, BioParticipant>(
 					reaction.getRightParticipantList());
 
-			for (BioPhysicalEntityParticipant bpe : rightParticipants.values()) {
+			for (BioParticipant bpe : rightParticipants.values()) {
 
 				if (bpe.getIsCofactor() == true) {
 					reaction.removeRight(bpe.getPhysicalEntity().getId());
@@ -939,7 +939,7 @@ public class BioNetwork {
 
 		for (String reactionId : reactionIds) {
 
-			BioChemicalReaction reaction = this.getBiochemicalReactionList()
+			BioReaction reaction = this.getBiochemicalReactionList()
 					.get(reactionId);
 
 			Set<String> pathwayReactionIds = reaction.getPathwayList().keySet();
@@ -975,13 +975,13 @@ public class BioNetwork {
 		for (String reactionId : reactionIds) {
 
 			if (this.getBiochemicalReactionList().containsKey(reactionId)) {
-				BioChemicalReaction reaction = this
+				BioReaction reaction = this
 						.getBiochemicalReactionList().get(reactionId);
 
-				HashMap<String, BioPhysicalEntityParticipant> leftParticipants = new HashMap<String, BioPhysicalEntityParticipant>(
+				HashMap<String, BioParticipant> leftParticipants = new HashMap<String, BioParticipant>(
 						reaction.getLeftParticipantList());
 
-				for (BioPhysicalEntityParticipant bpe : leftParticipants
+				for (BioParticipant bpe : leftParticipants
 						.values()) {
 
 					if (!metaboliteIds
@@ -992,10 +992,10 @@ public class BioNetwork {
 
 				}
 
-				HashMap<String, BioPhysicalEntityParticipant> rightParticipants = new HashMap<String, BioPhysicalEntityParticipant>(
+				HashMap<String, BioParticipant> rightParticipants = new HashMap<String, BioParticipant>(
 						reaction.getRightParticipantList());
 
-				for (BioPhysicalEntityParticipant bpe : rightParticipants
+				for (BioParticipant bpe : rightParticipants
 						.values()) {
 
 					if (!metaboliteIds
@@ -1042,7 +1042,7 @@ public class BioNetwork {
 
 		for (String reactionId : reactionIds) {
 
-			BioChemicalReaction reaction = this.getBiochemicalReactionList()
+			BioReaction reaction = this.getBiochemicalReactionList()
 					.get(reactionId);
 
 			if (reaction.getPathwayList().size() == 0) {
@@ -1074,7 +1074,7 @@ public class BioNetwork {
 			throw new IllegalArgumentException("compound id "+ExternalCpdId+" already used");
 		}
 
-		BioChemicalReaction rxn = new BioChemicalReaction(ExchangeReactionId);
+		BioReaction rxn = new BioReaction(ExchangeReactionId);
 
 		if (withExternal) {
 			BioPhysicalEntity cpd = new BioPhysicalEntity(ExternalCpdId);
@@ -1096,9 +1096,9 @@ public class BioNetwork {
 			cpd.setBoundaryCondition(true);
 			cpd.setCompartment(compartment);
 
-			rxn.addLeftParticipant(new BioPhysicalEntityParticipant(cpd));
+			rxn.addLeftParticipant(new BioParticipant(cpd));
 		}
-		rxn.addRightParticipant(new BioPhysicalEntityParticipant(this
+		rxn.addRightParticipant(new BioParticipant(this
 				.getPhysicalEntityList().get(cpdId)));
 		rxn.setReversibility(true);
 
@@ -1120,16 +1120,16 @@ public class BioNetwork {
 
 		if (this.getPhysicalEntityList().containsKey(cpdId)) {
 
-			HashMap<String, BioChemicalReaction> rs = this
+			HashMap<String, BioReaction> rs = this
 					.getListOfReactionsAsSubstrate(cpdId);
-			HashMap<String, BioChemicalReaction> rp = this
+			HashMap<String, BioReaction> rp = this
 					.getListOfReactionsAsProduct(cpdId);
 
-			HashMap<String, BioChemicalReaction> reactions = new HashMap<String, BioChemicalReaction>(
+			HashMap<String, BioReaction> reactions = new HashMap<String, BioReaction>(
 					rs);
 			reactions.putAll(rp);
 
-			for (BioChemicalReaction r : reactions.values()) {
+			for (BioReaction r : reactions.values()) {
 				pathways.putAll(r.getPathwayList());
 			}
 		}
@@ -1143,11 +1143,11 @@ public class BioNetwork {
 	 * @param cpdId
 	 * @return
 	 */
-	public HashMap<String, BioChemicalReaction> getExchangeReactionsOfMetabolite(
+	public HashMap<String, BioReaction> getExchangeReactionsOfMetabolite(
 			String cpdId) {
 
-		HashMap<String, BioChemicalReaction> reactions = new HashMap<String, BioChemicalReaction>();
-		HashMap<String, BioChemicalReaction> ex_reactions = new HashMap<String, BioChemicalReaction>();
+		HashMap<String, BioReaction> reactions = new HashMap<String, BioReaction>();
+		HashMap<String, BioReaction> ex_reactions = new HashMap<String, BioReaction>();
 
 		if (!this.getPhysicalEntityList().containsKey(cpdId)) {
 			System.err.println("[Warning] getExchangeReactionsOfMetabolite : "
@@ -1158,7 +1158,7 @@ public class BioNetwork {
 		reactions.putAll(this.getListOfReactionsAsProduct(cpdId));
 		reactions.putAll(this.getListOfReactionsAsSubstrate(cpdId));
 
-		for (BioChemicalReaction reaction : reactions.values()) {
+		for (BioReaction reaction : reactions.values()) {
 
 			if (reaction.isExchangeReaction()) {
 				ex_reactions.put(reaction.getId(), reaction);
@@ -1196,7 +1196,7 @@ public class BioNetwork {
 		if (this.enzymes == null) {
 			this.enzymes = new HashMap<String, BioPhysicalEntity>();
 
-			for (BioChemicalReaction reaction : this
+			for (BioReaction reaction : this
 					.getBiochemicalReactionList().values()) {
 				HashMap<String, BioPhysicalEntity> enzymes = reaction
 						.getEnzList();

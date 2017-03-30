@@ -37,7 +37,7 @@ import org.jgrapht.EdgeFactory;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.GraphFactory;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 
@@ -67,10 +67,10 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 		return vertexSet;
 	}
 	
-	public Set<BioChemicalReaction> reactionVertexSet(){
-		HashSet<BioChemicalReaction> vertexSet = new HashSet<BioChemicalReaction>();
+	public Set<BioReaction> reactionVertexSet(){
+		HashSet<BioReaction> vertexSet = new HashSet<BioReaction>();
 		for(BioEntity v : this.vertexSet()){
-			if(v instanceof BioChemicalReaction) vertexSet.add((BioChemicalReaction) v);
+			if(v instanceof BioReaction) vertexSet.add((BioReaction) v);
 		}
 		return vertexSet;
 	}
@@ -98,13 +98,13 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 			BioEntity v2 = this.getEdgeTarget(e);
 			
 			if(v1 instanceof BioPhysicalEntity){
-				BioChemicalReaction reaction = (BioChemicalReaction) v2;
+				BioReaction reaction = (BioReaction) v2;
 				if(reaction.isReversible()){
 					e.setReversible(true);
 					if(reaction.getRightList().containsKey(v1.getId())) toRemove.add(e);
 				}
-			}else if(v1 instanceof BioChemicalReaction){
-				BioChemicalReaction reaction = (BioChemicalReaction) v1;
+			}else if(v1 instanceof BioReaction){
+				BioReaction reaction = (BioReaction) v1;
 				if(reaction.isReversible()){
 					e.setReversible(true);
 					if(reaction.getLeftList().containsKey(v2.getId())) toRemove.add(e);
@@ -128,8 +128,8 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 		for(BioEntity v : this.vertexSet()){
 			
 			//take only reaction vertices
-			if(v instanceof BioChemicalReaction){
-				BioChemicalReaction r = (BioChemicalReaction) v;
+			if(v instanceof BioReaction){
+				BioReaction r = (BioReaction) v;
 				//check all substrates
 				for(BioPhysicalEntity s : r.getListOfSubstrates().values()){
 					//add compound if missing
@@ -195,7 +195,7 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 					sideCompoundList.add(c);
 					
 					for(BipartiteEdge e : this.incomingEdgesOf(c)){
-						BioChemicalReaction r = (BioChemicalReaction) e.getV1();
+						BioReaction r = (BioReaction) e.getV1();
 						BioPhysicalEntity cCopy = new BioPhysicalEntity(c);
 						cCopy.setIsSide(true);
 						cCopy.setId(c.getId()+"_"+r.getId());
@@ -206,7 +206,7 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 					}
 					
 					for(BipartiteEdge e : this.outgoingEdgesOf(c)){
-						BioChemicalReaction r = (BioChemicalReaction) e.getV2();
+						BioReaction r = (BioReaction) e.getV2();
 						BioPhysicalEntity cCopy = new BioPhysicalEntity(c);
 						cCopy.setIsSide(true);
 						cCopy.setId(c.getId()+"_"+r.getId());

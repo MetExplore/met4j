@@ -31,34 +31,48 @@
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 /**
- * @author Fabien
- *	Definition from SBML v2 Version4 release1
- *	A compartment type in SBML is a grouping construct used to establish a relationship between multiple compartments.
- *	A compartment type is represented by the CompartmentType object class.
- *	In SBML Level 2 Version 3 and beyond, a compartment type only has an identity, and this identity can only be used to indicate that particular compartments belong to this type.
- *	This may be	useful for conveying a modeling intention, such as when a model contains many similar compartments, either by their biological function or the reactions they carry; without a compartment type construct, it would be impossible in the language of SBML to indicate that all of the compartments share an underlying conceptual relationship because each SBML compartment must be given a unique and separate identity.
- *	Compartment types have no mathematical meaning in SBML Level 2 Version 4. they have no effect on a models mathematical interpretation.
- *	Simulators and other numerical analysis software may ignore Compartment-Type objects and references to them in a model.
- *	There is no mechanism in SBML for representing hierarchies of compartment types.
- *	One CompartmentType	object instance cannot be the subtype of another CompartmentType object; SBML provides no means of defining such relationships.
+ * @author Fabien Definition from SBML v2 Version4 release1 A compartment type
+ *         in SBML is a grouping construct used to establish a relationship
+ *         between multiple compartments. A compartment type is represented by
+ *         the CompartmentType object class. In SBML Level 2 Version 3 and
+ *         beyond, a compartment type only has an identity, and this identity
+ *         can only be used to indicate that particular compartments belong to
+ *         this type. This may be useful for conveying a modeling intention,
+ *         such as when a model contains many similar compartments, either by
+ *         their biological function or the reactions they carry; without a
+ *         compartment type construct, it would be impossible in the language of
+ *         SBML to indicate that all of the compartments share an underlying
+ *         conceptual relationship because each SBML compartment must be given a
+ *         unique and separate identity. Compartment types have no mathematical
+ *         meaning in SBML Level 2 Version 4. they have no effect on a models
+ *         mathematical interpretation. Simulators and other numerical analysis
+ *         software may ignore Compartment-Type objects and references to them
+ *         in a model. There is no mechanism in SBML for representing
+ *         hierarchies of compartment types. One CompartmentType object instance
+ *         cannot be the subtype of another CompartmentType object; SBML
+ *         provides no means of defining such relationships.
  */
 public class BioCompartmentType {
 	private String id;
 	private String name;
-	public BioCompartmentType(String i, String n)
-	{
-		id=i;
-		name=n;
+
+	public BioCompartmentType(String i, String n) {
+		id = i;
+		name = n;
 	}
+
 	public String getId() {
 		return id;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}

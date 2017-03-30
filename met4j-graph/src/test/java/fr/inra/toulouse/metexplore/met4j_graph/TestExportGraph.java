@@ -44,7 +44,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -204,7 +204,7 @@ public class TestExportGraph{
 		assertEquals("missing edge in exported file", g.edgeSet().size(), edgeCount);
 		
 		HashSet<String> bnReactions=new HashSet<String>();
-		for(BioChemicalReaction r : bn.getBiochemicalReactionList().values()){
+		for(BioReaction r : bn.getBiochemicalReactionList().values()){
 			if(r.getLeftList().size()!=0 && r.getRightList().size()!=0){
 				bnReactions.add(r.getId());
 			}

@@ -77,7 +77,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartmentType;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
@@ -85,7 +85,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioRef;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioUnitDefinition;
@@ -478,7 +478,7 @@ public class JSBMLToBionetwork {
 					reactionName=reactionId;
 				}
 
-				BioChemicalReaction bionetReaction= new BioChemicalReaction(reactionId,reactionName);
+				BioReaction bionetReaction= new BioReaction(reactionId,reactionName);
 
 				bionetReaction.setSboterm(jSBMLReaction.getSBOTermID());
 //				if(jSBMLReaction.isSetAnnotation()){
@@ -516,7 +516,7 @@ public class JSBMLToBionetwork {
 					String tempParticipantId=bionetReaction.getId()+"__With__"+bionetMetabId;
 
 
-					BioPhysicalEntityParticipant bionetSubsPart=new BioPhysicalEntityParticipant(tempParticipantId,bionetSubstrate,Stoechio,bionetSubstrate.getCompartment());
+					BioParticipant bionetSubsPart=new BioParticipant(tempParticipantId,bionetSubstrate,Stoechio,bionetSubstrate.getCompartment());
 
 					if(jSBMLReaction.getReactant(n).isSetConstant()){
 						bionetSubsPart.setIsConstant(jSBMLReaction.getReactant(n).getConstant());
@@ -544,7 +544,7 @@ public class JSBMLToBionetwork {
 					String Stoechio=jSBMLReaction.getProduct(n).getStoichiometry()+"";
 					String tempParticipantId=bionetReaction.getId()+"__With__"+bionetMetabId;
 
-					BioPhysicalEntityParticipant  bionetProdPart=new BioPhysicalEntityParticipant(tempParticipantId,bionetproduct,Stoechio,bionetproduct.getCompartment());
+					BioParticipant  bionetProdPart=new BioParticipant(tempParticipantId,bionetproduct,Stoechio,bionetproduct.getCompartment());
 
 					if(jSBMLReaction.getProduct(n).isSetConstant()){
 						bionetProdPart.setIsConstant(jSBMLReaction.getProduct(n).getConstant());
@@ -787,7 +787,7 @@ public class JSBMLToBionetwork {
 						for(BioProtein protcompo:Compo){
 
 							protcompo.setCompartment(this.getBioNetwork().findbioCompartmentInList(jSBMLSpecie.getCompartment()));
-							BioPhysicalEntityParticipant bionetParticipant=new BioPhysicalEntityParticipant(specieId+"__With__"+protcompo.getId(),protcompo);
+							BioParticipant bionetParticipant=new BioParticipant(specieId+"__With__"+protcompo.getId(),protcompo);
 							unusedComplex.addComponent(bionetParticipant);
 						}
 
@@ -961,7 +961,7 @@ public class JSBMLToBionetwork {
 				for(BioProtein protcompo:Compo){
 
 					protcompo.setCompartment(this.getBioNetwork().findbioCompartmentInList(jSBMLModifierSpecies.getCompartment()));
-					BioPhysicalEntityParticipant bionetParticipant=new BioPhysicalEntityParticipant(specieId+"__With__"+protcompo.getId(),protcompo);
+					BioParticipant bionetParticipant=new BioParticipant(specieId+"__With__"+protcompo.getId(),protcompo);
 					complexModifier.addComponent(bionetParticipant);
 				}
 
@@ -1286,7 +1286,7 @@ public class JSBMLToBionetwork {
 	 * Uses Palson's definition
 	 * @param bionetReaction
 	 */
-	public void parseReactionNotes(BioChemicalReaction bionetReaction) {
+	public void parseReactionNotes(BioReaction bionetReaction) {
 
 		String reactionNotes=bionetReaction.getEntityNotes().getXHTMLasString();
 
@@ -1565,7 +1565,7 @@ public class JSBMLToBionetwork {
 
 										for (BioProtein existingProtein:this.getBioNetwork().getProteinList().values()){
 											if(Pattern.compile(prot_REGEX, Pattern.CASE_INSENSITIVE).matcher(existingProtein.getId()).matches()){
-												foundEnzyme.addComponent(new BioPhysicalEntityParticipant(newEnzId+"__With__"+existingProtein.getId(),existingProtein));
+												foundEnzyme.addComponent(new BioParticipant(newEnzId+"__With__"+existingProtein.getId(),existingProtein));
 												continue newCplxCompoLoop;
 											}
 										}
@@ -1598,7 +1598,7 @@ public class JSBMLToBionetwork {
 										prot.addGene(gene);
 
 										this.getBioNetwork().addProtein(prot);
-										foundEnzyme.addComponent(new BioPhysicalEntityParticipant(newEnzId+"__With__"+prot.getId(),prot));
+										foundEnzyme.addComponent(new BioParticipant(newEnzId+"__With__"+prot.getId(),prot));
 
 									}
 
@@ -1624,15 +1624,15 @@ public class JSBMLToBionetwork {
 	 * @param bionetReaction
 	 * @return
 	 */
-	private String getReactionCompart(BioChemicalReaction bionetReaction) {
+	private String getReactionCompart(BioReaction bionetReaction) {
 		String reactionComparts="";
 
 		HashSet<String> ids=new HashSet<String>();
 
-		for(BioPhysicalEntityParticipant parti:bionetReaction.leftParticipantList.values()){
+		for(BioParticipant parti:bionetReaction.leftParticipantList.values()){
 			ids.add("("+parti.getLocation().getId()+")");
 		}
-		for(BioPhysicalEntityParticipant parti:bionetReaction.rightParticipantList.values()){
+		for(BioParticipant parti:bionetReaction.rightParticipantList.values()){
 			ids.add("("+parti.getLocation().getId()+")");
 		}
 

@@ -34,12 +34,12 @@ import java.util.Collection;
 import java.util.Objects;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 
 /**
- * The edge Class linking two {@link BioPhysicalEntity}, associated with a {@link BioChemicalReaction}
+ * The edge Class linking two {@link BioPhysicalEntity}, associated with a {@link BioReaction}
  * @author clement
  */
 public class ReactionEdge extends Edge<BioPhysicalEntity>{
@@ -48,7 +48,7 @@ public class ReactionEdge extends Edge<BioPhysicalEntity>{
 	private static final long serialVersionUID = 1L;
     
     /** The reaction. */
-    private BioChemicalReaction r;
+    private BioReaction r;
     
     /** The pvalue. */
     private double pvalue;
@@ -60,7 +60,7 @@ public class ReactionEdge extends Edge<BioPhysicalEntity>{
      * @param v2 the target vertex
      * @param r the reaction
      */
-    public ReactionEdge(BioPhysicalEntity v1,BioPhysicalEntity v2, BioChemicalReaction r) {
+    public ReactionEdge(BioPhysicalEntity v1,BioPhysicalEntity v2, BioReaction r) {
         super(v1,v2);
         this.r=r;
     }
@@ -77,7 +77,7 @@ public class ReactionEdge extends Edge<BioPhysicalEntity>{
      *
      * @return the reaction
      */
-    public BioChemicalReaction getReaction(){
+    public BioReaction getReaction(){
     	return r;
     }
     

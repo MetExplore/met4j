@@ -61,7 +61,7 @@ import java.util.Iterator;
 @SuppressWarnings("rawtypes")
 public class BioComplex extends BioPhysicalEntity {
 
-	private HashMap<String, BioPhysicalEntityParticipant> componentList = new HashMap<String, BioPhysicalEntityParticipant>();
+	private HashMap<String, BioParticipant> componentList = new HashMap<String, BioParticipant>();
 	private HashMap<String, BioPhysicalEntity> allComponentList = null;
 
 	private Object organism;
@@ -102,11 +102,11 @@ public class BioComplex extends BioPhysicalEntity {
 	/**
 	 * @return Returns the component list
 	 */
-	public HashMap<String, BioPhysicalEntityParticipant> getComponentList() {
+	public HashMap<String, BioParticipant> getComponentList() {
 		return componentList;
 	}
 	
-	public void setComponentList(HashMap<String, BioPhysicalEntityParticipant> componentList) {
+	public void setComponentList(HashMap<String, BioParticipant> componentList) {
 		this.componentList=componentList;
 	}
 
@@ -116,7 +116,7 @@ public class BioComplex extends BioPhysicalEntity {
 	 * @param a
 	 *            BioPhysicaélEntityParticipant to add
 	 */
-	public void addComponent(BioPhysicalEntityParticipant o) {
+	public void addComponent(BioParticipant o) {
 		this.componentList.put(o.getId(), o);
 	}
 
@@ -143,7 +143,7 @@ public class BioComplex extends BioPhysicalEntity {
 				return;
 			}
 
-			ArrayList<BioPhysicalEntityParticipant> liste = new ArrayList<BioPhysicalEntityParticipant>(
+			ArrayList<BioParticipant> liste = new ArrayList<BioParticipant>(
 					componentList.values());
 
 			for (int i = 0; i < liste.size(); i++) {

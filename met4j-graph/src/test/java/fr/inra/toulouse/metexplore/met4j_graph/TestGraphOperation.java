@@ -37,7 +37,7 @@ import java.util.Arrays;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.analysis.GraphOperation;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -67,11 +67,11 @@ public class TestGraphOperation {
 		d = new BioPhysicalEntity("d"); g1.addVertex(d);
 		e = new BioPhysicalEntity("e"); g2.addVertex(e);
 		
-		ab = new ReactionEdge(a,b,new BioChemicalReaction("ab"));g1.addEdge(a, b, ab);g2.addEdge(a, b, ab);
-		bc = new ReactionEdge(b,c,new BioChemicalReaction("bc"));g1.addEdge(b, c, bc);g2.addEdge(a, b, ab);
-		ac = new ReactionEdge(a,c,new BioChemicalReaction("ac"));g1.addEdge(a, c, ac);
-		cd = new ReactionEdge(c,d,new BioChemicalReaction("cd"));g1.addEdge(c, d, cd);
-		ce = new ReactionEdge(c,e,new BioChemicalReaction("ce"));g2.addEdge(c, e, ce);
+		ab = new ReactionEdge(a,b,new BioReaction("ab"));g1.addEdge(a, b, ab);g2.addEdge(a, b, ab);
+		bc = new ReactionEdge(b,c,new BioReaction("bc"));g1.addEdge(b, c, bc);g2.addEdge(a, b, ab);
+		ac = new ReactionEdge(a,c,new BioReaction("ac"));g1.addEdge(a, c, ac);
+		cd = new ReactionEdge(c,d,new BioReaction("cd"));g1.addEdge(c, d, cd);
+		ce = new ReactionEdge(c,e,new BioReaction("ce"));g2.addEdge(c, e, ce);
 	}
 	
 	/**

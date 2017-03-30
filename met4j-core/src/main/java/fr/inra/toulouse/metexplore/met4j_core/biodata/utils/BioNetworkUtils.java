@@ -6,13 +6,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 
 public class BioNetworkUtils {
@@ -33,10 +33,10 @@ public class BioNetworkUtils {
 		// HashSet<String> reactions=new HashSet<String>();
 		// HashSet<String> compounds=new HashSet<String>();
 
-		HashMap<String, BioChemicalReaction> listOfReactions = new HashMap<String, BioChemicalReaction>();
+		HashMap<String, BioReaction> listOfReactions = new HashMap<String, BioReaction>();
 
 		// GET ALL THE REACTIONS
-		for (BioChemicalReaction reaction : originalNetwork.getBiochemicalReactionList()
+		for (BioReaction reaction : originalNetwork.getBiochemicalReactionList()
 				.values()) {
 			if (reaction.getCompartment() != null) {
 				if (compartments.contains(reaction.getCompartment().getId())) {
@@ -56,13 +56,13 @@ public class BioNetworkUtils {
 			} else {
 				if (withTransports) {
 					boolean transportInvolved = false;
-					for (BioPhysicalEntityParticipant cpdParticipant : reaction
+					for (BioParticipant cpdParticipant : reaction
 							.getLeftParticipantList().values()) {
 						if (compartments.contains(cpdParticipant
 								.getPhysicalEntity().getCompartment().getId()))
 							transportInvolved = true;
 					}
-					for (BioPhysicalEntityParticipant cpdParticipant : reaction
+					for (BioParticipant cpdParticipant : reaction
 							.getRightParticipantList().values()) {
 						if (compartments.contains(cpdParticipant
 								.getPhysicalEntity().getCompartment().getId()))
@@ -139,10 +139,10 @@ public class BioNetworkUtils {
 		}
 
 		for (String reacId : reactions) {
-			BioChemicalReaction reaction = originalNetwork
+			BioReaction reaction = originalNetwork
 					.getBiochemicalReactionList().get(reacId);
 
-			BioChemicalReaction newReaction = new BioChemicalReaction(
+			BioReaction newReaction = new BioReaction(
 					reaction.getId(), reaction.getName());
 
 			newReaction.setReversibility(reaction.getReversiblity());
@@ -150,7 +150,7 @@ public class BioNetworkUtils {
 
 			subNet.addBiochemicalReaction(newReaction);
 
-			for (BioPhysicalEntityParticipant cpdParticipant : reaction
+			for (BioParticipant cpdParticipant : reaction
 					.getLeftParticipantList().values()) {
 
 				String cpdId = cpdParticipant.getPhysicalEntity().getId();
@@ -164,7 +164,7 @@ public class BioNetworkUtils {
 							cpdParticipant.getPhysicalEntity().getId());
 				}
 
-				BioPhysicalEntityParticipant newCpdParticipant = new BioPhysicalEntityParticipant(
+				BioParticipant newCpdParticipant = new BioParticipant(
 						cpdParticipant.getId(), newCpd,
 						cpdParticipant.getStoichiometricCoefficient(),
 						cpdParticipant.getLocation());
@@ -183,7 +183,7 @@ public class BioNetworkUtils {
 				}
 			}
 
-			for (BioPhysicalEntityParticipant cpdParticipant : reaction
+			for (BioParticipant cpdParticipant : reaction
 					.getRightParticipantList().values()) {
 
 				String cpdId = cpdParticipant.getPhysicalEntity().getId();
@@ -197,7 +197,7 @@ public class BioNetworkUtils {
 							cpdParticipant.getPhysicalEntity().getId());
 				}
 
-				BioPhysicalEntityParticipant newCpdParticipant = new BioPhysicalEntityParticipant(
+				BioParticipant newCpdParticipant = new BioParticipant(
 						cpdParticipant.getId(), newCpd,
 						cpdParticipant.getStoichiometricCoefficient(),
 						cpdParticipant.getLocation());
@@ -233,7 +233,7 @@ public class BioNetworkUtils {
 
 		Set<String> reactions = new HashSet<String>();
 
-		for (BioChemicalReaction reaction : bn.getBiochemicalReactionList()
+		for (BioReaction reaction : bn.getBiochemicalReactionList()
 				.values()) {
 
 			HashMap<String, BioGene> genes = BioChemicalReactionUtils.getListOfGenesFromReaction(reaction);
@@ -257,10 +257,10 @@ public class BioNetworkUtils {
 				.getBiochemicalReactionList().keySet(), bn
 				.getPhysicalEntityList().keySet());
 
-		Set<BioChemicalReaction> reactions = new HashSet<BioChemicalReaction>(
+		Set<BioReaction> reactions = new HashSet<BioReaction>(
 				bn.getBiochemicalReactionList().values());
 
-		for (BioChemicalReaction rxn : reactions) {
+		for (BioReaction rxn : reactions) {
 
 			if (rxn.getReversiblity().compareToIgnoreCase("reversible") == 0) {
 
@@ -272,7 +272,7 @@ public class BioNetworkUtils {
 
 				rxn.setReversibility("irreversible-left-to-right");
 
-				BioChemicalReaction rxn2 = new BioChemicalReaction();
+				BioReaction rxn2 = new BioReaction();
 
 				rxn2.setId(originalId + "__B");
 				rxn2.setName(originalName + "__B");
@@ -330,17 +330,17 @@ public class BioNetworkUtils {
 	 *         HashMap<String,BioChemicalReaction>:Reaction_name
 	 *         :BioChemicalReaction created: 18-07-13
 	 */
-	public static HashMap<String, HashMap<String, BioChemicalReaction>> getListOfPossibleReactionsinSubnetwork(
+	public static HashMap<String, HashMap<String, BioReaction>> getListOfPossibleReactionsinSubnetwork(
 			BioNetwork bn, HashMap<String, BioPhysicalEntity> list, String IDtype) {
 
-		HashMap<String, HashMap<String, BioChemicalReaction>> out = new HashMap<String, HashMap<String, BioChemicalReaction>>(); // declare
+		HashMap<String, HashMap<String, BioReaction>> out = new HashMap<String, HashMap<String, BioReaction>>(); // declare
 		// output
 		// variable
 
 		for (String s : list.keySet()) {
 			HashMap<String, BioPhysicalEntity> cpds = new HashMap<String, BioPhysicalEntity>();
-			HashMap<String, BioChemicalReaction> rxns = new HashMap<String, BioChemicalReaction>();
-			HashMap<String, BioChemicalReaction> okrxns = new HashMap<String, BioChemicalReaction>();
+			HashMap<String, BioReaction> rxns = new HashMap<String, BioReaction>();
+			HashMap<String, BioReaction> okrxns = new HashMap<String, BioReaction>();
 
 			rxns = list.get(s).getReactionsAsProduct(); // get list of reactions
 			// in which the compound
@@ -511,14 +511,14 @@ public class BioNetworkUtils {
 	 */
 	public static void compressIdenticalReactions(BioNetwork bn) {
 
-		ArrayList<BioChemicalReaction> reactions = new ArrayList<BioChemicalReaction>(
+		ArrayList<BioReaction> reactions = new ArrayList<BioReaction>(
 				bn.getBiochemicalReactionList().values());
 
 		int l = reactions.size();
 
 		for (int i = 0; i < l; i++) {
 
-			BioChemicalReaction rxn1 = reactions.get(i);
+			BioReaction rxn1 = reactions.get(i);
 
 			Boolean identical = false;
 
@@ -528,7 +528,7 @@ public class BioNetworkUtils {
 			if (bn.getBiochemicalReactionList().containsKey(rxn1.getId())) {
 
 				for (int j = i + 1; j < l; j++) {
-					BioChemicalReaction rxn2 = reactions.get(j);
+					BioReaction rxn2 = reactions.get(j);
 					if (bn.getBiochemicalReactionList().containsKey(
 							rxn2.getId())) {
 						if (BioChemicalReactionUtils.areRedundant(rxn2,rxn1)) {
@@ -561,7 +561,7 @@ public class BioNetworkUtils {
 		// cofactor
 		for (BioPhysicalEntity cpd : bn.getPhysicalEntityList().values()) {
 
-			ArrayList<BioChemicalReaction> reactions = new ArrayList<BioChemicalReaction>();
+			ArrayList<BioReaction> reactions = new ArrayList<BioReaction>();
 
 			reactions.addAll(cpd.getReactionsAsSubstrate().values());
 			reactions.addAll(cpd.getReactionsAsProduct().values());
@@ -575,7 +575,7 @@ public class BioNetworkUtils {
 
 				i--;
 
-				BioChemicalReaction rxn = reactions.get(i);
+				BioReaction rxn = reactions.get(i);
 
 				HashMap<String, BioPhysicalEntity> primaries = new HashMap<String, BioPhysicalEntity>();
 

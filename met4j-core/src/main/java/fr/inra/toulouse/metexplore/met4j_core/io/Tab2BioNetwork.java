@@ -46,10 +46,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 
 
 /**
@@ -282,7 +282,7 @@ public class Tab2BioNetwork extends File2BioNetwork{
 	/**
 	 * format a reaction id in the pallson way (R_***)
 	 */
-	public void formatIdByPalsson(BioChemicalReaction reaction) {
+	public void formatIdByPalsson(BioReaction reaction) {
 		String id = reaction.getId();
 
 		if (!id.startsWith("R_")) {
@@ -364,9 +364,9 @@ public class Tab2BioNetwork extends File2BioNetwork{
 				
 				String formula = tab[this.colFormula];
 
-				BioChemicalReaction reaction;
+				BioReaction reaction;
 
-				reaction = new BioChemicalReaction(id);
+				reaction = new BioReaction(id);
 
 				if(this.addPalssonReaction) {
 					formatIdByPalsson(reaction);
@@ -466,7 +466,7 @@ public class Tab2BioNetwork extends File2BioNetwork{
 
 						BioPhysicalEntity cpd = this.initMetabolite(cpdId);
 
-						reaction.addLeftParticipant(new BioPhysicalEntityParticipant(cpd, sto));
+						reaction.addLeftParticipant(new BioParticipant(cpd, sto));
 
 						// We create the corresponding external metabolite
 						if(rightString.equals("")) {
@@ -520,7 +520,7 @@ public class Tab2BioNetwork extends File2BioNetwork{
 
 						BioPhysicalEntity cpd = this.initMetabolite(cpdId);
 
-						reaction.addRightParticipant(new BioPhysicalEntityParticipant(cpd, sto));
+						reaction.addRightParticipant(new BioParticipant(cpd, sto));
 						
 						// We create the corresponding external metabolite
 						if(leftString.equals("")) {

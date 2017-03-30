@@ -36,10 +36,10 @@ import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils;
 
 
@@ -52,7 +52,7 @@ public class BioNetwork2File {
 	private OutputStreamWriter writer;
 	
 	private HashMap<String, BioPhysicalEntity> listOfSpecies;
-	private HashMap<String, BioChemicalReaction> listOfReactions;
+	private HashMap<String, BioReaction> listOfReactions;
 	
 	public BioNetwork2File(BioNetwork bn, Boolean onlyPrimaries, Boolean keepHolderClassCompounds, String fileName) {
 		this.setBioNetwork(bn);
@@ -97,17 +97,17 @@ public class BioNetwork2File {
 	
 	public void filterReactionsAndCpds() {
 		
-		this.setListOfReactions(new HashMap<String, BioChemicalReaction>());
+		this.setListOfReactions(new HashMap<String, BioReaction>());
 		this.setListOfSpecies(new HashMap<String, BioPhysicalEntity>());
 		
-		HashMap<String, BioChemicalReaction> totalListOfReactions =  this.getBioNetwork().getBiochemicalReactionList();
+		HashMap<String, BioReaction> totalListOfReactions =  this.getBioNetwork().getBiochemicalReactionList();
 		
 		for(Iterator<String> iterReaction = totalListOfReactions.keySet().iterator(); iterReaction.hasNext(); ) {
 			
-			HashMap<String, BioPhysicalEntityParticipant> left;
-			HashMap<String, BioPhysicalEntityParticipant> right;
+			HashMap<String, BioParticipant> left;
+			HashMap<String, BioParticipant> right;
 			
-			BioChemicalReaction reaction = totalListOfReactions.get(iterReaction.next());
+			BioReaction reaction = totalListOfReactions.get(iterReaction.next());
 			
 			if(BioChemicalReactionUtils.testReaction(reaction, this.getOnlyPrimaries(), this.getKeepHolderClassCpd()) == true)  {
 				
@@ -194,7 +194,7 @@ public class BioNetwork2File {
 	 * @return
 	 * @see java.util.ArrayList#add(java.lang.Object)
 	 */
-	public void addReaction(BioChemicalReaction o) {
+	public void addReaction(BioReaction o) {
 		this.listOfReactions.put(o.getId(), o);
 	}
 
@@ -213,7 +213,7 @@ public class BioNetwork2File {
 	/**
 	 * @return the listOfReactions
 	 */
-	public HashMap<String, BioChemicalReaction> getListOfReactions() {
+	public HashMap<String, BioReaction> getListOfReactions() {
 		return this.listOfReactions;
 	}
 
@@ -222,7 +222,7 @@ public class BioNetwork2File {
 	 * @param listOfReactions the listOfReactions to set
 	 */
 	public void setListOfReactions(
-			HashMap<String, BioChemicalReaction> listOfReactions) {
+			HashMap<String, BioReaction> listOfReactions) {
 		this.listOfReactions = listOfReactions;
 	}
 

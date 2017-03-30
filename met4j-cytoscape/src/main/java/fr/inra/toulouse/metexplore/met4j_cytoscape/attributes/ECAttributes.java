@@ -35,7 +35,7 @@ package fr.inra.toulouse.metexplore.met4j_cytoscape.attributes;
 
 import java.util.HashMap;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
@@ -60,10 +60,10 @@ public class ECAttributes extends GenericAttributeHandler {
 
 		HashMap<String, String> res = new HashMap<String, String>();
 		
-		HashMap<String, BioChemicalReaction> reactions = this.getNetwork().getBiochemicalReactionList();
+		HashMap<String, BioReaction> reactions = this.getNetwork().getBiochemicalReactionList();
 		
 		
-		for (BioChemicalReaction reaction : reactions.values()) {
+		for (BioReaction reaction : reactions.values()) {
 			String ec = reaction.getEcNumber();
 			
 			if(ec == null)

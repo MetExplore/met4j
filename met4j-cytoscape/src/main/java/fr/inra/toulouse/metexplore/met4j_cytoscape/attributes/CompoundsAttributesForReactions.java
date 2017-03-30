@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
@@ -81,9 +81,9 @@ public class CompoundsAttributesForReactions extends GenericAttributeHandler {
 
 		HashMap<String, String> res = new HashMap<String, String>();
 
-		HashMap<String, BioChemicalReaction> reactions = this.getNetwork().getBiochemicalReactionList();
+		HashMap<String, BioReaction> reactions = this.getNetwork().getBiochemicalReactionList();
 
-		for (BioChemicalReaction reaction : reactions.values()) {
+		for (BioReaction reaction : reactions.values()) {
 			HashMap<String, BioPhysicalEntity> compounds = new HashMap<String, BioPhysicalEntity>();
 
 			if (substrate) {

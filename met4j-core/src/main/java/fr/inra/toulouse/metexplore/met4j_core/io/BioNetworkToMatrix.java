@@ -36,9 +36,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 
 
 
@@ -64,10 +64,10 @@ public class BioNetworkToMatrix {
 			matrix.put(cpd, new HashMap<String, Double>());
 		}
 		
-		for(BioChemicalReaction reaction : this.getNetwork().getBiochemicalReactionList().values()) {
-			HashMap<String, BioPhysicalEntityParticipant> LP = reaction.getLeftParticipantList();
+		for(BioReaction reaction : this.getNetwork().getBiochemicalReactionList().values()) {
+			HashMap<String, BioParticipant> LP = reaction.getLeftParticipantList();
 			
-			for(BioPhysicalEntityParticipant L : LP.values()) {
+			for(BioParticipant L : LP.values()) {
 				String id = L.getPhysicalEntity().getId();
 				String coeff = L.getStoichiometricCoefficient();
 				
@@ -75,9 +75,9 @@ public class BioNetworkToMatrix {
 				
 			}
 			
-			HashMap<String, BioPhysicalEntityParticipant> RP = reaction.getRightParticipantList();
+			HashMap<String, BioParticipant> RP = reaction.getRightParticipantList();
 			
-			for(BioPhysicalEntityParticipant R : RP.values()) {
+			for(BioParticipant R : RP.values()) {
 				String id = R.getPhysicalEntity().getId();
 				String coeff = R.getStoichiometricCoefficient();
 				
@@ -92,7 +92,7 @@ public class BioNetworkToMatrix {
 		
 		FileWriter fw = new FileWriter(filename);
 		
-		HashMap<String, BioChemicalReaction> reactions = this.getNetwork().getBiochemicalReactionList();
+		HashMap<String, BioReaction> reactions = this.getNetwork().getBiochemicalReactionList();
 		
 		ArrayList<String> tab = new ArrayList<String>(reactions.keySet());
 		

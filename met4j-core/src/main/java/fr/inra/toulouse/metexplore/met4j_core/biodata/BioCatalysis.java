@@ -53,7 +53,7 @@ import java.util.HashMap;
 
 public class BioCatalysis extends BioControl {
 	
-	private HashMap<String, BioPhysicalEntityParticipant> cofactorList = new HashMap<String, BioPhysicalEntityParticipant>();
+	private HashMap<String, BioParticipant> cofactorList = new HashMap<String, BioParticipant>();
 	private String direction = null;
 	// Specifies the reaction direction of the interaction catalyzed 
 	// by this instance of the catalysis class. Possible values of 
@@ -65,7 +65,7 @@ public class BioCatalysis extends BioControl {
 	// the interactions occurs only in the specified direction in physiological settings, 
 	// because of chemical properties of the reaction. (This definition from EcoCyc)
 	
-	private HashMap<String, BioChemicalReaction> reactionList = new HashMap<String, BioChemicalReaction>();
+	private HashMap<String, BioReaction> reactionList = new HashMap<String, BioReaction>();
 	
 	public BioCatalysis(String id) {
 		super(id);
@@ -81,7 +81,7 @@ public class BioCatalysis extends BioControl {
 	/**
 	 * @return Returns the cofactor.
 	 */
-	public HashMap<String, BioPhysicalEntityParticipant> getCofactorList() {
+	public HashMap<String, BioParticipant> getCofactorList() {
 		return cofactorList;
 	}
 	
@@ -89,21 +89,21 @@ public class BioCatalysis extends BioControl {
 	 * Add a cofactor in the list
 	 * @param o the object to add
 	 */
-	public void addCofactor(BioPhysicalEntityParticipant o) {
+	public void addCofactor(BioParticipant o) {
 		this.cofactorList.put(o.getId(), o);
 	}
 	
-	public void setCofactorList(HashMap<String, BioPhysicalEntityParticipant> list) {
+	public void setCofactorList(HashMap<String, BioParticipant> list) {
 		this.cofactorList = list;
 	}
 	
 	
-	public void copyCofactorList(HashMap<String, BioPhysicalEntityParticipant> list) {
+	public void copyCofactorList(HashMap<String, BioParticipant> list) {
 		
-		this.setCofactorList(new HashMap<String, BioPhysicalEntityParticipant>());
+		this.setCofactorList(new HashMap<String, BioParticipant>());
 		
-		for(BioPhysicalEntityParticipant cof : list.values()) {
-			BioPhysicalEntityParticipant newCof = new BioPhysicalEntityParticipant(cof);
+		for(BioParticipant cof : list.values()) {
+			BioParticipant newCof = new BioParticipant(cof);
 			this.addCofactor(newCof);
 		}
 		
@@ -126,7 +126,7 @@ public class BioCatalysis extends BioControl {
 	/**
 	 * @return the list of the reactionNodes catalysed by this instance
 	 */
-	public HashMap<String, BioChemicalReaction> getReactionList() {
+	public HashMap<String, BioReaction> getReactionList() {
 		return reactionList;
 	}
 	
@@ -134,14 +134,14 @@ public class BioCatalysis extends BioControl {
 	/**
 	 * @param reactionList
 	 */
-	public void setReactionList(HashMap<String, BioChemicalReaction> reactionList) {
+	public void setReactionList(HashMap<String, BioReaction> reactionList) {
 		this.reactionList = reactionList;
 	}
 	
 	/**
-	 * @param BioChemicalReaction reaction
+	 * @param BioReaction reaction
 	 */
-	public void addReaction(BioChemicalReaction reaction) {
+	public void addReaction(BioReaction reaction) {
 			reactionList.put(reaction.getId(), reaction);
 	}
 

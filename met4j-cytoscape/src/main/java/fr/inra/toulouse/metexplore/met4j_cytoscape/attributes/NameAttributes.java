@@ -36,7 +36,7 @@ package fr.inra.toulouse.metexplore.met4j_cytoscape.attributes;
 import java.io.IOException;
 import java.util.HashMap;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
@@ -112,9 +112,9 @@ public class NameAttributes extends GenericAttributeHandler {
 		
 		HashMap<String, String> res = new HashMap<String, String>();
 
-		HashMap<String, BioChemicalReaction> reactions = this.getNetwork().getBiochemicalReactionList();
+		HashMap<String, BioReaction> reactions = this.getNetwork().getBiochemicalReactionList();
 		
-		for (BioChemicalReaction rxn : reactions.values()) {
+		for (BioReaction rxn : reactions.values()) {
 
 			String name = StringUtils.getNotFormattedString(rxn.getName());
 

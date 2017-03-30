@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
@@ -252,9 +252,9 @@ public class TestEqualityNetworks {
 		assertEquals("Test ids of reactions", idReactionsRef, idReactionsTest);
 
 		for (String reactionId : idReactionsRef) {
-			BioChemicalReaction reactionRef = networkRef
+			BioReaction reactionRef = networkRef
 					.getBiochemicalReactionList().get(reactionId);
-			BioChemicalReaction reactionTest = networkTest
+			BioReaction reactionTest = networkTest
 					.getBiochemicalReactionList().get(reactionId);
 
 			String reactionNameRef = reactionRef.getName();

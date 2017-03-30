@@ -50,7 +50,7 @@ import org.w3c.dom.Element;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
  
@@ -165,7 +165,7 @@ public class BioGraph2XGMML{
 		graph.appendChild(createAttribute("backgroundColor","#ffffff"));
 		
 		for(BioEntity v : g.vertexSet()){
-			Element node = (v instanceof BioChemicalReaction) ? createReactionNode((BioChemicalReaction)v) : createCompoundNode((BioPhysicalEntity)v);
+			Element node = (v instanceof BioReaction) ? createReactionNode((BioReaction)v) : createCompoundNode((BioPhysicalEntity)v);
 			graph.appendChild(node);
 		}
 		
@@ -215,7 +215,7 @@ public class BioGraph2XGMML{
 	 * @param v the vertex
 	 * @return the xml element
 	 */
-	private Element createReactionNode(BioChemicalReaction v){
+	private Element createReactionNode(BioReaction v){
 		Element node = doc.createElement("node");
 //        node.setAttribute("label", v.getName());
 //        node.setAttribute("id", v.getId());
@@ -251,7 +251,7 @@ public class BioGraph2XGMML{
 		BioEntity src = e.getV1();
 		BioEntity trg = e.getV2();
 //		String interaction = (src instanceof BioChemicalReaction) ? "product" : "substrate of";
-		String interaction = (src instanceof BioChemicalReaction) ? "reaction-product" : "reaction-reactant";
+		String interaction = (src instanceof BioReaction) ? "reaction-product" : "reaction-reactant";
 		String label = src.getId()+" ("+interaction+") "+trg.getId();
 		edge.setAttribute("label", label);
 		edge.setAttribute("source", src.getId());
@@ -320,7 +320,7 @@ public class BioGraph2XGMML{
 		Element graphics = doc.createElement("graphics");
 		String width = "8";
 		graphics.setAttribute("width",width);
-		String fill = (e.getV1() instanceof BioChemicalReaction) ? "#339900" : "#cc3300";
+		String fill = (e.getV1() instanceof BioReaction) ? "#339900" : "#cc3300";
 		graphics.setAttribute("fill",fill);
 		String sourceArrow = e.isReversible() ?  "6" : "0";
 		graphics.setAttribute("cy:sourceArrow",sourceArrow);
@@ -425,7 +425,7 @@ public class BioGraph2XGMML{
 	 * @param v the vertex
 	 * @return the element
 	 */
-	private Element createReactionNodeGraphics(BioChemicalReaction v){
+	private Element createReactionNodeGraphics(BioReaction v){
 		Element graphics = doc.createElement("graphics");
 		String type="ROUNDED_RECTANGLE";
 		graphics.setAttribute("type",type);

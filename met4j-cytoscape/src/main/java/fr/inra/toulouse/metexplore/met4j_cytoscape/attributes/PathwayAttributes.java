@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
@@ -87,15 +87,15 @@ public class PathwayAttributes extends GenericAttributeHandler {
 
 		for (BioPhysicalEntity cpd : this.getNetwork().getPhysicalEntityList().values()) {
 
-			HashMap<String, BioChemicalReaction> reactionsP = cpd.getReactionsAsProduct();
-			HashMap<String, BioChemicalReaction> reactionsS = cpd.getReactionsAsSubstrate();
+			HashMap<String, BioReaction> reactionsP = cpd.getReactionsAsProduct();
+			HashMap<String, BioReaction> reactionsS = cpd.getReactionsAsSubstrate();
 
-			HashMap<String, BioChemicalReaction> reactionsT = reactionsP;
+			HashMap<String, BioReaction> reactionsT = reactionsP;
 			reactionsT.putAll(reactionsS);
 
 			Set<String> pathways = new HashSet<String>();
 
-			for (BioChemicalReaction reaction : reactionsT.values()) {
+			for (BioReaction reaction : reactionsT.values()) {
 
 				HashMap<String, BioPathway> BioPathways = reaction.getPathwayList();
 
@@ -145,9 +145,9 @@ public class PathwayAttributes extends GenericAttributeHandler {
 
 		HashMap<String, String> res = new HashMap<String, String>();
 
-		HashMap<String, BioChemicalReaction> reactions = this.getNetwork().getBiochemicalReactionList();
+		HashMap<String, BioReaction> reactions = this.getNetwork().getBiochemicalReactionList();
 
-		for (BioChemicalReaction rxn : reactions.values()) {
+		for (BioReaction rxn : reactions.values()) {
 
 			HashMap<String, BioPathway> pathways = rxn.getPathwayList();
 

@@ -52,13 +52,13 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.parallel.MergedGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.parallel.MetaEdge;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_core.io.BioNetworkToJSBML;
@@ -196,8 +196,8 @@ public class Merger {
 			String inchi = v.getInchi();
 			if(!StringUtils.isVoid(inchi) && (!uniqVertex.containsKey(inchi))){
 				BioPhysicalEntity uniq = new BioPhysicalEntity(v);
-				uniq.setReactionsAsProduct(new HashMap<String,BioChemicalReaction>());
-				uniq.setReactionsAsSubstrate(new HashMap<String,BioChemicalReaction>());
+				uniq.setReactionsAsProduct(new HashMap<String,BioReaction>());
+				uniq.setReactionsAsSubstrate(new HashMap<String,BioReaction>());
 				uniq.setCompartment(comp);
 				//keep the choosen one for a given inchi
 				uniqVertex.put(inchi, uniq);
@@ -205,40 +205,40 @@ public class Merger {
 			}
 		}
 		
-		HashMap<String, BioChemicalReaction> updatedReaction = new HashMap<String, BioChemicalReaction>();
+		HashMap<String, BioReaction> updatedReaction = new HashMap<String, BioReaction>();
 		for(ReactionEdge e : g.edgeSet()){
 			//get source and target inchis
 			String inchi1 = e.getV1().getInchi();
 			String inchi2 = e.getV2().getInchi();
-			BioChemicalReaction r = e.getReaction();
+			BioReaction r = e.getReaction();
 			if(!StringUtils.isVoid(inchi1) && !StringUtils.isVoid(inchi2) && !inchi1.equals(inchi2)){
 				//retreive the choosen one for each inchi
 				BioPhysicalEntity v1 = uniqVertex.get(inchi1);
 				BioPhysicalEntity v2 = uniqVertex.get(inchi2);
 				
 				//copy reaction
-				BioChemicalReaction r2 = null;
+				BioReaction r2 = null;
 				if(updatedReaction.containsKey(r.getId())){
 					r2 = updatedReaction.get(r.getId());
 				}else{
-					r2 = new BioChemicalReaction(r);
+					r2 = new BioReaction(r);
 					updatedReaction.put(r.getId(), r2);
 				}
 				
 				//update reaction participants to fit with the linked nodes
 				if(r2.getLeftList().containsValue(e.getV1())){
 					r2.removeLeftCpd(e.getV1());
-					r2.addLeftParticipant(new BioPhysicalEntityParticipant(v1));
+					r2.addLeftParticipant(new BioParticipant(v1));
 				}else if(r2.getRightList().containsValue(e.getV1())){
 					r2.removeRightCpd(e.getV1());
-					r2.addRightParticipant(new BioPhysicalEntityParticipant(v1));
+					r2.addRightParticipant(new BioParticipant(v1));
 				}
 				if(r2.getLeftList().containsValue(e.getV2())){
 					r2.removeLeftCpd(e.getV2());
-					r2.addLeftParticipant(new BioPhysicalEntityParticipant(v2));
+					r2.addLeftParticipant(new BioParticipant(v2));
 				}else if(r2.getRightList().containsValue(e.getV2())){
 					r2.removeRightCpd(e.getV2());
-					r2.addRightParticipant(new BioPhysicalEntityParticipant(v2));
+					r2.addRightParticipant(new BioParticipant(v2));
 				}
 				
 				//create new edge
@@ -277,8 +277,8 @@ public class Merger {
 					BioPhysicalEntity uniq = new BioPhysicalEntity(v);
 					uniq.setEntityAnnot(v.getEntityAnnot());
 					uniq.setId(id);
-					uniq.setReactionsAsProduct(new HashMap<String,BioChemicalReaction>());
-					uniq.setReactionsAsSubstrate(new HashMap<String,BioChemicalReaction>());
+					uniq.setReactionsAsProduct(new HashMap<String,BioReaction>());
+					uniq.setReactionsAsSubstrate(new HashMap<String,BioReaction>());
 					uniq.setCompartment(comp);
 					//keep the choosen one for a given truncated ids
 					uniqVertex.put(id, uniq);
@@ -288,7 +288,7 @@ public class Merger {
 			
 		}
 		
-		HashMap<String, BioChemicalReaction> updatedReaction = new HashMap<String, BioChemicalReaction>();
+		HashMap<String, BioReaction> updatedReaction = new HashMap<String, BioReaction>();
 		for(ReactionEdge e : g.edgeSet()){
 			//get source and target ids
 			String id1 = e.getV1().getId();
@@ -301,35 +301,35 @@ public class Merger {
 				id1=m1.group(1);
 				id2=m2.group(1);
 				
-				BioChemicalReaction r = e.getReaction();
+				BioReaction r = e.getReaction();
 				if(!id1.equals(id2)){
 					//retreive the choosen one for each inchi
 					BioPhysicalEntity v1 = uniqVertex.get(id1);
 					BioPhysicalEntity v2 = uniqVertex.get(id2);
 					
 					//copy reaction
-					BioChemicalReaction r2 = null;
+					BioReaction r2 = null;
 					if(updatedReaction.containsKey(r.getId())){
 						r2 = updatedReaction.get(r.getId());
 					}else{
-						r2 = new BioChemicalReaction(r);
+						r2 = new BioReaction(r);
 						updatedReaction.put(r.getId(), r2);
 					}
 					
 					//update reaction participants to fit with the linked nodes
 					if(r2.getLeftList().containsValue(e.getV1())){
 						r2.removeLeftCpd(e.getV1());
-						r2.addLeftParticipant(new BioPhysicalEntityParticipant(v1));
+						r2.addLeftParticipant(new BioParticipant(v1));
 					}else if(r2.getRightList().containsValue(e.getV1())){
 						r2.removeRightCpd(e.getV1());
-						r2.addRightParticipant(new BioPhysicalEntityParticipant(v1));
+						r2.addRightParticipant(new BioParticipant(v1));
 					}
 					if(r2.getLeftList().containsValue(e.getV2())){
 						r2.removeLeftCpd(e.getV2());
-						r2.addLeftParticipant(new BioPhysicalEntityParticipant(v2));
+						r2.addLeftParticipant(new BioParticipant(v2));
 					}else if(r2.getRightList().containsValue(e.getV2())){
 						r2.removeRightCpd(e.getV2());
-						r2.addRightParticipant(new BioPhysicalEntityParticipant(v2));
+						r2.addRightParticipant(new BioParticipant(v2));
 					}
 					
 					//create new edge
@@ -375,8 +375,8 @@ public class Merger {
 					BioPhysicalEntity uniq = new BioPhysicalEntity(v);
 					uniq.setEntityAnnot(v.getEntityAnnot());
 					uniq.setId(id);
-					uniq.setReactionsAsProduct(new HashMap<String,BioChemicalReaction>());
-					uniq.setReactionsAsSubstrate(new HashMap<String,BioChemicalReaction>());
+					uniq.setReactionsAsProduct(new HashMap<String,BioReaction>());
+					uniq.setReactionsAsSubstrate(new HashMap<String,BioReaction>());
 					uniq.setCompartment(comp);
 					//keep the choosen one for a given truncated ids
 					uniqCompound.put(id, uniq);
@@ -400,15 +400,15 @@ public class Merger {
 			}
 		}
 		
-		for(BioChemicalReaction r : bn.getBiochemicalReactionList().values()){
-			BioChemicalReaction r2 = new BioChemicalReaction(r);
+		for(BioReaction r : bn.getBiochemicalReactionList().values()){
+			BioReaction r2 = new BioReaction(r);
 			for(BioPhysicalEntity e : r.getLeftList().values()){
 				Matcher m = Pattern.compile(regex).matcher(e.getId());
 				if(m.matches()){
 					BioPhysicalEntity e2 =uniqCompound.get(m.group(1));
 					r2.removeLeftCpd(e);
 					String stochio = r.getLeftParticipantList().get(e.getId()).getStoichiometricCoefficient();
-					r2.addLeftParticipant(new BioPhysicalEntityParticipant(e2,stochio));
+					r2.addLeftParticipant(new BioParticipant(e2,stochio));
 				}
 			}
 			for(BioPhysicalEntity e : r.getRightList().values()){
@@ -417,7 +417,7 @@ public class Merger {
 					BioPhysicalEntity e2 =uniqCompound.get(m.group(1));
 					r2.removeRightCpd(e);
 					String stochio = r.getRightParticipantList().get(e.getId()).getStoichiometricCoefficient();
-					r2.addRightParticipant(new BioPhysicalEntityParticipant(e2,stochio));
+					r2.addRightParticipant(new BioParticipant(e2,stochio));
 				}
 			}
 			
@@ -426,14 +426,14 @@ public class Merger {
 				if(enz instanceof BioComplex){
 					BioComplex cplx = (BioComplex) enz;
 					String newId = cplx.getId();
-					HashMap<String,BioPhysicalEntityParticipant> newComponentList = new HashMap<String,BioPhysicalEntityParticipant>();
+					HashMap<String,BioParticipant> newComponentList = new HashMap<String,BioParticipant>();
 					for(BioPhysicalEntity participant : cplx.getAllComponentList().values()){
 						String id = participant.getId();
 						Matcher m = Pattern.compile(regex).matcher(id);
 						if(m.matches()){
 							String trunkId=m.group(1);
 							newId=newId.replace(id, trunkId);
-							BioPhysicalEntityParticipant uniqParticipant = new BioPhysicalEntityParticipant(uniqCompound.get(trunkId));
+							BioParticipant uniqParticipant = new BioParticipant(uniqCompound.get(trunkId));
 							newComponentList.put(trunkId, uniqParticipant);
 						}
 					}
@@ -470,7 +470,7 @@ public class Merger {
 	public static int removeTransport(BioNetwork bn){
 		Collection<String> reactionToRemove = new HashSet<String>();
 		for(String rId : bn.getBiochemicalReactionList().keySet()){
-			BioChemicalReaction r = bn.getBiochemicalReactionList().get(rId);
+			BioReaction r = bn.getBiochemicalReactionList().get(rId);
 			
 			//remove Exchange reaction
 			if(r.getRightList().isEmpty() || r.getLeftList().isEmpty()){
@@ -514,8 +514,8 @@ public class Merger {
 	public static int mergeReactions(BioNetwork bn){
 		//for several reactions with same substrates and products, add only one in the network
 		Collection<String> reactionToRemove = new HashSet<String>();
-		HashMap<Integer, BioChemicalReaction> uniqReaction = new HashMap<Integer, BioChemicalReaction>();
-		for(BioChemicalReaction r : bn.getBiochemicalReactionList().values()){
+		HashMap<Integer, BioReaction> uniqReaction = new HashMap<Integer, BioReaction>();
+		for(BioReaction r : bn.getBiochemicalReactionList().values()){
 			int hash = Objects.hash(r.getListOfSubstrates(),r.getListOfProducts());
 			System.out.println(r.getId());
 			if (!uniqReaction.containsKey(hash)){
@@ -524,7 +524,7 @@ public class Merger {
 				//add reaction to the to-be-removed list
 				reactionToRemove.add(r.getId());
 				//update compounds links to reactions
-				BioChemicalReaction choosenOne = uniqReaction.get(hash);
+				BioReaction choosenOne = uniqReaction.get(hash);
 				for(BioPhysicalEntity e : r.getListOfSubstrates().values()){
 					e.getReactionsAsSubstrate().remove(r.getId());
 					e.getReactionsAsSubstrate().put(choosenOne.getId(), choosenOne);

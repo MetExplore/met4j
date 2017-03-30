@@ -3,7 +3,7 @@
  */
 package fr.inra.toulouse.metexplore.met4j_core.mock;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
@@ -34,7 +34,7 @@ public final class DummyRattusBioModels implements DummySbml {
 	private final int NUMBER_OF_PROTEIN = 0;//TODO
 	private final int NUMBER_OF_REFS = 0;//TODO
 	private BioPathway dummyPath;
-	private BioChemicalReaction dummyR;
+	private BioReaction dummyR;
 	private BioPhysicalEntity dummyE;
 	private BioProtein dummyP;
 	private BioGene dummyG;
@@ -46,7 +46,7 @@ public final class DummyRattusBioModels implements DummySbml {
 	
 	public DummyRattusBioModels() {
 		
-		dummyR = new BioChemicalReaction("MNXR16397_i");
+		dummyR = new BioReaction("MNXR16397_i");
 		dummyR.setName("1 CMP-N-acetyl-beta-neuraminate + 1  = 1  + 1 CMP");
 		dummyR.setSboterm("SBO:0000176");
 		dummyR.setEcNumber("NA");
@@ -168,7 +168,7 @@ public final class DummyRattusBioModels implements DummySbml {
 	}
 
 	@Override
-	public BioChemicalReaction getTestReaction() {
+	public BioReaction getTestReaction() {
 		return dummyR;
 	}
 

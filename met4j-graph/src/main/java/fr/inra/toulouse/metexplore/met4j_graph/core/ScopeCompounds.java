@@ -42,10 +42,10 @@ import javax.xml.stream.XMLStreamException;
 import org.sbml.jsbml.SBMLException;
 import org.sbml.jsbml.text.parser.ParseException;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.io.BioNetworkToJSBML;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
@@ -59,7 +59,7 @@ public class ScopeCompounds {
 	private Set <String> inCpds;
 	private Set<String> bootstrapCpds;
 	private Integer stepNo; 					// Current numero of the iteration
-	private HashMap<String, BioChemicalReaction> availableReactions; // Reactions still available
+	private HashMap<String, BioReaction> availableReactions; // Reactions still available
 	
 	//	Indicates the ids of the added elements and the numero of the step when they have appeared 
 	private HashMap<String, Integer> currentCpdsSteps = new  HashMap<String, Integer>();
@@ -92,7 +92,7 @@ public class ScopeCompounds {
 		this.useReversibleReactionsOnlyOnce = useReversibleReactionsOnlyOnce;
 		this.forward = forward;
 		
-		HashMap <String, BioChemicalReaction> listOfReactions = new HashMap <String, BioChemicalReaction>(bioNetwork.getBiochemicalReactionList());
+		HashMap <String, BioReaction> listOfReactions = new HashMap <String, BioReaction>(bioNetwork.getBiochemicalReactionList());
 		this.setAvailableReactions(listOfReactions);
 		
 		for(String reactionToAvoid : reactionsToAvoid) {
@@ -126,7 +126,7 @@ public class ScopeCompounds {
 		this.useReversibleReactionsOnlyOnce = useReversibleReactionsOnlyOnce;
 		this.forward = forward;
 		
-		HashMap <String, BioChemicalReaction> listOfReactions = new HashMap <String, BioChemicalReaction>(bioNetwork.getBiochemicalReactionList());
+		HashMap <String, BioReaction> listOfReactions = new HashMap <String, BioReaction>(bioNetwork.getBiochemicalReactionList());
 		this.setAvailableReactions(listOfReactions);
 		
 		for(String reactionToAvoid : reactionsToAvoid) {
@@ -167,7 +167,7 @@ public class ScopeCompounds {
 			BioPhysicalEntity cpd = this.getOriginalBioNetwork().getPhysicalEntityList().get(cpdId);
 			
 			this.getScopeNetwork().addPhysicalEntity(this.getOriginalBioNetwork().getPhysicalEntityList().get(cpdId));
-			HashMap<String, BioChemicalReaction> listOfReactions;
+			HashMap<String, BioReaction> listOfReactions;
 			
 			if(this.forward == true) {
 //				listOfReactions = this.getOriginalBioNetwork().getListOfReactionsAsSubstrate(cpdId);
@@ -178,7 +178,7 @@ public class ScopeCompounds {
 				listOfReactions = cpd.getReactionsAsProduct();
 			}
 			
-			for(BioChemicalReaction reaction : listOfReactions.values()) {
+			for(BioReaction reaction : listOfReactions.values()) {
 				
 //				System.out.println("Reaction : "+reaction);
 				
@@ -381,14 +381,14 @@ public class ScopeCompounds {
 	/**
 	 * @return the availableReactions
 	 */
-	public HashMap<String, BioChemicalReaction> getAvailableReactions() {
+	public HashMap<String, BioReaction> getAvailableReactions() {
 		return availableReactions;
 	}
 
 	/**
 	 * @param availableReactions the availableReactions to set
 	 */
-	public void setAvailableReactions(HashMap<String, BioChemicalReaction> availableReactions) {
+	public void setAvailableReactions(HashMap<String, BioReaction> availableReactions) {
 		this.availableReactions = availableReactions;
 	}
 
@@ -459,7 +459,7 @@ public class ScopeCompounds {
 			
 			if(onlyResults) {
 				
-				HashMap<String, BioChemicalReaction> reactions;
+				HashMap<String, BioReaction> reactions;
 				
 				if(this.forward == false)
 					reactions = this.getOriginalBioNetwork().getListOfReactionsAsProduct(cpdId);
@@ -471,7 +471,7 @@ public class ScopeCompounds {
 				
 				if(nbReactions == 1) {
 					
-					BioChemicalReaction rxn = reactions.values().iterator().next();
+					BioReaction rxn = reactions.values().iterator().next();
 					
 					if(rxn.getReversiblity().compareToIgnoreCase("reversible") == 0) {
 						flag = true;
@@ -571,7 +571,7 @@ public class ScopeCompounds {
 		
 		for(Iterator<String> iterReaction= this.getCurrentReactionsSteps().keySet().iterator(); iterReaction.hasNext();) {
 			String reacId = iterReaction.next();
-			BioChemicalReaction reaction = this.getOriginalBioNetwork().getBiochemicalReactionList().get(reacId);
+			BioReaction reaction = this.getOriginalBioNetwork().getBiochemicalReactionList().get(reacId);
 			
 			Set<String> left;
 			Set<String> right;
@@ -603,16 +603,16 @@ public class ScopeCompounds {
 		
 		if(this.useReversibleReactionsOnlyOnce) {
 			// We keep only the direction used in each reaction
-			HashMap<String, BioChemicalReaction> listReactions = new HashMap<String, BioChemicalReaction>(network.getBiochemicalReactionList());
+			HashMap<String, BioReaction> listReactions = new HashMap<String, BioReaction>(network.getBiochemicalReactionList());
 			
-			for(BioChemicalReaction rxn : listReactions.values()) {
+			for(BioReaction rxn : listReactions.values()) {
 				if(rxn.getReversiblity().equalsIgnoreCase("reversible")) {
 					rxn.setReversibility(false);
 					
 					if(rxn.getFlag() == false) {
 						// The reaction is used in the backtrack direction
-						HashMap<String, BioPhysicalEntityParticipant> lefts = new HashMap<String, BioPhysicalEntityParticipant>(rxn.getLeftParticipantList());
-						HashMap<String, BioPhysicalEntityParticipant> rights = new HashMap<String, BioPhysicalEntityParticipant>(rxn.getRightParticipantList());
+						HashMap<String, BioParticipant> lefts = new HashMap<String, BioParticipant>(rxn.getLeftParticipantList());
+						HashMap<String, BioParticipant> rights = new HashMap<String, BioParticipant>(rxn.getRightParticipantList());
 						rxn.setLeftParticipantList(rights);
 						rxn.setRightParticipantList(lefts);
 						

@@ -3,7 +3,7 @@
  */
 package fr.inra.toulouse.metexplore.met4j_core.mock;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
@@ -33,7 +33,7 @@ public final class DummyKeggHuman implements DummySbml {
 	private final int NUMBER_OF_PROTEIN = 1396;
 	private final int NUMBER_OF_REFS = 15426;
 //	private BioPathway dummyPath;
-	private BioChemicalReaction dummyR;
+	private BioReaction dummyR;
 	private BioPhysicalEntity dummyE;
 	private BioProtein dummyP;
 	private BioGene dummyG;
@@ -45,7 +45,7 @@ public final class DummyKeggHuman implements DummySbml {
 	
 	public DummyKeggHuman() {
 		
-		dummyR = new BioChemicalReaction("R00494");
+		dummyR = new BioReaction("R00494");
 		dummyR.setName("glutathione gamma-glutamylaminopeptidase");
 		dummyR.setSboterm("");
 		dummyR.setReversibility(false);
@@ -177,7 +177,7 @@ public final class DummyKeggHuman implements DummySbml {
 	}
 
 	@Override
-	public BioChemicalReaction getTestReaction() {
+	public BioReaction getTestReaction() {
 		return dummyR;
 	}
 

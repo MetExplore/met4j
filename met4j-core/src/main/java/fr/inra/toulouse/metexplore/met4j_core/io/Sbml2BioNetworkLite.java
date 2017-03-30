@@ -44,13 +44,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioRef;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.UnitSbml;
@@ -76,7 +76,7 @@ public class Sbml2BioNetworkLite {
 	HashMap<String,BioPhysicalEntity> compounds;
 	
 	/** The reactions. */
-	HashSet<BioChemicalReaction> reactions;
+	HashSet<BioReaction> reactions;
 	
 	/** The compartments. */
 	HashMap<String,BioCompartment> compartments;
@@ -99,7 +99,7 @@ public class Sbml2BioNetworkLite {
 	public Sbml2BioNetworkLite(String inputSbml) {
 		this.inputSbml=inputSbml;
 		this.compounds = new HashMap<String,BioPhysicalEntity>();
-		this.reactions = new HashSet<BioChemicalReaction>();
+		this.reactions = new HashSet<BioReaction>();
 		this.compartments = new HashMap<String,BioCompartment>();
 	}
 	
@@ -112,7 +112,7 @@ public class Sbml2BioNetworkLite {
 	public Sbml2BioNetworkLite(String inputSbml, boolean parseNotes) {
 		this.inputSbml=inputSbml;
 		this.compounds = new HashMap<String,BioPhysicalEntity>();
-		this.reactions = new HashSet<BioChemicalReaction>();
+		this.reactions = new HashSet<BioReaction>();
 		this.compartments = new HashMap<String,BioCompartment>();
 		this.parseNote=parseNotes;
 	}
@@ -133,7 +133,7 @@ public class Sbml2BioNetworkLite {
 			buildCompounds();
 			buildCompartments();
 			buildUnitDefs();
-			for(BioChemicalReaction rxn : reactions){
+			for(BioReaction rxn : reactions){
 				this.bioNetwork.addBiochemicalReaction(rxn);
 			}
 			
@@ -308,8 +308,8 @@ public class Sbml2BioNetworkLite {
 						setInChiFromNotes(c, item);
 						setSMILESFromNotes(c, item);
 						
-					}else if(e instanceof BioChemicalReaction){
-						BioChemicalReaction r = (BioChemicalReaction) e;
+					}else if(e instanceof BioReaction){
+						BioReaction r = (BioReaction) e;
 						setPathwayFromNotes(r, item);
 						setECFromNotes(r, item);
 					}
@@ -319,7 +319,7 @@ public class Sbml2BioNetworkLite {
 		return;
 	}
 	
-	private void setPathwayFromNotes(BioChemicalReaction rxn, String notesTxtContent){
+	private void setPathwayFromNotes(BioReaction rxn, String notesTxtContent){
 		if(rxn.getPathwayList().isEmpty()){
 			Matcher m = Pattern.compile(".*SUBSYSTEM"+notesAttributeToValueSeparator+"(.+).*",Pattern.CASE_INSENSITIVE).matcher(notesTxtContent);
 			if( m.matches()){
@@ -337,7 +337,7 @@ public class Sbml2BioNetworkLite {
 		}
 	}
 	
-	private void setECFromNotes(BioChemicalReaction rxn, String notesTxtContent){
+	private void setECFromNotes(BioReaction rxn, String notesTxtContent){
 		if(StringUtils.isVoid(rxn.getEcNumber())){
 			Matcher m,m2;
 			m = Pattern.compile(".*PROTEIN.CLASS"+notesAttributeToValueSeparator+"(.+).*",Pattern.CASE_INSENSITIVE).matcher(notesTxtContent);
@@ -454,7 +454,7 @@ public class Sbml2BioNetworkLite {
 		int l = reactionsList.getLength();
 		for (int i = 1; i < l; i+=2) {
 			Element reaction = (Element) reactionsList.item(i);
-			BioChemicalReaction rxn = new BioChemicalReaction(reaction.getAttribute("id"),reaction.getAttribute("name"));
+			BioReaction rxn = new BioReaction(reaction.getAttribute("id"),reaction.getAttribute("name"));
 			rxn.setReversibility("true".equals(reaction.getAttribute("reversible")));
 			NodeList listsFromReaction = reaction.getChildNodes();
 			int l2 = listsFromReaction.getLength();
@@ -474,7 +474,7 @@ public class Sbml2BioNetworkLite {
 						}else{
 							c = compounds.get(species);
 						}
-						BioPhysicalEntityParticipant participant = new BioPhysicalEntityParticipant(c, stochio);
+						BioParticipant participant = new BioParticipant(c, stochio);
 						rxn.addLeftParticipant(participant);
 					}
 				}
@@ -493,7 +493,7 @@ public class Sbml2BioNetworkLite {
 						}else{
 							c = compounds.get(species);
 						}
-						BioPhysicalEntityParticipant participant = new BioPhysicalEntityParticipant(c, stochio);
+						BioParticipant participant = new BioParticipant(c, stochio);
 						rxn.addRightParticipant(participant);
 					}
 				}

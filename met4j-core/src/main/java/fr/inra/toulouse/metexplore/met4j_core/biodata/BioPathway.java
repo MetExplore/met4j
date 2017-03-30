@@ -48,7 +48,7 @@ public class BioPathway extends BioEntity {
 		
 	private HashMap<String, BioInteraction> listOfInteractions = new HashMap<String, BioInteraction>();
 	
-	private HashMap<String, BioChemicalReaction> reactions = new HashMap<String, BioChemicalReaction>();
+	private HashMap<String, BioReaction> reactions = new HashMap<String, BioReaction>();
 	
 	public BioPathway(String id) {
 		super(id);
@@ -165,15 +165,15 @@ public class BioPathway extends BioEntity {
 		this.listOfInteractions = listOfInteractions;
 	}
 
-	public HashMap<String, BioChemicalReaction> getReactions() {
+	public HashMap<String, BioReaction> getReactions() {
 		return reactions;
 	}
 
-	public void setReactions(HashMap<String, BioChemicalReaction> reactions) {
+	public void setReactions(HashMap<String, BioReaction> reactions) {
 		this.reactions = reactions;
 	}
 	
-	public void addReaction(BioChemicalReaction reaction) {
+	public void addReaction(BioReaction reaction) {
 		
 		this.reactions.put(reaction.getId(), reaction);
 		

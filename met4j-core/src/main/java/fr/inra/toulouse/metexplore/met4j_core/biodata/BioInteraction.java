@@ -41,7 +41,7 @@ import java.util.HashMap;
 
 public class BioInteraction extends BioEntity {
 	
-	private HashMap<String, BioPhysicalEntityParticipant> participantList = new HashMap<String, BioPhysicalEntityParticipant>();
+	private HashMap<String, BioParticipant> participantList = new HashMap<String, BioParticipant>();
 	
 	private HashMap<String, BioPathway> pathwayList = new HashMap<String, BioPathway>();
 	
@@ -65,7 +65,7 @@ public class BioInteraction extends BioEntity {
 	 * Get the participants list
 	 * @return Returns the participantList.
 	 */
-	public HashMap<String, BioPhysicalEntityParticipant> getParticipantList() {
+	public HashMap<String, BioParticipant> getParticipantList() {
 		return participantList;
 	}
 	
@@ -79,7 +79,7 @@ public class BioInteraction extends BioEntity {
 	 * Add a participant in the list
 	 * @param a BioPhysicalEntityParticipant
 	 */
-	public void addParticipant(BioPhysicalEntityParticipant o) {
+	public void addParticipant(BioParticipant o) {
 		this.participantList.put(o.getId(), o);
 	}
 
@@ -118,18 +118,18 @@ public class BioInteraction extends BioEntity {
 	 * @param participantList
 	 */
 	public void copyParticipantList(
-			HashMap<String, BioPhysicalEntityParticipant> participantList) {
+			HashMap<String, BioParticipant> participantList) {
 		
-		this.setParticipantList(new HashMap<String, BioPhysicalEntityParticipant>());
+		this.setParticipantList(new HashMap<String, BioParticipant>());
 		
-		for(BioPhysicalEntityParticipant bpe : participantList.values()) {
-			BioPhysicalEntityParticipant newBpe = new BioPhysicalEntityParticipant(bpe);
+		for(BioParticipant bpe : participantList.values()) {
+			BioParticipant newBpe = new BioParticipant(bpe);
 			this.addParticipant(newBpe);
 		}
 	}
 	
 	public void setParticipantList(
-			HashMap<String, BioPhysicalEntityParticipant> participantList) {
+			HashMap<String, BioParticipant> participantList) {
 		
 		this.participantList = participantList;
 		

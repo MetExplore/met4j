@@ -5,7 +5,7 @@ package fr.inra.toulouse.metexplore.met4j_core.io;
 
 import java.util.HashMap;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
@@ -94,11 +94,11 @@ public class ProcessBioNetWorkIds {
 
 
 
-	private void ProcessReactionHashMap(HashMap<String, BioChemicalReaction> ElementList){
+	private void ProcessReactionHashMap(HashMap<String, BioReaction> ElementList){
 
-		HashMap<String, BioChemicalReaction>tmpMap=new HashMap<String, BioChemicalReaction>();
+		HashMap<String, BioReaction>tmpMap=new HashMap<String, BioReaction>();
 
-		for ( BioChemicalReaction entity: ElementList.values()){
+		for ( BioReaction entity: ElementList.values()){
 			String newSID;
 			if (this.isToEncode()){
 				newSID=StringUtils.sbmlEncode(entity.getId());

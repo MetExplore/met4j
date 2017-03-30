@@ -8,9 +8,9 @@ import java.util.Set;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 
@@ -18,7 +18,7 @@ public class TestBipartiteGraph {
 
 	public static BipartiteGraph bg;
 	public static BioPhysicalEntity v1,v2,v3,side;
-	public static BioChemicalReaction r1,r2;
+	public static BioReaction r1,r2;
 
 	public static BipartiteEdge e1,e2,e3,e4,e5,e6;
 	
@@ -32,14 +32,14 @@ public class TestBipartiteGraph {
 		side = new BioPhysicalEntity("adp");
 		side.setIsSide(true);
 		
-		r1 = new BioChemicalReaction("r1");
-		r1.addLeftParticipant(new BioPhysicalEntityParticipant(v1));
-		r1.addLeftParticipant(new BioPhysicalEntityParticipant(side));
-		r1.addRightParticipant(new BioPhysicalEntityParticipant(v2));
-		r2 = new BioChemicalReaction("r2");
-		r2.addLeftParticipant(new BioPhysicalEntityParticipant(v2));
-		r2.addRightParticipant(new BioPhysicalEntityParticipant(v3));
-		r2.addRightParticipant(new BioPhysicalEntityParticipant(side));
+		r1 = new BioReaction("r1");
+		r1.addLeftParticipant(new BioParticipant(v1));
+		r1.addLeftParticipant(new BioParticipant(side));
+		r1.addRightParticipant(new BioParticipant(v2));
+		r2 = new BioReaction("r2");
+		r2.addLeftParticipant(new BioParticipant(v2));
+		r2.addRightParticipant(new BioParticipant(v3));
+		r2.addRightParticipant(new BioParticipant(side));
 		r2.setReversibility(true);
 		
 		bg.addVertex(v1);
@@ -76,7 +76,7 @@ public class TestBipartiteGraph {
 	
 	@Test
 	public void testReactionVertexSet(){
-		Set<BioChemicalReaction> rxns = bg.reactionVertexSet();
+		Set<BioReaction> rxns = bg.reactionVertexSet();
 		assertEquals(2, rxns.size());
 		assertTrue(rxns.contains(r1));
 		assertTrue(rxns.contains(r2));

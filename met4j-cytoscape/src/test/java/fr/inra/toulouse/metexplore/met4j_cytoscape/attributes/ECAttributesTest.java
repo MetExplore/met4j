@@ -66,7 +66,7 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 
 /**
@@ -84,10 +84,10 @@ public class ECAttributesTest {
 
 		BioNetwork network = new BioNetwork();
 
-		BioChemicalReaction r1 = new BioChemicalReaction("r1-rxn");
+		BioReaction r1 = new BioReaction("r1-rxn");
 		r1.setEcNumber("1.1.1.1");
 
-		BioChemicalReaction r2 = new BioChemicalReaction("r2-rxn");
+		BioReaction r2 = new BioReaction("r2-rxn");
 		r2.setEcNumber("1.2.3");
 
 		network.addBiochemicalReaction(r1);

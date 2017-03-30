@@ -42,7 +42,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
@@ -149,7 +149,7 @@ public class TestBioNetworkToJSBML extends TestJSBMLToBionetwork {
 				}
 			}
 		}
-		for(BioChemicalReaction e : bn.getBiochemicalReactionList().values()){
+		for(BioReaction e : bn.getBiochemicalReactionList().values()){
 			for(Set<BioRef> refs : e.getRefs().values()){
 				for(BioRef ref : refs){
 					allRefs.add(ref.getDbName()+"-"+ref.getId());

@@ -115,7 +115,7 @@ public class BioControl extends BioInteraction {
 	 */
 	private String controlType;
 	private BioConversion controlled;
-	private BioPhysicalEntityParticipant controller;
+	private BioParticipant controller;
 	
 	public BioControl(String id) {
 		super(id);
@@ -125,7 +125,7 @@ public class BioControl extends BioInteraction {
 		super(in);
 		this.setControlType(in.getControlType());
 		this.setControlled(new BioConversion(in.getControlled()));
-		this.setController(new BioPhysicalEntityParticipant(in.getController()));
+		this.setController(new BioParticipant(in.getController()));
 	}
 	
 	/**
@@ -160,14 +160,14 @@ public class BioControl extends BioInteraction {
 	/**
 	 * @return Returns the controller.
 	 */
-	public BioPhysicalEntityParticipant getController() {
+	public BioParticipant getController() {
 		return controller;
 	}
 
 	/**
 	 * @param controller The controller to set.
 	 */
-	public void setController(BioPhysicalEntityParticipant controller) {
+	public void setController(BioParticipant controller) {
 		this.controller = controller;
 	}
 

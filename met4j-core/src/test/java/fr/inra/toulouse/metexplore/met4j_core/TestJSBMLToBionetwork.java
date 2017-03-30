@@ -46,7 +46,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
@@ -140,8 +140,8 @@ public class TestJSBMLToBionetwork {
 		assertEquals("wrong number of biochemical reactions", dummy.getNumberOfReaction(), bn.getBiochemicalReactionList().size());
 		
 		try{
-			BioChemicalReaction r0 = dummy.getTestReaction();
-			BioChemicalReaction r = bn.getBiochemicalReactionList().get(r0.getId());
+			BioReaction r0 = dummy.getTestReaction();
+			BioReaction r = bn.getBiochemicalReactionList().get(r0.getId());
 			assertEquals("error in reaction SBO term :", r0.getSboterm(), r.getSboterm());
 			assertEquals("error in reaction name :", r0.getName(), r.getName());
 			assertEquals("error in reaction reversibility :", r0.isReversible(), r.isReversible());
@@ -167,7 +167,7 @@ public class TestJSBMLToBionetwork {
 			fail("missing reaction or attribut");
 		}
 		
-		for(BioChemicalReaction r : bn.getBiochemicalReactionList().values()){
+		for(BioReaction r : bn.getBiochemicalReactionList().values()){
 			for(BioPhysicalEntity s : r.getLeftList().values()){
 				assertTrue("error in reaction: substrat not found in Bionetwork", bn.getPhysicalEntityList().containsValue(s));
 			}
@@ -448,7 +448,7 @@ public class TestJSBMLToBionetwork {
 				refCount+=refs.size();
 			}
 		}
-		for(BioChemicalReaction e : bn.getBiochemicalReactionList().values()){
+		for(BioReaction e : bn.getBiochemicalReactionList().values()){
 			for(Set<BioRef> refs : e.getRefs().values()){
 				refCount+=refs.size();
 			}

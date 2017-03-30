@@ -65,7 +65,7 @@ import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
  * unchanged, e.g. glycogen + glucose = glycogen.
  */
 
-public class BioChemicalReaction extends BioConversion {
+public class BioReaction extends BioConversion {
 
 	private String deltaG = "";
 	private String deltaH = "";
@@ -109,11 +109,11 @@ public class BioChemicalReaction extends BioConversion {
 
 		Set<String> cofactors = new HashSet<String>();
 
-		HashMap<String, BioPhysicalEntityParticipant> participants = new HashMap<String, BioPhysicalEntityParticipant>(
+		HashMap<String, BioParticipant> participants = new HashMap<String, BioParticipant>(
 				this.getLeftParticipantList());
 		participants.putAll(this.getRightParticipantList());
 
-		for (BioPhysicalEntityParticipant bpe : participants.values()) {
+		for (BioParticipant bpe : participants.values()) {
 			if (bpe.getIsCofactor()) {
 				cofactors.add(bpe.getPhysicalEntity().getId());
 			}
@@ -124,11 +124,11 @@ public class BioChemicalReaction extends BioConversion {
 	public Set<String> getSideCompounds() {
 		Set<String> sides = new HashSet<String>();
 
-		HashMap<String, BioPhysicalEntityParticipant> participants = new HashMap<String, BioPhysicalEntityParticipant>(
+		HashMap<String, BioParticipant> participants = new HashMap<String, BioParticipant>(
 				this.getLeftParticipantList());
 		participants.putAll(this.getRightParticipantList());
 
-		for (BioPhysicalEntityParticipant bpe : participants.values()) {
+		for (BioParticipant bpe : participants.values()) {
 			if (!bpe.getIsPrimaryCompound()) {
 				sides.add(bpe.getPhysicalEntity().getId());
 			}
@@ -164,17 +164,17 @@ public class BioChemicalReaction extends BioConversion {
 		this.goTerm = goTerm;
 	}
 
-	public BioChemicalReaction(String id) {
+	public BioReaction(String id) {
 		super(id);
 
 	}
 
-	public BioChemicalReaction(String id, String name) {
+	public BioReaction(String id, String name) {
 		super(id, name);
 
 	}
 
-	public BioChemicalReaction(BioChemicalReaction rxn) {
+	public BioReaction(BioReaction rxn) {
 
 		super(rxn);
 
@@ -256,7 +256,7 @@ public class BioChemicalReaction extends BioConversion {
 	 *            The participant to add in the list of the participants
 	 */
 	@Override
-	public void addLeftParticipant(BioPhysicalEntityParticipant p) {
+	public void addLeftParticipant(BioParticipant p) {
 		this.getLeftParticipantList().put(p.getId(), p);
 		this.getParticipantList().put(p.getId(), p);
 		p.getPhysicalEntity().addReactionAsSubstrate(this);
@@ -270,7 +270,7 @@ public class BioChemicalReaction extends BioConversion {
 	 *            The participant to add in the list of the participants
 	 */
 	@Override
-	public void addRightParticipant(BioPhysicalEntityParticipant p) {
+	public void addRightParticipant(BioParticipant p) {
 		this.getRightParticipantList().put(p.getId(), p);
 		this.getParticipantList().put(p.getId(), p);
 		this.getRightList().put(p.getPhysicalEntity().getId(), p.getPhysicalEntity());
@@ -442,12 +442,12 @@ public class BioChemicalReaction extends BioConversion {
 		if (rev == false) {
 			reversibility = "irreversible-left-to-right";
 			if (oldRev != null && oldRev.equalsIgnoreCase("reversible")) {
-				for (BioPhysicalEntityParticipant bpe : this.getLeftParticipantList().values()) {
+				for (BioParticipant bpe : this.getLeftParticipantList().values()) {
 					if (!this.getRightList().containsKey(bpe.getPhysicalEntity().getId())) {
 						bpe.getPhysicalEntity().removeReactionAsProduct(this.getId());
 					}
 				}
-				for (BioPhysicalEntityParticipant bpe : this.getRightParticipantList().values()) {
+				for (BioParticipant bpe : this.getRightParticipantList().values()) {
 					if (!this.getLeftList().containsKey(bpe.getPhysicalEntity().getId())) {
 						bpe.getPhysicalEntity().removeReactionAsSubstrate(this.getId());
 					}
@@ -459,10 +459,10 @@ public class BioChemicalReaction extends BioConversion {
 		} else {
 			reversibility = "reversible";
 			if (oldRev != null && !oldRev.equalsIgnoreCase("reversible")) {
-				for (BioPhysicalEntityParticipant bpe : this.getLeftParticipantList().values()) {
+				for (BioParticipant bpe : this.getLeftParticipantList().values()) {
 					bpe.getPhysicalEntity().addReactionAsProduct(this);
 				}
-				for (BioPhysicalEntityParticipant bpe : this.getRightParticipantList().values()) {
+				for (BioParticipant bpe : this.getRightParticipantList().values()) {
 					bpe.getPhysicalEntity().addReactionAsSubstrate(this);
 				}
 			}
@@ -478,21 +478,21 @@ public class BioChemicalReaction extends BioConversion {
 		String oldRev = this.getReversiblity();
 
 		if (rev.equalsIgnoreCase("reversible") && !oldRev.equalsIgnoreCase("reversible")) {
-			for (BioPhysicalEntityParticipant bpe : this.getLeftParticipantList().values()) {
+			for (BioParticipant bpe : this.getLeftParticipantList().values()) {
 				bpe.getPhysicalEntity().addReactionAsProduct(this);
 			}
-			for (BioPhysicalEntityParticipant bpe : this.getRightParticipantList().values()) {
+			for (BioParticipant bpe : this.getRightParticipantList().values()) {
 				bpe.getPhysicalEntity().addReactionAsSubstrate(this);
 			}
 		}
 
 		if (!rev.equalsIgnoreCase("reversible") && oldRev.equalsIgnoreCase("reversible")) {
-			for (BioPhysicalEntityParticipant bpe : this.getLeftParticipantList().values()) {
+			for (BioParticipant bpe : this.getLeftParticipantList().values()) {
 				if (!this.getRightList().containsKey(bpe.getPhysicalEntity().getId())) {
 					bpe.getPhysicalEntity().removeReactionAsProduct(this.getId());
 				}
 			}
-			for (BioPhysicalEntityParticipant bpe : this.getRightParticipantList().values()) {
+			for (BioParticipant bpe : this.getRightParticipantList().values()) {
 				if (!this.getLeftList().containsKey(bpe.getPhysicalEntity().getId())) {
 					bpe.getPhysicalEntity().removeReactionAsSubstrate(this.getId());
 				}
@@ -539,21 +539,21 @@ public class BioChemicalReaction extends BioConversion {
 			this.reversibility = rev;
 
 		if (this.reversibility.equalsIgnoreCase("reversible")) {
-			for (BioPhysicalEntityParticipant bpe : this.getLeftParticipantList().values()) {
+			for (BioParticipant bpe : this.getLeftParticipantList().values()) {
 				bpe.getPhysicalEntity().addReactionAsProduct(this);
 			}
-			for (BioPhysicalEntityParticipant bpe : this.getRightParticipantList().values()) {
+			for (BioParticipant bpe : this.getRightParticipantList().values()) {
 				bpe.getPhysicalEntity().addReactionAsSubstrate(this);
 			}
 		}
 
 		if (!this.reversibility.equalsIgnoreCase("reversible")) {
-			for (BioPhysicalEntityParticipant bpe : this.getLeftParticipantList().values()) {
+			for (BioParticipant bpe : this.getLeftParticipantList().values()) {
 				if (!this.getRightList().containsKey(bpe.getPhysicalEntity().getId())) {
 					bpe.getPhysicalEntity().removeReactionAsProduct(this.getId());
 				}
 			}
-			for (BioPhysicalEntityParticipant bpe : this.getRightParticipantList().values()) {
+			for (BioParticipant bpe : this.getRightParticipantList().values()) {
 				if (!this.getLeftList().containsKey(bpe.getPhysicalEntity().getId())) {
 					bpe.getPhysicalEntity().removeReactionAsSubstrate(this.getId());
 				}
@@ -810,7 +810,7 @@ public class BioChemicalReaction extends BioConversion {
 
 		for (String id : left) {
 			
-			BioPhysicalEntityParticipant l = this.getLeftParticipantList().get(id);
+			BioParticipant l = this.getLeftParticipantList().get(id);
 			
 			nb++;
 			if (nb > 1) {
@@ -841,7 +841,7 @@ public class BioChemicalReaction extends BioConversion {
 
 		for (String id : right) {
 			
-			BioPhysicalEntityParticipant r = this.getRightParticipantList().get(id);
+			BioParticipant r = this.getRightParticipantList().get(id);
 			
 			nb++;
 			if (nb > 1) {
@@ -888,10 +888,10 @@ public class BioChemicalReaction extends BioConversion {
 
 		this.getLeftList().remove(cpd);
 
-		HashMap<String, BioPhysicalEntityParticipant> bpes = new HashMap<String, BioPhysicalEntityParticipant>(
+		HashMap<String, BioParticipant> bpes = new HashMap<String, BioParticipant>(
 				this.getLeftParticipantList());
 
-		for (BioPhysicalEntityParticipant bpe : bpes.values()) {
+		for (BioParticipant bpe : bpes.values()) {
 			if (bpe.getPhysicalEntity().getId().compareTo(cpd) == 0) {
 				this.getLeftParticipantList().remove(bpe.getId());
 			}
@@ -904,10 +904,10 @@ public class BioChemicalReaction extends BioConversion {
 	 */
 	public void removeRight(String cpd) {
 
-		HashMap<String, BioPhysicalEntityParticipant> bpes = new HashMap<String, BioPhysicalEntityParticipant>(
+		HashMap<String, BioParticipant> bpes = new HashMap<String, BioParticipant>(
 				this.getRightParticipantList());
 
-		for (BioPhysicalEntityParticipant bpe : bpes.values()) {
+		for (BioParticipant bpe : bpes.values()) {
 			if (bpe.getPhysicalEntity().getId().compareTo(cpd) == 0) {
 				this.getRightParticipantList().remove(bpe.getId());
 			}
@@ -964,7 +964,7 @@ public class BioChemicalReaction extends BioConversion {
 
 		this.getSideCompounds().add(cpdId);
 
-		for (BioPhysicalEntityParticipant bpe : this.getLeftParticipantList().values()) {
+		for (BioParticipant bpe : this.getLeftParticipantList().values()) {
 			BioPhysicalEntity cpd = bpe.getPhysicalEntity();
 
 			if (cpd.getId().equalsIgnoreCase(cpdId)) {
@@ -973,7 +973,7 @@ public class BioChemicalReaction extends BioConversion {
 
 		}
 
-		for (BioPhysicalEntityParticipant bpe : this.getRightParticipantList().values()) {
+		for (BioParticipant bpe : this.getRightParticipantList().values()) {
 			BioPhysicalEntity cpd = bpe.getPhysicalEntity();
 
 			if (cpd.getId().equalsIgnoreCase(cpdId)) {
@@ -991,7 +991,7 @@ public class BioChemicalReaction extends BioConversion {
 	 */
 	public void addPrimaryCompound(String cpdId) {
 
-		for (BioPhysicalEntityParticipant bpe : this.getLeftParticipantList().values()) {
+		for (BioParticipant bpe : this.getLeftParticipantList().values()) {
 			BioPhysicalEntity cpd = bpe.getPhysicalEntity();
 
 			if (cpd.getId().equalsIgnoreCase(cpdId)) {
@@ -1000,7 +1000,7 @@ public class BioChemicalReaction extends BioConversion {
 
 		}
 
-		for (BioPhysicalEntityParticipant bpe : this.getRightParticipantList().values()) {
+		for (BioParticipant bpe : this.getRightParticipantList().values()) {
 			BioPhysicalEntity cpd = bpe.getPhysicalEntity();
 
 			if (cpd.getId().equalsIgnoreCase(cpdId)) {
@@ -1020,7 +1020,7 @@ public class BioChemicalReaction extends BioConversion {
 
 		this.getCofactors().add(cpdId);
 
-		for (BioPhysicalEntityParticipant bpe : this.getLeftParticipantList().values()) {
+		for (BioParticipant bpe : this.getLeftParticipantList().values()) {
 			BioPhysicalEntity cpd = bpe.getPhysicalEntity();
 
 			if (cpd.getId().equalsIgnoreCase(cpdId)) {
@@ -1029,7 +1029,7 @@ public class BioChemicalReaction extends BioConversion {
 
 		}
 
-		for (BioPhysicalEntityParticipant bpe : this.getRightParticipantList().values()) {
+		for (BioParticipant bpe : this.getRightParticipantList().values()) {
 			BioPhysicalEntity cpd = bpe.getPhysicalEntity();
 
 			if (cpd.getId().equalsIgnoreCase(cpdId)) {
@@ -1055,13 +1055,13 @@ public class BioChemicalReaction extends BioConversion {
 		Set<BioCompartment> compartmentLefts = new HashSet<BioCompartment>();
 		Set<BioCompartment> compartmentRights = new HashSet<BioCompartment>();
 
-		for (BioPhysicalEntityParticipant bpe : this.getLeftParticipantList().values()) {
+		for (BioParticipant bpe : this.getLeftParticipantList().values()) {
 			BioPhysicalEntity cpd = bpe.getPhysicalEntity();
 			BioCompartment cpt = cpd.getCompartment();
 			compartmentLefts.add(cpt);
 		}
 
-		for (BioPhysicalEntityParticipant bpe : this.getRightParticipantList().values()) {
+		for (BioParticipant bpe : this.getRightParticipantList().values()) {
 			BioPhysicalEntity cpd = bpe.getPhysicalEntity();
 			BioCompartment cpt = cpd.getCompartment();
 			compartmentRights.add(cpt);
@@ -1081,6 +1081,11 @@ public class BioChemicalReaction extends BioConversion {
 
 	/**
 	 * @return true if the reaction is a transport reaction
+	 
+	// TODO : Pas sur que ca fonctionne à tous les coups
+	// Ex : A_a + C_b -> D_a + B_b
+	// A recoder en pensant au BioCompartment dans BPE.
+	 * @return
 	 */
 	public Boolean isTransportReaction() {
 		
@@ -1088,7 +1093,8 @@ public class BioChemicalReaction extends BioConversion {
 		for(BioPhysicalEntity s : this.getLeftList().values()){
 			compartmnts.add(s.getCompartment());
 		}
-		for(BioPhysicalEntity p : this.getRightList().values()){
+		for(BioPhysicalEntity p : 
+			this.getRightList().values()){
 			compartmnts.add(p.getCompartment());
 		}
 		
@@ -1106,14 +1112,14 @@ public class BioChemicalReaction extends BioConversion {
 	 */
 	public Boolean isExchangeReaction() {
 
-		HashMap<String, BioPhysicalEntityParticipant> lefts = this.getLeftParticipantList();
-		HashMap<String, BioPhysicalEntityParticipant> rights = this.getRightParticipantList();
+		HashMap<String, BioParticipant> lefts = this.getLeftParticipantList();
+		HashMap<String, BioParticipant> rights = this.getRightParticipantList();
 
 		if (lefts.size() == 0 || rights.size() == 0) {
 			return true;
 		}
 
-		for (BioPhysicalEntityParticipant bpe : lefts.values()) {
+		for (BioParticipant bpe : lefts.values()) {
 
 			BioPhysicalEntity cpd = bpe.getPhysicalEntity();
 
@@ -1122,7 +1128,7 @@ public class BioChemicalReaction extends BioConversion {
 			}
 		}
 
-		for (BioPhysicalEntityParticipant bpe : rights.values()) {
+		for (BioParticipant bpe : rights.values()) {
 
 			BioPhysicalEntity cpd = bpe.getPhysicalEntity();
 

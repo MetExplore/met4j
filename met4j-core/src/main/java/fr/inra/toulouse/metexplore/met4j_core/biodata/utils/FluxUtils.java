@@ -2,7 +2,7 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata.utils;
 
 import java.util.HashMap;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 
 public class FluxUtils {
@@ -16,7 +16,7 @@ public class FluxUtils {
 
 		HashMap<String, HashMap<String, Double>> balances = new HashMap<String, HashMap<String, Double>>();
 
-		for (BioChemicalReaction rxn : bn.getBiochemicalReactionList()
+		for (BioReaction rxn : bn.getBiochemicalReactionList()
 				.values()) {
 
 			String id = rxn.getId();

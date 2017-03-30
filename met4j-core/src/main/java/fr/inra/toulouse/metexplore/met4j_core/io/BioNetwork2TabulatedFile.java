@@ -35,13 +35,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
@@ -73,7 +73,7 @@ public class BioNetwork2TabulatedFile extends BioNetwork2File {
 				else
 					this.getWriter().write(attributes[i]+"\n");
 			}
-			for(BioChemicalReaction reaction: this.getListOfReactions().values())
+			for(BioReaction reaction: this.getListOfReactions().values())
 			{
 				for(int i=0;i<attributes.length;i++)
 				{
@@ -122,7 +122,7 @@ public class BioNetwork2TabulatedFile extends BioNetwork2File {
 	/**
 	 * 
 	 */
-	public String getReactionValueForAttribute(BioChemicalReaction reaction, String att)
+	public String getReactionValueForAttribute(BioReaction reaction, String att)
 	{
 		String val=null;
 		att=att.toLowerCase();
@@ -147,7 +147,7 @@ public class BioNetwork2TabulatedFile extends BioNetwork2File {
 	}
 	
 	public void write() throws IOException{
-		for(BioChemicalReaction reaction: this.getListOfReactions().values())
+		for(BioReaction reaction: this.getListOfReactions().values())
 		{
 			writeReaction(reaction);
 		}
@@ -166,7 +166,7 @@ public class BioNetwork2TabulatedFile extends BioNetwork2File {
 	/**
 	 * writing a reaction in the file out
 	 */
-	public void writeReaction(BioChemicalReaction reaction) {	
+	public void writeReaction(BioReaction reaction) {	
 		if(this.getBioNetwork().getType().equalsIgnoreCase("cyc")) {
 			if(reaction.getSpontaneous() == null) {
 				ArrayList<BioPhysicalEntity> enzymes = new ArrayList<BioPhysicalEntity>(reaction.getEnzList().values());
@@ -184,12 +184,12 @@ public class BioNetwork2TabulatedFile extends BioNetwork2File {
 		}
 	}
 	
-	public void recursiveWrite(BioChemicalReaction reaction, BioPhysicalEntity enzyme, BioPhysicalEntity sub) {
+	public void recursiveWrite(BioReaction reaction, BioPhysicalEntity enzyme, BioPhysicalEntity sub) {
 		
 		HashMap<String, BioPathway> pathways = new HashMap<String, BioPathway>(reaction.getPathwayList());
 		
-		HashMap<String, BioPhysicalEntityParticipant> left;
-		HashMap<String, BioPhysicalEntityParticipant> right;
+		HashMap<String, BioParticipant> left;
+		HashMap<String, BioParticipant> right;
 		
 		String infoReversibility = reaction.getReversiblity();
 		
@@ -267,7 +267,7 @@ public class BioNetwork2TabulatedFile extends BioNetwork2File {
 			}
 		}
 		else if(sub.getClass().getSimpleName().compareTo("BioComplex") == 0) {
-			HashMap<String, BioPhysicalEntityParticipant> subs = ((BioComplex)sub).getComponentList();
+			HashMap<String, BioParticipant> subs = ((BioComplex)sub).getComponentList();
 			
 			for(Iterator iterSub = subs.keySet().iterator(); iterSub.hasNext(); ) {
 				BioPhysicalEntity subSub = subs.get(iterSub.next()).getPhysicalEntity();
@@ -277,11 +277,11 @@ public class BioNetwork2TabulatedFile extends BioNetwork2File {
 	}
 	
 	
-	public void writeSpontaneousReaction(BioChemicalReaction reaction) {
+	public void writeSpontaneousReaction(BioReaction reaction) {
 		HashMap<String, BioPathway> pathways = new HashMap<String, BioPathway>(reaction.getPathwayList());
 		
-		HashMap<String, BioPhysicalEntityParticipant> left;
-		HashMap<String, BioPhysicalEntityParticipant> right;
+		HashMap<String, BioParticipant> left;
+		HashMap<String, BioParticipant> right;
 		
 		String infoReversibility = reaction.getReversiblity();
 		

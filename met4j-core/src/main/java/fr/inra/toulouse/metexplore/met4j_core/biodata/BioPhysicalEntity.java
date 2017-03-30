@@ -60,8 +60,8 @@ public class BioPhysicalEntity extends BioEntity {
 	
 	private String caas="NA";
 	
-	private HashMap<String, BioChemicalReaction> reactionsAsSubstrate = new HashMap<String, BioChemicalReaction>();
-	private HashMap<String, BioChemicalReaction> reactionsAsProduct = new HashMap<String, BioChemicalReaction>();
+	private HashMap<String, BioReaction> reactionsAsSubstrate = new HashMap<String, BioReaction>();
+	private HashMap<String, BioReaction> reactionsAsProduct = new HashMap<String, BioReaction>();
 	
 	
 	public Boolean getBoundaryCondition() {
@@ -72,11 +72,11 @@ public class BioPhysicalEntity extends BioEntity {
 		this.boundaryCondition = boundaryCondition;
 	}
 
-	public void addReactionAsSubstrate(BioChemicalReaction rxn) {
+	public void addReactionAsSubstrate(BioReaction rxn) {
 		this.reactionsAsSubstrate.put(rxn.getId(), rxn);
 	}
 	
-	public void addReactionAsProduct(BioChemicalReaction rxn) {
+	public void addReactionAsProduct(BioReaction rxn) {
 		this.reactionsAsProduct.put(rxn.getId(), rxn);
 	}
 	
@@ -84,7 +84,7 @@ public class BioPhysicalEntity extends BioEntity {
 		this.reactionsAsSubstrate.remove(id);
 	}
 	
-	public HashMap<String, BioChemicalReaction> getReactionsAsSubstrate() {
+	public HashMap<String, BioReaction> getReactionsAsSubstrate() {
 		return reactionsAsSubstrate;
 	}
 
@@ -97,16 +97,16 @@ public class BioPhysicalEntity extends BioEntity {
 	}
 
 	public void setReactionsAsSubstrate(
-			HashMap<String, BioChemicalReaction> reactionsAsSubstrate) {
+			HashMap<String, BioReaction> reactionsAsSubstrate) {
 		this.reactionsAsSubstrate = reactionsAsSubstrate;
 	}
 
-	public HashMap<String, BioChemicalReaction> getReactionsAsProduct() {
+	public HashMap<String, BioReaction> getReactionsAsProduct() {
 		return reactionsAsProduct;
 	}
 
 	public void setReactionsAsProduct(
-			HashMap<String, BioChemicalReaction> reactionsAsProduct) {
+			HashMap<String, BioReaction> reactionsAsProduct) {
 		this.reactionsAsProduct = reactionsAsProduct;
 	}
 

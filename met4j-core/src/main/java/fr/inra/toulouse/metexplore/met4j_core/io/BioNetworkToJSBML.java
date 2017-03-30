@@ -36,13 +36,13 @@ import org.sbml.jsbml.UnitDefinition;
 import org.sbml.jsbml.text.parser.ParseException;
 import org.sbml.jsbml.Parameter;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioRef;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioUnitDefinition;
@@ -488,7 +488,7 @@ public class BioNetworkToJSBML {
 	 * @throws ParseException
 	 */
 	private void GetListOfReactions(Model jsbmlModel) throws XMLStreamException, ParseException {
-		for (BioChemicalReaction bionetReaction: this.bionet.getBiochemicalReactionList().values()){
+		for (BioReaction bionetReaction: this.bionet.getBiochemicalReactionList().values()){
 			Reaction libSBMLReaction=jsbmlModel.createReaction();
 
 			libSBMLReaction.setId(bionetReaction.getId());
@@ -506,7 +506,7 @@ public class BioNetworkToJSBML {
 				libSBMLReaction.setReversible(false);
 			}
 			//Set the substrates of the reaction
-			for (BioPhysicalEntityParticipant BionetLParticipant : bionetReaction.getLeftParticipantList().values()) {
+			for (BioParticipant BionetLParticipant : bionetReaction.getLeftParticipantList().values()) {
 				SpeciesReference specieRef=libSBMLReaction.createReactant();
 				specieRef.setSpecies(BionetLParticipant.getPhysicalEntity().getId());
 				specieRef.setStoichiometry(Double.parseDouble(BionetLParticipant.getStoichiometricCoefficient()));
@@ -523,7 +523,7 @@ public class BioNetworkToJSBML {
 				}
 			}
 			// set the products of the reaction
-			for (BioPhysicalEntityParticipant BionetRParticipant : bionetReaction.getRightParticipantList().values()) {
+			for (BioParticipant BionetRParticipant : bionetReaction.getRightParticipantList().values()) {
 				SpeciesReference specieRef=libSBMLReaction.createProduct();
 				specieRef.setSpecies(BionetRParticipant.getPhysicalEntity().getId());
 				specieRef.setStoichiometry(Double.parseDouble(BionetRParticipant.getStoichiometricCoefficient()));
@@ -655,7 +655,7 @@ public class BioNetworkToJSBML {
 	 * @param libSBMLReaction
 	 * @throws XMLStreamException
 	 */
-	private void updateNotesFromData(BioChemicalReaction bionetReaction, Reaction libSBMLReaction) throws XMLStreamException {
+	private void updateNotesFromData(BioReaction bionetReaction, Reaction libSBMLReaction) throws XMLStreamException {
 
 		String oldNotes;
 		if (bionetReaction.getEntityNotes()!=null){
@@ -1091,7 +1091,7 @@ public class BioNetworkToJSBML {
 	 */
 	@SuppressWarnings("unused")
 	@Deprecated
-	private void GeneratePalssonNote(Reaction libSBMLReaction, BioChemicalReaction bionetReaction) throws XMLStreamException{
+	private void GeneratePalssonNote(Reaction libSBMLReaction, BioReaction bionetReaction) throws XMLStreamException{
 		String notes="<body xmlns=\"http://www.w3.org/1999/xhtml\">\n";
 		notes+="<p>SUBSYSTEM:";
 

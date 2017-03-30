@@ -34,7 +34,7 @@
 
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-public class BioPhysicalEntityParticipant extends BioUtility {
+public class BioParticipant extends BioUtility {
 
 	private BioPhysicalEntity physicalEntity;
 	private String stoichiometricCoefficient;
@@ -56,32 +56,32 @@ public class BioPhysicalEntityParticipant extends BioUtility {
 		this.isCofactor = isCofactor;
 	}
 
-	public BioPhysicalEntityParticipant(String id, BioPhysicalEntity physicalEntity, String stoichiometricCoefficient, BioCompartment location) {
+	public BioParticipant(String id, BioPhysicalEntity physicalEntity, String stoichiometricCoefficient, BioCompartment location) {
 		super(id);
 		this.setPhysicalEntity(physicalEntity);
 		this.setStoichiometricCoefficient(stoichiometricCoefficient);
 		this.setLocation(location);
 	}
 	
-	public BioPhysicalEntityParticipant(String id, BioPhysicalEntity physicalEntity) {
+	public BioParticipant(String id, BioPhysicalEntity physicalEntity) {
 		super(id);
 		this.setPhysicalEntity(physicalEntity);
 		this.setStoichiometricCoefficient("1");
 	}
 	
-	public BioPhysicalEntityParticipant(BioPhysicalEntity physicalEntity) {
+	public BioParticipant(BioPhysicalEntity physicalEntity) {
 		super(physicalEntity.getId());
 		this.setPhysicalEntity(physicalEntity);
 		this.setStoichiometricCoefficient("1");
 	}
 	
-	public BioPhysicalEntityParticipant(BioPhysicalEntity physicalEntity, String sto) {
+	public BioParticipant(BioPhysicalEntity physicalEntity, String sto) {
 		super(physicalEntity.getId());
 		this.setPhysicalEntity(physicalEntity);
 		this.setStoichiometricCoefficient(sto);
 	}
 	
-	public BioPhysicalEntityParticipant(BioPhysicalEntityParticipant in) {
+	public BioParticipant(BioParticipant in) {
 		super(in);
 		this.setPhysicalEntity(new BioPhysicalEntity(in.getPhysicalEntity()));
 		this.setStoichiometricCoefficient(in.getStoichiometricCoefficient());

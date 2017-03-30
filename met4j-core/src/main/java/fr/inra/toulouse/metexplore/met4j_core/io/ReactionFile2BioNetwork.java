@@ -7,14 +7,14 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.Flux;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
@@ -80,7 +80,7 @@ public class ReactionFile2BioNetwork extends AnnotationFile2BioNetwork {
 
 		BioNetwork bn=this.getBioNetwork();
 
-		BioChemicalReaction rxn=new BioChemicalReaction();
+		BioReaction rxn=new BioReaction();
 
 		/*
 		 * if the identifier has to be in Palsson's format
@@ -181,10 +181,10 @@ public class ReactionFile2BioNetwork extends AnnotationFile2BioNetwork {
 
 	/**
 	 * Instantiate metabolites from the reaction's formula.
-	 * @param BioChemicalReaction rxn
+	 * @param BioReaction rxn
 	 * @param String formula
 	 */
-	private void ParseReactionFormula(BioChemicalReaction rxn,	String formula) {
+	private void ParseReactionFormula(BioReaction rxn,	String formula) {
 
 		String[] reactant = null;
 
@@ -208,7 +208,7 @@ public class ReactionFile2BioNetwork extends AnnotationFile2BioNetwork {
 		if(reactant!=null){
 			for (String substrate:reactant[0].split(" \\+ ")){
 	
-				BioPhysicalEntityParticipant lpart=this.IntstantiateRxnReactant(substrate);
+				BioParticipant lpart=this.IntstantiateRxnReactant(substrate);
 	
 				rxn.addLeftParticipant(lpart);
 	
@@ -216,7 +216,7 @@ public class ReactionFile2BioNetwork extends AnnotationFile2BioNetwork {
 	
 			for (String product:reactant[1].split(" \\+ ")){
 	
-				BioPhysicalEntityParticipant rpart=this.IntstantiateRxnReactant(product);
+				BioParticipant rpart=this.IntstantiateRxnReactant(product);
 	
 				rxn.addRightParticipant(rpart);
 	
@@ -230,7 +230,7 @@ public class ReactionFile2BioNetwork extends AnnotationFile2BioNetwork {
 	 * @param ReactantFromFormula
 	 * @return
 	 */
-	private BioPhysicalEntityParticipant IntstantiateRxnReactant(String ReactantFromFormula){
+	private BioParticipant IntstantiateRxnReactant(String ReactantFromFormula){
 
 		ReactantFromFormula=ReactantFromFormula.trim();
 
@@ -279,7 +279,7 @@ public class ReactionFile2BioNetwork extends AnnotationFile2BioNetwork {
 			this.getBioNetwork().addPhysicalEntity(Metabolite);
 		}
 
-		BioPhysicalEntityParticipant part=new BioPhysicalEntityParticipant(Metabolite);
+		BioParticipant part=new BioParticipant(Metabolite);
 		part.setStoichiometricCoefficient(coeff);
 		part.setIsConstant(false);
 
@@ -291,7 +291,7 @@ public class ReactionFile2BioNetwork extends AnnotationFile2BioNetwork {
 
 
 
-	private void parseGPR(BioChemicalReaction rxn, String GPRString) {
+	private void parseGPR(BioReaction rxn, String GPRString) {
 
 
 		if (this.isLogicalGPR()){
@@ -363,7 +363,7 @@ public class ReactionFile2BioNetwork extends AnnotationFile2BioNetwork {
 					}
 					protein=this.getBioNetwork().getProteinList().get(protId);
 
-					BioPhysicalEntityParticipant part=new BioPhysicalEntityParticipant(protein);	
+					BioParticipant part=new BioParticipant(protein);	
 
 					enz.addComponent(part);
 

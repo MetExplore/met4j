@@ -41,7 +41,7 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioPathUtils;
@@ -83,14 +83,14 @@ public class TestBioPathUtils {
 		f = new BioPhysicalEntity("f"); g.addVertex(f);
 		h = new BioPhysicalEntity("h"); g.addVertex(h);
 		
-		ab = new ReactionEdge(a,b,new BioChemicalReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 0);
-		bc = new ReactionEdge(b,c,new BioChemicalReaction("bc"));g.addEdge(b, c, bc);g.setEdgeWeight(bc, 100);
-		ad = new ReactionEdge(a,d,new BioChemicalReaction("ad"));g.addEdge(a, d, ad);g.setEdgeWeight(ad, 0);
-		de = new ReactionEdge(d,e,new BioChemicalReaction("de"));g.addEdge(d, e, de);g.setEdgeWeight(de, 0);
-		ef = new ReactionEdge(e,f,new BioChemicalReaction("ef"));g.addEdge(e, f, ef);g.setEdgeWeight(ef, 0);
-		fc = new ReactionEdge(f,c,new BioChemicalReaction("fc"));g.addEdge(f, c, fc);g.setEdgeWeight(fc, 1);
-		bh = new ReactionEdge(b,h,new BioChemicalReaction("bh"));g.addEdge(b, h, bh);g.setEdgeWeight(bh, 0);
-		hc = new ReactionEdge(h,c,new BioChemicalReaction("hc"));g.addEdge(h, c, hc);g.setEdgeWeight(hc, 10);
+		ab = new ReactionEdge(a,b,new BioReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 0);
+		bc = new ReactionEdge(b,c,new BioReaction("bc"));g.addEdge(b, c, bc);g.setEdgeWeight(bc, 100);
+		ad = new ReactionEdge(a,d,new BioReaction("ad"));g.addEdge(a, d, ad);g.setEdgeWeight(ad, 0);
+		de = new ReactionEdge(d,e,new BioReaction("de"));g.addEdge(d, e, de);g.setEdgeWeight(de, 0);
+		ef = new ReactionEdge(e,f,new BioReaction("ef"));g.addEdge(e, f, ef);g.setEdgeWeight(ef, 0);
+		fc = new ReactionEdge(f,c,new BioReaction("fc"));g.addEdge(f, c, fc);g.setEdgeWeight(fc, 1);
+		bh = new ReactionEdge(b,h,new BioReaction("bh"));g.addEdge(b, h, bh);g.setEdgeWeight(bh, 0);
+		hc = new ReactionEdge(h,c,new BioReaction("hc"));g.addEdge(h, c, hc);g.setEdgeWeight(hc, 10);
 		
 		List<ReactionEdge> abcList = new ArrayList<ReactionEdge>();
 			abcList.add(ab);abcList.add(bc);

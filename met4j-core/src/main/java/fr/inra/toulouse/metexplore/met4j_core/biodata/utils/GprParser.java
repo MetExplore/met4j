@@ -2,11 +2,11 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata.utils;
 
 import java.util.ArrayList;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
@@ -24,7 +24,7 @@ public class GprParser {
 
 		Boolean flag = true;
 
-		BioChemicalReaction rxn = bn.getBiochemicalReactionList().get(
+		BioReaction rxn = bn.getBiochemicalReactionList().get(
 				reactionId);
 
 		rxn.getEnzList().clear();
@@ -91,7 +91,7 @@ public class GprParser {
 				bn.addProtein(protein);
 			}
 			protein = bn.getProteinList().get(enzymeId);
-			enzyme.addComponent(new BioPhysicalEntityParticipant(protein));
+			enzyme.addComponent(new BioParticipant(protein));
 
 			for (int u = 0; u < tabGenes.length; u++) {
 				String geneId = tabGenes[u];

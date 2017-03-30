@@ -41,7 +41,7 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraphEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.reaction.CompoundEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
@@ -74,7 +74,7 @@ public class Bionetwork2BioGraph {
 			g.addVertex(v);
 		}
 		
-		for(BioChemicalReaction r : bn.getBiochemicalReactionList().values()){
+		for(BioReaction r : bn.getBiochemicalReactionList().values()){
 			boolean reversible = r.isReversible();
 			Collection<BioPhysicalEntity> left = r.getLeftList().values();
 			Collection<BioPhysicalEntity> right = r.getRightList().values();
@@ -104,8 +104,8 @@ public class Bionetwork2BioGraph {
 	 */
 	public ReactionGraph getReactionGraph(){
 		ReactionGraph g = new ReactionGraph();
-		HashSet<BioChemicalReaction> exchange = new HashSet<BioChemicalReaction>();
-		for(BioChemicalReaction r : bn.getBiochemicalReactionList().values()){
+		HashSet<BioReaction> exchange = new HashSet<BioReaction>();
+		for(BioReaction r : bn.getBiochemicalReactionList().values()){
 			if(!r.isExchangeReaction()){
 				g.addVertex(r);
 			}else{
@@ -115,14 +115,14 @@ public class Bionetwork2BioGraph {
 		
 		for(BioPhysicalEntity c : bn.getPhysicalEntityList().values()){
 			
-			Collection<BioChemicalReaction> left = c.getReactionsAsSubstrate().values();
-			Collection<BioChemicalReaction> right = c.getReactionsAsProduct().values();
+			Collection<BioReaction> left = c.getReactionsAsSubstrate().values();
+			Collection<BioReaction> right = c.getReactionsAsProduct().values();
 			left.removeAll(exchange);
 			right.removeAll(exchange);
 			
 			if(!left.isEmpty() && !right.isEmpty()){
-				for(BioChemicalReaction v1 : left){
-					for(BioChemicalReaction v2 : right){
+				for(BioReaction v1 : left){
+					for(BioReaction v2 : right){
 						if(v1!=v2){
 							g.addEdge(v1, v2, new CompoundEdge(v1,v2,c));
 						}
@@ -140,7 +140,7 @@ public class Bionetwork2BioGraph {
 		for(BioPhysicalEntity v : bn.getPhysicalEntityList().values()){
 			g.addVertex(v);
 		}
-		for(BioChemicalReaction r : bn.getBiochemicalReactionList().values()){
+		for(BioReaction r : bn.getBiochemicalReactionList().values()){
 			
 			Collection<BioPhysicalEntity> left = r.getLeftList().values();
 			Collection<BioPhysicalEntity> right = r.getRightList().values();
@@ -180,10 +180,10 @@ public class Bionetwork2BioGraph {
 	public static Collection<BioPathway> getPathwaysAsSource(BioPhysicalEntity e){
 		HashSet<BioPathway> pathwaysIn = new HashSet<BioPathway>();
 		HashSet<BioPathway> pathwaysAsSource = new HashSet<BioPathway>();
-		for(BioChemicalReaction r : e.getReactionsAsProduct().values()){
+		for(BioReaction r : e.getReactionsAsProduct().values()){
 			if(!r.isReversible()) pathwaysIn.addAll(r.getPathwayList().values());
 		}
-		for(BioChemicalReaction r : e.getReactionsAsSubstrate().values()){
+		for(BioReaction r : e.getReactionsAsSubstrate().values()){
 			for(BioPathway p : r.getPathwayList().values()){
 				if(!pathwaysIn.contains(p)) pathwaysAsSource.add(p);
 			}
@@ -200,10 +200,10 @@ public class Bionetwork2BioGraph {
 	public static Collection<BioPathway> getPathwaysAsTarget(BioPhysicalEntity e){
 		HashSet<BioPathway> pathwaysIn = new HashSet<BioPathway>();
 		HashSet<BioPathway> pathwaysAsTarget = new HashSet<BioPathway>();
-		for(BioChemicalReaction r : e.getReactionsAsSubstrate().values()){
+		for(BioReaction r : e.getReactionsAsSubstrate().values()){
 			if(!r.isReversible()) pathwaysIn.addAll(r.getPathwayList().values());
 		}
-		for(BioChemicalReaction r : e.getReactionsAsProduct().values()){
+		for(BioReaction r : e.getReactionsAsProduct().values()){
 			for(BioPathway p : r.getPathwayList().values()){
 				if(!pathwaysIn.contains(p)) pathwaysAsTarget.add(p);
 			}

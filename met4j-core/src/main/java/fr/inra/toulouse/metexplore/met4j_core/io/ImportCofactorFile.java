@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 
 public class ImportCofactorFile {
 	
@@ -116,14 +116,14 @@ public class ImportCofactorFile {
 			if (bn.getPhysicalEntityList().containsKey(cofs1.get(0))
 					&& bn.getPhysicalEntityList().containsKey(cofs2.get(0))) {
 
-				HashMap<String, BioChemicalReaction> listOfReactions = new HashMap<String, BioChemicalReaction>(
+				HashMap<String, BioReaction> listOfReactions = new HashMap<String, BioReaction>(
 						bn.getBiochemicalReactionList());
 
-				for (BioChemicalReaction reaction : listOfReactions.values()) {
+				for (BioReaction reaction : listOfReactions.values()) {
 
-					HashMap<String, BioPhysicalEntityParticipant> leftP = reaction
+					HashMap<String, BioParticipant> leftP = reaction
 							.getLeftParticipantList();
-					HashMap<String, BioPhysicalEntityParticipant> rightP = reaction
+					HashMap<String, BioParticipant> rightP = reaction
 							.getRightParticipantList();
 
 					HashMap<String, BioPhysicalEntity> left = reaction
@@ -134,7 +134,7 @@ public class ImportCofactorFile {
 					if (left.containsKey(cofs1.get(0))
 							&& right.containsKey(cofs2.get(0))) {
 
-						for (BioPhysicalEntityParticipant bp : leftP.values()) {
+						for (BioParticipant bp : leftP.values()) {
 
 							if (cofs1.contains(bp.getPhysicalEntity().getId())) {
 								reaction.addCofactor(bp.getPhysicalEntity()
@@ -143,7 +143,7 @@ public class ImportCofactorFile {
 
 						}
 
-						for (BioPhysicalEntityParticipant bp : rightP.values()) {
+						for (BioParticipant bp : rightP.values()) {
 
 							if (cofs2.contains(bp.getPhysicalEntity().getId())) {
 								reaction.addCofactor(bp.getPhysicalEntity()
@@ -155,7 +155,7 @@ public class ImportCofactorFile {
 					} else if (left.containsKey(cofs2.get(0))
 							&& right.containsKey(cofs1.get(0))) {
 
-						for (BioPhysicalEntityParticipant bp : leftP.values()) {
+						for (BioParticipant bp : leftP.values()) {
 
 							if (cofs2.contains(bp.getPhysicalEntity().getId())) {
 								reaction.addCofactor(bp.getPhysicalEntity()
@@ -164,7 +164,7 @@ public class ImportCofactorFile {
 
 						}
 
-						for (BioPhysicalEntityParticipant bp : rightP.values()) {
+						for (BioParticipant bp : rightP.values()) {
 
 							if (cofs1.contains(bp.getPhysicalEntity().getId())) {
 								reaction.addCofactor(bp.getPhysicalEntity()
@@ -182,7 +182,7 @@ public class ImportCofactorFile {
 		// cofactor
 		for (BioPhysicalEntity cpd : bn.getPhysicalEntityList().values()) {
 
-			ArrayList<BioChemicalReaction> reactions = new ArrayList<BioChemicalReaction>();
+			ArrayList<BioReaction> reactions = new ArrayList<BioReaction>();
 
 			reactions.addAll(cpd.getReactionsAsSubstrate().values());
 			reactions.addAll(cpd.getReactionsAsProduct().values());
@@ -196,14 +196,14 @@ public class ImportCofactorFile {
 
 				i--;
 
-				BioChemicalReaction rxn = reactions.get(i);
+				BioReaction rxn = reactions.get(i);
 
-				HashMap<String, BioPhysicalEntityParticipant> participants = new HashMap<String, BioPhysicalEntityParticipant>();
+				HashMap<String, BioParticipant> participants = new HashMap<String, BioParticipant>();
 
 				participants.putAll(rxn.getLeftParticipantList());
 				participants.putAll(rxn.getRightParticipantList());
 
-				for (BioPhysicalEntityParticipant bp : participants.values()) {
+				for (BioParticipant bp : participants.values()) {
 					if (bp.getId().compareTo(cpd.getId()) == 0) {
 						isCof = bp.getIsCofactor();
 					}

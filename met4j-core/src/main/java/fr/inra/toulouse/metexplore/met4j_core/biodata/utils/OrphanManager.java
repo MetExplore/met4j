@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 
@@ -23,9 +23,9 @@ public class OrphanManager {
 	 * 
 	 * @return
 	 */
-	public Collection<BioChemicalReaction> trim() {
-		HashSet<BioChemicalReaction> allRemovedReactions = new HashSet<BioChemicalReaction>();
-		Collection<BioChemicalReaction> removed = removeOrphanReactions();
+	public Collection<BioReaction> trim() {
+		HashSet<BioReaction> allRemovedReactions = new HashSet<BioReaction>();
+		Collection<BioReaction> removed = removeOrphanReactions();
 		while (!removed.isEmpty()) {
 			allRemovedReactions.addAll(removed);
 			removed = removeOrphanReactions();
@@ -37,16 +37,16 @@ public class OrphanManager {
 	 * 
 	 * @return
 	 */
-	private Collection<BioChemicalReaction> removeOrphanReactions() {
-		HashSet<BioChemicalReaction> removedReactions = new HashSet<BioChemicalReaction>();
+	private Collection<BioReaction> removeOrphanReactions() {
+		HashSet<BioReaction> removedReactions = new HashSet<BioReaction>();
 
 		HashMap<String, BioPhysicalEntity> orphans = getOrphanMetabolites(bn);
 
 		for (BioPhysicalEntity metabolite : orphans.values()) {
 
-			HashMap<String, BioChemicalReaction> reactionsP = new HashMap<String, BioChemicalReaction>(
+			HashMap<String, BioReaction> reactionsP = new HashMap<String, BioReaction>(
 					metabolite.getReactionsAsProduct());
-			for (BioChemicalReaction reaction : reactionsP.values()) {
+			for (BioReaction reaction : reactionsP.values()) {
 				if (bn.getBiochemicalReactionList().containsKey(
 						reaction.getId())) {
 					removedReactions.add(reaction);
@@ -54,10 +54,10 @@ public class OrphanManager {
 				}
 			}
 
-			HashMap<String, BioChemicalReaction> reactionsS = new HashMap<String, BioChemicalReaction>(
+			HashMap<String, BioReaction> reactionsS = new HashMap<String, BioReaction>(
 					metabolite.getReactionsAsSubstrate());
 
-			for (BioChemicalReaction reaction : reactionsS.values()) {
+			for (BioReaction reaction : reactionsS.values()) {
 				if (bn.getBiochemicalReactionList().containsKey(
 						reaction.getId())) {
 					removedReactions.add(reaction);
@@ -81,15 +81,15 @@ public class OrphanManager {
 
 		for (BioPhysicalEntity cpd : bn.getPhysicalEntityList().values()) {
 			if (!cpd.getBoundaryCondition()) {
-				HashMap<String, BioChemicalReaction> reactions = new HashMap<String, BioChemicalReaction>();
+				HashMap<String, BioReaction> reactions = new HashMap<String, BioReaction>();
 
 				// HashMap<String, BioChemicalReaction> reactionsP =
 				// this.getListOfReactionsAsProduct(cpd.getId());
-				HashMap<String, BioChemicalReaction> reactionsP = cpd
+				HashMap<String, BioReaction> reactionsP = cpd
 						.getReactionsAsProduct();
 				// HashMap<String, BioChemicalReaction> reactionsS =
 				// this.getListOfReactionsAsSubstrate(cpd.getId());
-				HashMap<String, BioChemicalReaction> reactionsS = cpd
+				HashMap<String, BioReaction> reactionsS = cpd
 						.getReactionsAsSubstrate();
 
 				reactions.putAll(reactionsP);

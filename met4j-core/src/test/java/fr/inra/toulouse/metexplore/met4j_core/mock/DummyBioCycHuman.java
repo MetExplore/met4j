@@ -4,7 +4,7 @@
 package fr.inra.toulouse.metexplore.met4j_core.mock;
 
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
@@ -32,7 +32,7 @@ public final class DummyBioCycHuman implements DummySbml {
 	private final int NUMBER_OF_COMPLEX = 3618;
 	private final int NUMBER_OF_PROTEIN = 3609;
 	private final int NUMBER_OF_REFS = 3836;
-	private BioChemicalReaction dummyR;
+	private BioReaction dummyR;
 	private BioPhysicalEntity dummyE;
 	private BioProtein dummyP;
 	private BioGene dummyG;
@@ -44,7 +44,7 @@ public final class DummyBioCycHuman implements DummySbml {
 	
 	public DummyBioCycHuman() {
 		
-		dummyR = new BioChemicalReaction("CDPDIGLYSYN-RXN");
+		dummyR = new BioReaction("CDPDIGLYSYN-RXN");
 		dummyR.setName("CDPDIGLYSYN-RXN");
 //		dummyR.setSboterm("SBO:0000176");
 		dummyR.setReversibility(false);
@@ -166,7 +166,7 @@ public final class DummyBioCycHuman implements DummySbml {
 	}
 
 	@Override
-	public BioChemicalReaction getTestReaction() {
+	public BioReaction getTestReaction() {
 		return dummyR;
 	}
 

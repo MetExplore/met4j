@@ -42,11 +42,11 @@ package fr.inra.toulouse.metexplore.met4j_core.io;
 
 import java.io.IOException;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.Flux;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils;
 
@@ -76,7 +76,7 @@ public class BioNetwork2SurreyFBA extends BioNetwork2File {
 	
 	public void save() throws IOException {
 		
-		for(BioChemicalReaction rxn : this.getBioNetwork().getBiochemicalReactionList().values()) {
+		for(BioReaction rxn : this.getBioNetwork().getBiochemicalReactionList().values()) {
 			
 			String id = rxn.getId();
 			String reactionName = rxn.getName();
@@ -135,7 +135,7 @@ public class BioNetwork2SurreyFBA extends BioNetwork2File {
 					// The left side is empty
 					// Create a fake external left metabolite for each right compound
 
-					for(BioPhysicalEntityParticipant bp : rxn.getRightParticipantList().values()) {
+					for(BioParticipant bp : rxn.getRightParticipantList().values()) {
 
 						BioPhysicalEntity cpd = bp.getPhysicalEntity();
 						String cpdId = cpd.getId();
@@ -155,7 +155,7 @@ public class BioNetwork2SurreyFBA extends BioNetwork2File {
 							newCpd.setBoundaryCondition(true);
 						}
 
-						BioPhysicalEntityParticipant bpe = new BioPhysicalEntityParticipant(newCpd);
+						BioParticipant bpe = new BioParticipant(newCpd);
 
 						rxn.addLeftParticipant(bpe);
 
@@ -167,7 +167,7 @@ public class BioNetwork2SurreyFBA extends BioNetwork2File {
 					// The right side is empty
 					// Create a fake external right metabolite for each right compound
 
-					for(BioPhysicalEntityParticipant bp : rxn.getLeftParticipantList().values()) {
+					for(BioParticipant bp : rxn.getLeftParticipantList().values()) {
 
 						BioPhysicalEntity cpd = bp.getPhysicalEntity();
 						String cpdId = cpd.getId();
@@ -187,7 +187,7 @@ public class BioNetwork2SurreyFBA extends BioNetwork2File {
 							newCpd.setBoundaryCondition(true);
 						}
 
-						BioPhysicalEntityParticipant bpe = new BioPhysicalEntityParticipant(newCpd);
+						BioParticipant bpe = new BioParticipant(newCpd);
 
 						rxn.addRightParticipant(bpe);
 
@@ -195,7 +195,7 @@ public class BioNetwork2SurreyFBA extends BioNetwork2File {
 				}
 			}
 			
-			for(BioPhysicalEntityParticipant p : rxn.getLeftParticipantList().values()) {
+			for(BioParticipant p : rxn.getLeftParticipantList().values()) {
 				
 				BioPhysicalEntity cpd = p.getPhysicalEntity();
 				
@@ -226,7 +226,7 @@ public class BioNetwork2SurreyFBA extends BioNetwork2File {
 			nb = 0;
 			Boolean rightExchange=false;
 			
-			for(BioPhysicalEntityParticipant p : rxn.getRightParticipantList().values()) {
+			for(BioParticipant p : rxn.getRightParticipantList().values()) {
 
 				BioPhysicalEntity cpd = p.getPhysicalEntity();
 				String cpdId = cpd.getId();

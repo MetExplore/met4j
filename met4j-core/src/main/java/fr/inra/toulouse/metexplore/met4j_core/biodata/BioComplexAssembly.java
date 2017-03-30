@@ -30,6 +30,8 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
+import java.util.ArrayList;
+
 /**
  * A conversion interaction in which a set of physical entities, at least one
  * being a macromolecule (protein or RNA), aggregate via non-covalent
@@ -53,6 +55,5 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 public class BioComplexAssembly extends BioConversion {
 
-	
 
 }

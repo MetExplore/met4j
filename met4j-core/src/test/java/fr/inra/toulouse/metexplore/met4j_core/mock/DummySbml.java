@@ -31,7 +31,7 @@
 package fr.inra.toulouse.metexplore.met4j_core.mock;
 
 import fr.inra.toulouse.metexplore.met4j_core.TestJSBMLToBionetwork;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
@@ -62,7 +62,7 @@ public interface DummySbml {
 	public int getNumberOfProtein();
 	public int getNumberOfRefs();
 	public BioPhysicalEntity getTestCompound();
-	public BioChemicalReaction getTestReaction();
+	public BioReaction getTestReaction();
 	public BioProtein getTestProtein();
 	public BioGene getTestGene();
 	public BioComplex getTestComplex();

@@ -73,7 +73,7 @@ public class KeggToBioNetwork {
 			}
 			
 			System.err.println("Retrieving Data on Reactions...");
-			for(BioChemicalReaction rxn: this.bioNetwork.getBiochemicalReactionList().values()){
+			for(BioReaction rxn: this.bioNetwork.getBiochemicalReactionList().values()){
 				this.getReactionData(rxn);
 			}
 
@@ -194,12 +194,12 @@ public class KeggToBioNetwork {
 
 				for(String id:reactionIds){
 
-					BioChemicalReaction reaction;
+					BioReaction reaction;
 					if(this.bioNetwork.getBiochemicalReactionList().containsKey(id)){
 						reaction=this.bioNetwork.getBiochemicalReactionList().get(id);
 					}
 					else{
-						reaction=new BioChemicalReaction(id);
+						reaction=new BioReaction(id);
 
 						if(rxn.getAttribute("type").equalsIgnoreCase("reversible")){
 							reaction.setReversibility(true);
@@ -253,11 +253,11 @@ public class KeggToBioNetwork {
 
 							//add compound as substrate or product
 							if(child.getNodeName().equalsIgnoreCase("substrate")){
-								BioPhysicalEntityParticipant lpart=new BioPhysicalEntityParticipant(cpd);
+								BioParticipant lpart=new BioParticipant(cpd);
 								lpart.setIsConstant(false);
 								reaction.addLeftParticipant(lpart);
 							}else{
-								BioPhysicalEntityParticipant rpart=new BioPhysicalEntityParticipant(cpd);
+								BioParticipant rpart=new BioParticipant(cpd);
 								rpart.setIsConstant(false);
 								reaction.addRightParticipant(rpart);
 							}
@@ -344,7 +344,7 @@ public class KeggToBioNetwork {
 	 * from the sbml specifications (2.4)
 	 * @param rxn
 	 */
-	private void getReactionData(BioChemicalReaction rxn) {
+	private void getReactionData(BioReaction rxn) {
 
 		HashMap<String, ArrayList<String>> Data=this.getEntityDataHasHash(rxn.getId());
 
@@ -381,7 +381,7 @@ public class KeggToBioNetwork {
 		for (BioComplex cplx: this.bioNetwork.getComplexList().values()){
 			this.simplifyId(cplx);
 		}
-		for (BioChemicalReaction rxn :this.bioNetwork.getBiochemicalReactionList().values()){
+		for (BioReaction rxn :this.bioNetwork.getBiochemicalReactionList().values()){
 			this.simplifyId(rxn);
 		}
 	}

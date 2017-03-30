@@ -46,13 +46,13 @@ import java.util.Iterator;
 
 public class BioConversion extends BioInteraction {
 
-	public HashMap<String, BioPhysicalEntityParticipant> leftParticipantList = new HashMap<String, BioPhysicalEntityParticipant>();
-	public HashMap<String, BioPhysicalEntityParticipant> rightParticipantList = new HashMap<String, BioPhysicalEntityParticipant>();
+	public HashMap<String, BioParticipant> leftParticipantList = new HashMap<String, BioParticipant>();
+	public HashMap<String, BioParticipant> rightParticipantList = new HashMap<String, BioParticipant>();
 
 	private String spontaneous = null;
 
-	public HashMap<String, BioPhysicalEntityParticipant> primaryLeftParticipantList = new HashMap<String, BioPhysicalEntityParticipant>();
-	public HashMap<String, BioPhysicalEntityParticipant> primaryRightParticipantList = new HashMap<String, BioPhysicalEntityParticipant>();
+	public HashMap<String, BioParticipant> primaryLeftParticipantList = new HashMap<String, BioParticipant>();
+	public HashMap<String, BioParticipant> primaryRightParticipantList = new HashMap<String, BioParticipant>();
 
 	public HashMap<String, BioPhysicalEntity> primaryLeftList = new HashMap<String, BioPhysicalEntity>();
 	public HashMap<String, BioPhysicalEntity> primaryRightList = new HashMap<String, BioPhysicalEntity>();
@@ -70,14 +70,14 @@ public class BioConversion extends BioInteraction {
 
 	public BioConversion(BioConversion in) {
 		super(in);
-		this.leftParticipantList = new HashMap<String, BioPhysicalEntityParticipant>();
+		this.leftParticipantList = new HashMap<String, BioParticipant>();
 		this.copyLeftParticipantList(in.getLeftParticipantList());
-		this.rightParticipantList = new HashMap<String, BioPhysicalEntityParticipant>();
+		this.rightParticipantList = new HashMap<String, BioParticipant>();
 		this.copyRightParticipantList(in.getRightParticipantList());
 		this.setSpontaneous(in.getSpontaneous());
-		this.primaryLeftParticipantList = new HashMap<String, BioPhysicalEntityParticipant>();
+		this.primaryLeftParticipantList = new HashMap<String, BioParticipant>();
 		this.copyPrimaryLeftParticipantList(in.getLeftParticipantList());
-		this.primaryRightParticipantList = new HashMap<String, BioPhysicalEntityParticipant>();
+		this.primaryRightParticipantList = new HashMap<String, BioParticipant>();
 		this.copyPrimaryRightParticipantList(in.getLeftParticipantList());
 		this.setDoesItContainClassCpd(in.getDoesItContainClassCpd());
 		this.setDoesItContainClassPrimaryCpd(in
@@ -95,7 +95,7 @@ public class BioConversion extends BioInteraction {
 	/**
 	 * @return Returns the leftList.
 	 */
-	public HashMap<String, BioPhysicalEntityParticipant> getLeftParticipantList() {
+	public HashMap<String, BioParticipant> getLeftParticipantList() {
 		return leftParticipantList;
 	}
 
@@ -104,11 +104,11 @@ public class BioConversion extends BioInteraction {
 	 *            The leftList to set.
 	 */
 	public void setLeftParticipantList(
-			HashMap<String, BioPhysicalEntityParticipant> leftList) {
+			HashMap<String, BioParticipant> leftList) {
 
-		this.leftParticipantList = new HashMap<String, BioPhysicalEntityParticipant>();
+		this.leftParticipantList = new HashMap<String, BioParticipant>();
 
-		for (Iterator<BioPhysicalEntityParticipant> iter = leftList.values()
+		for (Iterator<BioParticipant> iter = leftList.values()
 				.iterator(); iter.hasNext();) {
 			this.addLeftParticipant(iter.next());
 		}
@@ -116,10 +116,10 @@ public class BioConversion extends BioInteraction {
 	}
 
 	public void copyLeftParticipantList(
-			HashMap<String, BioPhysicalEntityParticipant> leftList) {
+			HashMap<String, BioParticipant> leftList) {
 
-		for (BioPhysicalEntityParticipant bpe : leftList.values()) {
-			BioPhysicalEntityParticipant newBpe = new BioPhysicalEntityParticipant(
+		for (BioParticipant bpe : leftList.values()) {
+			BioParticipant newBpe = new BioParticipant(
 					bpe);
 			this.addLeftParticipant(newBpe);
 		}
@@ -128,7 +128,7 @@ public class BioConversion extends BioInteraction {
 	/**
 	 * @return Returns the rightList.
 	 */
-	public HashMap<String, BioPhysicalEntityParticipant> getRightParticipantList() {
+	public HashMap<String, BioParticipant> getRightParticipantList() {
 		return rightParticipantList;
 	}
 
@@ -137,21 +137,21 @@ public class BioConversion extends BioInteraction {
 	 *            The rightList to set.
 	 */
 	public void setRightParticipantList(
-			HashMap<String, BioPhysicalEntityParticipant> rightList) {
+			HashMap<String, BioParticipant> rightList) {
 
-		this.rightParticipantList = new HashMap<String, BioPhysicalEntityParticipant>();
+		this.rightParticipantList = new HashMap<String, BioParticipant>();
 
-		for (Iterator<BioPhysicalEntityParticipant> iter = rightList.values()
+		for (Iterator<BioParticipant> iter = rightList.values()
 				.iterator(); iter.hasNext();) {
 			this.addRightParticipant(iter.next());
 		}
 	}
 
 	public void copyRightParticipantList(
-			HashMap<String, BioPhysicalEntityParticipant> rightList) {
+			HashMap<String, BioParticipant> rightList) {
 
-		for (BioPhysicalEntityParticipant bpe : rightList.values()) {
-			BioPhysicalEntityParticipant newBpe = new BioPhysicalEntityParticipant(
+		for (BioParticipant bpe : rightList.values()) {
+			BioParticipant newBpe = new BioParticipant(
 					bpe);
 			this.addRightParticipant(newBpe);
 		}
@@ -169,7 +169,7 @@ public class BioConversion extends BioInteraction {
 	 * @param p
 	 *            The participant to add in the list of the participants
 	 */
-	public void addLeftParticipant(BioPhysicalEntityParticipant p) {
+	public void addLeftParticipant(BioParticipant p) {
 		this.leftParticipantList.put(p.getId(), p);
 		this.getParticipantList().put(p.getId(), p);
 	}
@@ -178,7 +178,7 @@ public class BioConversion extends BioInteraction {
 	 * @param p
 	 *            The participant to add in the list of the participants
 	 */
-	public void addRightParticipant(BioPhysicalEntityParticipant p) {
+	public void addRightParticipant(BioParticipant p) {
 		this.rightParticipantList.put(p.getId(), p);
 		this.getParticipantList().put(p.getId(), p);
 	}
@@ -186,15 +186,15 @@ public class BioConversion extends BioInteraction {
 	/**
 	 * @return Returns the primaryLeftList.
 	 */
-	public HashMap<String, BioPhysicalEntityParticipant> getPrimaryLeftParticipantList() {
+	public HashMap<String, BioParticipant> getPrimaryLeftParticipantList() {
 		return primaryLeftParticipantList;
 	}
 
 	public void copyPrimaryLeftParticipantList(
-			HashMap<String, BioPhysicalEntityParticipant> leftList) {
+			HashMap<String, BioParticipant> leftList) {
 
-		for (BioPhysicalEntityParticipant bpe : leftList.values()) {
-			BioPhysicalEntityParticipant newBpe = new BioPhysicalEntityParticipant(
+		for (BioParticipant bpe : leftList.values()) {
+			BioParticipant newBpe = new BioParticipant(
 					bpe);
 			this.getPrimaryLeftParticipantList().put(newBpe.getId(), newBpe);
 		}
@@ -203,15 +203,15 @@ public class BioConversion extends BioInteraction {
 	/**
 	 * @return Returns the primaryRightList.
 	 */
-	public HashMap<String, BioPhysicalEntityParticipant> getPrimaryRightParticipantList() {
+	public HashMap<String, BioParticipant> getPrimaryRightParticipantList() {
 		return primaryRightParticipantList;
 	}
 
 	public void copyPrimaryRightParticipantList(
-			HashMap<String, BioPhysicalEntityParticipant> rightList) {
+			HashMap<String, BioParticipant> rightList) {
 
-		for (BioPhysicalEntityParticipant bpe : rightList.values()) {
-			BioPhysicalEntityParticipant newBpe = new BioPhysicalEntityParticipant(
+		for (BioParticipant bpe : rightList.values()) {
+			BioParticipant newBpe = new BioParticipant(
 					bpe);
 			this.getPrimaryRightParticipantList().put(newBpe.getId(), newBpe);
 		}
@@ -232,7 +232,7 @@ public class BioConversion extends BioInteraction {
 	 */
 	public void setDoesItContainClassCpd() {
 
-		ArrayList<BioPhysicalEntityParticipant> leftBPEP = new ArrayList<BioPhysicalEntityParticipant>(
+		ArrayList<BioParticipant> leftBPEP = new ArrayList<BioParticipant>(
 				getLeftParticipantList().values());
 		for (int i = 0; i < leftBPEP.size(); i++) {
 			BioPhysicalEntity cpd = leftBPEP.get(i).getPhysicalEntity();
@@ -243,7 +243,7 @@ public class BioConversion extends BioInteraction {
 			}
 		}
 
-		ArrayList<BioPhysicalEntityParticipant> rightBPEP = new ArrayList<BioPhysicalEntityParticipant>(
+		ArrayList<BioParticipant> rightBPEP = new ArrayList<BioParticipant>(
 				getRightParticipantList().values());
 		for (int i = 0; i < rightBPEP.size(); i++) {
 			BioPhysicalEntity cpd = rightBPEP.get(i).getPhysicalEntity();
@@ -283,9 +283,9 @@ public class BioConversion extends BioInteraction {
 			return;
 		}
 
-		ArrayList<BioPhysicalEntityParticipant> listPL = new ArrayList<BioPhysicalEntityParticipant>(
+		ArrayList<BioParticipant> listPL = new ArrayList<BioParticipant>(
 				primaryLeftParticipantList.values());
-		ArrayList<BioPhysicalEntityParticipant> listPR = new ArrayList<BioPhysicalEntityParticipant>(
+		ArrayList<BioParticipant> listPR = new ArrayList<BioParticipant>(
 				primaryRightParticipantList.values());
 
 		for (int i = 0; i < listPL.size(); i++) {
@@ -318,7 +318,7 @@ public class BioConversion extends BioInteraction {
 	public HashMap<String, BioPhysicalEntity> getLeftList() {
 		HashMap<String, BioPhysicalEntity> list = new HashMap<String, BioPhysicalEntity>();
 
-		for (BioPhysicalEntityParticipant bpe : this.getLeftParticipantList()
+		for (BioParticipant bpe : this.getLeftParticipantList()
 				.values()) {
 			list.put(bpe.getPhysicalEntity().getId(), bpe.getPhysicalEntity());
 		}
@@ -335,10 +335,10 @@ public class BioConversion extends BioInteraction {
 
 		this.getPrimaryLeftList().remove(cpd.getId());
 
-		HashMap<String, BioPhysicalEntityParticipant> tmp = new HashMap<String, BioPhysicalEntityParticipant>(
+		HashMap<String, BioParticipant> tmp = new HashMap<String, BioParticipant>(
 				this.getLeftParticipantList());
 
-		for (BioPhysicalEntityParticipant bpe : tmp.values()) {
+		for (BioParticipant bpe : tmp.values()) {
 			if (bpe.getPhysicalEntity().getId().compareTo(cpd.getId()) == 0) {
 				this.getLeftParticipantList().remove(bpe.getId());
 				this.getPrimaryLeftParticipantList().remove(bpe.getId());
@@ -355,10 +355,10 @@ public class BioConversion extends BioInteraction {
 
 		this.getPrimaryRightList().remove(cpd.getId());
 
-		HashMap<String, BioPhysicalEntityParticipant> tmp = new HashMap<String, BioPhysicalEntityParticipant>(
+		HashMap<String, BioParticipant> tmp = new HashMap<String, BioParticipant>(
 				this.getRightParticipantList());
 
-		for (BioPhysicalEntityParticipant bpe : tmp.values()) {
+		for (BioParticipant bpe : tmp.values()) {
 			if (bpe.getPhysicalEntity().getId().compareTo(cpd.getId()) == 0) {
 				this.getRightParticipantList().remove(bpe.getId());
 				this.getPrimaryRightParticipantList().remove(bpe.getId());
@@ -372,7 +372,7 @@ public class BioConversion extends BioInteraction {
 	public HashMap<String, BioPhysicalEntity> getRightList() {
 		HashMap<String, BioPhysicalEntity> list = new HashMap<String, BioPhysicalEntity>();
 
-		for (BioPhysicalEntityParticipant bpe : this.getRightParticipantList()
+		for (BioParticipant bpe : this.getRightParticipantList()
 				.values()) {
 			list.put(bpe.getPhysicalEntity().getId(), bpe.getPhysicalEntity());
 		}
@@ -387,7 +387,7 @@ public class BioConversion extends BioInteraction {
 		if (primaryLeftList.size() == 0) {
 			for (Iterator<String> iter = this.getPrimaryLeftParticipantList().keySet()
 					.iterator(); iter.hasNext();) {
-				BioPhysicalEntityParticipant bpe = this
+				BioParticipant bpe = this
 						.getPrimaryLeftParticipantList().get(iter.next());
 				primaryLeftList.put(bpe.getPhysicalEntity().getId(),
 						bpe.getPhysicalEntity());
@@ -403,7 +403,7 @@ public class BioConversion extends BioInteraction {
 		if (primaryRightList.size() == 0) {
 			for (Iterator<String> iter = this.getPrimaryRightParticipantList().keySet()
 					.iterator(); iter.hasNext();) {
-				BioPhysicalEntityParticipant bpe = this
+				BioParticipant bpe = this
 						.getPrimaryRightParticipantList().get(iter.next());
 				primaryRightList.put(bpe.getPhysicalEntity().getId(),
 						bpe.getPhysicalEntity());

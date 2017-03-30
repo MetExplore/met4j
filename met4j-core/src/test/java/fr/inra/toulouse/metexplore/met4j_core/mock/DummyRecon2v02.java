@@ -3,13 +3,13 @@
  */
 package fr.inra.toulouse.metexplore.met4j_core.mock;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.UnitSbml;
@@ -32,7 +32,7 @@ public final class DummyRecon2v02 implements DummySbml {
 	private final int NUMBER_OF_COMPLEX = 1168;
 	private final int NUMBER_OF_PROTEIN = 3907;
 	private final int NUMBER_OF_REFS = 18483;
-	private BioChemicalReaction dummyR;
+	private BioReaction dummyR;
 	private BioPhysicalEntity dummyE;
 	private BioProtein dummyP;
 	private BioGene dummyG;
@@ -44,7 +44,7 @@ public final class DummyRecon2v02 implements DummySbml {
 	
 	public DummyRecon2v02() {
 		
-		dummyR = new BioChemicalReaction("R_RE3597C");
+		dummyR = new BioReaction("R_RE3597C");
 		dummyR.setName("RE3597");
 		dummyR.setSboterm("SBO:0000176");
 		dummyR.setReversibility(true);
@@ -92,9 +92,9 @@ public final class DummyRecon2v02 implements DummySbml {
 		dummyCpx.setBoundaryCondition(true);
 		dummyCpx.setConstant(false);
 		dummyCpx.setCompartment(new BioCompartment("Mitochondria", "m"));
-		dummyCpx.addComponent(new BioPhysicalEntityParticipant("_10449_1_m", new BioPhysicalEntity("_10449_1_m")));
-		dummyCpx.addComponent(new BioPhysicalEntityParticipant("_1892_1_m", new BioPhysicalEntity("_1892_1_m")));
-		dummyCpx.addComponent(new BioPhysicalEntityParticipant("_3033_1_m", new BioPhysicalEntity("_3033_1_m")));
+		dummyCpx.addComponent(new BioParticipant("_10449_1_m", new BioPhysicalEntity("_10449_1_m")));
+		dummyCpx.addComponent(new BioParticipant("_1892_1_m", new BioPhysicalEntity("_1892_1_m")));
+		dummyCpx.addComponent(new BioParticipant("_3033_1_m", new BioPhysicalEntity("_3033_1_m")));
 		dummyCpx.addRef("uniprot", "P42765", 1, "hasPart", "sbml file");
 		dummyCpx.addRef("uniprot", "P30084", 1, "hasPart", "sbml file");
 		dummyCpx.addRef("uniprot", "Q16836", 1, "hasPart", "sbml file");
@@ -164,7 +164,7 @@ public final class DummyRecon2v02 implements DummySbml {
 	}
 
 	@Override
-	public BioChemicalReaction getTestReaction() {
+	public BioReaction getTestReaction() {
 		return dummyR;
 	}
 

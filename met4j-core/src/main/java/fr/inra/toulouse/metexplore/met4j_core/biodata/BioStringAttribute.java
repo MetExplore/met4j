@@ -43,46 +43,48 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
  * 'C(OP(=O)(O)O)[CH]1([CH](O)[CH](O)[CH](O)[CH](O)O1)'.
  */
 
-public class BioChemicalStructure{
+public class BioStringAttribute{
 
-	private String structureData;
-	private String structureFormat;
+	private String value;
+	private String type;
 	
 	
-	public BioChemicalStructure(BioChemicalStructure in) {
-		super(in);
-		this.setStructureData(in.getStructureData());
-		this.setStructureFormat(in.getStructureFormat());
-	}
-	
-	/**
-	 * @return Returns the structureData.
-	 */
-	public String getStructureData() {
-		return structureData;
+	public BioStringAttribute(BioStringAttribute in) {
+		this.value=in.getValue();
+		this.type=in.getType();
 	}
 
-	/**
-	 * @param structureData The structureData to set.
-	 */
-	public void setStructureData(String structureData) {
-		this.structureData = structureData;
-	}
 
 	/**
-	 * @return Returns the structureFormat.
+	 * @return the value
 	 */
-	public String getStructureFormat() {
-		return structureFormat;
+	public String getValue() {
+		return value;
 	}
 
+
 	/**
-	 * @param structureFormat The structureFormat to set.
+	 * @param value the value to set
 	 */
-	public void setStructureFormat(String structureFormat) {
-		this.structureFormat = structureFormat;
+	public void setValue(String value) {
+		this.value = value;
 	}
-	
+
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
 	
 
 }

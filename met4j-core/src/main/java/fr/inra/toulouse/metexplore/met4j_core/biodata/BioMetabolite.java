@@ -65,30 +65,62 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
  *
  */
 public class BioMetabolite extends BioPhysicalEntity {
-
-	/**
-	 * @param id
-	 */
-	public BioMetabolite(String id) {
-		super(id);
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @param id
-	 * @param name
-	 */
-	public BioMetabolite(String id, String name) {
-		super(id, name);
-		// TODO Auto-generated constructor stub
-	}
+	
+	private double molecularWeight;
+	private String chemicalFormula;
+	private int charge;
+	
 
 	/**
 	 * @param pe
 	 */
-	public BioMetabolite(BioPhysicalEntity pe) {
+	public BioMetabolite(BioMetabolite pe){
 		super(pe);
-		// TODO Auto-generated constructor stub
+		this.molecularWeight=pe.getMolecularWeight();
+		this.chemicalFormula=pe.getChemicalFormula();
+		this.charge=pe.getCharge();
+	}
+
+
+	public String getChemicalFormula() {
+		return chemicalFormula;
+	}
+
+
+	public void setChemicalFormula(String chemicalFormula) {
+		this.chemicalFormula = chemicalFormula;
+	}
+
+
+	/**
+	 * @return the molecularWeight
+	 */
+	public Double getMolecularWeight() {
+		return molecularWeight;
+	}
+
+
+	/**
+	 * @param molecularWeight the molecularWeight to set
+	 */
+	public void setMolecularWeight(Double molecularWeight) {
+		this.molecularWeight = molecularWeight;
+	}
+
+
+	/**
+	 * @return the charge
+	 */
+	public int getCharge() {
+		return charge;
+	}
+
+
+	/**
+	 * @param charge the charge to set
+	 */
+	public void setCharge(int charge) {
+		this.charge = charge;
 	}
 
 }

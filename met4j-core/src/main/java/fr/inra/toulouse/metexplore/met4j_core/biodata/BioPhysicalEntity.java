@@ -30,7 +30,7 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-
+//07-04-2017 refactoring
 /**
  * @author ludo & clement
  * 
@@ -38,8 +38,16 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
  */
 public abstract class BioPhysicalEntity extends BioEntity {
 	
-	public BioPhysicalEntity(BioEntity in) {
+	/**
+	 * From BioCyc : for substrates whose names imply a braod specificity
+	 * for a given enzymes. These nonsepcific substrates are often
+	 * involved in multiple reactionNodes
+	 */
+	private Boolean isGeneric;
+	
+	public BioPhysicalEntity(BioPhysicalEntity in) {
 		super(in);
+		this.isGeneric=in.getIsGeneric();
 	}
 
 	public Boolean getIsGeneric() {
@@ -49,13 +57,6 @@ public abstract class BioPhysicalEntity extends BioEntity {
 	public void setIsGeneric(Boolean isGeneric) {
 		this.isGeneric = isGeneric;
 	}
-
-	/**
-	 * From BioCyc : for substrates whose names imply a braod specificity
-	 * for a given enzymes. These nonsepcific substrates are often
-	 * involved in multiple reactionNodes
-	 */
-	private Boolean isGeneric;
 	
 	
 }

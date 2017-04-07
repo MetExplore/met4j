@@ -44,3 +44,6 @@ compartment possede des biophysical entity, si definie uniquement en terme de pa
 
 TODO rajouter notion d'inclusion pour les compartiment?
 	utiliser les synomymes dans les BioCollections
+	
+
+	TODO add BioMeasure ou un nom plus cool

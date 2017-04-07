@@ -45,45 +45,6 @@ import fr.inra.toulouse.metexplore.met4j_core.io.BioUnitDefinition;
  */
 public class BioCompartment extends BioEntity{
 
-	/**
-	 * SBML v2 Version 4 release 1:
-	 * "A Compartment object has an optional attribute spatialDimensions, whose value must be a positive integer indicating the number of spatial dimensions possessed by the compartment.
-	 * The maximum value is �3�, meaning a three-dimensional structure (a volume). 
-	 * Other permissible values are �2� (for a two-dimensional area), �1� (for a one-dimensional curve), and �0� (for a point).
-	 * The default value is �3�.
-	 * Note that the number of spatial dimensions possessed by a compartment affects certain aspects of the compartment�s size and units-of-size."
-	 */
-	private int spatialDimensions=3;
-	/**
-	 * SBML v2 Version 4 release 1:
-	 * "Each compartment has an optional floating-point attribute named size, representing the initial total size of the compartment.
-	 * The size may be a volume (if the compartment is a three-dimensional one), or it may be 4 an area (if the compartment is two-dimensional), or a length (if the compartment is one-dimensional)."
-	 */
-	private double size=1;
-	/**
-	 * SBML v2 Version 4 release 1:
-	 * "The units associated with the compartment�s size value may be set using the optional attribute units.
-	 * The default units, and the kinds of units allowed as values of the attribute units, interact with the number of spatial dimensions of the compartment."
-	 */
-	private BioUnitDefinition unit;
-	/**
-	 * SBML v2 Version 4 release 1:
-	 * "The optional attribute outside of type SId can be used to express one type of positioning relationship between compartments.
-	 * If present, the value of outside for a given compartment must be the id attribute value of another compartment defined in the model.
-	 * Doing so means that the other compartment surrounds it or is �outside� of it.
-	 * This enables the representation of simple topological relationships between compartments, for those simulation systems that can make use of the information (e.g., for drawing simple diagrams of compartments)."
-	 */
-	private BioCompartment outsideCompartment=null;
-	/**
-	 * SBML v2 Version 4 release 1:
-	 * "A Compartment also has an optional boolean attribute called constant that indicates whether the compartment�s size stays constant or can vary during a simulation.
-	 * A value of �false� indicates the compartment�s size can be changed by other constructs in SBML.
-	 * A value of �true� indicates the compartment�s size cannot be changed by any other construct except InitialAssignment.
-	 * In the special case of spatialDimensions=�0�, the value cannot be changed by InitialAssignment either.
-	 * The default value for the constant attribute is �true� because in the most common modeling scenarios at the time of this writing, compartment sizes remain constant.
-	 * The constant attribute must default to or be set to �true� if the value of the spatialDimensions attribute is �0�, because a zero-dimensional compartment cannot ever have a size."
-	 */
-	private boolean constant=true;
 	
 	private String sboterm;
 	

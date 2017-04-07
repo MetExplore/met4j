@@ -68,6 +68,48 @@ public class BioMetabolite extends BioPhysicalEntity {
 	
 	private double molecularWeight;
 	private String chemicalFormula;
+	private String inchi;
+	private String smile;
+	/**
+	 * @return the inchi
+	 */
+	public String getInchi() {
+		return inchi;
+	}
+
+
+	/**
+	 * @param inchi the inchi to set
+	 */
+	public void setInchi(String inchi) {
+		this.inchi = inchi;
+	}
+
+
+	/**
+	 * @return the smile
+	 */
+	public String getSmile() {
+		return smile;
+	}
+
+
+	/**
+	 * @param smile the smile to set
+	 */
+	public void setSmile(String smile) {
+		this.smile = smile;
+	}
+
+
+	/**
+	 * @param molecularWeight the molecularWeight to set
+	 */
+	public void setMolecularWeight(double molecularWeight) {
+		this.molecularWeight = molecularWeight;
+	}
+
+
 	private int charge;
 	
 

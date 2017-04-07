@@ -37,8 +37,8 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioUnitDefinition;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.UnitSbml;
+import fr.inra.toulouse.metexplore.met4j_core.io.BioUnitDefinition;
+import fr.inra.toulouse.metexplore.met4j_core.io.UnitSbml;
 
 /**
  * interface for collecting information and build test-case based on a sbml file

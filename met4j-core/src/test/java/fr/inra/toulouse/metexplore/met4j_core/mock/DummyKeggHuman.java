@@ -10,8 +10,8 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioUnitDefinition;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.UnitSbml;
+import fr.inra.toulouse.metexplore.met4j_core.io.BioUnitDefinition;
+import fr.inra.toulouse.metexplore.met4j_core.io.UnitSbml;
 
 /**
  * This dummy class is created to be used in {@link TestLibSBMLToBionetwork_2}

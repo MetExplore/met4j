@@ -41,7 +41,7 @@ import java.util.Iterator;
  * interaction class should be created rarely.
  */
 
-public class BioInteraction extends BioEntity {
+public abstract class BioInteraction extends BioEntity {
 	
 	private HashMap<String, BioParticipant> participantList = new HashMap<String, BioParticipant>();
 	

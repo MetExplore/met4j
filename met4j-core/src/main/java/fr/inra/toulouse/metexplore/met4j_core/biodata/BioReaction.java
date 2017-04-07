@@ -37,6 +37,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import fr.inra.toulouse.metexplore.met4j_core.io.BioUnitDefinition;
+import fr.inra.toulouse.metexplore.met4j_core.io.Flux;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 /**
@@ -65,7 +67,7 @@ import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
  * unchanged, e.g. glycogen + glucose = glycogen.
  */
 
-public class BioReaction extends BioConversion {
+public class BioReaction extends BioInteraction {
 
 	private String deltaG = "";
 	private String deltaH = "";

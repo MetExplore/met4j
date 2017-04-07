@@ -86,9 +86,6 @@ public class BioEntity {
 	 * Attribute map containing for instance an attribute "mapped" true/false if the metabolite is in the dataset
 	 */
 	private HashMap<String, Object> attributes;
-
-
-	private BioCompartment compartment;
 	
 	private String score = "NA";
 	private String status = "NA";

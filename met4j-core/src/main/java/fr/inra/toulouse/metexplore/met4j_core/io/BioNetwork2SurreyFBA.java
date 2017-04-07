@@ -47,7 +47,6 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.Flux;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils;
 
 

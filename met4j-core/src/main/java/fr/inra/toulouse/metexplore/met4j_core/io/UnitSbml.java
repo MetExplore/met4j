@@ -31,7 +31,7 @@
 /**
  * 
  */
-package fr.inra.toulouse.metexplore.met4j_core.biodata;
+package fr.inra.toulouse.metexplore.met4j_core.io;
 
 import java.util.HashMap;
 import java.util.Map.Entry;

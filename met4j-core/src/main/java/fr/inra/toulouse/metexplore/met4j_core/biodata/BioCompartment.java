@@ -33,6 +33,8 @@
  */
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
+import fr.inra.toulouse.metexplore.met4j_core.io.BioUnitDefinition;
+
 /**
  * @author ludo & Fabien
  *
@@ -41,19 +43,8 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
  *	"A compartment in SBML represents a bounded space in which species are located.
  *	Compartments do not necessarily have to correspond to actual structures inside or outside of a biological cell, although models are often designed that way."
  */
-public class BioCompartment {
-	/**
-	 * id is the identifier for this compartment, default is NA
-	 */
-	private String id="NA";
-	/**
-	 * Name is a user specified name, default is NA (optional)
-	 */
-	private String name="NA";
-	/**
-	 * Compartment containing the current compartment type
-	 */
-	private BioCompartmentType compartmentType=null;
+public class BioCompartment extends BioEntity{
+
 	/**
 	 * SBML v2 Version 4 release 1:
 	 * "A Compartment object has an optional attribute spatialDimensions, whose value must be a positive integer indicating the number of spatial dimensions possessed by the compartment.

@@ -34,7 +34,7 @@
 
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-public class BioParticipant extends BioUtility {
+public class BioParticipant extends BioEntity {
 
 	private BioPhysicalEntity physicalEntity;
 	private String stoichiometricCoefficient;

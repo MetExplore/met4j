@@ -14,8 +14,8 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioUnitDefinition;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.UnitSbml;
+import fr.inra.toulouse.metexplore.met4j_core.io.BioUnitDefinition;
+import fr.inra.toulouse.metexplore.met4j_core.io.UnitSbml;
 
 /**
  * @author lcottret 3 déc. 2013

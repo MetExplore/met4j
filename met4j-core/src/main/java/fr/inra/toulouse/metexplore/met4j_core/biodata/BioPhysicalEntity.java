@@ -38,7 +38,7 @@ import java.util.HashMap;
  * TODO : change type of charge 
  *
  */
-public class BioPhysicalEntity extends BioEntity {
+public abstract class BioPhysicalEntity extends BioEntity {
 	
 	private String molecularWeight = "NA";
 	private String chemicalFormula = "NA";

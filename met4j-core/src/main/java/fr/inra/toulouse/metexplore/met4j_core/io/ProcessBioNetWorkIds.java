@@ -13,7 +13,6 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 public class ProcessBioNetWorkIds {

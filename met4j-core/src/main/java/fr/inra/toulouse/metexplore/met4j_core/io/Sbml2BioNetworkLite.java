@@ -52,8 +52,6 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioRef;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioUnitDefinition;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.UnitSbml;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 /**

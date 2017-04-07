@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 

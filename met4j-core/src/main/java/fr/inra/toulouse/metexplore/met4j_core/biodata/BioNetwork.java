@@ -41,6 +41,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils;
+import fr.inra.toulouse.metexplore.met4j_core.io.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 /**
@@ -48,7 +49,7 @@ import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
  * 
  */
 
-public class BioNetwork {
+public class BioNetwork extends BioEntity{
 
 
 	private HashMap<String, BioPathway> pathwayList = new HashMap<String, BioPathway>();
@@ -73,13 +74,6 @@ public class BioNetwork {
 
 	private HashMap<String, BioPhysicalEntity> enzymes = null;
 
-	private String id = "NA";
-
-	private String name = "NA";
-
-	private String type = "custom";
-
-	private String sboterm;
 
 
 	private HashMap<String, BioUnitDefinition> unitDefinitions = new HashMap<String, BioUnitDefinition>();

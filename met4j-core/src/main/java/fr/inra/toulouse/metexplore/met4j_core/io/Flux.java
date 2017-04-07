@@ -31,7 +31,7 @@
 /**
  * 1 juin 2011 
  */
-package fr.inra.toulouse.metexplore.met4j_core.biodata;
+package fr.inra.toulouse.metexplore.met4j_core.io;
 
 /**
  * @author ludo

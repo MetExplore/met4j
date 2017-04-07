@@ -39,12 +39,6 @@ public class BioParticipant extends BioEntity {
 	private BioPhysicalEntity physicalEntity;
 	private String stoichiometricCoefficient;
 	private BioCompartment location;
-	
-	//To be compliant with the SBML level3.1 
-	private Boolean isConstant = false;
-	private String id;
-	
-	private Boolean isPrimaryCompound = true;
 	private Boolean isCofactor = false;
 	
 	
@@ -56,35 +50,23 @@ public class BioParticipant extends BioEntity {
 		this.isCofactor = isCofactor;
 	}
 
-	public BioParticipant(String id, BioPhysicalEntity physicalEntity, String stoichiometricCoefficient, BioCompartment location) {
-		super(id);
-		this.setPhysicalEntity(physicalEntity);
+	public BioParticipant(BioPhysicalEntity physicalEntity, String stoichiometricCoefficient, BioCompartment location) {
+		super(physicalEntity.getId());
+		this.physicalEntity=physicalEntity;
 		this.setStoichiometricCoefficient(stoichiometricCoefficient);
 		this.setLocation(location);
 	}
 	
-	public BioParticipant(String id, BioPhysicalEntity physicalEntity) {
-		super(id);
-		this.setPhysicalEntity(physicalEntity);
-		this.setStoichiometricCoefficient("1");
-	}
-	
 	public BioParticipant(BioPhysicalEntity physicalEntity) {
 		super(physicalEntity.getId());
-		this.setPhysicalEntity(physicalEntity);
+		this.physicalEntity=physicalEntity;
 		this.setStoichiometricCoefficient("1");
 	}
 	
 	public BioParticipant(BioPhysicalEntity physicalEntity, String sto) {
 		super(physicalEntity.getId());
-		this.setPhysicalEntity(physicalEntity);
+		this.physicalEntity=physicalEntity;
 		this.setStoichiometricCoefficient(sto);
-	}
-	
-	public BioParticipant(BioParticipant in) {
-		super(in);
-		this.setPhysicalEntity(new BioPhysicalEntity(in.getPhysicalEntity()));
-		this.setStoichiometricCoefficient(in.getStoichiometricCoefficient());
 	}
 	
 	/**
@@ -92,13 +74,6 @@ public class BioParticipant extends BioEntity {
 	 */
 	public BioPhysicalEntity getPhysicalEntity() {
 		return physicalEntity;
-	}
-
-	/**
-	 * @param physicalEntity The physicalEntity to set.
-	 */
-	public void setPhysicalEntity(BioPhysicalEntity physicalEntity) {
-		this.physicalEntity = physicalEntity;
 	}
 
 	/**
@@ -118,19 +93,6 @@ public class BioParticipant extends BioEntity {
 		this.stoichiometricCoefficient = stoichiometricCoefficient;
 	}
 
-	/**
-	 * @return Returns the isPrimaryCompound.
-	 */
-	public Boolean getIsPrimaryCompound() {
-		return isPrimaryCompound;
-	}
-
-	/**
-	 * @param isPrimaryCompound The isPrimaryCompound to set.
-	 */
-	public void setIsPrimaryCompound(Boolean isPrimaryCompound) {
-		this.isPrimaryCompound = isPrimaryCompound;
-	}
 
 	public BioCompartment getLocation() {
 		return location;
@@ -138,24 +100,6 @@ public class BioParticipant extends BioEntity {
 
 	public void setLocation(BioCompartment location) {
 		this.location = location;
-	}
-
-	public Boolean getIsConstant() {
-		return isConstant;
-	}
-
-	@Override
-	public String getId() {
-		return id;
-	}
-
-	public void setIsConstant(Boolean isConstant) {
-		this.isConstant = isConstant;
-	}
-
-	@Override
-	public void setId(String id) {
-		this.id = id;
 	}
 
 }

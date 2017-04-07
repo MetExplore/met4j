@@ -67,3 +67,7 @@ Todo : collection contient des maps, vu que id final private dans BioEntity
 pour les réactions. renvoyer des maps non modifiables. Sinon risques incohérences avec les ajouts de réactant depuis la classe réaction.
 
 gestion d'exceptions dans les collections (duplicats etc.) regarder si il ya des interfaces qui etendent collection qui les gèrent.
+
+viréer les constructeurs par copie!
+
+Todo : stochio as number?

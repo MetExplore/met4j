@@ -46,4 +46,13 @@ TODO rajouter notion d'inclusion pour les compartiment?
 	utiliser les synomymes dans les BioCollections
 	
 
-	TODO add BioMeasure ou un nom plus cool
+	TODO add BioMeasure ou un nom plus cool?
+	
+cas des copies, dans l'idéeal copie methode abstraite. Cas si on copie via constructeur?
+
+Pathway et compartiment -> etendre BioCollections? non parceque on veut des collections de pathways ou compartiments, et donc qu'ils étendent BioEntity. Si BioCollections étend BioEntity, alors les collections du bionetwork doivent avoir dfes attributs nom,id etc.
+On a du coup des entités qui réfères des collections d'entité, et qui sont elle même des Bioentity. explicité cette caractéristique via une interface?
+
+Compliquer le schéma de classe : à faire quand le besoin se présente, sinon on va se retrouver avec une multitude de classe qui ne sont pas utilisées (ce qui été le déclancheur du refactoring)
+
+Cas des gènes on relation Prot 1 gene, gene n prot.

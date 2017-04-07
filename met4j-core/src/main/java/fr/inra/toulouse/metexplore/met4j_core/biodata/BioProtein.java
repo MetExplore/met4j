@@ -30,8 +30,6 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.HashMap;
-
 
 public class BioProtein extends BioPhysicalEntity {
 

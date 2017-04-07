@@ -37,18 +37,18 @@ import java.util.stream.Collectors;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
-public class BioEntityCollection implements Collection<BioEntity> {
+public class BioEntityCollection<E extends BioEntity> implements Collection<E> {
 	
 	
-	private HashSet<BioEntity> entities;
+	private HashSet<E> entities;
 	
 	
 	public BioEntityCollection() {
-		entities = new HashSet<BioEntity>();
+		entities = new HashSet<E>();
 	}
 	
 	
-	public BioEntityCollection(HashSet<BioEntity> e) {
+	public BioEntityCollection(HashSet<E> e) {
 		entities = e;
 	}
 	
@@ -77,12 +77,12 @@ public class BioEntityCollection implements Collection<BioEntity> {
 	 * @param id
 	 * @return
 	 */
-	public BioEntityCollection getEntitiesWithId(String id) {
+	public BioEntityCollection<E> getEntitiesWithId(String id) {
 		
-		HashSet<BioEntity> e = new HashSet<BioEntity> (entities.stream().filter
+		HashSet<E> e = new HashSet<E> (entities.stream().filter
 				(o -> o.getId().equals(id)).collect(Collectors.toSet()));
 			
-		return new BioEntityCollection(e);
+		return new BioEntityCollection<E>(e);
 	}
 	
 	/**
@@ -90,78 +90,24 @@ public class BioEntityCollection implements Collection<BioEntity> {
 	 * @param id
 	 * @return
 	 */
-	public BioEntityCollection getEntitiesWithName(String name) {
+	public BioEntityCollection<E> getEntitiesWithName(String name) {
 		
-		HashSet<BioEntity> e = new HashSet<BioEntity> (entities.stream().filter
+		HashSet<E> e = new HashSet<E> (entities.stream().filter
 				(o -> o.getName().equals(name)).collect(Collectors.toSet()));
 			
-		return new BioEntityCollection(e);
+		return new BioEntityCollection<E>(e);
 	}
 	
 	
-	public HashSet<BioEntity> getEntities() {
+	public HashSet<E> getEntities() {
 		return entities;
 	}
 
 	/**
 	 * @param entities the entities to set
 	 */
-	public void setEntities(HashSet<BioEntity> entities) {
+	public void setEntities(HashSet<E> entities) {
 		this.entities = entities;
-	}
-
-	/**
-	 * @param c
-	 * @return
-	 * @see java.util.AbstractSet#removeAll(java.util.Collection)
-	 */
-	public boolean removeAll(Collection<?> c) {
-		return entities.removeAll(c);
-	}
-
-	/**
-	 * @param o
-	 * @return
-	 * @see java.util.HashSet#contains(java.lang.Object)
-	 */
-	public boolean contains(Object o) {
-		return entities.contains(o);
-	}
-
-	/**
-	 * @param e
-	 * @return
-	 * @see java.util.HashSet#add(java.lang.Object)
-	 */
-	public boolean add(BioEntity e) {
-		return entities.add(e);
-	}
-
-	/**
-	 * @param o
-	 * @return
-	 * @see java.util.HashSet#remove(java.lang.Object)
-	 */
-	public boolean remove(Object o) {
-		return entities.remove(o);
-	}
-
-	/**
-	 * @param c
-	 * @return
-	 * @see java.util.AbstractCollection#containsAll(java.util.Collection)
-	 */
-	public boolean containsAll(Collection<?> c) {
-		return entities.containsAll(c);
-	}
-
-	/**
-	 * @param c
-	 * @return
-	 * @see java.util.AbstractCollection#addAll(java.util.Collection)
-	 */
-	public boolean addAll(Collection<? extends BioEntity> c) {
-		return entities.addAll(c);
 	}
 
 
@@ -178,7 +124,7 @@ public class BioEntityCollection implements Collection<BioEntity> {
 
 
 	@Override
-	public Iterator<BioEntity> iterator() {
+	public Iterator<E> iterator() {
 		return this.entities.iterator();
 	}
 
@@ -204,6 +150,48 @@ public class BioEntityCollection implements Collection<BioEntity> {
 	@Override
 	public void clear() {
 		this.entities.clear();
+	}
+
+
+	@Override
+	public boolean removeAll(Collection<?> c) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public boolean contains(Object o) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public boolean add(E e) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public boolean remove(Object o) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public boolean containsAll(Collection<?> c) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public boolean addAll(Collection<? extends E> c) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 

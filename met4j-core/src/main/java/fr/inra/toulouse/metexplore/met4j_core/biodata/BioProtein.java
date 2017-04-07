@@ -36,21 +36,10 @@ import java.util.HashMap;
 public class BioProtein extends BioPhysicalEntity {
 
 	private String sequence;
-	private HashMap<String, BioGene> geneList = new HashMap<String, BioGene>();
-	
-	
-	public BioProtein(String id) {
-		super(id);
-	}
-	
-	public BioProtein(String id, String name) {
-		super(id, name);
-	}
 	
 	public BioProtein(BioProtein prot){
 		super(prot);
 		this.setSequence(prot.getSequence());
-		this.setGeneList(prot.getGeneList());
 	}
 	
 	/**
@@ -65,28 +54,5 @@ public class BioProtein extends BioPhysicalEntity {
 	public void setSequence(String sequence) {
 		this.sequence = sequence;
 	}
-
-	/**
-	 * @return Returns the geneList.
-	 */
-	public HashMap<String, BioGene> getGeneList() {
-		return geneList;
-	}
-
-	/**
-	 * @param geneList The geneList to set.
-	 */
-	public void setGeneList(HashMap<String, BioGene> geneList) {
-		this.geneList = geneList;
-	}
-	
-	/**
-	 * @param gene The gene to ass
-	 */
-	public void addGene(BioGene gene) {
-		this.geneList.put(gene.getId(), gene);
-	}
-	
-	
 
 }

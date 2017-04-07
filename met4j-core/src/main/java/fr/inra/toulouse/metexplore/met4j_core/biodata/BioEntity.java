@@ -41,7 +41,7 @@ import java.util.Set;
  * The root class of ontology
  */
 
-public class BioEntity {
+public abstract class BioEntity {
 	
 	private final String id;
 	private String name;
@@ -50,7 +50,7 @@ public class BioEntity {
 		
 	private HashMap<String,Set<BioRef>> refs;
 	
-	
+
 	public BioEntity(BioEntity in) {
 		this.id = in.getId();
 		this.setName(in.getName());

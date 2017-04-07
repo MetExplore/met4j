@@ -56,3 +56,14 @@ On a du coup des entités qui réfères des collections d'entité, et qui sont e
 Compliquer le schéma de classe : à faire quand le besoin se présente, sinon on va se retrouver avec une multitude de classe qui ne sont pas utilisées (ce qui été le déclancheur du refactoring)
 
 Cas des gènes on relation Prot 1 gene, gene n prot.
+
+Utilisation des bioparticipant transparante; Quand on accèdes au substarts ou produits on veut récupérer des BioEntity. On aurait alors des méthodes du type getStochio(BioEntity e);
+
+Si on a left/right en attribut de participant: on gagne en confort e code quand traiter tout les réactant. Par contre, quand accéder à un seul côté,on doit boucler sur l'ensemble des réactants pour checker leur "ĉoté"
+On peut avoir un meme metabolite du côté droit et gauche -> 2 listes.
+
+Todo : collection contient des maps, vu que id final private dans BioEntity
+
+pour les réactions. renvoyer des maps non modifiables. Sinon risques incohérences avec les ajouts de réactant depuis la classe réaction.
+
+gestion d'exceptions dans les collections (duplicats etc.) regarder si il ya des interfaces qui etendent collection qui les gèrent.

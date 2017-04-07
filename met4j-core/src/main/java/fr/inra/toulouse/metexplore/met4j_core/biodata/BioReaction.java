@@ -69,6 +69,7 @@ import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 public class BioReaction extends BioInteraction {
 
+	private String spontaneous = null;
 	private String deltaG = "";
 	private String deltaH = "";
 	private String deltaS = "";

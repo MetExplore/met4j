@@ -45,108 +45,33 @@ public class BioEntity {
 	
 	private final String id;
 	private String name;
-	private String shortName;
 	private ArrayList<String> synonyms = new ArrayList<String>();
 	private String comment;
-	
-	private String sboterm;
-	
+		
 	private HashMap<String,Set<BioRef>> refs;
-
-	private Boolean flagedAsUpdate=false;
-	private String isUpdateOf;
-	
-	private Boolean flagedAsInsert=false;
-	private Boolean flagedAsConflict=false;
-	
-	private BioEntity inConflictWith;
-	
-	
-	/**
-	 * Describes the availability of this data (e.g. a copyright statement).
-	 */
-	private String availability; 
-	
-	
-	/**
-	 * From BioCyc : for substrates whose names imply a braod specificity
-	 * for a given enzymes. These nonsepcific substrates are often
-	 * involved in multiple reactionNodes
-	 */
-	private Boolean isHolderClass; 	// From BioCyc : for substrates whose names imply a braod specificity
-									// for a given enzymes. These nonsepcific substrates are often
-									// involved in multiple reactionNodes
-	
-	/**
-	 * Permet les parcours dans les donnees. Ex : backtrack
-	 */
-	private Boolean flag = false;
-	
-	/**
-	 * Attribute map containing for instance an attribute "mapped" true/false if the metabolite is in the dataset
-	 */
-	private HashMap<String, Object> attributes;
-	
-	private String score = "NA";
-	private String status = "NA";
-	private HashSet<String> pmids;
-	
-	private Set<Comment> userComments = new HashSet<Comment>();
 	
 	
 	public BioEntity(BioEntity in) {
 		this.id = in.getId();
-		this.setAvailability(in.getAvailability());
 		this.setName(in.getName());
-		this.setShortName(in.getName());
 		this.setSynonyms(new ArrayList<String>());
 		this.getSynonyms().addAll(in.getSynonyms());
 		this.setComment(in.getComment());
-		this.setFlag(false);
-		this.setIsHolderClass(in.getIsHolderClass());
-		this.setCompartment(new BioCompartment(in.getCompartment()));
 		this.setRefs(new HashMap<String, Set<BioRef>>());
-		this.setPmids(new HashSet<String>());
-		this.setAttributes(in.getAttributes());
 	}
 	
 	public BioEntity(String id, String name) {
 		
 		this.id=id;
 		this.setName(name);
-		this.setIsHolderClass(false);
-		this.setCompartment(new BioCompartment("NA", "NA"));
-		this.setPmids(new HashSet<String>());
 		this.setRefs(new HashMap<String, Set<BioRef>>());
-		this.setAttributes(new HashMap<String, Object>());
 	}
 	
 	
 	public BioEntity(String id) {
 		this.id=id;
 		this.setName(id);
-		this.setIsHolderClass(false);
-		this.setCompartment(new BioCompartment("NA", "NA"));
-		this.setPmids(new HashSet<String>());
 		this.setRefs(new HashMap<String, Set<BioRef>>());
-		this.setAttributes(new HashMap<String, Object>());
-	}
-	
-
-	/**
-	 * get the sbo term of the entity
-	 * @return sboterm : String
-	 */
-	public String getSboterm() {
-		return sboterm;
-	}
-
-	/**
-	 * Set the sbo term of the entity
-	 * @param sboterm : String
-	 */
-	public void setSboterm(String sboterm) {
-		this.sboterm = sboterm;
 	}
 	
 	/**
@@ -163,22 +88,6 @@ public class BioEntity {
 	 */
 	public String getName() {
 		return this.name;
-	}
-	
-	/**
-	 * Get the short name of the entity
-	 * @return the short name of the entity
-	 */
-	public String getShortName() {
-		return this.shortName;
-	}
-	
-	/**
-	 * Set the short name of the entity
-	 * @param n : String
-	 */
-	public void setShortName (String n) {
-		this.shortName = n;
 	}
 	
 	/**
@@ -212,22 +121,6 @@ public class BioEntity {
 	public String getComment() {
 		return this.comment;
 	}
-	
-	/**
-	 * Set the availability of the entity
-	 * @param a : A string
-	 */
-	public void setAvailability(String a) {
-		this.availability = a;
-	}
-	
-	/**
-	 * Get the availability of the entity
-	 * @return a string
-	 */
-	public String getAvailability() {
-		return this.availability;
-	}
 
 	/**
 	 * @return Returns the id.
@@ -236,104 +129,8 @@ public class BioEntity {
 		return id;
 	}
 
-	/**
-	 * @return Returns the isHolderClass.
-	 */
-	public Boolean getIsHolderClass() {
-		return isHolderClass;
-	}
-
-	/**
-	 * @param isHolderClass The isHolderClass to set.
-	 */
-	public void setIsHolderClass(Boolean isHolderClass) {
-		this.isHolderClass = isHolderClass;
-	}
-
-	public Boolean getFlag() {
-		return flag;
-	}
-
-	public void setFlag(Boolean flag) {
-		this.flag = flag;
-	}
-
 	public void setSynonyms(ArrayList<String> synonyms) {
 		this.synonyms = synonyms;
-	}
-
-	public BioCompartment getCompartment() {
-		return compartment;
-	}
-
-	public void setCompartment(BioCompartment compartment) {
-		this.compartment = compartment;
-	}
-	
-	/**
-	 * @return the score
-	 */
-	public String getScore() {
-		return score;
-	}
-
-	/**
-	 * @param score the score to set
-	 */
-	public void setScore(String score) {
-		this.score = score;
-	}
-
-	/**
-	 * @return the status
-	 */
-	public String getStatus() {
-		return status;
-	}
-
-	/**
-	 * @param status the status to set
-	 */
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	/**
-	 * @param e
-	 * @return
-	 * @see java.util.Set#add(java.lang.Object)
-	 */
-	public boolean addComment(Comment e) {
-		return userComments.add(e);
-	}
-
-	/**
-	 * @return the userComments
-	 */
-	public Set<Comment> getUserComments() {
-		return userComments;
-	}
-
-	/**
-	 * @return the pmids
-	 */
-	public HashSet<String> getPmids() {
-		return pmids;
-	}
-
-	/**
-	 * @param pmids the pmids to set
-	 */
-	public void setPmids(HashSet<String> pmids) {
-		this.pmids = pmids;
-	}
-
-	/**
-	 * Adds a pmid
-	 * @param pmid
-	 */
-	public void addPmid(String pmid) {
-		this.pmids.add(pmid);
 	}
 	
 	public void addRef(String dbName, String dbId, int confidenceLevel, String relation, String origin){
@@ -414,59 +211,5 @@ public class BioEntity {
 		this.refs=refs;
 	}
 
-	public Boolean getFlagedAsUpdate() {
-		return flagedAsUpdate;
-	}
-
-	public Boolean getFlagedAsInsert() {
-		return flagedAsInsert;
-	}
-
-	public void setFlagedAsUpdate(Boolean flagedAsUpdat) {
-		this.flagedAsUpdate = flagedAsUpdat;
-	}
-
-	public void setFlagedAsInsert(Boolean flagedAsInsert) {
-		this.flagedAsInsert = flagedAsInsert;
-	}
-
-	public Boolean getFlagedAsConflict() {
-		return flagedAsConflict;
-	}
-
-	public void setFlagedAsConflict(Boolean flagedAsConflict) {
-		this.flagedAsConflict = flagedAsConflict;
-	}
-
-	public BioEntity getInConflictWith() {
-		return inConflictWith;
-	}
-
-	public void setInConflictWith(BioEntity inConflictWith) {
-		this.inConflictWith = inConflictWith;
-	}
-
-	public String getIsUpdateOf() {
-		return isUpdateOf;
-	}
-
-	public void setIsUpdateOf(String isUpdateOf) {
-		this.isUpdateOf = isUpdateOf;
-	}
-
-	public HashMap<String, Object> getAttributes() {
-		return attributes;
-	}
-
-	public void setAttributes(HashMap<String, Object> attributes) {
-		this.attributes = attributes;
-	}
-
-	public void addAttributeValue(String key, Object value){
-		this.getAttributes().put(key, value);
-	}
-	public void removeAttribute(String key){
-		this.getAttributes().remove(key);
-	}
 	
 }

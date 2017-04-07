@@ -40,6 +40,15 @@ import java.util.HashMap;
  */
 public abstract class BioPhysicalEntity extends BioEntity {
 	
+	/**
+	 * From BioCyc : for substrates whose names imply a braod specificity
+	 * for a given enzymes. These nonsepcific substrates are often
+	 * involved in multiple reactionNodes
+	 */
+	private Boolean isGeneric; 	// From BioCyc : for substrates whose names imply a braod specificity
+									// for a given enzymes. These nonsepcific substrates are often
+									// involved in multiple reactionNodes
+	
 	private String molecularWeight = "NA";
 	private String chemicalFormula = "NA";
 	

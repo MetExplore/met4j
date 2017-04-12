@@ -2,8 +2,7 @@ package fr.inra.toulouse.metexplore.met4j_graph;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -12,9 +11,6 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
-import fr.inra.toulouse.metexplore.met4j_graph.core.BioPath;
-import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
-import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.io.ReactionGraphCreator;
 

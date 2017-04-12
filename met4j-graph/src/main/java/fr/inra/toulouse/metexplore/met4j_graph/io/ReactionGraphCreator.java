@@ -47,8 +47,8 @@ public class ReactionGraphCreator {
 			right.removeAll(exchange);
 			
 			if(!left.isEmpty() && !right.isEmpty()){
-				for(BioChemicalReaction v1 : left){
-					for(BioChemicalReaction v2 : right){
+				for(BioChemicalReaction v1 : right){
+					for(BioChemicalReaction v2 : left){
 						if(v1!=v2){
 							g.addEdge(v1, v2, new CompoundEdge(v1,v2,c));
 						}
@@ -61,13 +61,13 @@ public class ReactionGraphCreator {
 	
 	
 	public ReactionGraph getReactionGraph1(){
-		System.err.println("create new graph");
 		ReactionGraph g = new ReactionGraph();
 		HashMap<BioPhysicalEntity, HashSet<BioChemicalReaction>> incoming = new HashMap<BioPhysicalEntity, HashSet<BioChemicalReaction>>();
-		System.err.println("foreach reactions");
 		for(BioChemicalReaction r : bn.getBiochemicalReactionList().values()){
 			g.addVertex(r);
-			for(BioPhysicalEntityParticipant p : r.getLeftParticipantList().values()){
+			HashSet<BioPhysicalEntityParticipant> left = new HashSet<BioPhysicalEntityParticipant>(r.getLeftParticipantList().values());
+			if(r.isReversible()) left.addAll(r.getRightParticipantList().values());
+			for(BioPhysicalEntityParticipant p : left){
 				BioPhysicalEntity e = p.getPhysicalEntity();
 				if(!e.getIsSide()){
 					HashSet<BioChemicalReaction> relation = incoming.get(e);
@@ -81,18 +81,15 @@ public class ReactionGraphCreator {
 				}
 			}
 		}
-		System.err.println("foreach reactions");
-		int i = 0;
-		int n = bn.getBiochemicalReactionList().size();
+
 		for(BioChemicalReaction r : bn.getBiochemicalReactionList().values()){
-			i++;
-			System.err.println(i+"/"+n);
-			for(BioPhysicalEntityParticipant p : r.getRightParticipantList().values()){
+			HashSet<BioPhysicalEntityParticipant> right = new HashSet<BioPhysicalEntityParticipant>(r.getRightParticipantList().values());
+			if(r.isReversible()) right.addAll(r.getLeftParticipantList().values());
+			for(BioPhysicalEntityParticipant p : right){
 				BioPhysicalEntity e = p.getPhysicalEntity();
 				if(!e.getIsSide()){
 					HashSet<BioChemicalReaction> relation = incoming.get(e);
 					if(relation != null){
-						System.err.println("\t"+e.getId()+"\t"+relation.size());
 						for(BioChemicalReaction r2 : relation){
 							if(!r.equals(r2)){
 								g.addEdge(r, r2, new CompoundEdge(r, r2, e));
@@ -124,7 +121,7 @@ public class ReactionGraphCreator {
 					if(!v1.getLeftParticipantList().isEmpty() && !v1.getRightParticipantList().isEmpty()){
 						for(BioChemicalReaction v2 : right){
 							if(v1 != v2 && !v2.getLeftParticipantList().isEmpty() && !v2.getRightParticipantList().isEmpty()){
-								g.addEdge(v1, v2, new CompoundEdge(v1,v2,c));
+								g.addEdge(v2, v1, new CompoundEdge(v2,v1,c));
 							}
 						}
 					}
@@ -135,15 +132,15 @@ public class ReactionGraphCreator {
 	}
 	
 	public ReactionGraph getReactionGraph3(){
-		System.err.println("create new graph");
 		ReactionGraph g = new ReactionGraph();
 		HashMap<BioPhysicalEntity, HashSet<BioChemicalReaction>> incoming = new HashMap<BioPhysicalEntity, HashSet<BioChemicalReaction>>();
 		HashMap<BioPhysicalEntity, HashSet<BioChemicalReaction>> outgoing = new HashMap<BioPhysicalEntity, HashSet<BioChemicalReaction>>();
 
-		System.err.println("foreach reactions");
 		for(BioChemicalReaction r : bn.getBiochemicalReactionList().values()){
 			g.addVertex(r);
-			for(BioPhysicalEntityParticipant p : r.getLeftParticipantList().values()){
+			HashSet<BioPhysicalEntityParticipant> left = new HashSet<BioPhysicalEntityParticipant>(r.getLeftParticipantList().values());
+			if(r.isReversible()) left.addAll(r.getRightParticipantList().values());
+			for(BioPhysicalEntityParticipant p : left){
 				BioPhysicalEntity e = p.getPhysicalEntity();
 				HashSet<BioChemicalReaction> relation = incoming.get(e);
 				if(relation==null){
@@ -154,7 +151,9 @@ public class ReactionGraphCreator {
 					relation.add(r);
 				}
 			}
-			for(BioPhysicalEntityParticipant p : r.getRightParticipantList().values()){
+			HashSet<BioPhysicalEntityParticipant> right = new HashSet<BioPhysicalEntityParticipant>(r.getRightParticipantList().values());
+			if(r.isReversible()) right.addAll(r.getLeftParticipantList().values());
+			for(BioPhysicalEntityParticipant p : right){
 				BioPhysicalEntity e = p.getPhysicalEntity();
 				HashSet<BioChemicalReaction> relation = outgoing.get(e);
 				if(relation==null){
@@ -172,7 +171,9 @@ public class ReactionGraphCreator {
 				HashSet<BioChemicalReaction> connected = incoming.get(e);
 				if(connected!=null){
 					for(BioChemicalReaction r2 : connected){
-						g.addEdge(r1, r2, new CompoundEdge(r1,r2,e));
+						if(r1!=r2){
+							g.addEdge(r1, r2, new CompoundEdge(r1,r2,e));
+						}
 					}
 				}
 			}
@@ -183,6 +184,9 @@ public class ReactionGraphCreator {
 	
 	public ReactionGraph getReactionGraph4(){
 		ReactionGraph g = new ReactionGraph();
+		for(BioChemicalReaction r : bn.getBiochemicalReactionList().values()){
+			g.addVertex(r);
+		}
 		HashSet<BioChemicalReaction> reactionStack1 = new HashSet<BioChemicalReaction>(bn.getBiochemicalReactionList().values());
 		HashSet<BioChemicalReaction> reactionStack2 = new HashSet<BioChemicalReaction>(bn.getBiochemicalReactionList().values());
 		
@@ -237,7 +241,6 @@ public class ReactionGraphCreator {
 		//for each reaction r1 in N
 		for(BioChemicalReaction r1 : bn.getBiochemicalReactionList().values())
 		{
-			System.err.println("   "+cpt++);
 			//for each reaction r2 in N
 			for(BioChemicalReaction r2 : bn.getBiochemicalReactionList().values())
 			{

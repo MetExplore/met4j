@@ -104,27 +104,26 @@ public class Bionetwork2BioGraph {
 	 */
 	public ReactionGraph getReactionGraph(){
 		ReactionGraph g = new ReactionGraph();
-		HashSet<BioChemicalReaction> exchange = new HashSet<BioChemicalReaction>();
+		
 		for(BioChemicalReaction r : bn.getBiochemicalReactionList().values()){
-			if(!r.isExchangeReaction()){
+			if(!r.getLeftParticipantList().isEmpty() && !r.getRightParticipantList().isEmpty()){
 				g.addVertex(r);
-			}else{
-				exchange.add(r);
 			}
 		}
 		
 		for(BioPhysicalEntity c : bn.getPhysicalEntityList().values()){
-			
-			Collection<BioChemicalReaction> left = c.getReactionsAsSubstrate().values();
-			Collection<BioChemicalReaction> right = c.getReactionsAsProduct().values();
-			left.removeAll(exchange);
-			right.removeAll(exchange);
-			
-			if(!left.isEmpty() && !right.isEmpty()){
-				for(BioChemicalReaction v1 : left){
-					for(BioChemicalReaction v2 : right){
-						if(v1!=v2){
-							g.addEdge(v1, v2, new CompoundEdge(v1,v2,c));
+			if(!c.getIsSide()){
+				Collection<BioChemicalReaction> left = c.getReactionsAsSubstrate().values();
+				Collection<BioChemicalReaction> right = c.getReactionsAsProduct().values();
+				
+				if(!left.isEmpty() && !right.isEmpty()){
+					for(BioChemicalReaction v1 : left){
+						if(!v1.getLeftParticipantList().isEmpty() && !v1.getRightParticipantList().isEmpty()){
+							for(BioChemicalReaction v2 : right){
+								if(v1 != v2 && !v2.getLeftParticipantList().isEmpty() && !v2.getRightParticipantList().isEmpty()){
+									g.addEdge(v2, v1, new CompoundEdge(v2,v1,c));
+								}
+							}
 						}
 					}
 				}

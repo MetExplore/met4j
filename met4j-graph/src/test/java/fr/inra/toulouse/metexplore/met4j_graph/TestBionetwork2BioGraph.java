@@ -110,20 +110,20 @@ public class TestBionetwork2BioGraph {
 		assertEquals("wrong number of vertices",7, g.vertexSet().size());
 		assertEquals("wrong number of edges",13, g.edgeSet().size());
 		
-		assertEquals("wrong in-degree of reaction "+a.getId(), 1, g.inDegreeOf(a));
-		assertEquals("wrong out-degree of reaction "+a.getId(), 3, g.outDegreeOf(a));
-		assertEquals("wrong in-degree of reaction "+b.getId(), 2, g.inDegreeOf(b));
-		assertEquals("wrong out-degree of reaction "+b.getId(), 2, g.outDegreeOf(b));
-		assertEquals("wrong in-degree of reaction "+c.getId(), 4, g.inDegreeOf(c));
-		assertEquals("wrong out-degree of reaction "+c.getId(), 0, g.outDegreeOf(c));
-		assertEquals("wrong in-degree of reaction "+d.getId(), 0, g.inDegreeOf(d));
-		assertEquals("wrong out-degree of reaction "+d.getId(), 3, g.outDegreeOf(d));
-		assertEquals("wrong in-degree of reaction "+e.getId(), 2, g.inDegreeOf(e));
-		assertEquals("wrong out-degree of reaction "+e.getId(), 4, g.outDegreeOf(e));
-		assertEquals("wrong in-degree of reaction "+f.getId(), 3, g.inDegreeOf(f));
-		assertEquals("wrong out-degree of reaction "+f.getId(), 0, g.outDegreeOf(f));
-		assertEquals("wrong in-degree of reaction "+h.getId(), 1, g.inDegreeOf(h));
-		assertEquals("wrong out-degree of reaction "+h.getId(), 1, g.outDegreeOf(h));
+		assertEquals("wrong in-degree of compound "+a.getId(), 1, g.inDegreeOf(a));
+		assertEquals("wrong out-degree of compound "+a.getId(), 3, g.outDegreeOf(a));
+		assertEquals("wrong in-degree of compound "+b.getId(), 2, g.inDegreeOf(b));
+		assertEquals("wrong out-degree of compound "+b.getId(), 2, g.outDegreeOf(b));
+		assertEquals("wrong in-degree of compound "+c.getId(), 4, g.inDegreeOf(c));
+		assertEquals("wrong out-degree of compound "+c.getId(), 0, g.outDegreeOf(c));
+		assertEquals("wrong in-degree of compound "+d.getId(), 0, g.inDegreeOf(d));
+		assertEquals("wrong out-degree of compound "+d.getId(), 3, g.outDegreeOf(d));
+		assertEquals("wrong in-degree of compound "+e.getId(), 2, g.inDegreeOf(e));
+		assertEquals("wrong out-degree of compound "+e.getId(), 4, g.outDegreeOf(e));
+		assertEquals("wrong in-degree of compound "+f.getId(), 3, g.inDegreeOf(f));
+		assertEquals("wrong out-degree of compound "+f.getId(), 0, g.outDegreeOf(f));
+		assertEquals("wrong in-degree of compound "+h.getId(), 1, g.inDegreeOf(h));
+		assertEquals("wrong out-degree of compound "+h.getId(), 1, g.outDegreeOf(h));
 	}
 	
 	@Test
@@ -135,20 +135,20 @@ public class TestBionetwork2BioGraph {
 		assertEquals("wrong number of vertices",14, g.vertexSet().size());
 		assertEquals("wrong number of edges",22, g.edgeSet().size());
 		
-		assertEquals("wrong in-degree of reaction "+a.getId(), 1, g.inDegreeOf(a));
-		assertEquals("wrong out-degree of reaction "+a.getId(), 2, g.outDegreeOf(a));
-		assertEquals("wrong in-degree of reaction "+b.getId(), 2, g.inDegreeOf(b));
-		assertEquals("wrong out-degree of reaction "+b.getId(), 2, g.outDegreeOf(b));
-		assertEquals("wrong in-degree of reaction "+c.getId(), 1, g.inDegreeOf(c));
-		assertEquals("wrong out-degree of reaction "+c.getId(), 0, g.outDegreeOf(c));
-		assertEquals("wrong in-degree of reaction "+d.getId(), 0, g.inDegreeOf(d));
-		assertEquals("wrong out-degree of reaction "+d.getId(), 3, g.outDegreeOf(d));
-		assertEquals("wrong in-degree of reaction "+e.getId(), 2, g.inDegreeOf(e));
-		assertEquals("wrong out-degree of reaction "+e.getId(), 3, g.outDegreeOf(e));
-		assertEquals("wrong in-degree of reaction "+f.getId(), 3, g.inDegreeOf(f));
-		assertEquals("wrong out-degree of reaction "+f.getId(), 0, g.outDegreeOf(f));
-		assertEquals("wrong in-degree of reaction "+h.getId(), 1, g.inDegreeOf(h));
-		assertEquals("wrong out-degree of reaction "+h.getId(), 1, g.outDegreeOf(h));
+		assertEquals("wrong in-degree of compound "+a.getId(), 1, g.inDegreeOf(a));
+		assertEquals("wrong out-degree of compound "+a.getId(), 2, g.outDegreeOf(a));
+		assertEquals("wrong in-degree of compound "+b.getId(), 2, g.inDegreeOf(b));
+		assertEquals("wrong out-degree of compound "+b.getId(), 2, g.outDegreeOf(b));
+		assertEquals("wrong in-degree of compound "+c.getId(), 2, g.inDegreeOf(c));
+		assertEquals("wrong out-degree of compound "+c.getId(), 0, g.outDegreeOf(c));
+		assertEquals("wrong in-degree of compound "+d.getId(), 0, g.inDegreeOf(d));
+		assertEquals("wrong out-degree of compound "+d.getId(), 3, g.outDegreeOf(d));
+		assertEquals("wrong in-degree of compound "+e.getId(), 2, g.inDegreeOf(e));
+		assertEquals("wrong out-degree of compound "+e.getId(), 3, g.outDegreeOf(e));
+		assertEquals("wrong in-degree of compound "+f.getId(), 3, g.inDegreeOf(f));
+		assertEquals("wrong out-degree of compound "+f.getId(), 0, g.outDegreeOf(f));
+		assertEquals("wrong in-degree of compound "+h.getId(), 1, g.inDegreeOf(h));
+		assertEquals("wrong out-degree of compound "+h.getId(), 1, g.outDegreeOf(h));
 		
 		assertEquals("wrong in-degree of reaction "+r1.getId(), 1, g.inDegreeOf(r1));
 		assertEquals("wrong out-degree of reaction "+r1.getId(), 2, g.outDegreeOf(r1));

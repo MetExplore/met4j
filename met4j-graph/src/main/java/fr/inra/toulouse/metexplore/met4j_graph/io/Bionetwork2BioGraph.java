@@ -149,20 +149,15 @@ public class Bionetwork2BioGraph {
 				boolean reversible = r.isReversible();
 				
 				for(BioPhysicalEntity v1 : left){
-					for(BioPhysicalEntity v2 : right){
-						if(v1!=v2){
-							
-							g.addEdge(v1, r, new BipartiteEdge(v1, r, false));
-							g.addEdge(r, v2, new BipartiteEdge(r, v2, false));
-							
-							if(reversible){
-								g.addEdge(v2, r, new BipartiteEdge(v2, r, true));
-								g.addEdge(r, v1, new BipartiteEdge(r, v1, true));
-							}
-							
-						}else{
-							System.err.println("skip loop on "+v1.getId()+" -> "+v2.getId()+" ("+r.getId()+")");
-						}
+					g.addEdge(v1, r, new BipartiteEdge(v1, r, false));
+					if(reversible){
+						g.addEdge(r, v1, new BipartiteEdge(r, v1, true));
+					}
+				}
+				for(BioPhysicalEntity v2 : right){	
+					g.addEdge(r, v2, new BipartiteEdge(r, v2, false));	
+					if(reversible){
+						g.addEdge(v2, r, new BipartiteEdge(v2, r, true));
 					}
 				}
 			}

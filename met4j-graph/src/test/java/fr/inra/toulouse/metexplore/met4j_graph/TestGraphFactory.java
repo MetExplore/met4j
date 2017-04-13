@@ -56,7 +56,37 @@ public class TestGraphFactory {
 		
 		f=CompoundGraph.getFactory();
 	}
-
+	
+	@Test
+	public void testCreateGraphFromElements() {
+		HashSet<ReactionEdge> edges = new HashSet<ReactionEdge>();
+		edges.add(e1);
+		edges.add(e2);
+		HashSet<BioPhysicalEntity> vertexSet1 = new HashSet<BioPhysicalEntity>();
+		vertexSet1.add(v1);
+		vertexSet1.add(v2);
+		vertexSet1.add(v3);
+		vertexSet1.add(new BioPhysicalEntity("v4"));
+		
+		CompoundGraph g2 = f.createGraphFromElements(vertexSet1, edges);
+		
+		assertEquals(4, g2.vertexSet().size());
+		assertEquals(2, g2.edgeSet().size());
+	}
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void testEsceptionCreateGraphFromElements() {
+		HashSet<ReactionEdge> edges = new HashSet<ReactionEdge>();
+		edges.add(e1);
+		edges.add(e2);
+		HashSet<BioPhysicalEntity> vertexSet1 = new HashSet<BioPhysicalEntity>();
+		vertexSet1.add(v1);
+		vertexSet1.add(v2);
+		
+		CompoundGraph g2 = f.createGraphFromElements(vertexSet1, edges);
+		g2.toString();
+	}
+	
 	@Test
 	public void testCreateGraphFromEdgeList() {
 		HashSet<ReactionEdge> edges = new HashSet<ReactionEdge>();
@@ -98,6 +128,19 @@ public class TestGraphFactory {
 		assertEquals(2, g2.edgeSet().size());
 		assertTrue(g2.containsEdge(v3, v2));
 		assertTrue(g2.containsEdge(v2, v1));
+	}
+	
+	@Test
+	public void testCreateSubgraph(){
+		HashSet<BioPhysicalEntity> vertexSet1 = new HashSet<BioPhysicalEntity>();
+		vertexSet1.add(v1);
+		vertexSet1.add(v2);
+		CompoundGraph g2 = f.createSubGraph(cg, vertexSet1);
+		assertEquals(2, g2.vertexSet().size());
+		assertEquals(1, g2.edgeSet().size());
+		assertTrue(g2.vertexSet().contains(v1));
+		assertTrue(g2.vertexSet().contains(v2));
+		assertTrue(g2.edgeSet().contains(e1));
 	}
 
 }

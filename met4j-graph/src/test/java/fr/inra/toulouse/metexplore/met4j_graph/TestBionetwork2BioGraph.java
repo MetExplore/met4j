@@ -11,7 +11,6 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
 import fr.inra.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inra.toulouse.metexplore.met4j_graph.io.ReactionGraphCreator;
 
 public class TestBionetwork2BioGraph {
 	/** The graph. */

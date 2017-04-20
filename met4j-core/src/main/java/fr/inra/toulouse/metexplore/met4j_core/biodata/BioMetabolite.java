@@ -61,7 +61,6 @@
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 /**
- * @author lcottret
  *
  */
 public class BioMetabolite extends BioPhysicalEntity {
@@ -70,6 +69,12 @@ public class BioMetabolite extends BioPhysicalEntity {
 	private String chemicalFormula;
 	private String inchi;
 	private String smile;
+	private int charge;
+	
+	public BioMetabolite(String id) {
+		super(id);
+	}
+	
 	/**
 	 * @return the inchi
 	 */
@@ -110,19 +115,6 @@ public class BioMetabolite extends BioPhysicalEntity {
 	}
 
 
-	private int charge;
-	
-
-	/**
-	 * @param pe
-	 */
-	public BioMetabolite(BioMetabolite pe){
-		super(pe);
-		this.molecularWeight=pe.getMolecularWeight();
-		this.chemicalFormula=pe.getChemicalFormula();
-		this.charge=pe.getCharge();
-	}
-
 
 	public String getChemicalFormula() {
 		return chemicalFormula;
@@ -139,14 +131,6 @@ public class BioMetabolite extends BioPhysicalEntity {
 	 */
 	public Double getMolecularWeight() {
 		return molecularWeight;
-	}
-
-
-	/**
-	 * @param molecularWeight the molecularWeight to set
-	 */
-	public void setMolecularWeight(Double molecularWeight) {
-		this.molecularWeight = molecularWeight;
 	}
 
 

@@ -51,15 +51,6 @@ public abstract class BioEntity {
 	private HashMap<String,Set<BioRef>> refs;
 	
 
-	public BioEntity(BioEntity in) {
-		this.id = in.getId();
-		this.setName(in.getName());
-		this.setSynonyms(new ArrayList<String>());
-		this.getSynonyms().addAll(in.getSynonyms());
-		this.setComment(in.getComment());
-		this.setRefs(new HashMap<String, Set<BioRef>>());
-	}
-	
 	public BioEntity(String id, String name) {
 		
 		this.id=id;

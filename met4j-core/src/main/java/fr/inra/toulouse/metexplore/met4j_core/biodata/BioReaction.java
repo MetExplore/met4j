@@ -70,43 +70,10 @@ import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 public class BioReaction extends BioInteraction {
 
 	private boolean spontaneous = false;
-	private String deltaG = "";
-	private String deltaH = "";
-	private String deltaS = "";
-	private String ecNumber = "";
-	private String keq = "";
-	private HashMap<String, BioCatalysis> enzrxnsList = new HashMap<String, BioCatalysis>();
-	private HashMap<String, BioPhysicalEntity> enzList = new HashMap<String, BioPhysicalEntity>();
-	private HashMap<String, BioPhysicalEntity> listOfSubstrates = new HashMap<String, BioPhysicalEntity>();
-	private HashMap<String, BioPhysicalEntity> listOfProducts = new HashMap<String, BioPhysicalEntity>();
-	
-	private String go= null;
-	private String goTerm= null;
+	private String ecNumber;
+	private boolean reversibility;
 
-	private String reversibility = "irreversible-left-to-right";
-	private HashMap<String, BioPhysicalEntity> listOfPrimarySubstrates;
-	private HashMap<String, BioPhysicalEntity> listOfPrimaryProducts;
 
-	private String sbmlNote = "";
-
-	private Boolean isGenericReaction = false;
-
-	private Boolean hole = false;
-
-	private Flux lowerBound = new Flux("-99999", new BioUnitDefinition("mmol_per_gDW_per_hr", "mmol_per_gDW_per_hr"));
-	private Flux upperBound = new Flux("99999", new BioUnitDefinition("mmol_per_gDW_per_hr", "mmol_per_gDW_per_hr"));
-
-	private HashMap<String, Flux> ListOfAdditionalFluxParam = new HashMap<String, Flux>();
-
-	private String KineticFormula;
-
-	public static String FBA_INTERNAL = "Internal";
-	public static String FBA_EXCHANGE = "Exchange";
-	public static String FBA_TRANSPORT = "Transport";
-
-	public Boolean getHole() {
-		return hole;
-	}
 
 	public Set<String> getCofactors() {
 

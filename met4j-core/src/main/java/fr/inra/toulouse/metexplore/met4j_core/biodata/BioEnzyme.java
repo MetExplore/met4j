@@ -30,6 +30,32 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
+import java.util.HashMap;
+
 public class BioEnzyme extends BioPhysicalEntity {
+
+	private HashMap<String, BioParticipant> participants;
+
+	public BioEnzyme(String id) {
+		super(id);
+	}
+
+	/**
+	 * @return the participants
+	 */
+	public HashMap<String, BioParticipant> getParticipants() {
+		return participants;
+	}
+
+	/**
+	 * @param participants the participants to set
+	 */
+	public void setParticipants(HashMap<String, BioParticipant> participants) {
+		this.participants = participants;
+	}
+
+	
+	
+	
 
 }

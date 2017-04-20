@@ -33,10 +33,10 @@
  */
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import fr.inra.toulouse.metexplore.met4j_core.io.BioUnitDefinition;
+import java.util.HashMap;
+
 
 /**
- * @author ludo & Fabien
  *
  *	Biological cellular compartment, e.g. mitochondria, cytoplasm
  *	SBML v2 Version 4 release 1
@@ -46,148 +46,35 @@ import fr.inra.toulouse.metexplore.met4j_core.io.BioUnitDefinition;
 public class BioCompartment extends BioEntity{
 
 	
-	private String sboterm;
+	private HashMap<String, BioPhysicalEntity> components;
 	
-	private Boolean flagedAsUpdate=false;
-	private Boolean flagedAsInsert=false;
-	private Boolean flagedAsConflict=false;
-	
-	private String fake_id = "fake_compartment";
-	private String fake_name = "fake compartment";
-	
-	
-	public BioCompartment() {
-
-	}
-	
-	/**
-	 * Constructor by copy
-	 * @param c compartment to copy
-	 */
-	public BioCompartment(BioCompartment bioCompartment) {
-		if(bioCompartment != null) 
-		{
-			this.name = bioCompartment.getName();
-			this.id = bioCompartment.getId();
-		}
-	}
-	
-	/**
-	 * BioCompartment constructor
-	 * @param name Common name of the compartment
-	 * @param id Identifier of the compartment
-	 */
-	public BioCompartment(String name, String id) {
-		this.name = name;
-		this.id = id;
-	}
-	/**
-	 * 
-	 * @return the BioCompartment containing the current one
-	 */
-	public BioCompartment getOutsideCompartment() {
-		return outsideCompartment;
-	}
-	/**
-	 * Set the compartment containing the current one
-	 * @param outsideCompartment
-	 */
-	public void setOutsideCompartment(BioCompartment outsideCompartment) {
-		this.outsideCompartment = outsideCompartment;
-	}
-	
-	/**
-	 * get the sbo term of the entity
-	 * @return sboterm : String
-	 */
-	public String getSboterm() {
-		return sboterm;
+	public BioCompartment(String id) {
+		super(id);
 	}
 
 	/**
-	 * Set the sbo term of the entity
-	 * @param sboterm : String
+	 * @return the components
 	 */
-	public void setSboterm(String sboterm) {
-		this.sboterm = sboterm;
+	public HashMap<String, BioPhysicalEntity> getComponents() {
+		return components;
 	}
-	
+
 	/**
-	 * Useful to indicate each time the same compartment for proteins, enzymes, etc...
+	 * @param components the components to set
 	 */
-	public void setAsFakeCompartment () {
-		this.setName(fake_name);
-		this.setId(fake_id);
+	public void setComponents(HashMap<String, BioPhysicalEntity> components) {
+		this.components = components;
+	}
+	
+	public void addComponent(BioPhysicalEntity e)
+	{
+		this.components.put(e.getId(), e);
 	}
 	
 	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public BioCompartmentType getCompartmentType() {
-		return compartmentType;
-	}
-	public void setCompartmentType(BioCompartmentType compartmentType) {
-		this.compartmentType = compartmentType;
-	}
-	public int getSpatialDimensions() {
-		return spatialDimensions;
-	}
-	public void setSpatialDimensions(int spatialDimensions) {
-		this.spatialDimensions = spatialDimensions;
-	}
-	public double getSize() {
-		return size;
-	}
-	public void setSize(double size) {
-		this.size = size;
-	}
-	public BioUnitDefinition getUnit() {
-		return unit;
-	}
-	public void setUnit(BioUnitDefinition unit) {
-		this.unit = unit;
-	}
+	
 
-	public boolean isConstant() {
-		return constant;
-	}
-
-	public void setConstant(boolean constant) {
-		this.constant = constant;
-	}
-
-	public Boolean getFlagedAsUpdate() {
-		return flagedAsUpdate;
-	}
-
-	public void setFlagedAsUpdate(Boolean flagedAsUpdate) {
-		this.flagedAsUpdate = flagedAsUpdate;
-	}
-
-	public Boolean getFlagedAsInsert() {
-		return flagedAsInsert;
-	}
-
-	public void setFlagedAsInsert(Boolean flagedAsInsert) {
-		this.flagedAsInsert = flagedAsInsert;
-	}
-
-	public Boolean getFlagedAsConflict() {
-		return flagedAsConflict;
-	}
-
-	public void setFlagedAsConflict(Boolean flagedAsConflict) {
-		this.flagedAsConflict = flagedAsConflict;
-	}
+	
+	
 	
 }

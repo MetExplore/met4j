@@ -35,16 +35,14 @@ import java.util.HashMap;
 
 public class BioGene extends BioEntity {
 	
-	private String sequence;
+	
 	public HashMap<String, BioProtein> proteinList = new HashMap<String, BioProtein>();
 
-	public BioGene(BioGene in) {
-		super(in);
-		this.sequence=in.getSequence();
-		this.proteinList=new HashMap<String, BioProtein>(proteinList);
+	
+	public BioGene(String id) {
+		super(id);
 	}
 
-	
 	/**
 	 * @return Returns the proteinList.
 	 */
@@ -66,12 +64,5 @@ public class BioGene extends BioEntity {
 		proteinList.put(protein.getId(), protein);
 	}
 
-	public String getSequence() {
-		return sequence;
-	}
-
-	public void setSequence(String sequence) {
-		this.sequence = sequence;
-	}
 
 }

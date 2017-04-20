@@ -45,9 +45,9 @@ public abstract class BioPhysicalEntity extends BioEntity {
 	}
 
 	/**
-	 * From BioCyc : for substrates whose names imply a braod specificity
-	 * for a given enzymes. These nonsepcific substrates are often
-	 * involved in multiple reactionNodes
+	 * From BioCyc : for substrates whose names imply a broad specificity
+	 * for a given enzyme. These non specific substrates are often
+	 * involved in multiple reaction nodes
 	 */
 	private Boolean isGeneric;
 	

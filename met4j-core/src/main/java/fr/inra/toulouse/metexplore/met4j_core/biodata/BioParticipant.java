@@ -31,12 +31,6 @@
 
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import java.text.DecimalFormat;
-import java.text.Format;
-import java.text.NumberFormat;
-
-import org.omg.CORBA.DoubleSeqHelper;
-
 import fr.inra.toulouse.metexplore.met4j_core.utils.ErrorUtils;
 
 public abstract class BioParticipant extends BioEntity {

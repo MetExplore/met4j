@@ -37,8 +37,7 @@ import java.util.Set;
 
 
 /**
- * @author ludo
- * The root class of ontology
+ * The root class 
  */
 
 public abstract class BioEntity {
@@ -186,16 +185,6 @@ public abstract class BioEntity {
 			}
 		}
 		return false;
-	}
-	
-	public int countRef(){
-		int total=0;
-		
-		for(Set<BioRef> refSet:this.refs.values()){
-			total+=refSet.size();
-		}
-		return total;
-		
 	}
 	
 	public void setRefs(HashMap<String, Set<BioRef>> refs){

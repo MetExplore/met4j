@@ -33,24 +33,8 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 public class BioProtein extends BioPhysicalEntity {
 
-	private String sequence;
-	
-	public BioProtein(BioProtein prot){
-		super(prot);
-		this.setSequence(prot.getSequence());
-	}
-	
-	/**
-	 * @return Returns the sequence.
-	 */
-	public String getSequence() {
-		return sequence;
-	}
-	/**
-	 * @param sequence The sequence to set.
-	 */
-	public void setSequence(String sequence) {
-		this.sequence = sequence;
+	public BioProtein(String id) {
+		super(id);
 	}
 
 }

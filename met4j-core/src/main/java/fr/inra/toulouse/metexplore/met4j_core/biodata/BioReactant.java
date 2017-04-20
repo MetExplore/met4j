@@ -64,7 +64,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 /**
- * @author lcottret
  *
  */
 public class BioReactant extends BioParticipant {

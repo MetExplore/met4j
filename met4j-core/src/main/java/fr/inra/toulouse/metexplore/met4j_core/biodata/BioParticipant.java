@@ -28,36 +28,21 @@
  *  The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL license and that you accept its terms.
  ******************************************************************************/
-// Any additional special characteristics of a physical entity in the context of an interaction. 
-// These currently include stoichiometric coefficient and cellular location, but 
-// this list may be expanded in later levels.
 
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-public class BioParticipant extends BioEntity {
+public abstract class BioParticipant extends BioEntity {
 
 	private BioPhysicalEntity physicalEntity;
-	private String stoichiometricCoefficient;
-	private BioCompartment location;
-
-	public BioParticipant(BioPhysicalEntity physicalEntity, String stoichiometricCoefficient, BioCompartment location) {
+	
+	private Double quantity;
+	
+	public BioParticipant(BioPhysicalEntity physicalEntity, Double quantity) {
 		super(physicalEntity.getId());
 		this.physicalEntity=physicalEntity;
-		this.setStoichiometricCoefficient(stoichiometricCoefficient);
-		this.setLocation(location);
+		this.quantity = quantity;
 	}
 	
-	public BioParticipant(BioPhysicalEntity physicalEntity) {
-		super(physicalEntity.getId());
-		this.physicalEntity=physicalEntity;
-		this.setStoichiometricCoefficient("1");
-	}
-	
-	public BioParticipant(BioPhysicalEntity physicalEntity, String sto) {
-		super(physicalEntity.getId());
-		this.physicalEntity=physicalEntity;
-		this.setStoichiometricCoefficient(sto);
-	}
 	
 	/**
 	 * @return Returns the physicalEntity.
@@ -65,31 +50,33 @@ public class BioParticipant extends BioEntity {
 	public BioPhysicalEntity getPhysicalEntity() {
 		return physicalEntity;
 	}
+	
 
 	/**
-	 * @return Returns the stoichiometricCoefficient.
+	 * @param physicalEntity the physicalEntity to set
 	 */
-	public String getStoichiometricCoefficient() {
-		return stoichiometricCoefficient;
+	public void setPhysicalEntity(BioPhysicalEntity physicalEntity) {
+		this.physicalEntity = physicalEntity;
 	}
+	
+	
+
 
 	/**
-	 * @param stoichiometricCoefficient The stoichiometricCoefficient to set.
+	 * @return the quantity
 	 */
-	public void setStoichiometricCoefficient(String stoichiometricCoefficient) {
-		if(stoichiometricCoefficient.equals("")) {
-			stoichiometricCoefficient="1";
-		}
-		this.stoichiometricCoefficient = stoichiometricCoefficient;
+	public Double getQuantity() {
+		return quantity;
 	}
 
 
-	public BioCompartment getLocation() {
-		return location;
+	/**
+	 * @param quantity the quantity to set
+	 */
+	public void setQuantity(Double quantity) {
+		this.quantity = quantity;
 	}
 
-	public void setLocation(BioCompartment location) {
-		this.location = location;
-	}
+
 
 }

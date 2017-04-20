@@ -37,18 +37,18 @@ import java.util.stream.Collectors;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
-public class BioEntityCollection<E extends BioEntity> implements Collection<E> {
+public class BioCollection<E extends BioEntity> implements Collection<E> {
 	
 	
 	private HashSet<E> entities;
 	
 	
-	public BioEntityCollection() {
+	public BioCollection() {
 		entities = new HashSet<E>();
 	}
 	
 	
-	public BioEntityCollection(HashSet<E> e) {
+	public BioCollection(HashSet<E> e) {
 		entities = e;
 	}
 	
@@ -77,12 +77,11 @@ public class BioEntityCollection<E extends BioEntity> implements Collection<E> {
 	 * @param id
 	 * @return
 	 */
-	public BioEntityCollection<E> getEntitiesWithId(String id) {
+	public E getEntitiesFromId(String id) {
 		
-		HashSet<E> e = new HashSet<E> (entities.stream().filter
-				(o -> o.getId().equals(id)).collect(Collectors.toSet()));
+		E entity = entities.stream().filter(o -> o.getId().equals(id)).findFirst().get();
 			
-		return new BioEntityCollection<E>(e);
+		return entity;
 	}
 	
 	/**
@@ -90,12 +89,12 @@ public class BioEntityCollection<E extends BioEntity> implements Collection<E> {
 	 * @param id
 	 * @return
 	 */
-	public BioEntityCollection<E> getEntitiesWithName(String name) {
+	public BioCollection<E> getEntitiesWithName(String name) {
 		
 		HashSet<E> e = new HashSet<E> (entities.stream().filter
 				(o -> o.getName().equals(name)).collect(Collectors.toSet()));
 			
-		return new BioEntityCollection<E>(e);
+		return new BioCollection<E>(e);
 	}
 	
 	
@@ -155,43 +154,37 @@ public class BioEntityCollection<E extends BioEntity> implements Collection<E> {
 
 	@Override
 	public boolean removeAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		return entities.removeAll(c);
 	}
 
 
 	@Override
 	public boolean contains(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		return entities.contains(o);
 	}
 
 
 	@Override
 	public boolean add(E e) {
-		// TODO Auto-generated method stub
-		return false;
+		return entities.add(e);
 	}
 
 
 	@Override
 	public boolean remove(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		return entities.remove(o);
 	}
 
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		return entities.containsAll(c);
 	}
 
 
 	@Override
 	public boolean addAll(Collection<? extends E> c) {
-		// TODO Auto-generated method stub
-		return false;
+		return entities.addAll(c);
 	}
 	
 

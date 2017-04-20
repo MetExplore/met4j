@@ -39,16 +39,6 @@ public class BioParticipant extends BioEntity {
 	private BioPhysicalEntity physicalEntity;
 	private String stoichiometricCoefficient;
 	private BioCompartment location;
-	private Boolean isCofactor = false;
-	
-	
-	public Boolean getIsCofactor() {
-		return isCofactor;
-	}
-
-	public void setIsCofactor(Boolean isCofactor) {
-		this.isCofactor = isCofactor;
-	}
 
 	public BioParticipant(BioPhysicalEntity physicalEntity, String stoichiometricCoefficient, BioCompartment location) {
 		super(physicalEntity.getId());

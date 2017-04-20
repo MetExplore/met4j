@@ -30,9 +30,7 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * An entity that defines a single biochemical interaction between two or more
@@ -43,18 +41,16 @@ import java.util.Iterator;
 
 public abstract class BioInteraction extends BioEntity {
 	
+	
 	private HashMap<String, BioParticipant> leftParticipantList = new HashMap<String, BioParticipant>();
 	private HashMap<String, BioParticipant> rightParticipantList = new HashMap<String, BioParticipant>();
 
-	public BioInteraction(BioInteraction in) {
-		super(in);
-		this.leftParticipantList = new HashMap<String, BioParticipant>();
-		this.copyLeftParticipantList(in.getLeftParticipantList());
-		this.rightParticipantList = new HashMap<String, BioParticipant>();
-		this.copyRightParticipantList(in.getRightParticipantList());
+
+	public BioInteraction(String id) {
+		super(id);
 	}
 
-
+	
 	/**
 	 * @return the leftList
 	 */

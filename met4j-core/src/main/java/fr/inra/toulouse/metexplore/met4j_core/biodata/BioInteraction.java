@@ -30,7 +30,8 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * An entity that defines a single biochemical interaction between two or more
@@ -40,94 +41,40 @@ import java.util.HashMap;
  */
 
 public abstract class BioInteraction extends BioEntity {
-	
-	
-	private HashMap<String, BioParticipant> leftParticipantList = new HashMap<String, BioParticipant>();
-	private HashMap<String, BioParticipant> rightParticipantList = new HashMap<String, BioParticipant>();
 
+	private Set<BioReactant> reactants = new HashSet<BioReactant>();
 
 	public BioInteraction(String id) {
 		super(id);
 	}
 
-	
-	/**
-	 * @return the leftList
-	 */
-	public HashMap<String, BioPhysicalEntity> getLeftList() {
-		HashMap<String, BioPhysicalEntity> list = new HashMap<String, BioPhysicalEntity>();
-
-		for (BioParticipant bpe : this.getLeftParticipantList()
-				.values()) {
-			list.put(bpe.getPhysicalEntity().getId(), bpe.getPhysicalEntity());
-		}
-
-		return list;
-	}
-
 	/**
 	 * @return the leftParticipantList
 	 */
-	public HashMap<String, BioParticipant> getLeftParticipantList() {
-		return leftParticipantList;
+	public Set<BioReactant> getReactants() {
+		return reactants;
 	}
 
+	public Set<BioReactant> getLeft() {
 
-	/**
-	 * @param leftParticipantList the leftParticipantList to set
-	 */
-	public void setLeftParticipantList(HashMap<String, BioParticipant> leftParticipantList) {
-		this.leftParticipantList = leftParticipantList;
+		return getSide(false);
 	}
 
+	public Set<BioReactant> getRight() {
 
-	/**
-	 * @return the rightParticipantList
-	 */
-	public HashMap<String, BioParticipant> getRightParticipantList() {
-		return rightParticipantList;
+		return getSide(true);
 	}
 
+	private Set<BioReactant> getSide(boolean right) {
+		Set<BioReactant> reactants = new HashSet<BioReactant>();
 
-	/**
-	 * @param rightParticipantList the rightParticipantList to set
-	 */
-	public void setRightParticipantList(HashMap<String, BioParticipant> rightParticipantList) {
-		this.rightParticipantList = rightParticipantList;
-	}
-
-
-	/**
-	 * Remove a cpd from the list of left compounds
-	 * 
-	 * @param cpd
-	 */
-	public void removeLeftCpd(BioPhysicalEntity cpd) {
-		this.leftParticipantList.remove(cpd.getId());
-	}
-
-	/**
-	 * Remove a cpd from the list of right compounds
-	 * 
-	 * @param cpd
-	 */
-	public void removeRightCpd(BioPhysicalEntity cpd) {
-		this.rightParticipantList.remove(cpd.getId());
-	}
-
-	/**
-	 * @return the rightList
-	 */
-	public HashMap<String, BioPhysicalEntity> getRightList() {
-		HashMap<String, BioPhysicalEntity> list = new HashMap<String, BioPhysicalEntity>();
-
-		for (BioParticipant bpe : this.getRightParticipantList()
-				.values()) {
-			list.put(bpe.getPhysicalEntity().getId(), bpe.getPhysicalEntity());
+		for (BioReactant r : this.reactants) {
+			if (r.isRight() == right) {
+				reactants.add(r);
+			}
 		}
 
-		return list;
+		return reactants;
 	}
-	
-	
+
 }

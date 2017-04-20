@@ -30,7 +30,6 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -41,128 +40,10 @@ import java.util.HashMap;
 
 public class BioPathway extends BioEntity {
 	
-	private HashMap<String, BioPathway> superPathways = new HashMap<String, BioPathway> ();
-	private HashMap<String, BioPathway>  subPathways = new HashMap<String, BioPathway> ();
-	
-	private ArrayList<String> primaryCompounds = new ArrayList<String>();
-		
-	private HashMap<String, BioInteraction> listOfInteractions = new HashMap<String, BioInteraction>();
-	
 	private HashMap<String, BioReaction> reactions = new HashMap<String, BioReaction>();
 	
 	public BioPathway(String id) {
 		super(id);
-	}
-	
-	public BioPathway(String id, String name) {
-		super(id, name);
-	}
-	
-	public BioPathway(BioPathway in) {
-		super(in);
-		this.copySuperPathways(in.getSuperPathways());
-		this.copySubPathways(in.getSubPathways());
-		this.setPrimaryCompounds(new ArrayList<String>());
-		this.getPrimaryCompounds().addAll(in.getPrimaryCompounds());
-	}
-	
-
-	/**
-	 * @return Returns the subPathways.
-	 */
-	public HashMap<String, BioPathway> getSubPathways() {
-		return subPathways;
-	}
-
-	/**
-	 * @param subPathways The subPathways to set.
-	 */
-	public void setSubPathways(HashMap<String, BioPathway>  subPathways) {
-		this.subPathways = subPathways;
-	}
-	
-	public void copySubPathways(HashMap<String, BioPathway> subPathways) {
-		
-		this.setSubPathways(new HashMap<String, BioPathway>());
-		
-		for(BioPathway subPathway : subPathways.values()) {
-			BioPathway newSubPathway = new BioPathway(subPathway);
-			this.addSubPathway(newSubPathway);
-		}
-		
-	}
-	
-	
-	/**
-	 * Adds a sub Pathway in the list
-	 */
-	public void addSubPathway(BioPathway pathway) {
-		this.subPathways.put(pathway.getId(), pathway);
-	}
-
-	/**
-	 * @return Returns the superPathways.
-	 */
-	public HashMap<String, BioPathway> getSuperPathways() {
-		return superPathways;
-	}
-
-	/**
-	 * @param superPathways The superPathways to set.
-	 */
-	public void setSuperPathways(HashMap<String, BioPathway>  superPathways) {
-		this.superPathways = superPathways;
-	}
-	
-	public void copySuperPathways(HashMap<String, BioPathway> superPathways) {
-		
-		this.setSuperPathways(new HashMap<String, BioPathway>());
-		
-		for(BioPathway superPathway : superPathways.values()) {
-			BioPathway newSuperPathway = new BioPathway(superPathway);
-			this.addSuperPathway(newSuperPathway);
-		}
-		
-	}
-	
-	
-	/**
-	 * Adds a super Pathway in the list
-	 */
-	public void addSuperPathway(BioPathway pathway) {
-		this.superPathways.put(pathway.getId(), pathway);
-	}
-
-	/**
-	 * @return Returns the primaryCompounds.
-	 */
-	public ArrayList<String> getPrimaryCompounds() {
-		return primaryCompounds;
-	}
-
-	/**
-	 * @param primaryCompounds The primaryCompounds to set.
-	 */
-	public void setPrimaryCompounds(ArrayList<String> primaryCompounds) {
-		this.primaryCompounds = primaryCompounds;
-	}
-	
-	/**
-	 * 
-	 */
-	public void addPrimaryCompound(String primaryCompound) {
-		if(! primaryCompounds.contains(primaryCompound)) {
-			primaryCompounds.add(primaryCompound);
-		}
-	}
-
-	public HashMap<String, BioInteraction> getListOfInteractions() {
-		return listOfInteractions;
-	}
-
-	public void setListOfInteractions(
-			HashMap<String, BioInteraction> listOfInteractions) {
-		this.listOfInteractions = listOfInteractions;
 	}
 
 	public HashMap<String, BioReaction> getReactions() {

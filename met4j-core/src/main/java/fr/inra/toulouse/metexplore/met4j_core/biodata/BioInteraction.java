@@ -64,7 +64,7 @@ public abstract class BioInteraction extends BioEntity {
 
 		return getSide(true);
 	}
-
+	
 	private Set<BioReactant> getSide(boolean right) {
 		Set<BioReactant> reactants = new HashSet<BioReactant>();
 

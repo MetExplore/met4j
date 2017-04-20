@@ -201,6 +201,11 @@ public abstract class BioEntity {
 	public void setRefs(HashMap<String, Set<BioRef>> refs){
 		this.refs=refs;
 	}
+	
+	@Override
+	public String toString(){
+		return this.getId();
+	}
 
 	
 }

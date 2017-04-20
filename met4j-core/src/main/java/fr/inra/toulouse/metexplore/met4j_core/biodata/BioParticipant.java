@@ -31,6 +31,14 @@
 
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
+import java.text.DecimalFormat;
+import java.text.Format;
+import java.text.NumberFormat;
+
+import org.omg.CORBA.DoubleSeqHelper;
+
+import fr.inra.toulouse.metexplore.met4j_core.utils.ErrorUtils;
+
 public abstract class BioParticipant extends BioEntity {
 
 	private BioPhysicalEntity physicalEntity;
@@ -40,7 +48,7 @@ public abstract class BioParticipant extends BioEntity {
 	public BioParticipant(BioPhysicalEntity physicalEntity, Double quantity) {
 		super(physicalEntity.getId());
 		this.physicalEntity=physicalEntity;
-		this.quantity = quantity;
+		this.setQuantity(quantity);
 	}
 	
 	
@@ -72,11 +80,17 @@ public abstract class BioParticipant extends BioEntity {
 
 	/**
 	 * @param quantity the quantity to set
+	 * TODO : Check that quantity is a "good" number
 	 */
 	public void setQuantity(Double quantity) {
+		
+		if(Double.isNaN(quantity) || Double.isInfinite(quantity) || quantity <= 0)
+		{
+			ErrorUtils.error("Illegal argument: the quantity must be finite and positive");
+			throw new IllegalArgumentException();
+		}
+		
 		this.quantity = quantity;
 	}
-
-
 
 }

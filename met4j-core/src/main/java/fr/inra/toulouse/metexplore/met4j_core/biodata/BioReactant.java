@@ -60,6 +60,9 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 /**
  * @author lcottret
  *
@@ -111,6 +114,32 @@ public class BioReactant extends BioParticipant {
 	 */
 	public void setRight(boolean right) {
 		this.right = right;
+	}
+	
+	@Override
+	public String toString() {
+		
+		
+		String quantityStr = "";
+		
+		if(this.getQuantity() == Math.floor(this.getQuantity())) {
+				
+			quantityStr += this.getQuantity().intValue();
+			
+		}else{
+			NumberFormat formater = new DecimalFormat("#0.00");
+			quantityStr = formater.format(this.getQuantity());
+			
+		}
+		
+		StringBuffer buffer = new StringBuffer(quantityStr);
+		buffer.append(this.getId());
+		buffer.append("[");
+		buffer.append(this.getLocation().getId());
+		buffer.append("]");
+			
+		return buffer.toString();
+		
 	}
 
 }

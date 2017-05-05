@@ -31,8 +31,10 @@
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
+
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 /**
  * A conversion interaction in which one or more entities (substrates) undergo
@@ -67,7 +69,13 @@ public class BioReaction extends BioEntity {
 	private String ecNumber;
 	private boolean reversible;
 
-
+	
+	private BioCollection<BioReactant> left = new BioCollection<BioReactant>();
+	private BioCollection<BioReactant> right = new BioCollection<BioReactant>();
+	
+	public enum Side {LEFT, RIGHT};
+	
+	
 	public BioReaction(String id) {
 		super(id);
 	}
@@ -87,7 +95,7 @@ public class BioReaction extends BioEntity {
 		ArrayList<String> lefts = new ArrayList<String>();
 		
 
-		for (BioReactant cpd : this.getLeft()) {
+		for (BioReactant cpd : this.getLeftReactants()) {
 
 			lefts.add(cpd.toString());
 		}
@@ -102,7 +110,7 @@ public class BioReaction extends BioEntity {
 		ArrayList<String> rights = new ArrayList<String>();
 		
 		
-		for (BioReactant cpd : this.getRight()) {
+		for (BioReactant cpd : this.getRightReactants()) {
 
 			rights.add(cpd.toString());
 		}
@@ -187,15 +195,133 @@ public class BioReaction extends BioEntity {
 		
 	}
 	
-	public Set<BioReactant> getLeft() {
+	/**
+	 * @param side : {@link Side}
+	 * @return unmodifiable {@link BioCollection} of entities involved in left {@link BioReactant}
+	 */
+	protected BioCollection<BioPhysicalEntity> getLeft() {
+		return getSideEntities(Side.LEFT);
+	}
+	
+	
+	/**
+	 * @param side : {@link Side}
+	 * @return unmodifiable {@link BioCollection} of entities involved in right {@link BioReactant}
+	 */
+	protected BioCollection<BioPhysicalEntity> getRight() {
+		return getSideEntities(Side.RIGHT);
+	}
+	
+	
+	
+	/**
+	 * @param side : {@link Side}
+	 * @return  {@link BioCollection} of left {@link BioReactant}
+	 */
+	private BioCollection<BioReactant> getLeftReactants() {
 
-		return getSide(false);
+		return getSideReactants(Side.LEFT);
 	}
 
-	public Set<BioReactant> getRight() {
+	/**
+	 * @param side : {@link Side}
+	 * @return {@link BioCollection}of right {@link BioReactant}
+	 */
+	private BioCollection<BioReactant> getRightReactants() {
 
-		return getSide(true);
+		return getSideReactants(Side.RIGHT);
 	}
+	
+	
+	
+	/**
+	 * 
+	 * @return a {@link BioCollection} of {@link BioPhysicalEntity}
+	 */
+	protected BioCollection<BioPhysicalEntity> getEntities() {
+		
+		BioCollection<BioReactant> reactants = this.getReactants();
+		
+		BioCollection<BioPhysicalEntity> entities = new BioCollection<BioPhysicalEntity>();
+		
+		for(BioReactant reactant : reactants)
+		{
+			BioPhysicalEntity entity = reactant.getPhysicalEntity();
+			
+			if(! entities.contains(entity)) {
+				entities.add(entity);
+			}
+		}
+		
+		return entities;
+	}
+	
+	
+	/**
+	 * 
+	 * @return a {@link BioCollection} of {@link BioReactant}
+	 */
+	private BioCollection<BioReactant> getReactants() {
+
+		BioCollection<BioReactant> reactants = new BioCollection<BioReactant>();
+		
+		reactants.addAll(this.getLeftReactants());
+		reactants.addAll(this.getRightReactants());
+		
+		return reactants;
+	}
+	
+	
+	
+	/**
+	 * @param side : {@link Side}
+	 * @return  {@link BioCollection} of {@link BioReactant}
+	 */
+	private BioCollection<BioReactant> getSideReactants(Side side) {
+		
+		BioCollection<BioReactant> reactantCollection;
+		
+		if(side == Side.LEFT) {
+			reactantCollection = this.left;
+		}
+		else {
+			reactantCollection = this.right;
+		}
+		
+		return reactantCollection;
+		
+	}
+	
+	/**
+	 * @param side : {@link Side}
+	 * @return unmodifiable {@link BioCollection} of {@link BioPhysicalEntity} involved in reactants
+	 */
+	private BioCollection<BioPhysicalEntity> getSideEntities(Side side) {
+		
+		BioCollection<BioReactant> reactantCollection;
+		
+		if(side == Side.LEFT) {
+			reactantCollection = this.left;
+		}
+		else {
+			reactantCollection = this.right;
+		}
+		
+		BioCollection<BioPhysicalEntity> entityCollection = new BioCollection<BioPhysicalEntity>();
+		
+		for(BioReactant reactant: reactantCollection)
+		{
+			entityCollection.add(reactant.getPhysicalEntity());
+		}
+		
+		return entityCollection;
+		
+		
+	}
+	
+	
+	
+	
 
 
 }

@@ -35,6 +35,8 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 import java.util.HashMap;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+
 
 /**
  *
@@ -46,7 +48,7 @@ import java.util.HashMap;
 public class BioCompartment extends BioEntity{
 
 	
-	private HashMap<String, BioPhysicalEntity> components;
+	private BioCollection<BioPhysicalEntity> components;
 	
 	public BioCompartment(String id) {
 		super(id);
@@ -55,21 +57,23 @@ public class BioCompartment extends BioEntity{
 	/**
 	 * @return the components
 	 */
-	public HashMap<String, BioPhysicalEntity> getComponents() {
+	public BioCollection<BioPhysicalEntity> getComponents() {
 		return components;
 	}
 
 	/**
 	 * @param components the components to set
 	 */
-	public void setComponents(HashMap<String, BioPhysicalEntity> components) {
+	public void setComponents(BioCollection<BioPhysicalEntity> components) {
 		this.components = components;
 	}
 	
 	public void addComponent(BioPhysicalEntity e)
 	{
-		this.components.put(e.getId(), e);
+		this.components.add(e);
 	}
+	
+	
 	
 	
 	

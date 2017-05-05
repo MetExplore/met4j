@@ -31,11 +31,11 @@
 package fr.inra.toulouse.metexplore.met4j_core.biodata.collection;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
@@ -43,15 +43,18 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 public class BioCollection<E extends BioEntity> implements Collection<E> {
 	
 	
-	private HashMap<String,E> entities;
+	private Map<String,E> entities;
 	
+	private BioCollection(Map<String,E> entities){
+		this.entities=entities;
+	}
 	
 	public BioCollection() {
 		entities = new HashMap<String,E>();
 	}
 	
 	
-	public BioCollection(Set<E> set) {
+	public BioCollection(Collection<E> set) {
 		entities = new HashMap<String,E>();
 		this.addAll(set);
 	}
@@ -183,6 +186,10 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 			this.add(e);
 		}
 		return true;
+	}
+	
+	public BioCollection<E> getView(){
+		return new BioCollection<E>(Collections.unmodifiableMap(this.entities));
 	}
 
 }

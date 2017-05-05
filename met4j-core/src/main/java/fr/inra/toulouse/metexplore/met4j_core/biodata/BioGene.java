@@ -32,11 +32,13 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 import java.util.HashMap;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+
 
 public class BioGene extends BioEntity {
 	
 	
-	public HashMap<String, BioProtein> proteinList = new HashMap<String, BioProtein>();
+	public BioCollection<BioProtein> proteinList = new BioCollection<BioProtein>();
 
 	
 	public BioGene(String id) {
@@ -46,14 +48,14 @@ public class BioGene extends BioEntity {
 	/**
 	 * @return Returns the proteinList.
 	 */
-	public HashMap<String, BioProtein> getProteinList() {
+	public BioCollection<BioProtein> getProteinList() {
 		return proteinList;
 	}
 
 	/**
 	 * @param proteinList The proteinList to set.
 	 */
-	public void setProteinList(HashMap<String, BioProtein> proteinList) {
+	public void setProteinList(BioCollection<BioProtein> proteinList) {
 		this.proteinList = proteinList;
 	}
 	
@@ -61,7 +63,7 @@ public class BioGene extends BioEntity {
 	 * @param protein : protein to add
 	 */
 	public void addProtein(BioProtein protein) {
-		proteinList.put(protein.getId(), protein);
+		proteinList.add( protein);
 	}
 
 

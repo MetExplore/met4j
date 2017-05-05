@@ -32,6 +32,8 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 import java.util.HashMap;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+
 /**
  * A set or series of interactions, often forming a network, which biologists
  * have found useful to group together for organizational, historic, biophysical
@@ -40,23 +42,23 @@ import java.util.HashMap;
 
 public class BioPathway extends BioEntity {
 	
-	private HashMap<String, BioReaction> reactions = new HashMap<String, BioReaction>();
+	private BioCollection<BioReaction> reactions = new BioCollection<BioReaction>();
 	
 	public BioPathway(String id) {
 		super(id);
 	}
 
-	public HashMap<String, BioReaction> getReactions() {
+	public BioCollection< BioReaction> getReactions() {
 		return reactions;
 	}
 
-	public void setReactions(HashMap<String, BioReaction> reactions) {
+	public void setReactions(BioCollection< BioReaction> reactions) {
 		this.reactions = reactions;
 	}
 	
 	public void addReaction(BioReaction reaction) {
 		
-		this.reactions.put(reaction.getId(), reaction);
+		this.reactions.add(reaction);
 		
 	}
 	

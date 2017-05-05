@@ -32,6 +32,7 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A conversion interaction in which one or more entities (substrates) undergo
@@ -59,7 +60,7 @@ import java.util.HashSet;
  * unchanged, e.g. glycogen + glucose = glycogen.
  */
 
-public class BioReaction extends BioInteraction {
+public class BioReaction extends BioEntity {
 
 
 	private boolean spontaneous = false;
@@ -184,6 +185,16 @@ public class BioReaction extends BioInteraction {
 			return false;
 		}
 		
+	}
+	
+	public Set<BioReactant> getLeft() {
+
+		return getSide(false);
+	}
+
+	public Set<BioReactant> getRight() {
+
+		return getSide(true);
 	}
 
 

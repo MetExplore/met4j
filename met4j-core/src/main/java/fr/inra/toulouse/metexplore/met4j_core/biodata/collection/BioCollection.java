@@ -31,8 +31,11 @@
 package fr.inra.toulouse.metexplore.met4j_core.biodata.collection;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
@@ -40,16 +43,17 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 public class BioCollection<E extends BioEntity> implements Collection<E> {
 	
 	
-	private HashSet<E> entities;
+	private HashMap<String,E> entities;
 	
 	
 	public BioCollection() {
-		entities = new HashSet<E>();
+		entities = new HashMap<String,E>();
 	}
 	
 	
-	public BioCollection(HashSet<E> e) {
-		entities = e;
+	public BioCollection(Set<E> set) {
+		entities = new HashMap<String,E>();
+		this.addAll(set);
 	}
 	
 	
@@ -59,7 +63,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @return {@link Boolean}
 	 */
 	public Boolean containsId(String id) {
-		return entities.stream().filter(o -> o.getId().equals(id)).findFirst().isPresent();
+		return entities.containsKey(id);
 	}
 	
 	/**
@@ -68,18 +72,18 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @return {@link Boolean}
 	 */
 	public Boolean containsName(String name) {
-		return entities.stream().filter(o -> o.getId().equals(name)).findFirst().isPresent();
+		return entities.values().stream().filter(o -> o.getId().equals(name)).findFirst().isPresent();
 	}
 	
 	
 	/**
-	 * Get entities with a specific id
+	 * Get entity with a specific id
 	 * @param id
 	 * @return
 	 */
-	public E getEntitiesFromId(String id) {
+	public E getEntityFromId(String id) {
 		
-		E entity = entities.stream().filter(o -> o.getId().equals(id)).findFirst().get();
+		E entity = entities.get(id);
 			
 		return entity;
 	}
@@ -89,24 +93,12 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @param id
 	 * @return
 	 */
-	public BioCollection<E> getEntitiesWithName(String name) {
+	public BioCollection<E> getEntitiesFromName(String name) {
 		
-		HashSet<E> e = new HashSet<E> (entities.stream().filter
+		HashSet<E> e = new HashSet<E> (entities.values().stream().filter
 				(o -> o.getName().equals(name)).collect(Collectors.toSet()));
 			
 		return new BioCollection<E>(e);
-	}
-	
-	
-	public HashSet<E> getEntities() {
-		return entities;
-	}
-
-	/**
-	 * @param entities the entities to set
-	 */
-	public void setEntities(HashSet<E> entities) {
-		this.entities = entities;
 	}
 
 
@@ -124,25 +116,25 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	@Override
 	public Iterator<E> iterator() {
-		return this.entities.iterator();
+		return this.entities.values().iterator();
 	}
 
 
 	@Override
 	public Object[] toArray() {
-		return this.entities.toArray();
+		return this.entities.values().toArray();
 	}
 
 
 	@Override
 	public <T> T[] toArray(T[] a) {
-		return this.entities.toArray(a);
+		return this.entities.values().toArray(a);
 	}
 
 
 	@Override
 	public boolean retainAll(Collection<?> c) {
-		return this.entities.retainAll(c);
+		return this.entities.values().retainAll(c);
 	}
 
 
@@ -154,38 +146,43 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	@Override
 	public boolean removeAll(Collection<?> c) {
-		return entities.removeAll(c);
+		return entities.values().removeAll(c);
 	}
 
 
 	@Override
 	public boolean contains(Object o) {
-		return entities.contains(o);
+		return entities.values().contains(o);
 	}
 
 
 	@Override
 	public boolean add(E e) {
-		return entities.add(e);
+		String id = e.getId();
+		if(entities.containsKey(id)) throw new IllegalArgumentException("Duplicated identifier in BioCollection. Identifiers must be unique");
+		entities.put(e.getId(), e);
+		return true;
 	}
 
 
 	@Override
 	public boolean remove(Object o) {
-		return entities.remove(o);
+		return entities.values().remove(o);
 	}
 
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
-		return entities.containsAll(c);
+		return entities.values().containsAll(c);
 	}
 
 
 	@Override
 	public boolean addAll(Collection<? extends E> c) {
-		return entities.addAll(c);
+		for(E e : c){
+			this.add(e);
+		}
+		return true;
 	}
-	
 
 }

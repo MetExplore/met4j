@@ -69,7 +69,6 @@ import java.text.NumberFormat;
 public class BioReactant extends BioParticipant {
 
 	private BioCompartment location=null;
-	private boolean right;
 
 	
 
@@ -82,12 +81,10 @@ public class BioReactant extends BioParticipant {
 	public BioReactant(BioPhysicalEntity physicalEntity, Double stoichiometry, Boolean right,  BioCompartment location) {
 		super(physicalEntity, stoichiometry);
 		this.setLocation(location);
-		this.setRight(right);
 	}
 	
 	public BioReactant(BioPhysicalEntity physicalEntity,  Boolean right) {
 		super(physicalEntity, 1.0);
-		this.setRight(right);
 	}
 
 
@@ -98,21 +95,6 @@ public class BioReactant extends BioParticipant {
 
 	public void setLocation(BioCompartment location) {
 		this.location = location;
-	}
-	
-	/**
-	 * @return the right
-	 */
-	public boolean isRight() {
-		return right;
-	}
-
-
-	/**
-	 * @param right the right to set
-	 */
-	public void setRight(boolean right) {
-		this.right = right;
 	}
 	
 	@Override

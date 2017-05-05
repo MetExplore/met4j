@@ -155,9 +155,15 @@ public class BioNetwork {
 	
 	//__________________________________
 //	obtenir les reactions en fonction d'une liste de left et de right metabolites (match exact ou partiel)
-	public BioCollection<BioReaction> getReactionsFromSubstrate(Collection<BioPhysicalEntity> substrate);
+	public BioCollection<BioReaction> getReactionsFromSubstrates(Collection<BioPhysicalEntity> substrate){};
+	public BioCollection<BioReaction> getReactionsFromProducts(Collection<BioPhysicalEntity> substrate){};
+	public BioCollection<BioReaction> getReactionsFromSubstrate(BioPhysicalEntity substrate){};
+	public BioCollection<BioReaction> getReactionsFromProduct(BioPhysicalEntity substrate){};
+	public BioCollection<BioReaction> getReactionsFromEnzyme(BioPhysicalEntity substrate){};
+	public BioCollection<BioReaction> getReactionsFromPathway(BioPhysicalEntity substrate){};
 //	obtenir les reactions en fonction d'un substrat ou d'un produit
 //	obtenir les reactions en fonction d'un pathway
+	
 //	obtenir les metabolites en fonction d'un pathway
 //	obtenir les pathways depuis un metabolite
 //	obtenir les pathways depuis une reaction
@@ -477,7 +483,7 @@ public class BioNetwork {
 	/**
 	 * @return the pathways
 	 */
-	public BioCollection<BioPathway> getPathways() {
+	public BioCollection<BioPathway> getPathwaysView() {
 		return pathways.getView();
 	}
 
@@ -485,7 +491,7 @@ public class BioNetwork {
 	/**
 	 * @return the metabolites
 	 */
-	public BioCollection<BioMetabolite> getMetabolites() {
+	public BioCollection<BioMetabolite> getMetabolitesView() {
 		return metabolites.getView();
 	}
 
@@ -493,7 +499,7 @@ public class BioNetwork {
 	/**
 	 * @return the proteins
 	 */
-	public BioCollection<BioProtein> getProteins() {
+	public BioCollection<BioProtein> getProteinsView() {
 		return proteins.getView();
 	}
 
@@ -501,7 +507,7 @@ public class BioNetwork {
 	/**
 	 * @return the genes
 	 */
-	public BioCollection<BioGene> getGenes() {
+	public BioCollection<BioGene> getGenesView() {
 		return genes.getView();
 	}
 
@@ -509,7 +515,7 @@ public class BioNetwork {
 	/**
 	 * @return the reactions
 	 */
-	public BioCollection<BioReaction> getReactions() {
+	public BioCollection<BioReaction> getReactionsView() {
 		return reactions.getView();
 	}
 
@@ -517,7 +523,7 @@ public class BioNetwork {
 	/**
 	 * @return the compartments
 	 */
-	public BioCollection<BioCompartment> getCompartments() {
+	public BioCollection<BioCompartment> getCompartmentsView() {
 		return compartments.getView();
 	}
 
@@ -525,7 +531,7 @@ public class BioNetwork {
 	/**
 	 * @return the enzymes
 	 */
-	public BioCollection<BioEnzyme> getEnzymes() {
+	public BioCollection<BioEnzyme> getEnzymesView() {
 		return enzymes.getView();
 	}
 

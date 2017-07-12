@@ -28,10 +28,7 @@ import fr.inra.toulouse.metexplore.met4j_core.io.Sbml2BioNetworkLite;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.algo.EigenVectorCentrality;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.analysis.RankUtils;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.GraphFilter;
-import fr.inra.toulouse.metexplore.met4j_graph.computation.weighting.ReactionProbabilityWeight;
-import fr.inra.toulouse.metexplore.met4j_graph.computation.weighting.SimilarityWeightPolicy;
-import fr.inra.toulouse.metexplore.met4j_graph.computation.weighting.WeightUtils;
-import fr.inra.toulouse.metexplore.met4j_graph.computation.weighting.WeightsFromFile;
+import fr.inra.toulouse.metexplore.met4j_graph.computation.weighting.*;
 import fr.inra.toulouse.metexplore.met4j_graph.core.GraphFactory;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -45,7 +42,8 @@ import fr.inra.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 public class Compute2DRank {
 	
 	String seedsFilePath;
-	BioNetwork model;
+
+	private BioNetwork model;
 	CompoundGraph firstGraph;
 	CompoundGraph reverseGraph;
 	HashMap<String,Double> seeds;
@@ -63,9 +61,35 @@ public class Compute2DRank {
 	HashMap<String, Double> globalCheiRankScore;
 	HashMap<String, Integer> globalPageRank;
 	HashMap<String, Integer> globalCheiRank;
-	
-	HashMap<String, Double> globalVsPersonalizedPageRank;
-	HashMap<String, Double> globalVsPersonalizedCheiRank;
+
+	//Scores normalisés
+	private HashMap<String, Double> globalVsPersonalizedPageRank;
+	private HashMap<String, Double> globalVsPersonalizedCheiRank;
+
+
+	public BioNetwork getModel() {
+		return model;
+	}
+
+	public void setModel(BioNetwork model) {
+		this.model = model;
+	}
+
+	public HashMap<String, Double> getGlobalVsPersonalizedPageRank() {
+		return globalVsPersonalizedPageRank;
+	}
+
+	public void setGlobalVsPersonalizedPageRank(HashMap<String, Double> globalVsPersonalizedPageRank) {
+		this.globalVsPersonalizedPageRank = globalVsPersonalizedPageRank;
+	}
+
+	public HashMap<String, Double> getGlobalVsPersonalizedCheiRank() {
+		return globalVsPersonalizedCheiRank;
+	}
+
+	public void setGlobalVsPersonalizedCheiRank(HashMap<String, Double> globalVsPersonalizedCheiRank) {
+		this.globalVsPersonalizedCheiRank = globalVsPersonalizedCheiRank;
+	}
 
 	public HashMap<String, Double> getPageRankScore() {
 		return pageRankScore;

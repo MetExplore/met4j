@@ -31,7 +31,7 @@
 /**
  * 10 déc. 2013 
  */
-package fr.inra.toulouse.metexplore.met4j_core.mock;
+package fr.inra.toulouse.metexplore.met4j_core.utils;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;

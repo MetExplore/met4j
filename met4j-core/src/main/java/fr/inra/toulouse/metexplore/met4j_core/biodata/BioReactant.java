@@ -78,12 +78,12 @@ public class BioReactant extends BioParticipant {
 	 * @param stoichiometricCoefficient
 	 * @param location
 	 */
-	public BioReactant(BioPhysicalEntity physicalEntity, Double stoichiometry, Boolean right,  BioCompartment location) {
+	public BioReactant(BioPhysicalEntity physicalEntity, Double stoichiometry, BioCompartment location) {
 		super(physicalEntity, stoichiometry);
 		this.setLocation(location);
 	}
 	
-	public BioReactant(BioPhysicalEntity physicalEntity,  Boolean right) {
+	public BioReactant(BioPhysicalEntity physicalEntity) {
 		super(physicalEntity, 1.0);
 	}
 

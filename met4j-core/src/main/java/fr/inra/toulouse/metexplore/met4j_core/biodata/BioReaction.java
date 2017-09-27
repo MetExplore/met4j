@@ -31,7 +31,6 @@
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
@@ -215,6 +214,8 @@ public class BioReaction extends BioEntity {
 	
 	
 	/**
+	 * TODO : must be a protected method ?
+	 * 
 	 * @param side : {@link Side}
 	 * @return  {@link BioCollection} of left {@link BioReactant}
 	 */
@@ -224,6 +225,8 @@ public class BioReaction extends BioEntity {
 	}
 
 	/**
+	 * TODO : must be a protected method ?
+	 * 
 	 * @param side : {@link Side}
 	 * @return {@link BioCollection}of right {@link BioReactant}
 	 */
@@ -258,7 +261,7 @@ public class BioReaction extends BioEntity {
 	
 	
 	/**
-	 * 
+	 * TODO : Is this method actually useful?
 	 * @return a {@link BioCollection} of {@link BioReactant}
 	 */
 	private BioCollection<BioReactant> getReactants() {

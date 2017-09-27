@@ -17,29 +17,17 @@ import org.junit.Test;
  *
  */
 
-/**
- * Test class extending BioEntity
- * 
- * @author lcottret
- *
- */
-class BioTest extends BioEntity {
 
-	public BioTest(String id) {
-		super(id);
-	}
-
-}
 
 public class BioEntityTest {
 
 	public static BioRef ref;
-	public static BioTest bioEntityTest;
+	public static BioEntityFake bioEntityTest;
 
 	public static void init() {
 		ref = new BioRef("origin", "dbName", "dbId", 1);
 		ref.setLogicallink("link");
-		bioEntityTest = new BioTest("entityTest");
+		bioEntityTest = new BioEntityFake("entityTest");
 
 	}
 

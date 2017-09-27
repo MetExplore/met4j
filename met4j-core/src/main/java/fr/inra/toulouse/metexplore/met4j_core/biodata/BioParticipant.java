@@ -74,7 +74,6 @@ public abstract class BioParticipant extends BioEntity {
 
 	/**
 	 * @param quantity the quantity to set
-	 * TODO : Check that quantity is a "good" number
 	 */
 	public void setQuantity(Double quantity) {
 		

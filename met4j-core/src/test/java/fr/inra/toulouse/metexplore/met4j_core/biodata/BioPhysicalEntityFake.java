@@ -28,49 +28,16 @@
  *  The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL license and that you accept its terms.
  ******************************************************************************/
-
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import org.junit.Test;
-
-
-public class BioParticipantTest {
-
-	/**
-	 * Test if a catch an exception if the number is nan
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testSetNaNQuantity() {
-
-		BioParticipant p = new BioParticipantFake(new BioPhysicalEntityFake("test"), 2.0);
-		Double nan = Double.NaN;
-		p.setQuantity(nan);
-
+/**
+ * @author lcottret
+ *
+ *
+ * Test class extending BioPhysicalEntity
+ */
+public class BioPhysicalEntityFake extends BioPhysicalEntity {
+	public BioPhysicalEntityFake(String id) {
+		super(id);
 	}
-	
-	/**
-	 * Test if a catch an exception if the number is infinite
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testSetInfiniteQuantity() {
-
-		BioParticipant p = new BioParticipantFake(new BioPhysicalEntityFake("test"), 2.0);
-		Double inf = Double.POSITIVE_INFINITY;
-		p.setQuantity(inf);
-	}
-	
-	/**
-	 * Test if a catch an exception if the number is <= 0
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testSetNegativeOrNullQuantity() {
-
-		BioParticipant p = new BioParticipantFake(new BioPhysicalEntityFake("test"), 2.0);
-		Double n = 0.0;
-		p.setQuantity(n);
-		
-		n = -10.0;
-		p.setQuantity(n);
-	}
-
 }

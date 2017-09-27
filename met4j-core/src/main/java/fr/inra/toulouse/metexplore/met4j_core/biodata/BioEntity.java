@@ -123,6 +123,15 @@ public abstract class BioEntity {
 		this.synonyms = synonyms;
 	}
 	
+	
+	/**
+	 * TODO : voir la coherence du code entre les deux methodes addRef. Celle ci devrait se terminer par un this.addRef(ref)
+	 * @param dbName
+	 * @param dbId
+	 * @param confidenceLevel
+	 * @param relation
+	 * @param origin
+	 */
 	public void addRef(String dbName, String dbId, int confidenceLevel, String relation, String origin){
 		BioRef ref = new BioRef(origin, dbName, dbId, confidenceLevel);
 		ref.setLogicallink(relation);

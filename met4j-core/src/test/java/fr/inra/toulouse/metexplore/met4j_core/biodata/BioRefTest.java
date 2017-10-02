@@ -56,9 +56,31 @@ public class BioRefTest {
 	}
 		
 	@Test
-	public void testCompareTo() {
-		// TODO : Decide when two biorefs are equal
-		fail("Not yet implemented");
+	public void testEquals() {
+		
+		BioRef ref = new BioRef("origin", "db1", "id1",1);
+		BioRef ref2 = new BioRef("origin2", "db1", "id1", 2);
+		BioRef ref3 = new BioRef("origin2", "db2", "id1", 1);
+		BioRef ref4 = new BioRef("origin2", "db1", "id2", 1);
+		
+		assertTrue("Two refs with same db and id must be equal", ref.equals(ref2));
+		assertFalse("Two refs with different db must not be equal", ref.equals(ref3));
+		assertFalse("Two refs with different id must not be equal", ref.equals(ref4));
+		
+		ref.setLogicallink("otherLink");
+		assertFalse("Two refs with different logical link must not be equal", ref.equals(ref2));
+		
 	}
+	
+	@Test
+	public void testCompare() {
+		BioRef ref = new BioRef("origin", "db1", "id1",1);
+		BioRef ref2 = new BioRef("origin2", "db1", "id1", 2);
+		
+		assertEquals("Test comparison BioRefs", 1, ref2.compare(ref2, ref));
+		assertEquals("Test comparison BioRefs", 1, ref2.compareTo(ref));
+		
+	}
+	
 
 }

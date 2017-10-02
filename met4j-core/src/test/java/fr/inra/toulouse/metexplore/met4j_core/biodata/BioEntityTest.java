@@ -64,17 +64,6 @@ public class BioEntityTest {
 
 		assertEquals("The same ref has been added", 1, bioEntityTest.getRefs().get(ref.dbName).size());
 
-		// Test if we load a bioref with the same parameters except
-		// confidenceLevel, the confidence level is updated
-		// if the confidence level is greater
-		int confidenceLevelOri = ref.confidenceLevel;
-		refRedundant.setConfidenceLevel(confidenceLevelOri + 1);
-		bioEntityTest.addRef(refRedundant);
-		assertEquals("The same ref (except confidence level) has been added", 1,
-				bioEntityTest.getRefs().get(ref.dbName).size());
-		assertEquals("The confidence level has not been updated", confidenceLevelOri + 1,
-				bioEntityTest.getRefs().get(ref.dbName).iterator().next().getConfidenceLevel());
-
 		// Test if we load a bioref with an other logical link, it's considered
 		// as a new Bioref
 		refRedundant.setLogicallink("linkRedundant");
@@ -103,16 +92,6 @@ public class BioEntityTest {
 		bioEntityTest.addRef(ref.dbName, ref.getId(), ref.confidenceLevel, ref.getLogicallink(), ref.getOrigin());
 
 		assertEquals("The same ref has been added", 1, bioEntityTest.getRefs().get(ref.dbName).size());
-
-		// Test if we load a bioref with the same parameters except
-		// confidenceLevel, the confidence level is updated
-		// if the confidence level is greater
-		int confidenceLevelOri = ref.confidenceLevel;
-		bioEntityTest.addRef(ref.dbName, ref.getId(), ref.confidenceLevel + 1, ref.getLogicallink(), ref.getOrigin());
-		assertEquals("The same ref (except confidence level) has been added", 1,
-				bioEntityTest.getRefs().get(ref.dbName).size());
-		assertEquals("The confidence level has not been updated", confidenceLevelOri + 1,
-				bioEntityTest.getRefs().get(ref.dbName).iterator().next().getConfidenceLevel());
 
 		// Test if we load a bioref with an other logical link, it's considered
 		// as a new Bioref
@@ -188,22 +167,6 @@ public class BioEntityTest {
 		// link) to a ref in the set of refs
 		ref2.setLogicallink("test");
 		assertFalse("Must return false if the ref is similar (except the logical link) to a ref in the set of refs",
-				bioEntityTest.hasRef(ref2));
-
-		// Test if it returns false if the ref is similar to a ref in the set of
-		// refs but has a greater confidence level
-		ref2.setLogicallink(ref.logicallink);
-		ref2.setConfidenceLevel(ref.confidenceLevel + 1);
-		assertFalse(
-				"Must return false if the ref is similar to a ref in the set of refs but has a greater confidence level ",
-				bioEntityTest.hasRef(ref2));
-
-		// Test if it returns true if the ref is similar to a ref in the set of
-		// refs but has a lower confidence level
-		ref2.setLogicallink(ref.logicallink);
-		ref2.setConfidenceLevel(ref.confidenceLevel + 1);
-		assertTrue(
-				"Must return true if the ref is similar to a ref in the set of refs but has a lower confidence level ",
 				bioEntityTest.hasRef(ref2));
 
 	}

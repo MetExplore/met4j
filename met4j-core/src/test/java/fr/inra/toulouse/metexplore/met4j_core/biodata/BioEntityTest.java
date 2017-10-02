@@ -41,6 +41,11 @@ public class BioEntityTest {
 		init();
 	}
 
+	@Test (expected = Exception.class)
+	public void testConstructorWithNullId() {
+		bioEntityTest = new BioEntityFake(null);
+	}
+	
 	/**
 	 * Test method for
 	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity#addRef(fr.inra.toulouse.metexplore.met4j_core.biodata.BioRef)}.

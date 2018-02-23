@@ -263,7 +263,8 @@ public class Compute2DRank {
 	 */
 	public void importSeeds(){
 		seeds = new HashMap<String, Double>();
-		HashSet<String> tmpSeeds = new HashSet<String>();
+		HashMap<String, Double> tmpSeeds = new HashMap<>();
+		Double somme = 0.0;
 		try {
 			BufferedReader file = new BufferedReader(new FileReader(seedsFilePath));
 			String line;
@@ -274,7 +275,12 @@ public class Compute2DRank {
 				if(!firstGraph.hasVertex(node)){
 					System.err.println(node+" not found in graph!");
 				}else{
-					tmpSeeds.add(node);
+					Double weight = 0.0;
+					if(splitLine.length>1)
+						weight = Double.parseDouble(splitLine[1]);
+
+					tmpSeeds.put(node, weight);
+					somme+=weight;
 				}
 			}
 			file.close();  
@@ -282,9 +288,17 @@ public class Compute2DRank {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		for(String node : tmpSeeds){
-			seeds.put(node, 1.0/tmpSeeds.size());
+		if(somme==0.0)
+		{
+			for(String node : tmpSeeds.keySet()){
+				seeds.put(node, 1.0D/tmpSeeds.size());
+			}
+		}
+		else
+		{
+			for(String node : tmpSeeds.keySet()){
+				seeds.put(node, tmpSeeds.get(node)/somme);
+			}
 		}
 		
 		System.err.println("seeds file imported");
@@ -316,10 +330,6 @@ public class Compute2DRank {
 		
 		globalVsPersonalizedPageRank = computeGlobalVsPersonalized(globalPageRankScore, pageRankScore);
 		globalVsPersonalizedCheiRank = computeGlobalVsPersonalized(globalCheiRankScore, cheiRankScore);
-		for(String seed : seeds.keySet()){
-			globalVsPersonalizedPageRank.remove(seed);
-			globalVsPersonalizedCheiRank.remove(seed);
-		}
 		
 		return;
 	}
@@ -465,20 +475,20 @@ public class Compute2DRank {
 		String outputDir=args[3];	//Directory where outputs will be exported
 		double dampingFactor = 0.85;
 		
-		DateFormat df = new SimpleDateFormat("yy-MM-dd_HH:mm_");
-		outputDir+=df.format(new Date());
-		System.err.println(sbmlFilePath);
-		System.err.println(weightsFile);
-		System.err.println(seedsFilePath);
-		Matcher m = Pattern.compile("^.+/([^/]+)$").matcher(sbmlFilePath);
-		m.matches();
-		String sbmlFileName = m.group(1);
-		Matcher m2= Pattern.compile("^.+/([^/]+)$").matcher(seedsFilePath);
-		m2.matches();
-		String noiFileName = m2.group(1);
-		
-		outputDir+=sbmlFileName+"_in:"+noiFileName+"_d"+dampingFactor+"_";
-		
+//		DateFormat df = new SimpleDateFormat("yy-MM-dd_HH:mm_");
+//		outputDir+=df.format(new Date());
+//		System.err.println(sbmlFilePath);
+//		System.err.println(weightsFile);
+//		System.err.println(seedsFilePath);
+//		Matcher m = Pattern.compile("^.+/([^/]+)$").matcher(sbmlFilePath);
+//		m.matches();
+//		String sbmlFileName = m.group(1);
+//		Matcher m2= Pattern.compile("^.+/([^/]+)$").matcher(seedsFilePath);
+//		m2.matches();
+//		String noiFileName = m2.group(1);
+//
+//		outputDir+=sbmlFileName+"_in:"+noiFileName+"_d"+dampingFactor+"_";
+//
 
 		Compute2DRank analysis2D = new Compute2DRank(sbmlFilePath, seedsFilePath, weightsFile);
 		analysis2D.compute();

@@ -351,7 +351,7 @@ public class Compute2DRank {
 		
 		EigenVectorCentrality<BioPhysicalEntity, ReactionEdge, CompoundGraph> scoreComputor 
 			= new EigenVectorCentrality<BioPhysicalEntity, ReactionEdge, CompoundGraph>(graph);
-		scoreComputor.addJumpProb(seeds.keySet(), 1-dampingFactor);
+		scoreComputor.addJumpProb(seeds, 1-dampingFactor);
 		HashMap<String, Double> score = scoreComputor.powerIteration(seeds, maxNbOfIter, tolerance);
 		return score;
 	}

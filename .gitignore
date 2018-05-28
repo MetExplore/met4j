@@ -5,3 +5,8 @@ jsbml.log
 .settings/
 *.log
 *~
+
+\.vscode/
+
+*.factorypath
+

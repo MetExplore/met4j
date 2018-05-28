@@ -97,7 +97,8 @@ public class BioNetwork {
 	}
 	
 	
-	public void remove(BioEntity e){
+	public void remove(BioEntity e) throws IllegalArgumentException {
+		
 		if(e instanceof BioPathway){
 			this.pathways.remove((BioPathway)e);
 		}
@@ -134,8 +135,15 @@ public class BioNetwork {
 	}
 	
 	//relation reactant-reaction
-	public void affectSubstrate(BioPhysicalEntity substrate, Double stoichiometry, BioCompartment localisation, BioReaction reaction){}
-	public void affectProduct(BioPhysicalEntity product, Double stoichiometry, BioCompartment localisation, BioReaction reaction){}
+	public void affectLeft(BioPhysicalEntity substrate, Double stoichiometry, BioCompartment localisation, BioReaction reaction){
+
+		BioReactant leftReactant = new BioReactant(substrate,  stoichiometry, localisation);
+		reaction.getLeftReactants().add(leftReactant);
+
+	}
+	public void affectRight(BioPhysicalEntity product, Double stoichiometry, BioCompartment localisation, BioReaction reaction){
+
+	}
 	
 	//relation enzyme -reaction
 	public void affectEnzyme(BioEnzyme enzyme, BioReaction reaction){};
@@ -533,6 +541,13 @@ public class BioNetwork {
 	 */
 	public BioCollection<BioEnzyme> getEnzymesView() {
 		return enzymes.getView();
+	}
+
+
+	public BioCollection<BioReactant> getLeftReactants(BioReaction r) {
+
+		return r.getLeftReactants();
+
 	}
 
 }

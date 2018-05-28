@@ -118,7 +118,7 @@ public class BioNetworkTest {
 		network.add(protein);
 		network.affectSubUnit(protein, 1.0, enzyme);
 		network.remove(protein);
-		assertEquals("Protein not removed from enzyme", 0, enzyme.getSubUnits().size());
+		assertEquals("Protein not removed from enzyme", 0, enzyme.getParticipants().size());
 
 		// Test if the compartment still contains the protein
 		BioCompartment compartment = new BioCompartment("cpt");
@@ -183,7 +183,7 @@ public class BioNetworkTest {
 		assertEquals("Metabolite not removed from the compartment", 0, cpt.getComponents().size());
 
 		// Remove metabolite from enzymes
-		assertEquals("Protein not removed from enzyme", 0, enz.getSubUnits().size());
+		assertEquals("Protein not removed from enzyme", 0, enz.getParticipants().size());
 
 		// Must return an exception
 		network.remove(metabolite);

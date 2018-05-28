@@ -61,17 +61,16 @@
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  *
  */
 public class BioReactant extends BioParticipant {
 
-	private BioCompartment location=null;
-
-	
-
+	private BioCompartment location = null;
 
 	/**
 	 * @param physicalEntity
@@ -82,12 +81,10 @@ public class BioReactant extends BioParticipant {
 		super(physicalEntity, stoichiometry);
 		this.setLocation(location);
 	}
-	
+
 	public BioReactant(BioPhysicalEntity physicalEntity) {
 		super(physicalEntity, 1.0);
 	}
-
-
 
 	public BioCompartment getLocation() {
 		return location;
@@ -96,31 +93,39 @@ public class BioReactant extends BioParticipant {
 	public void setLocation(BioCompartment location) {
 		this.location = location;
 	}
-	
+
 	@Override
 	public String toString() {
-		
-		
+
 		String quantityStr = "";
-		
-		if(this.getQuantity() == Math.floor(this.getQuantity())) {
-				
+
+		if (this.getQuantity() == Math.floor(this.getQuantity())) {
+
 			quantityStr += this.getQuantity().intValue();
-			
-		}else{
-			NumberFormat formater = new DecimalFormat("#0.00");
+
+		} else {
+			Locale currentLocale = Locale.getDefault();
+
+			DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
+			otherSymbols.setDecimalSeparator('.');
+			otherSymbols.setGroupingSeparator('.');
+
+			NumberFormat formater = new DecimalFormat("#0.00", otherSymbols);
 			quantityStr = formater.format(this.getQuantity());
-			
+
 		}
-		
+
 		StringBuffer buffer = new StringBuffer(quantityStr);
+		buffer.append(" ");
 		buffer.append(this.getId());
-		buffer.append("[");
-		buffer.append(this.getLocation().getId());
-		buffer.append("]");
-			
+		if (this.getLocation() != null) {
+			buffer.append("[");
+			buffer.append(this.getLocation().getId());
+			buffer.append("]");
+		}
+
 		return buffer.toString();
-		
+
 	}
 
 }

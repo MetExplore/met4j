@@ -35,7 +35,6 @@ import static org.junit.Assert.*;
 import java.lang.reflect.Field;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.internal.ArrayComparisonFailure;
 
@@ -97,12 +96,12 @@ public class BioReactionTest {
 	@Test
 	public void testToString() {
 
-		assertEquals("Formula badly formatted", "testreaction: 1 l1[cpt1] + 1 l2[cpt2] -> 1 r1[cpt1] + 1 r2[cpt2]",
+		assertEquals("Formula badly formatted", "testreaction: 1 l1[cpt1] + 1 l2[cpt1] -> 1 r1[cpt2] + 1 r2[cpt2]",
 				reaction.toString());
 
 		reaction.setReversible(true);
 
-		assertEquals("Formula badly formatted", "testreaction: 1 l1[cpt1] + 1 l2[cpt2] <-> 1 r1[cpt1] + 1 r2[cpt2]",
+		assertEquals("Formula badly formatted", "testreaction: 1 l1[cpt1] + 1 l2[cpt1] <-> 1 r1[cpt2] + 1 r2[cpt2]",
 				reaction.toString());
 
 	}

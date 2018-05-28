@@ -159,8 +159,7 @@ public abstract class BioEntity {
 	
 	public void addRef(BioRef ref){
 		String dbName = ref.getDbName();
-		String dbId = ref.getId();
-		if(!this.hasRef(dbName, dbId)){
+		if(!this.hasRef(ref)){
 			if (this.refs.containsKey(dbName)){
 				refs.get(dbName).add(ref);
 			} else {
@@ -198,11 +197,13 @@ public abstract class BioEntity {
 	
 	public boolean hasRef(BioRef unkRef){
 		
+
+
 		if(this.refs==null || !this.refs.containsKey(unkRef.dbName)){
 			return false;
 		}
 		for(BioRef ref:this.refs.get(unkRef.dbName)){
-			if(ref.getId().equals(unkRef.id) && ref.getLogicallink().equals(unkRef.logicallink)){
+			if(ref.equals(unkRef)){
 				return true;
 			}
 		}

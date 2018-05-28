@@ -52,13 +52,26 @@ public abstract class BioEntity {
 
 	public BioEntity(String id, String name) {
 		
+		if(id==null)
+		{
+			throw new NullPointerException();
+		}
+
 		this.id=id;
+
 		this.setName(name);
 		this.setRefs(new HashMap<String, Set<BioRef>>());
 	}
 	
 	
 	public BioEntity(String id) {
+
+		
+		if(id==null)
+		{
+			throw new NullPointerException();
+		}
+
 		this.id=id;
 		this.setName(id);
 		this.setRefs(new HashMap<String, Set<BioRef>>());

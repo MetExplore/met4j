@@ -31,6 +31,7 @@
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
@@ -89,16 +90,17 @@ public class BioReaction extends BioEntity {
 		
 		String direction = " -> ";
 
-		str = str.concat(this.getId() + " : ");
+		str = str.concat(this.getId() + ": ");
 		
 		ArrayList<String> lefts = new ArrayList<String>();
 		
-
 		for (BioReactant cpd : this.getLeftReactants()) {
 
 			lefts.add(cpd.toString());
 		}
 		
+		Collections.sort(lefts);
+
 		String leftStr = String.join(" + ", lefts);
 
 		if (this.isReversible()) {
@@ -114,7 +116,10 @@ public class BioReaction extends BioEntity {
 			rights.add(cpd.toString());
 		}
 		
+		Collections.sort(rights);
+
 		String rightStr = String.join(" + ", rights);
+
 		
 		str = str+leftStr+direction+rightStr;
 
@@ -214,23 +219,21 @@ public class BioReaction extends BioEntity {
 	
 	
 	/**
-	 * TODO : must be a protected method ?
 	 * 
 	 * @param side : {@link Side}
 	 * @return  {@link BioCollection} of left {@link BioReactant}
 	 */
-	private BioCollection<BioReactant> getLeftReactants() {
+	protected BioCollection<BioReactant> getLeftReactants() {
 
 		return getSideReactants(Side.LEFT);
 	}
 
 	/**
-	 * TODO : must be a protected method ?
 	 * 
 	 * @param side : {@link Side}
 	 * @return {@link BioCollection}of right {@link BioReactant}
 	 */
-	private BioCollection<BioReactant> getRightReactants() {
+	protected BioCollection<BioReactant> getRightReactants() {
 
 		return getSideReactants(Side.RIGHT);
 	}

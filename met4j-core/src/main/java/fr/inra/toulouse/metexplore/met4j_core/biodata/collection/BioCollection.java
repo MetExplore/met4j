@@ -170,7 +170,15 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	@Override
 	public boolean remove(Object o) {
-		return entities.values().remove(o);
+		Boolean flag =  entities.values().remove(o);
+
+		if(flag)
+		{
+			throw new IllegalArgumentException("Impossible to remove an object absent from a collection");
+		}
+
+		return flag;
+
 	}
 
 

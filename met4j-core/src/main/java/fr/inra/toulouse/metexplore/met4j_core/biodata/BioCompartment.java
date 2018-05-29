@@ -52,6 +52,8 @@ public class BioCompartment extends BioEntity{
 	
 	public BioCompartment(String id) {
 		super(id);
+
+		components  = new BioCollection<BioPhysicalEntity>();
 	}
 
 	/**

@@ -72,7 +72,9 @@ public class BioReaction extends BioEntity {
 	
 	private BioCollection<BioReactant> left = new BioCollection<BioReactant>();
 	private BioCollection<BioReactant> right = new BioCollection<BioReactant>();
-	
+
+	private BioCollection<BioEnzyme> enzymes = new BioCollection<BioEnzyme>();
+
 	public enum Side {LEFT, RIGHT};
 	
 	
@@ -324,10 +326,22 @@ public class BioReaction extends BioEntity {
 		
 		
 	}
-	
-	
-	
-	
+
+	/**
+	 * Get the list of enzymes
+	 */
+	protected BioCollection<BioEnzyme> getEnzymes() {
+
+		return enzymes;
+
+	}
+
+	/**
+	 * Add an enzyme that catalyses the reaction
+	 */
+	protected void addEnzyme(BioEnzyme e) {
+		this.enzymes.add(e);
+	}
 
 
-}
+}	

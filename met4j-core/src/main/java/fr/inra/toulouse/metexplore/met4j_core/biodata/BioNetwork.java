@@ -166,7 +166,9 @@ public class BioNetwork {
 		}
 	}
 
-	// relation enzyme -reaction
+	/**
+	 * Affects an enzyme to a reaction
+	 */
 	public void affectEnzyme(BioEnzyme enzyme, BioReaction reaction) {
 
 		if(! this.contains(enzyme)) 
@@ -179,11 +181,8 @@ public class BioNetwork {
 			throw new IllegalArgumentException("Reaction "+reaction.getId()+" not present in the network");
 		}
 
+		reaction.addEnzyme(enzyme);
 
-
-	};
-
-	public void affectEnzyme(BioProtein protein, BioReaction reaction) {
 	};
 
 	// relation enzyme -constituant

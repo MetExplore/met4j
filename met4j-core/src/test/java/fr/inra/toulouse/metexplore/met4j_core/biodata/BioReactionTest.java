@@ -65,10 +65,10 @@ public class BioReactionTest {
 		cpt1 = new BioCompartment("cpt1");
 		cpt2 = new BioCompartment("cpt2");
 
-		l1 = new BioReactant(new BioPhysicalEntityFake("l1"), 1.0, cpt1);
-		l2 = new BioReactant(new BioPhysicalEntityFake("l2"), 1.0, cpt1);
-		r1 = new BioReactant(new BioPhysicalEntityFake("r1"), 1.0, cpt2);
-		r2 = new BioReactant(new BioPhysicalEntityFake("r2"), 1.0, cpt2);
+		l1 = new BioReactant(new BioMetaboliteFake("l1"), 1.0, cpt1);
+		l2 = new BioReactant(new BioMetaboliteFake("l2"), 1.0, cpt1);
+		r1 = new BioReactant(new BioMetaboliteFake("r1"), 1.0, cpt2);
+		r2 = new BioReactant(new BioMetaboliteFake("r2"), 1.0, cpt2);
 
 		reaction = new BioReaction("testreaction");
 
@@ -201,6 +201,14 @@ public class BioReactionTest {
 		assertArrayEquals("getRightReactants does not function well",
 				((BioCollection<BioPhysicalEntity>) rightField.get(reaction)).toArray(), reaction.getRightReactants().toArray());
 
+	}
+
+	public void testGetProteins() {
+		fail("not implemented");
+	}
+
+	public void testGetGenes() {
+		fail("not implemented");
 	}
 
 }

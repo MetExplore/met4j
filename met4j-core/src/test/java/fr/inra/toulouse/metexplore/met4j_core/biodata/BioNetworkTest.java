@@ -173,7 +173,7 @@ public class BioNetworkTest {
 		network.add(metabolite);
 		network.add(cpt);
 		network.affectToCompartment(metabolite, cpt);
-		network.affectSubstrate(metabolite, 1.0, cpt, reaction);
+		network.affectLeft(metabolite, 1.0, cpt, reaction);
 		network.add(enz);
 		network.affectSubUnit(metabolite, 1.0, enz);
 		network.remove(metabolite);
@@ -204,7 +204,7 @@ public class BioNetworkTest {
 		network.add(protein);
 		network.affectGeneProduct(protein, gene);
 		network.remove(gene);
-		assertEquals("Gene not removed from the protein", 0, gene.getProteinList());
+		assertEquals("Gene not removed from the protein", 0,protein.getGene());
 
 		// Must return an exception
 		network.remove(gene);
@@ -251,8 +251,8 @@ public class BioNetworkTest {
 		network.add(cpt);
 		network.add(reaction);
 		network.affectToCompartment(met, cpt);
-		network.affectSubstrate(met, 1.0, cpt, reaction);
-		network.affectProduct(met, 1.0, cpt, reaction);
+		network.affectLeft(met, 1.0, cpt, reaction);
+		network.affectRight(met, 1.0, cpt, reaction);
 
 		network.remove(cpt);
 
@@ -273,14 +273,44 @@ public class BioNetworkTest {
 		network.add(reaction);
 		BioMetabolite s1 = new BioMetabolite("s1");
 		network.add(s1);
-		BioProtein s2 = new BioProtein("s2");
+		BioMetabolite s2 = new BioMetabolite("s2");
 		network.add(s2);
 		BioCompartment cpt = new BioCompartment("cpt");
+		network.add(cpt);
 
-		network.affectSubstrate(s1, 1.0, cpt, reaction);
-		network.affectSubstrate(s2, 1.0, cpt, reaction);
+		network.affectToCompartment(s1, cpt);
+		network.affectToCompartment(s2, cpt);
+
+
+		network.affectLeft(s1, 1.0, cpt, reaction);
+		network.affectLeft(s2, 1.0, cpt, reaction);
 
 		assertEquals("Substrate not well added", 2, reaction.getLeftReactants().size());
+
+	}
+
+	@Test
+	public void testRemoveSubstrate() {
+
+		BioReaction reaction = new BioReaction("r1");
+		network.add(reaction);
+		BioMetabolite s1 = new BioMetabolite("s1");
+		network.add(s1);
+		BioMetabolite s2 = new BioMetabolite("s2");
+		network.add(s2);
+		BioCompartment cpt = new BioCompartment("cpt");
+		network.add(cpt);
+
+		network.affectToCompartment(s1, cpt);
+		network.affectToCompartment(s2, cpt);
+
+
+		network.affectLeft(s1, 1.0, cpt, reaction);
+		network.affectLeft(s2, 1.0, cpt, reaction);
+
+		network.removeLeft(s2,  cpt, reaction);
+
+		assertEquals("Substrate not well added", 1, reaction.getLeftReactants().size());
 
 	}
 
@@ -291,10 +321,10 @@ public class BioNetworkTest {
 		BioCompartment cpt = new BioCompartment("cptId");
 
 		network.add(metabolite);
-		network.add(cpt);
+		
 		network.add(reaction);
-		// The compartment has not been affected to the metabolite
-		network.affectSubstrate(metabolite, 1.0, cpt, reaction);
+		// The compartment has not been added to the network
+		network.affectLeft(metabolite, 1.0, cpt, reaction);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -309,7 +339,7 @@ public class BioNetworkTest {
 		network.add(reaction);
 		network.affectToCompartment(metabolite, cpt2);
 		// The metabolite has been affected to an other compartment
-		network.affectSubstrate(metabolite, 1.0, cpt, reaction);
+		network.affectLeft(metabolite, 1.0, cpt, reaction);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -321,7 +351,7 @@ public class BioNetworkTest {
 		network.add(metabolite);
 		network.add(cpt);
 		network.affectToCompartment(metabolite, cpt);
-		network.affectSubstrate(metabolite, 1.0, cpt, reaction);
+		network.affectLeft(metabolite, 1.0, cpt, reaction);
 	}
 
 	@Test
@@ -330,14 +360,40 @@ public class BioNetworkTest {
 		network.add(reaction);
 		BioMetabolite s1 = new BioMetabolite("s1");
 		network.add(s1);
-		BioProtein s2 = new BioProtein("s2");
+		BioMetabolite s2 = new BioMetabolite("s2");
 		network.add(s2);
 		BioCompartment cpt = new BioCompartment("cpt");
+		network.add(cpt);	
 
-		network.affectProduct(s1, 1.0, cpt, reaction);
-		network.affectProduct(s2, 1.0, cpt, reaction);
+		network.affectToCompartment(s1, cpt);
+		network.affectToCompartment(s2, cpt);
+
+		network.affectRight(s1, 1.0, cpt, reaction);
+		network.affectRight(s2, 1.0, cpt, reaction);
 
 		assertEquals("Product not well added", 2, reaction.getRightReactants().size());
+	}
+
+	@Test
+	public void testRemoveProduct() {
+		BioReaction reaction = new BioReaction("r1");
+		network.add(reaction);
+		BioMetabolite s1 = new BioMetabolite("s1");
+		network.add(s1);
+		BioMetabolite s2 = new BioMetabolite("s2");
+		network.add(s2);
+		BioCompartment cpt = new BioCompartment("cpt");
+		network.add(cpt);	
+
+		network.affectToCompartment(s1, cpt);
+		network.affectToCompartment(s2, cpt);
+
+		network.affectRight(s1, 1.0, cpt, reaction);
+		network.affectRight(s2, 1.0, cpt, reaction);
+
+		network.removeRight(s1, cpt, reaction);
+
+		assertEquals("Product not well removed", 1, reaction.getRightReactants().size());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -347,9 +403,8 @@ public class BioNetworkTest {
 		BioCompartment cpt = new BioCompartment("cptId");
 
 		network.add(metabolite);
-		network.add(cpt);
 		network.add(reaction);
-		network.affectProduct(metabolite, 1.0, cpt, reaction);
+		network.affectRight(metabolite, 1.0, cpt, reaction);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -363,7 +418,7 @@ public class BioNetworkTest {
 		network.add(cpt);
 		network.add(reaction);
 		network.affectToCompartment(metabolite, cpt2);
-		network.affectProduct(metabolite, 1.0, cpt, reaction);
+		network.affectRight(metabolite, 1.0, cpt, reaction);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -375,7 +430,7 @@ public class BioNetworkTest {
 		network.add(metabolite);
 		network.add(cpt);
 		network.affectToCompartment(metabolite, cpt);
-		network.affectProduct(metabolite, 1.0, cpt, reaction);
+		network.affectRight(metabolite, 1.0, cpt, reaction);
 	}
 
 	@Test
@@ -387,7 +442,21 @@ public class BioNetworkTest {
 		network.add(enzyme);
 		network.affectEnzyme(enzyme, reaction);
 
-		assertEquals("Enzyme not affected to reaction", 1, enzyme.getReactions().size());
+		assertEquals("Enzyme not affected to reaction", 1, reaction.getEnzymes().size());
+	}
+
+	@Test
+	public void testRemoveEnzymeFromReaction() {
+
+		BioReaction reaction = new BioReaction("reactionId");
+		BioEnzyme enzyme = new BioEnzyme("enzymeId");
+		network.add(reaction);
+		network.add(enzyme);
+		network.affectEnzyme(enzyme, reaction);
+
+		network.removeEnzymeFromReaction(enzyme, reaction);
+
+		assertEquals("Enzyme not removed from reaction", 0, reaction.getEnzymes().size());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -421,7 +490,26 @@ public class BioNetworkTest {
 
 		network.affectSubUnit(unitMetabolite, 1.0, enz);
 
-		assertEquals("subunit not added to enzyme", 1, enz.getSubUnits().size());
+		assertEquals("subunit not added to enzyme", 1, enz.getParticipants().size());
+	}
+
+
+	@Test
+	public void testRemoveSubUnit() {
+
+		BioMetabolite unitMetabolite = new BioMetabolite("met");
+		BioProtein unitProtein = new BioProtein("prot");
+		BioEnzyme enz = new BioEnzyme("enz");
+
+		network.add(unitMetabolite);
+		network.add(unitProtein);
+		network.add(enz);
+
+		network.affectSubUnit(unitMetabolite, 1.0, enz);
+;
+		network.removeSubUnit(unitMetabolite, enz);
+
+		assertEquals("subunit not removed from enzyme", 0, enz.getParticipants().size());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -459,9 +547,7 @@ public class BioNetworkTest {
 
 		network.affectGeneProduct(prot, gene);
 
-		assertEquals("Bad number of proteins coded by the gene", 1, gene.getProteinList());
-
-		assertEquals("Gene not affected to protein", prot, gene.getProteinList().iterator().next());
+		assertEquals("Gene badly affected", prot.getGene(), gene);
 
 	}
 
@@ -487,6 +573,25 @@ public class BioNetworkTest {
 
 		network.affectGeneProduct(prot, gene);
 
+		
+
+
+	}
+
+	@Test
+	public void testRemoveGeneProduct() {
+
+		BioProtein prot = new BioProtein("protId");
+		BioGene gene = new BioGene("geneId");
+
+		network.add(prot);
+		network.add(gene);
+
+		network.affectGeneProduct(prot, gene);
+		network.removeGeneProduct(prot, gene);
+
+		assertEquals("Bad number of proteins coded by the gene", null, prot.getGene());
+
 	}
 
 	@Test
@@ -503,6 +608,24 @@ public class BioNetworkTest {
 		assertEquals("Reaction not added to pathway", 1, pathway.getReactions().size());
 
 		assertEquals("Bad reaction added to pathway", reaction, pathway.getReactions().iterator().next());
+	}
+
+	@Test
+	public void testRemoveReactionFromPathway() {
+
+		BioReaction reaction = new BioReaction("reacId");
+		BioPathway pathway = new BioPathway("pathwayId");
+
+		network.add(reaction);
+		network.add(pathway);
+
+		network.affectToPathway(reaction, pathway);
+
+		network.removeReactionFromPathway(reaction, pathway);
+
+
+		assertEquals("Reaction not removed from pathway", 0, pathway.getReactions().size());
+
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -567,31 +690,75 @@ public class BioNetworkTest {
 
 	}
 
+
+
 	@Test
 	public void testGetReactionsFromSubstrates() {
 		BioReaction r1 = addTestReactionToNetwork();
+		r1.setReversible(false);
 
 		BioReaction r2 = new BioReaction("id2");
 		network.add(r2);
 
-		Set<BioMetabolite> substrates = new HashSet<BioMetabolite>();
-		substrates.add(network.getMetabolitesView().getEntityFromId("s1"));
-		substrates.add(network.getMetabolitesView().getEntityFromId("s2"));
+		Set<String> substrates = new HashSet<String>();
 
-		BioCollection<BioReaction> reactions = network.getReactionsFromSubstrates(substrates);
+		substrates.add("s1");
+		substrates.add("s2");
 
-		assertEquals("Get the bad number of reactions with these substrates", 1, reactions.size());
+		BioCollection<BioReaction> reactions = network.getReactionsFromSubstrates(substrates, true);
 
-		assertEquals("Get the bad reaction with these substrates", r1, reactions.iterator().next());
+		assertEquals("Get the bad number of reactions with exactly these substrates", 1, reactions.size());
+
+		assertEquals("Get the bad reaction with exactly these substrates", r1, reactions.iterator().next());
 
 		BioMetabolite s3 = new BioMetabolite("id3");
 		network.add(s3);
 
-		substrates.add(s3);
+		substrates.add("id3");
 
-		reactions = network.getReactionsFromSubstrates(substrates);
+		reactions = network.getReactionsFromSubstrates(substrates, true);
 
 		assertEquals("No reaction exists with these substrates", 0, reactions.size());
+
+		// test exact = false
+		substrates.clear();
+		substrates.add("s1");
+
+		reactions = network.getReactionsFromSubstrates(substrates, true);
+
+		assertEquals("No reaction with exactly this substrate", 0, reactions.size());
+
+		reactions = network.getReactionsFromSubstrates(substrates, false);
+
+		assertEquals("Get the bad number of reactions with  this at least substrate", 1, reactions.size());
+
+
+		// since r1 is irreversible, test the right side
+		substrates.clear();
+		substrates.add("p1");
+		reactions = network.getReactionsFromSubstrates(substrates, false);
+
+		assertEquals("No reaction with this substrate (that is a product in fact)", 0, reactions.size());
+
+		substrates.add("p2");
+
+		reactions = network.getReactionsFromSubstrates(substrates, true);
+
+		assertEquals("No reaction with exactly these substrates (that are products in fact)", 0, reactions.size());
+
+		// set r1 reversible and test the right side
+		r1.setReversible(true);
+
+		reactions = network.getReactionsFromSubstrates(substrates, true);
+
+		assertEquals("Get the bad number of reactions with  this all these substrates (reversible reaction)", 1, reactions.size());
+
+		substrates.remove("p2");
+
+		reactions = network.getReactionsFromSubstrates(substrates, false);
+
+		assertEquals("Get the bad number of reactions with  this at least substrate (reversible reaction)", 1, reactions.size());
+
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -601,59 +768,103 @@ public class BioNetworkTest {
 		BioMetabolite s2 = new BioMetabolite("id2");
 		network.add(s1);
 
-		Set<BioMetabolite> substrates = new HashSet<BioMetabolite>();
-		substrates.add(s1);
-		substrates.add(s2);
+		Set<String> substrates = new HashSet<String>();
+		substrates.add("s1");
+		substrates.add("s2");
 
-		network.getReactionsFromSubstrates(substrates);
+		network.getReactionsFromSubstrates(substrates, true);
 
 	}
 
 	@Test
-	public void testGetReactionsFromProducts() {
+	public void testgetReactionsFromProducts() {
 		BioReaction r1 = addTestReactionToNetwork();
+		r1.setReversible(false);
 
 		BioReaction r2 = new BioReaction("id2");
 		network.add(r2);
 
-		Set<BioMetabolite> products = new HashSet<BioMetabolite>();
-		products.add(network.getMetabolitesView().getEntityFromId("p1"));
-		products.add(network.getMetabolitesView().getEntityFromId("p2"));
+		Set<String> products = new HashSet<String>();
 
-		BioCollection<BioReaction> reactions = network.getReactionsFromProducts(products);
+		products.add("p1");
+		products.add("p2");
 
-		assertEquals("Get the bad number of reactions with these products", 1, reactions.size());
+		System.err.println("Products : "+products);
 
-		assertEquals("Get the bad reaction with these products", r1, reactions.iterator().next());
+		BioCollection<BioReaction> reactions = network.getReactionsFromProducts(products, true);
+
+		assertEquals("Get the bad number of reactions with exactly these products", 1, reactions.size());
+
+		assertEquals("Get the bad reaction with exactly these products", r1, reactions.iterator().next());
 
 		BioMetabolite s3 = new BioMetabolite("id3");
-
-		products.add(s3);
 		network.add(s3);
 
-		reactions = network.getReactionsFromProducts(products);
+		products.add("id3");
+
+		reactions = network.getReactionsFromProducts(products, true);
 
 		assertEquals("No reaction exists with these products", 0, reactions.size());
+
+		// test exact = false
+		products.clear();
+		products.add("p1");
+
+		reactions = network.getReactionsFromProducts(products, true);
+
+		assertEquals("No reaction with exactly this substrate", 0, reactions.size());
+
+		reactions = network.getReactionsFromProducts(products, false);
+
+		assertEquals("Get the bad number of reactions with  this at least substrate", 1, reactions.size());
+
+
+		// since r1 is irreversible, test the right side
+		products.clear();
+		products.add("s1");
+		reactions = network.getReactionsFromProducts(products, false);
+
+		assertEquals("No reaction with this substrate (that is a product in fact)", 0, reactions.size());
+
+		products.add("s2");
+
+		reactions = network.getReactionsFromProducts(products, true);
+
+		assertEquals("No reaction with exactly these products (that are products in fact)", 0, reactions.size());
+
+		// set r1 reversible and test the right side
+		r1.setReversible(true);
+
+		reactions = network.getReactionsFromProducts(products, true);
+
+		assertEquals("Get the bad number of reactions with  this all these products (reversible reaction)", 1, reactions.size());
+
+		products.remove("s2");
+
+		reactions = network.getReactionsFromProducts(products, false);
+
+		assertEquals("Get the bad number of reactions with  this at least substrate (reversible reaction)", 1, reactions.size());
+
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testGetReactionsFromProductsWithProductAbsent() {
+	public void testgetReactionsFromProductsWithProductAbsent() {
 
 		BioMetabolite s1 = new BioMetabolite("id1");
 		BioMetabolite s2 = new BioMetabolite("id2");
 		network.add(s1);
 
-		Set<BioMetabolite> substrates = new HashSet<BioMetabolite>();
-		substrates.add(s1);
-		substrates.add(s2);
+		Set<String> substrates = new HashSet<String>();
+		substrates.add("s1");
+		substrates.add("s2");
 
-		network.getReactionsFromProducts(substrates);
+		network.getReactionsFromProducts(substrates, true);
 
 	}
 
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testGetPhysicalEntitiesFromPathway() {
+	@Test
+	public void testGetMetabolitesFromPathway() {
 
 		BioPathway p = new BioPathway("id");
 		network.add(p);
@@ -662,110 +873,143 @@ public class BioNetworkTest {
 
 		network.affectToPathway(r, p);
 
-		BioCollection<BioMetabolite> subs = network.getPhysicalEntitiesFromPathway(p);
+		BioCollection<BioMetabolite> subs = network.getMetabolitesFromPathway(p);
 
 		assertEquals("Bad number of metabolites in pathway", 4, subs.size());
-
-		network.remove(p);
-		// Must return an exception
-		network.getPhysicalEntitiesFromPathway(p);
 
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void testGetPathwaysFromPhysicalEntities() {
+	public void testGetMetabolitesFromPathwayAbsent() {
 
-		BioPathway p2 = new BioPathway("id2");
-		network.add(p2);
+		BioPathway p = new BioPathway("id");
+		network.add(p);
 
 		BioReaction r = addTestReactionToNetwork();
 
-		BioMetabolite cpd = (BioMetabolite) r.getLeft().iterator().next();
-		
-		BioCollection<BioMetabolite> cpds = new BioCollection<BioMetabolite>();
-		cpds.add(cpd);
+		network.affectToPathway(r, p);
 
-		BioCollection<BioPathway> pathways = network.getPathwaysFromPhysicalEntities(cpds);
+		BioCollection<BioMetabolite> subs = network.getMetabolitesFromPathway(p);
+
+		network.remove(p);
+		// Must return an exception
+		network.getMetabolitesFromPathway(p);
+
+	}
+
+	@Test
+	public void testGetPathwaysFromMetabolites() {
+
+		BioPathway p2 = new BioPathway("pathway2");
+		network.add(p2);
+
+		addTestReactionToNetwork();
+
+		
+		Set<String> cpds = new HashSet<String>();
+		cpds.add("s1");
+
+		BioCollection<BioPathway> pathways = network.getPathwaysFromMetabolites(cpds, false);
 
 		assertEquals("Bad number of pathways containing this compound", 1, pathways.size());
 
-		assertTrue("Bad pathway containing this compound",
-				pathways.contains(network.getPathwaysView().getEntitiesFromName("pathway1")));
+		assertEquals("Bad pathway containing this compound","pathway1", pathways.getIds().iterator().next());
 
 		BioMetabolite cpd2 = new BioMetabolite("id3");
 		network.add(cpd2);
 
-		cpds.remove(cpd);
-		cpds.add(cpd2);
+		cpds.add("id3");
 
-		pathways = network.getPathwaysFromPhysicalEntities(cpds);
+		pathways = network.getPathwaysFromMetabolites(cpds, false);
+
+		assertEquals("Bad number of pathways containing at least one  compound of this list", 1, pathways.size());
+
+		cpds.remove("s1");
+
+		pathways = network.getPathwaysFromMetabolites(cpds, false);
 
 		assertEquals("No pathway contains this compound", 0, pathways.size());
-
-		network.remove(cpd2);
-		// Must return an exception
-		pathways = network.getPathwaysFromPhysicalEntities(cpds);
 
 	}
 
 	@Test(expected = IllegalArgumentException.class)
+	public void testGetPathwaysFromMetabolitesMetaboliteAbsent() {
+		addTestReactionToNetwork();
+
+		Set<String> cpds = new HashSet<String>();
+
+		cpds.add("s1");
+		cpds.add("absent");
+
+		network.getPathwaysFromMetabolites(cpds, false);
+
+	}
+
+
+
+	@Test
 	public void testGetReactionsFromGenes() {
 
 		BioReaction r = addTestReactionToNetwork();
 		BioReaction r2 = new BioReaction("id2");
 		network.add(r2);
 
-		Set<BioGene> genes = new HashSet<BioGene>();
-		genes.add(network.getGenesView().getEntityFromId("g1"));
-		genes.add(network.getGenesView().getEntityFromId("g2"));
+		Set<String> genes = new HashSet<String>();
+		genes.add("g1");
+		genes.add("g2");
 
-		BioCollection<BioReaction> reactions = network.getReactionsFromGenes(genes);
+		BioCollection<BioReaction> reactions = network.getReactionsFromGenes(genes, true);
 
 		assertEquals("Bad number of reactions with these genes", 1, reactions.size());
 
 		assertEquals("Bad reaction with these genes", r, reactions.iterator().next());
-
-		BioGene g3 = new BioGene("g3");
-		genes.add(g3);
-		// Must return an exception
-		network.getReactionsFromGenes(genes);
-
 	}
 
 	@Test(expected = IllegalArgumentException.class)
+	public void testGetReactionsFromGenesWithGeneAbsent() {
+
+		Set<String> genes = new HashSet<String>();
+		genes.add("absent");
+
+		network.getReactionsFromGenes(genes, true);
+	}
+
+	@Test
 	public void testGetGenesFromReactions() {
 
-		BioReaction r = addTestReactionToNetwork();
-		BioReaction r2 = new BioReaction("id2");
+		addTestReactionToNetwork();
+		BioReaction r2 = new BioReaction("r2");
 		network.add(r2);
 
 		BioGene g3 = new BioGene("g3");
 		network.add(g3);
 
-		Set<BioReaction> reactions = new HashSet<BioReaction>();
-		reactions.add(r);
-		reactions.add(r2);
+		Set<String> reactions = new HashSet<String>();
+		reactions.add("r1");
+		reactions.add("r2");
 
 		BioCollection<BioGene> genes = network.getGenesFromReactions(reactions);
 
 		assertEquals("Bad number of genes with these reactions", 2, genes.size());
+	}
 
+	@Test(expected =  IllegalArgumentException.class)
+	public void testGetGenesFromReactionsabsent() {
 		BioReaction r3 = new BioReaction("id3");
-		reactions.add(r3);
+		Set<String> reactions = new HashSet<String>();
+		reactions.add("id3");
 		// Must return an exception
 		network.getGenesFromReactions(reactions);
 
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testGetGenesFromPathways() {
 
-		BioReaction r = addTestReactionToNetwork();
+		addTestReactionToNetwork();
 
-		BioPathway p = network.getPathwaysView().getEntityFromId("pathway1");
-
-		Set<BioPathway> pathways = new HashSet<BioPathway>();
-		pathways.add(p);
+		Set<String> pathways = new HashSet<String>();
+		pathways.add("pathway1");
 
 		BioGene g3 = new BioGene("g3");
 		network.add(g3);
@@ -774,45 +1018,68 @@ public class BioNetworkTest {
 
 		assertEquals("Bad number of genes in this pathway", 2, genes.size());
 
-		BioCollection<BioGene> genesTest = new BioCollection<BioGene>();
-		genesTest.add(network.getGenesView().getEntityFromId("g1"));
-		genesTest.add(network.getGenesView().getEntityFromId("g2"));
+		Set<String> geneRefs = new HashSet<String>();
+		geneRefs.add("g1");
+		geneRefs.add("g2");
 
-		assertEquals("Bad genes in this pathway", genesTest, genes);
-
-		BioPathway p2 = new BioPathway("pathway2");
-
-		pathways.add(p2);
-		// Must return an exception
-		network.getGenesFromPathways(pathways);
+		assertEquals("Bad genes in this pathway", geneRefs, genes.getIds()) ;
 
 	}
 
 	@Test(expected = IllegalArgumentException.class)
+	public void testGetGenesFromPathwaysAbsent() {
+		Set<String> pathways = new HashSet<String>();
+		pathways.add("absent");
+		// Must return an exception
+		network.getGenesFromPathways(pathways);
+	}
+
+	@Test
 	public void testGetPathwaysFromGenes() {
-		BioReaction r = addTestReactionToNetwork();
-		Set<BioGene> genes = new HashSet<BioGene>();
-		genes.add(network.getGenesView().getEntityFromId("g1"));
+		
+		addTestReactionToNetwork();
+		Set<String> genes = new HashSet<String>();
+		
+
+		BioGene gene = new BioGene("g3");
+		network.add(gene);
+
+		genes.add("g1");
+		genes.add("g2");
+		genes.add("g3");
 
 		BioPathway p2 = new BioPathway("pathway2");
 		network.add(p2);
 
-		BioCollection<BioPathway> pathways = network.getPathwaysFromGenes(genes);
+		BioCollection<BioPathway> pathways = network.getPathwaysFromGenes(genes, false);
 
 		assertEquals("Bad number of pathways with these genes", 1, pathways.size());
 
 		assertTrue("Bad pathway with these genes",
 				pathways.contains(network.getPathwaysView().getEntityFromId("pathway1")));
 
-		BioGene gene3 = new BioGene("gene3");
+		pathways = network.getPathwaysFromGenes(genes, true);
 
-		genes.add(gene3);
-		// Must return an exception
-		network.getPathwaysFromGenes(genes);
+		assertEquals("No pathway with all these genes", 0, pathways.size());
+
+		pathways = network.getPathwaysFromGenes(genes, false);
+
+		assertEquals("Bad number of pathways with at east one of these genes", 1, pathways.size());
+
 
 	}
 
 	@Test(expected = IllegalArgumentException.class)
+	public void testGetPathwaysFromGenesAbsent() {
+		Set<String> genes = new HashSet<String>();
+
+		genes.add("absent");
+		// Must return an exception
+		network.getPathwaysFromGenes(genes, true);
+
+	}
+
+	@Test
 	public void testGetPathwaysFromReactions() {
 
 		BioReaction r = addTestReactionToNetwork();
@@ -820,21 +1087,41 @@ public class BioNetworkTest {
 		BioPathway p2 = new BioPathway("pathway2");
 		network.add(p2);
 
-		Set<BioReaction> reactions = new HashSet<BioReaction>();
-		reactions.add(r);
+		Set<String> reactions = new HashSet<String>();
+		reactions.add("r1");
 
-		BioCollection<BioPathway> pathways = network.getPathwaysFromReactions(reactions);
+		BioCollection<BioPathway> pathways = network.getPathwaysFromReactions(reactions, true);
 
 		assertEquals("Bad number of pathways with this reaction", 1, pathways.size());
 
-		assertTrue("Bad pathway with these reactions",
-				pathways.contains(network.getPathwaysView().getEntityFromId("pathway1")));
+		Set<String> pathwaysRef = new HashSet<String>();
+		pathwaysRef.add("pathway1");
+		assertEquals("Bad pathway with these reactions",pathwaysRef, pathways.getIds() );
+
 
 		BioReaction r2 = new BioReaction("r2");
-		reactions.add(r2);
-		// Must return an exception
-		network.getPathwaysFromReactions(reactions);
+		network.add(r2);
 
+		reactions.add("r2");
+		
+		pathways = network.getPathwaysFromReactions(reactions, true);
+
+		assertEquals("No pathway with all these reactions", 0, pathways.size());
+
+		pathways = network.getPathwaysFromReactions(reactions, false);
+
+		assertEquals("Bad number of pathways with at least one of the reactions", 1, pathways.size());
+
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testGetPathwaysFromReactionsAbsent() {
+
+		Set<String> reactions = new HashSet<String>();
+		reactions.add("absent");
+
+		// Must return an exception
+		network.getPathwaysFromReactions(reactions, false);
 	}
 
 	/**
@@ -842,8 +1129,8 @@ public class BioNetworkTest {
 	 * @return a reaction with two substrates, two products, one enzyme linked
 	 *         to two genes All objects have been added to the network
 	 */
-	public BioReaction addTestReactionToNetwork() {
-		BioReaction r = new BioReaction("id");
+	private BioReaction addTestReactionToNetwork() {
+		BioReaction r = new BioReaction("r1");
 
 		BioMetabolite s1 = new BioMetabolite("s1");
 		BioMetabolite s2 = new BioMetabolite("s2");
@@ -854,12 +1141,19 @@ public class BioNetworkTest {
 		network.add(r);
 		network.add(s1);
 		network.add(s2);
+		network.add(p1);
+		network.add(p2);
 		network.add(cpt);
 
-		network.affectSubstrate(s1, 1.0, cpt, r);
-		network.affectSubstrate(s2, 1.0, cpt, r);
-		network.affectProduct(p1, 1.0, cpt, r);
-		network.affectProduct(p2, 1.0, cpt, r);
+		network.affectToCompartment(s1, cpt);
+		network.affectToCompartment(s2, cpt);
+		network.affectToCompartment(p1, cpt);
+		network.affectToCompartment(p2, cpt);
+
+		network.affectLeft(s1, 1.0, cpt, r);
+		network.affectLeft(s2, 1.0, cpt, r);
+		network.affectRight(p1, 1.0, cpt, r);
+		network.affectRight(p2, 1.0, cpt, r);
 
 		BioPathway p = new BioPathway("pathway1");
 		network.add(p);
@@ -869,9 +1163,9 @@ public class BioNetworkTest {
 		BioEnzyme e = new BioEnzyme("e");
 		network.add(e);
 		BioProtein prot1 = new BioProtein("p1");
-		network.add(p1);
+		network.add(prot1);
 		BioProtein prot2 = new BioProtein("p2");
-		network.add(p2);
+		network.add(prot2);
 		BioGene g1 = new BioGene("g1");
 		network.add(g1);
 		BioGene g2 = new BioGene("g2");
@@ -880,13 +1174,43 @@ public class BioNetworkTest {
 		network.affectGeneProduct(prot1, g1);
 		network.affectGeneProduct(prot2, g2);
 
-		network.affectSubUnit(p1, 1.0, e);
-		network.affectSubUnit(p2, 1.0, e);
+		network.affectSubUnit(prot1, 1.0, e);
+		network.affectSubUnit(prot2, 1.0, e);
 
 		network.affectEnzyme(e, r);
 
 		return r;
 
 	}
+
+@Test
+public void testGetMetabolitesView() {
+	fail("not implemented");
+}
+
+@Test
+public void testGetEnzymesView() {
+	fail("not implemented");
+}
+
+@Test
+public void testGetProteinsView() {
+	fail("not implemented");
+}
+
+@Test
+public void testGetPathwaysView() {
+	fail("not implemented");
+}
+@Test
+public void testGetGenesView() {
+	fail("not implemented");
+}
+
+@Test
+public void testGetCompartmentsView() {
+	fail("not implemented");
+}
+
 
 }

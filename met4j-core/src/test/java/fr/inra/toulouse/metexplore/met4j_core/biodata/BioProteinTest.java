@@ -31,46 +31,19 @@
 
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
+import static org.junit.Assert.fail;
+
 import org.junit.Test;
 
 
-public class BioParticipantTest {
+public class BioProteinTest {
 
-	/**
-	 * Test if a catch an exception if the number is nan
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testSetNaNQuantity() {
+    
+    @Test
+    public void testGetGenes() {
+        fail("not implemented");
+    }
 
-		BioParticipant p = new BioParticipantFake(new BioMetaboliteFake("test"), 2.0);
-		Double nan = Double.NaN;
-		p.setQuantity(nan);
 
-	}
-	
-	/**
-	 * Test if a catch an exception if the number is infinite
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testSetInfiniteQuantity() {
-
-		BioParticipant p = new BioParticipantFake(new BioMetaboliteFake("test"), 2.0);
-		Double inf = Double.POSITIVE_INFINITY;
-		p.setQuantity(inf);
-	}
-	
-	/**
-	 * Test if a catch an exception if the number is <= 0
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testSetNegativeOrNullQuantity() {
-
-		BioParticipant p = new BioParticipantFake(new BioMetaboliteFake("test"), 2.0);
-		Double n = 0.0;
-		p.setQuantity(n);
-		
-		n = -10.0;
-		p.setQuantity(n);
-	}
 
 }

@@ -32,27 +32,38 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 import java.util.HashMap;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+
 public class BioEnzyme extends BioPhysicalEntity {
 
-	private HashMap<String, BioParticipant> participants;
+	private BioCollection<BioParticipant> participants;
 
 	public BioEnzyme(String id) {
 		super(id);
+
+		participants = new BioCollection<BioParticipant>();
 	}
 
 	/**
 	 * @return the participants
 	 */
-	public HashMap<String, BioParticipant> getParticipants() {
+	protected BioCollection<BioParticipant> getParticipants() {
 		return participants;
 	}
 
 	/**
 	 * @param participants the participants to set
 	 */
-	public void setParticipants(HashMap<String, BioParticipant> participants) {
+	protected void setParticipants(BioCollection<BioParticipant> participants) {
 		this.participants = participants;
 	}
+
+	protected void addParticipant(BioParticipant participant)
+	{
+		this.participants.add(participant);
+	}
+
+
 
 	
 	

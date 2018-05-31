@@ -33,8 +33,23 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 public class BioProtein extends BioPhysicalEntity {
 
+	private BioGene gene;
+
+
 	public BioProtein(String id) {
 		super(id);
+	}
+
+	protected  void setGene(BioGene g) {
+		this.gene = g;
+	}
+
+	public BioGene getGene() {
+		return this.gene;
+	}
+
+	public void removeGene() {
+		this.gene = null;
 	}
 
 }

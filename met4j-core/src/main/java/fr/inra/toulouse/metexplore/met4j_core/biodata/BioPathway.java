@@ -48,16 +48,15 @@ public class BioPathway extends BioEntity {
 		super(id);
 	}
 
-	public BioCollection< BioReaction> getReactions() {
+	protected BioCollection<BioReaction> getReactions() {
 		return reactions;
 	}
 
-	public void setReactions(BioCollection< BioReaction> reactions) {
+	protected void setReactions(BioCollection< BioReaction> reactions) {
 		this.reactions = reactions;
 	}
 	
-	public void addReaction(BioReaction reaction) {
-		
+	protected void addReaction(BioReaction reaction) {
 		this.reactions.add(reaction);
 		
 	}

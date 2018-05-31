@@ -344,4 +344,38 @@ public class BioReaction extends BioEntity {
 	}
 
 
+
+	/**
+	 * Removes an enzyme frome a reaction
+	 */
+	protected void removeEnzyme(BioEnzyme e) {
+		this.enzymes.remove(e);
+	}
+
+	/**
+	 * Remove a physical entity from a side of a reaction
+	 */
+	protected void removeSide(BioPhysicalEntity e, BioCompartment localisation, Side side) {
+
+		BioCollection<BioReactant> reactants;
+		if(side.equals(Side.LEFT))  {
+			reactants = new BioCollection<BioReactant>(this.getLeftReactants());
+		}
+		else {
+			reactants = new BioCollection<BioReactant>(this.getRightReactants());
+		}
+
+		for(BioReactant p : reactants)
+		{
+			if(p.getPhysicalEntity().equals(e) && p.getLocation().equals(localisation)) {
+				if(side.equals(Side.LEFT))  {
+					this.getLeftReactants().remove(p);
+				}
+				else
+				{
+					this.getRightReactants().remove(p);
+				}
+			}
+		}
+	}	
 }	

@@ -30,38 +30,56 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.HashMap;
-
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 public class BioEnzyme extends BioPhysicalEntity {
 
-	private BioCollection<BioParticipant> participants;
+	private BioCollection<BioEnzymeParticipant> participants;
 
 	public BioEnzyme(String id) {
 		super(id);
 
-		participants = new BioCollection<BioParticipant>();
+		participants = new BioCollection<BioEnzymeParticipant>();
 	}
 
 	/**
 	 * @return the participants
 	 */
-	protected BioCollection<BioParticipant> getParticipants() {
+	protected BioCollection<BioEnzymeParticipant> getParticipants() {
 		return participants;
 	}
 
 	/**
 	 * @param participants the participants to set
 	 */
-	protected void setParticipants(BioCollection<BioParticipant> participants) {
+	protected void setParticipants(BioCollection<BioEnzymeParticipant> participants) {
 		this.participants = participants;
 	}
 
-	protected void addParticipant(BioParticipant participant)
+	protected void addParticipant(BioEnzymeParticipant participant)
 	{
 		this.participants.add(participant);
 	}
+
+	/**
+	 * Remove a participant from ifs physical entity
+	 */
+	protected void removeParticipant(BioPhysicalEntity e) 
+	{
+
+		BioCollection<BioEnzymeParticipant> tmp = new BioCollection<BioEnzymeParticipant>(this.participants);
+
+		for(BioEnzymeParticipant p : tmp)
+		{
+			if(p.getPhysicalEntity().equals(e)) 
+			{
+				this.participants.remove(p);
+				return;
+			}
+		}
+	}
+	
+
 
 
 

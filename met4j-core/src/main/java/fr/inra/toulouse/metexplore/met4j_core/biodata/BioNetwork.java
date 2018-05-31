@@ -294,7 +294,7 @@ public class BioNetwork {
 			throw new IllegalArgumentException("Gene " + gene.getId() + " not present in the network");
 		}
 
-		gene.addProtein(protein);
+		protein.setGene(gene);
 
 	};
 
@@ -311,7 +311,7 @@ public class BioNetwork {
 			throw new IllegalArgumentException("Gene " + gene.getId() + " not present in the network");
 		}
 
-		gene.removeProtein(protein);
+		protein.removeGene();
 
 	};
 
@@ -464,15 +464,13 @@ public class BioNetwork {
 	private BioCollection<BioReaction> getReactionsFromSubstratesOrProducts(Collection<String> substrates,
 			Boolean exact, Boolean areSubstrates) {
 
-		HashSet<BioReaction> reactionSet;
-
 		for (String s : substrates) {
 			if (!this.metabolites.containsId(s)) {
 				throw new IllegalArgumentException("Metabolite " + s + " not present in the network");
 			}
 		}
 
-		reactionSet = new HashSet<BioReaction>(this.getReactionsView().stream().filter(o -> {
+		HashSet<BioReaction> reactionSet = new HashSet<BioReaction>(this.getReactionsView().stream().filter(o -> {
 			BioReaction r = (BioReaction) o;
 
 			if (!r.isReversible()) {
@@ -488,8 +486,113 @@ public class BioNetwork {
 		}).collect(Collectors.toSet()));
 
 		return new BioCollection<BioReaction>(reactionSet);
+	}
+
+	/**
+	 * Get pathways where a metabolite is involved
+	 */
+	public BioCollection<BioPathway> getPathwaysFromMetabolites(Collection<String> metaboliteIds, Boolean all) {
+
+		for (String s : metaboliteIds) {
+			if (!this.metabolites.containsId(s)) {
+				throw new IllegalArgumentException("Metabolite " + s + " not present in the network");
+			}
+		}
+
+		HashSet<BioPathway> pathwaySet = new HashSet<BioPathway>(this.getPathwaysView().stream().filter( o -> {
+
+			BioPathway p = (BioPathway) o;
+
+			Set<String> metaboliteIdRefs = p.getMetabolites().getIds();
+
+			return all ? metaboliteIdRefs.containsAll(metaboliteIds) : ! Collections.disjoint(metaboliteIds, metaboliteIdRefs);
+
+		}).collect(Collectors.toSet()));
+
+		return new BioCollection<BioPathway>(pathwaySet);
 
 	}
+
+	/**
+	 * Get reactions from genes
+	 */
+	public BioCollection<BioReaction> getReactionsFromGenes(Collection<String> genes, Boolean all) {
+
+		for (String s : genes) {
+			if (!this.genes.containsId(s)) {
+				throw new IllegalArgumentException("Gene " + s + " not present in the network");
+			}
+		}
+
+		HashSet<BioReaction> reactionSet = new HashSet<BioReaction>(this.getReactionsView()
+		.stream().filter(o -> {
+			BioReaction r = (BioReaction) o;
+			Set<String> geneRefIds = r.getGenes().getIds();
+
+			return all ? geneRefIds.containsAll(genes) : ! Collections.disjoint(geneRefIds, genes);
+
+
+		}).collect(Collectors.toSet()));
+
+		return new BioCollection<BioReaction>(reactionSet);
+
+
+	}
+
+	/**
+	 * Get genes involved in a set of reactions
+	 */
+	public BioCollection<BioGene> getGenesFromReactions(Collection<String> reactionIds)
+	{
+
+		BioCollection<BioReaction> reactionsToTest = new BioCollection<BioReaction>();
+		for (String s : reactionIds) {
+			if (!this.reactions.containsId(s)) {
+				throw new IllegalArgumentException("Reaction " + s + " not present in the network");
+			}
+			reactionsToTest.add(reactions.getEntityFromId(s));
+		}
+
+		BioCollection<BioGene> genes = new BioCollection<BioGene>();
+
+		reactionsToTest.forEach( r -> {
+			try {
+				genes.addAll(r.getGenes());
+			} catch (IllegalArgumentException e) {}
+		});
+
+		return genes;
+	}
+
+	/**
+	 * Get genes from pathways
+	 */
+	public BioCollection<BioGene> getGenesFromPathways(Collection<String> pathwayIds)
+	{
+		BioCollection<BioPathway> pathwaysToTest = new BioCollection<BioPathway>();
+		for (String s : pathwayIds) {
+			if (!this.pathways.containsId(s)) {
+				throw new IllegalArgumentException("Reaction " + s + " not present in the network");
+			}
+			pathwaysToTest.add(pathways.getEntityFromId(s));
+		}
+
+		BioCollection<BioGene> genes = new BioCollection<BioGene>();
+
+		pathwaysToTest.forEach (p -> {
+
+			p.getReactions().forEach(r -> {
+				try {
+					genes.addAll(r.getGenes());
+				} catch (IllegalArgumentException e) {}
+			});
+
+		});
+
+		return genes;
+
+	}
+
 
 	public BioCollection<BioReaction> getReactionsFromEnzyme(BioPhysicalEntity substrate) {
 	};

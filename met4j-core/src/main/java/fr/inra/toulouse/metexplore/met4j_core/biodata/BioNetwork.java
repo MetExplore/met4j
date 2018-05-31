@@ -204,8 +204,58 @@ public class BioNetwork {
 
 	};
 
+	public void removeSubUnit(BioPhysicalEntity unit, BioEnzyme enzyme) {
+	
+
+		if(! this.contains(enzyme))
+		{
+			throw new IllegalArgumentException("Enzyme "+enzyme.getId()+" not present in the network");
+		}
+
+		if(! this.contains(unit))
+		{
+			throw new IllegalArgumentException("Physical entity "+unit.getId()+" not present in the network");
+		}
+
+		enzyme.removeParticipant(unit);
+
+	};
+
+
 	// relations proteine-gène
 	public void affectGeneProduct(BioProtein protein, BioGene gene) {
+
+		if(! this.contains(protein))
+		{
+			throw new IllegalArgumentException("Protein "+protein.getId()+" not present in the network");
+		}
+
+		if(! this.contains(gene))
+		{
+			throw new IllegalArgumentException("Gene "+gene.getId()+" not present in the network");
+		}
+
+		gene.addProtein(protein);
+
+
+	};
+
+	// relations proteine-gène
+	public void removeGeneProduct(BioProtein protein, BioGene gene) {
+
+		if(! this.contains(protein))
+		{
+			throw new IllegalArgumentException("Protein "+protein.getId()+" not present in the network");
+		}
+
+		if(! this.contains(gene))
+		{
+			throw new IllegalArgumentException("Gene "+gene.getId()+" not present in the network");
+		}
+
+		gene.removeProtein(protein);
+
+
 	};
 
 	// relation pathway -reaction

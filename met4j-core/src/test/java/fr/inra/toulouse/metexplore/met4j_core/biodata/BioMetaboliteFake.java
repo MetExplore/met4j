@@ -36,8 +36,8 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
  *
  * Test class extending BioPhysicalEntity
  */
-public class BioPhysicalEntityFake extends BioPhysicalEntity {
-	public BioPhysicalEntityFake(String id) {
+public class BioMetaboliteFake extends BioMetabolite {
+	public BioMetaboliteFake(String id) {
 		super(id);
 	}
 }

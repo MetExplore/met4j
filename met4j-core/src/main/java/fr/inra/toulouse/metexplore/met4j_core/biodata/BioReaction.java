@@ -266,7 +266,6 @@ public class BioReaction extends BioEntity {
 	
 	
 	/**
-	 * TODO : Is this method actually useful?
 	 * @return a {@link BioCollection} of {@link BioReactant}
 	 */
 	private BioCollection<BioReactant> getReactants() {

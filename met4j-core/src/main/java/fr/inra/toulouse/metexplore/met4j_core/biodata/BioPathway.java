@@ -60,6 +60,11 @@ public class BioPathway extends BioEntity {
 		this.reactions.add(reaction);
 		
 	}
+
+	protected void removeReaction(BioReaction reaction)
+	{
+		this.reactions.remove(reaction);
+	}
 	
 	
 

@@ -172,7 +172,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	public boolean remove(Object o) {
 		Boolean flag =  entities.values().remove(o);
 
-		if(flag)
+		if(! flag)
 		{
 			throw new IllegalArgumentException("Impossible to remove an object absent from a collection");
 		}

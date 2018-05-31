@@ -64,20 +64,19 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 public class BioReaction extends BioEntity {
 
-
 	private boolean spontaneous = false;
 	private String ecNumber;
 	private boolean reversible;
 
-	
 	private BioCollection<BioReactant> left = new BioCollection<BioReactant>();
 	private BioCollection<BioReactant> right = new BioCollection<BioReactant>();
 
 	private BioCollection<BioEnzyme> enzymes = new BioCollection<BioEnzyme>();
 
-	public enum Side {LEFT, RIGHT};
-	
-	
+	public enum Side {
+		LEFT, RIGHT
+	};
+
 	public BioReaction(String id) {
 		super(id);
 	}
@@ -89,41 +88,39 @@ public class BioReaction extends BioEntity {
 	public String toString() {
 
 		String str = new String();
-		
+
 		String direction = " -> ";
 
 		str = str.concat(this.getId() + ": ");
-		
+
 		ArrayList<String> lefts = new ArrayList<String>();
-		
+
 		for (BioReactant cpd : this.getLeftReactants()) {
 
 			lefts.add(cpd.toString());
 		}
-		
+
 		Collections.sort(lefts);
 
 		String leftStr = String.join(" + ", lefts);
 
 		if (this.isReversible()) {
-			
+
 			direction = " <-> ";
 		}
 
 		ArrayList<String> rights = new ArrayList<String>();
-		
-		
+
 		for (BioReactant cpd : this.getRightReactants()) {
 
 			rights.add(cpd.toString());
 		}
-		
+
 		Collections.sort(rights);
 
 		String rightStr = String.join(" + ", rights);
 
-		
-		str = str+leftStr+direction+rightStr;
+		str = str + leftStr + direction + rightStr;
 
 		return str;
 
@@ -137,22 +134,17 @@ public class BioReaction extends BioEntity {
 	}
 
 	/**
-	 * @param ecNumber
-	 *            The ecNumber to set.
+	 * @param ecNumber The ecNumber to set.
 	 */
 	public void setEcNumber(String ecNumber) {
 		this.ecNumber = ecNumber;
 	}
-
-
 
 	/**
 	 */
 	public Boolean isReversible() {
 		return reversible;
 	}
-
-
 
 	/**
 	 * @return the spontaneous
@@ -175,55 +167,50 @@ public class BioReaction extends BioEntity {
 		this.reversible = reversible;
 	}
 
-
-
-
 	/**
-	 * @return true if the reaction is a transport reaction,
-	 * i.e a reaction that involves several compartmens
-	 * Limitation : this reaction is considered as a transport reaction
-	 *  Ex : A_a + C_b -> D_a + B_b
+	 * @return true if the reaction is a transport reaction, i.e a reaction that
+	 *         involves several compartmens Limitation : this reaction is considered
+	 *         as a transport reaction Ex : A_a + C_b -> D_a + B_b
 	 * 
 	 */
 	public Boolean isTransportReaction() {
-		
+
 		HashSet<BioCompartment> compartments = new HashSet<BioCompartment>();
-		
-		for(BioReactant s : this.getReactants()){
+
+		for (BioReactant s : this.getReactants()) {
 			compartments.add(s.getLocation());
 		}
-		
-		if(compartments.size()>1){
+
+		if (compartments.size() > 1) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
-		
+
 	}
-	
+
 	/**
 	 * @param side : {@link Side}
-	 * @return unmodifiable {@link BioCollection} of entities involved in left {@link BioReactant}
+	 * @return unmodifiable {@link BioCollection} of entities involved in left
+	 *         {@link BioReactant}
 	 */
 	protected BioCollection<BioPhysicalEntity> getLeft() {
 		return getSideEntities(Side.LEFT);
 	}
-	
-	
+
 	/**
 	 * @param side : {@link Side}
-	 * @return unmodifiable {@link BioCollection} of entities involved in right {@link BioReactant}
+	 * @return unmodifiable {@link BioCollection} of entities involved in right
+	 *         {@link BioReactant}
 	 */
 	protected BioCollection<BioPhysicalEntity> getRight() {
 		return getSideEntities(Side.RIGHT);
 	}
-	
-	
-	
+
 	/**
 	 * 
 	 * @param side : {@link Side}
-	 * @return  {@link BioCollection} of left {@link BioReactant}
+	 * @return {@link BioCollection} of left {@link BioReactant}
 	 */
 	protected BioCollection<BioReactant> getLeftReactants() {
 
@@ -239,91 +226,82 @@ public class BioReaction extends BioEntity {
 
 		return getSideReactants(Side.RIGHT);
 	}
-	
-	
-	
+
 	/**
 	 * 
 	 * @return a {@link BioCollection} of {@link BioPhysicalEntity}
 	 */
 	protected BioCollection<BioMetabolite> getEntities() {
-		
+
 		BioCollection<BioReactant> reactants = this.getReactants();
-		
+
 		BioCollection<BioMetabolite> entities = new BioCollection<BioMetabolite>();
-		
-		for(BioReactant reactant : reactants)
-		{
+
+		for (BioReactant reactant : reactants) {
 			BioMetabolite entity = reactant.getMetabolite();
-			
-			if(! entities.contains(entity)) {
+
+			if (!entities.contains(entity)) {
 				entities.add(entity);
 			}
 		}
-		
+
 		return entities;
 	}
-	
-	
+
 	/**
 	 * @return a {@link BioCollection} of {@link BioReactant}
 	 */
 	private BioCollection<BioReactant> getReactants() {
 
 		BioCollection<BioReactant> reactants = new BioCollection<BioReactant>();
-		
+
 		reactants.addAll(this.getLeftReactants());
 		reactants.addAll(this.getRightReactants());
-		
+
 		return reactants;
 	}
-	
-	
-	
+
 	/**
 	 * @param side : {@link Side}
-	 * @return  {@link BioCollection} of {@link BioReactant}
+	 * @return {@link BioCollection} of {@link BioReactant}
 	 */
 	private BioCollection<BioReactant> getSideReactants(Side side) {
-		
+
 		BioCollection<BioReactant> reactantCollection;
-		
-		if(side == Side.LEFT) {
+
+		if (side == Side.LEFT) {
 			reactantCollection = this.left;
-		}
-		else {
+		} else {
 			reactantCollection = this.right;
 		}
-		
+
 		return reactantCollection;
-		
+
 	}
-	
+
 	/**
 	 * @param side : {@link Side}
-	 * @return unmodifiable {@link BioCollection} of {@link BioPhysicalEntity} involved in reactants
+	 * @return unmodifiable {@link BioCollection} of {@link BioPhysicalEntity}
+	 *         involved in reactants
 	 */
 	private BioCollection<BioPhysicalEntity> getSideEntities(Side side) {
-		
+
 		BioCollection<BioReactant> reactantCollection;
-		
-		if(side == Side.LEFT) {
+
+		if (side == Side.LEFT) {
 			reactantCollection = this.left;
-		}
-		else {
+		} else {
 			reactantCollection = this.right;
 		}
-		
+
 		BioCollection<BioPhysicalEntity> entityCollection = new BioCollection<BioPhysicalEntity>();
-		
-		for(BioReactant reactant: reactantCollection)
-		{
+
+		for (BioReactant reactant : reactantCollection) {
 			entityCollection.add(reactant.getMetabolite());
 		}
-		
+
 		return entityCollection;
-		
-		
+
 	}
 
 	/**
@@ -342,8 +320,6 @@ public class BioReaction extends BioEntity {
 		this.enzymes.add(e);
 	}
 
-
-
 	/**
 	 * Removes an enzyme frome a reaction
 	 */
@@ -357,24 +333,48 @@ public class BioReaction extends BioEntity {
 	protected void removeSide(BioPhysicalEntity e, BioCompartment localisation, Side side) {
 
 		BioCollection<BioReactant> reactants;
-		if(side.equals(Side.LEFT))  {
+		if (side.equals(Side.LEFT)) {
 			reactants = new BioCollection<BioReactant>(this.getLeftReactants());
-		}
-		else {
+		} else {
 			reactants = new BioCollection<BioReactant>(this.getRightReactants());
 		}
 
-		for(BioReactant p : reactants)
-		{
-			if(p.getMetabolite().equals(e) && p.getLocation().equals(localisation)) {
-				if(side.equals(Side.LEFT))  {
+		for (BioReactant p : reactants) {
+			if (p.getMetabolite().equals(e) && p.getLocation().equals(localisation)) {
+				if (side.equals(Side.LEFT)) {
 					this.getLeftReactants().remove(p);
-				}
-				else
-				{
+				} else {
 					this.getRightReactants().remove(p);
 				}
 			}
 		}
-	}	
-}	
+	}
+
+	/**
+	 * Get list of genes
+	 */
+	public BioCollection<BioGene> getGenes() {
+
+		BioCollection<BioGene> genes = new BioCollection<BioGene>();
+		this.getEnzymes().forEach(e -> {
+
+			System.err.println("Enzyme : "+e);
+
+
+			e.getParticipants().getView().forEach(p -> {
+				if (p.getPhysicalEntity() instanceof BioProtein) {
+					BioGene gene = ((BioProtein) p.getPhysicalEntity()).getGene();
+					
+					System.err.println("gene "+gene);
+					
+					if (gene != null) {
+						genes.add(((BioProtein) p.getPhysicalEntity()).getGene());
+					}
+				}
+			});
+		});
+
+		return genes;
+	}
+
+}

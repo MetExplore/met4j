@@ -187,6 +187,21 @@ public class BioNetwork {
 
 	// relation enzyme -constituant
 	public void affectSubUnit(BioPhysicalEntity unit, Double quantity, BioEnzyme enzyme) {
+	
+		BioEnzymeParticipant p = new BioEnzymeParticipant(unit, quantity);
+
+		if(! this.contains(enzyme))
+		{
+			throw new IllegalArgumentException("Enzyme "+enzyme.getId()+" not present in the network");
+		}
+
+		if(! this.contains(unit))
+		{
+			throw new IllegalArgumentException("Physical entity "+unit.getId()+" not present in the network");
+		}
+
+		enzyme.addParticipant(p);
+
 	};
 
 	// relations proteine-gène
@@ -200,12 +215,12 @@ public class BioNetwork {
 	// relations compartiment - contenu
 	public void affectToCompartment(BioPhysicalEntity entity, BioCompartment compartment) {
 
-		if (!checkPresenceEntity(compartment)) {
+		if (!contains(compartment)) {
 			throw new IllegalArgumentException("Compartment " + compartment.getId() + " not in the network");
 		}
 
-		if (!checkPresenceEntity(entity)) {
-			throw new IllegalArgumentException("Physical entity" + entity.getId() + " not in the network");
+		if (!contains(entity)) {
+			throw new IllegalArgumentException("Physical entity " + entity.getId() + " not in the network");
 		}
 
 		compartment.addComponent(entity);

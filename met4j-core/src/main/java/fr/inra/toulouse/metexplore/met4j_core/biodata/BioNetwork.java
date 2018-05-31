@@ -40,6 +40,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.sbml.jsbml.Compartment;
 
@@ -133,10 +134,9 @@ public class BioNetwork {
 	}
 
 	/**
-	 * Remove a left reactant 
+	 * Remove a left reactant
 	 */
-	public void removeLeft(BioPhysicalEntity e, BioCompartment localisation,
-			BioReaction reaction) {
+	public void removeLeft(BioPhysicalEntity e, BioCompartment localisation, BioReaction reaction) {
 
 		removeSideReaction(e, localisation, reaction, Side.LEFT);
 	}
@@ -150,16 +150,13 @@ public class BioNetwork {
 		affectSideReaction(product, stoichiometry, localisation, reaction, Side.RIGHT);
 	}
 
-
 	/**
-	 * Remove a right reactant 
+	 * Remove a right reactant
 	 */
-	public void removeRight(BioPhysicalEntity e, BioCompartment localisation,
-			BioReaction reaction) {
+	public void removeRight(BioPhysicalEntity e, BioCompartment localisation, BioReaction reaction) {
 
 		removeSideReaction(e, localisation, reaction, Side.RIGHT);
 	}
-
 
 	private void affectSideReaction(BioPhysicalEntity e, Double stoichiometry, BioCompartment localisation,
 			BioReaction reaction, Side side) {
@@ -183,7 +180,7 @@ public class BioNetwork {
 		if (!this.reactions.contains(reaction)) {
 			throw new IllegalArgumentException("Reaction " + reaction.getId() + " not in the network");
 		}
-		
+
 		if (side.equals(Side.LEFT)) {
 			reaction.getLeftReactants().add(reactant);
 		} else {
@@ -192,10 +189,9 @@ public class BioNetwork {
 	}
 
 	/**
-	 * Remove an entity from a side of reaction 
+	 * Remove an entity from a side of reaction
 	 */
-	private void removeSideReaction(BioPhysicalEntity e,BioCompartment localisation,
-			BioReaction reaction, Side side) {
+	private void removeSideReaction(BioPhysicalEntity e, BioCompartment localisation, BioReaction reaction, Side side) {
 
 		// The network must contain the compartment
 		if (!this.compartments.contains(localisation)) {
@@ -215,7 +211,7 @@ public class BioNetwork {
 		if (!this.reactions.contains(reaction)) {
 			throw new IllegalArgumentException("Reaction " + reaction.getId() + " not in the network");
 		}
-		
+
 		reaction.removeSide(e, localisation, side);
 
 	}
@@ -225,14 +221,12 @@ public class BioNetwork {
 	 */
 	public void affectEnzyme(BioEnzyme enzyme, BioReaction reaction) {
 
-		if(! this.contains(enzyme)) 
-		{
-			throw new IllegalArgumentException("Enzyme "+enzyme.getId()+" not present in the network");
+		if (!this.contains(enzyme)) {
+			throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
 		}
 
-		if(! this.contains(reaction)) 
-		{
-			throw new IllegalArgumentException("Reaction "+reaction.getId()+" not present in the network");
+		if (!this.contains(reaction)) {
+			throw new IllegalArgumentException("Reaction " + reaction.getId() + " not present in the network");
 		}
 
 		reaction.addEnzyme(enzyme);
@@ -244,14 +238,12 @@ public class BioNetwork {
 	 */
 	public void removeEnzymeFromReaction(BioEnzyme enzyme, BioReaction reaction) {
 
-		if(! this.contains(enzyme)) 
-		{
-			throw new IllegalArgumentException("Enzyme "+enzyme.getId()+" not present in the network");
+		if (!this.contains(enzyme)) {
+			throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
 		}
 
-		if(! this.contains(reaction)) 
-		{
-			throw new IllegalArgumentException("Reaction "+reaction.getId()+" not present in the network");
+		if (!this.contains(reaction)) {
+			throw new IllegalArgumentException("Reaction " + reaction.getId() + " not present in the network");
 		}
 
 		reaction.removeEnzyme(enzyme);
@@ -260,17 +252,15 @@ public class BioNetwork {
 
 	// relation enzyme -constituant
 	public void affectSubUnit(BioPhysicalEntity unit, Double quantity, BioEnzyme enzyme) {
-	
+
 		BioEnzymeParticipant p = new BioEnzymeParticipant(unit, quantity);
 
-		if(! this.contains(enzyme))
-		{
-			throw new IllegalArgumentException("Enzyme "+enzyme.getId()+" not present in the network");
+		if (!this.contains(enzyme)) {
+			throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
 		}
 
-		if(! this.contains(unit))
-		{
-			throw new IllegalArgumentException("Physical entity "+unit.getId()+" not present in the network");
+		if (!this.contains(unit)) {
+			throw new IllegalArgumentException("Physical entity " + unit.getId() + " not present in the network");
 		}
 
 		enzyme.addParticipant(p);
@@ -278,40 +268,33 @@ public class BioNetwork {
 	};
 
 	public void removeSubUnit(BioPhysicalEntity unit, BioEnzyme enzyme) {
-	
 
-		if(! this.contains(enzyme))
-		{
-			throw new IllegalArgumentException("Enzyme "+enzyme.getId()+" not present in the network");
+		if (!this.contains(enzyme)) {
+			throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
 		}
 
-		if(! this.contains(unit))
-		{
-			throw new IllegalArgumentException("Physical entity "+unit.getId()+" not present in the network");
+		if (!this.contains(unit)) {
+			throw new IllegalArgumentException("Physical entity " + unit.getId() + " not present in the network");
 		}
 
 		enzyme.removeParticipant(unit);
 
 	};
 
-
 	/**
 	 * Add a relation protein gene
 	 */
 	public void affectGeneProduct(BioProtein protein, BioGene gene) {
 
-		if(! this.contains(protein))
-		{
-			throw new IllegalArgumentException("Protein "+protein.getId()+" not present in the network");
+		if (!this.contains(protein)) {
+			throw new IllegalArgumentException("Protein " + protein.getId() + " not present in the network");
 		}
 
-		if(! this.contains(gene))
-		{
-			throw new IllegalArgumentException("Gene "+gene.getId()+" not present in the network");
+		if (!this.contains(gene)) {
+			throw new IllegalArgumentException("Gene " + gene.getId() + " not present in the network");
 		}
 
 		gene.addProtein(protein);
-
 
 	};
 
@@ -320,18 +303,15 @@ public class BioNetwork {
 	 */
 	public void removeGeneProduct(BioProtein protein, BioGene gene) {
 
-		if(! this.contains(protein))
-		{
-			throw new IllegalArgumentException("Protein "+protein.getId()+" not present in the network");
+		if (!this.contains(protein)) {
+			throw new IllegalArgumentException("Protein " + protein.getId() + " not present in the network");
 		}
 
-		if(! this.contains(gene))
-		{
-			throw new IllegalArgumentException("Gene "+gene.getId()+" not present in the network");
+		if (!this.contains(gene)) {
+			throw new IllegalArgumentException("Gene " + gene.getId() + " not present in the network");
 		}
 
 		gene.removeProtein(protein);
-
 
 	};
 
@@ -339,19 +319,33 @@ public class BioNetwork {
 	 * Add a pathway affected to a reaction
 	 */
 	public void affectToPathway(BioReaction reaction, BioPathway pathway) {
-	
-		if (! this.contains(pathway)) {
-			throw new IllegalArgumentException("Pathway "+pathway.getId()+" not present in the network");
+
+		if (!this.contains(pathway)) {
+			throw new IllegalArgumentException("Pathway " + pathway.getId() + " not present in the network");
 		}
 
-		if (! this.contains(reaction)) {
-			throw new IllegalArgumentException("Reaction "+reaction.getId()+" not present in the network");
+		if (!this.contains(reaction)) {
+			throw new IllegalArgumentException("Reaction " + reaction.getId() + " not present in the network");
 		}
 
 		pathway.addReaction(reaction);
 
-		
 	};
+
+	/**
+	 * Remove a reaction from a pathway
+	 */
+	public void removeReactionFromPathway(BioReaction r, BioPathway p) {
+		if (!this.contains(p)) {
+			throw new IllegalArgumentException("Pathway " + p.getId() + " not present in the network");
+		}
+
+		if (!this.contains(r)) {
+			throw new IllegalArgumentException("Reaction " + r.getId() + " not present in the network");
+		}
+
+		p.removeReaction(r);
+	}
 
 	// relations compartiment - contenu
 	public void affectToCompartment(BioPhysicalEntity entity, BioCompartment compartment) {
@@ -424,17 +418,70 @@ public class BioNetwork {
 			}
 		}
 
-		throw new IllegalArgumentException("BioEntity "+e.getClass().getName()+" not handled by BioNetwork");
+		throw new IllegalArgumentException("BioEntity " + e.getClass().getName() + " not handled by BioNetwork");
 	}
 
-	// __________________________________
-	// obtenir les reactions en fonction d'une liste de left et de right metabolites
-	// (match exact ou partiel)
-	public BioCollection<BioReaction> getReactionsFromSubstrates(Collection<BioPhysicalEntity> substrate) {
-	};
+	/**
+	 * returns the list of reactions that can use as substrates a list of
+	 * metabolites
+	 * 
+	 * @param exact if true, the match must be exact, if false, the reactions
+	 *              returned can have a superset of the specified substrates
+	 */
+	public BioCollection<BioReaction> getReactionsFromSubstrates(Collection<String> substrates, Boolean exact) {
 
-	public BioCollection<BioReaction> getReactionsFromProducts(Collection<BioPhysicalEntity> substrate) {
-	};
+		return this.getReactionsFromSubstratesOrProducts(substrates, exact, true);
+
+	}
+
+	/**
+	 * returns the list of reactions that can prodice a list of
+	 * metabolites
+	 * 
+	 * @param exact if true, the match must be exact, if false, the reactions
+	 *              returned can have a superset of the specified products
+	 */
+	public BioCollection<BioReaction> getReactionsFromProducts(Collection<String> substrates, Boolean exact) {
+
+		return this.getReactionsFromSubstratesOrProducts(substrates, exact, false);
+
+	}
+
+	/**
+	 * G
+	 */
+	private BioCollection<BioReaction> getReactionsFromSubstratesOrProducts(Collection<String> substrates, Boolean exact, Boolean areSubstrates) {
+
+		HashSet<BioReaction> reactionSet;
+
+		for(String s : substrates)
+		{
+			if(! this.metabolites.containsId(s))
+			{
+				throw new IllegalArgumentException("Metabolite "+s+" not present in the network");
+			}
+		}
+
+		reactionSet = new HashSet<BioReaction>(this.getReactionsView().stream().filter(o -> {
+			BioReaction r = (BioReaction) o;
+
+			if (!r.isReversible()) {
+				
+				Set<String> refIds = areSubstrates ? r.getLeft().getIds() : r.getRight().getIds();
+
+				return exact ? refIds.equals(substrates) : refIds.containsAll(substrates);
+
+			} else {
+				return exact ? r.getRight().getIds().equals(substrates) || r.getLeft().getIds().equals(substrates)
+						: r.getRight().getIds().containsAll(substrates) || r.getLeft().getIds().containsAll(substrates);
+			}
+		}).collect(Collectors.toSet()));
+
+
+		return new BioCollection<BioReaction>(reactionSet);
+
+	}
+
 
 	public BioCollection<BioReaction> getReactionsFromSubstrate(BioPhysicalEntity substrate) {
 	};

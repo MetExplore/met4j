@@ -27,4 +27,11 @@ public class BioReactantTest {
 		
 	}
 
+
+	@Test
+	public void testEquality() {
+		fail("not implemented");
+	}
+
+
 }

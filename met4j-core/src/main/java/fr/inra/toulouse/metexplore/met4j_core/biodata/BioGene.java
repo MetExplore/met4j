@@ -30,8 +30,6 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.HashMap;
-
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 
@@ -55,15 +53,22 @@ public class BioGene extends BioEntity {
 	/**
 	 * @param proteinList The proteinList to set.
 	 */
-	public void setProteinList(BioCollection<BioProtein> proteinList) {
+	protected void setProteinList(BioCollection<BioProtein> proteinList) {
 		this.proteinList = proteinList;
 	}
 	
 	/**
 	 * @param protein : protein to add
 	 */
-	public void addProtein(BioProtein protein) {
+	protected void addProtein(BioProtein protein) {
 		proteinList.add( protein);
+	}
+
+	/**
+	 * @param protein : protein to add
+	 */
+	protected void removeProtein(BioProtein protein) {
+		proteinList.remove( protein);
 	}
 
 

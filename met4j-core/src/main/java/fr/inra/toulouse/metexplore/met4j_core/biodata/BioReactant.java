@@ -43,17 +43,17 @@ public class BioReactant extends BioParticipant {
 	private BioCompartment location = null;
 
 	/**
-	 * @param physicalEntity
+	 * @param metabolite
 	 * @param stoichiometricCoefficient
 	 * @param location
 	 */
-	public BioReactant(BioPhysicalEntity physicalEntity, Double stoichiometry, BioCompartment location) {
-		super(physicalEntity, stoichiometry);
+	public BioReactant(BioMetabolite metabolite, Double stoichiometry, BioCompartment location) {
+		super(metabolite, stoichiometry);
 		this.setLocation(location);
 	}
 
-	public BioReactant(BioPhysicalEntity physicalEntity) {
-		super(physicalEntity, 1.0);
+	public BioReactant(BioMetabolite metabolite) {
+		super(metabolite, 1.0);
 	}
 
 	public BioCompartment getLocation() {
@@ -62,6 +62,10 @@ public class BioReactant extends BioParticipant {
 
 	public void setLocation(BioCompartment location) {
 		this.location = location;
+	}
+
+	public BioMetabolite getMetabolite() {
+		return (BioMetabolite) this.getPhysicalEntity();
 	}
 
 	@Override
@@ -117,7 +121,7 @@ public class BioReactant extends BioParticipant {
          
 		// Compare the data members and return accordingly 
 		
-		return c.getPhysicalEntity().equals(this.getPhysicalEntity())
+		return c.getMetabolite().equals(this.getMetabolite())
 		&& c.getLocation().equals(this.getLocation())
 		&& c.getQuantity().equals(this.getQuantity());
     }

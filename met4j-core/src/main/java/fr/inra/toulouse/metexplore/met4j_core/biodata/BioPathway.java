@@ -31,6 +31,8 @@
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
@@ -65,6 +67,25 @@ public class BioPathway extends BioEntity {
 	{
 		this.reactions.remove(reaction);
 	}
+
+
+	/**
+	 * Get metabolites involved in pathways
+	 */
+	protected BioCollection<BioMetabolite> getMetabolites()
+	{
+		BioCollection<BioMetabolite> metaboliteSet = new BioCollection<BioMetabolite>();
+
+		try {
+		this.getReactions().forEach(r -> metaboliteSet.addAll(r.getEntities()));
+		}
+		catch (IllegalArgumentException e) {}
+
+
+		return metaboliteSet;
+	}
+
+
 	
 	
 

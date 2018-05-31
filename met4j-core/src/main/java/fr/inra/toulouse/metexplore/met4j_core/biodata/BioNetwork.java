@@ -295,7 +295,9 @@ public class BioNetwork {
 	};
 
 
-	// relations proteine-gène
+	/**
+	 * Add a relation protein gene
+	 */
 	public void affectGeneProduct(BioProtein protein, BioGene gene) {
 
 		if(! this.contains(protein))
@@ -313,7 +315,9 @@ public class BioNetwork {
 
 	};
 
-	// relations proteine-gène
+	/**
+	 * Remove a relation between gene and product
+	 */
 	public void removeGeneProduct(BioProtein protein, BioGene gene) {
 
 		if(! this.contains(protein))
@@ -331,8 +335,22 @@ public class BioNetwork {
 
 	};
 
-	// relation pathway -reaction
+	/**
+	 * Add a pathway affected to a reaction
+	 */
 	public void affectToPathway(BioReaction reaction, BioPathway pathway) {
+	
+		if (! this.contains(pathway)) {
+			throw new IllegalArgumentException("Pathway "+pathway.getId()+" not present in the network");
+		}
+
+		if (! this.contains(reaction)) {
+			throw new IllegalArgumentException("Reaction "+reaction.getId()+" not present in the network");
+		}
+
+		pathway.addReaction(reaction);
+
+		
 	};
 
 	// relations compartiment - contenu

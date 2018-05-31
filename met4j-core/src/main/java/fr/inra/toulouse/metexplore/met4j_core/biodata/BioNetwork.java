@@ -516,9 +516,9 @@ public class BioNetwork {
 	/**
 	 * Get reactions from genes
 	 */
-	public BioCollection<BioReaction> getReactionsFromGenes(Collection<String> genes, Boolean all) {
+	public BioCollection<BioReaction> getReactionsFromGenes(Collection<String> geneIds, Boolean all) {
 
-		for (String s : genes) {
+		for (String s : geneIds) {
 			if (!this.genes.containsId(s)) {
 				throw new IllegalArgumentException("Gene " + s + " not present in the network");
 			}
@@ -529,7 +529,7 @@ public class BioNetwork {
 			BioReaction r = (BioReaction) o;
 			Set<String> geneRefIds = r.getGenes().getIds();
 
-			return all ? geneRefIds.containsAll(genes) : ! Collections.disjoint(geneRefIds, genes);
+			return all ? geneRefIds.containsAll(geneIds) : ! Collections.disjoint(geneRefIds, geneIds);
 
 
 		}).collect(Collectors.toSet()));
@@ -590,6 +590,56 @@ public class BioNetwork {
 		});
 
 		return genes;
+
+	}
+
+
+	/**
+	 * Get pathways from genes
+	 */
+	public BioCollection<BioPathway> getPathwaysFromGenes(Collection<String> geneIds, Boolean all)
+	{
+		for (String s : geneIds) {
+			if (!this.genes.containsId(s)) {
+				throw new IllegalArgumentException("Gene " + s + " not present in the network");
+			}
+		}
+
+		HashSet<BioPathway> pathwaySet = new HashSet<BioPathway>(this.getPathwaysView()
+		.stream().filter(p -> {
+
+			Set<String> geneRefIds = p.getGenes().getIds();
+
+			return all ? geneRefIds.containsAll(geneIds) : ! Collections.disjoint(geneRefIds, geneIds);
+
+
+		}).collect(Collectors.toSet()));
+
+		return new BioCollection<BioPathway>(pathwaySet);
+
+	}
+
+	/**
+	 * get pathways from reactions
+	 */
+	public BioCollection<BioPathway> getPathwaysFromReactions(Collection<String> reactionIds, Boolean all)
+	{
+		for (String s : reactionIds) {
+			if (!this.reactions.containsId(s)) {
+				throw new IllegalArgumentException("Reaction " + s + " not present in the network");
+			}
+		}
+
+		HashSet<BioPathway> pathwaySet = new HashSet<BioPathway>(this.getPathwaysView()
+		.stream().filter(p -> {
+
+			Set<String> reactionRefIds = p.getReactions().getIds();
+
+			return all ? reactionRefIds.containsAll(reactionIds) : ! Collections.disjoint(reactionRefIds, reactionIds);
+
+		}).collect(Collectors.toSet()));
+
+		return new BioCollection<BioPathway>(pathwaySet);
 
 	}
 

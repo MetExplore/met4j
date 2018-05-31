@@ -76,6 +76,29 @@ public abstract class BioEntity {
 		this.setName(id);
 		this.setRefs(new HashMap<String, Set<BioRef>>());
 	}
+
+	@Override
+    public boolean equals(Object o) {
+ 
+        // If the object is compared with itself then return true  
+        if (o == this) {
+            return true;
+        }
+ 
+        /* Check if o is an instance of BioEntity or not
+          "null instanceof [type]" also returns false */
+        if (!(o instanceof BioEntity)) {
+            return false;
+        }
+         
+        // typecast o to BioReactant so that we can compare data members 
+        BioEntity c = (BioEntity) o;
+         
+		// Compare the data members and return accordingly 
+		
+		return c.getId().equals(this.getId());
+    }
+
 	
 	/**
 	 * Set the name of the entity

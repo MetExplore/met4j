@@ -30,46 +30,10 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-
-
 public class BioGene extends BioEntity {
 	
-	
-	public BioCollection<BioProtein> proteinList = new BioCollection<BioProtein>();
-
 	
 	public BioGene(String id) {
 		super(id);
 	}
-
-	/**
-	 * @return Returns the proteinList.
-	 */
-	public BioCollection<BioProtein> getProteinList() {
-		return proteinList;
-	}
-
-	/**
-	 * @param proteinList The proteinList to set.
-	 */
-	protected void setProteinList(BioCollection<BioProtein> proteinList) {
-		this.proteinList = proteinList;
-	}
-	
-	/**
-	 * @param protein : protein to add
-	 */
-	protected void addProtein(BioProtein protein) {
-		proteinList.add( protein);
-	}
-
-	/**
-	 * @param protein : protein to add
-	 */
-	protected void removeProtein(BioProtein protein) {
-		proteinList.remove( protein);
-	}
-
-
 }

@@ -43,9 +43,9 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
  */
 
 public class BioPathway extends BioEntity {
-	
+
 	private BioCollection<BioReaction> reactions = new BioCollection<BioReaction>();
-	
+
 	public BioPathway(String id) {
 		super(id);
 	}
@@ -54,40 +54,46 @@ public class BioPathway extends BioEntity {
 		return reactions;
 	}
 
-	protected void setReactions(BioCollection< BioReaction> reactions) {
+	protected void setReactions(BioCollection<BioReaction> reactions) {
 		this.reactions = reactions;
 	}
-	
+
 	protected void addReaction(BioReaction reaction) {
 		this.reactions.add(reaction);
-		
+
 	}
 
-	protected void removeReaction(BioReaction reaction)
-	{
+	protected void removeReaction(BioReaction reaction) {
 		this.reactions.remove(reaction);
 	}
-
 
 	/**
 	 * Get metabolites involved in pathways
 	 */
-	protected BioCollection<BioMetabolite> getMetabolites()
-	{
+	protected BioCollection<BioMetabolite> getMetabolites() {
 		BioCollection<BioMetabolite> metaboliteSet = new BioCollection<BioMetabolite>();
 
 		try {
-		this.getReactions().forEach(r -> metaboliteSet.addAll(r.getEntities()));
+			this.getReactions().forEach(r -> metaboliteSet.addAll(r.getEntities()));
+		} catch (IllegalArgumentException e) {
 		}
-		catch (IllegalArgumentException e) {}
-
 
 		return metaboliteSet;
 	}
 
+	/**
+	 * Get genes involved in pathways
+	 */
 
-	
-	
+	protected BioCollection<BioGene> getGenes() {
+		BioCollection<BioGene> geneSet = new BioCollection<BioGene>();
 
+		try {
+			this.getReactions().forEach(r -> geneSet.addAll(r.getGenes()));
+		} catch (IllegalArgumentException e) {
+		}
+
+		return geneSet;
+	}
 
 }

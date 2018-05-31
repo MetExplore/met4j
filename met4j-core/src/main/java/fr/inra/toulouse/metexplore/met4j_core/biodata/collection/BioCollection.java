@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
@@ -57,6 +58,19 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	public BioCollection(Collection<E> set) {
 		entities = new HashMap<String,E>();
 		this.addAll(set);
+	}
+
+	@Override
+	public String toString()
+	{
+		String str = "BioCollection\n[\n";
+		for(E e : this.entities.values())
+		{
+			str += e.toString();
+			str += "\n";
+		}
+
+		return str+"]";
 	}
 	
 	
@@ -89,6 +103,13 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 		E entity = entities.get(id);
 			
 		return entity;
+	}
+
+	/**
+	 * Get the set of the ids of the entities in the collection
+	 */
+	public Set<String> getIds () {
+		return this.entities.keySet();
 	}
 	
 	/**

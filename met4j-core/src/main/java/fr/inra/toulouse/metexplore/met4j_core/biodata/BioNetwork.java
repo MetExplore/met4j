@@ -122,7 +122,9 @@ public class BioNetwork {
 		}
 	}
 
-	// relation reactant-reaction
+	/**
+	 * add a relation reactant-reaction
+	 */
 	public void affectLeft(BioPhysicalEntity substrate, Double stoichiometry, BioCompartment localisation,
 			BioReaction reaction) {
 
@@ -130,11 +132,34 @@ public class BioNetwork {
 
 	}
 
+	/**
+	 * Remove a left reactant 
+	 */
+	public void removeLeft(BioPhysicalEntity e, BioCompartment localisation,
+			BioReaction reaction) {
+
+		removeSideReaction(e, localisation, reaction, Side.LEFT);
+	}
+
+	/**
+	 * Add a relation product-reaction
+	 */
 	public void affectRight(BioPhysicalEntity product, Double stoichiometry, BioCompartment localisation,
 			BioReaction reaction) {
 
 		affectSideReaction(product, stoichiometry, localisation, reaction, Side.RIGHT);
 	}
+
+
+	/**
+	 * Remove a right reactant 
+	 */
+	public void removeRight(BioPhysicalEntity e, BioCompartment localisation,
+			BioReaction reaction) {
+
+		removeSideReaction(e, localisation, reaction, Side.RIGHT);
+	}
+
 
 	private void affectSideReaction(BioPhysicalEntity e, Double stoichiometry, BioCompartment localisation,
 			BioReaction reaction, Side side) {
@@ -151,7 +176,7 @@ public class BioNetwork {
 
 		// The metabolite must be connected to the compartment
 		if (!localisation.getComponents().contains(e)) {
-			throw new IllegalArgumentException("Metabolite " + reactant.getId() + " not in the compartment");
+			throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the compartment");
 		}
 
 		// The network must contain the reaction
@@ -164,6 +189,35 @@ public class BioNetwork {
 		} else {
 			reaction.getRightReactants().add(reactant);
 		}
+	}
+
+	/**
+	 * Remove an entity from a side of reaction 
+	 */
+	private void removeSideReaction(BioPhysicalEntity e,BioCompartment localisation,
+			BioReaction reaction, Side side) {
+
+		// The network must contain the compartment
+		if (!this.compartments.contains(localisation)) {
+			throw new IllegalArgumentException("Compartment " + localisation.getId() + " not in the network");
+		}
+
+		if (!this.metabolites.contains(e)) {
+			throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the network");
+		}
+
+		// The metabolite must be connected to the compartment
+		if (!localisation.getComponents().contains(e)) {
+			throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the compartment");
+		}
+
+		// The network must contain the reaction
+		if (!this.reactions.contains(reaction)) {
+			throw new IllegalArgumentException("Reaction " + reaction.getId() + " not in the network");
+		}
+		
+		reaction.removeSide(e, localisation, side);
+
 	}
 
 	/**
@@ -182,6 +236,25 @@ public class BioNetwork {
 		}
 
 		reaction.addEnzyme(enzyme);
+
+	};
+
+	/**
+	 * Remove the link between enzyme from a reaction
+	 */
+	public void removeEnzymeFromReaction(BioEnzyme enzyme, BioReaction reaction) {
+
+		if(! this.contains(enzyme)) 
+		{
+			throw new IllegalArgumentException("Enzyme "+enzyme.getId()+" not present in the network");
+		}
+
+		if(! this.contains(reaction)) 
+		{
+			throw new IllegalArgumentException("Reaction "+reaction.getId()+" not present in the network");
+		}
+
+		reaction.removeEnzyme(enzyme);
 
 	};
 

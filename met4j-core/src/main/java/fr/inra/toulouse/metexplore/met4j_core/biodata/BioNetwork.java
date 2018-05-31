@@ -126,7 +126,7 @@ public class BioNetwork {
 	/**
 	 * add a relation reactant-reaction
 	 */
-	public void affectLeft(BioPhysicalEntity substrate, Double stoichiometry, BioCompartment localisation,
+	public void affectLeft(BioMetabolite substrate, Double stoichiometry, BioCompartment localisation,
 			BioReaction reaction) {
 
 		affectSideReaction(substrate, stoichiometry, localisation, reaction, Side.LEFT);
@@ -144,7 +144,7 @@ public class BioNetwork {
 	/**
 	 * Add a relation product-reaction
 	 */
-	public void affectRight(BioPhysicalEntity product, Double stoichiometry, BioCompartment localisation,
+	public void affectRight(BioMetabolite product, Double stoichiometry, BioCompartment localisation,
 			BioReaction reaction) {
 
 		affectSideReaction(product, stoichiometry, localisation, reaction, Side.RIGHT);
@@ -158,7 +158,7 @@ public class BioNetwork {
 		removeSideReaction(e, localisation, reaction, Side.RIGHT);
 	}
 
-	private void affectSideReaction(BioPhysicalEntity e, Double stoichiometry, BioCompartment localisation,
+	private void affectSideReaction(BioMetabolite e, Double stoichiometry, BioCompartment localisation,
 			BioReaction reaction, Side side) {
 		BioReactant reactant = new BioReactant(e, stoichiometry, localisation);
 
@@ -347,6 +347,18 @@ public class BioNetwork {
 		p.removeReaction(r);
 	}
 
+	/**
+	 * Get metabolites involved in a pathway
+	 */
+	public BioCollection<BioMetabolite> getMetabolitesFromPathway(BioPathway p) {
+
+		if (!this.contains(p)) {
+			throw new IllegalArgumentException("Pathway " + p.getId() + " not present in the network");
+		}
+		return p.getMetabolites();
+
+	}
+
 	// relations compartiment - contenu
 	public void affectToCompartment(BioPhysicalEntity entity, BioCompartment compartment) {
 
@@ -435,8 +447,7 @@ public class BioNetwork {
 	}
 
 	/**
-	 * returns the list of reactions that can prodice a list of
-	 * metabolites
+	 * returns the list of reactions that can prodice a list of metabolites
 	 * 
 	 * @param exact if true, the match must be exact, if false, the reactions
 	 *              returned can have a superset of the specified products
@@ -448,17 +459,16 @@ public class BioNetwork {
 	}
 
 	/**
-	 * G
+	 * Get reactions from a list of ids of substrates (or products)
 	 */
-	private BioCollection<BioReaction> getReactionsFromSubstratesOrProducts(Collection<String> substrates, Boolean exact, Boolean areSubstrates) {
+	private BioCollection<BioReaction> getReactionsFromSubstratesOrProducts(Collection<String> substrates,
+			Boolean exact, Boolean areSubstrates) {
 
 		HashSet<BioReaction> reactionSet;
 
-		for(String s : substrates)
-		{
-			if(! this.metabolites.containsId(s))
-			{
-				throw new IllegalArgumentException("Metabolite "+s+" not present in the network");
+		for (String s : substrates) {
+			if (!this.metabolites.containsId(s)) {
+				throw new IllegalArgumentException("Metabolite " + s + " not present in the network");
 			}
 		}
 
@@ -466,7 +476,7 @@ public class BioNetwork {
 			BioReaction r = (BioReaction) o;
 
 			if (!r.isReversible()) {
-				
+
 				Set<String> refIds = areSubstrates ? r.getLeft().getIds() : r.getRight().getIds();
 
 				return exact ? refIds.equals(substrates) : refIds.containsAll(substrates);
@@ -477,17 +487,9 @@ public class BioNetwork {
 			}
 		}).collect(Collectors.toSet()));
 
-
 		return new BioCollection<BioReaction>(reactionSet);
 
 	}
-
-
-	public BioCollection<BioReaction> getReactionsFromSubstrate(BioPhysicalEntity substrate) {
-	};
-
-	public BioCollection<BioReaction> getReactionsFromProduct(BioPhysicalEntity substrate) {
-	};
 
 	public BioCollection<BioReaction> getReactionsFromEnzyme(BioPhysicalEntity substrate) {
 	};

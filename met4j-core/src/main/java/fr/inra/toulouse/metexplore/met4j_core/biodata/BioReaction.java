@@ -246,15 +246,15 @@ public class BioReaction extends BioEntity {
 	 * 
 	 * @return a {@link BioCollection} of {@link BioPhysicalEntity}
 	 */
-	protected BioCollection<BioPhysicalEntity> getEntities() {
+	protected BioCollection<BioMetabolite> getEntities() {
 		
 		BioCollection<BioReactant> reactants = this.getReactants();
 		
-		BioCollection<BioPhysicalEntity> entities = new BioCollection<BioPhysicalEntity>();
+		BioCollection<BioMetabolite> entities = new BioCollection<BioMetabolite>();
 		
 		for(BioReactant reactant : reactants)
 		{
-			BioPhysicalEntity entity = reactant.getPhysicalEntity();
+			BioMetabolite entity = reactant.getMetabolite();
 			
 			if(! entities.contains(entity)) {
 				entities.add(entity);
@@ -318,7 +318,7 @@ public class BioReaction extends BioEntity {
 		
 		for(BioReactant reactant: reactantCollection)
 		{
-			entityCollection.add(reactant.getPhysicalEntity());
+			entityCollection.add(reactant.getMetabolite());
 		}
 		
 		return entityCollection;
@@ -366,7 +366,7 @@ public class BioReaction extends BioEntity {
 
 		for(BioReactant p : reactants)
 		{
-			if(p.getPhysicalEntity().equals(e) && p.getLocation().equals(localisation)) {
+			if(p.getMetabolite().equals(e) && p.getLocation().equals(localisation)) {
 				if(side.equals(Side.LEFT))  {
 					this.getLeftReactants().remove(p);
 				}

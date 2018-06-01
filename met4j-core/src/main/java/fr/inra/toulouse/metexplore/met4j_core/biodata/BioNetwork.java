@@ -36,19 +36,13 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.sbml.jsbml.Compartment;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction.Side;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils;
-import fr.inra.toulouse.metexplore.met4j_core.io.BioUnitDefinition;
-import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 /**
  * 
@@ -995,134 +989,6 @@ public class BioNetwork {
 	 * @return the list of reactionNodes which involves the compound cpd as
 	 *         substrate
 	 */
-	public HashMap<String, BioReaction> getListOfReactionsAsSubstrate(String cpd) {
-
-		HashMap<String, BioReaction> reactionsAsSubstrate = new HashMap<String, BioReaction>();
-
-		if (this.getPhysicalEntityList().containsKey(cpd) == false) {
-			return reactionsAsSubstrate;
-		}
-
-		for (BioReaction rxn : this.getBiochemicalReactionList().values()) {
-
-			HashMap<String, BioPhysicalEntity> listOfSubstrates = rxn.getListOfSubstrates();
-
-			if (listOfSubstrates.containsKey(cpd)) {
-				reactionsAsSubstrate.put(rxn.getId(), rxn);
-			}
-		}
-
-		return reactionsAsSubstrate;
-
-	}
-
-	/**
-	 * @param cpd
-	 * @return the list of reactionNodes which involves the compound cpd as product
-	 */
-
-	public HashMap<String, BioReaction> getListOfReactionsAsProduct(String cpd) {
-
-		HashMap<String, BioReaction> reactionsAsProduct = new HashMap<String, BioReaction>();
-
-		if (this.getPhysicalEntityList().containsKey(cpd) == false) {
-			return reactionsAsProduct;
-		}
-
-		for (BioReaction rxn : this.getBiochemicalReactionList().values()) {
-
-			HashMap<String, BioPhysicalEntity> listOfProducts = rxn.getListOfProducts();
-
-			if (listOfProducts.containsKey(cpd)) {
-				reactionsAsProduct.put(rxn.getId(), rxn);
-			}
-		}
-
-		return reactionsAsProduct;
-
-	}
-
-	/**
-	 * @param left
-	 * @param right
-	 * @return the list of the reactionNodes which have these left and right
-	 *         compounds
-	 */
-	public HashMap<String, BioReaction> reactionsWith(Set<String> left, Set<String> right) {
-
-		HashMap<String, BioReaction> listOfReactions = new HashMap<String, BioReaction>();
-
-		for (BioReaction rxn : this.getBiochemicalReactionList().values()) {
-
-			Set<String> l = rxn.getLeftList().keySet();
-			Set<String> r = rxn.getRightList().keySet();
-
-			if (rxn.getReversiblity().compareToIgnoreCase("irreversible-left-to-right") == 0) {
-				if (l.equals(left) && r.equals(right))
-					listOfReactions.put(rxn.getId(), rxn);
-			} else if (rxn.getReversiblity().compareToIgnoreCase("irreversible-right-to-left") == 0) {
-				if (l.equals(right) && r.equals(left))
-					listOfReactions.put(rxn.getId(), rxn);
-			} else {
-				if ((l.equals(right) && r.equals(left)) || (l.equals(left) && r.equals(right)))
-					listOfReactions.put(rxn.getId(), rxn);
-			}
-		}
-
-		return listOfReactions;
-
-	}
-
-	/**
-	 * Returns the reactions that contains the metabolites in the set1 and the
-	 * metabolites in the set2 in each side. For instance : if set1 = A and set2 = B
-	 * Returns : R1 : A +C -> B + D R2 : B + E -> A +F
-	 * 
-	 */
-	public HashMap<String, BioReaction> reactionsThatInvolvesAtLeast(Set<String> set1, Set<String> set2) {
-
-		HashMap<String, BioReaction> listOfReactions = new HashMap<String, BioReaction>();
-
-		for (BioReaction reaction : this.getBiochemicalReactionList().values()) {
-
-			Set<String> lefts = reaction.getLeftList().keySet();
-			Set<String> rights = reaction.getRightList().keySet();
-
-			if ((lefts.containsAll(set1) && rights.containsAll(set2))
-					|| (lefts.containsAll(set2) && rights.containsAll(set1))) {
-				listOfReactions.put(reaction.getId(), reaction);
-			}
-		}
-
-		return listOfReactions;
-
-	}
-
-	/**
-	 * Returns the list of pathways where a compound is involved
-	 * 
-	 * @param cpdId
-	 * @return a HashMap<String, BioPathway>
-	 */
-	public HashMap<String, BioPathway> getPathwaysOfCompound(String cpdId) {
-
-		HashMap<String, BioPathway> pathways = new HashMap<String, BioPathway>();
-
-		if (this.getPhysicalEntityList().containsKey(cpdId)) {
-
-			HashMap<String, BioReaction> rs = this.getListOfReactionsAsSubstrate(cpdId);
-			HashMap<String, BioReaction> rp = this.getListOfReactionsAsProduct(cpdId);
-
-			HashMap<String, BioReaction> reactions = new HashMap<String, BioReaction>(rs);
-			reactions.putAll(rp);
-
-			for (BioReaction r : reactions.values()) {
-				pathways.putAll(r.getPathwayList());
-			}
-		}
-
-		return pathways;
-	}
 
 	/**
 	 * @return the pathways

@@ -96,31 +96,187 @@ public class BioNetwork {
 		if (e instanceof BioPathway) {
 			this.pathways.remove((BioPathway) e);
 		} else if (e instanceof BioMetabolite) {
-			this.metabolites.remove((BioMetabolite) e);
-			// remove des reactants
-			// remove des compartiments
+			this.removeMetabolite((BioMetabolite) e);
 		} else if (e instanceof BioProtein) {
-			this.proteins.remove((BioProtein) e);
-			// remove des genes
-			// remove des reactants
-			// remove des compartmnt
+			this.removeProtein((BioProtein) e);
 		} else if (e instanceof BioGene) {
-			this.genes.remove((BioGene) e);
+			this.removeGene((BioGene) e);
 		} else if (e instanceof BioReaction) {
-			this.reactions.remove((BioReaction) e);
-			// remove des pathway
-			// remove des enzyme?
+			this.removeReaction((BioReaction) e);
 		} else if (e instanceof BioCompartment) {
-			this.compartments.remove((BioCompartment) e);
-			// remove reactants des reactions
+			this.removeCompartment((BioCompartment) e);
 		} else if (e instanceof BioEnzyme) {
 			this.enzymes.remove((BioEnzyme) e);
-			// remove from reaction?
 		} else {
 
 			throw new IllegalArgumentException(
 					"BioEntity \"" + e.getClass().getSimpleName() + "\" not supported by BioNetwork");
 		}
+
+		e = null;
+
+	}
+
+	/**
+	 * Remove protein from the network and from the enzymes and the compartments
+	 * where it is involved
+	 */
+	private void removeProtein(BioProtein protein) {
+
+		this.proteins.remove(protein);
+
+		this.enzymes.forEach(e -> {
+			BioCollection<BioEnzymeParticipant> participants = new BioCollection<BioEnzymeParticipant>(
+					e.getParticipants());
+
+					Boolean remove = false;
+					for(BioEnzymeParticipant p : participants) {
+						if (p.getPhysicalEntity().equals(protein)) {
+							remove = true;
+							break;
+						}
+					}
+
+					if(remove)
+					{
+						this.remove(e);
+					}
+		});
+
+		this.compartments.forEach(c -> {
+			BioCollection<BioPhysicalEntity> components = new BioCollection<BioPhysicalEntity>(c.getComponents());
+
+			components.forEach(p -> {
+				if (p.equals(protein)) {
+					c.getComponents().remove(p);
+				}
+			});
+		});
+
+	}
+
+	/**
+	 * Remove a metabolite from the network and from the reactions and compartments
+	 * where it is involved and from the c
+	 */
+	private void removeMetabolite(BioMetabolite m) {
+		this.metabolites.remove(m);
+
+		BioCollection<BioReaction> reactionsCopy = new BioCollection<BioReaction>(reactions);
+
+		reactionsCopy.forEach(r -> {
+			BioCollection<BioReactant> lefts = new BioCollection<BioReactant>(r.getLeftReactants());
+
+			Boolean remove = false;
+
+			for (BioReactant participant : lefts) {
+				if (participant.getPhysicalEntity().equals(m)) {
+					remove = true;
+					break;
+				}
+			}
+
+			if (remove == false) {
+				BioCollection<BioReactant> rights = new BioCollection<BioReactant>(r.getRightReactants());
+				for (BioReactant participant : rights) {
+					if (participant.getPhysicalEntity().equals(m)) {
+						remove = true;
+						break;
+					}
+				}
+			}
+
+			if(remove == true)
+			{
+				this.remove(r);
+			}
+
+		});
+
+		this.compartments.forEach(c -> {
+			BioCollection<BioPhysicalEntity> components = new BioCollection<BioPhysicalEntity>(c.getComponents());
+
+			components.forEach(p -> {
+				if (p.equals(m)) {
+					c.getComponents().remove(p);
+				}
+			});
+		});
+
+		BioCollection<BioEnzyme> enzymesCopy = new BioCollection<BioEnzyme>(this.enzymes);
+
+		enzymesCopy.forEach(e -> {
+			BioCollection<BioEnzymeParticipant> participants = new BioCollection<BioEnzymeParticipant>(
+					e.getParticipants());
+
+					Boolean remove = false;
+					for(BioEnzymeParticipant p : participants) {
+						if (p.getPhysicalEntity().equals(m)) {
+							remove = true;
+							break;
+						}
+					}
+
+					if(remove)
+					{
+						this.remove(e);
+					}
+			
+		});
+	}
+
+	/**
+	 * Remove a gene from the network and remove the link between the gene and
+	 * proteins
+	 */
+	private void removeGene(BioGene g) {
+
+		this.genes.remove(g);
+
+		BioCollection<BioProtein> proteinsCopy = new BioCollection<BioProtein>(proteins);
+		proteinsCopy.forEach(p -> {
+			if (p.getGene().equals(g)) {
+				this.remove(p);
+			}
+		});
+
+	}
+
+	/**
+	 * Remove a reaction from the network and from the pathways where it is involved
+	 */
+	private void removeReaction(BioReaction r) {
+
+		this.reactions.remove(r);
+
+		this.pathways.forEach(p -> {
+			try {
+				p.removeReaction(r);
+			} catch (IllegalArgumentException e) {
+			}
+			;
+		});
+
+	}
+
+	/**
+	 * Remove a compartment and all the reactions that involve reactants in this
+	 * compartment
+	 */
+	private void removeCompartment(BioCompartment c) {
+		this.compartments.remove(c);
+
+		this.reactions.forEach(r -> {
+
+			BioCollection<BioReactant> reactants = r.getReactants();
+			for (BioReactant reactant : reactants) {
+				if (reactant.getLocation().equals(c)) {
+					this.removeReaction(r);
+					break;
+				}
+			}
+		});
+
 	}
 
 	/**
@@ -499,13 +655,14 @@ public class BioNetwork {
 			}
 		}
 
-		HashSet<BioPathway> pathwaySet = new HashSet<BioPathway>(this.getPathwaysView().stream().filter( o -> {
+		HashSet<BioPathway> pathwaySet = new HashSet<BioPathway>(this.getPathwaysView().stream().filter(o -> {
 
 			BioPathway p = (BioPathway) o;
 
 			Set<String> metaboliteIdRefs = p.getMetabolites().getIds();
 
-			return all ? metaboliteIdRefs.containsAll(metaboliteIds) : ! Collections.disjoint(metaboliteIds, metaboliteIdRefs);
+			return all ? metaboliteIdRefs.containsAll(metaboliteIds)
+					: !Collections.disjoint(metaboliteIds, metaboliteIdRefs);
 
 		}).collect(Collectors.toSet()));
 
@@ -524,26 +681,22 @@ public class BioNetwork {
 			}
 		}
 
-		HashSet<BioReaction> reactionSet = new HashSet<BioReaction>(this.getReactionsView()
-		.stream().filter(o -> {
+		HashSet<BioReaction> reactionSet = new HashSet<BioReaction>(this.getReactionsView().stream().filter(o -> {
 			BioReaction r = (BioReaction) o;
 			Set<String> geneRefIds = r.getGenes().getIds();
 
-			return all ? geneRefIds.containsAll(geneIds) : ! Collections.disjoint(geneRefIds, geneIds);
-
+			return all ? geneRefIds.containsAll(geneIds) : !Collections.disjoint(geneRefIds, geneIds);
 
 		}).collect(Collectors.toSet()));
 
 		return new BioCollection<BioReaction>(reactionSet);
-
 
 	}
 
 	/**
 	 * Get genes involved in a set of reactions
 	 */
-	public BioCollection<BioGene> getGenesFromReactions(Collection<String> reactionIds)
-	{
+	public BioCollection<BioGene> getGenesFromReactions(Collection<String> reactionIds) {
 
 		BioCollection<BioReaction> reactionsToTest = new BioCollection<BioReaction>();
 		for (String s : reactionIds) {
@@ -555,10 +708,11 @@ public class BioNetwork {
 
 		BioCollection<BioGene> genes = new BioCollection<BioGene>();
 
-		reactionsToTest.forEach( r -> {
+		reactionsToTest.forEach(r -> {
 			try {
 				genes.addAll(r.getGenes());
-			} catch (IllegalArgumentException e) {}
+			} catch (IllegalArgumentException e) {
+			}
 		});
 
 		return genes;
@@ -567,8 +721,7 @@ public class BioNetwork {
 	/**
 	 * Get genes from pathways
 	 */
-	public BioCollection<BioGene> getGenesFromPathways(Collection<String> pathwayIds)
-	{
+	public BioCollection<BioGene> getGenesFromPathways(Collection<String> pathwayIds) {
 		BioCollection<BioPathway> pathwaysToTest = new BioCollection<BioPathway>();
 		for (String s : pathwayIds) {
 			if (!this.pathways.containsId(s)) {
@@ -579,12 +732,13 @@ public class BioNetwork {
 
 		BioCollection<BioGene> genes = new BioCollection<BioGene>();
 
-		pathwaysToTest.forEach (p -> {
+		pathwaysToTest.forEach(p -> {
 
 			p.getReactions().forEach(r -> {
 				try {
 					genes.addAll(r.getGenes());
-				} catch (IllegalArgumentException e) {}
+				} catch (IllegalArgumentException e) {
+				}
 			});
 
 		});
@@ -593,25 +747,21 @@ public class BioNetwork {
 
 	}
 
-
 	/**
 	 * Get pathways from genes
 	 */
-	public BioCollection<BioPathway> getPathwaysFromGenes(Collection<String> geneIds, Boolean all)
-	{
+	public BioCollection<BioPathway> getPathwaysFromGenes(Collection<String> geneIds, Boolean all) {
 		for (String s : geneIds) {
 			if (!this.genes.containsId(s)) {
 				throw new IllegalArgumentException("Gene " + s + " not present in the network");
 			}
 		}
 
-		HashSet<BioPathway> pathwaySet = new HashSet<BioPathway>(this.getPathwaysView()
-		.stream().filter(p -> {
+		HashSet<BioPathway> pathwaySet = new HashSet<BioPathway>(this.getPathwaysView().stream().filter(p -> {
 
 			Set<String> geneRefIds = p.getGenes().getIds();
 
-			return all ? geneRefIds.containsAll(geneIds) : ! Collections.disjoint(geneRefIds, geneIds);
-
+			return all ? geneRefIds.containsAll(geneIds) : !Collections.disjoint(geneRefIds, geneIds);
 
 		}).collect(Collectors.toSet()));
 
@@ -622,20 +772,18 @@ public class BioNetwork {
 	/**
 	 * get pathways from reactions
 	 */
-	public BioCollection<BioPathway> getPathwaysFromReactions(Collection<String> reactionIds, Boolean all)
-	{
+	public BioCollection<BioPathway> getPathwaysFromReactions(Collection<String> reactionIds, Boolean all) {
 		for (String s : reactionIds) {
 			if (!this.reactions.containsId(s)) {
 				throw new IllegalArgumentException("Reaction " + s + " not present in the network");
 			}
 		}
 
-		HashSet<BioPathway> pathwaySet = new HashSet<BioPathway>(this.getPathwaysView()
-		.stream().filter(p -> {
+		HashSet<BioPathway> pathwaySet = new HashSet<BioPathway>(this.getPathwaysView().stream().filter(p -> {
 
 			Set<String> reactionRefIds = p.getReactions().getIds();
 
-			return all ? reactionRefIds.containsAll(reactionIds) : ! Collections.disjoint(reactionRefIds, reactionIds);
+			return all ? reactionRefIds.containsAll(reactionIds) : !Collections.disjoint(reactionRefIds, reactionIds);
 
 		}).collect(Collectors.toSet()));
 
@@ -643,11 +791,28 @@ public class BioNetwork {
 
 	}
 
+	/**
+	 * Get reactions involved in pathways
+	 */
+	public BioCollection<BioReaction> getReactionsFromPathways(Collection<String> pathwayIds) {
+		BioCollection<BioPathway> pathwaysToTest = new BioCollection<BioPathway>();
+		for (String s : pathwayIds) {
+			if (!this.pathways.containsId(s)) {
+				throw new IllegalArgumentException("Reaction " + s + " not present in the network");
+			}
+			pathwaysToTest.add(pathways.getEntityFromId(s));
+		}
 
-	public BioCollection<BioReaction> getReactionsFromEnzyme(BioPhysicalEntity substrate) {
-	};
+		BioCollection<BioReaction> reactions = new BioCollection<BioReaction>();
 
-	public BioCollection<BioReaction> getReactionsFromPathway(BioPhysicalEntity substrate) {
+		pathwaysToTest.forEach(p -> {
+
+			reactions.addAll(p.getReactions());
+
+		});
+
+		return reactions;
+
 	};
 	// obtenir les reactions en fonction d'un substrat ou d'un produit
 	// obtenir les reactions en fonction d'un pathway

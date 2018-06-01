@@ -251,12 +251,14 @@ public class BioReaction extends BioEntity {
 	/**
 	 * @return a {@link BioCollection} of {@link BioReactant}
 	 */
-	private BioCollection<BioReactant> getReactants() {
+	protected BioCollection<BioReactant> getReactants() {
 
 		BioCollection<BioReactant> reactants = new BioCollection<BioReactant>();
-
-		reactants.addAll(this.getLeftReactants());
-		reactants.addAll(this.getRightReactants());
+		try {
+			reactants.addAll(this.getLeftReactants());
+			reactants.addAll(this.getRightReactants());
+		} catch (IllegalArgumentException e) {
+		}
 
 		return reactants;
 	}
@@ -358,15 +360,14 @@ public class BioReaction extends BioEntity {
 		BioCollection<BioGene> genes = new BioCollection<BioGene>();
 		this.getEnzymes().forEach(e -> {
 
-			System.err.println("Enzyme : "+e);
-
+			System.err.println("Enzyme : " + e);
 
 			e.getParticipants().getView().forEach(p -> {
 				if (p.getPhysicalEntity() instanceof BioProtein) {
 					BioGene gene = ((BioProtein) p.getPhysicalEntity()).getGene();
-					
-					System.err.println("gene "+gene);
-					
+
+					System.err.println("gene " + gene);
+
 					if (gene != null) {
 						genes.add(((BioProtein) p.getPhysicalEntity()).getGene());
 					}

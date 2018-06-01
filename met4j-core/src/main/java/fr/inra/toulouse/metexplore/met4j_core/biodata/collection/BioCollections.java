@@ -7,14 +7,14 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 public class BioCollections{
 	
-	public static <E extends BioEntity> BioCollection<E> interesct(BioCollection<E>... collections){
+	public static <E extends BioEntity> BioCollection<E> intersect(BioCollection<E>... collections){
 		
-		BioCollection<E> interesct = new BioCollection<E>(collections[0]);
+		BioCollection<E> intersect = new BioCollection<E>(collections[0]);
 		for(int i=1; i<collections.length; i++){
-			interesct.retainAll(collections[i]);
-			if(interesct.isEmpty()) return interesct;
+			intersect.retainAll(collections[i]);
+			if(intersect.isEmpty()) return intersect;
 		}
-		return interesct;
+		return intersect;
 	}
 	
 	public static <E extends BioEntity> BioCollection<E> union(BioCollection<E>... collections){
@@ -51,14 +51,14 @@ public class BioCollections{
 //		c2.add(m3);
 //		c3.add(m4);
 //		
-//		System.out.println("interesct");
+//		System.out.println("intersect");
 //		BioCollection<BioMetabolite> c4 = BioCollections.union(c1,c2,c3);
 //		for(BioMetabolite m : c4){
 //			System.out.println(m.getId());
 //		}
 //		
 //		System.out.println("union");
-//		BioCollection<BioMetabolite> c5 = BioCollections.interesct(c1,c2,c3);
+//		BioCollection<BioMetabolite> c5 = BioCollections.intersect(c1,c2,c3);
 //		for(BioMetabolite m : c5){
 //			System.out.println(m.getId());
 //		}

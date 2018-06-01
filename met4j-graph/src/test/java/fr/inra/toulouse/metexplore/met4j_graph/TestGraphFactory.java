@@ -8,9 +8,9 @@ import java.util.HashSet;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inra.toulouse.metexplore.met4j_graph.core.GraphFactory;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -21,7 +21,7 @@ public class TestGraphFactory {
 	public static CompoundGraph cg;
 	public static GraphFactory<BioPhysicalEntity, ReactionEdge, CompoundGraph> f;
 	public static BioPhysicalEntity v1,v2,v3;
-	public static BioChemicalReaction r1,r2,r3;
+	public static BioReaction r1,r2,r3;
 	public static ReactionEdge e1,e2;
 	
 	@BeforeClass
@@ -32,17 +32,17 @@ public class TestGraphFactory {
 		v2 = new BioPhysicalEntity("v2");
 		v3 = new BioPhysicalEntity("v3");
 		
-		r1 = new BioChemicalReaction("r1");
-		r1.addLeftParticipant(new BioPhysicalEntityParticipant(v1));
-		r1.addRightParticipant(new BioPhysicalEntityParticipant(v2));
+		r1 = new BioReaction("r1");
+		r1.addLeftParticipant(new BioParticipant(v1));
+		r1.addRightParticipant(new BioParticipant(v2));
 
-		r2 = new BioChemicalReaction("r2");
-		r2.addLeftParticipant(new BioPhysicalEntityParticipant(v2));
-		r2.addRightParticipant(new BioPhysicalEntityParticipant(v3));
+		r2 = new BioReaction("r2");
+		r2.addLeftParticipant(new BioParticipant(v2));
+		r2.addRightParticipant(new BioParticipant(v3));
 
-		r3 = new BioChemicalReaction("r3");
-		r3.addLeftParticipant(new BioPhysicalEntityParticipant(v2));
-		r3.addRightParticipant(new BioPhysicalEntityParticipant(v3));
+		r3 = new BioReaction("r3");
+		r3.addLeftParticipant(new BioParticipant(v2));
+		r3.addRightParticipant(new BioParticipant(v3));
 		r3.setReversibility(true);
 		
 		e1 = new ReactionEdge(v1, v2, r1);

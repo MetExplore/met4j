@@ -37,7 +37,7 @@ import org.jgrapht.EdgeFactory;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.GraphFactory;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 
 /**
@@ -106,7 +106,7 @@ public class CompoundGraph extends BioGraph<BioPhysicalEntity, ReactionEdge> {
 	 */
 	public HashSet<ReactionEdge> getEdgesFromPathway(String pathwayId){
 		HashSet<ReactionEdge> edgeList = new HashSet<ReactionEdge>();
-		for(BioChemicalReaction r : this.getBiochemicalReactionList().values()){
+		for(BioReaction r : this.getBiochemicalReactionList().values()){
 			if(r.getPathwayList().keySet().contains(pathwayId)){
 				edgeList.addAll(this.getEdgesFromReaction(r.getId()));
 			}
@@ -119,8 +119,8 @@ public class CompoundGraph extends BioGraph<BioPhysicalEntity, ReactionEdge> {
 	 *
 	 * @return the biochemical reaction list
 	 */
-	public HashMap<String, BioChemicalReaction> getBiochemicalReactionList(){
-		HashMap<String, BioChemicalReaction> reactionMap = new HashMap<String, BioChemicalReaction>();
+	public HashMap<String, BioReaction> getBiochemicalReactionList(){
+		HashMap<String, BioReaction> reactionMap = new HashMap<String, BioReaction>();
 		for(ReactionEdge e: this.edgeSet()){
 			if(!reactionMap.containsKey(e.toString())){
 				reactionMap.put(e.toString(), e.getReaction());
@@ -134,7 +134,7 @@ public class CompoundGraph extends BioGraph<BioPhysicalEntity, ReactionEdge> {
 	 *
 	 * @param r the reaction
 	 */
-	public void addEdgesFromReaction(BioChemicalReaction r){
+	public void addEdgesFromReaction(BioReaction r){
 		for(BioPhysicalEntity sub : r.getLeftList().values()){
 			if(this.hasVertex(sub.getId())){
 				for(BioPhysicalEntity prd : r.getRightList().values()){

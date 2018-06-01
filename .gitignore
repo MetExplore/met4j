@@ -8,3 +8,8 @@ jsbml.log
 
 .idea*
 *.iml
+
+\.vscode/
+
+*.factorypath
+

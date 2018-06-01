@@ -69,10 +69,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 
 /**
  * @author lcottret
@@ -94,24 +94,24 @@ public class CompoundsAttributesForReactionsTest {
 
 		BioNetwork network = new BioNetwork();
 
-		BioChemicalReaction r1 = new BioChemicalReaction("r1-rxn");
+		BioReaction r1 = new BioReaction("r1-rxn");
 
 		BioPhysicalEntity a = new BioPhysicalEntity("A-cpd");
 		BioPhysicalEntity b = new BioPhysicalEntity("B-cpd");
 		BioPhysicalEntity c = new BioPhysicalEntity("C-cpd");
 		BioPhysicalEntity d = new BioPhysicalEntity("D-cpd");
 
-		r1.addLeftParticipant(new BioPhysicalEntityParticipant(a));
-		r1.addLeftParticipant(new BioPhysicalEntityParticipant(b));
-		r1.addRightParticipant(new BioPhysicalEntityParticipant(c));
-		r1.addRightParticipant(new BioPhysicalEntityParticipant(d));
+		r1.addLeftParticipant(new BioParticipant(a));
+		r1.addLeftParticipant(new BioParticipant(b));
+		r1.addRightParticipant(new BioParticipant(c));
+		r1.addRightParticipant(new BioParticipant(d));
 
-		BioChemicalReaction r2 = new BioChemicalReaction("r2-rxn");
+		BioReaction r2 = new BioReaction("r2-rxn");
 
-		r2.addRightParticipant(new BioPhysicalEntityParticipant(a));
-		r2.addRightParticipant(new BioPhysicalEntityParticipant(b));
-		r2.addLeftParticipant(new BioPhysicalEntityParticipant(c));
-		r2.addLeftParticipant(new BioPhysicalEntityParticipant(d));
+		r2.addRightParticipant(new BioParticipant(a));
+		r2.addRightParticipant(new BioParticipant(b));
+		r2.addLeftParticipant(new BioParticipant(c));
+		r2.addLeftParticipant(new BioParticipant(d));
 
 		network.addBiochemicalReaction(r1);
 		network.addBiochemicalReaction(r2);

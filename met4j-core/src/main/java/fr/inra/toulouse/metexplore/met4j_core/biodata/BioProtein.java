@@ -30,63 +30,26 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.HashMap;
-
 
 public class BioProtein extends BioPhysicalEntity {
 
-	private String sequence;
-	private HashMap<String, BioGene> geneList = new HashMap<String, BioGene>();
-	
-	
+	private BioGene gene;
+
+
 	public BioProtein(String id) {
 		super(id);
 	}
-	
-	public BioProtein(String id, String name) {
-		super(id, name);
-	}
-	
-	public BioProtein(BioProtein prot){
-		super(prot);
-		this.setSequence(prot.getSequence());
-		this.setGeneList(prot.getGeneList());
-	}
-	
-	/**
-	 * @return Returns the sequence.
-	 */
-	public String getSequence() {
-		return sequence;
-	}
-	/**
-	 * @param sequence The sequence to set.
-	 */
-	public void setSequence(String sequence) {
-		this.sequence = sequence;
+
+	protected  void setGene(BioGene g) {
+		this.gene = g;
 	}
 
-	/**
-	 * @return Returns the geneList.
-	 */
-	public HashMap<String, BioGene> getGeneList() {
-		return geneList;
+	public BioGene getGene() {
+		return this.gene;
 	}
 
-	/**
-	 * @param geneList The geneList to set.
-	 */
-	public void setGeneList(HashMap<String, BioGene> geneList) {
-		this.geneList = geneList;
+	public void removeGene() {
+		this.gene = null;
 	}
-	
-	/**
-	 * @param gene The gene to ass
-	 */
-	public void addGene(BioGene gene) {
-		this.geneList.put(gene.getId(), gene);
-	}
-	
-	
 
 }

@@ -42,7 +42,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -89,16 +89,16 @@ public class TestWeightingPolicy {
 		g.addVertex(x);
 		y = new BioPhysicalEntity("y"); y.setName("glycerol 3-phosphate"); y.setInchi("InChI=1S/C3H9O6P/c4-1-3(5)2-9-10(6,7)8/h3-5H,1-2H2,(H2,6,7,8)/p-2/t3-/m1/s1");
 		g.addVertex(y);
-		BioChemicalReaction abd = new BioChemicalReaction("abd");
-		BioChemicalReaction efb = new BioChemicalReaction("efb");
-		BioChemicalReaction bxc = new BioChemicalReaction("bxc");
-		BioChemicalReaction fyc = new BioChemicalReaction("fyc");
+		BioReaction abd = new BioReaction("abd");
+		BioReaction efb = new BioReaction("efb");
+		BioReaction bxc = new BioReaction("bxc");
+		BioReaction fyc = new BioReaction("fyc");
 		ab = new ReactionEdge(a,b,abd);g.addEdge(a, b, ab);
 		bc = new ReactionEdge(b,c,bxc);g.addEdge(b, c, bc);
 		ad = new ReactionEdge(a,d,abd);g.addEdge(a, d, ad);
-		de = new ReactionEdge(d,e,new BioChemicalReaction("de"));g.addEdge(d, e, de);
+		de = new ReactionEdge(d,e,new BioReaction("de"));g.addEdge(d, e, de);
 		ef = new ReactionEdge(e,f,efb);g.addEdge(e, f, ef);
-		fc = new ReactionEdge(f,c,new BioChemicalReaction("fc"));g.addEdge(f, c, fc);
+		fc = new ReactionEdge(f,c,new BioReaction("fc"));g.addEdge(f, c, fc);
 		bx = new ReactionEdge(b,x,bxc);g.addEdge(b, x, bx);
 		eb = new ReactionEdge(e,b,efb);g.addEdge(e, b, eb);
 		yc = new ReactionEdge(y,c,fyc);g.addEdge(y, c, yc);
@@ -379,13 +379,13 @@ public class TestWeightingPolicy {
 		glc_e.addRef("KEGG.COMPOUND", "C00031", 1, "is", "none");
 		BioPhysicalEntity noKegg = new BioPhysicalEntity("M_nokeg_g");g.addVertex(noKegg);
 		
-		BioChemicalReaction glcToG6p = new BioChemicalReaction("glcToG6p");
+		BioReaction glcToG6p = new BioReaction("glcToG6p");
 		glcToG6p.setReversibility(true);
 		
 		ReactionEdge e1 = new ReactionEdge(glc,g6p,glcToG6p);g.addEdge(glc, g6p, e1);
 		ReactionEdge e2 = new ReactionEdge(g6p,glc,glcToG6p);g.addEdge(g6p, glc, e2);
-		ReactionEdge e3 = new ReactionEdge(glc,glc_e,new BioChemicalReaction("transport"));g.addEdge(glc, glc_e, e3);
-		ReactionEdge e4 = new ReactionEdge(g6p,glc,new BioChemicalReaction("glcToG6pII"));g.addEdge(g6p, glc, e4);
+		ReactionEdge e3 = new ReactionEdge(glc,glc_e,new BioReaction("transport"));g.addEdge(glc, glc_e, e3);
+		ReactionEdge e4 = new ReactionEdge(g6p,glc,new BioReaction("glcToG6pII"));g.addEdge(g6p, glc, e4);
 		
 		wp.setWeight(g);
 		
@@ -421,14 +421,14 @@ public class TestWeightingPolicy {
 		pho.addRef("KEGG.COMPOUND", "C00009", 1, "is", "none");
 		BioPhysicalEntity noKegg = new BioPhysicalEntity("M_nokeg_g");g.addVertex(noKegg);
 		
-		BioChemicalReaction glcToG6p = new BioChemicalReaction("glcToG6p");
+		BioReaction glcToG6p = new BioReaction("glcToG6p");
 		glcToG6p.setReversibility(true);
 		
 		ReactionEdge e1 = new ReactionEdge(glc,g6p,glcToG6p);g.addEdge(glc, g6p, e1);
 		ReactionEdge e2 = new ReactionEdge(g6p,glc,glcToG6p);g.addEdge(g6p, glc, e2);
-		ReactionEdge e3 = new ReactionEdge(glc,glc_e,new BioChemicalReaction("transport"));g.addEdge(glc, glc_e, e3);
-		ReactionEdge e4 = new ReactionEdge(g6p,glc,new BioChemicalReaction("glcToG6pII"));g.addEdge(g6p, glc, e4);
-		ReactionEdge e5 = new ReactionEdge(pho,g6p,new BioChemicalReaction("glcToG6pIII"));g.addEdge(pho, g6p, e5);
+		ReactionEdge e3 = new ReactionEdge(glc,glc_e,new BioReaction("transport"));g.addEdge(glc, glc_e, e3);
+		ReactionEdge e4 = new ReactionEdge(g6p,glc,new BioReaction("glcToG6pII"));g.addEdge(g6p, glc, e4);
+		ReactionEdge e5 = new ReactionEdge(pho,g6p,new BioReaction("glcToG6pIII"));g.addEdge(pho, g6p, e5);
 		wp.setWeight(g);
 		
 		assertEquals("wrong atom conservation ", 1.0,g.getEdgeWeight(e1),Double.MIN_VALUE);

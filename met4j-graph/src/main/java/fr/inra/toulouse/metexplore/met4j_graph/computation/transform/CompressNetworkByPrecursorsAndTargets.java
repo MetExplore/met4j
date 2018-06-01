@@ -41,10 +41,10 @@ import org.sbml.jsbml.SBMLException;
 import org.sbml.jsbml.text.parser.ParseException;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.ScopeCompounds;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.io.BioNetworkToJSBML;
 import fr.inra.toulouse.metexplore.met4j_core.io.InputPrecursorReader;
 import fr.inra.toulouse.metexplore.met4j_core.io.JSBMLToBionetwork;
@@ -147,9 +147,9 @@ public class CompressNetworkByPrecursorsAndTargets {
 			
 			System.err.println("\n-----------\ncpdId : "+cpdId+"\n-----------\n");
 						
-			HashMap<String, BioChemicalReaction> reactionsUsingCpd = this.network.getListOfReactionsAsSubstrate(cpdId);
+			HashMap<String, BioReaction> reactionsUsingCpd = this.network.getListOfReactionsAsSubstrate(cpdId);
 			
-			for(BioChemicalReaction rxn : reactionsUsingCpd.values()) {
+			for(BioReaction rxn : reactionsUsingCpd.values()) {
 				
 				System.err.println("\n-----------\nReaction "+rxn+"\n----------\n");
 				
@@ -190,14 +190,14 @@ public class CompressNetworkByPrecursorsAndTargets {
 					}
 				}
 				
-				BioChemicalReaction newReaction = new BioChemicalReaction();
+				BioReaction newReaction = new BioReaction();
 				newReaction.setReversibility(false);
 				for(BioPhysicalEntity sub : subs.values()) {
 					BioPhysicalEntity newSub = new BioPhysicalEntity(sub);
 					if(sub.getFlag()) {
 						newSub.setFlag(true);
 					}
-					newReaction.addLeftParticipant(new BioPhysicalEntityParticipant(newSub));
+					newReaction.addLeftParticipant(new BioParticipant(newSub));
 				}
 				
 				if(rxn.getReversiblity().compareToIgnoreCase("reversible")==0) {
@@ -206,7 +206,7 @@ public class CompressNetworkByPrecursorsAndTargets {
 						if(prod.getFlag()) {
 							newProd.setFlag(true);
 						}
-						newReaction.addRightParticipant(new BioPhysicalEntityParticipant(newProd));
+						newReaction.addRightParticipant(new BioParticipant(newProd));
 					}
 
 					newReaction.setReversibility(true);
@@ -218,8 +218,8 @@ public class CompressNetworkByPrecursorsAndTargets {
 
 					// We make the other reactions using the substrates not available
 					for(BioPhysicalEntity sub : subs.values()) {
-						HashMap<String, BioChemicalReaction> rxns = this.network.getListOfReactionsAsSubstrate(sub.getId());
-						for(BioChemicalReaction reactionTest : rxns.values()) {
+						HashMap<String, BioReaction> rxns = this.network.getListOfReactionsAsSubstrate(sub.getId());
+						for(BioReaction reactionTest : rxns.values()) {
 							if(! reactionTest.equals(rxn)) {
 								scope.getAvailableReactions().remove(reactionTest.getId());
 							}
@@ -268,7 +268,7 @@ public class CompressNetworkByPrecursorsAndTargets {
 							if(scopeCpd.getFlag()) {
 								newProd.setFlag(true);
 							}
-							newReaction.addRightParticipant(new BioPhysicalEntityParticipant(newProd));
+							newReaction.addRightParticipant(new BioParticipant(newProd));
 
 							System.err.println("new Reaction : "+newReaction);
 
@@ -278,11 +278,11 @@ public class CompressNetworkByPrecursorsAndTargets {
 				
 				if(newReaction.getRightParticipantList().size()>0 && this.compressedNetwork.reactionsWith(newReaction.getLeftList().keySet(), newReaction.getRightList().keySet()).size() == 0) {
 					
-					HashMap<String, BioChemicalReaction> reactionsWithSameSubstrates = this.compressedNetwork.reactionsWithTheseSubstrates(newReaction.getLeftList().keySet());
+					HashMap<String, BioReaction> reactionsWithSameSubstrates = this.compressedNetwork.reactionsWithTheseSubstrates(newReaction.getLeftList().keySet());
 					
 					if(reactionsWithSameSubstrates.size() > 0 ) {
-						for(BioChemicalReaction reaction : reactionsWithSameSubstrates.values()) {
-							for(BioPhysicalEntityParticipant bpe : newReaction.getRightParticipantList().values()) {
+						for(BioReaction reaction : reactionsWithSameSubstrates.values()) {
+							for(BioParticipant bpe : newReaction.getRightParticipantList().values()) {
 								reaction.addRightParticipant(bpe);
 								this.compressedNetwork.addPhysicalEntity(bpe.getPhysicalEntity());
 							}

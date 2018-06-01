@@ -9,10 +9,10 @@ import java.util.HashSet;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -26,7 +26,7 @@ public class TestMergedGraph {
 	public static CompoundGraph cg;
 	public static MergedGraph<BioPhysicalEntity,ReactionEdge> cg2;
 	public static BioPhysicalEntity v1,v2;
-	public static BioChemicalReaction r1,r2;
+	public static BioReaction r1,r2;
 	public static ReactionEdge e1,e2;
 	public static MetaEdge<BioPhysicalEntity, ReactionEdge> e;
 	
@@ -37,12 +37,12 @@ public class TestMergedGraph {
 		v1 = new BioPhysicalEntity("v1");
 		v2 = new BioPhysicalEntity("v2");
 		
-		r1 = new BioChemicalReaction("r1");
-		r1.addLeftParticipant(new BioPhysicalEntityParticipant(v1));
-		r1.addRightParticipant(new BioPhysicalEntityParticipant(v2));
-		r2 = new BioChemicalReaction("r2");
-		r2.addLeftParticipant(new BioPhysicalEntityParticipant(v1));
-		r2.addRightParticipant(new BioPhysicalEntityParticipant(v2));
+		r1 = new BioReaction("r1");
+		r1.addLeftParticipant(new BioParticipant(v1));
+		r1.addRightParticipant(new BioParticipant(v2));
+		r2 = new BioReaction("r2");
+		r2.addLeftParticipant(new BioParticipant(v1));
+		r2.addRightParticipant(new BioParticipant(v2));
 		
 		e1 = new ReactionEdge(v1, v2, r1);
 		e2 = new ReactionEdge(v1, v2, r2);

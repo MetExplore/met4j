@@ -33,14 +33,14 @@ package fr.inra.toulouse.metexplore.met4j_graph.core.reaction;
 import java.util.Objects;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 
 /**
- * The edge Class linking two {@link BioChemicalReaction}, associated with a {@link BioPhysicalEntity}
+ * The edge Class linking two {@link BioReaction}, associated with a {@link BioPhysicalEntity}
  * @author clement
  */
-public class CompoundEdge extends Edge<BioChemicalReaction>{
+public class CompoundEdge extends Edge<BioReaction>{
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -56,7 +56,7 @@ public class CompoundEdge extends Edge<BioChemicalReaction>{
      * @param v2 the target vertex
      * @param c the compound
      */
-    public CompoundEdge(BioChemicalReaction v1,BioChemicalReaction v2, BioPhysicalEntity c) {
+    public CompoundEdge(BioReaction v1,BioReaction v2, BioPhysicalEntity c) {
         super(v1,v2);
         this.c=c;
     }

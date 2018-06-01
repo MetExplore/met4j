@@ -36,7 +36,7 @@ import java.util.Map;
 import fr.inra.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 
 
@@ -51,7 +51,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioPhysicalEntity, ReactionEdge, CompoundGraph>{
 	
 	
-	Map<BioChemicalReaction,Double> reactionWeights;
+	Map<BioReaction,Double> reactionWeights;
 	
 	public ReactionProbabilityWeight() {
 		super();
@@ -59,11 +59,11 @@ public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioPhysic
 	public ReactionProbabilityWeight(WeightingPolicy<BioPhysicalEntity, ReactionEdge, CompoundGraph> wp) {
 		super(wp);
 	}
-	public ReactionProbabilityWeight(Map<BioChemicalReaction,Double> reactionWeights) {
+	public ReactionProbabilityWeight(Map<BioReaction,Double> reactionWeights) {
 		super();
 		this.reactionWeights=reactionWeights;
 	}
-	public ReactionProbabilityWeight(WeightingPolicy<BioPhysicalEntity, ReactionEdge, CompoundGraph> wp, Map<BioChemicalReaction,Double> reactionWeights) {
+	public ReactionProbabilityWeight(WeightingPolicy<BioPhysicalEntity, ReactionEdge, CompoundGraph> wp, Map<BioReaction,Double> reactionWeights) {
 		super(wp);
 		this.reactionWeights=reactionWeights;
 	}
@@ -78,10 +78,10 @@ public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioPhysic
 		for(BioPhysicalEntity v : g.vertexSet()){
 			
 			//get edge weight sum for each bio-chemical reaction consuming the node
-			Map<BioChemicalReaction,Double> sumMap = new HashMap<BioChemicalReaction, Double>();
+			Map<BioReaction,Double> sumMap = new HashMap<BioReaction, Double>();
 			
 			for(ReactionEdge e : g.outgoingEdgesOf(v)){
-				BioChemicalReaction reaction = e.getReaction();
+				BioReaction reaction = e.getReaction();
 				
 				if(!sumMap.containsKey(reaction)){
 					sumMap.put(reaction, g.getEdgeWeight(e));
@@ -92,20 +92,20 @@ public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioPhysic
 			}
 			
 			//compute reactions probabilities
-			Map<BioChemicalReaction,Double> reactionsProbabilities = new HashMap<BioChemicalReaction, Double>();
+			Map<BioReaction,Double> reactionsProbabilities = new HashMap<BioReaction, Double>();
 			double nbOfConsumingReaction = sumMap.size();
 			if(reactionWeights==null){
 				//if no reaction weights set, 
-				for(BioChemicalReaction r : sumMap.keySet()){
+				for(BioReaction r : sumMap.keySet()){
 					reactionsProbabilities.put(r, 1.0/nbOfConsumingReaction);
 				}
 			}else{
 				double reactionWeightSum = 0.0;
-				for(BioChemicalReaction r : sumMap.keySet()){
+				for(BioReaction r : sumMap.keySet()){
 					reactionWeightSum+=reactionWeights.get(r);
 				}
 				
-				for(BioChemicalReaction r : sumMap.keySet()){
+				for(BioReaction r : sumMap.keySet()){
 					double reactionWeight = reactionWeights.get(r);
 					reactionsProbabilities.put(r, reactionWeight/reactionWeightSum);
 				}
@@ -115,7 +115,7 @@ public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioPhysic
 			//update weights
 			if(!sumMap.isEmpty()){
 				for(ReactionEdge e : g.outgoingEdgesOf(v)){
-					BioChemicalReaction r = e.getReaction();
+					BioReaction r = e.getReaction();
 					double weight = g.getEdgeWeight(e);
 					double weightSum = sumMap.get(r);
 					double reactionProba = reactionsProbabilities.get(r);
@@ -130,7 +130,7 @@ public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioPhysic
 	/**
 	 * @return the reaction-weight map
 	 */
-	public Map<BioChemicalReaction, Double> getReactionWeights() {
+	public Map<BioReaction, Double> getReactionWeights() {
 		return reactionWeights;
 	}
 
@@ -138,7 +138,7 @@ public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioPhysic
 	/**
 	 * @param reactionWeights the reaction-weight map to set
 	 */
-	public void setReactionWeights(Map<BioChemicalReaction, Double> reactionWeights) {
+	public void setReactionWeights(Map<BioReaction, Double> reactionWeights) {
 		this.reactionWeights = reactionWeights;
 	}
 }

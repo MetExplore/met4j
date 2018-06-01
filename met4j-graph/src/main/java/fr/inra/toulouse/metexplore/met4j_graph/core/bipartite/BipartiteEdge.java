@@ -31,7 +31,7 @@
 package fr.inra.toulouse.metexplore.met4j_graph.core.bipartite;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 
@@ -56,25 +56,25 @@ public class BipartiteEdge extends Edge<BioEntity>{
 	 * @param v1 the source vertex
 	 * @param v2 the target vertex
 	 */
-	public BipartiteEdge(BioPhysicalEntity v1, BioChemicalReaction v2){
+	public BipartiteEdge(BioPhysicalEntity v1, BioReaction v2){
 		super(v1,v2);
 	}
-	public BipartiteEdge(BioChemicalReaction v1, BioPhysicalEntity v2){
+	public BipartiteEdge(BioReaction v1, BioPhysicalEntity v2){
 		super(v1,v2);
 	}
-	public BipartiteEdge(BioPhysicalEntity v1, BioChemicalReaction v2, boolean reversible){
+	public BipartiteEdge(BioPhysicalEntity v1, BioReaction v2, boolean reversible){
 		super(v1,v2);
 		this.reversible=reversible;
 		
 	}
-	public BipartiteEdge(BioChemicalReaction v1, BioPhysicalEntity v2, boolean reversible){
+	public BipartiteEdge(BioReaction v1, BioPhysicalEntity v2, boolean reversible){
 		super(v1,v2);
 		this.reversible=reversible;
 	}
 	public BipartiteEdge(BioEntity v1, BioEntity v2, boolean reversible){
 		super(v1,v2);
-		if(!(v1 instanceof BioPhysicalEntity && v2 instanceof BioChemicalReaction)
-		 && !(v1 instanceof BioChemicalReaction && v2 instanceof BioPhysicalEntity)){
+		if(!(v1 instanceof BioPhysicalEntity && v2 instanceof BioReaction)
+		 && !(v1 instanceof BioReaction && v2 instanceof BioPhysicalEntity)){
 			throw new IllegalArgumentException("Edges in bipartite graph can only connect a compound to a reaction");
 		}
 		this.reversible=reversible;

@@ -43,7 +43,7 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.algo.FloydWarshall;
@@ -78,15 +78,15 @@ public class TestShortestPaths {
 		f = new BioPhysicalEntity("f"); g.addVertex(f);
 		h = new BioPhysicalEntity("h"); g.addVertex(h);
 		i = new BioPhysicalEntity("i"); g.addVertex(i);
-		ab = new ReactionEdge(a,b,new BioChemicalReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 1.0);
-		bc = new ReactionEdge(b,c,new BioChemicalReaction("bc"));g.addEdge(b, c, bc);g.setEdgeWeight(bc, 1.0);
-		ad = new ReactionEdge(a,d,new BioChemicalReaction("ad"));g.addEdge(a, d, ad);g.setEdgeWeight(ad, 1.0);
-		de = new ReactionEdge(d,e,new BioChemicalReaction("de"));g.addEdge(d, e, de);g.setEdgeWeight(de, 1.0);
-		ef = new ReactionEdge(e,f,new BioChemicalReaction("ef"));g.addEdge(e, f, ef);g.setEdgeWeight(ef, 1.0);
-		fc = new ReactionEdge(f,c,new BioChemicalReaction("fc"));g.addEdge(f, c, fc);g.setEdgeWeight(fc, 1.0);
-		bh = new ReactionEdge(b,h,new BioChemicalReaction("bh"));g.addEdge(b, h, bh);g.setEdgeWeight(bh, 1.0);
-		eb = new ReactionEdge(e,b,new BioChemicalReaction("eb"));g.addEdge(e, b, eb);g.setEdgeWeight(eb, 1.0);
-		ic = new ReactionEdge(i,c,new BioChemicalReaction("ic"));g.addEdge(i, c, ic);g.setEdgeWeight(ic, 1.0);
+		ab = new ReactionEdge(a,b,new BioReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 1.0);
+		bc = new ReactionEdge(b,c,new BioReaction("bc"));g.addEdge(b, c, bc);g.setEdgeWeight(bc, 1.0);
+		ad = new ReactionEdge(a,d,new BioReaction("ad"));g.addEdge(a, d, ad);g.setEdgeWeight(ad, 1.0);
+		de = new ReactionEdge(d,e,new BioReaction("de"));g.addEdge(d, e, de);g.setEdgeWeight(de, 1.0);
+		ef = new ReactionEdge(e,f,new BioReaction("ef"));g.addEdge(e, f, ef);g.setEdgeWeight(ef, 1.0);
+		fc = new ReactionEdge(f,c,new BioReaction("fc"));g.addEdge(f, c, fc);g.setEdgeWeight(fc, 1.0);
+		bh = new ReactionEdge(b,h,new BioReaction("bh"));g.addEdge(b, h, bh);g.setEdgeWeight(bh, 1.0);
+		eb = new ReactionEdge(e,b,new BioReaction("eb"));g.addEdge(e, b, eb);g.setEdgeWeight(eb, 1.0);
+		ic = new ReactionEdge(i,c,new BioReaction("ic"));g.addEdge(i, c, ic);g.setEdgeWeight(ic, 1.0);
 		
 		
 //		BioChemicalReaction r1 = new BioChemicalReaction("acyz");

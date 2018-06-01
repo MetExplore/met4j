@@ -6,9 +6,9 @@ import java.util.HashSet;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.analysis.ChokePoint;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
@@ -20,7 +20,7 @@ public class TestChokePoint {
 	public static CompoundGraph cg;
 	public static BipartiteGraph bg;
 	public static BioPhysicalEntity v1,v2,v3,v4;
-	public static BioChemicalReaction r1,r2,r3;
+	public static BioReaction r1,r2,r3;
 	
 	@BeforeClass
 	public static void init(){
@@ -33,20 +33,20 @@ public class TestChokePoint {
 		v3 = new BioPhysicalEntity("v3");
 		v4 = new BioPhysicalEntity("v4");
 		
-		r1 = new BioChemicalReaction("r1");
-		r1.addLeftParticipant(new BioPhysicalEntityParticipant(v1));
-		r1.addRightParticipant(new BioPhysicalEntityParticipant(v2));
-		r1.addRightParticipant(new BioPhysicalEntityParticipant(v3));
+		r1 = new BioReaction("r1");
+		r1.addLeftParticipant(new BioParticipant(v1));
+		r1.addRightParticipant(new BioParticipant(v2));
+		r1.addRightParticipant(new BioParticipant(v3));
 
-		r2 = new BioChemicalReaction("r2");
-		r2.addLeftParticipant(new BioPhysicalEntityParticipant(v1));
-		r2.addRightParticipant(new BioPhysicalEntityParticipant(v4));
-		r2.addRightParticipant(new BioPhysicalEntityParticipant(v3));
+		r2 = new BioReaction("r2");
+		r2.addLeftParticipant(new BioParticipant(v1));
+		r2.addRightParticipant(new BioParticipant(v4));
+		r2.addRightParticipant(new BioParticipant(v3));
 
-		r3 = new BioChemicalReaction("r3");
-		r3.addLeftParticipant(new BioPhysicalEntityParticipant(v2));
-		r3.addLeftParticipant(new BioPhysicalEntityParticipant(v3));
-		r3.addRightParticipant(new BioPhysicalEntityParticipant(v4));
+		r3 = new BioReaction("r3");
+		r3.addLeftParticipant(new BioParticipant(v2));
+		r3.addLeftParticipant(new BioParticipant(v3));
+		r3.addRightParticipant(new BioParticipant(v4));
 
 		
 		ReactionEdge e1 = new ReactionEdge(v1, v2, r1);
@@ -98,14 +98,14 @@ public class TestChokePoint {
 	
 	@Test
 	public void testGetChokePointFromCompoundGraph() {
-		HashSet<BioChemicalReaction> cp = ChokePoint.getChokePoint(cg);
+		HashSet<BioReaction> cp = ChokePoint.getChokePoint(cg);
 		assertEquals(1, cp.size());
 		assertTrue(cp.contains(r3));
 	}
 	
 	@Test
 	public void testGetChokePointFromBipartiteGraph() {
-		HashSet<BioChemicalReaction> cp = ChokePoint.getChokePoint(bg);
+		HashSet<BioReaction> cp = ChokePoint.getChokePoint(bg);
 		assertEquals(1, cp.size());
 		assertTrue(cp.contains(r3));
 	}

@@ -35,7 +35,7 @@ package fr.inra.toulouse.metexplore.met4j_cytoscape.attributes;
 
 import java.util.HashMap;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
@@ -67,7 +67,7 @@ public class TypeAttributes extends GenericAttributeHandler {
 			res.put(id, "species");
 		}
 
-		for (BioChemicalReaction reaction : this.getNetwork().getBiochemicalReactionList().values()) {
+		for (BioReaction reaction : this.getNetwork().getBiochemicalReactionList().values()) {
 
 			String id = this.getSbmlCoded() ? StringUtils.sbmlEncode(reaction.getId()) : reaction.getId();
 

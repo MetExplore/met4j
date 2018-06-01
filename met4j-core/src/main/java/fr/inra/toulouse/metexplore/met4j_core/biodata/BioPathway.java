@@ -30,12 +30,7 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.HashMap;
-
-
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 /**
  * A set or series of interactions, often forming a network, which biologists
@@ -45,197 +40,56 @@ import java.util.HashMap;
 
 public class BioPathway extends BioEntity {
 
-//	private HashMap<String, BioPathwayStep> pathwayComponents = new HashMap<String, BioPathwayStep>();
-	
-	private HashMap<String, BioPathway> superPathways = new HashMap<String, BioPathway> ();
-	private HashMap<String, BioPathway>  subPathways = new HashMap<String, BioPathway> ();
-	
-	private ArrayList<String> primaryCompounds = new ArrayList<String>();
-		
-	private HashMap<String, BioInteraction> listOfInteractions = new HashMap<String, BioInteraction>();
-	
-	private HashMap<String, BioChemicalReaction> reactions = new HashMap<String, BioChemicalReaction>();
-	
+	private BioCollection<BioReaction> reactions = new BioCollection<BioReaction>();
+
 	public BioPathway(String id) {
 		super(id);
 	}
-	
-	public BioPathway(String id, String name) {
-		super(id, name);
-	}
-	
-	public BioPathway(BioPathway in) {
-		super(in);
-//		this.copyPathwayComponents(in.getPathwayComponents());
-		this.copySuperPathways(in.getSuperPathways());
-		this.copySubPathways(in.getSubPathways());
-		this.setPrimaryCompounds(new ArrayList<String>());
-		this.getPrimaryCompounds().addAll(in.getPrimaryCompounds());
-	}
-	
-	/**
-	 * @return Returns the pathwayComponents.
-	 */
-//	public HashMap<String, BioPathwayStep> getPathwayComponents() {
-//		return pathwayComponents;
-//	}
-	
-	/**
-	 * @param the pathway step to add
-	 */
-//	public void addPathwayComponent(BioPathwayStep o) {
-//		this.pathwayComponents.put(o.getId(), o);
-//	}
-	
-	/**
-	 * @param the interaction to add
-	 */
-//	public void addPathwayComponent(BioInteraction o) {
-//		BioPathwayStep pathwayStep = new BioPathwayStep(o);
-//		this.addPathwayComponent(pathwayStep);
-//	}
-	
-	/**
-	 * Returns the list of all interactions present in all pathwayStep
-	 */
-//	public HashMap<String, BioInteraction> getListOfInteractions () {
-//		
-//		HashMap<String, BioInteraction> totalListOfInteractions = new HashMap<String, BioInteraction>();
-//		
-//		for(BioPathwayStep step : this.getPathwayComponents().values()) {
-//			HashMap<String, BioInteraction> listOfInteractions = step.getStepInteractions();
-//			totalListOfInteractions.putAll(listOfInteractions);
-//		}
-//		
-//		return totalListOfInteractions;
-//		
-//	}
-	
 
-	/**
-	 * @return Returns the subPathways.
-	 */
-	public HashMap<String, BioPathway> getSubPathways() {
-		return subPathways;
-	}
-
-	/**
-	 * @param subPathways The subPathways to set.
-	 */
-	public void setSubPathways(HashMap<String, BioPathway>  subPathways) {
-		this.subPathways = subPathways;
-	}
-	
-	public void copySubPathways(HashMap<String, BioPathway> subPathways) {
-		
-		this.setSubPathways(new HashMap<String, BioPathway>());
-		
-		for(BioPathway subPathway : subPathways.values()) {
-			BioPathway newSubPathway = new BioPathway(subPathway);
-			this.addSubPathway(newSubPathway);
-		}
-		
-	}
-	
-	
-	/**
-	 * Adds a sub Pathway in the list
-	 */
-	public void addSubPathway(BioPathway pathway) {
-		this.subPathways.put(pathway.getId(), pathway);
-	}
-
-	/**
-	 * @return Returns the superPathways.
-	 */
-	public HashMap<String, BioPathway> getSuperPathways() {
-		return superPathways;
-	}
-
-	/**
-	 * @param superPathways The superPathways to set.
-	 */
-	public void setSuperPathways(HashMap<String, BioPathway>  superPathways) {
-		this.superPathways = superPathways;
-	}
-	
-	public void copySuperPathways(HashMap<String, BioPathway> superPathways) {
-		
-		this.setSuperPathways(new HashMap<String, BioPathway>());
-		
-		for(BioPathway superPathway : superPathways.values()) {
-			BioPathway newSuperPathway = new BioPathway(superPathway);
-			this.addSuperPathway(newSuperPathway);
-		}
-		
-	}
-	
-	
-	/**
-	 * Adds a super Pathway in the list
-	 */
-	public void addSuperPathway(BioPathway pathway) {
-		this.superPathways.put(pathway.getId(), pathway);
-	}
-
-	/**
-	 * @return Returns the primaryCompounds.
-	 */
-	public ArrayList<String> getPrimaryCompounds() {
-		return primaryCompounds;
-	}
-
-	/**
-	 * @param primaryCompounds The primaryCompounds to set.
-	 */
-	public void setPrimaryCompounds(ArrayList<String> primaryCompounds) {
-		this.primaryCompounds = primaryCompounds;
-	}
-	
-	/**
-	 * 
-	 */
-	public void addPrimaryCompound(String primaryCompound) {
-		if(! primaryCompounds.contains(primaryCompound)) {
-			primaryCompounds.add(primaryCompound);
-		}
-	}
-
-	public HashMap<String, BioInteraction> getListOfInteractions() {
-		return listOfInteractions;
-	}
-
-	public void setListOfInteractions(
-			HashMap<String, BioInteraction> listOfInteractions) {
-		this.listOfInteractions = listOfInteractions;
-	}
-
-	public HashMap<String, BioChemicalReaction> getReactions() {
+	protected BioCollection<BioReaction> getReactions() {
 		return reactions;
 	}
 
-	public void setReactions(HashMap<String, BioChemicalReaction> reactions) {
+	protected void setReactions(BioCollection<BioReaction> reactions) {
 		this.reactions = reactions;
 	}
-	
-	public void addReaction(BioChemicalReaction reaction) {
-		
-		this.reactions.put(reaction.getId(), reaction);
-		
+
+	protected void addReaction(BioReaction reaction) {
+		this.reactions.add(reaction);
+
 	}
 
-//	public void copyPathwayComponents(
-//			HashMap<String, BioPathwayStep> pathwayComponents) {
-//		
-//		this.pathwayComponents = new HashMap<String, BioPathwayStep>();
-//		
-//		for(BioPathwayStep bps : pathwayComponents.values()) {
-//			BioPathwayStep newBps = new BioPathwayStep(bps);
-//			this.addPathwayComponent(newBps);
-//		}
-//	}
-	
-	
+	protected void removeReaction(BioReaction reaction) {
+		this.reactions.remove(reaction);
+	}
 
+	/**
+	 * Get metabolites involved in pathways
+	 */
+	protected BioCollection<BioMetabolite> getMetabolites() {
+		BioCollection<BioMetabolite> metaboliteSet = new BioCollection<BioMetabolite>();
+
+		try {
+			this.getReactions().forEach(r -> metaboliteSet.addAll(r.getEntities()));
+		} catch (IllegalArgumentException e) {
+		}
+
+		return metaboliteSet;
+	}
+
+	/**
+	 * Get genes involved in pathways
+	 */
+
+	protected BioCollection<BioGene> getGenes() {
+		BioCollection<BioGene> geneSet = new BioCollection<BioGene>();
+
+		try {
+			this.getReactions().forEach(r -> geneSet.addAll(r.getGenes()));
+		} catch (IllegalArgumentException e) {
+		}
+
+		return geneSet;
+	}
 
 }

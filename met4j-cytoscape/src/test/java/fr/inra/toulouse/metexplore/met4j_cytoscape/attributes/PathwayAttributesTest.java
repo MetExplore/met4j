@@ -66,11 +66,11 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 
 /**
  * @author lcottret
@@ -87,20 +87,20 @@ public class PathwayAttributesTest {
 
 		BioNetwork network = new BioNetwork();
 
-		BioChemicalReaction r1 = new BioChemicalReaction("r1-rxn", "R1");
+		BioReaction r1 = new BioReaction("r1-rxn", "R1");
 
 		BioPhysicalEntity a = new BioPhysicalEntity("A-cpd", "A';");
 		BioPhysicalEntity b = new BioPhysicalEntity("B-cpd", "B");
 		BioPhysicalEntity c = new BioPhysicalEntity("C-cpd", "C");
 		BioPhysicalEntity d = new BioPhysicalEntity("D-cpd", "D");
 
-		r1.addLeftParticipant(new BioPhysicalEntityParticipant(a));
-		r1.addRightParticipant(new BioPhysicalEntityParticipant(c));
+		r1.addLeftParticipant(new BioParticipant(a));
+		r1.addRightParticipant(new BioParticipant(c));
 
-		BioChemicalReaction r2 = new BioChemicalReaction("r2-rxn", "R2&lt;i&gt;ase&lt;/i&gt;");
+		BioReaction r2 = new BioReaction("r2-rxn", "R2&lt;i&gt;ase&lt;/i&gt;");
 
-		r2.addRightParticipant(new BioPhysicalEntityParticipant(b));
-		r2.addLeftParticipant(new BioPhysicalEntityParticipant(d));
+		r2.addRightParticipant(new BioParticipant(b));
+		r2.addLeftParticipant(new BioParticipant(d));
 
 		BioPathway p1 = new BioPathway("P-1", "pathway;");
 		BioPathway p2 = new BioPathway("P-2", "pathway--2;");

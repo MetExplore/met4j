@@ -7,7 +7,7 @@ import java.util.Set;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.analysis.GraphSampler;
@@ -37,10 +37,10 @@ public class TestGraphSampler {
 		c = new BioPhysicalEntity("c"); g.addVertex(c);
 		d = new BioPhysicalEntity("d"); g.addVertex(d);
 		e = new BioPhysicalEntity("e"); g.addVertex(e);
-		ab = new ReactionEdge(a,b,new BioChemicalReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 1.0);
-		ac = new ReactionEdge(a,c,new BioChemicalReaction("ac"));g.addEdge(a, c, ac);g.setEdgeWeight(ac, 1.0);
-		ae = new ReactionEdge(a,e,new BioChemicalReaction("ae"));g.addEdge(a, e, ae);g.setEdgeWeight(ae, 1.0);
-		ad = new ReactionEdge(a,d,new BioChemicalReaction("ad"));g.addEdge(a, d, ad);g.setEdgeWeight(ad, 1.0);
+		ab = new ReactionEdge(a,b,new BioReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 1.0);
+		ac = new ReactionEdge(a,c,new BioReaction("ac"));g.addEdge(a, c, ac);g.setEdgeWeight(ac, 1.0);
+		ae = new ReactionEdge(a,e,new BioReaction("ae"));g.addEdge(a, e, ae);g.setEdgeWeight(ae, 1.0);
+		ad = new ReactionEdge(a,d,new BioReaction("ad"));g.addEdge(a, d, ad);g.setEdgeWeight(ad, 1.0);
 		sampler = new GraphSampler<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g);
 
 	}

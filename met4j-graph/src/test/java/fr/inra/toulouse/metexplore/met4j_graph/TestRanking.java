@@ -36,7 +36,7 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.analysis.RankUtils;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -89,21 +89,21 @@ public class TestRanking {
 		BioPhysicalEntity b = new BioPhysicalEntity("b");g1.addVertex(b);g2.addVertex(b);
 		BioPhysicalEntity c = new BioPhysicalEntity("c");g1.addVertex(c);g2.addVertex(c);
 		
-		ReactionEdge ba = new ReactionEdge(b, a, new BioChemicalReaction("ba"));
+		ReactionEdge ba = new ReactionEdge(b, a, new BioReaction("ba"));
 		g1.addEdge(b, a, ba); g1.setEdgeScore(ba, 8.0); expected1.put("ba", 0);
-		ReactionEdge ae = new ReactionEdge(a, e, new BioChemicalReaction("ae"));
+		ReactionEdge ae = new ReactionEdge(a, e, new BioReaction("ae"));
 		g1.addEdge(a, e, ae); g1.setEdgeScore(ae, 7.0); expected1.put("ae", 2);
-		ReactionEdge ca = new ReactionEdge(c, a, new BioChemicalReaction("ca"));
+		ReactionEdge ca = new ReactionEdge(c, a, new BioReaction("ca"));
 		g1.addEdge(c, a, ca); g1.setEdgeScore(ca, 6.0); expected1.put("ca", 3);
-		ReactionEdge cd = new ReactionEdge(c, d, new BioChemicalReaction("cd"));
+		ReactionEdge cd = new ReactionEdge(c, d, new BioReaction("cd"));
 		g1.addEdge(c, d, cd); g1.setEdgeScore(cd, 5.0); expected1.put("cd", 4);
-		ReactionEdge db = new ReactionEdge(d, b, new BioChemicalReaction("db"));
+		ReactionEdge db = new ReactionEdge(d, b, new BioReaction("db"));
 		g1.addEdge(d, b, db); g1.setEdgeScore(db, 4.0); expected1.put("db", 5);
-		ReactionEdge ec = new ReactionEdge(e, c, new BioChemicalReaction("ec"));
+		ReactionEdge ec = new ReactionEdge(e, c, new BioReaction("ec"));
 		g1.addEdge(e, c, ec); g1.setEdgeScore(ec, 3.0); expected1.put("ec", 6);
-		ReactionEdge eb = new ReactionEdge(e, b, new BioChemicalReaction("eb"));
+		ReactionEdge eb = new ReactionEdge(e, b, new BioReaction("eb"));
 		g1.addEdge(e, b, eb); g1.setEdgeScore(eb, 2.0); expected1.put("eb", 7);
-		BioChemicalReaction r = new BioChemicalReaction("dea");
+		BioReaction r = new BioReaction("dea");
 		ReactionEdge de = new ReactionEdge(d, e, r);
 		ReactionEdge ea = new ReactionEdge(e, a, r);
 		g1.addEdge(d, e, de); g1.setEdgeScore(de, 3.7);

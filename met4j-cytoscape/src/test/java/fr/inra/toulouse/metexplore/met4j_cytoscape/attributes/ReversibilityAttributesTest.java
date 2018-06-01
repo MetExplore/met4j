@@ -66,7 +66,7 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 
 /**
@@ -84,9 +84,9 @@ public class ReversibilityAttributesTest {
 
 		BioNetwork network = new BioNetwork();
 
-		BioChemicalReaction r1 = new BioChemicalReaction("r1-rxn", "R1");
+		BioReaction r1 = new BioReaction("r1-rxn", "R1");
 
-		BioChemicalReaction r2 = new BioChemicalReaction("r2-rxn", "R2");
+		BioReaction r2 = new BioReaction("r2-rxn", "R2");
 
 		r1.setReversibility(false);
 		r2.setReversibility(true);

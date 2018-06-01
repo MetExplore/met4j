@@ -233,46 +233,6 @@ public class StringUtils {
         return out;
 	}
 	
-	public static void main(String[] args) {
-		
-//		String in = "<i>cis</i>-zeatin & biosynthesis &lt; 1 &gt; 1; \" ,";
-//		
-//		System.err.println(htmlEncode(in));
-//		
-//		String in2 = "2-CYSTEIN rED 4";
-//		
-//		System.err.println(sbmlEncode(in2));
-//		
-//		String in = "0.5d0";
-//		String in2 = ".5";
-//		String in3 = "d1.234f05";
-//		
-//		System.out.println(transformStoi(in));
-//		System.out.println(transformStoi(in2));
-//		System.out.println(transformStoi(in3));
-		
-		String in = "S119__R__4__phosphopantothenoyl__45__L_cysteine";
-		System.out.println(in);
-		System.out.println(sbmlDecode(in));
-		
-		in = "ribulose__32__phosphate__32__3__45__epimerase";
-		System.out.println(in);
-		System.out.println(sbmlDecode(in));
-		
-		in = "_1__46__2__46__1__46__45__45__RXN";
-		System.out.println(in);
-		System.out.println(sbmlDecode(in));
-		
-		in = "&lt;i&gt;N&lt;/i&gt;-acetyl-L-ornithine";
-		System.out.println(in);
-		System.out.println(removeHtmlMarks(in));
-		
-		in = "mdash;amp;prime;#039;&lt;i&gt;N&lt;/i&gt;__45__acetyl__45__L__45__&amp;truc;ornithine";
-		System.out.println(in);
-		System.out.println(getNotFormattedString(in));
-		
-	}
-	
 	
 	/**
 	 * Transforms a stoechiometric coefficient to be compatible with the

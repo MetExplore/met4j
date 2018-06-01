@@ -50,7 +50,7 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
@@ -342,7 +342,7 @@ public class ExportGraph {
     			BioEntity src = e.getV1();
     			BioEntity trg = e.getV2();
     			if(!(src==null || trg== null)){
-	    			String interaction = (src instanceof BioChemicalReaction) ? "product" : "substrate of";
+	    			String interaction = (src instanceof BioReaction) ? "product" : "substrate of";
 	    			String edgeID = src.getId()+" ("+interaction+") "+trg.getId();
 	    			if(edgeID.contains("=")){
 	    				bw.close();
@@ -382,8 +382,8 @@ public class ExportGraph {
 //    				boolean side = (graph.hasVertex(v.getId())) ? false : true ;
     				entry=e.getId()+"\t"+e.getName()+"\tcompound\t"+e.getCompartment().getName()+"\t"+e.getIsSide()+"\tnull\tnull";
     			}
-    			else if(v instanceof BioChemicalReaction){
-    				BioChemicalReaction r = (BioChemicalReaction) v;
+    			else if(v instanceof BioReaction){
+    				BioReaction r = (BioReaction) v;
     				entry=r.getId()+"\t"+r.getName()+"\treaction\tnull\tnull\t"+StringUtils.join(r.getPathwayList().keySet(),", ");
     			}
     			if(entry!=null){
@@ -464,7 +464,7 @@ public class ExportGraph {
     			BioEntity src = e.getV1();
     			BioEntity trg = e.getV2();
     			if(!(src==null || trg== null)){
-	    			String interaction = (src instanceof BioChemicalReaction) ? "product" : "substrate of";
+	    			String interaction = (src instanceof BioReaction) ? "product" : "substrate of";
 					String entry=src.getId()+"\t"+interaction+"\t"+trg.getId();
 					bw.write(entry);
 					bw.newLine();

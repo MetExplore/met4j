@@ -30,39 +30,10 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.HashMap;
-
-public class BioGene extends BioPhysicalEntity {
+public class BioGene extends BioEntity {
 	
-	public HashMap<String, BioProtein> proteinList = new HashMap<String, BioProtein>();
 	
 	public BioGene(String id) {
 		super(id);
 	}
-	
-	public BioGene(String id, String name) {
-		super(id, name);
-	}
-	
-	/**
-	 * @return Returns the proteinList.
-	 */
-	public HashMap<String, BioProtein> getProteinList() {
-		return proteinList;
-	}
-
-	/**
-	 * @param proteinList The proteinList to set.
-	 */
-	public void setProteinList(HashMap<String, BioProtein> proteinList) {
-		this.proteinList = proteinList;
-	}
-	
-	/**
-	 * @param protein : protein to add
-	 */
-	public void addProtein(BioProtein protein) {
-		proteinList.put(protein.getId(), protein);
-	}
-
 }

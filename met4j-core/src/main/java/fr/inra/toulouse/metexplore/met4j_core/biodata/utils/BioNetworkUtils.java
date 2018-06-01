@@ -222,30 +222,6 @@ public class BioNetworkUtils {
 	}
 
 	
-	/**
-	 * Returns the set of reactions catalysed by a gene
-	 * 
-	 * @param geneId
-	 *            : String
-	 * @return a Set of Strings TODO : test it
-	 */
-	public static Set<String> getReactionsFromGene(BioNetwork bn, String geneId) {
-
-		Set<String> reactions = new HashSet<String>();
-
-		for (BioReaction reaction : bn.getBiochemicalReactionList()
-				.values()) {
-
-			HashMap<String, BioGene> genes = BioChemicalReactionUtils.getListOfGenesFromReaction(reaction);
-
-			if (genes.containsKey(geneId)) {
-				reactions.add(reaction.getId());
-			}
-		}
-
-		return reactions;
-
-	}
 	
 	
 	/**

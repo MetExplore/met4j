@@ -75,95 +75,10 @@ public class BioChemicalReactionUtils {
 		return false;
 	}
 	
-	/**
-	 * Returns the genes catalysing the reaction
-	 * TODO : add back to Reaction class, using lazy builder, ensure update when enzyme added
-	 * @return a HashMap
-	 */
-	public static HashMap<String, BioGene> getListOfGenesFromReaction(BioReaction r) {
-
-		HashMap<String, BioGene> genes = new HashMap<String, BioGene>();
-
-		for (Iterator<String> iterEnz = r.getEnzList().keySet().iterator(); iterEnz
-				.hasNext();) {
-
-			BioPhysicalEntity enzyme = r.getEnzList().get(iterEnz.next());
-
-			String classe = enzyme.getClass().getSimpleName();
-
-			if (classe.compareTo("BioProtein") == 0) {
-				genes.putAll(((BioProtein) enzyme).getGeneList());
-			} else if (classe.compareTo("BioComplex") == 0) {
-
-				HashMap<String, BioPhysicalEntity> componentList = ((BioComplex) enzyme)
-						.getAllComponentList();
-
-				for (Iterator<String> iterComponent = componentList.keySet()
-						.iterator(); iterComponent.hasNext();) {
-
-					BioPhysicalEntity component = componentList
-							.get(iterComponent.next());
-
-					if (component.getClass().getSimpleName()
-							.compareTo("BioProtein") == 0) {
-						genes.putAll(((BioProtein) component).getGeneList());
-					}
-				}
-			}
-		}
-
-		return genes;
-
-	}
-	
 	public static Boolean testReaction(BioReaction r) {
 		return testReaction(r, false, true);
 	}
 
-	/**
-	 * Test the reaction : - if onlyPrimaries = true, test if the reaction
-	 * occurs in a metabolic pathway, i.e. if the primary compounds can be
-	 * adressed - if keepHolderClassCpd = false, test if any substrate or
-	 * product of the reaction is a generic compound (e.g "an aldehyde").
-	 */
-	public static Boolean testReaction(BioReaction r, Boolean onlyPrimaries,
-			Boolean keepHolderClassCpd) {
-
-		if (onlyPrimaries == true) {
-			if (r.getPathwayList().size() == 0) {
-				return false;
-			}
-
-			if ((r.getPrimaryLeftParticipantList().size() == 0)
-					|| (r.getPrimaryRightParticipantList().size() == 0)) {
-				System.err.println("[Warning] The " + r.getId()
-						+ " has a problem with its primary compounds");
-				return false;
-			}
-
-			if (keepHolderClassCpd == false) {
-				if (r.getDoesItContainClassPrimaryCpd() == true) {
-					return false;
-				}
-			}
-		} else {
-
-			if ((r.getLeftParticipantList().size() == 0)
-					|| (r.getRightParticipantList().size() == 0)) {
-				System.err.println("[Warning] the " + r.getId()
-						+ " has a problem with its compounds");
-				return false;
-			}
-
-			if (keepHolderClassCpd == false) {
-				if (r.getDoesItContainClassCpd() == true) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
 	/**
 	 * 
 	 * @return a ArrayList<String> corresponding to the association between

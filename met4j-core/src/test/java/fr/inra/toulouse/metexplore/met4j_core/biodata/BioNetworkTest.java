@@ -1304,5 +1304,18 @@ public class BioNetworkTest {
 
 		compartments.clear();
 	}
-
+	
+	@Test
+	public void testGetLeftReactants()
+	{
+		fail("not implemented");
+	}
+	
+	@Test
+	public void testGetRightReactants()
+	{
+		fail("not implemented");
+	}
+	
+	
 }

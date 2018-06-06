@@ -9,11 +9,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 public class BioChemicalReactionUtils {
@@ -22,27 +25,49 @@ public class BioChemicalReactionUtils {
 	 * Comparison with another reaction : if the substrates and the products
 	 * have the same id, return true
 	 */
-	public static Boolean areRedundant(BioReaction r1, BioReaction r2) {
+	public static Boolean areRedundant(BioNetwork network, BioReaction r1, BioReaction r2) {
 
-		Set<String> listOfOtherSubstrates = r2.getLeftList().keySet();
-		Set<String> listOfOtherProducts = r2.getRightList().keySet();
-
-		if (r1.getReversiblity().equalsIgnoreCase(r2.getReversiblity())
-				&& listOfOtherProducts.equals(r1.getRightList().keySet())
-				&& listOfOtherSubstrates.equals(r1.getLeftList().keySet())) {
-			return true;
+		
+		if(! network.contains(r1))
+		{
+			throw new IllegalArgumentException(r1.getId()+" is not present in the network");
 		}
-
-		if (r1.getReversiblity().equalsIgnoreCase("reversible")
-				&& r2.getReversiblity().equalsIgnoreCase("reversible")
-				&& ((r1.getLeftList().keySet().equals(listOfOtherSubstrates) && r1
-						.getRightList().keySet().equals(listOfOtherProducts)) || (r1
-						.getLeftList().keySet().equals(listOfOtherProducts) && r1
-						.getRightList().keySet().equals(listOfOtherSubstrates)))) {
-			return true;
+		
+		if(! network.contains(r2))
+		{
+			throw new IllegalArgumentException(r2.getId()+" is not present in the network");
 		}
-
-		return false;
+		
+		
+		if(r1.isReversible() != r2.isReversible())
+		{
+			return false;
+		}
+		
+		BioCollection<BioReactant> leftR1 = network.getLeftReactants(r1);
+		BioCollection<BioReactant> leftR2 = network.getLeftReactants(r2);
+		BioCollection<BioReactant> rightR1 = network.getRightReactants(r1);
+		BioCollection<BioReactant> rightR2 = network.getRightReactants(r2);
+		
+		Boolean flag1 = leftR1.containsAll(leftR2) &&
+				leftR2.containsAll(leftR1) && 
+				rightR1.containsAll(rightR2) &&
+				rightR2.containsAll(rightR1);
+		
+		if(! r1.isReversible())
+		{
+			return flag1;
+		}
+		else 
+		{
+			Boolean flag2 = rightR1.containsAll(leftR2) &&
+					leftR2.containsAll(rightR1) && 
+					leftR1.containsAll(rightR2) &&
+					rightR2.containsAll(leftR1);
+			
+			return flag1 || flag2;
+		}
+		
 
 	}
 	

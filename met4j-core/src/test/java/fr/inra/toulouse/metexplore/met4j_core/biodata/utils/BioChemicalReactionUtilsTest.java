@@ -80,11 +80,11 @@ public class BioChemicalReactionUtilsTest {
 		
 		network.affectLeft(m1, 1.0, c, r2);
 		
-		assertFalse("r1 and r2 must be identified as not redundant", BioChemicalReactionUtils.areRedundant(r1, r2));
+		assertFalse("r1 and r2 must be identified as not redundant", BioChemicalReactionUtils.areRedundant(network, r1, r2));
 		
 		network.affectRight(m2, 1.0, c, r2);
 		
-		assertTrue("r1 and r2 must be identified as redundant", BioChemicalReactionUtils.areRedundant(r1, r2));
+		assertTrue("r1 and r2 must be identified as redundant", BioChemicalReactionUtils.areRedundant(network, r1, r2));
 
 	}
 	
@@ -92,7 +92,7 @@ public class BioChemicalReactionUtilsTest {
 	public void testAreRedundantR1Absent() {
 		
 		BioReaction r2 = new BioReaction("r2");
-		BioChemicalReactionUtils.areRedundant(r2, r1);
+		BioChemicalReactionUtils.areRedundant(network, r2, r1);
 		
 
 	}
@@ -101,9 +101,28 @@ public class BioChemicalReactionUtilsTest {
 	public void testAreRedundantR2Absent() {
 		
 		BioReaction r2 = new BioReaction("r2");
-		BioChemicalReactionUtils.areRedundant(r1, r2);
+		BioChemicalReactionUtils.areRedundant(network, r1, r2);
 		
 
+	}
+	
+	@Test(expected = NullPointerException.class)
+	public void testAreRedundantNetworkNull() {
+		
+		BioReaction r2 = new BioReaction("r2");
+		BioChemicalReactionUtils.areRedundant(null, r1, r2);
+	}
+	
+	@Test(expected = NullPointerException.class)
+	public void testAreRedundantR1Null() {
+		
+		BioChemicalReactionUtils.areRedundant(network, null, r1);
+	}
+	
+	@Test(expected = NullPointerException.class)
+	public void testAreRedundantR2Null() {
+		
+		BioChemicalReactionUtils.areRedundant(network, r1, null);
 	}
 
 	/**

@@ -50,7 +50,6 @@ public class BioChemicalReactionUtilsTest {
 	BioMetabolite m1, m2;
 	BioCompartment c;
 
-	
 	@Before
 	public void init() {
 		network = new BioNetwork();
@@ -66,67 +65,111 @@ public class BioChemicalReactionUtilsTest {
 		network.affectToCompartment(m2, c);
 		network.affectLeft(m1, 1.0, c, r1);
 		network.affectRight(m2, 1.0, c, r1);
-		
+		r1.setReversible(false);
+
 	}
-	
+
 	/**
-	 * Test method for {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#areRedundant(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction, fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
+	 * Test method for
+	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#areRedundant(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction, fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
 	 */
 	@Test
-	public void testAreRedundant() {
-		
+	public void testAreRedundantIrreversible() {
+
 		BioReaction r2 = new BioReaction("r2");
 		network.add(r2);
-		
+
 		network.affectLeft(m1, 1.0, c, r2);
-		
-		assertFalse("r1 and r2 must be identified as not redundant", BioChemicalReactionUtils.areRedundant(network, r1, r2));
-		
+
+		assertFalse("r1 and r2 must be identified as not redundant",
+				BioChemicalReactionUtils.areRedundant(network, r1, r2));
+
 		network.affectRight(m2, 1.0, c, r2);
-		
+
 		assertTrue("r1 and r2 must be identified as redundant", BioChemicalReactionUtils.areRedundant(network, r1, r2));
 
 	}
-	
+
+	@Test
+	public void testAreRedundantReversible() {
+
+		r1.setReversible(true);
+		BioReaction r2 = new BioReaction("r2");
+		r2.setReversible(true);
+
+		network.add(r2);
+
+		network.affectLeft(m1, 1.0, c, r2);
+
+		network.affectRight(m2, 1.0, c, r2);
+
+		assertTrue("r1 and r2 must be identified as redundant", BioChemicalReactionUtils.areRedundant(network, r1, r2));
+
+		network.removeLeft(m1, c, r2);
+		network.removeRight(m2, c, r2);
+
+		network.affectLeft(m2, 1.0, c, r2);
+
+		network.affectRight(m1, 1.0, c, r2);
+
+		assertTrue("r1 and r2 must be identified as redundant", BioChemicalReactionUtils.areRedundant(network, r1, r2));
+
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testAreRedundantR1Absent() {
-		
+
 		BioReaction r2 = new BioReaction("r2");
 		BioChemicalReactionUtils.areRedundant(network, r2, r1);
-		
 
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testAreRedundantR2Absent() {
-		
+
 		BioReaction r2 = new BioReaction("r2");
 		BioChemicalReactionUtils.areRedundant(network, r1, r2);
-		
 
 	}
-	
+
 	@Test(expected = NullPointerException.class)
 	public void testAreRedundantNetworkNull() {
-		
+
 		BioReaction r2 = new BioReaction("r2");
 		BioChemicalReactionUtils.areRedundant(null, r1, r2);
 	}
-	
+
 	@Test(expected = NullPointerException.class)
 	public void testAreRedundantR1Null() {
-		
+
 		BioChemicalReactionUtils.areRedundant(network, null, r1);
 	}
-	
+
 	@Test(expected = NullPointerException.class)
 	public void testAreRedundantR2Null() {
-		
+
 		BioChemicalReactionUtils.areRedundant(network, r1, null);
 	}
 
+	@Test
+	public void testAreRedundantRev() {
+		BioReaction r2 = new BioReaction("r2");
+		network.add(r2);
+
+		network.affectLeft(m1, 1.0, c, r2);
+
+		network.affectRight(m2, 1.0, c, r2);
+
+		r2.setReversible(true);
+
+		assertFalse("r1 and r2 must be identified as not redundant",
+				BioChemicalReactionUtils.areRedundant(network, r1, r2));
+
+	}
+
 	/**
-	 * Test method for {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#isGeneticallyPossible(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
+	 * Test method for
+	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#isGeneticallyPossible(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
 	 */
 	@Test
 	public void testIsGeneticallyPossible() {
@@ -134,7 +177,8 @@ public class BioChemicalReactionUtilsTest {
 	}
 
 	/**
-	 * Test method for {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#getGPR(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
+	 * Test method for
+	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#getGPR(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
 	 */
 	@Test
 	public void testGetGPR() {
@@ -142,7 +186,8 @@ public class BioChemicalReactionUtilsTest {
 	}
 
 	/**
-	 * Test method for {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#computeAtomBalances(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
+	 * Test method for
+	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#computeAtomBalances(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
 	 */
 	@Test
 	public void testComputeAtomBalances() {
@@ -150,7 +195,8 @@ public class BioChemicalReactionUtilsTest {
 	}
 
 	/**
-	 * Test method for {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#isBalanced(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
+	 * Test method for
+	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#isBalanced(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
 	 */
 	@Test
 	public void testIsBalanced() {

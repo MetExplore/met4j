@@ -528,7 +528,7 @@ public class BioNetwork {
 	 * Return true if the entity is in the list of metabolites, reactions, genes,
 	 * pathways, proteins, etc...
 	 */
-	private Boolean contains(BioEntity e) {
+	public Boolean contains(BioEntity e) {
 
 		if (e instanceof BioProtein) {
 			if (this.proteins.contains(e)) {

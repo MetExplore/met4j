@@ -1044,5 +1044,11 @@ public class BioNetwork {
 		return r.getLeftReactants();
 
 	}
+	
+	public BioCollection<BioReactant> getRightReactants(BioReaction r) {
+
+		return r.getRightReactants();
+
+	}
 
 }

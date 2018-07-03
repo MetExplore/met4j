@@ -35,7 +35,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.classesForTests.BioProteinFake;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 
 
 public class BioProteinTest {
@@ -44,7 +44,7 @@ public class BioProteinTest {
     @Test
     public void testGetSetGene() {
         
-    	BioProteinFake p = new BioProteinFake("p");
+    	BioProtein p = new BioProtein("p");
     	BioGene g = new BioGene("g");
     	
     	p.setGene(g);
@@ -58,7 +58,7 @@ public class BioProteinTest {
     
 public void testRemoveGene() {
         
-    	BioProteinFake p = new BioProteinFake("p");
+    	BioProtein p = new BioProtein("p");
     	BioGene g = new BioGene("g");
     	
     	p.setGene(g);

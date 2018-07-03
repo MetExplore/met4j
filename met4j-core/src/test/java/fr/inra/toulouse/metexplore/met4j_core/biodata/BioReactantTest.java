@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.classesForTests.BioMetaboliteFake;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 
 
@@ -16,15 +16,15 @@ public class BioReactantTest {
 	public void testToString() {
 		
 		// Test with an integer
-		BioReactant reactant = new BioReactant(new BioMetaboliteFake("cpdId"), 1.0, new BioCompartment("cptId"));
+		BioReactant reactant = new BioReactant(new BioMetabolite("cpdId"), 1.0, new BioCompartment("cptId"));
 		assertEquals("reactant badly formatted (integer coefficient)", "1 cpdId[cptId]", reactant.toString());
 		
 		// Test if a double is well rounded
-		reactant = new BioReactant(new BioMetaboliteFake("cpdId"), 1.26666, new BioCompartment("cptId"));
+		reactant = new BioReactant(new BioMetabolite("cpdId"), 1.26666, new BioCompartment("cptId"));
 		assertEquals("reactant badly formatted (integer coefficient)", "1.27 cpdId[cptId]", reactant.toString());
 		
 		// Test when the biocompartment is null
-		reactant = new BioReactant(new BioMetaboliteFake("cpdId"), 1.0, null);
+		reactant = new BioReactant(new BioMetabolite("cpdId"), 1.0, null);
 		assertEquals("reactant badly formatted (integer coefficient)", "1 cpdId", reactant.toString());
 		
 	}
@@ -33,9 +33,9 @@ public class BioReactantTest {
 	@Test
 	public void testEquality() {
 	
-		BioMetaboliteFake c1 = new BioMetaboliteFake("c1");
+		BioMetabolite c1 = new BioMetabolite("c1");
 		BioCompartment cpt1 = new BioCompartment("cpt1");
-		BioMetaboliteFake c2 = new BioMetaboliteFake("c2");
+		BioMetabolite c2 = new BioMetabolite("c2");
 		BioCompartment cpt2 = new BioCompartment("cpt2");
 		
 		BioReactant r1 = new BioReactant(c1, 1.0, cpt1);

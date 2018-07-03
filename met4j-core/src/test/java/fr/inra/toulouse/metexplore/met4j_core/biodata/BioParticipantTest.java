@@ -33,7 +33,7 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.classesForTests.BioMetaboliteFake;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.classesForTests.BioParticipantFake;
 
 
@@ -45,7 +45,7 @@ public class BioParticipantTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testSetNaNQuantity() {
 
-		BioParticipant p = new BioParticipantFake(new BioMetaboliteFake("test"), 2.0);
+		BioParticipant p = new BioParticipantFake(new BioMetabolite("test"), 2.0);
 		Double nan = Double.NaN;
 		p.setQuantity(nan);
 
@@ -57,7 +57,7 @@ public class BioParticipantTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testSetInfiniteQuantity() {
 
-		BioParticipant p = new BioParticipantFake(new BioMetaboliteFake("test"), 2.0);
+		BioParticipant p = new BioParticipantFake(new BioMetabolite("test"), 2.0);
 		Double inf = Double.POSITIVE_INFINITY;
 		p.setQuantity(inf);
 	}
@@ -68,7 +68,7 @@ public class BioParticipantTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testSetNegativeOrNullQuantity() {
 
-		BioParticipant p = new BioParticipantFake(new BioMetaboliteFake("test"), 2.0);
+		BioParticipant p = new BioParticipantFake(new BioMetabolite("test"), 2.0);
 		Double n = 0.0;
 		p.setQuantity(n);
 		

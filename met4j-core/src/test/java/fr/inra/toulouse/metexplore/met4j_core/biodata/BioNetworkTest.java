@@ -629,7 +629,7 @@ public class BioNetworkTest {
 
 		network.add(prot);
 		network.add(gene);
-
+		
 		network.affectGeneProduct(prot, gene);
 		
 		assertEquals("Gene badly affected", prot.getGene(), gene);

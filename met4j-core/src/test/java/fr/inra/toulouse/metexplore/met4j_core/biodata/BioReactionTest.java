@@ -38,7 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.internal.ArrayComparisonFailure;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.classesForTests.BioMetaboliteFake;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 /**
@@ -66,10 +66,10 @@ public class BioReactionTest {
 		cpt1 = new BioCompartment("cpt1");
 		cpt2 = new BioCompartment("cpt2");
 
-		l1 = new BioReactant(new BioMetaboliteFake("l1"), 1.0, cpt1);
-		l2 = new BioReactant(new BioMetaboliteFake("l2"), 1.0, cpt1);
-		r1 = new BioReactant(new BioMetaboliteFake("r1"), 1.0, cpt2);
-		r2 = new BioReactant(new BioMetaboliteFake("r2"), 1.0, cpt2);
+		l1 = new BioReactant(new BioMetabolite("l1"), 1.0, cpt1);
+		l2 = new BioReactant(new BioMetabolite("l2"), 1.0, cpt1);
+		r1 = new BioReactant(new BioMetabolite("r1"), 1.0, cpt2);
+		r2 = new BioReactant(new BioMetabolite("r2"), 1.0, cpt2);
 
 		reaction = new BioReaction("testreaction");
 

@@ -24,7 +24,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.classesForTests.BioEntityF
 public class BioEntityTest {
 
 	public static BioRef ref;
-	public static BioEntityFake bioEntityTest;
+	public static BioEntity bioEntityTest;
 
 	public static void init() {
 		ref = new BioRef("origin", "dbName", "dbId", 1);

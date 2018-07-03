@@ -52,10 +52,6 @@ public class BioReactant extends BioParticipant {
 		this.setLocation(location);
 	}
 
-	public BioReactant(BioMetabolite metabolite) {
-		super(metabolite, 1.0);
-	}
-
 	protected BioCompartment getLocation() {
 		return location;
 	}

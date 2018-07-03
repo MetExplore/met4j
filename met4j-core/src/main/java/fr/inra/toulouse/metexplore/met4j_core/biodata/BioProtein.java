@@ -48,7 +48,7 @@ public class BioProtein extends BioPhysicalEntity {
 		return this.gene;
 	}
 
-	public void removeGene() {
+	protected void removeGene() {
 		this.gene = null;
 	}
 

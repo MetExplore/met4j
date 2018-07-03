@@ -13,3 +13,5 @@ jsbml.log
 
 *.factorypath
 
+
+met4j-core/src/main/java/fr/inra/toulouse/metexplore/met4j_core/Test\.java

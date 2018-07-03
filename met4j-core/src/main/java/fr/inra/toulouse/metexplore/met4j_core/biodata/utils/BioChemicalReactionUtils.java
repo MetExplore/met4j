@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
@@ -71,39 +70,8 @@ public class BioChemicalReactionUtils {
 
 	}
 	
-	/**
-	 * Indicate if all the genes coding for at least one enzyme are present
-	 */
-	public static boolean isGeneticallyPossible(BioReaction r) {
-		if (r.getSpontaneous() != null) {
-				return true;
-		} else {
-			ArrayList<BioPhysicalEntity> liste = new ArrayList<BioPhysicalEntity>(
-					r.getEnzList().values());
 	
-			for (int i = 0; i < liste.size(); i++) {
 	
-				BioPhysicalEntity enzyme = liste.get(i);
-				String classe = enzyme.getClass().getSimpleName();
-	
-				if (classe.compareTo("BioProtein") == 0) {
-					if (((BioProtein) enzyme).getGeneList().size() > 0) {
-						return true;
-					}
-				} else if (classe.compareTo("BioComplex") == 0) {
-					if (((BioComplex) enzyme).getIsGeneticallyPossible() == true) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-	
-	public static Boolean testReaction(BioReaction r) {
-		return testReaction(r, false, true);
-	}
-
 	/**
 	 * 
 	 * @return a ArrayList<String> corresponding to the association between

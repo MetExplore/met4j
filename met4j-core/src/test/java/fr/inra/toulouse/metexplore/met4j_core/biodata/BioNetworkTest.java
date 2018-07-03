@@ -17,11 +17,11 @@ public class BioNetworkTest {
 	BioReaction r;
 	BioMetabolite s1, s2, p1, p2;
 	BioCompartment cpt;
-	
+
 	/**
 	 * 
-	 * @return a reaction with two substrates, two products, one enzyme linked to
-	 *         two genes All objects have been added to the network
+	 * @return a reaction with two substrates, two products, one enzyme linked
+	 *         to two genes All objects have been added to the network
 	 */
 	private BioReaction addTestReactionToNetwork() {
 		r = new BioReaction("r1");
@@ -247,7 +247,7 @@ public class BioNetworkTest {
 		network.remove(metabolite);
 		assertEquals("Reaction not removed", 0, network.getReactionsView().size());
 
-		assertEquals("Enzyme not removed", 0,  network.getEnzymesView().size());
+		assertEquals("Enzyme not removed", 0, network.getEnzymesView().size());
 
 	}
 
@@ -631,7 +631,7 @@ public class BioNetworkTest {
 		network.add(gene);
 
 		network.affectGeneProduct(prot, gene);
-
+		
 		assertEquals("Gene badly affected", prot.getGene(), gene);
 
 	}
@@ -1235,8 +1235,6 @@ public class BioNetworkTest {
 
 	}
 
-	
-
 	@Test(expected = UnsupportedOperationException.class)
 	public void testGetMetabolitesView() {
 
@@ -1305,50 +1303,46 @@ public class BioNetworkTest {
 
 		compartments.clear();
 	}
-	
+
 	@Test
-	public void testGetLeftReactants()
-	{
-	
+	public void testGetLeftReactants() {
+
 		addTestReactionToNetwork();
-		
+
 		BioCollection<BioReactant> leftReactants = network.getLeftReactants(r);
-		
+
 		assertEquals("Bad number of left reactants", 2, leftReactants.size());
-		
-		for(BioReactant reactant : leftReactants)
-		{
-			assertTrue("Bad content of left reactants", reactant.getMetabolite().equals(s1) || reactant.getMetabolite().equals(s2));
-			
+
+		for (BioReactant reactant : leftReactants) {
+			assertTrue("Bad content of left reactants",
+					reactant.getMetabolite().equals(s1) || reactant.getMetabolite().equals(s2));
+
 			assertTrue("Bad compartment of left reactant", reactant.getLocation().equals(cpt));
-			
-			assertTrue("Bad stoichiometry of left reactant", reactant.getQuantity()==2.0);
-			
+
+			assertTrue("Bad stoichiometry of left reactant", reactant.getQuantity() == 2.0);
+
 		}
-		
-		
-		
+
 	}
-	
+
 	@Test
-	public void testGetRightReactants()
-	{
-addTestReactionToNetwork();
-		
+	public void testGetRightReactants() {
+		addTestReactionToNetwork();
+
 		BioCollection<BioReactant> rightReactants = network.getRightReactants(r);
-		
+
 		assertEquals("Bad number of right reactants", 2, rightReactants.size());
-		
-		for(BioReactant reactant : rightReactants)
-		{
-			assertTrue("Bad content of right reactants", reactant.getMetabolite().equals(p1) || reactant.getMetabolite().equals(p2));
-			
+
+		for (BioReactant reactant : rightReactants) {
+			assertTrue("Bad content of right reactants",
+					reactant.getMetabolite().equals(p1) || reactant.getMetabolite().equals(p2));
+
 			assertTrue("Bad compartment of right reactant", reactant.getLocation().equals(cpt));
-			
-			assertTrue("Bad stoichiometry of right reactant", reactant.getQuantity()==3.0);
-			
+
+			assertTrue("Bad stoichiometry of right reactant", reactant.getQuantity() == 3.0);
+
 		}
 	}
 	
-	
+
 }

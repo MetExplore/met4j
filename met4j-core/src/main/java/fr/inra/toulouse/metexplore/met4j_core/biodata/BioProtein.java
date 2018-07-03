@@ -44,7 +44,7 @@ public class BioProtein extends BioPhysicalEntity {
 		this.gene = g;
 	}
 
-	public BioGene getGene() {
+	protected BioGene getGene() {
 		return this.gene;
 	}
 

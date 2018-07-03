@@ -40,7 +40,7 @@ public class BioProteinTest {
 
     
     @Test
-    public void testGetGenes() {
+    public void testGetGene() {
         fail("not implemented");
     }
 

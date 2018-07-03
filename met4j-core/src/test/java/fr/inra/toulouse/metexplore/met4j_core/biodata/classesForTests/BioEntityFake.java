@@ -28,18 +28,20 @@
  *  The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL license and that you accept its terms.
  ******************************************************************************/
-package fr.inra.toulouse.metexplore.met4j_core.biodata;
+package fr.inra.toulouse.metexplore.met4j_core.biodata.classesForTests;
+
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * @author lcottret
- *
- * Test class extending BioParticipant
+ * 
+ *  Test class extending BioEntity
  *
  */
-public class BioParticipantFake extends BioParticipant {
+public class BioEntityFake extends BioEntity {
 
-	public BioParticipantFake(BioPhysicalEntity physicalEntity, Double quantity) {
-		super(physicalEntity, quantity);
+	public BioEntityFake(String id) {
+		super(id);
 	}
 
 }

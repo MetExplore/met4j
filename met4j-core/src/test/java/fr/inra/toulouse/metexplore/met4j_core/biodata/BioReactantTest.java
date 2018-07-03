@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.classesForTests.BioMetaboliteFake;
+
 
 
 

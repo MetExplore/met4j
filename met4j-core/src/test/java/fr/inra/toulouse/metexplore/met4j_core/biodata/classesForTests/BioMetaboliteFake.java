@@ -28,7 +28,9 @@
  *  The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL license and that you accept its terms.
  ******************************************************************************/
-package fr.inra.toulouse.metexplore.met4j_core.biodata;
+package fr.inra.toulouse.metexplore.met4j_core.biodata.classesForTests;
+
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * @author lcottret

@@ -12,6 +12,8 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.classesForTests.BioEntityFake;
+
 /**
  * @author lcottret
  *

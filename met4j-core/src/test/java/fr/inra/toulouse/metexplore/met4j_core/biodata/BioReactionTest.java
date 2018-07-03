@@ -38,6 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.internal.ArrayComparisonFailure;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.classesForTests.BioMetaboliteFake;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 /**

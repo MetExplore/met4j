@@ -8,6 +8,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.classesForTests.BioEntityFake;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 public class BioNetworkTest {

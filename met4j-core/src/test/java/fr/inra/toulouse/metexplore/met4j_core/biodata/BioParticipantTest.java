@@ -33,6 +33,9 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
 import org.junit.Test;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.classesForTests.BioMetaboliteFake;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.classesForTests.BioParticipantFake;
+
 
 public class BioParticipantTest {
 

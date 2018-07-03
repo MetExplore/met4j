@@ -31,17 +31,43 @@
 
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
+
+import fr.inra.toulouse.metexplore.met4j_core.biodata.classesForTests.BioProteinFake;
 
 
 public class BioProteinTest {
 
     
     @Test
-    public void testGetGene() {
-        fail("not implemented");
+    public void testGetSetGene() {
+        
+    	BioProteinFake p = new BioProteinFake("p");
+    	BioGene g = new BioGene("g");
+    	
+    	p.setGene(g);
+    	
+    	BioGene g2 = p.getGene();
+    	
+    	assertTrue("g and g2 must be equal", g.equals(g2));
+    	
+    	
+    }
+    
+public void testRemoveGene() {
+        
+    	BioProteinFake p = new BioProteinFake("p");
+    	BioGene g = new BioGene("g");
+    	
+    	p.setGene(g);
+    	
+    	p.removeGene();
+    	
+    	assertNull("The gene of p must be null", p.getGene());
+    	
+    	
     }
 
 

@@ -14,6 +14,68 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 public class BioNetworkTest {
 
 	BioNetwork network;
+	BioReaction r;
+	BioMetabolite s1, s2, p1, p2;
+	BioCompartment cpt;
+	
+	/**
+	 * 
+	 * @return a reaction with two substrates, two products, one enzyme linked to
+	 *         two genes All objects have been added to the network
+	 */
+	private BioReaction addTestReactionToNetwork() {
+		r = new BioReaction("r1");
+
+		s1 = new BioMetabolite("s1");
+		s2 = new BioMetabolite("s2");
+		p1 = new BioMetabolite("p1");
+		p2 = new BioMetabolite("p2");
+		cpt = new BioCompartment("cpt");
+
+		network.add(r);
+		network.add(s1);
+		network.add(s2);
+		network.add(p1);
+		network.add(p2);
+		network.add(cpt);
+
+		network.affectToCompartment(s1, cpt);
+		network.affectToCompartment(s2, cpt);
+		network.affectToCompartment(p1, cpt);
+		network.affectToCompartment(p2, cpt);
+
+		network.affectLeft(s1, 2.0, cpt, r);
+		network.affectLeft(s2, 2.0, cpt, r);
+		network.affectRight(p1, 3.0, cpt, r);
+		network.affectRight(p2, 3.0, cpt, r);
+
+		BioPathway p = new BioPathway("pathway1");
+		network.add(p);
+
+		network.affectToPathway(r, p);
+
+		BioEnzyme e = new BioEnzyme("e");
+		network.add(e);
+		BioProtein prot1 = new BioProtein("p1");
+		network.add(prot1);
+		BioProtein prot2 = new BioProtein("p2");
+		network.add(prot2);
+		BioGene g1 = new BioGene("g1");
+		network.add(g1);
+		BioGene g2 = new BioGene("g2");
+		network.add(g2);
+
+		network.affectGeneProduct(prot1, g1);
+		network.affectGeneProduct(prot2, g2);
+
+		network.affectSubUnit(prot1, 1.0, e);
+		network.affectSubUnit(prot2, 1.0, e);
+
+		network.affectEnzyme(e, r);
+
+		return r;
+
+	}
 
 	@Before
 	public void init() {
@@ -783,7 +845,6 @@ public class BioNetworkTest {
 	public void testGetReactionsFromSubstratesWithSubstrateAbsent() {
 
 		BioMetabolite s1 = new BioMetabolite("id1");
-		BioMetabolite s2 = new BioMetabolite("id2");
 		network.add(s1);
 
 		Set<String> substrates = new HashSet<String>();
@@ -870,7 +931,6 @@ public class BioNetworkTest {
 	public void testgetReactionsFromProductsWithProductAbsent() {
 
 		BioMetabolite s1 = new BioMetabolite("id1");
-		BioMetabolite s2 = new BioMetabolite("id2");
 		network.add(s1);
 
 		Set<String> substrates = new HashSet<String>();
@@ -906,8 +966,6 @@ public class BioNetworkTest {
 		BioReaction r = addTestReactionToNetwork();
 
 		network.affectToPathway(r, p);
-
-		BioCollection<BioMetabolite> subs = network.getMetabolitesFromPathway(p);
 
 		network.remove(p);
 		// Must return an exception
@@ -1010,7 +1068,6 @@ public class BioNetworkTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testGetGenesFromReactionsabsent() {
-		BioReaction r3 = new BioReaction("id3");
 		Set<String> reactions = new HashSet<String>();
 		reactions.add("id3");
 		// Must return an exception
@@ -1178,64 +1235,7 @@ public class BioNetworkTest {
 
 	}
 
-	/**
-	 * 
-	 * @return a reaction with two substrates, two products, one enzyme linked to
-	 *         two genes All objects have been added to the network
-	 */
-	private BioReaction addTestReactionToNetwork() {
-		BioReaction r = new BioReaction("r1");
-
-		BioMetabolite s1 = new BioMetabolite("s1");
-		BioMetabolite s2 = new BioMetabolite("s2");
-		BioMetabolite p1 = new BioMetabolite("p1");
-		BioMetabolite p2 = new BioMetabolite("p2");
-		BioCompartment cpt = new BioCompartment("cpt");
-
-		network.add(r);
-		network.add(s1);
-		network.add(s2);
-		network.add(p1);
-		network.add(p2);
-		network.add(cpt);
-
-		network.affectToCompartment(s1, cpt);
-		network.affectToCompartment(s2, cpt);
-		network.affectToCompartment(p1, cpt);
-		network.affectToCompartment(p2, cpt);
-
-		network.affectLeft(s1, 1.0, cpt, r);
-		network.affectLeft(s2, 1.0, cpt, r);
-		network.affectRight(p1, 1.0, cpt, r);
-		network.affectRight(p2, 1.0, cpt, r);
-
-		BioPathway p = new BioPathway("pathway1");
-		network.add(p);
-
-		network.affectToPathway(r, p);
-
-		BioEnzyme e = new BioEnzyme("e");
-		network.add(e);
-		BioProtein prot1 = new BioProtein("p1");
-		network.add(prot1);
-		BioProtein prot2 = new BioProtein("p2");
-		network.add(prot2);
-		BioGene g1 = new BioGene("g1");
-		network.add(g1);
-		BioGene g2 = new BioGene("g2");
-		network.add(g2);
-
-		network.affectGeneProduct(prot1, g1);
-		network.affectGeneProduct(prot2, g2);
-
-		network.affectSubUnit(prot1, 1.0, e);
-		network.affectSubUnit(prot2, 1.0, e);
-
-		network.affectEnzyme(e, r);
-
-		return r;
-
-	}
+	
 
 	@Test(expected = UnsupportedOperationException.class)
 	public void testGetMetabolitesView() {
@@ -1309,13 +1309,45 @@ public class BioNetworkTest {
 	@Test
 	public void testGetLeftReactants()
 	{
-		fail("not implemented");
+	
+		addTestReactionToNetwork();
+		
+		BioCollection<BioReactant> leftReactants = network.getLeftReactants(r);
+		
+		assertEquals("Bad number of left reactants", 2, leftReactants.size());
+		
+		for(BioReactant reactant : leftReactants)
+		{
+			assertTrue("Bad content of left reactants", reactant.getMetabolite().equals(s1) || reactant.getMetabolite().equals(s2));
+			
+			assertTrue("Bad compartment of left reactant", reactant.getLocation().equals(cpt));
+			
+			assertTrue("Bad stoichiometry of left reactant", reactant.getQuantity()==2.0);
+			
+		}
+		
+		
+		
 	}
 	
 	@Test
 	public void testGetRightReactants()
 	{
-		fail("not implemented");
+addTestReactionToNetwork();
+		
+		BioCollection<BioReactant> rightReactants = network.getRightReactants(r);
+		
+		assertEquals("Bad number of right reactants", 2, rightReactants.size());
+		
+		for(BioReactant reactant : rightReactants)
+		{
+			assertTrue("Bad content of right reactants", reactant.getMetabolite().equals(p1) || reactant.getMetabolite().equals(p2));
+			
+			assertTrue("Bad compartment of right reactant", reactant.getLocation().equals(cpt));
+			
+			assertTrue("Bad stoichiometry of right reactant", reactant.getQuantity()==3.0);
+			
+		}
 	}
 	
 	

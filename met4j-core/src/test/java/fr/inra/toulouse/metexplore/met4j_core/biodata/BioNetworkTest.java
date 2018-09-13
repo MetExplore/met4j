@@ -17,6 +17,7 @@ public class BioNetworkTest {
 	BioReaction r;
 	BioMetabolite s1, s2, p1, p2;
 	BioCompartment cpt;
+	BioEnzyme e1, e2;
 
 	/**
 	 * 
@@ -54,8 +55,8 @@ public class BioNetworkTest {
 
 		network.affectToPathway(r, p);
 
-		BioEnzyme e = new BioEnzyme("e");
-		network.add(e);
+		e1 = new BioEnzyme("e");
+		network.add(e1);
 		BioProtein prot1 = new BioProtein("p1");
 		network.add(prot1);
 		BioProtein prot2 = new BioProtein("p2");
@@ -64,14 +65,21 @@ public class BioNetworkTest {
 		network.add(g1);
 		BioGene g2 = new BioGene("g2");
 		network.add(g2);
-
+		
+		e2 = new BioEnzyme("e2");
+		network.add(e2);
+		
+		
 		network.affectGeneProduct(prot1, g1);
 		network.affectGeneProduct(prot2, g2);
 
-		network.affectSubUnit(prot1, 1.0, e);
-		network.affectSubUnit(prot2, 1.0, e);
+		network.affectSubUnit(prot1, 1.0, e1);
+		network.affectSubUnit(prot2, 1.0, e1);
+		
+		network.affectSubUnit(prot1, 1.0, e2);
 
-		network.affectEnzyme(e, r);
+		network.affectEnzyme(e1, r);
+		network.affectEnzyme(e2, r);
 
 		return r;
 
@@ -1254,7 +1262,7 @@ public class BioNetworkTest {
 
 		BioCollection<BioEnzyme> enzymes = network.getEnzymesView();
 
-		assertEquals("Not good number of enzymes in the view", 1, enzymes.size());
+		assertEquals("Not good number of enzymes in the view", 2, enzymes.size());
 
 		enzymes.clear();
 	}
@@ -1342,6 +1350,13 @@ public class BioNetworkTest {
 			assertTrue("Bad stoichiometry of right reactant", reactant.getQuantity() == 3.0);
 
 		}
+	}
+	
+	@Test
+	public void testGetEnzymesFromReaction() {
+		
+		
+		
 	}
 	
 

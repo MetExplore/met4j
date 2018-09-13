@@ -357,7 +357,7 @@ public class BioReaction extends BioEntity {
 	 */
 	public BioCollection<BioGene> getGenes() {
 
-		BioCollection<BioGene> genes = new BioCollection<BioGene>();
+		HashSet<BioGene> genes = new HashSet<BioGene>();
 		this.getEnzymes().forEach(e -> {
 
 			System.err.println("Enzyme : " + e);
@@ -375,7 +375,7 @@ public class BioReaction extends BioEntity {
 			});
 		});
 
-		return genes;
+		return new BioCollection<BioGene>(genes);
 	}
 
 }

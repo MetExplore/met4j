@@ -167,40 +167,40 @@ public class BioChemicalReactionUtilsTest {
 
 	}
 
-	/**
-	 * Test method for
-	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#isGeneticallyPossible(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
-	 */
-	@Test
-	public void testIsGeneticallyPossible() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for
-	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#getGPR(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
-	 */
-	@Test
-	public void testGetGPR() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for
-	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#computeAtomBalances(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
-	 */
-	@Test
-	public void testComputeAtomBalances() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for
-	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#isBalanced(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
-	 */
-	@Test
-	public void testIsBalanced() {
-		fail("Not yet implemented");
-	}
+//	/**
+//	 * Test method for
+//	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#isGeneticallyPossible(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
+//	 */
+//	@Test
+//	public void testIsGeneticallyPossible() {
+//		fail("Not yet implemented");
+//	}
+//
+//	/**
+//	 * Test method for
+//	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#getGPR(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
+//	 */
+//	@Test
+//	public void testGetGPR() {
+//		fail("Not yet implemented");
+//	}
+//
+//	/**
+//	 * Test method for
+//	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#computeAtomBalances(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
+//	 */
+//	@Test
+//	public void testComputeAtomBalances() {
+//		fail("Not yet implemented");
+//	}
+//
+//	/**
+//	 * Test method for
+//	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#isBalanced(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
+//	 */
+//	@Test
+//	public void testIsBalanced() {
+//		fail("Not yet implemented");
+//	}
 
 }

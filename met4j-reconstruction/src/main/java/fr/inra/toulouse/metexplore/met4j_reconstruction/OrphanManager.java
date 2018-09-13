@@ -1,4 +1,4 @@
-package fr.inra.toulouse.metexplore.met4j_core.biodata.utils;
+package fr.inra.toulouse.metexplore.met4j_reconstruction;
 
 import java.util.Collection;
 import java.util.HashMap;

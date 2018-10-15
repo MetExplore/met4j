@@ -48,7 +48,8 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
  * 
  */
 
-public class BioNetwork {
+public class BioNetwork extends BioEntity {
+
 
 	private BioCollection<BioPathway> pathways = new BioCollection<BioPathway>();
 

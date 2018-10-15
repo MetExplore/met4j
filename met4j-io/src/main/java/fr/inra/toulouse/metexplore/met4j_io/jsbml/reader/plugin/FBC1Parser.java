@@ -1,4 +1,4 @@
-package parsebionet.io.jsbml.reader.plugin;
+package fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin;
 
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.Species;
@@ -16,8 +16,8 @@ import parsebionet.biodata.fbc.ReactionObjective;
 import parsebionet.biodata.fbc.FluxNetwork;
 import parsebionet.biodata.fbc.FluxReaction;
 import parsebionet.biodata.fbc.Objectives;
-import parsebionet.io.jsbml.dataTags.PrimaryDataTag;
-import parsebionet.io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
 
 /**
  * This class is used to parse SBML level 3 FBC version 1 package.</br></br>To

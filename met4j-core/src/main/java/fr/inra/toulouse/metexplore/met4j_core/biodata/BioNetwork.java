@@ -65,6 +65,14 @@ public class BioNetwork extends BioEntity {
 
 	private BioCollection<BioEnzyme> enzymes = new BioCollection<BioEnzyme>();
 
+	public BioNetwork(String id) {
+		super(id);
+	}
+	
+	public BioNetwork() {
+		super(null);
+	}
+	
 	public void add(BioEntity e) {
 		if (e instanceof BioPathway) {
 			this.pathways.add((BioPathway) e);

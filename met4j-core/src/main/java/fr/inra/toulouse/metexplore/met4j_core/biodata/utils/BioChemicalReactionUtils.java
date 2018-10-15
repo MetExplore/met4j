@@ -17,7 +17,6 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
-import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 public class BioChemicalReactionUtils {
 	

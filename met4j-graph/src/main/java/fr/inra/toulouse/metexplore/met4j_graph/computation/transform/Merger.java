@@ -52,6 +52,7 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.parallel.MergedGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.parallel.MetaEdge;
+import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioComplex;
@@ -63,7 +64,6 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_core.io.BioNetworkToJSBML;
 import fr.inra.toulouse.metexplore.met4j_core.io.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_core.io.JSBMLToBionetwork;
-import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 /**
  * Class used to merges nodes or edges

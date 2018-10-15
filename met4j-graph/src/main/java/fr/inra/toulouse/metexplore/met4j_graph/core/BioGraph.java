@@ -43,9 +43,9 @@ import org.jgrapht.Graphs;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
+import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 
 /**
  * The Class BioGraph.

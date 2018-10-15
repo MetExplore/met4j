@@ -50,7 +50,7 @@ import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
+import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 
 
 /**

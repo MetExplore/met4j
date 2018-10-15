@@ -37,9 +37,9 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 
 /**

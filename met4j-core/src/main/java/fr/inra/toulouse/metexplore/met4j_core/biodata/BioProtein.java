@@ -39,6 +39,10 @@ public class BioProtein extends BioPhysicalEntity {
 	public BioProtein(String id) {
 		super(id);
 	}
+	
+	public BioProtein(String id, String name) {
+		super(id, name);
+	}
 
 	protected  void setGene(BioGene g) {
 		this.gene = g;

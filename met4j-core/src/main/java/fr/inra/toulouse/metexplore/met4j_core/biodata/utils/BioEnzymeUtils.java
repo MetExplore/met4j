@@ -15,15 +15,7 @@ public class BioEnzymeUtils {
 	 */
 	public static String createIdFromProteins(BioCollection<BioProtein> proteins) 
 	{
-		
-		String str = "";
-		
-		ArrayList<String> proteinIds = new ArrayList<String>(proteins.getIds());
-		
-		Collections.sort(proteinIds);
-		
-		return proteinIds.stream().collect(Collectors.joining("_AND_"));
-		
+		return proteins.getIds().stream().sorted().collect(Collectors.joining("_AND_"));
 	}
 	
 	

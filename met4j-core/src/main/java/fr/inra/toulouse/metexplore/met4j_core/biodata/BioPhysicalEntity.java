@@ -43,6 +43,10 @@ public abstract class BioPhysicalEntity extends BioEntity {
 	public BioPhysicalEntity(String id) {
 		super(id);
 	}
+	
+	public BioPhysicalEntity(String id, String name) {
+		super(id, name);
+	}
 
 	/**
 	 * From BioCyc : for substrates whose names imply a broad specificity

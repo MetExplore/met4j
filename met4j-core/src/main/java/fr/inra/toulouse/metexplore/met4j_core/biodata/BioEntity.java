@@ -49,6 +49,8 @@ public abstract class BioEntity {
 		
 	private HashMap<String,Set<BioRef>> refs;
 	
+	private HashMap<String, String> attributes;
+	
 
 	public BioEntity(String id, String name) {
 		
@@ -240,6 +242,21 @@ public abstract class BioEntity {
 	@Override
 	public String toString(){
 		return this.getId();
+	}
+
+
+	public HashMap<String, String> getAttributes() {
+		return attributes;
+	}
+
+
+	public void setAttributes(HashMap<String, String> attributes) {
+		this.attributes = attributes;
+	}
+
+
+	public String addAttribute(String key, String value) {
+		return attributes.put(key, value);
 	}
 
 	

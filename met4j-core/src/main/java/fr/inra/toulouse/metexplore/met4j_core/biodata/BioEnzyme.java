@@ -41,6 +41,12 @@ public class BioEnzyme extends BioPhysicalEntity {
 
 		participants = new BioCollection<BioEnzymeParticipant>();
 	}
+	
+	public BioEnzyme(String id, String name) {
+		super(id, name);
+
+		participants = new BioCollection<BioEnzymeParticipant>();
+	}
 
 	/**
 	 * @return the participants

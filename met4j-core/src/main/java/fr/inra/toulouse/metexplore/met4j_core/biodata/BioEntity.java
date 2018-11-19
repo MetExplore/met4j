@@ -54,9 +54,13 @@ public abstract class BioEntity {
 
 	public BioEntity(String id, String name) {
 		
-		if(id==null)
+		if(id==null) 
 		{
 			throw new NullPointerException();
+		}
+		else if(id.isEmpty() || id.matches("^\\s*$"))
+		{
+			throw new IllegalArgumentException();
 		}
 
 		this.id=id;

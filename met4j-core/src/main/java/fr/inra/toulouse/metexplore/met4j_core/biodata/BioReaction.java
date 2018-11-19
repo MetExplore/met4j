@@ -81,6 +81,10 @@ public class BioReaction extends BioEntity {
 		super(id);
 	}
 
+	public BioReaction(String id, String name) {
+		super(id, name);
+	}
+
 	/**
 	 * 
 	 */

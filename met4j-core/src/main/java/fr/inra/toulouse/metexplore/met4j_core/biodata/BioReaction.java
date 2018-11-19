@@ -314,6 +314,15 @@ public class BioReaction extends BioEntity {
 		return enzymes;
 
 	}
+	
+	/**
+	 * Get the list of enzymes
+	 */
+	public BioCollection<BioEnzyme> getEnzymesView() {
+
+		return enzymes.getView();
+
+	}
 
 	/**
 	 * Add an enzyme that catalyses the reaction

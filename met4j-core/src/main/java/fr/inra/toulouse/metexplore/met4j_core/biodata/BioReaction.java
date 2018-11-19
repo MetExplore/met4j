@@ -373,13 +373,9 @@ public class BioReaction extends BioEntity {
 		HashSet<BioGene> genes = new HashSet<BioGene>();
 		this.getEnzymes().forEach(e -> {
 
-			System.err.println("Enzyme : " + e);
-
 			e.getParticipants().getView().forEach(p -> {
 				if (p.getPhysicalEntity() instanceof BioProtein) {
 					BioGene gene = ((BioProtein) p.getPhysicalEntity()).getGene();
-
-					System.err.println("gene " + gene);
 
 					if (gene != null) {
 						genes.add(((BioProtein) p.getPhysicalEntity()).getGene());

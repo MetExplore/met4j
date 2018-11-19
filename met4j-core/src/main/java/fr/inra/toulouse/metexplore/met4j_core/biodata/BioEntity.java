@@ -49,7 +49,7 @@ public abstract class BioEntity {
 		
 	private HashMap<String,Set<BioRef>> refs;
 	
-	private HashMap<String, String> attributes;
+	private HashMap<String, Object> attributes;
 	
 
 	public BioEntity(String id, String name) {
@@ -245,17 +245,17 @@ public abstract class BioEntity {
 	}
 
 
-	public HashMap<String, String> getAttributes() {
+	public HashMap<String, Object> getAttributes() {
 		return attributes;
 	}
 
 
-	public void setAttributes(HashMap<String, String> attributes) {
+	public void setAttributes(HashMap<String, Object> attributes) {
 		this.attributes = attributes;
 	}
 
 
-	public String addAttribute(String key, String value) {
+	public Object addAttribute(String key, Object value) {
 		return attributes.put(key, value);
 	}
 

@@ -31,9 +31,11 @@
 /**
  * 
  */
-package fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc;
+package fr.inra.toulouse.metexplore.met4j_io.annotations;
 
 import java.util.HashMap;
+
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 //import net.sf.saxon.functions.Unordered;
 
@@ -41,7 +43,7 @@ import java.util.HashMap;
  * @author ludo
  *
  */
-public class BioUnitDefinition {
+public class BioUnitDefinition extends BioEntity {
 	
 	private String id = "NA";
 	private String name = "NA";
@@ -53,14 +55,7 @@ public class BioUnitDefinition {
 	HashMap<String, UnitSbml> units;
 	
 	public BioUnitDefinition(String id, String name) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.units = new HashMap<String, UnitSbml>();
-	}
-	
-	public BioUnitDefinition() {
-		super();
+		super(id, name);
 		this.units = new HashMap<String, UnitSbml>();
 	}
 	

@@ -36,4 +36,8 @@ public class BioGene extends BioEntity {
 	public BioGene(String id) {
 		super(id);
 	}
+	
+	public BioGene(String id, String name) {
+		super(id, name);
+	}
 }

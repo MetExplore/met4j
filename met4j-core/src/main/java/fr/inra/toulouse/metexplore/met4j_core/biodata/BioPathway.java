@@ -45,6 +45,10 @@ public class BioPathway extends BioEntity {
 	public BioPathway(String id) {
 		super(id);
 	}
+	
+	public BioPathway(String id, String name) {
+		super(id, name);
+	}
 
 	protected BioCollection<BioReaction> getReactions() {
 		return reactions;

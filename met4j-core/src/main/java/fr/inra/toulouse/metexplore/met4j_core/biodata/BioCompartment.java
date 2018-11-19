@@ -33,8 +33,6 @@
  */
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.HashMap;
-
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 

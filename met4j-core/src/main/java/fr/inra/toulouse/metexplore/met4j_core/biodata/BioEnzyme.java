@@ -54,6 +54,10 @@ public class BioEnzyme extends BioPhysicalEntity {
 	protected BioCollection<BioEnzymeParticipant> getParticipants() {
 		return participants;
 	}
+	
+	public BioCollection<BioEnzymeParticipant> getParticipantsView() {
+		return participants.getView();
+	}
 
 	/**
 	 * @param participants the participants to set

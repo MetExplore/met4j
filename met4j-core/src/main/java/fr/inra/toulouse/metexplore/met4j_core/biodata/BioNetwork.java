@@ -291,6 +291,16 @@ public class BioNetwork extends BioEntity {
 		affectSideReaction(substrate, stoichiometry, localisation, reaction, Side.LEFT);
 
 	}
+	
+	/**
+	 * add a relation reactant-reaction
+	 */
+	public void affectLeft(BioReactant reactant,
+			BioReaction reaction) {
+
+		affectSideReaction(reactant, reaction, Side.LEFT);
+
+	}
 
 	/**
 	 * Remove a left reactant
@@ -307,6 +317,15 @@ public class BioNetwork extends BioEntity {
 			BioReaction reaction) {
 
 		affectSideReaction(product, stoichiometry, localisation, reaction, Side.RIGHT);
+	}
+	
+	/**
+	 * Add a relation product-reaction
+	 */
+	public void affectRight(BioReactant reactant,
+			BioReaction reaction) {
+
+		affectSideReaction(reactant, reaction, Side.RIGHT);
 	}
 
 	/**
@@ -333,6 +352,37 @@ public class BioNetwork extends BioEntity {
 		// The metabolite must be connected to the compartment
 		if (!localisation.getComponents().contains(e)) {
 			throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the compartment");
+		}
+
+		// The network must contain the reaction
+		if (!this.reactions.contains(reaction)) {
+			throw new IllegalArgumentException("Reaction " + reaction.getId() + " not in the network");
+		}
+
+		if (side.equals(Side.LEFT)) {
+			reaction.getLeftReactants().add(reactant);
+		} else {
+			reaction.getRightReactants().add(reactant);
+		}
+	}
+	
+	private void affectSideReaction(BioReactant reactant,
+			BioReaction reaction, Side side) {
+
+		BioCompartment localisation = reactant.getLocation();
+		
+		// The network must contain the compartment
+		if (!this.compartments.contains(localisation)) {
+			throw new IllegalArgumentException("Compartment " + localisation.getId() + " not in the network");
+		}
+
+		if (!this.metabolites.contains(reactant.getPhysicalEntity())) {
+			throw new IllegalArgumentException("Metabolite " + reactant.getPhysicalEntity().getId() + " not in the network");
+		}
+
+		// The metabolite must be connected to the compartment
+		if (!localisation.getComponents().contains(reactant.getPhysicalEntity())) {
+			throw new IllegalArgumentException("Metabolite " + reactant.getPhysicalEntity().getId() + " not in the compartment");
 		}
 
 		// The network must contain the reaction
@@ -1059,5 +1109,5 @@ public class BioNetwork extends BioEntity {
 		return r.getRightReactants();
 
 	}
-
+	
 }

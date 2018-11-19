@@ -45,6 +45,10 @@ public class BioMetabolite extends BioPhysicalEntity {
 		super(id);
 	}
 	
+	public BioMetabolite(String id, String name) {
+		super(id, name);
+	}
+	
 	/**
 	 * @return the inchi
 	 */

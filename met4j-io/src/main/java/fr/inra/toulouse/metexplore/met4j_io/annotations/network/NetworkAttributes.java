@@ -1,6 +1,10 @@
 package fr.inra.toulouse.metexplore.met4j_io.annotations.network;
 
+import java.util.Set;
+
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.BioUnitDefinitionCollection;
 
@@ -40,7 +44,7 @@ public class NetworkAttributes {
 	 * @param c
 	 */
 	public static void addUnitDefinitions(BioNetwork network, BioUnitDefinitionCollection c) {
-		network.addAttribute(UNIT_DEFINITIONS, c);
+		network.setAttribute(UNIT_DEFINITIONS, c);
 	}
 
 	/**
@@ -66,6 +70,53 @@ public class NetworkAttributes {
 		}
 
 		getUnitDefinitions(network).add(unit);
+
+	}
+
+	/**
+	 * 
+	 * @param network
+	 * @param notes
+	 */
+	public static void setNotes(BioNetwork network, Notes notes) {
+
+		GenericAttributes.setNotes(network, notes);
+
+	}
+
+	/**
+	 * 
+	 * @param network
+	 * @param notes
+	 */
+	public static Notes getNotes(BioNetwork network) {
+
+		return GenericAttributes.getNotes(network);
+
+	}
+
+	/**
+	 * get pmids
+	 * 
+	 * @param r
+	 * @return
+	 */
+	public static Set<Integer> getPmids(BioNetwork n) {
+
+		return GenericAttributes.getPmids(n);
+
+	}
+
+	/**
+	 * 
+	 * set pmids
+	 * 
+	 * @param r
+	 * @param pmids
+	 */
+	public static void setPmids(BioNetwork n, Set<Integer> pmids) {
+
+		GenericAttributes.setPmids(n, pmids);
 
 	}
 

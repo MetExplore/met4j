@@ -2,6 +2,7 @@ package fr.inra.toulouse.metexplore.met4j_io.annotations.network;
 
 import static org.junit.Assert.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Before;
@@ -9,6 +10,8 @@ import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.BioUnitDefinitionCollection;
 
@@ -34,7 +37,8 @@ public class NetworkAttributesTest {
 	public void testAddUnitDefinitions() {
 		NetworkAttributes.addUnitDefinitions(network, unitDefinitions);
 
-		Set<String> cTest = ((BioUnitDefinitionCollection) network.getAttribute(NetworkAttributes.UNIT_DEFINITIONS)).getIds();
+		Set<String> cTest = ((BioUnitDefinitionCollection) network.getAttribute(NetworkAttributes.UNIT_DEFINITIONS))
+				.getIds();
 
 		assertEquals("Test add unit definition collection", unitDefinitions.getIds(), cTest);
 
@@ -65,27 +69,79 @@ public class NetworkAttributesTest {
 		BioUnitDefinition test = NetworkAttributes.getUnitDefinition(network, "toto");
 		assertNull("Test get not existing unit definition", test);
 	}
-	
+
 	@Test
 	public void testContainsUnitDefinition() {
-		
+
 		assertFalse("Test if no unitDefinitions", NetworkAttributes.containsUnitDefinitions(network));
-		
+
 		NetworkAttributes.addUnitDefinitions(network, unitDefinitions);
 		assertTrue("Test if unitDefinitions", NetworkAttributes.containsUnitDefinitions(network));
-		
+
+	}
+
+	@Test
+	public void testAddUnitDefinition() {
+
+		NetworkAttributes.addUnitDefinition(network, u1);
+		NetworkAttributes.addUnitDefinition(network, u2);
+
+		Set<String> cTest = ((BioUnitDefinitionCollection) network.getAttribute(NetworkAttributes.UNIT_DEFINITIONS))
+				.getIds();
+
+		assertEquals("Test add unit definition", unitDefinitions.getIds(), cTest);
+
+	}
+
+	@Test
+	public void testSetNotes() {
+
+		Notes notes = new Notes("<p>toto</p>");
+
+		NetworkAttributes.setNotes(network, notes);
+
+		assertEquals(notes, network.getAttribute(GenericAttributes.NOTES));
+
+	}
+
+	@Test
+	public void testGetNotes() {
+
+		Notes notes = new Notes("<p>toto</p>");
+
+		network.setAttribute(GenericAttributes.NOTES, notes);
+
+		assertEquals(notes, NetworkAttributes.getNotes(network));
+
 	}
 	
 	@Test
-	public void testAddUnitDefinition() {
-		
-		NetworkAttributes.addUnitDefinition(network, u1);
-		NetworkAttributes.addUnitDefinition(network, u2);
-		
-		Set<String> cTest = ((BioUnitDefinitionCollection) network.getAttribute(NetworkAttributes.UNIT_DEFINITIONS)).getIds();
+	public void testSetPmids() {
 
-		assertEquals("Test add unit definition", unitDefinitions.getIds(), cTest);
-		
+		Set<Integer> pmids = new HashSet<Integer>();
+
+		pmids.add(1235);
+		pmids.add(111);
+
+		NetworkAttributes.setPmids(network, pmids);
+
+		assertEquals(pmids, network.getAttribute(GenericAttributes.PMIDS));
+
 	}
+
+	@Test
+	public void testGetPmids() {
+
+		Set<Integer> pmids = new HashSet<Integer>();
+
+		pmids.add(1235);
+		pmids.add(111);
+
+		network.setAttribute(GenericAttributes.PMIDS, pmids);
+
+		assertEquals(pmids, NetworkAttributes.getPmids(network));
+
+	}
+
 
 }

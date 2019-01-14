@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentAttributes;
 
 public class CompartmentAttributesTest {
@@ -25,11 +26,11 @@ public class CompartmentAttributesTest {
 		
 		assertTrue(CompartmentAttributes.getConstant(compartment));
 		
-		compartment.addAttribute(CompartmentAttributes.CONSTANT, false);
+		compartment.addAttribute(GenericAttributes.CONSTANT, false);
 		
 		assertFalse(CompartmentAttributes.getConstant(compartment));
 		
-		compartment.addAttribute(CompartmentAttributes.CONSTANT, true);
+		compartment.addAttribute(GenericAttributes.CONSTANT, true);
 		
 		assertTrue(CompartmentAttributes.getConstant(compartment));
 		
@@ -39,10 +40,10 @@ public class CompartmentAttributesTest {
 	public void testSetConstant() {
 		
 		CompartmentAttributes.setConstant(compartment, false);
-		assertFalse((Boolean)compartment.getAttribute(CompartmentAttributes.CONSTANT));
+		assertFalse((Boolean)compartment.getAttribute(GenericAttributes.CONSTANT));
 		
 		CompartmentAttributes.setConstant(compartment, true);
-		assertTrue((Boolean)compartment.getAttribute(CompartmentAttributes.CONSTANT));
+		assertTrue((Boolean)compartment.getAttribute(GenericAttributes.CONSTANT));
 		
 	}
 

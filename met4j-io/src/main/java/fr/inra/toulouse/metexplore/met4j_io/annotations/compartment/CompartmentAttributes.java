@@ -1,10 +1,10 @@
 package fr.inra.toulouse.metexplore.met4j_io.annotations.compartment;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 
 public class CompartmentAttributes {
 	
-	public static final String CONSTANT = "constant";
 	
 	/**
 	 * get Constant condition of a compartment
@@ -13,14 +13,7 @@ public class CompartmentAttributes {
 	 */
 	public static Boolean getConstant(BioCompartment c) {
 		
-		Boolean flag = true;
-		
-		if(c.getAttribute(CONSTANT) != null)
-		{
-			flag = (Boolean)c.getAttribute(CONSTANT);
-		}
-		
-		return flag;
+		return GenericAttributes.getConstant(c);
 	}
 	
 	/**
@@ -28,7 +21,8 @@ public class CompartmentAttributes {
 	 * @param m
 	 */
 	public static void setConstant(BioCompartment c, Boolean flag) {
-		c.addAttribute(CONSTANT, flag);
+		
+		GenericAttributes.setConstant(c, flag);
 	}
 	
 

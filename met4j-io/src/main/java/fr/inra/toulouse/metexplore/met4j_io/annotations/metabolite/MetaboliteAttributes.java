@@ -1,6 +1,7 @@
 package fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 
 public class MetaboliteAttributes {
 	
@@ -12,7 +13,6 @@ public class MetaboliteAttributes {
 	public static final String INCHIKEY = "inchikey";
 	public static final String OUTSIDE_COMPARTMENT = "outside_compartment";
 	public static final String SBO_TERM = "sbo_term";
-	public static final String CONSTANT = "constant";
 	public static final String BOUNDARY_CONDITION = "boundary_condition";
 	public static final String SUBSTANCE_UNITS = "substance_units";
 	public static final String INITIAL_AMOUNT = "initial_quantity_amount";
@@ -37,6 +37,35 @@ public class MetaboliteAttributes {
 		
 		return flag;
 	}
+	
+	/**
+	 * Set boundary condition
+	 * @param m
+	 */
+	public static void setBoundaryCondition(BioMetabolite m, Boolean flag) {
+		m.addAttribute(BOUNDARY_CONDITION, flag);
+	}
+	
+	/**
+	 * get Constant condition of a metabolite
+	 * @param m
+	 * @return
+	 */
+	public static Boolean getConstant(BioMetabolite m) {
+		
+		return GenericAttributes.getConstant(m);
+	}
+	
+	/**
+	 * Set constant condition
+	 * @param m
+	 */
+	public static void setConstant(BioMetabolite m, Boolean flag) {
+		
+		GenericAttributes.setConstant(m, flag);
+		
+	}
+	
 
 
 }

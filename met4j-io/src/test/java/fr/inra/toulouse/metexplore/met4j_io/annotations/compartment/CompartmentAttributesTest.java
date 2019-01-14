@@ -8,6 +8,7 @@ import org.junit.Test;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentAttributes;
 
 public class CompartmentAttributesTest {
@@ -26,11 +27,11 @@ public class CompartmentAttributesTest {
 		
 		assertTrue(CompartmentAttributes.getConstant(compartment));
 		
-		compartment.addAttribute(GenericAttributes.CONSTANT, false);
+		compartment.setAttribute(GenericAttributes.CONSTANT, false);
 		
 		assertFalse(CompartmentAttributes.getConstant(compartment));
 		
-		compartment.addAttribute(GenericAttributes.CONSTANT, true);
+		compartment.setAttribute(GenericAttributes.CONSTANT, true);
 		
 		assertTrue(CompartmentAttributes.getConstant(compartment));
 		
@@ -44,6 +45,28 @@ public class CompartmentAttributesTest {
 		
 		CompartmentAttributes.setConstant(compartment, true);
 		assertTrue((Boolean)compartment.getAttribute(GenericAttributes.CONSTANT));
+		
+	}
+
+	@Test 
+	public void testSetNotes() {
+		
+		Notes notes = new Notes("<p>toto</p>");
+		
+		CompartmentAttributes.setNotes(compartment, notes);
+		
+		assertEquals(notes, compartment.getAttribute(GenericAttributes.NOTES));
+		
+	}
+	
+	@Test 
+	public void testGetNotes() {
+		
+		Notes notes = new Notes("<p>toto</p>");
+		
+		compartment.setAttribute(GenericAttributes.NOTES, notes);
+		
+		assertEquals(notes, CompartmentAttributes.getNotes(compartment));
 		
 	}
 

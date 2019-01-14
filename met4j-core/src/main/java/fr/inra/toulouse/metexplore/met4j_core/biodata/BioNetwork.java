@@ -70,7 +70,7 @@ public class BioNetwork extends BioEntity {
 	}
 	
 	public BioNetwork() {
-		super(null);
+		super("NA");
 	}
 	
 	public void add(BioEntity e) {

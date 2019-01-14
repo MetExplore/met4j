@@ -1353,9 +1353,26 @@ public class BioNetworkTest {
 	}
 	
 	@Test
-	public void testGetEnzymesFromReaction() {
+	public void testGetCompartmentsFromMetabolite() {
 		
+		BioCompartment c1 = new BioCompartment("cpt1");
+		BioCompartment c2 = new BioCompartment("cpt2");
 		
+		network.add(c1);
+		network.add(c2);
+		s1 = new BioMetabolite("s1");
+		network.add(s1);
+		
+		network.affectToCompartment(s1, c1);
+		network.affectToCompartment(s1, c2);
+		
+		BioCollection<BioCompartment> ref = new BioCollection<BioCompartment>();
+		ref.add(c1);
+		ref.add(c2);
+		
+		BioCollection<BioCompartment> test = network.getCompartmentsFromMetabolite(s1);
+		
+		assertEquals("Test getCompartmentsFromMetabolite", ref, test);
 		
 	}
 	

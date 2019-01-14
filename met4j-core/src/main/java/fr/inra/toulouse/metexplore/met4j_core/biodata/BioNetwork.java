@@ -867,182 +867,31 @@ public class BioNetwork extends BioEntity {
 		return reactions;
 
 	};
-	// obtenir les reactions en fonction d'un substrat ou d'un produit
-	// obtenir les reactions en fonction d'un pathway
 
-	// obtenir les metabolites en fonction d'un pathway
-	// obtenir les pathways depuis un metabolite
-	// obtenir les pathways depuis une reaction
-
-	// /**
-	// * Add a pathway in the network Each reaction involved in a pathway must be
-	// * present in the reaction list
-	// *
-	// * @param {@link BioPathway} pathway
-	// */
-	// public void addPathway(BioPathway pathway) {
-	//
-	// // We check that each reaction is already in the network
-	// for (BioReaction reaction : pathway.getReactions()) {
-	// if (!this.reactions.contains(reaction)) {
-	// throw new UnsupportedOperationException(
-	// "Reaction "
-	// + reaction.getId()
-	// + " not present in the BioNetwork. You have to add the reaction before adding
-	// the pathway");
-	// }
-	// }
-	//
-	// this.pathways.add(pathway);
-	//
-	// }
-	//
-	// /**
-	// * Add a metabolite in the network
-	// *
-	// * @param {@link BioMetabolite} metabolite
-	// */
-	// public void addMetabolite(BioMetabolite metabolite) {
-	// this.metabolites.add(metabolite);
-	// }
-	//
-	// /**
-	// * Add a protein in the network
-	// *
-	// * @param {@link BioProtein} protein
-	// */
-	// public void addProtein(BioProtein protein) {
-	// this.proteins.add(protein);
-	// }
-	//
-	// /**
-	// * Add a gene in the network Each protein must be present in the protein
-	// * list
-	// *
-	// * @param {@link BioGene} gene
-	// */
-	// public void addGene(BioGene gene) {
-	//
-	// // We check that each protein is already in the network
-	// for (BioProtein protein : gene.getProteinList()) {
-	// if (!this.proteins.contains(protein)) {
-	// throw new UnsupportedOperationException(
-	// "Protein "
-	// + protein.getId()
-	// + " not present in the BioNetwork. You have to add the protein before adding
-	// the gene");
-	// }
-	// }
-	//
-	// this.genes.add(gene);
-	//
-	// }
-	//
-	// /**
-	// * Add a reaction in the network Each reactant must be present in the
-	// * protein list
-	// *
-	// * @param {@link BioReaction} reaction
-	// */
-	// public void addReaction(BioReaction reaction) {
-	//
-	// // We check that each reactant is already in the network
-	// for (BioPhysicalEntity entity : reaction.getEntities()) {
-	// if (entity.getClass() == BioProtein.class) {
-	// if (!this.proteins.contains(entity)) {
-	// throw new UnsupportedOperationException(
-	// "Protein "
-	// + entity.getId()
-	// + " not present in the BioNetwork. You have to add the protein before adding
-	// the reaction");
-	// }
-	// } else {
-	// if (!this.metabolites.contains(entity)) {
-	// throw new UnsupportedOperationException(
-	// "Metabolite "
-	// + entity.getId()
-	// + " not present in the BioNetwork. You have to add the metabolite before
-	// adding the reaction");
-	// }
-	// }
-	//
-	// }
-	//
-	// this.reactions.add(reaction);
-	//
-	// }
-	//
-	// public void addCompartment(BioCompartment compartment) {
-	//
-	// // We check that each participant is already in the network
-	// for (BioPhysicalEntity entity : compartment.getEntities()) {
-	// if (entity.getClass() == BioProtein.class) {
-	// if (!this.proteins.contains(entity)) {
-	// throw new UnsupportedOperationException(
-	// "Protein "
-	// + entity.getId()
-	// + " not present in the BioNetwork. You have to add the protein before adding
-	// the reaction");
-	// }
-	// } else {
-	// if (!this.metabolites.contains(entity)) {
-	// throw new UnsupportedOperationException(
-	// "Metabolite "
-	// + entity.getId()
-	// + " not present in the BioNetwork. You have to add the metabolite before
-	// adding the reaction");
-	// }
-	// }
-	//
-	// }
-	//
-	//
-	// this.compartments.add(compartment);
-	// }
-	//
-	// public void addEnzyme(BioEnzyme enzyme) {
-	// // verifier que ses participants sont bien dans metabolites and proteins
-	// }
-	//
-	// /**
-	// * Removes a compound from a network.
-	// */
-	// public void removeMetabolite(String id) {
-	//
-	// if (this.getPhysicalEntityList().containsKey(id) == true) {
-	//
-	// HashMap<String, BioReaction> RP = this
-	// .getListOfReactionsAsProduct(id);
-	// HashMap<String, BioReaction> RC = this
-	// .getListOfReactionsAsSubstrate(id);
-	//
-	// HashMap<String, BioReaction> reactions = new HashMap<String, BioReaction>();
-	// reactions.putAll(RP);
-	// reactions.putAll(RC);
-	//
-	// this.getPhysicalEntityList().remove(id);
-	//
-	// for (BioReaction rxn : reactions.values()) {
-	//
-	// Set<String> left = rxn.getLeftList().keySet();
-	// Set<String> right = rxn.getRightList().keySet();
-	//
-	// if (left.contains(id) == true) {
-	// rxn.removeLeftCpd(rxn.getLeftList().get(id));
-	// }
-	//
-	// if (right.contains(id) == true) {
-	// rxn.removeRightCpd(rxn.getRightList().get(id));
-	// }
-	//
-	// if (rxn.getLeftList().size() == 0
-	// || rxn.getRightList().size() == 0) {
-	// this.removeBioChemicalReaction(rxn.getId());
-	// }
-	// }
-	// }
-	// }
-
+	/**
+	 * Get compartments where are involved a metabolite
+	 * @param m
+	 * @return
+	 */
+	public BioCollection<BioCompartment> getCompartmentsFromMetabolite(BioMetabolite m) {
+		if(! this.contains(m)) {
+			throw new IllegalArgumentException("Metabolite " + m + " not present in the network");
+		}
+		
+		BioCollection<BioCompartment> cpts = new BioCollection<BioCompartment>();
+		
+		for(BioCompartment c : this.compartments) 
+		{
+			if(c.getComponents().contains(m)) 
+			{
+				cpts.add(c);
+			}
+		}
+		
+		return cpts;
+		
+	}
+	
 	/**
 	 * @param cpd
 	 * @return the list of reactionNodes which involves the compound cpd as

@@ -32,6 +32,8 @@ package fr.inra.toulouse.metexplore.met4j_io.utils;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -520,4 +522,98 @@ public class StringUtils {
 		return SPECIAL_REGEX_CHARS.matcher(str).replaceAll("\\\\$0");
 	}
 	
+	/**
+	 * Find the closing parenthesis in a text given the position of the matching
+	 * opening one
+	 * 
+	 * @param text
+	 *            The text
+	 * @param openPos
+	 *            the position of the opening parenthesis
+	 * @return the position of the matching closing parenthesis
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             when the matching closing parenthesis is not found
+	 */
+	public static int findClosingParen(char[] text, int openPos)
+			throws ArrayIndexOutOfBoundsException {
+		int closePos = openPos;
+		int counter = 1;
+		while (counter > 0) {
+			char c = text[++closePos];
+			if (c == '(') {
+				counter++;
+			} else if (c == ')') {
+				counter--;
+			}
+		}
+		return closePos;
+	}
+
+	/**
+	 * Find the opening parenthesis in a text given the position of the matching
+	 * closing one
+	 * 
+	 * @param text
+	 *            The text
+	 * @param closePos
+	 *            the position of the closing parenthesis
+	 * @return the position of the matching opening parenthesis
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             when the matching opening parenthesis is not found
+	 */
+	public static int findOpenParen(char[] text, int closePos) {
+		int openPos = closePos;
+		int counter = 1;
+		while (counter > 0) {
+			char c = text[--openPos];
+			if (c == '(') {
+				counter--;
+			} else if (c == ')') {
+				counter++;
+			}
+		}
+		return openPos;
+	}
+	
+
+	/**
+	 * Add to list1 all elements of list2 that are not empty or only space
+	 * characters
+	 * 
+	 * @param list1
+	 * @param list2
+	 */
+	public static void addAllNonEmpty(ArrayList<String> list1,
+			List<String> list2) {
+		for (String s : list2) {
+			if (!s.replaceAll(" ", "").isEmpty()) {
+				list1.add(s);
+			}
+		}
+
+	}
+	
+	/**
+	 * Convert an ID to a valid SBML SID
+	 * 
+	 * @param id
+	 *            the Id to convert to SID
+	 * @return the converted SID
+	 */
+	public static String convertToSID(String id) {
+
+		Matcher matcher = Pattern.compile("[^0-9A-Za-z_]").matcher(id);
+
+		while (matcher.find()) {
+			id = id.replaceAll(
+					StringUtils.escapeSpecialRegexChars(matcher.group(0)), "_");
+		}
+
+		if (Pattern.compile("^[0-9].*").matcher(id).matches()) {
+			id = "_" + id;
+		}
+
+		return id;
+
+	}
 }

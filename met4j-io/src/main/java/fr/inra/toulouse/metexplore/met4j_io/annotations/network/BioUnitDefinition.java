@@ -31,11 +31,12 @@
 /**
  * 
  */
-package fr.inra.toulouse.metexplore.met4j_io.annotations;
+package fr.inra.toulouse.metexplore.met4j_io.annotations.network;
 
 import java.util.HashMap;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.UnitSbml;
 
 //import net.sf.saxon.functions.Unordered;
 
@@ -45,9 +46,6 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
  */
 public class BioUnitDefinition extends BioEntity {
 	
-	private String id = "NA";
-	private String name = "NA";
-	
 	private Boolean flagedAsUpdate=false;
 	private Boolean flagedAsInsert=false;
 	private Boolean flagedAsConflict=false;
@@ -56,38 +54,25 @@ public class BioUnitDefinition extends BioEntity {
 	
 	public BioUnitDefinition(String id, String name) {
 		super(id, name);
+		
 		this.units = new HashMap<String, UnitSbml>();
 	}
 	
 	/**
 	 * default BioUnitDefinition
 	 */
-	public void setDefault() {
+	public BioUnitDefinition() {
 		
-		this.id = "mmol_per_gDW_per_hr";
-		this.name = this.id;
+		super("mmol_per_gDW_per_hr", "mmol_per_gDW_per_hr");
+		
 		this.units = new HashMap<String, UnitSbml>();
 		
 		this.units.put("mole", new UnitSbml("mole", "", "-3", ""));
 		this.units.put("gram", new UnitSbml("gram", "-1", "", ""));
 		this.units.put("second", new UnitSbml("second", "-1", "", "0.00027777"));
 		
-		
 	}
 	
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public HashMap<String, UnitSbml> getUnits() {
 		return units;
 	}

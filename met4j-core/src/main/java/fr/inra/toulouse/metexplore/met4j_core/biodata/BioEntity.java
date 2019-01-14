@@ -263,7 +263,7 @@ public abstract class BioEntity {
 	}
 
 
-	public Object addAttribute(String key, Object value) {
+	public Object setAttribute(String key, Object value) {
 		return attributes.put(key, value);
 	}
 	

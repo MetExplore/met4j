@@ -43,7 +43,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
  *	"A compartment in SBML represents a bounded space in which species are located.
  *	Compartments do not necessarily have to correspond to actual structures inside or outside of a biological cell, although models are often designed that way."
  */
-public class BioCompartment extends BioEntity{
+public class BioCompartment extends BioPhysicalEntity{
 
 	
 	private BioCollection<BioPhysicalEntity> components;

@@ -36,8 +36,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEnzyme;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 
 /**
@@ -49,6 +52,9 @@ public class BioChemicalReactionUtilsTest {
 	BioReaction r1;
 	BioMetabolite m1, m2;
 	BioCompartment c;
+	BioProtein p1, p2, p3;
+	BioGene g1, g2, g3;
+	BioEnzyme e1, e2;
 
 	@Before
 	public void init() {
@@ -66,6 +72,29 @@ public class BioChemicalReactionUtilsTest {
 		network.affectLeft(m1, 1.0, c, r1);
 		network.affectRight(m2, 1.0, c, r1);
 		r1.setReversible(false);
+
+		e1 = new BioEnzyme("e1");
+		e2 = new BioEnzyme("e2");
+
+		network.add(e1);
+		network.add(e2);
+
+		p1 = new BioProtein("p1");
+		p2 = new BioProtein("p2");
+		p3 = new BioProtein("p3");
+
+		network.add(p1);
+		network.add(p2);
+		network.add(p3);
+
+		g1 = new BioGene("g1", "G1");
+		g2 = new BioGene("g2", "G2");
+		g3 = new BioGene("g3", "G3");
+		
+		network.add(g1);
+		network.add(g2);
+		network.add(g3);
+		
 
 	}
 
@@ -167,40 +196,94 @@ public class BioChemicalReactionUtilsTest {
 
 	}
 
-//	/**
-//	 * Test method for
-//	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#isGeneticallyPossible(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
-//	 */
-//	@Test
-//	public void testIsGeneticallyPossible() {
-//		fail("Not yet implemented");
-//	}
-//
-//	/**
-//	 * Test method for
-//	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#getGPR(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
-//	 */
-//	@Test
-//	public void testGetGPR() {
-//		fail("Not yet implemented");
-//	}
-//
-//	/**
-//	 * Test method for
-//	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#computeAtomBalances(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
-//	 */
-//	@Test
-//	public void testComputeAtomBalances() {
-//		fail("Not yet implemented");
-//	}
-//
-//	/**
-//	 * Test method for
-//	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#isBalanced(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
-//	 */
-//	@Test
-//	public void testIsBalanced() {
-//		fail("Not yet implemented");
-//	}
+	@Test
+	public void testGprUnicity() {
+
+		network.affectGeneProduct(p1, g1);
+		network.affectGeneProduct(p2, g1);
+		network.affectGeneProduct(p3, g1);
+
+		network.affectSubUnit(p1, 1.0, e1);
+		network.affectSubUnit(p2, 1.0, e1);
+		network.affectSubUnit(p3, 1.0, e2);
+
+		network.affectEnzyme(e1, r1);
+		network.affectEnzyme(e2, r1);
+
+		String gprRef = "g1";
+
+		String gprTest = BioChemicalReactionUtils.getGPR(network, r1, false);
+
+		assertEquals("Test unicity in GPRs", gprRef, gprTest);
+
+	}
+
+	@Test
+	public void testGpr() {
+
+		network.affectGeneProduct(p1, g1);
+		network.affectGeneProduct(p2, g2);
+		network.affectGeneProduct(p3, g3);
+
+		network.affectSubUnit(p1, 1.0, e1);
+		network.affectSubUnit(p2, 1.0, e1);
+		network.affectSubUnit(p3, 1.0, e2);
+
+		network.affectEnzyme(e1, r1);
+		network.affectEnzyme(e2, r1);
+
+		String gprRef = "( g1 AND g2 ) OR ( g3 )";
+
+		String gprTest = BioChemicalReactionUtils.getGPR(network, r1, false);
+
+		assertEquals("Test  GPRs", gprRef, gprTest);
+		
+		String gprRefWithNames = "( G1 AND G2 ) OR ( G3 )";
+		
+		gprTest = BioChemicalReactionUtils.getGPR(network, r1, true);
+		
+		assertEquals("Test  GPRs with names", gprRefWithNames, gprTest);
+		
+	}
+
+	// /**
+	// * Test method for
+	// * {@link
+	// fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#isGeneticallyPossible(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
+	// */
+	// @Test
+	// public void testIsGeneticallyPossible() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// /**
+	// * Test method for
+	// * {@link
+	// fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#getGPR(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
+	// */
+	// @Test
+	// public void testGetGPR() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// /**
+	// * Test method for
+	// * {@link
+	// fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#computeAtomBalances(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
+	// */
+	// @Test
+	// public void testComputeAtomBalances() {
+	// fail("Not yet implemented");
+	// }
+	//
+	// /**
+	// * Test method for
+	// * {@link
+	// fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils#isBalanced(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
+	// */
+	// @Test
+	// public void testIsBalanced() {
+	// fail("Not yet implemented");
+	// }
 
 }

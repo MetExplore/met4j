@@ -1,20 +1,18 @@
 package fr.inra.toulouse.metexplore.met4j_core.biodata.utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEnzyme;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 
@@ -71,17 +69,71 @@ public class BioChemicalReactionUtils {
 	}
 	
 	
-//	public static String getGeneAssociation(BioNetwork network, BioReaction r) {
-//		
-//		String s="";
-//		if(! network.contains(r))
-//		{
-//			throw new IllegalArgumentException(r.getId()+" is not present in the network");
-//		}
-//		
-//		return s;
-//		
-//	}
+	
+	/**
+	 * 
+	 * @param network
+	 * @param r
+	 * @return
+	 */
+	public static String getGPR(BioNetwork network, BioReaction r, Boolean getGeneNames) {
+		
+		if(! network.contains(r))
+		{
+			throw new IllegalArgumentException(r.getId()+" is not present in the network");
+		}
+		
+		BioCollection<BioEnzyme> enzymes = r.getEnzymesView();
+		
+		TreeSet<String> geneIdSets  = new TreeSet<String>();
+		
+		for(BioEnzyme enz : enzymes)
+		{
+			BioCollection<BioEnzymeParticipant> participants = enz.getParticipantsView();
+			
+			TreeSet<String> geneIds = new TreeSet<String>();
+			
+			for(BioEnzymeParticipant p : participants) {
+				BioPhysicalEntity ent = p.getPhysicalEntity();
+				
+				if(ent.getClass().equals(BioProtein.class))
+				{
+					BioProtein prot = (BioProtein) ent;
+					BioGene g = prot.getGene();
+					
+					String id = getGeneNames ? g.getName() : g.getId();
+					
+					geneIds.add(id);
+					
+				}
+			}
+			
+			if(geneIds.size() > 0)
+			{
+				String geneIdString = StringUtils.join(geneIds.toArray(new String[geneIds.size()]), " AND ");
+				geneIdSets.add(geneIdString);
+			}
+			
+		}
+		
+		TreeSet<String> finalSet;
+		
+		if(geneIdSets.size() > 1 ){
+			
+			finalSet = new TreeSet<String>(geneIdSets.stream().map(s -> "( "+s+" )").collect(Collectors.toSet()));
+			
+		}
+		else {
+			finalSet = geneIdSets;
+		}
+		
+		
+		String gpr = StringUtils.join(finalSet.toArray(new String[finalSet.size()]), " OR ");
+		
+		
+		return gpr;
+		
+	}
 	
 	
 //	/**

@@ -64,9 +64,11 @@ public abstract class BioEntity {
 		}
 
 		this.id=id;
-
+		
 		this.setName(name);
 		this.setRefs(new HashMap<String, Set<BioRef>>());
+		
+		attributes = new HashMap<String, Object>();
 	}
 	
 	
@@ -81,6 +83,8 @@ public abstract class BioEntity {
 		this.id=id;
 		this.setName(id);
 		this.setRefs(new HashMap<String, Set<BioRef>>());
+		
+		attributes = new HashMap<String, Object>();
 	}
 
 	@Override

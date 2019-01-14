@@ -8,6 +8,7 @@ import org.junit.Test;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.Notes;
 
 public class MetaboliteAttributesTest {
 	
@@ -26,11 +27,11 @@ public class MetaboliteAttributesTest {
 		
 		assertFalse(MetaboliteAttributes.getBoundaryCondition(metabolite));
 		
-		metabolite.addAttribute(MetaboliteAttributes.BOUNDARY_CONDITION, true);
+		metabolite.setAttribute(MetaboliteAttributes.BOUNDARY_CONDITION, true);
 		
 		assertTrue(MetaboliteAttributes.getBoundaryCondition(metabolite));
 		
-		metabolite.addAttribute(MetaboliteAttributes.BOUNDARY_CONDITION, false);
+		metabolite.setAttribute(MetaboliteAttributes.BOUNDARY_CONDITION, false);
 		
 		assertFalse(MetaboliteAttributes.getBoundaryCondition(metabolite));
 		
@@ -52,11 +53,11 @@ public class MetaboliteAttributesTest {
 		
 		assertTrue(MetaboliteAttributes.getConstant(metabolite));
 		
-		metabolite.addAttribute(GenericAttributes.CONSTANT, false);
+		metabolite.setAttribute(GenericAttributes.CONSTANT, false);
 		
 		assertFalse(MetaboliteAttributes.getConstant(metabolite));
 		
-		metabolite.addAttribute(GenericAttributes.CONSTANT, true);
+		metabolite.setAttribute(GenericAttributes.CONSTANT, true);
 		
 		assertTrue(MetaboliteAttributes.getConstant(metabolite));
 		
@@ -72,5 +73,50 @@ public class MetaboliteAttributesTest {
 		assertTrue((Boolean)metabolite.getAttribute(GenericAttributes.CONSTANT));
 		
 	}
+	
+	@Test 
+	public void testSetNotes() {
+		
+		Notes notes = new Notes("<p>toto</p>");
+		
+		MetaboliteAttributes.setNotes(metabolite, notes);
+		
+		assertEquals(notes, metabolite.getAttribute(GenericAttributes.NOTES));
+		
+	}
+	
+	@Test 
+	public void testGetNotes() {
+		
+		Notes notes = new Notes("<p>toto</p>");
+		
+		metabolite.setAttribute(GenericAttributes.NOTES, notes);
+		
+		assertEquals(notes, MetaboliteAttributes.getNotes(metabolite));
+		
+	}
+	
+	@Test
+	public void testGetCharge() {
+		
+		Double charge = 1.0;
+		
+		metabolite.setAttribute(MetaboliteAttributes.CHARGE, charge);
+		
+		assertEquals(charge, MetaboliteAttributes.getCharge(metabolite));
+		
+	}
+	
+	@Test
+	public void testSetCharge() {
+		
+		Double charge = 1.0;
+		
+		MetaboliteAttributes.setCharge(metabolite, charge);
+		
+		assertEquals(charge, metabolite.getAttribute(MetaboliteAttributes.CHARGE));
+		
+	}
+	
 
 }

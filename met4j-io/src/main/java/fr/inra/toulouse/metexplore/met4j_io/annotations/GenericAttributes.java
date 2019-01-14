@@ -1,24 +1,21 @@
 package fr.inra.toulouse.metexplore.met4j_io.annotations;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 
 public class GenericAttributes {
 
-	public static final String LOWER_BOUND = "flux_lower_bound";
-	public static final String UPPER_BOUND = "flux_upper_bound";
 	public static final String UNIT_DEFINITIONS = "unit_definitions";
 	public static final String NOTES = "notes";
-	public static final String SCORE = "score";
-	public static final String STATUS = "status";
 	public static final String PMIDS = "pmids";
 	public static final String COMMENT = "comment";
-	public static final String CHARGE = "charge";
-	public static final String SMILE = "smile";
-	public static final String INCHIKEY = "inchikey";
 	public static final String OUTSIDE_COMPARTMENT = "outside_compartment";
 	public static final String TYPE = "type";
 	public static final String UNIT = "unit";
@@ -71,7 +68,97 @@ public class GenericAttributes {
 			throw new IllegalArgumentException("The entity must be a BioMetabolite, a BioCompartment or a BioReactant");
 		}
 
-		e.addAttribute(CONSTANT, flag);
+		e.setAttribute(CONSTANT, flag);
 	}
+
+	/**
+	 * get notes
+	 * 
+	 * @param e
+	 * @return
+	 */
+	public static Notes getNotes(BioEntity e) {
+
+		if (!(e.getClass().equals(BioNetwork.class) || e.getClass().equals(BioReaction.class)
+				|| e.getClass().equals(BioMetabolite.class) ||  e.getClass().equals(BioCompartment.class))) {
+			throw new IllegalArgumentException("The entity must be a BioCompartment, a BioMetabolite, a BioNetwork or a BioReaction");
+		}
+
+		return (Notes) e.getAttribute(NOTES);
+
+	}
+
+	/**
+	 * set notes
+	 * 
+	 * @param e
+	 * @return
+	 */
+	public static void setNotes(BioEntity e, Notes notes) {
+
+		if (!(e.getClass().equals(BioNetwork.class) || e.getClass().equals(BioReaction.class)
+				|| e.getClass().equals(BioMetabolite.class) ||  e.getClass().equals(BioCompartment.class))) {
+			throw new IllegalArgumentException("The entity must be a BioCompartment, a BioMetabolite, a BioNetwork or a BioReaction");
+		}
+
+		e.setAttribute(NOTES, notes);
+
+	}
+	
+	/**
+	 * set pmids
+	 * @param e
+	 * @param pmids
+	 */
+	public static void setPmids(BioEntity e, Set<Integer> pmids) {
+		
+		if (!(e.getClass().equals(BioNetwork.class) || e.getClass().equals(BioReaction.class)
+				)) {
+			throw new IllegalArgumentException("The entity must be a BioNetwork or a BioReaction");
+		}
+		
+		e.setAttribute(PMIDS, pmids);
+
+	}
+	
+	/**
+	 * get pmids
+	 * @param e
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static Set<Integer> getPmids (BioEntity e) {
+		
+		if (!(e.getClass().equals(BioNetwork.class) || e.getClass().equals(BioReaction.class)
+				)) {
+			throw new IllegalArgumentException("The entity must be a BioNetwork or a BioReaction");
+		}
+		
+		return (Set<Integer>)e.getAttribute(PMIDS);
+		
+	}
+	
+	/**
+	 * 
+	 * get comment
+	 * 
+	 * @param e
+	 * @return
+	 */
+	public static String getComment(BioEntity e) {
+		return (String)e.getAttribute(COMMENT);
+	}
+	
+	/**
+	 * 
+	 * set comment
+	 * 
+	 * @param e
+	 * @return
+	 */
+	public static void setComment(BioEntity e, String comment) {
+		e.setAttribute(COMMENT, comment);
+	}
+	
 
 }

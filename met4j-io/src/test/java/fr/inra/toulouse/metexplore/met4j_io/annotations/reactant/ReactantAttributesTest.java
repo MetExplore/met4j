@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 
@@ -30,11 +29,11 @@ public class ReactantAttributesTest {
 
 		assertTrue(ReactantAttributes.getConstant(r));
 
-		r.addAttribute(GenericAttributes.CONSTANT, false);
+		r.setAttribute(GenericAttributes.CONSTANT, false);
 
 		assertFalse(ReactantAttributes.getConstant(r));
 
-		r.addAttribute(GenericAttributes.CONSTANT, true);
+		r.setAttribute(GenericAttributes.CONSTANT, true);
 
 		assertTrue(ReactantAttributes.getConstant(r));
 

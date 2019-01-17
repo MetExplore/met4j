@@ -69,6 +69,69 @@ public class CompartmentAttributesTest {
 		assertEquals(notes, CompartmentAttributes.getNotes(compartment));
 		
 	}
+	
+	@Test
+	public void testSetOutsideCompartment() {
+		
+		BioCompartment outside = new BioCompartment("o");
+		
+		CompartmentAttributes.setOutsideCompartment(compartment, outside);
+		
+		assertEquals((BioCompartment)compartment.getAttribute(CompartmentAttributes.OUTSIDE_COMPARTMENT), outside);
+		
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetEqualOutsideCompartment() {
+		CompartmentAttributes.setOutsideCompartment(compartment, compartment);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testSetIdenticalOutsideCompartment() {
+		
+		BioCompartment outside = new BioCompartment("c");
+		CompartmentAttributes.setOutsideCompartment(compartment, outside);
+	}
+	
+	@Test
+	public void testGetOutsideCompartment() {
+		BioCompartment outside = new BioCompartment("o");
+		
+		compartment.setAttribute(CompartmentAttributes.OUTSIDE_COMPARTMENT, outside);
+		
+		assertEquals(outside, CompartmentAttributes.getOutsideCompartment(compartment));
+		
+	}
+	
+	@Test
+	public void testGetNullOutsideCompartment() {
+		
+		assertNull(CompartmentAttributes.getOutsideCompartment(compartment));
+		
+	}
+	
+	@Test 
+	public void testGetType() {
+		
+		String type = "type";
+		
+		compartment.setAttribute(CompartmentAttributes.TYPE, type);
+		
+		assertEquals(type, CompartmentAttributes.getType(compartment));
+		
+	}
+	
+	@Test
+	public void testSetType() {
+		
+		String type = "type";
+		
+		CompartmentAttributes.setType(compartment, type); 		
+		
+		assertEquals((String) compartment.getAttribute(CompartmentAttributes.TYPE), type);
+		
+	}
+	
 
 
 }

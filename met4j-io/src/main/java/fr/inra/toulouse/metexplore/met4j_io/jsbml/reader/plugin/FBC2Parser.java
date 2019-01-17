@@ -1,4 +1,4 @@
-package parsebionet.io.jsbml.reader.plugin;
+package fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin;
 
 import java.util.ArrayList;
 
@@ -13,29 +13,34 @@ import org.sbml.jsbml.ext.fbc.GeneProduct;
 import org.sbml.jsbml.ext.fbc.GeneProductRef;
 import org.sbml.jsbml.ext.fbc.Or;
 
-import parsebionet.biodata.BioChemicalReaction;
-import parsebionet.biodata.BioGene;
-import parsebionet.biodata.BioNetwork;
-import parsebionet.biodata.Flux;
-import parsebionet.biodata.fbc.FluxNetwork;
-import parsebionet.biodata.fbc.FluxReaction;
-import parsebionet.biodata.fbc.GeneAssociations;
-import parsebionet.biodata.fbc.SingleGeneAssociation;
-import parsebionet.io.jsbml.dataTags.PrimaryDataTag;
-import parsebionet.io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.network.BioUnitDefinition;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.network.BioUnitDefinitionCollection;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxNetwork;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxReaction;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociations;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.SingleGeneAssociation;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
 
 /**
  * This class is used to parse SBML level 3 FBC version 2 package. It extends
  * the {@link FBC1Parser} class because the SBML packages share some common
- * objects.</br></br>To incorporate the additional data, this class uses objects
- * from the {@link parsebionet.biodata.fbc} package
+ * objects.</br>
+ * </br>
+ * To incorporate the additional data, this class uses objects from the
+ * {@link parsebionet.biodata.fbc} package
  * 
  * @author Benjamin
  * @since 3.0
  * 
  */
-public class FBC2Parser extends FBC1Parser implements PackageParser,
-		PrimaryDataTag, ReaderSBML3Compatible {
+public class FBC2Parser extends FBC1Parser implements PackageParser, PrimaryDataTag, ReaderSBML3Compatible {
 
 	/**
 	 * The sbml namespace of the FBC version 2 package
@@ -70,9 +75,8 @@ public class FBC2Parser extends FBC1Parser implements PackageParser,
 
 		this.setFlxNet(new FluxNetwork(bionetwork));
 		this.setFbcModel((FBCModelPlugin) model.getPlugin("fbc"));
-		System.err.println("Starting " + this.getAssociatedPackageName()
-				+ " version " + this.getFbcModel().getPackageVersion()
-				+ " plugin...");
+		System.err.println("Starting " + this.getAssociatedPackageName() + " version "
+				+ this.getFbcModel().getPackageVersion() + " plugin...");
 
 		this.getModelData();
 
@@ -103,15 +107,16 @@ public class FBC2Parser extends FBC1Parser implements PackageParser,
 	 * all the possible flux bounds values of the reactions in this model.
 	 */
 	private void parseParameters() {
-		for (Parameter gParam : this.getFbcModel().getParent()
-				.getListOfParameters()) {
-			Flux bioParam = new Flux();
-			bioParam.setConstant(gParam.getConstant());
-			bioParam.setId(gParam.getId());
-			bioParam.value = String.valueOf(gParam.getValue());
 
-			bioParam.unitDefinition = this.flxNet.getUnderlyingBionet()
-					.getUnitDefinitions().get(gParam.getUnits());
+		BioUnitDefinitionCollection udList = NetworkAttributes.getUnitDefinitions(this.flxNet.getUnderlyingBionet());
+
+		for (Parameter gParam : this.getFbcModel().getParent().getListOfParameters()) {
+			Flux bioParam = new Flux(gParam.getId());
+			bioParam.setConstant(gParam.getConstant());
+			bioParam.value = gParam.getValue();
+
+			bioParam.unitDefinition = (BioUnitDefinition) (udList.getEntityFromId(gParam.getUnits()));
+
 			this.flxNet.addFluxBound(bioParam);
 		}
 	}
@@ -126,84 +131,84 @@ public class FBC2Parser extends FBC1Parser implements PackageParser,
 			String geneName = geneProd.getName();
 
 			BioGene gene = new BioGene(geneId, geneName);
-			gene.setLabel(geneProd.getLabel());
 
-			this.getFlxNet().getUnderlyingBionet().addGene(gene);
+			// Note LC : before, it was "setLabel"...
+			gene.setName(geneProd.getLabel());
+
+			this.getFlxNet().getUnderlyingBionet().add(gene);
 		}
 	}
 
 	/**
 	 * Parse the list of reaction and uses the data provided by the fbc package
 	 * to fill the missing data for the reactions presents in the bionetwork.
-	 * Example are: 
+	 * Example are:
 	 * <ul>
-	 * <li>fbc:upperbound 
-	 * <li>fbc:lowerbound 
+	 * <li>fbc:upperbound
+	 * <li>fbc:lowerbound
 	 * <li>fbc:GeneProductAssociation
 	 * </ul>
 	 */
 	protected void parseFluxReactions() {
+
+		BioUnitDefinitionCollection udList = NetworkAttributes.getUnitDefinitions(this.flxNet.getUnderlyingBionet());
+
 		for (Reaction rxn : this.getFbcModel().getParent().getListOfReactions()) {
 
-			BioChemicalReaction reaction = this.flxNet.getUnderlyingBionet()
-					.getBiochemicalReactionList().get(rxn.getId());
+			BioReaction reaction = this.flxNet.getUnderlyingBionet().getReactionsView().getEntityFromId(rxn.getId());
 
-			FBCReactionPlugin rxnPlugin = (FBCReactionPlugin) rxn
-					.getPlugin("fbc");
+			FBCReactionPlugin rxnPlugin = (FBCReactionPlugin) rxn.getPlugin("fbc");
 			FluxReaction flxReaction = new FluxReaction(reaction);
 
 			GeneAssociations GA = new GeneAssociations();
 
 			// System.err.println(rxn.getId());
 			if (rxnPlugin.isSetGeneProductAssociation()) {
-				GA.setListOfUniqueGA(this.getGA(rxnPlugin
-						.getGeneProductAssociation().getAssociation()));
+				GA.setListOfUniqueGA(this.getGA(rxnPlugin.getGeneProductAssociation().getAssociation()));
 			}
 			// System.err.println("out of recursion");
 			flxReaction.setReactionGAs(GA);
 			flxReaction.convertGAtoComplexes(flxNet.getUnderlyingBionet());
 
-			if (!this.flxNet.getListOfFluxBounds().containsKey(
-					rxnPlugin.getLowerFluxBound())) {
+			if (!this.flxNet.getListOfFluxBounds().containsKey(rxnPlugin.getLowerFluxBound())) {
 				Parameter fbcParam = rxnPlugin.getLowerFluxBoundInstance();
-				Flux param = new Flux();
+				Flux param = new Flux(fbcParam.getId());
 				param.setConstant(fbcParam.getConstant());
-				param.setId(fbcParam.getId());
-				param.value = String.valueOf(fbcParam.getValue());
-				param.unitDefinition = this.flxNet.getUnderlyingBionet()
-						.getUnitDefinitions().get(fbcParam.getUnits());
+				param.value = fbcParam.getValue();
+				param.unitDefinition = (BioUnitDefinition) (udList.getEntityFromId(fbcParam.getUnits()));
 				this.flxNet.addFluxBound(param);
 			}
 
-			reaction.setLowerBound(this.flxNet.getListOfFluxBounds().get(
-					rxnPlugin.getLowerFluxBound()));
+			ReactionAttributes.setLowerBound(reaction,
+					this.flxNet.getListOfFluxBounds().get(rxnPlugin.getLowerFluxBound()));
 
-			if (!this.flxNet.getListOfFluxBounds().containsKey(
-					rxnPlugin.getUpperFluxBound())) {
+			ReactionAttributes.setLowerBound(reaction,
+					this.flxNet.getListOfFluxBounds().get(rxnPlugin.getLowerFluxBound()));
+
+			if (!this.flxNet.getListOfFluxBounds().containsKey(rxnPlugin.getUpperFluxBound())) {
 				Parameter fbcParam = rxnPlugin.getUpperFluxBoundInstance();
-				Flux param = new Flux();
+				Flux param = new Flux(fbcParam.getId());
 				param.setConstant(fbcParam.getConstant());
-				param.setId(fbcParam.getId());
-				param.value = String.valueOf(fbcParam.getValue());
-				param.unitDefinition = this.flxNet.getUnderlyingBionet()
-						.getUnitDefinitions().get(fbcParam.getUnits());
+				param.value = fbcParam.getValue();
+				param.unitDefinition = (BioUnitDefinition) (udList.getEntityFromId(fbcParam.getUnits()));
 				this.flxNet.addFluxBound(param);
 			}
 
-			reaction.setUpperBound(this.flxNet.getListOfFluxBounds().get(
-					rxnPlugin.getUpperFluxBound()));
-
-			this.flxNet.getListOfFluxReactions().put(flxReaction.getId(),
-					flxReaction);
+			ReactionAttributes.setUpperBound(reaction,
+					this.flxNet.getListOfFluxBounds().get(rxnPlugin.getUpperFluxBound()));
+			
+			this.flxNet.getListOfFluxReactions().put(flxReaction.getId(), flxReaction);
 
 		}
 
 	}
 
 	/**
-	 * Recursively parse Association blocks to retrieve all possible combination of Gene associations
+	 * Recursively parse Association blocks to retrieve all possible combination
+	 * of Gene associations
+	 * 
 	 * @param block
-	 * 	the current Association block
+	 *            the current Association block
 	 * @return an ArrayList of {@link SingleGeneAssociation}
 	 */
 	public ArrayList<SingleGeneAssociation> getGA(Association block) {
@@ -223,8 +228,7 @@ public class FBC2Parser extends FBC1Parser implements PackageParser,
 					} else {
 
 						for (SingleGeneAssociation y : list) {
-							tmplist.add(SingleGeneAssociation.concatToNewGA(x,
-									y));
+							tmplist.add(SingleGeneAssociation.concatToNewGA(x, y));
 						}
 					}
 
@@ -247,8 +251,7 @@ public class FBC2Parser extends FBC1Parser implements PackageParser,
 
 			GA.setId(geneRef.getId());
 
-			BioGene g = this.flxNet.getUnderlyingBionet().getGeneList()
-					.get(geneRef.getGeneProduct());
+			BioGene g = this.flxNet.getUnderlyingBionet().getGenesView().getEntityFromId(geneRef.getGeneProduct());
 			GA.addGene(g);
 
 			list.add(GA);

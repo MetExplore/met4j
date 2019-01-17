@@ -12,6 +12,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxCollection;
 
 public class ReactionAttributesTest {
 
@@ -178,7 +179,7 @@ public class ReactionAttributesTest {
 		assertEquals(pmids, ReactionAttributes.getPmids(r));
 
 	}
-	
+
 	@Test
 	public void testSetComment() {
 
@@ -198,6 +199,171 @@ public class ReactionAttributesTest {
 		r.setAttribute(GenericAttributes.COMMENT, comment);
 
 		assertEquals(comment, ReactionAttributes.getComment(r));
+
+	}
+
+	@Test
+	public void testSetSboTerm() {
+
+		String sbo = "sbo";
+		ReactionAttributes.setSboTerm(r, sbo);
+
+		assertEquals((String) r.getAttribute(GenericAttributes.SBO_TERM), sbo);
+	}
+
+	@Test
+	public void testGetSboTerm() {
+
+		String sbo = "sbo";
+
+		r.setAttribute(GenericAttributes.SBO_TERM, sbo);
+
+		assertEquals(sbo, ReactionAttributes.getSboTerm(r));
+
+	}
+
+	@Test
+	public void testSetFast() {
+
+		Boolean flag = true;
+		ReactionAttributes.setFast(r, flag);
+
+		assertEquals((boolean) r.getAttribute(ReactionAttributes.FAST), true);
+
+		flag = false;
+		ReactionAttributes.setFast(r, flag);
+		assertEquals((boolean) r.getAttribute(ReactionAttributes.FAST), false);
+
+	}
+
+	@Test
+	public void testGetFast() {
+
+		assertFalse("By default fast must be false", ReactionAttributes.getFast(r));
+
+		Boolean flag = true;
+
+		r.setAttribute(ReactionAttributes.FAST, flag);
+
+		assertEquals(flag, ReactionAttributes.getFast(r));
+
+	}
+
+	@Test
+	public void testSetKineticFormula() {
+
+		String f = "f";
+		ReactionAttributes.setKineticFormula(r, f);
+
+		assertEquals((String) r.getAttribute(ReactionAttributes.KINETIC_FORMULA), f);
+	}
+
+	@Test
+	public void testGetKineticFormula() {
+
+		String f = "f";
+
+		r.setAttribute(ReactionAttributes.KINETIC_FORMULA, f);
+
+		assertEquals(f, ReactionAttributes.getKineticFormula(r));
+
+	}
+
+	@Test
+	public void testGetFluxParams() {
+
+		Flux f = new Flux("f");
+		Flux f2 = new Flux("f2");
+
+		FluxCollection c = new FluxCollection();
+		c.add(f);
+		c.add(f2);
+
+		r.setAttribute(ReactionAttributes.FLUX_PARAMS, c);
+
+		assertEquals(c, ReactionAttributes.getFluxParams(r));
+
+	}
+
+	@Test
+	public void testSetFluxParams() {
+
+		Flux f = new Flux("f");
+		Flux f2 = new Flux("f2");
+
+		FluxCollection c = new FluxCollection();
+		c.add(f);
+		c.add(f2);
+
+		ReactionAttributes.setFluxParams(r, c);
+
+		assertEquals((FluxCollection) r.getAttribute(ReactionAttributes.FLUX_PARAMS), c);
+
+	}
+	
+	@Test
+	public void testGetAdditionalFluxParams() {
+
+		Flux f = new Flux("f");
+		Flux f2 = new Flux("f2");
+
+		FluxCollection c = new FluxCollection();
+		c.add(f);
+		c.add(f2);
+
+		r.setAttribute(ReactionAttributes.ADDITIONAL_FLUX_PARAMS, c);
+
+		assertEquals(c, ReactionAttributes.getAdditionalFluxParams(r));
+
+	}
+
+	@Test
+	public void testSetAdditionalFluxParams() {
+
+		Flux f = new Flux("f");
+		Flux f2 = new Flux("f2");
+
+		FluxCollection c = new FluxCollection();
+		c.add(f);
+		c.add(f2);
+
+		ReactionAttributes.setAdditionalFluxParams(r, c);
+
+		assertEquals((FluxCollection) r.getAttribute(ReactionAttributes.ADDITIONAL_FLUX_PARAMS), c);
+
+	}
+
+	@Test
+	public void testAddFlux() {
+
+		Flux f = new Flux("f");
+		Flux f2 = new Flux("f2");
+
+		ReactionAttributes.addFlux(r, f);
+		ReactionAttributes.addFlux(r, f2);
+
+		assertEquals(((FluxCollection) r.getAttribute(ReactionAttributes.FLUX_PARAMS)).getEntityFromId("f"), f);
+
+		assertEquals(((FluxCollection) r.getAttribute(ReactionAttributes.FLUX_PARAMS)).getEntityFromId("f2"), f2);
+
+	}
+
+	@Test
+	public void testGetFlux() {
+
+		Flux f = new Flux("f");
+		Flux f2 = new Flux("f2");
+
+		ReactionAttributes.addFlux(r, f);
+		ReactionAttributes.addFlux(r, f2);
+
+		Flux test = ReactionAttributes.getFlux(r, "f");
+
+		assertEquals(f, test);
+
+		Flux test2 = ReactionAttributes.getFlux(r, "f2");
+
+		assertEquals(f2, test2);
 
 	}
 

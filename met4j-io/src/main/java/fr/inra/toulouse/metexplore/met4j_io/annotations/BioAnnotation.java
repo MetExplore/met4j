@@ -41,6 +41,7 @@ import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 
 /**
@@ -50,23 +51,19 @@ import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
  * @author Benjamin
  * @since 2.0
  */
-public class BioAnnotation {
+public class BioAnnotation  extends BioEntity{
 
 	/**
 	 * The annotations are successive xml elements used to cross reference
 	 * biological data.
 	 */
 	private String XMLasString;
-	/**
-	 * The metaID associated to this annotation
-	 */
-	private String MetaId;
 
 	/**
 	 * Default Constructor
 	 */
 	public BioAnnotation() {
-		this.MetaId = null;
+		super("NA");
 	}
 
 	/**
@@ -79,13 +76,14 @@ public class BioAnnotation {
 	 */
 	public BioAnnotation(String meta, String xmlasString) {
 
+		super(meta);
+		
 		if (StringUtils.isVoid(meta)) {
-			XMLasString = null;
-			MetaId = null;
+			 throw new IllegalArgumentException();
 		} else {
 			XMLasString = xmlasString;
-			MetaId = meta;
 		}
+		
 	}
 
 	/**
@@ -149,7 +147,7 @@ public class BioAnnotation {
 	 */
 	public void setXMLasStringFromHashMap(HashMap<String, String> AnnotMap) {
 		String tempstr = "        <annotation>\n          <rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:bqmodel=\"http://biomodels.net/model-qualifiers/\" xmlns:bqbiol=\"http://biomodels.net/biology-qualifiers/\">\n            <rdf:Description rdf:about=\""
-				+ this.getMetaId() + "\">\n";
+				+ this.getId() + "\">\n";
 		for (String db : AnnotMap.keySet()) {
 			tempstr = tempstr
 					+ "              <bqbiol:is>\n                <rdf:Bag>\n                  <rdf:li rdf:resource=\"http://identifiers.org/"
@@ -176,21 +174,6 @@ public class BioAnnotation {
 	 */
 	public void setXMLasString(String xMLasString) {
 		XMLasString = xMLasString;
-	}
-
-	/**
-	 * @return the metaId
-	 */
-	public String getMetaId() {
-		return MetaId;
-	}
-
-	/**
-	 * @param metaId
-	 *            the metaId to set
-	 */
-	public void setMetaId(String metaId) {
-		MetaId = metaId;
 	}
 
 }

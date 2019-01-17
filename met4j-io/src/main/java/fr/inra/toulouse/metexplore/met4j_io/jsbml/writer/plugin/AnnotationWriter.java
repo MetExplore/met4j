@@ -1,4 +1,4 @@
-package parsebionet.io.jsbml.writer.plugin;
+package fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -12,17 +12,24 @@ import org.sbml.jsbml.CVTerm.Type;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.UniqueNamedSBase;
 
-import parsebionet.biodata.BioChemicalReaction;
-import parsebionet.biodata.BioCompartment;
-import parsebionet.biodata.BioEntity;
-import parsebionet.biodata.BioGene;
-import parsebionet.biodata.BioNetwork;
-import parsebionet.biodata.BioPhysicalEntity;
-import parsebionet.biodata.BioRef;
-import parsebionet.io.jsbml.dataTags.AdditionalDataTag;
-import parsebionet.io.jsbml.writer.plugin.tags.WriterSBML2Compatible;
-import parsebionet.io.jsbml.writer.plugin.tags.WriterSBML3Compatible;
-import parsebionet.utils.StringUtils;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioRef;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.BioAnnotation;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.gene.GeneAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.tags.WriterSBML2Compatible;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.tags.WriterSBML3Compatible;
+import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 
 /**
  * Creates MIRIAM annotation for the SBML entities of the model created by
@@ -31,8 +38,8 @@ import parsebionet.utils.StringUtils;
  * @author Benjamin
  * @since 3.0
  */
-public class AnnotationWriter implements PackageWriter, WriterSBML2Compatible,
-		WriterSBML3Compatible, AdditionalDataTag {
+public class AnnotationWriter
+		implements PackageWriter, WriterSBML2Compatible, WriterSBML3Compatible, AdditionalDataTag {
 
 	/**
 	 * The SBML model
@@ -115,30 +122,25 @@ public class AnnotationWriter implements PackageWriter, WriterSBML2Compatible,
 
 		this.createModelAnnotation();
 		this.createCompartAnnotations();
-		this.createAnnotationFromBioEntities(this.getBionetwork()
-				.getPhysicalEntityList());
-		this.createAnnotationFromBioEntities(this.getBionetwork()
-				.getBiochemicalReactionList());
-		this.createAnnotationFromBioEntities(this.getBionetwork().getGeneList());
-		this.createAnnotationFromBioEntities(this.getBionetwork()
-				.getComplexList());
-		this.createAnnotationFromBioEntities(this.getBionetwork()
-				.getProteinList());
+		this.createAnnotationFromBioEntities(this.getBionetwork().getMetabolitesView());
+		this.createAnnotationFromBioEntities(this.getBionetwork().getReactionsView());
+		this.createAnnotationFromBioEntities(this.getBionetwork().getGenesView());
+		this.createAnnotationFromBioEntities(this.getBionetwork().getEnzymesView());
 	}
 
 	/**
 	 * Create the model's annotation from the saved annotation if it exists
 	 */
 	private void createModelAnnotation() {
-		if (this.getBionetwork().getModelAnnot() != null
-				&& this.getBionetwork().getModelAnnot().getMetaId() != null) {
+
+		
+		BioAnnotation modelAnnot = NetworkAttributes.getAnnotation(this.getBionetwork());
+
+		if (modelAnnot != null) {
 
 			try {
-				this.getModel().setMetaId(
-						this.getBionetwork().getModelAnnot().getMetaId());
-				this.getModel().setAnnotation(
-						new Annotation(this.getBionetwork().getModelAnnot()
-								.getXMLasString()));
+				this.getModel().setMetaId(modelAnnot.getId());
+				this.getModel().setAnnotation(new Annotation(modelAnnot.getXMLasString()));
 			} catch (XMLStreamException e) {
 
 				AnnotationWriter.errorsAndWarnings.add("Unable to create Model annotation form the saved annotations");
@@ -151,11 +153,10 @@ public class AnnotationWriter implements PackageWriter, WriterSBML2Compatible,
 	 * Creates the compartments' annotations from their references
 	 */
 	private void createCompartAnnotations() {
-		for (BioCompartment c : this.getBionetwork().getCompartments().values()) {
+		for (BioCompartment c : this.getBionetwork().getCompartmentsView()) {
 			Annotation annot = createAnnotationsFromRefs(c.getRefs());
 
-			UniqueNamedSBase sbase = this.getModel().findUniqueNamedSBase(
-					StringUtils.convertToSID(c.getId()));
+			UniqueNamedSBase sbase = this.getModel().findUniqueNamedSBase(StringUtils.convertToSID(c.getId()));
 			if (!annot.isEmpty() && sbase != null) {
 
 				String metaid = model.getSBMLDocument().nextMetaId();
@@ -176,12 +177,10 @@ public class AnnotationWriter implements PackageWriter, WriterSBML2Compatible,
 	 * @param entityList
 	 *            the list of {@link BioEntity}
 	 */
-	private void createAnnotationFromBioEntities(
-			HashMap<String, ? extends BioEntity> entityList) {
-		for (BioEntity ent : entityList.values()) {
+	private void createAnnotationFromBioEntities(BioCollection<? extends BioEntity> entityList) {
+		for (BioEntity ent : entityList) {
 
-			UniqueNamedSBase sbase = this.getModel().findUniqueNamedSBase(
-					StringUtils.convertToSID(ent.getId()));
+			UniqueNamedSBase sbase = this.getModel().findUniqueNamedSBase(StringUtils.convertToSID(ent.getId()));
 
 			if (sbase != null) {
 
@@ -189,12 +188,10 @@ public class AnnotationWriter implements PackageWriter, WriterSBML2Compatible,
 
 				switch (ent.getClass().getSimpleName()) {
 				case "BioPhysicalEntity":
-					this.getAdditionnalAnnotation((BioPhysicalEntity) ent,
-							annot);
+					this.getAdditionnalAnnotation((BioMetabolite) ent, annot);
 					break;
-				case "BioChemicalReaction":
-					this.getAdditionnalAnnotation((BioChemicalReaction) ent,
-							annot);
+				case "BioReaction":
+					this.getAdditionnalAnnotation((BioReaction) ent, annot);
 					break;
 				case "BioGene":
 					this.getAdditionnalAnnotation((BioGene) ent, annot);
@@ -223,29 +220,24 @@ public class AnnotationWriter implements PackageWriter, WriterSBML2Compatible,
 	 *            {@link BioNetwork}
 	 * @return The SBML Annotation object
 	 */
-	private Annotation createAnnotationsFromRefs(
-			HashMap<String, Set<BioRef>> setOfRef) {
+	private Annotation createAnnotationsFromRefs(HashMap<String, Set<BioRef>> setOfRef) {
 		Annotation annot = new Annotation();
 
 		for (Set<BioRef> refs : setOfRef.values()) {
 			addingLoop: for (BioRef r : refs) {
 
 				for (CVTerm innerCV : annot.getListOfCVTerms()) {
-					if (innerCV.getBiologicalQualifierType().compareTo(
-							Qualifier.valueOf("BQB_"
-									+ r.logicallink.toUpperCase())) == 0) {
-						innerCV.addResource(usedPattern + r.getDbName()
-								+ separator + r.id);
+					if (innerCV.getBiologicalQualifierType()
+							.compareTo(Qualifier.valueOf("BQB_" + r.logicallink.toUpperCase())) == 0) {
+						innerCV.addResource(usedPattern + r.getDbName() + separator + r.id);
 						continue addingLoop;
 					}
 				}
 
 				CVTerm cvTerm = new CVTerm();
 				cvTerm.setQualifierType(Type.BIOLOGICAL_QUALIFIER);
-				cvTerm.setBiologicalQualifierType(Qualifier.valueOf("BQB_"
-						+ r.logicallink.toUpperCase()));
-				cvTerm.addResource(usedPattern + r.getDbName() + separator
-						+ r.id);
+				cvTerm.setBiologicalQualifierType(Qualifier.valueOf("BQB_" + r.logicallink.toUpperCase()));
+				cvTerm.addResource(usedPattern + r.getDbName() + separator + r.id);
 				annot.addCVTerm(cvTerm);
 			}
 		}
@@ -262,8 +254,7 @@ public class AnnotationWriter implements PackageWriter, WriterSBML2Compatible,
 	 * @param annot
 	 *            The SBMl annotation object
 	 */
-	private void getAdditionnalAnnotation(BioPhysicalEntity ent,
-			Annotation annot) {
+	private void getAdditionnalAnnotation(BioMetabolite ent, Annotation annot) {
 
 		CVTerm cvIsTerm = new CVTerm();
 		boolean newCV = false;
@@ -276,20 +267,17 @@ public class AnnotationWriter implements PackageWriter, WriterSBML2Compatible,
 			cvIsTerm = annot.filterCVTerms(Qualifier.BQB_IS).get(0);
 		}
 
-		if (ent.getInchi() != null && !ent.getInchi().isEmpty()
-				&& !ent.getInchi().equals("NA")) {
+		if (ent.getInchi() != null && !ent.getInchi().isEmpty() && !ent.getInchi().equals("NA")) {
 			if (annot.filterCVTerms(Qualifier.BQB_IS, "inchi").isEmpty()) {
-				cvIsTerm.addResource(usedPattern + "inchi" + separator
-						+ ent.getInchi());
+				cvIsTerm.addResource(usedPattern + "inchi" + separator + ent.getInchi());
 			}
 		}
 
-		if (ent.getPubchemCID() != null && !ent.getPubchemCID().isEmpty()
-				&& !ent.getPubchemCID().equals("NA")) {
-			if (annot.filterCVTerms(Qualifier.BQB_IS, "pubchem.compound")
-					.isEmpty()) {
-				cvIsTerm.addResource(usedPattern + "pubchem.compound"
-						+ separator + ent.getPubchemCID());
+		String pubChemCid =  MetaboliteAttributes.getPubchem(ent);
+
+		if (pubChemCid != null && !pubChemCid.isEmpty() && !pubChemCid.equals("NA")) {
+			if (annot.filterCVTerms(Qualifier.BQB_IS, MetaboliteAttributes.PUBCHEM).isEmpty()) {
+				cvIsTerm.addResource(usedPattern + MetaboliteAttributes.PUBCHEM + separator + pubChemCid);
 			}
 		}
 
@@ -304,16 +292,18 @@ public class AnnotationWriter implements PackageWriter, WriterSBML2Compatible,
 		newCV = false;
 		if (annot.filterCVTerms(Qualifier.BQB_IS_DESCRIBED_BY).isEmpty()) {
 			cvIsDescByTerm.setQualifierType(Type.BIOLOGICAL_QUALIFIER);
-			cvIsDescByTerm
-					.setBiologicalQualifierType(Qualifier.BQB_IS_DESCRIBED_BY);
+			cvIsDescByTerm.setBiologicalQualifierType(Qualifier.BQB_IS_DESCRIBED_BY);
 			newCV = true;
 		} else {
-			cvIsDescByTerm = annot.filterCVTerms(Qualifier.BQB_IS_DESCRIBED_BY)
-					.get(0);
+			cvIsDescByTerm = annot.filterCVTerms(Qualifier.BQB_IS_DESCRIBED_BY).get(0);
 		}
-		for (String pmid : ent.getPmids()) {
-			cvIsDescByTerm.addResource(usedPattern + "pubmed" + separator
-					+ pmid);
+		if (MetaboliteAttributes.getPmids(ent) == null) {
+				
+			Set<Integer> pmids = MetaboliteAttributes.getPmids(ent);
+
+			for (Integer pmid : pmids) {
+				cvIsDescByTerm.addResource(usedPattern + "pubmed" + separator + pmid);
+			}
 		}
 		if (newCV && cvIsDescByTerm.getNumResources() > 0) {
 			annot.addCVTerm(cvIsDescByTerm);
@@ -329,8 +319,7 @@ public class AnnotationWriter implements PackageWriter, WriterSBML2Compatible,
 	 * @param annot
 	 *            The SBMl annotation object
 	 */
-	private void getAdditionnalAnnotation(BioChemicalReaction rxn,
-			Annotation annot) {
+	private void getAdditionnalAnnotation(BioReaction rxn, Annotation annot) {
 
 		CVTerm cvIsTerm = new CVTerm();
 		boolean newCV = false;
@@ -346,8 +335,7 @@ public class AnnotationWriter implements PackageWriter, WriterSBML2Compatible,
 		if (rxn.getEcNumber() != null && !rxn.getEcNumber().isEmpty()) {
 
 			if (annot.filterCVTerms(Qualifier.BQB_IS, "ec-code").isEmpty()) {
-				cvIsTerm.addResource(usedPattern + "ec-code" + separator
-						+ rxn.getEcNumber());
+				cvIsTerm.addResource(usedPattern + "ec-code" + separator + rxn.getEcNumber());
 			}
 		}
 		if (newCV && cvIsTerm.getNumResources() > 0) {
@@ -361,17 +349,51 @@ public class AnnotationWriter implements PackageWriter, WriterSBML2Compatible,
 		newCV = false;
 		if (annot.filterCVTerms(Qualifier.BQB_IS_DESCRIBED_BY).isEmpty()) {
 			cvIsDescByTerm.setQualifierType(Type.BIOLOGICAL_QUALIFIER);
-			cvIsDescByTerm
-					.setBiologicalQualifierType(Qualifier.BQB_IS_DESCRIBED_BY);
+			cvIsDescByTerm.setBiologicalQualifierType(Qualifier.BQB_IS_DESCRIBED_BY);
 			newCV = true;
 		} else {
-			cvIsDescByTerm = annot.filterCVTerms(Qualifier.BQB_IS_DESCRIBED_BY)
-					.get(0);
+			cvIsDescByTerm = annot.filterCVTerms(Qualifier.BQB_IS_DESCRIBED_BY).get(0);
 		}
-		for (String pmid : rxn.getPmids()) {
-			cvIsDescByTerm.addResource(usedPattern + "pubmed" + separator
-					+ pmid);
+
+		if (ReactionAttributes.getPmids(rxn) != null) {
+
+			Set<Integer> pmids = ReactionAttributes.getPmids(rxn);
+
+			for (Integer pmid : pmids) {
+				cvIsDescByTerm.addResource(usedPattern + "pubmed" + separator + pmid);
+			}
 		}
+		if (newCV && cvIsDescByTerm.getNumResources() > 0) {
+			annot.addCVTerm(cvIsDescByTerm);
+		}
+	}
+	
+	private void getAdditionnalAnnotation(BioGene gene, Annotation annot) {
+
+		boolean newCV = false;
+
+		/**
+		 * Same method for the "isDecribedBy" term
+		 */
+		CVTerm cvIsDescByTerm = new CVTerm();
+		newCV = false;
+		if (annot.filterCVTerms(Qualifier.BQB_IS_DESCRIBED_BY).isEmpty()) {
+			cvIsDescByTerm.setQualifierType(Type.BIOLOGICAL_QUALIFIER);
+			cvIsDescByTerm.setBiologicalQualifierType(Qualifier.BQB_IS_DESCRIBED_BY);
+			newCV = true;
+		} else {
+			cvIsDescByTerm = annot.filterCVTerms(Qualifier.BQB_IS_DESCRIBED_BY).get(0);
+		}
+		
+		if (GeneAttributes.getPmids(gene) != null) {
+
+			Set<Integer> pmids = GeneAttributes.getPmids(gene);
+
+			for (Integer pmid : pmids) {
+				cvIsDescByTerm.addResource(usedPattern + "pubmed" + separator + pmid);
+			}
+		}
+		
 		if (newCV && cvIsDescByTerm.getNumResources() > 0) {
 			annot.addCVTerm(cvIsDescByTerm);
 		}
@@ -437,29 +459,6 @@ public class AnnotationWriter implements PackageWriter, WriterSBML2Compatible,
 		this.separator = separator;
 	}
 
-	// private void getAdditionnalAnnotation(BioGene gene, Annotation annot) {
-	//
-	// CVTerm cvIsTerm=new CVTerm();
-	// boolean newCV=false;
-	//
-	// /**
-	// * Same method for the "isDecribedBy" term
-	// */
-	// CVTerm cvIsDescByTerm=new CVTerm();
-	// newCV=false;
-	// if(annot.filterCVTerms(Qualifier.BQB_IS_DESCRIBED_BY).isEmpty()){
-	// cvIsDescByTerm.setQualifierType(Type.BIOLOGICAL_QUALIFIER);
-	// cvIsDescByTerm.setBiologicalQualifierType(Qualifier.BQB_IS_DESCRIBED_BY);
-	// newCV=true;
-	// }else{
-	// cvIsDescByTerm=annot.filterCVTerms(Qualifier.BQB_IS_DESCRIBED_BY).get(0);
-	// }
-	// for(String pmid:gene.getPmids()){
-	// cvIsDescByTerm.addResource(URLpattern+"pubmed"+"/"+pmid);
-	// }
-	// if(newCV && cvIsDescByTerm.getNumResources()>0){
-	// annot.addCVTerm(cvIsDescByTerm);
-	// }
-	// }
+	
 
 }

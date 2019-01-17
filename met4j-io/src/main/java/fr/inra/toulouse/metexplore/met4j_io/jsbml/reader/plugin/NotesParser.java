@@ -1,9 +1,8 @@
-package parsebionet.io.jsbml.reader.plugin;
+package fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,25 +11,30 @@ import javax.xml.stream.XMLStreamException;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.UniqueNamedSBase;
 
-import parsebionet.biodata.BioChemicalReaction;
-import parsebionet.biodata.BioCompartment;
-import parsebionet.biodata.BioEntity;
-import parsebionet.biodata.BioGene;
-import parsebionet.biodata.BioNetwork;
-import parsebionet.biodata.BioPathway;
-import parsebionet.biodata.BioPhysicalEntity;
-import parsebionet.biodata.BioRef;
-import parsebionet.biodata.Comment;
-import parsebionet.biodata.Notes;
-import parsebionet.biodata.fbc.FluxReaction;
-import parsebionet.biodata.fbc.GeneAssociations;
-import parsebionet.biodata.fbc.SingleGeneAssociation;
-import parsebionet.io.jsbml.dataTags.AdditionalDataTag;
-import parsebionet.io.jsbml.errors.MalformedGeneAssociationStringException;
-import parsebionet.io.jsbml.reader.plugin.tags.ReaderSBML1Compatible;
-import parsebionet.io.jsbml.reader.plugin.tags.ReaderSBML2Compatible;
-import parsebionet.io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
-import parsebionet.utils.StringUtils;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioRef;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.Notes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.errors.MalformedGeneAssociationStringException;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxReaction;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociations;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.SingleGeneAssociation;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML1Compatible;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML2Compatible;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
+import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 
 /**
  * This class is used to parse the Notes of SBML element. </br>
@@ -186,12 +190,12 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
 		this.getModelData(model, bionetwork);
 
-		this.getSBMLNotes(bionetwork.getBiochemicalReactionList());
-		this.getSBMLNotes(bionetwork.getPhysicalEntityList());
+		this.getSBMLNotes(bionetwork.getReactionsView());
+		this.getSBMLNotes(bionetwork.getMetabolitesView());
 		// this.getSBMLNotes(bionetwork.getEnzList());
-		this.getSBMLCompartNotes(bionetwork.getCompartments());
+		this.getSBMLCompartNotes(bionetwork.getCompartmentsView());
 
-		this.getSBMLNotes(bionetwork.getCompartments());
+		this.getSBMLNotes(bionetwork.getCompartmentsView());
 
 	}
 
@@ -215,7 +219,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 */
 	public void getModelData(Model model, BioNetwork bionet) {
 		try {
-			bionet.setModelNotes(new Notes(model.getNotesString()));
+			NetworkAttributes.setNotes(bionet, (new Notes(model.getNotesString())));
 		} catch (XMLStreamException e) {
 			System.err.println("Error while parsing Model notes");
 			e.printStackTrace();
@@ -230,26 +234,28 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * @param list
 	 *            the bionetwork list of {@link BioEntity}
 	 */
-	private void getSBMLNotes(HashMap<String, ? extends BioEntity> list) {
+	private void getSBMLNotes(BioCollection<? extends BioEntity> list) {
 
-		for (Entry<String, ? extends BioEntity> entry : list.entrySet()) {
-			UniqueNamedSBase sbase = this.getModel().findUniqueNamedSBase(entry.getKey());
+		for (BioEntity ent : list) {
+			String id = ent.getId();
 
-			if (entry.getValue().getEntityNotes() == null) {
+			UniqueNamedSBase sbase = this.getModel().findUniqueNamedSBase(id);
+
+			if (GenericAttributes.getNotes(ent) == null) {
 				try {
 
 					if (sbase != null && sbase.isSetNotes()) {
-						entry.getValue().setEntityNotes(new Notes(sbase.getNotesString()));
+						GenericAttributes.setNotes(ent, new Notes(sbase.getNotesString()));
 
-						switch (entry.getValue().getClass().getSimpleName()) {
+						switch (ent.getClass().getSimpleName()) {
 						case "BioCompartment":
-							this.parseNotes((BioCompartment) entry.getValue());
+							this.parseNotes((BioCompartment) ent);
 							break;
-						case "BioChemicalReaction":
-							this.parseNotes((BioChemicalReaction) entry.getValue());
+						case "BioReaction":
+							this.parseNotes((BioReaction) ent);
 							break;
-						case "BioPhysicalEntity":
-							this.parseNotes((BioPhysicalEntity) entry.getValue());
+						case "BioMetabolite":
+							this.parseNotes((BioMetabolite) ent);
 							break;
 						}
 
@@ -257,8 +263,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
 				} catch (XMLStreamException e) {
 
-					NotesParser.errorsAndWarnings.add("Error while parsing "
-							+ entry.getValue().getClass().getSimpleName() + " " + entry.getValue().getId() + " notes");
+					NotesParser.errorsAndWarnings.add(
+							"Error while parsing " + ent.getClass().getSimpleName() + " " + ent.getId() + " notes");
 
 				}
 			}
@@ -272,18 +278,20 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * @param compartments
 	 *            the list of {@link BioCompartment}s of the bionetwork
 	 */
-	private void getSBMLCompartNotes(HashMap<String, BioCompartment> compartments) {
-		for (Entry<String, BioCompartment> entry : compartments.entrySet()) {
-			UniqueNamedSBase sbase = this.getModel().findUniqueNamedSBase(entry.getKey());
+	private void getSBMLCompartNotes(BioCollection<BioCompartment> compartments) {
+		for (BioCompartment c : compartments) {
+
+			UniqueNamedSBase sbase = this.getModel().findUniqueNamedSBase(c.getId());
 
 			try {
 				if (sbase != null && sbase.isSetNotes()) {
-					entry.getValue().setCompartNotes(new Notes(sbase.getNotesString()));
+					CompartmentAttributes.setNotes(c, new Notes(sbase.getNotesString()));
+
 				}
 			} catch (XMLStreamException e) {
 
-				NotesParser.errorsAndWarnings.add("Error while parsing " + entry.getValue().getClass().getSimpleName()
-						+ " " + entry.getValue().getId() + " notes");
+				NotesParser.errorsAndWarnings
+						.add("Error while parsing " + c.getClass().getSimpleName() + " " + c.getId() + " notes");
 
 			}
 		}
@@ -306,9 +314,9 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * @param reaction
 	 *            The {@link BioChemicalReaction}
 	 */
-	private void parseNotes(BioChemicalReaction reaction) {
+	private void parseNotes(BioReaction reaction) {
 
-		String reactionNotes = reaction.getEntityNotes().getXHTMLasString();
+		String reactionNotes = ReactionAttributes.getNotes(reaction).getXHTMLasString();
 
 		Matcher m;
 
@@ -318,12 +326,13 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 			String[] pthwList = m.group(1).split(this.getPathwaySep());
 			for (String val : pthwList) {
 				String value = val.replaceAll("[^\\p{ASCII}]", "");
-				if (this.getBionetwork().getPathwayList().containsKey(value)) {
-					reaction.addPathway(this.getBionetwork().getPathwayList().get(value));
+				if (this.getBionetwork().getPathwaysView().containsId(value)) {
+					this.getBionetwork().affectToPathway(reaction,
+							this.getBionetwork().getPathwaysView().getEntityFromId(value));
 				} else {
 					BioPathway bionetPath = new BioPathway(value, value);
-					this.getBionetwork().addPathway(bionetPath);
-					reaction.addPathway(bionetPath);
+					this.getBionetwork().add(bionetPath);
+					this.getBionetwork().affectToPathway(reaction, bionetPath);
 				}
 			}
 		}
@@ -340,23 +349,40 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 		if (this.getScorePattern() != null
 				&& (m = Pattern.compile(this.getScorePattern()).matcher(reactionNotes)).find()) {
 			String value = m.group(1);
-			reaction.setScore(value);
+			ReactionAttributes.setScore(reaction, Double.parseDouble(value));
 		}
 
 		// get the reaction status
 		if (this.getStatusPattern() != null
 				&& (m = Pattern.compile(this.getStatusPattern()).matcher(reactionNotes)).find()) {
 			String value = m.group(1);
-			reaction.setStatus(value);
+
+			ReactionAttributes.setStatus(reaction, value);
 		}
 
 		// get the PMIDS
 		if (this.getPmidPattern() != null
 				&& (m = Pattern.compile(this.getPmidPattern()).matcher(reactionNotes)).find()) {
-			String[] Authorlist = m.group(1).split("(" + this.separator + "\\s?)(?=)");
-			for (String value : Authorlist) {
-				reaction.addPmid(value.trim());
-			}
+
+			// TODO : to be corrected...
+
+			// String[] Authorlist = m.group(1).split("(" + this.separator +
+			// "\\s?)(?=)");
+			//
+			//
+			//
+			//
+			// if(Authorlist.length > 0 && !
+			// reaction.getAttributes().containsKey(Attributes.PMIDS))
+			// {
+			// reaction.addAttribute(Attributes.PMIDS, new HashSet<String>());
+			// }
+			//
+			//
+			// // TODO : see why parsing author Lists...
+			// for (String value : Authorlist) {
+			// ((HashSet<String>)(reaction.getAttribute(Attributes.PMIDS))).add(value);
+			// }
 		}
 
 		// get the note/comment field (yes there is a note field in the sbml
@@ -367,10 +393,12 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 			if (value == "") {
 				value = "NA";
 			}
-			reaction.addComment(new Comment(value, "NA"));
+
+			ReactionAttributes.setComment(reaction, value);
+
 		}
 
-		if (reaction.getEnzList().isEmpty()) {
+		if (!reaction.getEnzymesView().isEmpty()) {
 
 			if (this.getGPRPattern() != null
 					&& (m = Pattern.compile(this.getGPRPattern()).matcher(reactionNotes)).find()) {
@@ -401,9 +429,10 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * @param metabolite
 	 *            the metabolite as a {@link BioPhysicalEntity}
 	 */
-	private void parseNotes(BioPhysicalEntity metabolite) {
+	private void parseNotes(BioMetabolite metabolite) {
 
-		String metaboNotes = metabolite.getEntityNotes().getXHTMLasString();
+		String metaboNotes = MetaboliteAttributes.getNotes(metabolite).getXHTMLasString();
+
 		// metaboNotes=metaboNotes.replaceAll(">\\s+<", "><");
 		Matcher m;
 
@@ -426,10 +455,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 			String value = m.group(1);
 
 			if (!StringUtils.isVoid(value)) {
-				if (metabolite.getCharge() != null
-						&& (metabolite.getCharge().isEmpty() || metabolite.getCharge().equalsIgnoreCase("0"))) {
-					metabolite.setCharge(value);
-				}
+
+				MetaboliteAttributes.setCharge(metabolite, Integer.parseInt(value));
 
 				metaboNotes = metaboNotes.replaceAll(this.getChargePattern(), "");
 			}
@@ -460,7 +487,10 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 						metabolite.addRef(new BioRef("SBML File", "inchi", values, 1));
 					}
 				} else if (dbName.equalsIgnoreCase("SMILES")) {
-					metabolite.setSmiles(values);
+					if (!metabolite.hasRef("smiles", values)) {
+						metabolite.setSmile(values);
+						metabolite.addRef(new BioRef("SBML File", "smiles", values, 1));
+					}
 				} else if (dbName.equalsIgnoreCase("INCHIKEY") || dbName.equalsIgnoreCase("INCHI KEY")) {
 					if (!metabolite.hasRef("inchikey", values)) {
 						metabolite.addRef(new BioRef("SBML File", "inchikey", values, 1));
@@ -483,7 +513,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
 	private void parseNotes(BioCompartment cpt) {
 
-		String notes = cpt.getEntityNotes().getXHTMLasString();
+		String notes = CompartmentAttributes.getNotes(cpt).getXHTMLasString();
 
 		String dbName = null;
 		String values;
@@ -605,10 +635,10 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 			if (!tmpAssos.isEmpty()) {
 				SingleGeneAssociation x = new SingleGeneAssociation();
 
-				BioGene g = this.bionetwork.getGeneList().get(tmpAssos);
+				BioGene g = this.bionetwork.getGenesView().getEntityFromId(tmpAssos);
 				if (g == null) {
 					g = new BioGene(tmpAssos);
-					this.bionetwork.getGeneList().put(tmpAssos, g);
+					this.bionetwork.add(g);
 				}
 				x.addGene(g);
 				list.add(x);

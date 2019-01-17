@@ -4,5 +4,5 @@
  * @Since 3.0
  */
 
-package parsebionet.io.jsbml.writer;
+package fr.inra.toulouse.metexplore.met4j_io.jsbml.writer;
 

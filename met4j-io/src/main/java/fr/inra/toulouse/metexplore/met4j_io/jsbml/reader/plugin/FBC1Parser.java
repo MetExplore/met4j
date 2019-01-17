@@ -8,15 +8,16 @@ import org.sbml.jsbml.ext.fbc.FluxBound;
 import org.sbml.jsbml.ext.fbc.FluxObjective;
 import org.sbml.jsbml.ext.fbc.Objective;
 
-import parsebionet.biodata.BioChemicalReaction;
-import parsebionet.biodata.BioNetwork;
-import parsebionet.biodata.BioPhysicalEntity;
-import parsebionet.biodata.Flux;
-import parsebionet.biodata.fbc.ReactionObjective;
-import parsebionet.biodata.fbc.FluxNetwork;
-import parsebionet.biodata.fbc.FluxReaction;
-import parsebionet.biodata.fbc.Objectives;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxNetwork;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxReaction;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Objectives;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.ReactionObjective;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
 
 /**
@@ -90,49 +91,28 @@ public class FBC1Parser implements PackageParser, PrimaryDataTag,
 	 */
 	private void parseListOfBounds() {
 		for (FluxBound bound : this.getFbcModel().getListOfFluxBounds()) {
-			BioChemicalReaction rxn = this.getFlxNet().getUnderlyingBionet()
-					.getBiochemicalReactionList().get(bound.getReaction());
+			BioReaction rxn = this.getFlxNet().getUnderlyingBionet()
+					.getReactionsView().getEntityFromId(bound.getReaction());
 
-			Flux flx = new Flux();
-			flx.value = String.valueOf(bound.getValue());
-			if (this.getFlxNet().getUnderlyingBionet().getUnitDefinitions()
-					.containsKey(bound.getReactionInstance().getDerivedUnits())) {
-				flx.unitDefinition = this.getFlxNet().getUnderlyingBionet()
-						.getUnitDefinitions()
-						.get(bound.getReactionInstance().getDerivedUnits());
 
-			} else if (this.getFlxNet().getUnderlyingBionet()
-					.getUnitDefinitions().containsKey("FLUX_UNIT")) {
-
-				flx.unitDefinition = this.getFlxNet().getUnderlyingBionet()
-						.getUnitDefinitions().get("FLUX_UNIT");
-
-			} else if (this.getFlxNet().getUnderlyingBionet()
-					.getUnitDefinitions().containsKey("mmol_per_gDW_per_hr")) {
-
-				flx.unitDefinition = this.getFlxNet().getUnderlyingBionet()
-						.getUnitDefinitions().get("mmol_per_gDW_per_hr");
-			}
-
+			Flux flux = new Flux();
+			flux.value = bound.getValue();
+			
 			switch (bound.getOperation()) {
 			case EQUAL:
-				System.err.println("tutu");
-				rxn.setUpperBound(flx);
-				rxn.setLowerBound(flx);
-
+				
+				ReactionAttributes.setLowerBound(rxn, flux);
+				ReactionAttributes.setUpperBound(rxn, flux);
+				
 				break;
 			case GREATER_EQUAL:
 
-				if (rxn.getLowerBound() == null) {
-					rxn.setLowerBound(flx);
-				}
+				ReactionAttributes.setLowerBound(rxn, flux);
 
 				break;
 			case LESS_EQUAL:
 
-				if (rxn.getUpperBound() == null) {
-					rxn.setUpperBound(flx);
-				}
+				ReactionAttributes.setUpperBound(rxn, flux);
 
 				break;
 			}
@@ -156,11 +136,11 @@ public class FBC1Parser implements PackageParser, PrimaryDataTag,
 
 			BioNetwork net = this.flxNet.getUnderlyingBionet();
 
-			BioPhysicalEntity metabolite = net.getPhysicalEntityList().get(
+			BioMetabolite metabolite = net.getMetabolitesView().getEntityFromId(
 					specie.getId());
 
 			if (speciePlugin.isSetCharge())
-				metabolite.setCharge(String.valueOf(speciePlugin.getCharge()));
+				metabolite.setCharge(speciePlugin.getCharge());
 			if (speciePlugin.isSetChemicalFormula())
 				metabolite
 						.setChemicalFormula(speciePlugin.getChemicalFormula());
@@ -182,15 +162,14 @@ public class FBC1Parser implements PackageParser, PrimaryDataTag,
 			biodatObj.setType(fbcObj.getType().toString());
 
 			for (FluxObjective fbcFluxObj : fbcObj.getListOfFluxObjectives()) {
-				ReactionObjective biodataFluxObj = new ReactionObjective();
+				ReactionObjective biodataFluxObj = new ReactionObjective(fbcFluxObj.getId(), fbcFluxObj.getName());
 
-				biodataFluxObj.setId(fbcFluxObj.getId());
-				biodataFluxObj.setName(fbcFluxObj.getName());
 				biodataFluxObj.setCoefficient(fbcFluxObj.getCoefficient());
 
 				biodataFluxObj.setFlxReaction(new FluxReaction(this.flxNet
-						.getUnderlyingBionet().getBiochemicalReactionList()
-						.get(fbcFluxObj.getReaction())));
+						.getUnderlyingBionet().getReactionsView()
+						.getEntityFromId(fbcFluxObj.getReaction())));
+
 
 				biodatObj.getListOfReactionObjectives().add(biodataFluxObj);
 			}

@@ -1,10 +1,10 @@
-package parsebionet.io.jsbml.writer.plugin;
+package fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin;
 
 import java.util.ArrayList;
 
 import org.sbml.jsbml.Model;
 
-import parsebionet.biodata.BioNetwork;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 
 /**
  * An interface that declares common methods for the writer plugins

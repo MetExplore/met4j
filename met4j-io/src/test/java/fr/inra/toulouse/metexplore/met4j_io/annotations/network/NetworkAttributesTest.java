@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.BioAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.BioUnitDefinition;
@@ -141,6 +142,28 @@ public class NetworkAttributesTest {
 
 		assertEquals(pmids, NetworkAttributes.getPmids(network));
 
+	}
+	
+	@Test 
+	public void testSetAnnotation() {
+		
+		BioAnnotation val = new BioAnnotation("val", "<p>");
+		
+		NetworkAttributes.setAnnotation(network, val);
+		
+		assertEquals(val, network.getAttribute(GenericAttributes.ANNOTATION));
+		
+	}
+	
+	@Test
+	public void testGetAnnotation() {
+		
+		BioAnnotation val = new BioAnnotation("val", "<p>");
+		
+		network.setAttribute(GenericAttributes.ANNOTATION, val);
+		
+		assertEquals(val, NetworkAttributes.getAnnotation(network));
+		
 	}
 
 

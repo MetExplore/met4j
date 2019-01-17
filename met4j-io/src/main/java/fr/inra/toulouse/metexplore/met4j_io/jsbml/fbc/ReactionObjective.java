@@ -1,12 +1,20 @@
 package fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * This class represents a part of one of the flux objectives present in the model
  * @author Benjamin
  * @since 3.0
  */
-public class ReactionObjective {
+public class ReactionObjective extends BioEntity {
+
+	
+	
+	
+	public ReactionObjective(String id, String name) {
+		super(id, name);
+	}
 
 	/**
 	 * the {@link FluxReaction} of this {@link ReactionObjective}

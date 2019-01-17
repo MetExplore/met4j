@@ -1,4 +1,4 @@
-package parsebionet.io.jsbml.writer.plugin;
+package fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,17 +22,22 @@ import org.sbml.jsbml.ext.fbc.GeneProductRef;
 import org.sbml.jsbml.ext.fbc.Objective;
 import org.sbml.jsbml.ext.fbc.Or;
 
-import parsebionet.biodata.BioChemicalReaction;
-import parsebionet.biodata.BioComplex;
-import parsebionet.biodata.BioGene;
-import parsebionet.biodata.BioNetwork;
-import parsebionet.biodata.BioPhysicalEntity;
-import parsebionet.biodata.BioProtein;
-import parsebionet.biodata.Flux;
-import parsebionet.biodata.fbc.FluxNetwork;
-import parsebionet.io.jsbml.dataTags.PrimaryDataTag;
-import parsebionet.io.jsbml.writer.plugin.tags.WriterSBML3Compatible;
-import parsebionet.utils.StringUtils;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEnzyme;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxCollection;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxNetwork;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.tags.WriterSBML3Compatible;
+import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 
 /**
  * This class is used to extend the SBML model by adding the SBML FBC version 2
@@ -95,13 +100,13 @@ public class FBCWriter implements PackageWriter, WriterSBML3Compatible, PrimaryD
 	 * sbml model
 	 */
 	private void createFluxSpecies() {
-		for (BioPhysicalEntity bioMetab : this.flxNet.getUnderlyingBionet().getPhysicalEntityList().values()) {
+		for (BioMetabolite bioMetab : this.flxNet.getUnderlyingBionet().getMetabolitesView()) {
 			Species specie = this.fbcModel.getParent().getSpecies(StringUtils.convertToSID(bioMetab.getId()));
 
 			if (specie != null && !bioMetab.getChemicalFormula().isEmpty()) {
 
 				FBCSpeciesPlugin speciePlugin = (FBCSpeciesPlugin) specie.getPlugin("fbc");
-				speciePlugin.setCharge(Integer.parseInt(bioMetab.getCharge()));
+				speciePlugin.setCharge(bioMetab.getCharge());
 
 				try {
 					speciePlugin.setChemicalFormula(bioMetab.getChemicalFormula());
@@ -119,17 +124,13 @@ public class FBCWriter implements PackageWriter, WriterSBML3Compatible, PrimaryD
 	 * bionetwork.
 	 */
 	private void createGeneProductsInBioNet() {
-		for (BioGene bioGene : this.flxNet.getUnderlyingBionet().getGeneList().values()) {
+		for (BioGene bioGene : this.flxNet.getUnderlyingBionet().getGenesView()) {
 			GeneProduct geneProd = this.getFbcModel().createGeneProduct();
 
 			geneProd.setId(StringUtils.convertToSID(bioGene.getId()));
 			geneProd.setName(bioGene.getName());
 
-			if (bioGene.getLabel() == null || bioGene.getLabel().isEmpty()) {
-				geneProd.setLabel(bioGene.getName());
-			} else {
-				geneProd.setLabel(bioGene.getLabel());
-			}
+			geneProd.setLabel(bioGene.getName());
 
 			// if(bioGene.getProteinList().size()==1 ){
 			// for(BioProtein prot:bioGene.getProteinList().values()){
@@ -144,50 +145,6 @@ public class FBCWriter implements PackageWriter, WriterSBML3Compatible, PrimaryD
 	}
 
 	/**
-	 * Create a species from a {@link BioProtein}
-	 * 
-	 * @param prot
-	 *            the protein
-	 * @return A SBML Species
-	 * @deprecated {@link BioProtein} are now used trough
-	 *             {@link #createGeneAssociation(BioPhysicalEntity)} method
-	 */
-	@SuppressWarnings("unused")
-	@Deprecated
-	private Species getOrCreateProteinSpecies(BioProtein prot) {
-		Species protspecies = this.getFbcModel().getParent().getSpecies(StringUtils.convertToSID(prot.getId()));
-
-		if (protspecies == null) {
-			protspecies = this.getFbcModel().getParent().createSpecies(prot.getId());
-			protspecies.setCompartment(prot.getCompartment().getId());
-
-			protspecies.setName(prot.getName());
-			protspecies.setBoundaryCondition(prot.getBoundaryCondition());
-
-			protspecies.setConstant(prot.getConstant());
-
-			if (!StringUtils.isVoid(prot.getSboterm())) {
-				protspecies.setSBOTerm(prot.getSboterm());
-			} else {
-				protspecies.setSBOTerm("SBO:0000252");
-			}
-
-			protspecies.setHasOnlySubstanceUnits(prot.getHasOnlySubstanceUnit());
-
-			if (prot.getInitialQuantity().size() == 1) {
-				for (Entry<String, Double> quantity : prot.getInitialQuantity().entrySet()) {
-					if (quantity.getKey().equals("amount")) {
-						protspecies.setInitialAmount(quantity.getValue());
-					} else if (quantity.getKey().equals("concentration")) {
-						protspecies.setInitialConcentration(quantity.getValue());
-					}
-				}
-			}
-		}
-		return protspecies;
-	}
-
-	/**
 	 * Creates the FBCReactionPlugin associated to each reaction to add the fbc
 	 * attributes
 	 */
@@ -195,7 +152,7 @@ public class FBCWriter implements PackageWriter, WriterSBML3Compatible, PrimaryD
 
 		HashMap<String, Double> rxnInObjective = new HashMap<String, Double>();
 
-		for (BioChemicalReaction bioRxn : this.flxNet.getUnderlyingBionet().getBiochemicalReactionList().values()) {
+		for (BioReaction bioRxn : this.flxNet.getUnderlyingBionet().getReactionsView()) {
 
 			Reaction rxn = this.getFbcModel().getParent().getReaction(StringUtils.convertToSID(bioRxn.getId()));
 			FBCReactionPlugin rxnPlugin = (FBCReactionPlugin) rxn.getPlugin("fbc");
@@ -219,42 +176,56 @@ public class FBCWriter implements PackageWriter, WriterSBML3Compatible, PrimaryD
 				rxn.unsetKineticLaw();
 			}
 
-			Parameter up = this.getFbcModel().getParent().getParameter(StringUtils
-					.convertToSID(("UPPER_BOUND_" + bioRxn.getUpperBound().value).replaceAll("[\\+\\-]", "")));
+			Flux ub = (Flux) bioRxn.getAttribute("UPPER_BOUND");
+
+			Parameter up = this.getFbcModel().getParent()
+					.getParameter(StringUtils.convertToSID(("UPPER_BOUND_" + ub.value).replaceAll("[\\+\\-]", "")));
 			if (up == null) {
-				up = this.getFbcModel().getParent().createParameter(StringUtils
-						.convertToSID(("UPPER_BOUND_" + bioRxn.getUpperBound().value).replaceAll("[\\+\\-]", "")));
-				up.setValue(Double.parseDouble(bioRxn.getUpperBound().value));
+				up = this.getFbcModel().getParent().createParameter(
+						StringUtils.convertToSID(("UPPER_BOUND_" + ub.value).replaceAll("[\\+\\-]", "")));
+				up.setValue(ub.value);
 				up.setConstant(true);
-				up.setUnits(StringUtils.convertToSID(bioRxn.getUpperBound().unitDefinition.getId()));
+				up.setUnits(StringUtils.convertToSID(ub.unitDefinition.getId()));
 			}
 			rxnPlugin.setUpperFluxBound(up);
 
-			Parameter down = this.getFbcModel().getParent().getParameter(StringUtils
-					.convertToSID(("LOWER_BOUND_" + bioRxn.getLowerBound().value).replaceAll("[\\+\\-]", "")));
+			Flux lb = (Flux) bioRxn.getAttribute("LOWER_BOUND");
+
+			Parameter down = this.getFbcModel().getParent()
+					.getParameter(StringUtils.convertToSID(("LOWER_BOUND_" + lb.value).replaceAll("[\\+\\-]", "")));
 			if (down == null) {
-				down = this.getFbcModel().getParent().createParameter(StringUtils
-						.convertToSID(("LOWER_BOUND_" + bioRxn.getLowerBound().value).replaceAll("[\\+\\-]", "")));
-				down.setValue(Double.parseDouble(bioRxn.getLowerBound().value));
+				down = this.getFbcModel().getParent().createParameter(
+						StringUtils.convertToSID(("LOWER_BOUND_" + lb.value).replaceAll("[\\+\\-]", "")));
+				down.setValue(lb.value);
 				down.setConstant(true);
-				down.setUnits(StringUtils.convertToSID(bioRxn.getUpperBound().unitDefinition.getId()));
+				down.setUnits(StringUtils.convertToSID(lb.unitDefinition.getId()));
 			}
 			rxnPlugin.setLowerFluxBound(down);
 
-			for (Entry<String, Flux> param : bioRxn.getListOfAdditionalFluxParam().entrySet()) {
-				if (param.getKey().equals("OBJECTIVE_COEFFICIENT") && Double.valueOf(param.getValue().value) != 0) {
-					rxnInObjective.put(bioRxn.getId(), Double.valueOf(param.getValue().value));
+			if (ReactionAttributes.getFluxParams(bioRxn) != null) {
+				
+				FluxCollection fluxParams = ReactionAttributes.getFluxParams(bioRxn);
+
+				for (Flux param : fluxParams) {
+					if (param.getId().equals("OBJECTIVE_COEFFICIENT") && Double.valueOf(param.value) != 0) {
+						rxnInObjective.put(bioRxn.getId(), Double.valueOf(param.value));
+					}
 				}
 			}
 
 			/**
 			 * update modifiers to geneProduct references
 			 */
-			if (!bioRxn.getListOfGenes().isEmpty()) {
+			
+			
+			BioCollection<BioGene> genes = bioRxn.getGenes();
+			BioCollection<BioEnzyme> enzymes = bioRxn.getEnzymesView();
+			
+			if (!genes.isEmpty()) {
 				GeneProductAssociation GPA = rxnPlugin.createGeneProductAssociation();
 
-				if (bioRxn.getEnzList().size() == 1) {
-					for (BioPhysicalEntity enz : bioRxn.getEnzList().values()) {
+				if (enzymes.size() == 1) {
+					for (BioEnzyme enz : enzymes) {
 						Association a = createGeneAssociation(enz);
 						if (a != null) {
 							GPA.setAssociation(a);
@@ -262,7 +233,7 @@ public class FBCWriter implements PackageWriter, WriterSBML3Compatible, PrimaryD
 					}
 				} else {
 					Or orAssoc = new Or();
-					for (BioPhysicalEntity enz : bioRxn.getEnzList().values()) {
+					for (BioEnzyme enz : enzymes) {
 						Association a = createGeneAssociation(enz);
 						if (a != null) {
 							orAssoc.addAssociation(a);
@@ -309,12 +280,13 @@ public class FBCWriter implements PackageWriter, WriterSBML3Compatible, PrimaryD
 	private Association createGeneAssociation(BioPhysicalEntity enz) {
 
 		Association assoc;
+		
 		switch (enz.getClass().getSimpleName()) {
 		case "BioProtein":
 			List<Association> assoslist = new ArrayList<Association>();
 
 			BioGene gene = ((BioProtein) enz).getGene();
-
+			
 			if (gene != null) {
 				GeneProductRef geneRef = new GeneProductRef();
 				geneRef.setGeneProduct(StringUtils.convertToSID(gene.getId()));
@@ -333,18 +305,18 @@ public class FBCWriter implements PackageWriter, WriterSBML3Compatible, PrimaryD
 			}
 
 			break;
-		case "BioComplex":
+		case "BioEnzyme":
 
-			if (((BioComplex) enz).getAllComponentList().size() == 1) {
+			if (((BioEnzyme) enz).getParticipantsView().size() == 1) {
 				assoc = null;
-				for (BioPhysicalEntity part : ((BioComplex) enz).getAllComponentList().values()) {
-					assoc = createGeneAssociation(part);
+				for (BioEnzymeParticipant part : ((BioEnzyme) enz).getParticipantsView()) {
+					assoc = createGeneAssociation(part.getPhysicalEntity());
 				}
 
-			} else if (((BioComplex) enz).getAllComponentList().size() > 1) {
+			} else if (((BioEnzyme) enz).getParticipantsView().size() > 1) {
 				assoc = new And();
-				for (BioPhysicalEntity part : ((BioComplex) enz).getAllComponentList().values()) {
-					((And) assoc).addAssociation(createGeneAssociation(part));
+				for (BioEnzymeParticipant part : ((BioEnzyme) enz).getParticipantsView()) {
+					((And) assoc).addAssociation(createGeneAssociation(part.getPhysicalEntity()));
 				}
 			} else {
 				assoc = null;
@@ -357,7 +329,7 @@ public class FBCWriter implements PackageWriter, WriterSBML3Compatible, PrimaryD
 		}
 
 		return assoc;
-
+		
 	}
 
 	/**

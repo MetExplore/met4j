@@ -6,6 +6,8 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxCollection;
+
 
 public class ReactionAttributes {
 
@@ -13,6 +15,11 @@ public class ReactionAttributes {
 	public static final String UPPER_BOUND = "flux_upper_bound";
 	public static final String SCORE = "score";
 	public static final String STATUS = "status";
+	public static final String FAST = "fast";
+	public static final String KINETIC_FORMULA = "kinetic_formula";
+	public static final String FLUX_PARAMS = "flux_params";
+	public static final String ADDITIONAL_FLUX_PARAMS = "additional_flux_params";
+
 
 
 
@@ -184,7 +191,135 @@ public class ReactionAttributes {
 		
 	}
 	
+	/**
+	 * Get Sbo term
+	 * 
+	 * @param c
+	 * @return
+	 */
+	public static String getSboTerm(BioReaction r) {
+		return GenericAttributes.getSboTerm(r);
+	}
+
+	/**
+	 * Set Sbo term
+	 * 
+	 * @param c
+	 * @param sboTerm
+	 */
+	public static void setSboTerm(BioReaction r, String sboTerm) {
+		GenericAttributes.setSboTerm(r, sboTerm);
+	}
+
 	
+	/**
+	 * get fast attribute
+	 * @param r
+	 * @return
+	 */
+	public static boolean getFast(BioReaction r) {
+		return r.getAttribute(FAST)!=null ? (boolean) r.getAttribute(FAST) : false;
+	}
+	
+	/**
+	 * Set fast attribute
+	 * @param r
+	 * @param flag
+	 */
+	public static void setFast(BioReaction r, boolean flag) {
+		r.setAttribute(FAST, flag);
+	}
+	
+	/**
+	 * get kinetic formula
+	 * @param r
+	 * @return
+	 */
+	public static String getKineticFormula(BioReaction r) {
+		return (String)r.getAttribute(KINETIC_FORMULA);
+	}
+	
+	/**
+	 * Set fast attribute
+	 * @param r
+	 * @param flag
+	 */
+	public static void setKineticFormula(BioReaction r, String k) {
+		r.setAttribute(KINETIC_FORMULA, k);
+	}
+
+	/**
+	 * Get flux params
+	 * @param r
+	 * @return
+	 */
+	public static FluxCollection getFluxParams(BioReaction r) {
+		return (FluxCollection)r.getAttribute(FLUX_PARAMS);
+	}
+
+	/**
+	 * Set Flux params
+	 * @param r
+	 * @param c
+	 */
+	public static void setFluxParams(BioReaction r, FluxCollection c) {
+		r.setAttribute(FLUX_PARAMS, c);
+	}
+	
+	
+	/**
+	 * Get addtional flux params
+	 * @param r
+	 * @return
+	 */
+	public static FluxCollection getAdditionalFluxParams(BioReaction r) {
+		return (FluxCollection)r.getAttribute(ADDITIONAL_FLUX_PARAMS);
+	}
+
+	/**
+	 * Set additional Flux params
+	 * @param r
+	 * @param c
+	 */
+	public static void setAdditionalFluxParams(BioReaction r, FluxCollection c) {
+		r.setAttribute(ADDITIONAL_FLUX_PARAMS, c);
+	}
+	
+	
+	
+	/**
+	 * Add a flux
+	 * @param r
+	 * @param f
+	 */
+	public static void addFlux(BioReaction r, Flux f) {
+		
+		if(getFluxParams(r) == null)
+		{
+			setFluxParams(r, new FluxCollection());
+		}
+		
+		getFluxParams(r).add(f);
+		
+	}
+
+	/**
+	 * get flux from its id
+	 * @param r
+	 * @param id
+	 * @return
+	 */
+	public static Flux getFlux(BioReaction r, String id) {
+		
+		if(getFluxParams(r) == null)
+		{
+			return null;
+		}
+		
+		return getFluxParams(r).getEntityFromId(id);
+		
+		
+	}
 	
 	
 }

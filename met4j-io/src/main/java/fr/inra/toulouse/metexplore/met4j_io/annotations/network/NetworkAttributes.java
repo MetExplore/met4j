@@ -3,6 +3,7 @@ package fr.inra.toulouse.metexplore.met4j_io.annotations.network;
 import java.util.Set;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.BioAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.BioUnitDefinition;
@@ -119,5 +120,26 @@ public class NetworkAttributes {
 		GenericAttributes.setPmids(n, pmids);
 
 	}
+	
+	/**
+	 * Set annotation
+	 * 
+	 * @param metabolite
+	 * @param val
+	 */
+	public static void setAnnotation(BioNetwork network, BioAnnotation val) {
+		GenericAttributes.setAnnotation(network, val);
+	}
+
+	/**
+	 * Get annotation
+	 * 
+	 * @param metabolite
+	 * @return
+	 */
+	public static BioAnnotation getAnnotation(BioNetwork network) {
+		return GenericAttributes.getAnnotation(network);
+	}
+
 
 }

@@ -1,4 +1,4 @@
-package parsebionet.io.jsbml.writer;
+package fr.inra.toulouse.metexplore.met4j_io.jsbml.writer;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -23,11 +23,12 @@ import org.sbml.jsbml.SBMLException;
 import org.sbml.jsbml.SBMLWriter;
 import org.sbml.jsbml.validator.SBMLValidator;
 
-import parsebionet.biodata.BioNetwork;
-import parsebionet.io.jsbml.dataTags.AdditionalDataTag;
-import parsebionet.io.jsbml.dataTags.PrimaryDataTag;
-import parsebionet.io.jsbml.writer.plugin.PackageWriter;
-import parsebionet.utils.JSBMLUtils;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.utils.JSBMLUtils;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.PackageWriter;
+
 
 /**
  * The main writer class. It uses the correct {@link BionetworkToJsbml} class
@@ -213,17 +214,7 @@ public class JsbmlWriter {
 	 *            The list of plugins that will be applied to the converter
 	 */
 	protected void createConverter(ArrayList<PackageWriter> verifiedPkgs) {
-		BionetworkToJsbml converter = null;
-		switch (this.getLevel()) {
-		case 3:
-			converter = new BionetworkToJsbml3(this.getDoc());
-			break;
-		case 2:
-		case 1:
-			converter = new BionetworkToJsbml2(this.getDoc());
-			break;
-		}
-
+		BionetworkToJsbml converter = new BionetworkToJsbml(this.getModel().getLevel(), this.getModel().getVersion(), this.getDoc());
 		try {
 			converter.setPackages(verifiedPkgs);
 		} catch (Exception e1) {
@@ -265,16 +256,7 @@ public class JsbmlWriter {
 
 		this.setDoc(new SBMLDocument());
 
-		BionetworkToJsbml converter = null;
-		switch (this.getLevel()) {
-		case 3:
-			converter = new BionetworkToJsbml3(this.getDoc());
-			break;
-		case 2:
-		case 1:
-			converter = new BionetworkToJsbml2(this.getDoc());
-			break;
-		}
+		BionetworkToJsbml converter = new BionetworkToJsbml(this.getModel().getLevel(), this.getModel().getVersion(), this.getDoc());
 
 		try {
 			converter.setPackages(verifiedPkgs);

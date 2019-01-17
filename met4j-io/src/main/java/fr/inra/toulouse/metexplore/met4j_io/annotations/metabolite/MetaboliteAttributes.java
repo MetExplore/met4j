@@ -1,6 +1,9 @@
 package fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite;
 
+import java.util.Set;
+
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.BioAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.Notes;
 
@@ -11,6 +14,11 @@ public class MetaboliteAttributes {
 	public static final String CHARGE = "charge";
 	public static final String INCHIKEY = "inchikey";
 	public static final String BOUNDARY_CONDITION = "boundary_condition";
+	public static final String SUBSTANCE_UNITS = "substance_units";
+	public static final String INITIAL_AMOUNT = "initial_quantity_amount";
+	public static final String INITIAL_CONCENTRATION = "initial_quantity_concentration";
+	public static final String PUBCHEM = "pubchem.compound";
+	public static final String HAS_ONLY_SUBSTANCE_UNITS = "has_only_substance_units";
 
 	/**
 	 * get Boundary condition of a metabolite
@@ -88,13 +96,15 @@ public class MetaboliteAttributes {
 	 * @param m
 	 * @return
 	 */
-	public static Double getCharge(BioMetabolite m) {
+	public static int getCharge(BioMetabolite m) {
 
-		Double charge = (Double) m.getAttribute(CHARGE);
-
-		if (charge == null) {
-			charge = 0.0;
+		if( m.getAttribute(CHARGE) == null)
+		{
+			return 0;
 		}
+		
+		int charge = (int) m.getAttribute(CHARGE);
+		
 
 		return charge;
 
@@ -106,10 +116,187 @@ public class MetaboliteAttributes {
 	 * @param m
 	 * @param charge
 	 */
-	public static void setCharge(BioMetabolite m, Double charge) {
+	public static void setCharge(BioMetabolite m, int charge) {
 
 		m.setAttribute(CHARGE, charge);
 
 	}
 
+	/**
+	 * Get Metabolite units
+	 * 
+	 * @param m
+	 * @return
+	 */
+	public static String getSubtanceUnits(BioMetabolite m) {
+
+		return (String) m.getAttribute(SUBSTANCE_UNITS);
+	}
+
+	/**
+	 * Set subtance units
+	 * 
+	 * @param metabolite
+	 * @param u
+	 */
+	public static void setSubstanceUnits(BioMetabolite m, String u) {
+
+		m.setAttribute(SUBSTANCE_UNITS, u);
+
+	}
+
+	/**
+	 * Get Sbo term
+	 * 
+	 * @param c
+	 * @return
+	 */
+	public static String getSboTerm(BioMetabolite m) {
+		return GenericAttributes.getSboTerm(m);
+	}
+
+	/**
+	 * Set Sbo term
+	 * 
+	 * @param c
+	 * @param sboTerm
+	 */
+	public static void setSboTerm(BioMetabolite m, String sboTerm) {
+		GenericAttributes.setSboTerm(m, sboTerm);
+	}
+
+	/**
+	 * get Initial Amount
+	 * 
+	 * @param metabolite
+	 * @return
+	 */
+	public static Double getInitialAmount(BioMetabolite metabolite) {
+
+		if (metabolite.getAttribute(INITIAL_AMOUNT) == null) {
+			return 0.0;
+		}
+		
+		Double val = (Double) metabolite.getAttribute(INITIAL_AMOUNT);
+
+		return val;
+
+	}
+
+	/**
+	 * Set initial amount
+	 * @param metabolite
+	 * @param val
+	 */
+	public static void setInitialAmount(BioMetabolite metabolite, Double val) {
+		metabolite.setAttribute(INITIAL_AMOUNT, val);
+
+	}
+
+	/**
+	 * Get initial concentration
+	 * @param metabolite
+	 * @return
+	 */
+	public static Double getInitialConcentration(BioMetabolite metabolite) {
+		Double val = (Double) metabolite.getAttribute(INITIAL_CONCENTRATION);
+
+		if (val == null) {
+			val = 0.0;
+		}
+
+		return val;
+	}
+
+	/**
+	 * Set initial concentration
+	 * @param metabolite
+	 * @param val
+	 */
+	public static void setInitialConcentration(BioMetabolite metabolite, Double val) {
+		metabolite.setAttribute(INITIAL_CONCENTRATION, val);
+
+	}
+
+	/**
+	 * Set annotation
+	 * 
+	 * @param metabolite
+	 * @param val
+	 */
+	public static void setAnnotation(BioMetabolite metabolite, BioAnnotation val) {
+		GenericAttributes.setAnnotation(metabolite, val);
+	}
+
+	/**
+	 * Get annotation
+	 * 
+	 * @param metabolite
+	 * @return
+	 */
+	public static BioAnnotation getAnnotation(BioMetabolite metabolite) {
+		return GenericAttributes.getAnnotation(metabolite);
+	}
+
+	/**
+	 * Get pubchem
+	 * @param metabolite
+	 * @return
+	 */
+	public static String getPubchem(BioMetabolite metabolite) {
+		return (String)metabolite.getAttribute(PUBCHEM);
+	}
+
+	/**
+	 * Set pubchem
+	 * @param metabolite
+	 * @param val
+	 */
+	public static void setPubchem(BioMetabolite metabolite, String val) {
+		metabolite.setAttribute(PUBCHEM, val);
+	}
+	
+	/**
+	 * get pmids
+	 * 
+	 * @param r
+	 * @return
+	 */
+	public static Set<Integer> getPmids(BioMetabolite m) {
+
+		return GenericAttributes.getPmids(m);
+
+	}
+
+	/**
+	 * 
+	 * set pmids
+	 * 
+	 * @param r
+	 * @param pmids
+	 */
+	public static void setPmids(BioMetabolite m, Set<Integer> pmids) {
+
+		GenericAttributes.setPmids(m, pmids);
+
+	}
+
+	/**
+	 * Get hasOnlySubstanceUnit value
+	 * @param metabolite
+	 * @return
+	 */
+	public static boolean getHasOnlySubstanceUnits(BioMetabolite metabolite) {
+		return (boolean) metabolite.getAttribute(HAS_ONLY_SUBSTANCE_UNITS);
+	}
+
+	/**
+	 * Set hasOnlySubstanceUnit value
+	 * @param metabolite
+	 * @param b
+	 */
+	public static void setHasOnlySubstanceUnits(BioMetabolite metabolite, boolean b) {
+		metabolite.setAttribute(HAS_ONLY_SUBSTANCE_UNITS, b);
+	}
+	
 }

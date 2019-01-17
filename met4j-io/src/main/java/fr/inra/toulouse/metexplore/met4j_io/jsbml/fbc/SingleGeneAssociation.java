@@ -15,6 +15,9 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
  */
 public class SingleGeneAssociation {
 
+	
+	private String id;
+	
 	/**
 	 * The Set of {@link BioGene} present in this association
 	 */
@@ -98,6 +101,14 @@ public class SingleGeneAssociation {
 			return true;
 		}
 		return false;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

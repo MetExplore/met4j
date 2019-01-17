@@ -1,7 +1,6 @@
-package parsebionet.io.jsbml.reader;
+package fr.inra.toulouse.metexplore.met4j_io.jsbml.reader;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +9,6 @@ import java.util.HashSet;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.log4j.Level;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLError;
@@ -18,14 +16,13 @@ import org.sbml.jsbml.SBMLError.SEVERITY;
 import org.sbml.jsbml.SBMLReader;
 import org.sbml.jsbml.validator.SBMLValidator;
 
-import parsebionet.biodata.BioNetwork;
-import parsebionet.io.jsbml.dataTags.AdditionalDataTag;
-import parsebionet.io.jsbml.dataTags.PrimaryDataTag;
-import parsebionet.io.jsbml.reader.plugin.AnnotationParser;
-import parsebionet.io.jsbml.reader.plugin.FBC2Parser;
-import parsebionet.io.jsbml.reader.plugin.NotesParser;
-import parsebionet.io.jsbml.reader.plugin.PackageParser;
-import parsebionet.utils.JSBMLUtils;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.AnnotationParser;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBC2Parser;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 
 /**
  * The main reader class. It uses the correct {@link JsbmlToBioNetwork} class
@@ -81,8 +78,8 @@ public class JsbmlReader {
 		HashSet<PackageParser> pkgs = new HashSet<PackageParser>(Arrays.asList(
 				new NotesParser(true), new FBC2Parser(), new AnnotationParser(
 						true)));
-		BioNetwork net;
-		if ((net = reader.read(pkgs)) == null) {
+		BioNetwork net = reader.read(pkgs);
+		if (net == null) {
 			for (String err : reader.errorsAndWarnings) {
 				System.err.println(err);
 			}
@@ -91,9 +88,6 @@ public class JsbmlReader {
 			for (String e : reader.errorsAndWarnings) {
 				System.err.println(e);
 			}
-
-			net.printBioNetworkSizeToErr();
-
 		}
 	}
 
@@ -143,16 +137,7 @@ public class JsbmlReader {
 			ArrayList<PackageParser> verifiedPkgs = this
 					.verifyPackages(userEnabledPackages);
 
-			JsbmlToBioNetwork converter = null;
-			switch (this.getModel().getLevel()) {
-			case 3:
-				converter = new Jsbml3ToBioNetwork();
-				break;
-			case 2:
-			case 1:
-				converter = new Jsbml2ToBioNetwork();
-				break;
-			}
+			JsbmlToBioNetwork converter = new JsbmlToBioNetwork();
 
 			this.setConverter(converter);
 
@@ -223,7 +208,6 @@ public class JsbmlReader {
 	 *             SBMLReader.read(..) method
 	 */
 	private void initiateModel() throws IOException, XMLStreamException {
-		this.setLogMode();
 		File sbmlFile = new File(this.getFilename());
 
 		SBMLDocument doc = SBMLReader.read(sbmlFile);
@@ -237,24 +221,6 @@ public class JsbmlReader {
 		}
 
 		this.setModel(doc.getModel());
-
-	}
-
-	/**
-	 * Set the JSBML Log4J level to Fatal
-	 * 
-	 * @see JSBMLUtils
-	 * @throws FileNotFoundException
-	 *             if the log file is not found
-	 * @throws IOException
-	 *             if the log file is unwritable
-	 */
-	private void setLogMode() throws FileNotFoundException, IOException {
-
-		JSBMLUtils.setDefaultLog4jConfiguration();
-		JSBMLUtils.setJSBMLlogToLevel(Level.FATAL);
-
-		// JSBMLUtils.addFileLog("/tmp/importLog.log");
 
 	}
 

@@ -12,7 +12,9 @@ public class MetaboliteAttributes {
 	public static final String NOTES = "notes";
 	public static final String COMMENT = "comment";
 	public static final String CHARGE = "charge";
+	public static final String FORMULA = "formula";
 	public static final String INCHIKEY = "inchikey";
+	public static final String INCHI = "inchi";
 	public static final String BOUNDARY_CONDITION = "boundary_condition";
 	public static final String SUBSTANCE_UNITS = "substance_units";
 	public static final String INITIAL_AMOUNT = "initial_quantity_amount";
@@ -90,37 +92,6 @@ public class MetaboliteAttributes {
 
 	}
 
-	/**
-	 * get charge
-	 * 
-	 * @param m
-	 * @return
-	 */
-	public static int getCharge(BioMetabolite m) {
-
-		if( m.getAttribute(CHARGE) == null)
-		{
-			return 0;
-		}
-		
-		int charge = (int) m.getAttribute(CHARGE);
-		
-
-		return charge;
-
-	}
-
-	/**
-	 * set charge
-	 * 
-	 * @param m
-	 * @param charge
-	 */
-	public static void setCharge(BioMetabolite m, int charge) {
-
-		m.setAttribute(CHARGE, charge);
-
-	}
 
 	/**
 	 * Get Metabolite units

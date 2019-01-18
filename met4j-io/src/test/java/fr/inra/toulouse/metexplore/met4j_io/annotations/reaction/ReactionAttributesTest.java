@@ -134,7 +134,7 @@ public class ReactionAttributesTest {
 
 		ReactionAttributes.setNotes(r, notes);
 
-		assertEquals(notes, r.getAttribute(GenericAttributes.NOTES));
+		assertEquals(notes, r.getAttribute(GenericAttributes.SBML_NOTES));
 
 	}
 
@@ -143,7 +143,7 @@ public class ReactionAttributesTest {
 
 		Notes notes = new Notes("<p>toto</p>");
 
-		r.setAttribute(GenericAttributes.NOTES, notes);
+		r.setAttribute(GenericAttributes.SBML_NOTES, notes);
 
 		assertEquals(notes, ReactionAttributes.getNotes(r));
 

@@ -82,7 +82,7 @@ public class MetaboliteAttributesTest {
 		
 		MetaboliteAttributes.setNotes(metabolite, notes);
 		
-		assertEquals(notes, metabolite.getAttribute(GenericAttributes.NOTES));
+		assertEquals(notes, metabolite.getAttribute(GenericAttributes.SBML_NOTES));
 		
 	}
 	
@@ -91,7 +91,7 @@ public class MetaboliteAttributesTest {
 		
 		Notes notes = new Notes("<p>toto</p>");
 		
-		metabolite.setAttribute(GenericAttributes.NOTES, notes);
+		metabolite.setAttribute(GenericAttributes.SBML_NOTES, notes);
 		
 		assertEquals(notes, MetaboliteAttributes.getNotes(metabolite));
 		

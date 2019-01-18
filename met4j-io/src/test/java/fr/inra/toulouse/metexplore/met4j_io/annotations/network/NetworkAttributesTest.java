@@ -101,7 +101,7 @@ public class NetworkAttributesTest {
 
 		NetworkAttributes.setNotes(network, notes);
 
-		assertEquals(notes, network.getAttribute(GenericAttributes.NOTES));
+		assertEquals(notes, network.getAttribute(GenericAttributes.SBML_NOTES));
 
 	}
 
@@ -110,7 +110,7 @@ public class NetworkAttributesTest {
 
 		Notes notes = new Notes("<p>toto</p>");
 
-		network.setAttribute(GenericAttributes.NOTES, notes);
+		network.setAttribute(GenericAttributes.SBML_NOTES, notes);
 
 		assertEquals(notes, NetworkAttributes.getNotes(network));
 

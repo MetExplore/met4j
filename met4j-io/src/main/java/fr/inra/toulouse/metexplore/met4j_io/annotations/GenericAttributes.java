@@ -12,7 +12,7 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 public class GenericAttributes {
 
 	public static final String SBML_UNIT_DEFINITIONS = "unit_definitions";
-	public static final String NOTES = "notes";
+	public static final String SBML_NOTES = "notes";
 	public static final String PMIDS = "pmids";
 	public static final String COMMENT = "comment";
 	public static final String SBO_TERM = "sbo_term";
@@ -66,7 +66,7 @@ public class GenericAttributes {
 	 */
 	public static Notes getNotes(BioEntity e) {
 
-		return (Notes) e.getAttribute(NOTES);
+		return (Notes) e.getAttribute(SBML_NOTES);
 
 	}
 
@@ -78,7 +78,7 @@ public class GenericAttributes {
 	 */
 	public static void setNotes(BioEntity e, Notes notes) {
 
-		e.setAttribute(NOTES, notes);
+		e.setAttribute(SBML_NOTES, notes);
 
 	}
 

@@ -56,7 +56,7 @@ public class CompartmentAttributesTest {
 
 		CompartmentAttributes.setNotes(compartment, notes);
 
-		assertEquals(notes, compartment.getAttribute(GenericAttributes.NOTES));
+		assertEquals(notes, compartment.getAttribute(GenericAttributes.SBML_NOTES));
 
 	}
 
@@ -65,7 +65,7 @@ public class CompartmentAttributesTest {
 
 		Notes notes = new Notes("<p>toto</p>");
 
-		compartment.setAttribute(GenericAttributes.NOTES, notes);
+		compartment.setAttribute(GenericAttributes.SBML_NOTES, notes);
 
 		assertEquals(notes, CompartmentAttributes.getNotes(compartment));
 

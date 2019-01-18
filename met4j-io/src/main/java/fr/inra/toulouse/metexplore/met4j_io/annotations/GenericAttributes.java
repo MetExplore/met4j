@@ -4,11 +4,8 @@ import java.util.Set;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 
 public class GenericAttributes {
 
@@ -67,12 +64,6 @@ public class GenericAttributes {
 	 */
 	public static Notes getNotes(BioEntity e) {
 
-		if (!(e.getClass().equals(BioNetwork.class) || e.getClass().equals(BioReaction.class)
-				|| e.getClass().equals(BioMetabolite.class) || e.getClass().equals(BioCompartment.class))) {
-			throw new IllegalArgumentException(
-					"The entity must be a BioCompartment, a BioMetabolite, a BioNetwork or a BioReaction");
-		}
-
 		return (Notes) e.getAttribute(NOTES);
 
 	}
@@ -84,12 +75,6 @@ public class GenericAttributes {
 	 * @return
 	 */
 	public static void setNotes(BioEntity e, Notes notes) {
-
-		if (!(e.getClass().equals(BioNetwork.class) || e.getClass().equals(BioReaction.class)
-				|| e.getClass().equals(BioMetabolite.class) || e.getClass().equals(BioCompartment.class))) {
-			throw new IllegalArgumentException(
-					"The entity must be a BioCompartment, a BioMetabolite, a BioNetwork or a BioReaction");
-		}
 
 		e.setAttribute(NOTES, notes);
 
@@ -103,12 +88,6 @@ public class GenericAttributes {
 	 */
 	public static void setPmids(BioEntity e, Set<Integer> pmids) {
 
-		if (!(e.getClass().equals(BioGene.class) || e.getClass().equals(BioNetwork.class)
-				|| e.getClass().equals(BioMetabolite.class) || e.getClass().equals(BioReaction.class))) {
-			throw new IllegalArgumentException(
-					"The entity must be a BioNetwork or a BioReaction or a BioMetabolite or a BioGene");
-		}
-
 		e.setAttribute(PMIDS, pmids);
 
 	}
@@ -121,12 +100,6 @@ public class GenericAttributes {
 	 */
 	@SuppressWarnings("unchecked")
 	public static Set<Integer> getPmids(BioEntity e) {
-
-		if (!(e.getClass().equals(BioGene.class) || e.getClass().equals(BioNetwork.class)
-				|| e.getClass().equals(BioMetabolite.class) || e.getClass().equals(BioReaction.class))) {
-			throw new IllegalArgumentException(
-					"The entity must be a BioNetwork or a BioReaction or a BioMetabolite or a BioGene");
-		}
 
 		return (Set<Integer>) e.getAttribute(PMIDS);
 
@@ -161,12 +134,6 @@ public class GenericAttributes {
 	 * @param sboTerm
 	 */
 	public static void setSboTerm(BioEntity e, String sboTerm) {
-		if (!(e.getClass().equals(BioReaction.class) || e.getClass().equals(BioMetabolite.class)
-				|| e.getClass().equals(BioCompartment.class))) {
-			throw new IllegalArgumentException(
-					"The entity must be a BioMetabolite or a BioReaction or a BioCompartment");
-		}
-
 		e.setAttribute(SBO_TERM, sboTerm);
 
 	}
@@ -178,12 +145,6 @@ public class GenericAttributes {
 	 * @return
 	 */
 	public static String getSboTerm(BioEntity e) {
-		if (!(e.getClass().equals(BioReaction.class) || e.getClass().equals(BioMetabolite.class)
-				|| e.getClass().equals(BioCompartment.class))) {
-			throw new IllegalArgumentException(
-					"The entity must be a BioMetabolite or a BioReaction or a BioCompartment");
-		}
-
 		return (String) e.getAttribute(SBO_TERM);
 	}
 
@@ -194,12 +155,6 @@ public class GenericAttributes {
 	 * @return
 	 */
 	public static BioAnnotation getAnnotation(BioEntity e) {
-		if (!(e.getClass().equals(BioNetwork.class) || e.getClass().equals(BioReaction.class)
-				|| e.getClass().equals(BioMetabolite.class) || e.getClass().equals(BioCompartment.class))) {
-			throw new IllegalArgumentException(
-					"The entity must be a BioMetabolite or a BioReaction or a BioCompartment");
-		}
-
 		return (BioAnnotation) e.getAttribute(ANNOTATION);
 	}
 
@@ -210,12 +165,6 @@ public class GenericAttributes {
 	 * @param sboTerm
 	 */
 	public static void setAnnotation(BioEntity e, BioAnnotation val) {
-		if (!(e.getClass().equals(BioNetwork.class) || e.getClass().equals(BioReaction.class)
-				|| e.getClass().equals(BioMetabolite.class) || e.getClass().equals(BioCompartment.class))) {
-			throw new IllegalArgumentException(
-					"The entity must be a BioMetabolite or a BioReaction or a BioCompartment");
-		}
-
 		e.setAttribute(ANNOTATION, val);
 
 	}

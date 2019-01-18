@@ -100,6 +100,8 @@ public class MetaboliteAttributesTest {
 	@Test
 	public void testGetCharge() {
 		
+		assertEquals("When not defined, the charge must equal to  0",0, MetaboliteAttributes.getCharge(metabolite));
+		
 		int charge = 1;
 		
 		metabolite.setAttribute(MetaboliteAttributes.CHARGE, charge);

@@ -6,7 +6,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
@@ -18,6 +20,9 @@ public class ReactionAttributesTest {
 
 	BioReaction r;
 	Flux f;
+
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
 
 	@Before
 	public void init() {
@@ -49,7 +54,7 @@ public class ReactionAttributesTest {
 
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testSetLowerBound() {
 
 		f.value = 150.0;
@@ -57,17 +62,36 @@ public class ReactionAttributesTest {
 		ReactionAttributes.setLowerBound(r, f);
 
 		assertEquals("test set lower bound", 150.0, ((Flux) r.getAttribute(ReactionAttributes.LOWER_BOUND)).value, 0.0);
+		
+		f.value = -150.0;
 
-		// Must throw an exception since the reaction is irreversible and the
-		// lower bound negative
+		ReactionAttributes.setLowerBound(r, f);
+		
+		assertEquals("test set lower bound", -150.0, ((Flux) r.getAttribute(ReactionAttributes.LOWER_BOUND)).value, 0.0);
+
+		f.value = 150.0;
+		
+		r.setReversible(false);
+
+		ReactionAttributes.setLowerBound(r, f);
+		assertEquals("test set lower bound", 150.0, ((Flux) r.getAttribute(ReactionAttributes.LOWER_BOUND)).value, 0.0);
+
+
+	}
+	
+	@Test
+	public void testSetBadLowerBound() {
+		
+		exception.expect(IllegalArgumentException.class);
 		r.setReversible(false);
 
 		f.value = -150.0;
+		
 		ReactionAttributes.setLowerBound(r, f);
-
 	}
+	
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testSetUpperBound() {
 
 		f.value = 150.0;
@@ -75,16 +99,33 @@ public class ReactionAttributesTest {
 		ReactionAttributes.setUpperBound(r, f);
 
 		assertEquals("test set upper bound", 150.0, ((Flux) r.getAttribute(ReactionAttributes.UPPER_BOUND)).value, 0.0);
-
-		// Must throw an exception since the reaction is irreversible and the
-		// upper bound negative
-		r.setReversible(false);
-
+		
 		f.value = -150.0;
 
 		ReactionAttributes.setUpperBound(r, f);
 
+		assertEquals("test set upper bound", -150.0, ((Flux) r.getAttribute(ReactionAttributes.UPPER_BOUND)).value, 0.0);
+
+		r.setReversible(false);
+
+		f.value = 150.0;
+		ReactionAttributes.setUpperBound(r, f);
+		assertEquals("test set upper bound", 150.0, ((Flux) r.getAttribute(ReactionAttributes.UPPER_BOUND)).value, 0.0);
+
 	}
+	
+	
+	@Test
+	public void testSetBadUpperBound() {
+		
+		exception.expect(IllegalArgumentException.class);
+		r.setReversible(false);
+
+		f.value = -150.0;
+		
+		ReactionAttributes.setUpperBound(r, f);
+	}
+	
 
 	@Test
 	public void testSetNotes() {
@@ -300,7 +341,7 @@ public class ReactionAttributesTest {
 		assertEquals((FluxCollection) r.getAttribute(ReactionAttributes.FLUX_PARAMS), c);
 
 	}
-	
+
 	@Test
 	public void testGetAdditionalFluxParams() {
 
@@ -364,7 +405,14 @@ public class ReactionAttributesTest {
 		Flux test2 = ReactionAttributes.getFlux(r, "f2");
 
 		assertEquals(f2, test2);
+		
+		assertNull(ReactionAttributes.getFlux(r, "nonExistant"));
 
 	}
-
+	
+	@Test
+	public void testGetFluxWhenNoFluxParams() {
+		assertNull(ReactionAttributes.getFlux(r, "f"));
+	}
+	
 }

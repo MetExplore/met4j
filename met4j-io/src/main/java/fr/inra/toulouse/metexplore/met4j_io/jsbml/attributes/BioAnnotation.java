@@ -55,13 +55,6 @@ public class BioAnnotation  extends BioEntity{
 	private String XMLasString;
 
 	/**
-	 * Default Constructor
-	 */
-	public BioAnnotation() {
-		super("NA");
-	}
-
-	/**
 	 * Constructor
 	 * 
 	 * @param meta
@@ -86,14 +79,6 @@ public class BioAnnotation  extends BioEntity{
 	 */
 	public String getXMLasString() {
 		return XMLasString;
-	}
-
-	/**
-	 * @param xMLasString
-	 *            the xMLasString to set
-	 */
-	public void setXMLasString(String xMLasString) {
-		XMLasString = xMLasString;
 	}
 
 }

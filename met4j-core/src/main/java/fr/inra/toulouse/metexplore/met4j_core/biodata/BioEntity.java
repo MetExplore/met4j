@@ -35,123 +35,124 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 /**
- * The root class 
+ * The root class
  */
 
 public abstract class BioEntity {
-	
+
 	private final String id;
 	private String name;
 	private ArrayList<String> synonyms = new ArrayList<String>();
 	private String comment;
-		
-	private HashMap<String,Set<BioRef>> refs;
-	
+
+	private HashMap<String, Set<BioRef>> refs;
+
 	private HashMap<String, Object> attributes;
-	
 
 	public BioEntity(String id, String name) {
-		
-		if(id==null) 
-		{
-			throw new NullPointerException();
-		}
-		else if(id.isEmpty() || id.matches("^\\s*$"))
-		{
-			throw new IllegalArgumentException();
+
+		if (StringUtils.isVoid(id)) {
+			throw new IllegalArgumentException("Invalid id for building a BioEntity");
 		}
 
-		this.id=id;
-		
+		this.id = id;
+
 		this.setName(name);
 		this.setRefs(new HashMap<String, Set<BioRef>>());
-		
+
 		attributes = new HashMap<String, Object>();
 	}
-	
-	
+
 	public BioEntity(String id) {
 
-		
-		if(id==null)
-		{
+		if (id == null) {
 			throw new NullPointerException();
 		}
 
-		this.id=id;
+		this.id = id;
 		this.setName(id);
 		this.setRefs(new HashMap<String, Set<BioRef>>());
-		
+
 		attributes = new HashMap<String, Object>();
 	}
 
 	@Override
-    public boolean equals(Object o) {
- 
-        // If the object is compared with itself then return true  
-        if (o == this) {
-            return true;
-        }
- 
-        /* Check if o is an instance of BioEntity or not
-          "null instanceof [type]" also returns false */
-        if (!(o instanceof BioEntity)) {
-            return false;
-        }
-         
-        // typecast o to BioReactant so that we can compare data members 
-        BioEntity c = (BioEntity) o;
-         
-		// Compare the data members and return accordingly 
-		
-		return c.getId().equals(this.getId());
-    }
+	public boolean equals(Object o) {
 
-	
+		// If the object is compared with itself then return true
+		if (o == this) {
+			return true;
+		}
+
+		/*
+		 * Check if o is an instance of BioEntity or not
+		 * "null instanceof [type]" also returns false
+		 */
+		if (!(o instanceof BioEntity)) {
+			return false;
+		}
+
+		// typecast o to BioReactant so that we can compare data members
+		BioEntity c = (BioEntity) o;
+
+		// Compare the data members and return accordingly
+
+		return c.getId().equals(this.getId());
+	}
+
 	/**
 	 * Set the name of the entity
-	 * @param n : String
+	 * 
+	 * @param n
+	 *            : String
 	 */
-	public void setName (String n) {
+	public void setName(String n) {
 		this.name = n;
 	}
-	
+
 	/**
 	 * Get the name of the entity
+	 * 
 	 * @return the name of the entity
 	 */
 	public String getName() {
 		return this.name;
 	}
-	
+
 	/**
 	 * Get the list of the synonyms
+	 * 
 	 * @return an ArrayList of the synonyms of the entity
 	 */
 	public ArrayList<String> getSynonyms() {
 		return this.synonyms;
 	}
-	
+
 	/**
 	 * add a synonym in the list
-	 * @param a String to add
+	 * 
+	 * @param a
+	 *            String to add
 	 */
 	public void addSynonym(String s) {
 		this.synonyms.add(s);
 	}
-	
+
 	/**
 	 * Set the comment on the entity
+	 * 
 	 * @param c
 	 */
-	public void setComment (String c) {
+	public void setComment(String c) {
 		this.comment = c;
 	}
-	
+
 	/**
 	 * Get the comment on the entity
+	 * 
 	 * @return the comment on the entity
 	 */
 	public String getComment() {
@@ -168,20 +169,21 @@ public abstract class BioEntity {
 	public void setSynonyms(ArrayList<String> synonyms) {
 		this.synonyms = synonyms;
 	}
-	
-	
+
 	/**
-	 * TODO : voir la coherence du code entre les deux methodes addRef. Celle ci devrait se terminer par un this.addRef(ref)
+	 * TODO : voir la coherence du code entre les deux methodes addRef. Celle ci
+	 * devrait se terminer par un this.addRef(ref)
+	 * 
 	 * @param dbName
 	 * @param dbId
 	 * @param confidenceLevel
 	 * @param relation
 	 * @param origin
 	 */
-	public void addRef(String dbName, String dbId, int confidenceLevel, String relation, String origin){
+	public void addRef(String dbName, String dbId, int confidenceLevel, String relation, String origin) {
 		BioRef ref = new BioRef(origin, dbName, dbId, confidenceLevel);
 		ref.setLogicallink(relation);
-		if (this.refs.containsKey(dbName)){
+		if (this.refs.containsKey(dbName)) {
 			refs.get(dbName).add(ref);
 		} else {
 			Set<BioRef> refList = new HashSet<BioRef>();
@@ -189,11 +191,11 @@ public abstract class BioEntity {
 			this.refs.put(dbName, refList);
 		}
 	}
-	
-	public void addRef(BioRef ref){
+
+	public void addRef(BioRef ref) {
 		String dbName = ref.getDbName();
-		if(!this.hasRef(ref)){
-			if (this.refs.containsKey(dbName)){
+		if (!this.hasRef(ref)) {
+			if (this.refs.containsKey(dbName)) {
 				refs.get(dbName).add(ref);
 			} else {
 				Set<BioRef> refList = new HashSet<BioRef>();
@@ -202,74 +204,67 @@ public abstract class BioEntity {
 			}
 		}
 	}
-	
-	public HashMap<String, Set<BioRef>> getRefs(){
+
+	public HashMap<String, Set<BioRef>> getRefs() {
 		return this.refs;
 	}
-	
-	public Set<BioRef> getRefs(String dbName){
-		if (this.refs.containsKey(dbName)){
+
+	public Set<BioRef> getRefs(String dbName) {
+		if (this.refs.containsKey(dbName)) {
 			return this.refs.get(dbName);
-		}
-		else{
+		} else {
 			return null;
 		}
 	}
-	
-	public boolean hasRef(String dbName, String dbId){
-		if(this.refs==null || !this.refs.containsKey(dbName)){
+
+	public boolean hasRef(String dbName, String dbId) {
+		if (this.refs == null || !this.refs.containsKey(dbName)) {
 			return false;
 		}
-		for(BioRef ref:this.refs.get(dbName)){
-			if(ref.getId().equals(dbId)){
+		for (BioRef ref : this.refs.get(dbName)) {
+			if (ref.getId().equals(dbId)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	public boolean hasRef(BioRef unkRef){
-		
 
+	public boolean hasRef(BioRef unkRef) {
 
-		if(this.refs==null || !this.refs.containsKey(unkRef.dbName)){
+		if (this.refs == null || !this.refs.containsKey(unkRef.dbName)) {
 			return false;
 		}
-		for(BioRef ref:this.refs.get(unkRef.dbName)){
-			if(ref.equals(unkRef)){
+		for (BioRef ref : this.refs.get(unkRef.dbName)) {
+			if (ref.equals(unkRef)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	public void setRefs(HashMap<String, Set<BioRef>> refs){
-		this.refs=refs;
+
+	public void setRefs(HashMap<String, Set<BioRef>> refs) {
+		this.refs = refs;
 	}
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		return this.getId();
 	}
-
 
 	public HashMap<String, Object> getAttributes() {
 		return attributes;
 	}
 
-
 	public void setAttributes(HashMap<String, Object> attributes) {
 		this.attributes = attributes;
 	}
 
-
 	public Object setAttribute(String key, Object value) {
 		return attributes.put(key, value);
 	}
-	
+
 	public Object getAttribute(String key) {
 		return attributes.get(key);
 	}
 
-	
 }

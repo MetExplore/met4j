@@ -30,6 +30,8 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_io.annotations.compartment;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
+
 /**
  * @author Fabien
  *	Definition from SBML v2 Version4 release1
@@ -42,24 +44,10 @@ package fr.inra.toulouse.metexplore.met4j_io.annotations.compartment;
  *	There is no mechanism in SBML for representing hierarchies of compartment types.
  *	One CompartmentType	object instance cannot be the subtype of another CompartmentType object; SBML provides no means of defining such relationships.
  */
-public class BioCompartmentType {
-	private String id;
-	private String name;
+public class BioCompartmentType extends BioEntity {
+	
 	public BioCompartmentType(String i, String n)
 	{
-		id=i;
-		name=n;
-	}
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
+		super(i, n);
 	}
 }

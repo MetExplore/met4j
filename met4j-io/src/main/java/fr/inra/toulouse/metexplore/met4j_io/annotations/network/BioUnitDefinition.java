@@ -46,9 +46,6 @@ import fr.inra.toulouse.metexplore.met4j_io.annotations.UnitSbml;
  */
 public class BioUnitDefinition extends BioEntity {
 	
-	private Boolean flagedAsUpdate=false;
-	private Boolean flagedAsInsert=false;
-	private Boolean flagedAsConflict=false;
 	
 	HashMap<String, UnitSbml> units;
 	
@@ -83,30 +80,6 @@ public class BioUnitDefinition extends BioEntity {
 	
 	public void addUnit(UnitSbml unit) {
 		this.units.put(unit.getKind(), unit);
-	}
-
-	public Boolean getFlagedAsUpdate() {
-		return flagedAsUpdate;
-	}
-
-	public void setFlagedAsUpdate(Boolean flagedAsUpdate) {
-		this.flagedAsUpdate = flagedAsUpdate;
-	}
-
-	public Boolean getFlagedAsInsert() {
-		return flagedAsInsert;
-	}
-
-	public void setFlagedAsInsert(Boolean flagedAsInsert) {
-		this.flagedAsInsert = flagedAsInsert;
-	}
-
-	public Boolean getFlagedAsConflict() {
-		return flagedAsConflict;
-	}
-
-	public void setFlagedAsConflict(Boolean flagedAsConflict) {
-		this.flagedAsConflict = flagedAsConflict;
 	}
 
 }

@@ -36,11 +36,6 @@
 
 package fr.inra.toulouse.metexplore.met4j_io.annotations;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 
@@ -79,86 +74,11 @@ public class BioAnnotation  extends BioEntity{
 		super(meta);
 		
 		if (StringUtils.isVoid(meta)) {
-			 throw new IllegalArgumentException();
+			 throw new IllegalArgumentException("The string is not valid");
 		} else {
 			XMLasString = xmlasString;
 		}
 		
-	}
-
-	/**
-	 * Retrieve gene identifier from annotation described with the 'isEncodedBy'
-	 * qualifier
-	 * 
-	 * @return a set of gene identifier that are annotated with the
-	 *         'isEncodedBy' qualifier
-	 */
-	public HashSet<String> getEncodedBy() {
-
-		String annot = this.getXMLasString().replaceAll(">\\s+<", "><");
-		HashSet<String> genesName = new HashSet<String>();
-		Matcher m;
-		String regex = ".+?isEncodedBy.+?resource=\"http://identifiers\\.org/[^/]+/([^\"]+)\".+?isEncodedBy>.*";
-
-		m = Pattern.compile(regex).matcher(annot);
-		while (m.matches()) {
-			String value = m.group(1);
-			genesName.add(value);
-			annot = annot.replaceAll(value, "");
-			m = Pattern.compile(regex).matcher(annot);
-		}
-
-		return genesName;
-	}
-
-	/**
-	 * Parse Annotation XML as a HashMap with db as key and dbid as value
-	 * 
-	 * @return HashMap<db,dbid>
-	 */
-	public HashMap<String, String> getAnnotationAsSimpleHashMap() {
-		String AnnXML = XMLasString;
-		HashMap<String, String> AnnotationHashMap = new HashMap<String, String>();
-
-		String[] lines = AnnXML.split("\n");
-		for (int i = 0; i < lines.length; i++) {
-			if (lines[i].contains("identifiers.org")) {
-				String[] lineparts = lines[i].split("/");
-				for (int j = 0; j < lineparts.length; j++) {
-					if (lineparts[j].contains("identifiers.org")) {
-						if (!lineparts[j + 1].equals("inci")) {
-							AnnotationHashMap.put(lineparts[j + 1],
-									lineparts[j + 2].replace("\"", ""));
-							break;
-						}
-					}
-				}
-			}
-		}
-
-		return AnnotationHashMap;
-	}
-
-	/**
-	 * Creates the annotation XMLstring from Annotation HashMap
-	 * 
-	 * @param AnnotMap
-	 *            the hash map to convert into annotations
-	 */
-	public void setXMLasStringFromHashMap(HashMap<String, String> AnnotMap) {
-		String tempstr = "        <annotation>\n          <rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:bqmodel=\"http://biomodels.net/model-qualifiers/\" xmlns:bqbiol=\"http://biomodels.net/biology-qualifiers/\">\n            <rdf:Description rdf:about=\""
-				+ this.getId() + "\">\n";
-		for (String db : AnnotMap.keySet()) {
-			tempstr = tempstr
-					+ "              <bqbiol:is>\n                <rdf:Bag>\n                  <rdf:li rdf:resource=\"http://identifiers.org/"
-					+ db
-					+ "/"
-					+ AnnotMap.get(db)
-					+ "\"/>\n                </rdf:Bag>\n              </bqbiol:is>\n";
-		}
-		tempstr = tempstr
-				+ "            </rdf:Description>\n          </rdf:RDF>\n        </annotation>";
-		XMLasString = tempstr;
 	}
 
 	/**

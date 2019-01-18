@@ -10,11 +10,11 @@ import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.BioAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.Notes;
-import fr.inra.toulouse.metexplore.met4j_io.annotations.network.BioUnitDefinition;
-import fr.inra.toulouse.metexplore.met4j_io.annotations.network.BioUnitDefinitionCollection;
 
 public class NetworkAttributesTest {
 

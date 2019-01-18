@@ -16,8 +16,6 @@ import org.sbml.jsbml.ext.fbc.Or;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_io.annotations.network.BioUnitDefinition;
-import fr.inra.toulouse.metexplore.met4j_io.annotations.network.BioUnitDefinitionCollection;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
@@ -27,6 +25,8 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxReaction;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociations;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.SingleGeneAssociation;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
 
 /**
  * This class is used to parse SBML level 3 FBC version 2 package. It extends

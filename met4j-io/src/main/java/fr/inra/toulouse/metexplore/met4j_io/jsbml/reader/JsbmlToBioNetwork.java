@@ -27,8 +27,6 @@ import fr.inra.toulouse.metexplore.met4j_io.annotations.UnitSbml;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.BioCompartmentType;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
-import fr.inra.toulouse.metexplore.met4j_io.annotations.network.BioUnitDefinition;
-import fr.inra.toulouse.metexplore.met4j_io.annotations.network.BioUnitDefinitionCollection;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reactant.ReactantAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
@@ -37,6 +35,8 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxCollection;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML2Compatible;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
 
 import org.sbml.jsbml.Unit.Kind;
 

@@ -39,6 +39,8 @@ package fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
+
 /**
  * This Class is used to keep track of the notes present in the imported file in
  * the BioNetwork object
@@ -91,8 +93,8 @@ public class Notes {
 	public void addAttributeToNotes(String key, String value,
 			boolean updateValue) {
 
-		String formattedKey = key.trim().replaceAll("\\s+", "_");
-		String formattedValue = value.trim().replaceAll("\\s+", "_");
+		String formattedKey = StringUtils.forXML(key.trim().replaceAll("\\s+", "_"));
+		String formattedValue = StringUtils.forXML(value.trim().replaceAll("\\s+", "_"));
 		
 		String existingNotes = this.getXHTMLasString();
 		String newNote = existingNotes;
@@ -148,7 +150,7 @@ public class Notes {
 	 * @param xHTMLasString
 	 *            the xHTMLasString to set
 	 */
-	public void setXHTMLasString(String xHTMLasString) {
+	private void setXHTMLasString(String xHTMLasString) {
 		XHTMLasString = xHTMLasString;
 	}
 

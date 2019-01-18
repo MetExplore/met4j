@@ -66,7 +66,7 @@ public class BioReaction extends BioEntity {
 
 	private boolean spontaneous = false;
 	private String ecNumber;
-	private boolean reversible;
+	private boolean reversible=true;
 
 	private BioCollection<BioReactant> left = new BioCollection<BioReactant>();
 	private BioCollection<BioReactant> right = new BioCollection<BioReactant>();

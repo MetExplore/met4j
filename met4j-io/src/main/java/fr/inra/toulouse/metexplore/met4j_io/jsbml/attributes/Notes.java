@@ -91,26 +91,28 @@ public class Notes {
 	public void addAttributeToNotes(String key, String value,
 			boolean updateValue) {
 
-		String keyRegex = key.replaceAll("\\s", ".");
+		String formattedKey = key.trim().replaceAll("\\s+", "_");
+		String formattedValue = value.trim().replaceAll("\\s+", "_");
+		
 		String existingNotes = this.getXHTMLasString();
 		String newNote = existingNotes;
 
-		Pattern p = Pattern.compile(keyRegex, Pattern.CASE_INSENSITIVE
+		Pattern p = Pattern.compile(formattedKey, Pattern.CASE_INSENSITIVE
 				| Pattern.UNICODE_CASE);
 
 		if (p.matcher(existingNotes).find() && updateValue) {
 
-			String valueRegex = keyRegex + ": ([^<]*)</p>";
+			String valueRegex = formattedKey + ": ([^<]*)</p>";
 			Matcher regexMatcher = Pattern.compile(valueRegex,
 					Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE).matcher(
 					existingNotes);
 			if (regexMatcher.find())
-				newNote = regexMatcher.replaceFirst(key + ": "
-						+ value + "</p>\n");
+				newNote = regexMatcher.replaceFirst(formattedKey + ": "
+						+ formattedValue + "</p>");
 
 		} else if (!p.matcher(existingNotes).find()) {
 
-			String replacementStrg = "<p>" + key + ": " + value
+			String replacementStrg = "<p>" + formattedKey + ": " + formattedValue
 					+ "</p>\n</body>";
 
 			newNote = existingNotes.replace("</body>", replacementStrg);

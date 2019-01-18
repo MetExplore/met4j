@@ -37,7 +37,7 @@
 package fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
+import static fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
 
 /**
  * This Class is used to keep track of the annotations present in the imported
@@ -73,7 +73,7 @@ public class BioAnnotation  extends BioEntity{
 
 		super(meta);
 		
-		if (StringUtils.isVoid(meta)) {
+		if (isVoid(meta)) {
 			 throw new IllegalArgumentException("The string is not valid");
 		} else {
 			XMLasString = xmlasString;

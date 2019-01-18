@@ -24,7 +24,8 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML1Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML2Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
-import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
+import static fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
+
 
 /**
  * This class is used to parse the annotation of every SBML element.
@@ -283,7 +284,7 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag,
 	 *            the Bionetwork
 	 */
 	public void getModelData(Model model, BioNetwork bionet) {
-		if (!StringUtils.isVoid(model.getMetaId())) {
+		if (!isVoid(model.getMetaId())) {
 			try {
 				
 				BioRef ref = new BioRef("sbml", "sbmlAnnotation", model.getAnnotationString(), 1);

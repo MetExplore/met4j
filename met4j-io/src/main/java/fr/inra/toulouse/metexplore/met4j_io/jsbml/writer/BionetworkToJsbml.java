@@ -2,7 +2,6 @@ package fr.inra.toulouse.metexplore.met4j_io.jsbml.writer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.sbml.jsbml.ASTNode;
 import org.sbml.jsbml.Compartment;
@@ -25,6 +24,8 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import static fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
+
 import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
@@ -38,6 +39,7 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.PackageWriter;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.tags.WriterSBML2Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.tags.WriterSBML3Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
+
 
 import org.sbml.jsbml.Unit.Kind;
 
@@ -165,7 +167,7 @@ public class BionetworkToJsbml {
 
 			LibSBMLCompart.setConstant(CompartmentAttributes.getConstant(compart));
 
-			if (!StringUtils.isVoid(CompartmentAttributes.getSboTerm(compart))) {
+			if (!isVoid(CompartmentAttributes.getSboTerm(compart))) {
 				LibSBMLCompart.setSBOTerm(CompartmentAttributes.getSboTerm(compart));
 			}
 
@@ -221,7 +223,7 @@ public class BionetworkToJsbml {
 
 				metab.setConstant(MetaboliteAttributes.getConstant(bioMetab));
 
-				if (!StringUtils.isVoid(MetaboliteAttributes.getSboTerm(bioMetab))) {
+				if (!isVoid(MetaboliteAttributes.getSboTerm(bioMetab))) {
 					metab.setSBOTerm(MetaboliteAttributes.getSboTerm(bioMetab));
 				} else {
 					metab.setSBOTerm("SBO:0000299");
@@ -255,7 +257,7 @@ public class BionetworkToJsbml {
 			reaction.setName(bionetReaction.getName());
 			reaction.setFast(ReactionAttributes.getFast(bionetReaction));
 
-			if (!StringUtils.isVoid(ReactionAttributes.getSboTerm(bionetReaction))) {
+			if (!isVoid(ReactionAttributes.getSboTerm(bionetReaction))) {
 				reaction.setSBOTerm(ReactionAttributes.getSboTerm(bionetReaction));
 			}
 

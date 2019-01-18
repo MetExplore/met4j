@@ -20,6 +20,8 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioRef;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import static fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
+
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
@@ -440,7 +442,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 				&& (m = Pattern.compile(this.getFormulaPattern()).matcher(metaboNotes)).find()) {
 			String value = m.group(1);
 
-			if (!StringUtils.isVoid(value)) {
+			if (!isVoid(value)) {
 				if (metabolite.getChemicalFormula() != null && (metabolite.getChemicalFormula().isEmpty()
 						|| metabolite.getChemicalFormula().equalsIgnoreCase("NA"))) {
 					metabolite.setChemicalFormula(value);
@@ -454,7 +456,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 				&& (m = Pattern.compile(this.getChargePattern()).matcher(metaboNotes)).find()) {
 			String value = m.group(1);
 
-			if (!StringUtils.isVoid(value)) {
+			if (!isVoid(value)) {
 
 				metabolite.setCharge(Integer.parseInt(value));
 				
@@ -474,7 +476,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 				dbName = m.group(1);
 				values = m.group(2);
 
-				if (StringUtils.isVoid(values)) {
+				if (isVoid(values)) {
 					metaboNotes = metaboNotes.replace(m.group(0), "");
 					m = Pattern.compile(NotesParser.defaultextDBidsPAttern).matcher(metaboNotes);
 					continue;
@@ -529,7 +531,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 				dbName = m.group(1);
 				values = m.group(2);
 
-				if (StringUtils.isVoid(values)) {
+				if (isVoid(values)) {
 					notes = notes.replace(m.group(0), "");
 					m = Pattern.compile(NotesParser.defaultextDBidsPAttern).matcher(notes);
 					continue;

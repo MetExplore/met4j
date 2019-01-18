@@ -9,7 +9,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 
 public class GenericAttributes {
 
-	public static final String UNIT_DEFINITIONS = "unit_definitions";
+	public static final String SBML_UNIT_DEFINITIONS = "unit_definitions";
 	public static final String NOTES = "notes";
 	public static final String PMIDS = "pmids";
 	public static final String COMMENT = "comment";

@@ -34,7 +34,7 @@
  * B.M
  */
 
-package fr.inra.toulouse.metexplore.met4j_io.annotations;
+package fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

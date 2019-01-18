@@ -476,7 +476,7 @@ public class JsbmlToBioNetwork {
 			}
 
 			if (specie.isSetCharge()) {
-				MetaboliteAttributes.setCharge(bionetSpecies, specie.getCharge());
+				bionetSpecies.setCharge(specie.getCharge());
 			}
 
 			if (model.getVersion() < 3) {

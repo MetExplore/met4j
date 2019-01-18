@@ -456,8 +456,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
 			if (!StringUtils.isVoid(value)) {
 
-				MetaboliteAttributes.setCharge(metabolite, Integer.parseInt(value));
-
+				metabolite.setCharge(Integer.parseInt(value));
+				
 				metaboNotes = metaboNotes.replaceAll(this.getChargePattern(), "");
 			}
 		}
@@ -488,7 +488,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 					}
 				} else if (dbName.equalsIgnoreCase("SMILES")) {
 					if (!metabolite.hasRef("smiles", values)) {
-						metabolite.setSmile(values);
+						metabolite.setSmiles(values);
 						metabolite.addRef(new BioRef("SBML File", "smiles", values, 1));
 					}
 				} else if (dbName.equalsIgnoreCase("INCHIKEY") || dbName.equalsIgnoreCase("INCHI KEY")) {

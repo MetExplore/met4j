@@ -151,7 +151,7 @@ public class NetworkAttributesTest {
 		
 		NetworkAttributes.setAnnotation(network, val);
 		
-		assertEquals(val, network.getAttribute(GenericAttributes.ANNOTATION));
+		assertEquals(val, network.getAttribute(GenericAttributes.SBML_ANNOTATION));
 		
 	}
 	
@@ -160,7 +160,7 @@ public class NetworkAttributesTest {
 		
 		BioAnnotation val = new BioAnnotation("val", "<p>");
 		
-		network.setAttribute(GenericAttributes.ANNOTATION, val);
+		network.setAttribute(GenericAttributes.SBML_ANNOTATION, val);
 		
 		assertEquals(val, NetworkAttributes.getAnnotation(network));
 		

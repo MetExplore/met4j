@@ -195,7 +195,7 @@ public class MetaboliteAttributesTest {
 		
 		MetaboliteAttributes.setAnnotation(metabolite, val);
 		
-		assertEquals(val, metabolite.getAttribute(GenericAttributes.ANNOTATION));
+		assertEquals(val, metabolite.getAttribute(GenericAttributes.SBML_ANNOTATION));
 		
 	}
 	
@@ -204,7 +204,7 @@ public class MetaboliteAttributesTest {
 		
 		BioAnnotation val = new BioAnnotation("val", "<p>");
 		
-		metabolite.setAttribute(GenericAttributes.ANNOTATION, val);
+		metabolite.setAttribute(GenericAttributes.SBML_ANNOTATION, val);
 		
 		assertEquals(val, MetaboliteAttributes.getAnnotation(metabolite));
 		

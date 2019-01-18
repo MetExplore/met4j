@@ -17,7 +17,7 @@ public class GenericAttributes {
 	public static final String SBO_TERM = "sbo_term";
 	public static final String CONSTANT = "constant";
 
-	public static final String ANNOTATION = "annotation";
+	public static final String SBML_ANNOTATION = "annotation";
 
 	/**
 	 * get Constant condition of a compartment
@@ -156,7 +156,7 @@ public class GenericAttributes {
 	 * @return
 	 */
 	public static BioAnnotation getAnnotation(BioEntity e) {
-		return (BioAnnotation) e.getAttribute(ANNOTATION);
+		return (BioAnnotation) e.getAttribute(SBML_ANNOTATION);
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class GenericAttributes {
 	 * @param sboTerm
 	 */
 	public static void setAnnotation(BioEntity e, BioAnnotation val) {
-		e.setAttribute(ANNOTATION, val);
+		e.setAttribute(SBML_ANNOTATION, val);
 
 	}
 

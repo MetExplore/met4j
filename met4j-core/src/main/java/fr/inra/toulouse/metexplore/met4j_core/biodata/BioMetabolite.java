@@ -38,8 +38,8 @@ public class BioMetabolite extends BioPhysicalEntity {
 	private double molecularWeight;
 	private String chemicalFormula;
 	private String inchi;
-	private String smile;
-	private int charge;
+	private String smiles;
+	private int charge = 0;
 	
 	public BioMetabolite(String id) {
 		super(id);
@@ -68,16 +68,16 @@ public class BioMetabolite extends BioPhysicalEntity {
 	/**
 	 * @return the smile
 	 */
-	public String getSmile() {
-		return smile;
+	public String getSmiles() {
+		return smiles;
 	}
 
 
 	/**
 	 * @param smile the smile to set
 	 */
-	public void setSmile(String smile) {
-		this.smile = smile;
+	public void setSmiles(String smile) {
+		this.smiles = smile;
 	}
 
 

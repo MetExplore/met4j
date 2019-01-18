@@ -19,7 +19,9 @@ public class ReactionAttributes {
 	public static final String KINETIC_FORMULA = "kinetic_formula";
 	public static final String FLUX_PARAMS = "flux_params";
 	public static final String ADDITIONAL_FLUX_PARAMS = "additional_flux_params";
-
+	public static final String SUBSYSTEM = "SUBSYSTEM";
+	public static final String EC_NUMBER = "EC_NUMBER";
+	public static final String GENE_ASSOCIATION = "GENE_ASSOCIATION";
 
 
 

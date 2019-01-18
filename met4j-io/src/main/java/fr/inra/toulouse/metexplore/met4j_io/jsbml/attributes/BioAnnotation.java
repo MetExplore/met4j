@@ -34,7 +34,7 @@
  * B.M
  */
 
-package fr.inra.toulouse.metexplore.met4j_io.annotations;
+package fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;

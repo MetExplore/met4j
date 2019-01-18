@@ -3,9 +3,9 @@ package fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite;
 import java.util.Set;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inra.toulouse.metexplore.met4j_io.annotations.BioAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.Notes;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.BioAnnotation;
 
 public class MetaboliteAttributes {
 

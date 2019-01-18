@@ -31,7 +31,7 @@
 /**
  * 
  */
-package fr.inra.toulouse.metexplore.met4j_io.annotations;
+package fr.inra.toulouse.metexplore.met4j_io.jsbml.units;
 
 import java.util.HashMap;
 import java.util.Map.Entry;

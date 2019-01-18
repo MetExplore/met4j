@@ -36,7 +36,6 @@ package fr.inra.toulouse.metexplore.met4j_io.jsbml.units;
 import java.util.HashMap;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inra.toulouse.metexplore.met4j_io.annotations.UnitSbml;
 
 //import net.sf.saxon.functions.Unordered;
 

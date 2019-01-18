@@ -23,7 +23,6 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.BioAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.Notes;
-import fr.inra.toulouse.metexplore.met4j_io.annotations.UnitSbml;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.BioCompartmentType;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
@@ -37,6 +36,7 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML2Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.UnitSbml;
 
 import org.sbml.jsbml.Unit.Kind;
 

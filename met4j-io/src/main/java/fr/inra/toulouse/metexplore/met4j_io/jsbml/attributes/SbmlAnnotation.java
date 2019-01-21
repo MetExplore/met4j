@@ -39,6 +39,9 @@ package fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import static fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * This Class is used to keep track of the annotations present in the imported
  * file in the BioNetwork object
@@ -52,25 +55,33 @@ public class SbmlAnnotation  extends BioEntity{
 	 * The annotations are successive xml elements used to cross reference
 	 * biological data.
 	 */
-	private String XMLasString;
+	private String xmlAsString;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param meta
+	 * @param metaId
 	 *            the metaID
 	 * @param xmlasString
 	 *            the XML string
 	 */
-	public SbmlAnnotation(String meta, String xmlasString) {
+	public SbmlAnnotation(String metaId, String xmlasString) {
 
-		super(meta);
+		super(metaId);
 		
-		if (isVoid(meta)) {
-			 throw new IllegalArgumentException("The string is not valid");
-		} else {
-			XMLasString = xmlasString;
+		Pattern p = Pattern.compile("<annotation>.*</annotation>", Pattern.DOTALL);
+		
+		Matcher m = p.matcher(xmlasString);
+		
+		if(! m.matches()) 
+		{
+			throw new IllegalArgumentException("The annotation must fit the pattern <annotation>.*</annotation");
 		}
+		
+		this.xmlAsString = xmlasString;
+		
+		
+		
 		
 	}
 
@@ -78,7 +89,7 @@ public class SbmlAnnotation  extends BioEntity{
 	 * @return the xMLasString
 	 */
 	public String getXMLasString() {
-		return XMLasString;
+		return xmlAsString;
 	}
 
 }

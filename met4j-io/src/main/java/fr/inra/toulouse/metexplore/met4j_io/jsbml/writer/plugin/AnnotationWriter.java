@@ -268,6 +268,8 @@ public class AnnotationWriter
 		}
 
 		if (ent.getInchi() != null && !ent.getInchi().isEmpty() && !ent.getInchi().equals("NA")) {
+			// TODO : it's not the good way to write inchi :
+			// http://sbml.org/Community/Wiki/About_annotations_in_Level_2
 			if (annot.filterCVTerms(Qualifier.BQB_IS, "inchi").isEmpty()) {
 				cvIsTerm.addResource(usedPattern + "inchi" + separator + ent.getInchi());
 			}

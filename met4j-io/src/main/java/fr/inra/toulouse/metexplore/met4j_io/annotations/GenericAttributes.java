@@ -86,6 +86,8 @@ public class GenericAttributes {
 	/**
 	 * set pmids
 	 * 
+	 * TODO : see if it useful since there is BioRef...
+	 * 
 	 * @param e
 	 * @param pmids
 	 */

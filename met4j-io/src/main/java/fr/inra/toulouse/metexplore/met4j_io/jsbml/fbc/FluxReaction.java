@@ -1,6 +1,5 @@
 package fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc;
 
-import java.util.HashMap;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEnzyme;

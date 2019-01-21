@@ -3,7 +3,6 @@ package fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc;
 
 import java.util.*;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * This class represents the full gene association as they are described in SBML
@@ -55,7 +54,7 @@ public class GeneAssociations{
 	}
 
 	/**
-	 * Returns the string representation of this GPR has a fully developed
+	 * Returns the string representation of this GPR as a fully developed
 	 * AND/OR logical expression.
 	 */
 	public String toString() {

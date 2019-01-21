@@ -171,6 +171,15 @@ public class ReactionAttributes {
 	}
 	
 	/**
+	 * Add pmid
+	 * @param r
+	 * @param pmid
+	 */
+	public static void addPmid(BioReaction r, Integer pmid) {
+		GenericAttributes.addPmid(r, pmid);
+	}
+	
+	/**
 	 * Set comment
 	 * @param r
 	 * @param comment

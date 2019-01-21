@@ -220,6 +220,22 @@ public class ReactionAttributesTest {
 		assertEquals(pmids, ReactionAttributes.getPmids(r));
 
 	}
+	
+	@Test
+	public void testAddPmid() {
+
+		Set<Integer> pmids = new HashSet<Integer>();
+
+		pmids.add(1235);
+		pmids.add(111);
+
+		ReactionAttributes.addPmid(r, 1235);
+		ReactionAttributes.addPmid(r, 111);
+		
+		
+		assertEquals(pmids, ReactionAttributes.getPmids(r));
+
+	}
 
 	@Test
 	public void testSetComment() {

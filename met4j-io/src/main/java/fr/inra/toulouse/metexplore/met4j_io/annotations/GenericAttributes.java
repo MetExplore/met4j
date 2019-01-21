@@ -1,5 +1,6 @@
 package fr.inra.toulouse.metexplore.met4j_io.annotations;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
@@ -94,6 +95,24 @@ public class GenericAttributes {
 
 	}
 
+	
+	/**
+	 * add pmid
+	 * 
+	 * @param e
+	 * @param pmids
+	 */
+	public static void addPmid(BioEntity e,Integer pmid) {
+
+		if(getPmids(e) == null) {
+			setPmids(e,	 new HashSet<Integer>());
+		}
+		
+		getPmids(e).add(pmid);
+		
+	}
+
+	
 	/**
 	 * get pmids
 	 * 

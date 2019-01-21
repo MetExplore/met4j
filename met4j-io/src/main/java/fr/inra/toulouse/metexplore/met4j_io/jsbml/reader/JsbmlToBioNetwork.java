@@ -31,7 +31,6 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageReaderException;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxCollection;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML2Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
@@ -502,7 +501,7 @@ public class JsbmlToBioNetwork {
 					}
 				}
 			} else {
-
+				
 				MetaboliteAttributes.setSubstanceUnits(bionetSpecies, specie.getSubstanceUnits());
 				MetaboliteAttributes.setSboTerm(bionetSpecies, specie.getSBOTermID());
 

@@ -21,6 +21,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 	public int confidenceLevel;
 	
 	public BioRef(String origin,String dbName,String id,int confidenceLevel) {
+		
 		Validate.notNull(dbName, "BioRef's database name can't be null");
 		Validate.notNull(id, "BioRef's database identifier can't be null");
 		
@@ -28,6 +29,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 		this.dbName=dbName;
 		this.id=id;
 		this.confidenceLevel=confidenceLevel;
+		// TODO : baseUri by default, not sure that we must keep this
 		this.baseURI="http://identifiers.org/"+dbName+"/";
 	}
 	
@@ -117,4 +119,14 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 	public void setBaseURI(String baseURI) {
 		this.baseURI = baseURI;
 	}
+
+	@Override
+	public String toString() {
+		return "BioRef [origin=" + origin + ", dbName=" + dbName + ", logicallink=" + logicallink + ", id=" + id
+				+ ", baseURI=" + baseURI + ", confidenceLevel=" + confidenceLevel + "]";
+	}
+	
+	
+	
+	
 }

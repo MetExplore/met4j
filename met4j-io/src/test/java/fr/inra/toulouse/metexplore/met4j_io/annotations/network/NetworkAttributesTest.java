@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.BioAnnotation;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
@@ -147,7 +147,7 @@ public class NetworkAttributesTest {
 	@Test 
 	public void testSetAnnotation() {
 		
-		BioAnnotation val = new BioAnnotation("val", "<p>");
+		SbmlAnnotation val = new SbmlAnnotation("val", "<p>");
 		
 		NetworkAttributes.setAnnotation(network, val);
 		
@@ -158,7 +158,7 @@ public class NetworkAttributesTest {
 	@Test
 	public void testGetAnnotation() {
 		
-		BioAnnotation val = new BioAnnotation("val", "<p>");
+		SbmlAnnotation val = new SbmlAnnotation("val", "<p>");
 		
 		network.setAttribute(GenericAttributes.SBML_ANNOTATION, val);
 		

@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.BioAnnotation;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 
 public class MetaboliteAttributesTest {
@@ -191,7 +191,7 @@ public class MetaboliteAttributesTest {
 	@Test 
 	public void testSetAnnotation() {
 		
-		BioAnnotation val = new BioAnnotation("val", "<p>");
+		SbmlAnnotation val = new SbmlAnnotation("val", "<p>");
 		
 		MetaboliteAttributes.setAnnotation(metabolite, val);
 		
@@ -202,7 +202,7 @@ public class MetaboliteAttributesTest {
 	@Test
 	public void testGetAnnotation() {
 		
-		BioAnnotation val = new BioAnnotation("val", "<p>");
+		SbmlAnnotation val = new SbmlAnnotation("val", "<p>");
 		
 		metabolite.setAttribute(GenericAttributes.SBML_ANNOTATION, val);
 		

@@ -27,7 +27,7 @@ import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAtt
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reactant.ReactantAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.BioAnnotation;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageReaderException;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
@@ -492,7 +492,7 @@ public class JsbmlToBioNetwork {
 						if (stype.isSetAnnotation()) {
 
 							MetaboliteAttributes.setAnnotation(bionetSpecies,
-									new BioAnnotation(stype.getMetaId(), stype.getAnnotationString()));
+									new SbmlAnnotation(stype.getMetaId(), stype.getAnnotationString()));
 						}
 						if (stype.isSetNotes()) {
 							MetaboliteAttributes.setNotes(bionetSpecies, new Notes(stype.getNotesString()));

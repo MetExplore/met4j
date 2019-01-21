@@ -4,7 +4,7 @@ import java.util.Set;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.BioAnnotation;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 
 public class MetaboliteAttributes {
@@ -195,7 +195,7 @@ public class MetaboliteAttributes {
 	 * @param metabolite
 	 * @param val
 	 */
-	public static void setAnnotation(BioMetabolite metabolite, BioAnnotation val) {
+	public static void setAnnotation(BioMetabolite metabolite, SbmlAnnotation val) {
 		GenericAttributes.setAnnotation(metabolite, val);
 	}
 
@@ -205,7 +205,7 @@ public class MetaboliteAttributes {
 	 * @param metabolite
 	 * @return
 	 */
-	public static BioAnnotation getAnnotation(BioMetabolite metabolite) {
+	public static SbmlAnnotation getAnnotation(BioMetabolite metabolite) {
 		return GenericAttributes.getAnnotation(metabolite);
 	}
 

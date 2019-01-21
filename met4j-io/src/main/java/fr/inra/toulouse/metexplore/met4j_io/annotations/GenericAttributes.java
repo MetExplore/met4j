@@ -6,7 +6,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.BioAnnotation;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 
 public class GenericAttributes {
@@ -156,8 +156,8 @@ public class GenericAttributes {
 	 * @param e
 	 * @return
 	 */
-	public static BioAnnotation getAnnotation(BioEntity e) {
-		return (BioAnnotation) e.getAttribute(SBML_ANNOTATION);
+	public static SbmlAnnotation getAnnotation(BioEntity e) {
+		return (SbmlAnnotation) e.getAttribute(SBML_ANNOTATION);
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class GenericAttributes {
 	 * @param e
 	 * @param sboTerm
 	 */
-	public static void setAnnotation(BioEntity e, BioAnnotation val) {
+	public static void setAnnotation(BioEntity e, SbmlAnnotation val) {
 		e.setAttribute(SBML_ANNOTATION, val);
 
 	}

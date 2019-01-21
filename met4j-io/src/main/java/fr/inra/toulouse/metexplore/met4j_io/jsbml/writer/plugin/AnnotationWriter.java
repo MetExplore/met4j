@@ -25,7 +25,7 @@ import fr.inra.toulouse.metexplore.met4j_io.annotations.gene.GeneAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.BioAnnotation;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.tags.WriterSBML2Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.tags.WriterSBML3Compatible;
@@ -134,7 +134,7 @@ public class AnnotationWriter
 	private void createModelAnnotation() {
 
 		
-		BioAnnotation modelAnnot = NetworkAttributes.getAnnotation(this.getBionetwork());
+		SbmlAnnotation modelAnnot = NetworkAttributes.getAnnotation(this.getBionetwork());
 
 		if (modelAnnot != null) {
 

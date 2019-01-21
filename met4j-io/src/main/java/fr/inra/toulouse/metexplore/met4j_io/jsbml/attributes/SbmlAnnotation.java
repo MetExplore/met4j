@@ -46,7 +46,7 @@ import static fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
  * @author Benjamin
  * @since 2.0
  */
-public class BioAnnotation  extends BioEntity{
+public class SbmlAnnotation  extends BioEntity{
 
 	/**
 	 * The annotations are successive xml elements used to cross reference
@@ -62,7 +62,7 @@ public class BioAnnotation  extends BioEntity{
 	 * @param xmlasString
 	 *            the XML string
 	 */
-	public BioAnnotation(String meta, String xmlasString) {
+	public SbmlAnnotation(String meta, String xmlasString) {
 
 		super(meta);
 		

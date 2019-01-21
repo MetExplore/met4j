@@ -9,7 +9,6 @@ public class BioAnnotationTest {
 	@Test
 	public void testBioAnnotation() {
 		
-		// TODO : must throw an exception when the xml is not valid
 		fail("Not yet implemented");
 	}
 

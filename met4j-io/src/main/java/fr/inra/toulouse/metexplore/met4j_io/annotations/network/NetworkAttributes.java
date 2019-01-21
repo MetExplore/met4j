@@ -4,7 +4,7 @@ import java.util.Set;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.BioAnnotation;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
@@ -127,7 +127,7 @@ public class NetworkAttributes {
 	 * @param metabolite
 	 * @param val
 	 */
-	public static void setAnnotation(BioNetwork network, BioAnnotation val) {
+	public static void setAnnotation(BioNetwork network, SbmlAnnotation val) {
 		GenericAttributes.setAnnotation(network, val);
 	}
 
@@ -137,7 +137,7 @@ public class NetworkAttributes {
 	 * @param metabolite
 	 * @return
 	 */
-	public static BioAnnotation getAnnotation(BioNetwork network) {
+	public static SbmlAnnotation getAnnotation(BioNetwork network) {
 		return GenericAttributes.getAnnotation(network);
 	}
 

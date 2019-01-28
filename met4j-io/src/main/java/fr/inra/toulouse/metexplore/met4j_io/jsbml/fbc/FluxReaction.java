@@ -14,7 +14,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioEnzymeUtils;
 /**
  * This Class represents a new type of reactions that handles the SBML fbc
  * package. It uses the classical {@link BioChemicalReaction} to handle reaction
- * participants and the new {@link GeneAssociations} to handle complex gene
+ * participants and the new {@link GeneAssociation} to handle complex gene
  * associations
  * 
  * @author Benjamin
@@ -30,9 +30,9 @@ public class FluxReaction extends BioEntity {
 	/**
 	 * The object holding the Gene Association
 	 * 
-	 * @see GeneAssociations
+	 * @see GeneAssociation
 	 */
-	private GeneAssociations reactionGAs;
+	private GeneAssociation reactionGAs;
 
 	/**
 	 * Constructor using a {@link BioChemicalReaction}
@@ -46,7 +46,7 @@ public class FluxReaction extends BioEntity {
 	}
 
 	/**
-	 * Convert the reaction's {@link GeneAssociations} to a set of
+	 * Convert the reaction's {@link GeneAssociation} to a set of
 	 * {@link BioComplex} and add them to the {@link BioNetwork} given in
 	 * parameter.</br>It also add them to the reaction as enzymes
 	 * 
@@ -54,7 +54,7 @@ public class FluxReaction extends BioEntity {
 	 *            The {@link BioNetwork} where the {@link BioComplex} will be
 	 *            added
 	 */
-	public void convertGAtoComplexes(BioNetwork bn) {
+	public void convertGeneAssociationstoComplexes(BioNetwork bn) {
 
 		BioReaction rxn = this.getUnderlyingReaction();
 		// BioNetwork bn=net.getUnderlyingBionet();
@@ -66,13 +66,12 @@ public class FluxReaction extends BioEntity {
 //			bn.addCompartment(defaultCmp);
 //		}
 
-		for (SingleGeneAssociation sga : this.getReactionGAs()
-				.getListOfUniqueGA()) {
+		for (GeneSet sga : this.getReactionGeneAssociation()) {
 			BioCollection<BioProtein> protlist = new BioCollection<BioProtein>();
 
 			// for each gene get the corresponding protein from the network or
 			// create it if it doesn't exists
-			for (BioGene gene : sga.getGeneList()) {
+			for (BioGene gene : sga) {
 				BioProtein prot;
 
 				if (bn.getProteinsView().containsId(gene.getId())) {
@@ -80,9 +79,9 @@ public class FluxReaction extends BioEntity {
 				} else {
 					prot = new BioProtein(gene.getId(), gene.getName());
 					bn.add(prot);
-					bn.affectGeneProduct(prot, gene);
-					
 				}
+				
+				bn.affectGeneProduct(prot, gene);
 
 				protlist.add(prot);
 			}
@@ -111,7 +110,7 @@ public class FluxReaction extends BioEntity {
 				}
 				
 				bn.affectEnzyme(enz, rxn);
-				
+
 			}
 
 		}
@@ -138,11 +137,11 @@ public class FluxReaction extends BioEntity {
 	}
 
 	/**
-	 * Get the {@link GeneAssociations} of the reaction
+	 * Get the {@link GeneAssociation} of the reaction
 	 * 
 	 * @return {@link #reactionGAs}
 	 */
-	public GeneAssociations getReactionGAs() {
+	public GeneAssociation getReactionGeneAssociation() {
 		return reactionGAs;
 	}
 
@@ -152,7 +151,7 @@ public class FluxReaction extends BioEntity {
 	 * @param reactionGAs
 	 *            the new value of {@link #reactionGAs}
 	 */
-	public void setReactionGAs(GeneAssociations reactionGAs) {
+	public void setReactionGeneAssociation(GeneAssociation reactionGAs) {
 		this.reactionGAs = reactionGAs;
 	}
 

@@ -22,8 +22,8 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxNetwork;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxReaction;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociations;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.SingleGeneAssociation;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.GeneSet;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
@@ -160,15 +160,15 @@ public class FBC2Parser extends FBC1Parser implements PackageParser, PrimaryData
 			FBCReactionPlugin rxnPlugin = (FBCReactionPlugin) rxn.getPlugin("fbc");
 			FluxReaction flxReaction = new FluxReaction(reaction);
 
-			GeneAssociations GA = new GeneAssociations();
+			GeneAssociation geneAssociation = new GeneAssociation();
 
 			// System.err.println(rxn.getId());
 			if (rxnPlugin.isSetGeneProductAssociation()) {
-				GA.setListOfUniqueGA(this.getGA(rxnPlugin.getGeneProductAssociation().getAssociation()));
+				geneAssociation = this.computeGeneAssocations(rxnPlugin.getGeneProductAssociation().getAssociation());
 			}
 			// System.err.println("out of recursion");
-			flxReaction.setReactionGAs(GA);
-			flxReaction.convertGAtoComplexes(flxNet.getUnderlyingBionet());
+			flxReaction.setReactionGeneAssociation(geneAssociation);
+			flxReaction.convertGeneAssociationstoComplexes(flxNet.getUnderlyingBionet());
 
 			if (!this.flxNet.getListOfFluxBounds().containsKey(rxnPlugin.getLowerFluxBound())) {
 				Parameter fbcParam = rxnPlugin.getLowerFluxBoundInstance();
@@ -196,7 +196,7 @@ public class FBC2Parser extends FBC1Parser implements PackageParser, PrimaryData
 
 			ReactionAttributes.setUpperBound(reaction,
 					this.flxNet.getListOfFluxBounds().get(rxnPlugin.getUpperFluxBound()));
-			
+
 			this.flxNet.getListOfFluxReactions().put(flxReaction.getId(), flxReaction);
 
 		}
@@ -209,55 +209,52 @@ public class FBC2Parser extends FBC1Parser implements PackageParser, PrimaryData
 	 * 
 	 * @param block
 	 *            the current Association block
-	 * @return an ArrayList of {@link SingleGeneAssociation}
+	 * @return an ArrayList of {@link GeneSet}
 	 */
-	public ArrayList<SingleGeneAssociation> getGA(Association block) {
+	public GeneAssociation computeGeneAssocations(Association block) {
 
-		ArrayList<SingleGeneAssociation> list = new ArrayList<SingleGeneAssociation>();
+		GeneAssociation geneAssociation = new GeneAssociation();
 
 		if (block.getClass().getSimpleName().equals("And")) {
 			And andBlock = (And) block;
 
 			for (Association andEl : andBlock.getListOfAssociations()) {
-				ArrayList<SingleGeneAssociation> tmplist = new ArrayList<SingleGeneAssociation>();
+				for (GeneSet x : this.computeGeneAssocations(andEl)) {
 
-				for (SingleGeneAssociation x : this.getGA(andEl)) {
-
-					if (list.isEmpty()) {
-						tmplist.add(x);
+					if (geneAssociation.isEmpty()) {
+						geneAssociation.add(x);
 					} else {
 
-						for (SingleGeneAssociation y : list) {
-							tmplist.add(SingleGeneAssociation.concatToNewGA(x, y));
+						for (GeneSet y : geneAssociation) {
+							y.addAll(x);
 						}
 					}
 
 				}
 
-				list = tmplist;
 			}
 
 		} else if (block.getClass().getSimpleName().equals("Or")) {
 			Or orBlock = (Or) block;
 
 			for (Association orEl : orBlock.getListOfAssociations()) {
-				list.addAll(this.getGA(orEl));
+				geneAssociation.addAll(this.computeGeneAssocations(orEl));
 			}
 
 		} else if (block.getClass().getSimpleName().equals("GeneProductRef")) {
 
 			GeneProductRef geneRef = (GeneProductRef) block;
-			SingleGeneAssociation GA = new SingleGeneAssociation();
+			GeneSet GA = new GeneSet();
 
 			GA.setId(geneRef.getId());
 
 			BioGene g = this.flxNet.getUnderlyingBionet().getGenesView().getEntityFromId(geneRef.getGeneProduct());
-			GA.addGene(g);
+			GA.add(g);
 
-			list.add(GA);
+			geneAssociation.add(GA);
 		}
 
-		return list;
+		return geneAssociation;
 	}
 
 }

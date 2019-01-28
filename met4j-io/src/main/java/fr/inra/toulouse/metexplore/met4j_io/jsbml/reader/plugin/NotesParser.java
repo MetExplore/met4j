@@ -31,8 +31,8 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.errors.MalformedGeneAssociationStringException;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxReaction;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociations;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.SingleGeneAssociation;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.GeneSet;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML1Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML2Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
@@ -407,10 +407,10 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
 				FluxReaction flx = new FluxReaction(reaction);
 
-				flx.setReactionGAs(new GeneAssociations());
+				flx.setReactionGeneAssociation(new GeneAssociation());
 				try {
-					flx.getReactionGAs().setListOfUniqueGA(this.getGA(m.group(1), flx));
-					flx.convertGAtoComplexes(this.bionetwork);
+					flx.setReactionGeneAssociation(this.computeGeneAssociation(m.group(1), flx));
+					flx.convertGeneAssociationstoComplexes(this.bionetwork);
 				} catch (MalformedGeneAssociationStringException e) {
 					NotesParser.errorsAndWarnings.add(e.getLocalizedMessage());
 				}
@@ -557,7 +557,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * Recursive function that parse gene association logical expression
 	 * strings. </br>
 	 * This is an adaptation of
-	 * {@link FBC2Parser#getGA(org.sbml.jsbml.ext.fbc.Association)} on Strings.
+	 * {@link FBC2Parser#computeGeneAssocations(org.sbml.jsbml.ext.fbc.Association)} on Strings.
 	 * </br>
 	 * </br>
 	 * Internally this uses {@link StringUtils#findClosingParen(char[], int)} to
@@ -568,15 +568,16 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 *            the initial GPR on the following recursions
 	 * @param flxRxn
 	 *            the flux reaction
-	 * @return a list of {@link SingleGeneAssociation}
+	 * @return a list of {@link GeneSet}
 	 * @throws MalformedGeneAssociationStringException
 	 *             when the GPR is malformed, ie when there is a missing
 	 *             parenthesis in the string that creates a confusions on the
 	 *             AND/OR associations
 	 */
-	public ArrayList<SingleGeneAssociation> getGA(String assosString, FluxReaction flxRxn)
+	public GeneAssociation computeGeneAssociation(String assosString, FluxReaction flxRxn)
 			throws MalformedGeneAssociationStringException {
-		ArrayList<SingleGeneAssociation> list = new ArrayList<SingleGeneAssociation>();
+		
+		GeneAssociation geneAssociation = new GeneAssociation();
 
 		ArrayList<String> subAssos = new ArrayList<String>();
 
@@ -611,47 +612,45 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 			StringUtils.addAllNonEmpty(subAssos, Arrays.asList(tmpAssos.split("(?i) or ")));
 
 			for (String s : subAssos) {
-				list.addAll(this.getGA(s, flxRxn));
+				geneAssociation.addAll(this.computeGeneAssociation(s, flxRxn));
 			}
 
 		} else if (tmpAssos.contains(" and ") || tmpAssos.contains(" And ") || tmpAssos.contains(" AND ")) {
 			StringUtils.addAllNonEmpty(subAssos, Arrays.asList(tmpAssos.split("(?i) and ")));
 			// foreach items in "and" block
 			for (String s : subAssos) {
-				ArrayList<SingleGeneAssociation> tmplist = new ArrayList<SingleGeneAssociation>();
-
-				for (SingleGeneAssociation x : this.getGA(s, flxRxn)) {
-					if (list.isEmpty()) {
-						tmplist.add(x);
+				
+				for (GeneSet x : this.computeGeneAssociation(s, flxRxn)) {
+					if (geneAssociation.isEmpty()) {
+						geneAssociation.add(x);
 					} else {
-						for (SingleGeneAssociation y : list) {
-							tmplist.add(SingleGeneAssociation.concatToNewGA(x, y));
+						for (GeneSet y : geneAssociation) {
+							y.addAll(x);
 						}
 					}
 				}
-				list = tmplist;
 
 			}
 		} else {
 			tmpAssos = tmpAssos.replaceAll(" ", "");
 			if (!tmpAssos.isEmpty()) {
-				SingleGeneAssociation x = new SingleGeneAssociation();
+				GeneSet x = new GeneSet();
 
 				BioGene g = this.bionetwork.getGenesView().getEntityFromId(tmpAssos);
 				if (g == null) {
 					g = new BioGene(tmpAssos);
 					this.bionetwork.add(g);
 				}
-				x.addGene(g);
-				list.add(x);
+				x.add(g);
+				geneAssociation.add(x);
 			} else {
 				for (String s : subAssos) {
-					list.addAll(this.getGA(s, flxRxn));
+					geneAssociation.addAll(this.computeGeneAssociation(s, flxRxn));
 				}
 			}
 		}
 
-		return list;
+		return geneAssociation;
 	}
 
 	/**

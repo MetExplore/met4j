@@ -191,7 +191,7 @@ public class MetaboliteAttributesTest {
 	@Test 
 	public void testSetAnnotation() {
 		
-		SbmlAnnotation val = new SbmlAnnotation("val", "<p>");
+		SbmlAnnotation val = new SbmlAnnotation("val", "<annotation>annot</annotation>");
 		
 		MetaboliteAttributes.setAnnotation(metabolite, val);
 		
@@ -202,7 +202,7 @@ public class MetaboliteAttributesTest {
 	@Test
 	public void testGetAnnotation() {
 		
-		SbmlAnnotation val = new SbmlAnnotation("val", "<p>");
+		SbmlAnnotation val = new SbmlAnnotation("val", "<annotation>annot</annotation>");
 		
 		metabolite.setAttribute(GenericAttributes.SBML_ANNOTATION, val);
 		

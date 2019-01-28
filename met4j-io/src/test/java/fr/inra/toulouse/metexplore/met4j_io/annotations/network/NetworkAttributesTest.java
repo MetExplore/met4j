@@ -147,7 +147,7 @@ public class NetworkAttributesTest {
 	@Test 
 	public void testSetAnnotation() {
 		
-		SbmlAnnotation val = new SbmlAnnotation("val", "<p>");
+		SbmlAnnotation val = new SbmlAnnotation("val", "<annotation>annot</annotation>");
 		
 		NetworkAttributes.setAnnotation(network, val);
 		
@@ -158,7 +158,7 @@ public class NetworkAttributesTest {
 	@Test
 	public void testGetAnnotation() {
 		
-		SbmlAnnotation val = new SbmlAnnotation("val", "<p>");
+		SbmlAnnotation val = new SbmlAnnotation("val", "<annotation>annot</annotation>");
 		
 		network.setAttribute(GenericAttributes.SBML_ANNOTATION, val);
 		

@@ -94,9 +94,8 @@ public class FBC1Parser implements PackageParser, PrimaryDataTag,
 			BioReaction rxn = this.getFlxNet().getUnderlyingBionet()
 					.getReactionsView().getEntityFromId(bound.getReaction());
 
+			Flux flux = new Flux(bound.getValue());
 
-			Flux flux = new Flux();
-			flux.value = bound.getValue();
 			
 			switch (bound.getOperation()) {
 			case EQUAL:

@@ -37,37 +37,43 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 
 /**
- * @author ludo
- * 1 juin 2011
+ * @author ludo 1 juin 2011
  *
  */
 public class Flux extends BioEntity {
-	
+
 	public Double value;
-	public BioUnitDefinition unitDefinition = new BioUnitDefinition("mmol_per_gDW_per_hr", "mmol_per_gDW_per_hr");
-	private boolean constant=false;
-	
+
+	public static String DEFAULT_UNIT = "mmol_per_gDW_per_hr";
+
+	public BioUnitDefinition unitDefinition = null;
+	private boolean constant = false;
+
 	public static Double FLUXMAX = 99999.0;
 	public static Double FLUXMIN = -99999.0;
-	
-	
+
 	public Flux(Double value, BioUnitDefinition unitDefinition) {
-		
-		super(value+"_"+unitDefinition.getId());
-		
+
+		super(value + "_" + unitDefinition.getId());
+
 		this.value = value;
 		this.unitDefinition = unitDefinition;
-		
+
 	}
-	
-	public Flux(String id){
+
+	public Flux(Double value) {
+
+		super(value + "_" + Flux.DEFAULT_UNIT);
+
+		BioUnitDefinition unitDefinition = new BioUnitDefinition(Flux.DEFAULT_UNIT, Flux.DEFAULT_UNIT);
+
+		this.value = value;
+		this.unitDefinition = unitDefinition;
+
+	}
+
+	public Flux(String id) {
 		super(id);
-	}
-	
-	public Flux(){
-		super("not_defined");
-		this.value=0.0;
-		this.unitDefinition=new BioUnitDefinition("dimensionless","dimensionless");
 	}
 
 	public boolean isConstant() {
@@ -79,7 +85,7 @@ public class Flux extends BioEntity {
 	 * @param constant
 	 */
 	public void setConstant(boolean constant) {
-		this.constant=constant;
+		this.constant = constant;
 	}
-	
+
 }

@@ -130,9 +130,7 @@ public class Notes {
 	 * @return true if the note are empty or equal to {@link #emptyNoteString}
 	 */
 	public boolean isEmpty() {
-		if (this.getXHTMLasString().isEmpty()) {
-			return true;
-		} else if (this.getXHTMLasString().replaceAll("\\s", "")
+		if (this.getXHTMLasString().replaceAll("\\s", "")
 				.equalsIgnoreCase(emptyNoteString.replaceAll("\\s", ""))) {
 			return true;
 		}

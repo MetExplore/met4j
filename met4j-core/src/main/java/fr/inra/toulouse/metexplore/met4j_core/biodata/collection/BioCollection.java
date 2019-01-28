@@ -68,7 +68,6 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 		return str + "]";
 	}
-	
 
 	/**
 	 * Check if the collection contains a BioEntity which has a given id
@@ -217,32 +216,31 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 		if (obj == null || obj.getClass() != this.getClass())
 			return false;
-		
+
 		BioCollection<?> c = (BioCollection<?>) obj;
-		
-		if(c.size() != this.size())
+
+		if (c.size() != this.size())
 			return false;
-		
-		for(BioEntity e : c)
-		{
-			if(! this.contains(e))
+
+		for (BioEntity e : c) {
+			if (!this.contains(e))
 				return false;
 		}
-			
+
 		return true;
-		
+
 	}
-	
+
 	@Override
-	  public int hashCode() {
-	    
-		int h=0;
-		
-		for(BioEntity e : this.entities.values()) {
+	public int hashCode() {
+
+		int h = 0;
+
+		for (BioEntity e : this.entities.values()) {
 			h += e.hashCode();
 		}
 		return h;
-		
-	  }  
+
+	}
 
 }

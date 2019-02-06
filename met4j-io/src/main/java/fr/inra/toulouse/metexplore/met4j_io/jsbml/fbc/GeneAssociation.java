@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
  */
 public class GeneAssociation implements Set<GeneSet> {
 
-	public HashSet<GeneSet> geneSets;
+	public ArrayList<GeneSet> geneSets;
 
 	public GeneAssociation() {
-		geneSets = new HashSet<GeneSet>();
+		geneSets = new ArrayList<GeneSet>();
 	}
 
 	/**
@@ -95,12 +95,13 @@ public class GeneAssociation implements Set<GeneSet> {
 	@Override
 	public boolean remove(Object o) {
 
-		HashSet<GeneSet> genes = new HashSet<GeneSet>(this.geneSets);
+		ArrayList<GeneSet> genes = new ArrayList<GeneSet>(this.geneSets);
 
 		for (GeneSet g : genes) {
 			if (o.equals(g)) {
-				geneSets.remove(g);
-				return true;
+				System.err.println("remove "+g);
+				
+				return geneSets.remove(g);
 			}
 		}
 

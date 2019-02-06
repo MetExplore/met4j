@@ -86,6 +86,9 @@ public class GeneAssociationTest {
 	public void testRemove() {
 
 		GeneSet set1 = new GeneSet();
+		
+		assertFalse(a.remove(set1));
+		
 		set1.add(g1);
 
 		a.add(set1);
@@ -97,7 +100,7 @@ public class GeneAssociationTest {
 		set1.add(g2);
 
 		a.remove(set1);
-
+		
 		assertTrue(!a.contains(set1));
 
 		a.add(set1);
@@ -204,6 +207,30 @@ public class GeneAssociationTest {
 		assertEquals(1, a.size());
 		
 		assertEquals(set1, a.iterator().next());
+		
+	}
+	
+	@Test
+	public void testContainsAll() {
+		
+		GeneAssociation a2 = new GeneAssociation();
+
+		GeneSet set1 = new GeneSet();
+		set1.add(g1);
+		set1.add(g2);
+
+		GeneSet set2 = new GeneSet();
+		set2.add(g2);
+		set1.add(g3);
+
+		a.add(set2);
+		a2.add(set1);
+		
+		assertFalse(a.containsAll(a2));
+		
+		a.add(set1);
+		
+		assertTrue(a.containsAll(a2));
 		
 	}
 	

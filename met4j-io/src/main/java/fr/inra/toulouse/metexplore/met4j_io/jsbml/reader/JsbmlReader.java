@@ -137,7 +137,7 @@ public class JsbmlReader {
 			ArrayList<PackageParser> verifiedPkgs = this
 					.verifyPackages(userEnabledPackages);
 
-			JsbmlToBioNetwork converter = new JsbmlToBioNetwork();
+			JsbmlToBioNetwork converter = new JsbmlToBioNetwork(this.getModel());
 
 			this.setConverter(converter);
 
@@ -150,7 +150,7 @@ public class JsbmlReader {
 
 			System.err.println("Parsing model " + this.getModel().getId());
 
-			this.getConverter().parseModel(this.getModel());
+			this.getConverter().parseModel();
 
 			this.errorsAndWarnings.addAll(PackageParser.errorsAndWarnings);
 

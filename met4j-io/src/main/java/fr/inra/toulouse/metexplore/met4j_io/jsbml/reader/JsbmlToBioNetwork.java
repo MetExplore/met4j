@@ -59,6 +59,11 @@ public class JsbmlToBioNetwork {
 	 */
 	public ArrayList<PackageParser> setOfPackage = new ArrayList<PackageParser>();
 
+	
+	public JsbmlToBioNetwork(Model model) {
+		this.model = model;
+	}
+	
 	/**
 	 * Main method of the parser. It should call the different list parser
 	 * defined in the inheriting classes
@@ -66,15 +71,20 @@ public class JsbmlToBioNetwork {
 	 * @param model
 	 *            the jsbml model
 	 */
-	protected void parseModel(Model model) {
-		this.model = model;
+	protected void parseModel() {
 
-		this.getModelData(model);
-		this.parseListOfUnitDefinitions(model);
-		this.parseListOfCompartments(model);
-		this.parseListOfReactions(model);
+		this.getModelData();
+		this.parseListOfUnitDefinitions();
+		this.parseListOfCompartments();
+		
+		
+		// Si le metabolite n'intervient dans aucune reaction, ça fait une erreur !!!!
+		// Cf parsebionet Jsbml3ToBioNetwork
+		this.parseListOfSpecies();
+		
+		this.parseListOfReactions();
 
-		this.parsePackageAdditionalData(model);
+		this.parsePackageAdditionalData();
 	}
 
 	/**
@@ -83,7 +93,7 @@ public class JsbmlToBioNetwork {
 	 * @param model
 	 *            the jsbml model
 	 */
-	protected void getModelData(Model model) {
+	protected void getModelData() {
 
 		BioNetwork bionet = new BioNetwork(model.getId());
 
@@ -101,7 +111,7 @@ public class JsbmlToBioNetwork {
 	 * @param model
 	 *            the jsbml model
 	 */
-	protected void parseListOfUnitDefinitions(Model model) {
+	protected void parseListOfUnitDefinitions() {
 
 		for (UnitDefinition jSBMLUD : model.getListOfUnitDefinitions()) {
 
@@ -140,7 +150,7 @@ public class JsbmlToBioNetwork {
 	 * @param model
 	 *            the jsbml model
 	 */
-	protected void parseListOfCompartments(Model model) {
+	protected void parseListOfCompartments() {
 
 		for (Compartment jSBMLCompart : model.getListOfCompartments()) {
 
@@ -216,6 +226,9 @@ public class JsbmlToBioNetwork {
 		}
 
 	}
+	
+	
+	
 
 	/**
 	 * Method to parse the list of reaction of the jsbml model
@@ -223,7 +236,7 @@ public class JsbmlToBioNetwork {
 	 * @param model
 	 *            the jsbml model
 	 */
-	protected void parseListOfReactions(Model model) {
+	protected void parseListOfReactions() {
 		for (Reaction jSBMLReaction : model.getListOfReactions()) {
 			String reactionId = jSBMLReaction.getId();
 
@@ -438,29 +451,17 @@ public class JsbmlToBioNetwork {
 
 		}
 	}
+	
+	protected void parseListOfSpecies() {
+		for (Species specie : this.getModel().getListOfSpecies()) {
+			String specieId = specie.getId();
 
-	/**
-	 * parse the jsbml species participating in a reaction and create the
-	 * corresponding metabolite as {@link BioPhysicalEntity} object
-	 * 
-	 * @param specie
-	 *            the Jsbml Species object
-	 * @return BioPhysicalEntity
-	 */
-	protected BioReactant parseParticipantSpecies(SpeciesReference specieRef) {
-		Species specie = this.getModel().getSpecies(specieRef.getSpecies());
-		String specieId = specie.getId();
-
-		String Stoechio = String.valueOf(specieRef.getStoichiometry());
-
-		BioMetabolite bionetSpecies = this.getBionet().getMetabolitesView().getEntityFromId(specieId);
-
-		if (bionetSpecies == null) {
 			String specieName = specie.getName();
 			if (specieName.isEmpty()) {
 				specieName = specieId;
 			}
-			bionetSpecies = new BioMetabolite(specieId, specieName);
+			
+			BioMetabolite bionetSpecies = new BioMetabolite(specieId, specieName);
 
 			MetaboliteAttributes.setBoundaryCondition(bionetSpecies, specie.getBoundaryCondition());
 			MetaboliteAttributes.setConstant(bionetSpecies, specie.getConstant());
@@ -516,8 +517,24 @@ public class JsbmlToBioNetwork {
 
 			this.getBionet().affectToCompartment(bionetSpecies,
 					this.getBionet().getCompartmentsView().getEntityFromId(specie.getCompartment()));
-
 		}
+	}
+
+	/**
+	 * parse the jsbml species participating in a reaction and create the
+	 * corresponding metabolite as {@link BioPhysicalEntity} object
+	 * 
+	 * @param specie
+	 *            the Jsbml Species object
+	 * @return BioPhysicalEntity
+	 */
+	protected BioReactant parseParticipantSpecies(SpeciesReference specieRef) {
+		Species specie = this.getModel().getSpecies(specieRef.getSpecies());
+		String specieId = specie.getId();
+
+		String Stoechio = String.valueOf(specieRef.getStoichiometry());
+
+		BioMetabolite bionetSpecies = this.getBionet().getMetabolitesView().getEntityFromId(specieId);
 
 		BioReactant reactant = new BioReactant(bionetSpecies, Double.parseDouble(Stoechio),
 				this.getBionet().getCompartmentsView().getEntityFromId(specie.getCompartment()));
@@ -587,7 +604,7 @@ public class JsbmlToBioNetwork {
 	 * @param model
 	 *            the jsbml model
 	 */
-	public void parsePackageAdditionalData(Model model) {
+	public void parsePackageAdditionalData() {
 		for (PackageParser parser : this.getSetOfPackage()) {
 			parser.parseModel(model, this.getBionet());
 		}

@@ -78,6 +78,7 @@ public class JsbmlReader {
 		HashSet<PackageParser> pkgs = new HashSet<PackageParser>(Arrays.asList(
 				new NotesParser(true), new FBCParser(), new AnnotationParser(
 						true)));
+		
 		BioNetwork net = reader.read(pkgs);
 		if (net == null) {
 			for (String err : reader.errorsAndWarnings) {
@@ -154,7 +155,7 @@ public class JsbmlReader {
 
 			this.errorsAndWarnings.addAll(PackageParser.errorsAndWarnings);
 
-			return this.getConverter().getBionet();
+			return this.getConverter().getNetwork();
 		} else {
 
 			return null;

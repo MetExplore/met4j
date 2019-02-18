@@ -117,7 +117,8 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 	 * @see FluxNetwork#setFbcStrict(boolean)
 	 */
 	private void setStrictFromFbcModel() {
-		this.getFlxNet().setFbcStrict(this.getFbcModel().getStrict());
+		
+		this.getFlxNet().setFbcStrict(this.getFbcModel().isSetStrict() ? this.getFbcModel().getStrict() : false);
 	}
 
 	/**

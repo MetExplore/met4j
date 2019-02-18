@@ -33,6 +33,7 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageReaderExcep
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML2Compatible;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.UnitSbml;
@@ -50,20 +51,19 @@ public class JsbmlToBioNetwork {
 	/**
 	 * The {@link BioNetwork} created by this class
 	 */
-	protected BioNetwork bionet;
+	private BioNetwork network;
 
-	protected Model model;
+	private Model model;
 
 	/**
 	 * The ordered list of {@link PackageParser} activated for this parser
 	 */
 	public ArrayList<PackageParser> setOfPackage = new ArrayList<PackageParser>();
 
-	
 	public JsbmlToBioNetwork(Model model) {
 		this.model = model;
 	}
-	
+
 	/**
 	 * Main method of the parser. It should call the different list parser
 	 * defined in the inheriting classes
@@ -73,15 +73,15 @@ public class JsbmlToBioNetwork {
 	 */
 	protected void parseModel() {
 
-		this.getModelData();
+		this.parseNetworkData();
 		this.parseListOfUnitDefinitions();
 		this.parseListOfCompartments();
-		
-		
-		// Si le metabolite n'intervient dans aucune reaction, ça fait une erreur !!!!
+
+		// Si le metabolite n'intervient dans aucune reaction, ça fait une
+		// erreur !!!!
 		// Cf parsebionet Jsbml3ToBioNetwork
 		this.parseListOfSpecies();
-		
+
 		this.parseListOfReactions();
 
 		this.parsePackageAdditionalData();
@@ -93,15 +93,13 @@ public class JsbmlToBioNetwork {
 	 * @param model
 	 *            the jsbml model
 	 */
-	protected void getModelData() {
+	private void parseNetworkData() {
 
 		BioNetwork bionet = new BioNetwork(model.getId());
 
 		bionet.setName(model.getName());
 
-		// Remove this in parsebionet -> met4j
-		// bionet.setType("sbml" + model.getLevel() + "." + model.getVersion());
-		this.setBionet(bionet);
+		this.setNetwork(bionet);
 	}
 
 	/**
@@ -111,7 +109,7 @@ public class JsbmlToBioNetwork {
 	 * @param model
 	 *            the jsbml model
 	 */
-	protected void parseListOfUnitDefinitions() {
+	private void parseListOfUnitDefinitions() {
 
 		for (UnitDefinition jSBMLUD : model.getListOfUnitDefinitions()) {
 
@@ -133,12 +131,12 @@ public class JsbmlToBioNetwork {
 					String Scale = String.valueOf(jSBMLUnit.getScale());
 					String Multiplier = String.valueOf(jSBMLUnit.getMultiplier());
 
-					UnitSbml bionetUnit = new UnitSbml(kind.getName().toUpperCase(), Exp, Scale, Multiplier);
+					UnitSbml bionetUnit = new UnitSbml(kind.getName(), Exp, Scale, Multiplier);
 					bionetUD.addUnit(bionetUnit);
 				}
 			}
 
-			NetworkAttributes.addUnitDefinition(this.getBionet(), bionetUD);
+			NetworkAttributes.addUnitDefinition(this.getNetwork(), bionetUD);
 		}
 
 	}
@@ -150,7 +148,7 @@ public class JsbmlToBioNetwork {
 	 * @param model
 	 *            the jsbml model
 	 */
-	protected void parseListOfCompartments() {
+	private void parseListOfCompartments() {
 
 		for (Compartment jSBMLCompart : model.getListOfCompartments()) {
 
@@ -161,10 +159,10 @@ public class JsbmlToBioNetwork {
 				compartName = compartId;
 			}
 
-			BioCompartment bionetCompart = this.getBionet().getCompartmentsView().getEntityFromId(compartId);
+			BioCompartment bionetCompart = this.getNetwork().getCompartmentsView().getEntityFromId(compartId);
 			if (bionetCompart == null) {
 				bionetCompart = new BioCompartment(compartName, compartId);
-				this.getBionet().add(bionetCompart);
+				this.getNetwork().add(bionetCompart);
 			}
 
 			/**
@@ -186,13 +184,13 @@ public class JsbmlToBioNetwork {
 
 				Compartment outsideJSBMLComp = model.getCompartment(jSBMLCompart.getOutside());
 
-				BioCompartment outsideCompart = this.getBionet().getCompartmentsView()
+				BioCompartment outsideCompart = this.getNetwork().getCompartmentsView()
 						.getEntityFromId(outsideJSBMLComp.getId());
 
 				// if it's null, we create it and add it to the bionetwork
 				if (outsideCompart == null) {
 					outsideCompart = new BioCompartment(outsideJSBMLComp.getName(), outsideJSBMLComp.getId());
-					this.getBionet().add(outsideCompart);
+					this.getNetwork().add(outsideCompart);
 				}
 
 				// We can add it as outside compartment of the current
@@ -203,7 +201,7 @@ public class JsbmlToBioNetwork {
 			if (jSBMLCompart.isSetUnits()) {
 
 				UnitDefinition JsbmlUnitDef = model.getUnitDefinition(jSBMLCompart.getUnits());
-				BioUnitDefinition bionetUnitDef = NetworkAttributes.getUnitDefinition(this.getBionet(),
+				BioUnitDefinition bionetUnitDef = NetworkAttributes.getUnitDefinition(this.getNetwork(),
 						JsbmlUnitDef.getId());
 				CompartmentAttributes.setUnitDefinition(bionetCompart, bionetUnitDef);
 			}
@@ -218,7 +216,7 @@ public class JsbmlToBioNetwork {
 				CompartmentAttributes.setSize(bionetCompart, jSBMLCompart.getSize());
 			}
 			if (jSBMLCompart.isSetSpatialDimensions()) {
-				CompartmentAttributes.setSpatialDimensions(bionetCompart, (int)jSBMLCompart.getSpatialDimensions());
+				CompartmentAttributes.setSpatialDimensions(bionetCompart, (int) jSBMLCompart.getSpatialDimensions());
 			} else {
 				CompartmentAttributes.setSpatialDimensions(bionetCompart, 3);
 			}
@@ -226,9 +224,6 @@ public class JsbmlToBioNetwork {
 		}
 
 	}
-	
-	
-	
 
 	/**
 	 * Method to parse the list of reaction of the jsbml model
@@ -236,7 +231,7 @@ public class JsbmlToBioNetwork {
 	 * @param model
 	 *            the jsbml model
 	 */
-	protected void parseListOfReactions() {
+	private void parseListOfReactions() {
 		for (Reaction jSBMLReaction : model.getListOfReactions()) {
 			String reactionId = jSBMLReaction.getId();
 
@@ -245,6 +240,8 @@ public class JsbmlToBioNetwork {
 				reactionName = reactionId;
 			}
 			BioReaction bionetReaction = new BioReaction(reactionId, reactionName);
+
+			this.getNetwork().add(bionetReaction);
 
 			if (jSBMLReaction.isSetSBOTerm()) {
 				ReactionAttributes.setSboTerm(bionetReaction, jSBMLReaction.getSBOTermID());
@@ -266,7 +263,7 @@ public class JsbmlToBioNetwork {
 
 			boolean hasBounds = false;
 
-			BioUnitDefinitionCollection udList = NetworkAttributes.getUnitDefinitions(this.getBionet());
+			BioUnitDefinitionCollection udList = NetworkAttributes.getUnitDefinitions(this.getNetwork());
 
 			KineticLaw kine = jSBMLReaction.getKineticLaw();
 			if (kine != null) {
@@ -346,78 +343,79 @@ public class JsbmlToBioNetwork {
 							ReactionAttributes.addFlux(bionetReaction, newflux);
 						}
 					}
-				}
-			} else { // SBML V3.0
-				for (LocalParameter param : kine.getListOfLocalParameters()) {
+				} else { // SBML V3.0
+					
+					// TODO : tester s'il y a le package fbc
+					
+					for (LocalParameter param : kine.getListOfLocalParameters()) {
 
-					UnitDefinition jsbmlUnit = model.getUnitDefinition(param.getUnits());
-					if (jsbmlUnit != null) {
+						UnitDefinition jsbmlUnit = model.getUnitDefinition(param.getUnits());
+						if (jsbmlUnit != null) {
 
-						BioUnitDefinition UD = udList.getEntityFromId(jsbmlUnit.getId());
+							BioUnitDefinition UD = udList.getEntityFromId(jsbmlUnit.getId());
 
-						if (param.getId().equalsIgnoreCase("UPPER_BOUND")
-								|| param.getName().equalsIgnoreCase("UPPER_BOUND")) {
+							if (param.getId().equalsIgnoreCase("UPPER_BOUND")
+									|| param.getName().equalsIgnoreCase("UPPER_BOUND")) {
 
-							/**
-							 * This is to make sure that the unit definition
-							 * associated with the fluxes is not null
-							 */
-							if (UD == null && udList.containsId("mmol_per_gDW_per_hr")) {
-								UD = udList.getEntityFromId("mmol_per_gDW_per_hr");
-							} else if (UD == null && udList.containsId("FLUX_UNIT")) {
-								UD = udList.getEntityFromId("FLUX_UNIT");
+								/**
+								 * This is to make sure that the unit definition
+								 * associated with the fluxes is not null
+								 */
+								if (UD == null && udList.containsId("mmol_per_gDW_per_hr")) {
+									UD = udList.getEntityFromId("mmol_per_gDW_per_hr");
+								} else if (UD == null && udList.containsId("FLUX_UNIT")) {
+									UD = udList.getEntityFromId("FLUX_UNIT");
+								}
+								if (UD == null) {
+									UD = new BioUnitDefinition(null, null);
+									udList.add(UD);
+								}
+
+								Flux newflux = new Flux(param.getValue(), UD);
+								ReactionAttributes.setUpperBound(bionetReaction, newflux);
+
+								hasBounds = true;
+							} else if (param.getId().equalsIgnoreCase("LOWER_BOUND")
+									|| param.getName().equalsIgnoreCase("LOWER_BOUND")) {
+
+								/**
+								 * This is to make sure that the unit definition
+								 * associated with the fluxes is not null
+								 */
+								if (UD == null && udList.containsId("mmol_per_gDW_per_hr")) {
+									UD = udList.getEntityFromId("mmol_per_gDW_per_hr");
+								} else if (UD == null && udList.containsId("FLUX_UNIT")) {
+									UD = udList.getEntityFromId("FLUX_UNIT");
+								}
+								if (UD == null) {
+									UD = new BioUnitDefinition();
+									udList.add(UD);
+								}
+
+								Flux newflux = new Flux(param.getValue(), UD);
+								ReactionAttributes.setLowerBound(bionetReaction, newflux);
+
+								hasBounds = true;
+							} else if (UD != null) {
+								Flux newflux = new Flux(param.getValue(), UD);
+
+								ReactionAttributes.addFlux(bionetReaction, newflux);
+
+							} else if (UD == null && param.getUnits().equalsIgnoreCase("dimensionless")) {
+								UD = new BioUnitDefinition("dimensionless", "dimensionless");
+								Flux newflux = new Flux(param.getValue(), UD);
+								ReactionAttributes.addFlux(bionetReaction, newflux);
 							}
-							if (UD == null) {
-								UD = new BioUnitDefinition(null, null);
-								udList.add(UD);
-							}
+						} else {
 
-							Flux newflux = new Flux(param.getValue(), UD);
-							ReactionAttributes.setUpperBound(bionetReaction, newflux);
-
-							hasBounds = true;
-						} else if (param.getId().equalsIgnoreCase("LOWER_BOUND")
-								|| param.getName().equalsIgnoreCase("LOWER_BOUND")) {
-
-							/**
-							 * This is to make sure that the unit definition
-							 * associated with the fluxes is not null
-							 */
-							if (UD == null && udList.containsId("mmol_per_gDW_per_hr")) {
-								UD = udList.getEntityFromId("mmol_per_gDW_per_hr");
-							} else if (UD == null && udList.containsId("FLUX_UNIT")) {
-								UD = udList.getEntityFromId("FLUX_UNIT");
-							}
-							if (UD == null) {
-								UD = new BioUnitDefinition();
-								udList.add(UD);
-							}
-
-							Flux newflux = new Flux(param.getValue(), UD);
-							ReactionAttributes.setLowerBound(bionetReaction, newflux);
-
-							hasBounds = true;
-						} else if (UD != null) {
-							Flux newflux = new Flux(param.getValue(), UD);
-
-							ReactionAttributes.addFlux(bionetReaction, newflux);
-
-						} else if (UD == null && param.getUnits().equalsIgnoreCase("dimensionless")) {
-							UD = new BioUnitDefinition("dimensionless", "dimensionless");
+							BioUnitDefinition UD = new BioUnitDefinition("dimensionless", "dimensionless");
 							Flux newflux = new Flux(param.getValue(), UD);
 							ReactionAttributes.addFlux(bionetReaction, newflux);
 						}
-					} else {
-
-						BioUnitDefinition UD = new BioUnitDefinition("dimensionless", "dimensionless");
-						Flux newflux = new Flux(param.getValue(), UD);
-						ReactionAttributes.addFlux(bionetReaction, newflux);
 					}
+
 				}
-
 			}
-
-			this.getBionet().add(bionetReaction);
 		}
 	}
 
@@ -435,7 +433,7 @@ public class JsbmlToBioNetwork {
 	 *            <li>right = products
 	 *            </ul>
 	 */
-	protected void parseReactionListOf(BioReaction bionetReaction, ListOf<SpeciesReference> listOf, String side) {
+	private void parseReactionListOf(BioReaction bionetReaction, ListOf<SpeciesReference> listOf, String side) {
 		for (SpeciesReference specieRef : listOf) {
 			BioReactant reactant = this.parseParticipantSpecies(specieRef);
 
@@ -444,15 +442,15 @@ public class JsbmlToBioNetwork {
 			}
 
 			if (side.equals("left")) {
-				this.getBionet().affectLeft(reactant, bionetReaction);
+				this.getNetwork().affectLeft(reactant, bionetReaction);
 			} else if (side.equals("right")) {
-				this.getBionet().affectRight(reactant, bionetReaction);
+				this.getNetwork().affectRight(reactant, bionetReaction);
 			}
 
 		}
 	}
-	
-	protected void parseListOfSpecies() {
+
+	private void parseListOfSpecies() {
 		for (Species specie : this.getModel().getListOfSpecies()) {
 			String specieId = specie.getId();
 
@@ -460,7 +458,7 @@ public class JsbmlToBioNetwork {
 			if (specieName.isEmpty()) {
 				specieName = specieId;
 			}
-			
+
 			BioMetabolite bionetSpecies = new BioMetabolite(specieId, specieName);
 
 			MetaboliteAttributes.setBoundaryCondition(bionetSpecies, specie.getBoundaryCondition());
@@ -502,7 +500,7 @@ public class JsbmlToBioNetwork {
 					}
 				}
 			} else {
-				
+
 				MetaboliteAttributes.setSubstanceUnits(bionetSpecies, specie.getSubstanceUnits());
 				MetaboliteAttributes.setSboTerm(bionetSpecies, specie.getSBOTermID());
 
@@ -513,10 +511,10 @@ public class JsbmlToBioNetwork {
 				}
 			}
 
-			this.getBionet().add(bionetSpecies);
+			this.getNetwork().add(bionetSpecies);
 
-			this.getBionet().affectToCompartment(bionetSpecies,
-					this.getBionet().getCompartmentsView().getEntityFromId(specie.getCompartment()));
+			this.getNetwork().affectToCompartment(bionetSpecies,
+					this.getNetwork().getCompartmentsView().getEntityFromId(specie.getCompartment()));
 		}
 	}
 
@@ -528,16 +526,33 @@ public class JsbmlToBioNetwork {
 	 *            the Jsbml Species object
 	 * @return BioPhysicalEntity
 	 */
-	protected BioReactant parseParticipantSpecies(SpeciesReference specieRef) {
+	private BioReactant parseParticipantSpecies(SpeciesReference specieRef) {
 		Species specie = this.getModel().getSpecies(specieRef.getSpecies());
 		String specieId = specie.getId();
 
-		String Stoechio = String.valueOf(specieRef.getStoichiometry());
+		String sto = String.valueOf(specieRef.getStoichiometry());
+		
+		System.err.println(sto);
+		
+		Double stoDbl = 1.0;
+		
+		try {
+			stoDbl =  Double.parseDouble(sto);
+		} catch (NumberFormatException e) {
+			System.err.println("Warning : invalid coefficient : "+sto+" for "+specieId);
+			stoDbl = 1.0;
+		}
+		
+		if(Double.isNaN(stoDbl))
+		{
+			System.err.println("Warning : invalid coefficient : "+sto+" for "+specieId);
+			stoDbl = 1.0;
+		}
 
-		BioMetabolite bionetSpecies = this.getBionet().getMetabolitesView().getEntityFromId(specieId);
+		BioMetabolite bionetSpecies = this.getNetwork().getMetabolitesView().getEntityFromId(specieId);
 
-		BioReactant reactant = new BioReactant(bionetSpecies, Double.parseDouble(Stoechio),
-				this.getBionet().getCompartmentsView().getEntityFromId(specie.getCompartment()));
+		BioReactant reactant = new BioReactant(bionetSpecies, stoDbl,
+				this.getNetwork().getCompartmentsView().getEntityFromId(specie.getCompartment()));
 
 		return reactant;
 	}
@@ -545,16 +560,16 @@ public class JsbmlToBioNetwork {
 	/**
 	 * @return the bionet
 	 */
-	public BioNetwork getBionet() {
-		return bionet;
+	public BioNetwork getNetwork() {
+		return network;
 	}
 
 	/**
 	 * @param bionet
 	 *            the bionet to set
 	 */
-	public void setBionet(BioNetwork bionet) {
-		this.bionet = bionet;
+	public void setNetwork(BioNetwork bionet) {
+		this.network = bionet;
 	}
 
 	/**
@@ -575,7 +590,8 @@ public class JsbmlToBioNetwork {
 	 */
 	public void addPackage(PackageParser pkg) throws JSBMLPackageReaderException {
 
-		if (pkg instanceof ReaderSBML2Compatible) {
+		if ((this.getModel().getLevel() <= 2 && pkg instanceof ReaderSBML2Compatible)
+				|| (this.getModel().getLevel() > 2 && pkg instanceof ReaderSBML3Compatible)) {
 			this.getSetOfPackage().add(pkg);
 		} else {
 			throw new JSBMLPackageReaderException("Invalid SBML level and package Reader combination");
@@ -606,7 +622,7 @@ public class JsbmlToBioNetwork {
 	 */
 	public void parsePackageAdditionalData() {
 		for (PackageParser parser : this.getSetOfPackage()) {
-			parser.parseModel(model, this.getBionet());
+			parser.parseModel(model, this.getNetwork());
 		}
 	}
 

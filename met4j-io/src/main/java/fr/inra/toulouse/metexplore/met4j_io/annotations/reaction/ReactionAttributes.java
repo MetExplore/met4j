@@ -60,7 +60,7 @@ public class ReactionAttributes {
 	 */
 	public static void setLowerBound(BioReaction r, Flux val) {
 
-		if (!r.isReversible() && val.value < 0) {
+		if (!r.isReversible() && (val != null && val.value < 0)) {
 			throw new IllegalArgumentException(
 					"The flux value must be greater or equal to 0 since the reaction is irreversible");
 		}
@@ -76,7 +76,7 @@ public class ReactionAttributes {
 	 */
 	public static void setUpperBound(BioReaction r, Flux val) {
 
-		if (!r.isReversible() && val.value < 0) {
+		if (!r.isReversible() && (val != null && val.value < 0)) {
 			throw new IllegalArgumentException(
 					"The flux value must be greater or equal to 0 since the reaction is irreversible");
 		}

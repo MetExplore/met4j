@@ -1,4 +1,4 @@
-package fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags;
+package fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin;
 
 import static org.junit.Assert.*;
 
@@ -9,7 +9,9 @@ import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.sbml.jsbml.Annotation;
 import org.sbml.jsbml.CVTerm;
 import org.sbml.jsbml.CVTerm.Qualifier;
@@ -31,6 +33,9 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.AnnotationParser
 
 public class AnnotationParserTest {
 
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
+
 	Model model;
 	BioNetwork network;
 	BioReaction r1, r2;
@@ -38,7 +43,7 @@ public class AnnotationParserTest {
 	BioProtein prot1, prot2;
 	BioCompartment cpt;
 	BioEnzyme e1, e2;
-	Annotation genericAnnotation, pubmedAnnotation, inchiAnnotation;
+	Annotation genericAnnotation, pubmedAnnotation, inchiAnnotation, ecAnnotation, modelAnnotation;
 
 	@Before
 	public void init() throws XMLStreamException {
@@ -134,6 +139,12 @@ public class AnnotationParserTest {
 		cvInchi.addResource("http://biomodels.net/inchi");
 		model.addDeclaredNamespace("inchi", "http://biomodels.net/inchi");
 
+		CVTerm cvEc = new CVTerm();
+		cvEc.addResource("http://identifiers.org/ec-code/1.1.1.1");
+		cvEc.setQualifierType(Type.BIOLOGICAL_QUALIFIER);
+		cvEc.setBiologicalQualifierType(Qualifier.BQB_IS);
+		genericAnnotation.addCVTerm(cvEc);
+
 		// inchiAnnotation.append("<rdf:Description rdf:about=\"#s1\"> <in:inchi
 		// xmlns:in=\"http://biomodels.net/inchi\">"
 		// +
@@ -161,13 +172,46 @@ public class AnnotationParserTest {
 	@Test
 	public void testParseModel() throws XMLStreamException {
 
+		model.setMetaId("truc");
+		
+		modelAnnotation = new Annotation();
+		CVTerm cvTermTaxon = new CVTerm();
+		cvTermTaxon.addResource("http://identifiers.org/taxonomy/511145");
+		cvTermTaxon.setQualifierType(Type.BIOLOGICAL_QUALIFIER);
+		cvTermTaxon.setBiologicalQualifierType(Qualifier.BQB_HAS_TAXON);
+		CVTerm cvTermModel = new CVTerm();
+		cvTermModel.addResource("http://identifiers.org/bigg.model/iJO1366");
+		cvTermModel.setQualifierType(Type.MODEL_QUALIFIER);
+		cvTermModel.setModelQualifierType(Qualifier.BQM_IS);
+		CVTerm cvtermPubmed = new CVTerm();
+		cvtermPubmed.addResource("http://identifiers.org/pubmed/1");
+		cvtermPubmed.setQualifierType(Type.BIOLOGICAL_QUALIFIER);
+		cvtermPubmed.setBiologicalQualifierType(Qualifier.BQB_IS_DESCRIBED_BY);
+		
+		modelAnnotation.addCVTerm(cvTermTaxon);
+		modelAnnotation.addCVTerm(cvTermModel);
+		modelAnnotation.addCVTerm(cvtermPubmed);
+		
+		model.setAnnotation(modelAnnotation);
+
 		AnnotationParser parser = new AnnotationParser(true);
 
 		parser.parseModel(model, network);
 
+		BioRef refModel = new BioRef(AnnotationParser.ORIGIN, "taxonomy", "511145", 1);
+		refModel.setLogicallink("hasTaxon");
+
+		System.err.println(network.getRefs());
+		
+		assertNotNull(network.getRefs("taxonomy"));
+		
+		assertEquals(network.getRefs("taxonomy").iterator().next(), refModel);
+
 		BioRef ref = new BioRef(AnnotationParser.ORIGIN, "kegg.reaction", "R00001", 1);
 
 		assertEquals(r1.getRefs("kegg.reaction").iterator().next(), ref);
+
+		assertEquals("1.1.1.1", r1.getEcNumber());
 
 		BioRef ref2 = new BioRef(AnnotationParser.ORIGIN, "pubmed", "1", 1);
 		ref2.setLogicallink("isDescribedBy");
@@ -190,7 +234,6 @@ public class AnnotationParserTest {
 		inchis.add(ref5);
 		HashMap<String, Set<BioRef>> refInchis = new HashMap<String, Set<BioRef>>();
 		refInchis.put("inchi", inchis);
-
 
 		assertEquals(refInchis, s1.getRefs());
 

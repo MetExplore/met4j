@@ -3,7 +3,6 @@ package fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.stream.XMLStreamException;
 
 import org.sbml.jsbml.Annotation;
 import org.sbml.jsbml.CVTerm;
@@ -11,7 +10,6 @@ import org.sbml.jsbml.Model;
 import org.sbml.jsbml.UniqueNamedSBase;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioRef;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
@@ -22,7 +20,6 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML1Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML2Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
-import static fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
 
 /**
  * This class is used to parse the annotation of every SBML element.
@@ -101,8 +98,8 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 		this.setBionetwork(bionetwork);
 		this.setModel(model);
 
-		this.getModelData(model, bionetwork);
-
+		this.parseAnnotation(bionetwork,model.getAnnotation());
+		
 		this.parseSbmlAnnotations(bionetwork.getReactionsView());
 		this.parseSbmlAnnotations(bionetwork.getMetabolitesView());
 		this.parseSbmlAnnotations(bionetwork.getProteinsView());
@@ -142,8 +139,17 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 
 		Matcher m;
 		for (CVTerm cv : annot.getListOfCVTerms()) {
-			String bioQual = cv.getBiologicalQualifierType().getElementNameEquivalent();
-
+			
+			String qual = "NA";
+			
+			if(cv.isBiologicalQualifier()) {
+			
+				qual = cv.getBiologicalQualifierType().getElementNameEquivalent();
+			}
+			else {
+				qual = cv.getModelQualifierType().getElementNameEquivalent();
+			}
+			
 			for (String ress : cv.getResources()) {
 				if (this.getAnnotationPattern() != null
 						&& (m = Pattern.compile(this.getAnnotationPattern()).matcher(ress)).matches()) {
@@ -151,50 +157,27 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 					if (m.group(1).equalsIgnoreCase("ec-code")) {
 						((BioReaction) ent).setEcNumber(m.group(2));
 					}
-					ent.addRef(m.group(1), m.group(2), 1, bioQual, ORIGIN);
+					System.err.println("add ref "+m.group(1)+" "+m.group(2)+" "+qual);
+					ent.addRef(m.group(1), m.group(2), 1, qual, ORIGIN);
 				}
 			}
 		}
 
 		String nonrdfAnnot = annot.getNonRDFannotationAsString();
 		if (ent instanceof BioMetabolite && nonrdfAnnot != null && !nonrdfAnnot.isEmpty()) {
-			
+
 			String specialInchiPattern = "<in:inchi xmlns:in=\"([^\"]+)\">InChI=([^<]+)</in:inchi>";
 
 			m = Pattern.compile(specialInchiPattern, Pattern.DOTALL).matcher(nonrdfAnnot);
-			
+
 			while (m.find()) {
-				
+
 				if (m.group(1).equalsIgnoreCase("http://biomodels.net/inchi")) {
 					if (!ent.hasRef("inchi", m.group(2))) {
 						ent.addRef("inchi", m.group(2), 1, "is", ORIGIN);
 					}
 				}
 			}
-		}
-	}
-
-	/**
-	 * Link the {@link #model}'s annotation to the bionetwork
-	 * 
-	 * @param model
-	 *            the SBML model
-	 * @param bionet
-	 *            the Bionetwork
-	 */
-	public void getModelData(Model model, BioNetwork bionet) {
-		if (!isVoid(model.getMetaId())) {
-			try {
-
-				BioRef ref = new BioRef(ORIGIN, "sbmlAnnotation", model.getAnnotationString(), 1);
-				bionet.addRef(ref);
-
-				// bionet.setModelAnnot(new BioAnnotation(model.getMetaId(),
-				// model
-				// .getAnnotationString()));
-			} catch (XMLStreamException e) {
-			}
-
 		}
 	}
 

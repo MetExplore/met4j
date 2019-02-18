@@ -45,6 +45,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
  */
 public class BioUnitDefinition extends BioEntity {
 	
+	public static String DEFAULT_UNIT = "mmol_per_gDW_per_hr";
 	
 	HashMap<String, UnitSbml> units;
 	
@@ -59,7 +60,7 @@ public class BioUnitDefinition extends BioEntity {
 	 */
 	public BioUnitDefinition() {
 		
-		super("mmol_per_gDW_per_hr", "mmol_per_gDW_per_hr");
+		super(DEFAULT_UNIT, DEFAULT_UNIT);
 		
 		this.units = new HashMap<String, UnitSbml>();
 		

@@ -557,7 +557,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * Recursive function that parse gene association logical expression
 	 * strings. </br>
 	 * This is an adaptation of
-	 * {@link FBC2Parser#computeGeneAssocations(org.sbml.jsbml.ext.fbc.Association)} on Strings.
+	 * {@link FBCParser#computeGeneAssocations(org.sbml.jsbml.ext.fbc.Association)} on Strings.
 	 * </br>
 	 * </br>
 	 * Internally this uses {@link StringUtils#findClosingParen(char[], int)} to

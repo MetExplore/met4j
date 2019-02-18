@@ -32,7 +32,7 @@ public class FluxReaction extends BioEntity {
 	 * 
 	 * @see GeneAssociation
 	 */
-	private GeneAssociation reactionGAs;
+	private GeneAssociation reactionGeneAssociation;
 
 	/**
 	 * Constructor using a {@link BioChemicalReaction}
@@ -57,6 +57,11 @@ public class FluxReaction extends BioEntity {
 	public void convertGeneAssociationstoComplexes(BioNetwork bn) {
 
 		BioReaction rxn = this.getUnderlyingReaction();
+		
+		if(! bn.contains(rxn)) {
+			throw new IllegalArgumentException(rxn+" not present in the network");
+		}
+		
 		// BioNetwork bn=net.getUnderlyingBionet();
 
 //		BioCompartment defaultCmp;
@@ -72,6 +77,12 @@ public class FluxReaction extends BioEntity {
 			// for each gene get the corresponding protein from the network or
 			// create it if it doesn't exists
 			for (BioGene gene : sga) {
+				
+				if(! bn.contains(gene))
+				{
+					bn.add(gene);
+				}
+				
 				BioProtein prot;
 
 				if (bn.getProteinsView().containsId(gene.getId())) {
@@ -93,16 +104,22 @@ public class FluxReaction extends BioEntity {
 				BioEnzyme enz = new BioEnzyme(prot.getId(), prot.getName());
 				enz.setName(prot.getName());
 				
-				bn.add(enz);
+				if(! bn.contains(enz)) {
+					bn.add(enz);
+				}
 				bn.affectSubUnit(prot, 1.0, enz);
+				
+				bn.affectEnzyme(enz, rxn);
 
-			} else if (protlist.size() > 1) {
+			} else {
 				
 				String id = BioEnzymeUtils.createIdFromProteins(protlist);
 				
 				BioEnzyme enz = new BioEnzyme(id, id);
 				
-				bn.add(enz);
+				if(! bn.contains(enz)) {
+					bn.add(enz);
+				}
 				
 				for(BioProtein prot : protlist)
 				{
@@ -127,32 +144,22 @@ public class FluxReaction extends BioEntity {
 	}
 
 	/**
-	 * Set the new {@link #underlyingReaction}
-	 * 
-	 * @param reaction
-	 *            the new value of {@link #underlyingReaction}
-	 */
-	public void setUnderlyingReaction(BioReaction reaction) {
-		this.underlyingReaction = reaction;
-	}
-
-	/**
 	 * Get the {@link GeneAssociation} of the reaction
 	 * 
-	 * @return {@link #reactionGAs}
+	 * @return {@link #reactionGeneAssociation}
 	 */
 	public GeneAssociation getReactionGeneAssociation() {
-		return reactionGAs;
+		return reactionGeneAssociation;
 	}
 
 	/**
-	 * Set {@link #reactionGAs} to a new value
+	 * Set {@link #reactionGeneAssociation} to a new value
 	 * 
 	 * @param reactionGAs
-	 *            the new value of {@link #reactionGAs}
+	 *            the new value of {@link #reactionGeneAssociation}
 	 */
 	public void setReactionGeneAssociation(GeneAssociation reactionGAs) {
-		this.reactionGAs = reactionGAs;
+		this.reactionGeneAssociation = reactionGAs;
 	}
 
 }

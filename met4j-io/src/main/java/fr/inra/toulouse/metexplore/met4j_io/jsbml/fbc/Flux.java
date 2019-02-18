@@ -44,8 +44,6 @@ public class Flux extends BioEntity {
 
 	public Double value;
 
-	public static String DEFAULT_UNIT = "mmol_per_gDW_per_hr";
-
 	public BioUnitDefinition unitDefinition = null;
 	private boolean constant = false;
 
@@ -63,9 +61,9 @@ public class Flux extends BioEntity {
 
 	public Flux(Double value) {
 
-		super(value + "_" + Flux.DEFAULT_UNIT);
+		super(value + "_" + BioUnitDefinition.DEFAULT_UNIT);
 
-		BioUnitDefinition unitDefinition = new BioUnitDefinition(Flux.DEFAULT_UNIT, Flux.DEFAULT_UNIT);
+		BioUnitDefinition unitDefinition = new BioUnitDefinition();
 
 		this.value = value;
 		this.unitDefinition = unitDefinition;
@@ -76,7 +74,7 @@ public class Flux extends BioEntity {
 		super(id);
 	}
 
-	public boolean isConstant() {
+	public boolean getConstant() {
 		return this.constant;
 	}
 

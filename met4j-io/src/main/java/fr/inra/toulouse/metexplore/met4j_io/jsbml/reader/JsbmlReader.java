@@ -20,7 +20,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.AnnotationParser;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBC2Parser;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBCParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 
@@ -76,7 +76,7 @@ public class JsbmlReader {
 		JsbmlReader reader = new JsbmlReader(inputFile, false);
 
 		HashSet<PackageParser> pkgs = new HashSet<PackageParser>(Arrays.asList(
-				new NotesParser(true), new FBC2Parser(), new AnnotationParser(
+				new NotesParser(true), new FBCParser(), new AnnotationParser(
 						true)));
 		BioNetwork net = reader.read(pkgs);
 		if (net == null) {

@@ -51,6 +51,8 @@ public class GeneSet extends HashSet<BioGene> {
 		String str = toString();
 
 		final int prime = 31;
+		
+		// TODO : not very satisfying since we use a mutable property...
 		int result = prime * ((str == null) ? 0 : str.hashCode());
 		return result;
 	}

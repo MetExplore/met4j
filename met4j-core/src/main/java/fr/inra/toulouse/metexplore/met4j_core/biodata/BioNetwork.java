@@ -886,6 +886,17 @@ public class BioNetwork extends BioEntity {
 	};
 
 	/**
+	 * Get reactions involved in a pathway
+	 * 
+	 * @param p
+	 * @return
+	 */
+	public BioCollection<BioReaction> getReactionsFromPathway(BioPathway p) {
+
+		return p.getReactions().getView();
+	}
+
+	/**
 	 * Get compartments where are involved a metabolite
 	 * 
 	 * @param m

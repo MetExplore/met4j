@@ -23,7 +23,6 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import static fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
 
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
-import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
@@ -73,7 +72,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	/**
 	 * The default pattern used to retrieve reaction's score
 	 */
-	public static final String defaultscorePattern = "[> ]+CONFIDENCE.SCORE:\\s*([^<]+)<";
+	public static final String defaultscorePattern = "[> ]+SCORE:\\s*([^<]+)<";
 	/**
 	 * The default pattern used to retrieve reaction's status
 	 */
@@ -93,16 +92,20 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	/**
 	 * The default pattern used to retrieve metabolite's chemical formula
 	 */
-	public static final String defaultformulaPattern = "[> ]+FORMULA:\\s*([^<]+)<";
+	public static final String defaultformulaPattern = "(?i)[> ]+FORMULA:\\s*([^<]+)<";
 	/**
-	 * The default pattern used to retrieve metabolite's external identifiers
+	 * The default pattern used to retrieve element external identifiers
 	 */
 	public static final String defaultextDBidsPAttern = "[>]+([a-zA-Z\\._0-9 ]+):\\s*([^<]+)<";
+
+	public static final String defaultInchiPattern = "[> ]+INCHI:\\s*([^<]+)<";
+
+	public static final String defaultSmilesPattern = "[> ]+SMILES:\\s*([^<]+)<";
 
 	/**
 	 * The default separator in Notes values.
 	 */
-	public static final String defaultseparator = " \\|\\| ";
+	public static final String defaultseparator = ",";
 
 	/**
 	 * The separator for multiple pathways present in a single pathway key.
@@ -149,6 +152,11 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * User defined pattern used to retrieve metabolite's chemical formula
 	 */
 	public String formulaPattern;
+
+	public String inchiPattern;
+
+	public String smilesPattern;
+
 	/**
 	 * User defined separator in Notes values.
 	 */
@@ -172,7 +180,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * Launch the parsing of Notes. Launches {@link #getSBMLNotes(HashMap)} or
+	 * Launch the parsing of Notes. Launches {@link #addNotes(HashMap)} or
 	 * {@link #getSBMLCompartNotes(HashMap)} on the following list of the
 	 * bionetwork:
 	 * <ul>
@@ -190,14 +198,11 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 		this.setBionetwork(bionetwork);
 		this.setModel(model);
 
-		this.getModelData(model, bionetwork);
+		this.addNetworkNotes(model, bionetwork);
 
-		this.getSBMLNotes(bionetwork.getReactionsView());
-		this.getSBMLNotes(bionetwork.getMetabolitesView());
-		// this.getSBMLNotes(bionetwork.getEnzList());
-		this.getSBMLCompartNotes(bionetwork.getCompartmentsView());
-
-		this.getSBMLNotes(bionetwork.getCompartmentsView());
+		this.addNotes(bionetwork.getReactionsView());
+		this.addNotes(bionetwork.getMetabolitesView());
+		this.addNotes(bionetwork.getCompartmentsView());
 
 	}
 
@@ -219,7 +224,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * @param bionet
 	 *            the bionetwork
 	 */
-	public void getModelData(Model model, BioNetwork bionet) {
+	private void addNetworkNotes(Model model, BioNetwork bionet) {
 		try {
 			NetworkAttributes.setNotes(bionet, (new Notes(model.getNotesString())));
 		} catch (XMLStreamException e) {
@@ -236,11 +241,10 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * @param list
 	 *            the bionetwork list of {@link BioEntity}
 	 */
-	private void getSBMLNotes(BioCollection<? extends BioEntity> list) {
+	private void addNotes(BioCollection<? extends BioEntity> list) {
 
 		for (BioEntity ent : list) {
 			String id = ent.getId();
-
 			UniqueNamedSBase sbase = this.getModel().findUniqueNamedSBase(id);
 
 			if (GenericAttributes.getNotes(ent) == null) {
@@ -249,18 +253,13 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 					if (sbase != null && sbase.isSetNotes()) {
 						GenericAttributes.setNotes(ent, new Notes(sbase.getNotesString()));
 
-						switch (ent.getClass().getSimpleName()) {
-						case "BioCompartment":
+						if (ent instanceof BioCompartment) {
 							this.parseNotes((BioCompartment) ent);
-							break;
-						case "BioReaction":
+						} else if (ent instanceof BioReaction) {
 							this.parseNotes((BioReaction) ent);
-							break;
-						case "BioMetabolite":
+						} else if (ent instanceof BioMetabolite) {
 							this.parseNotes((BioMetabolite) ent);
-							break;
 						}
-
 					}
 
 				} catch (XMLStreamException e) {
@@ -269,32 +268,6 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 							"Error while parsing " + ent.getClass().getSimpleName() + " " + ent.getId() + " notes");
 
 				}
-			}
-		}
-	}
-
-	/**
-	 * For each {@link BioCompartment}, link the {@link #model}'s compartment's
-	 * notes to it
-	 * 
-	 * @param compartments
-	 *            the list of {@link BioCompartment}s of the bionetwork
-	 */
-	private void getSBMLCompartNotes(BioCollection<BioCompartment> compartments) {
-		for (BioCompartment c : compartments) {
-
-			UniqueNamedSBase sbase = this.getModel().findUniqueNamedSBase(c.getId());
-
-			try {
-				if (sbase != null && sbase.isSetNotes()) {
-					CompartmentAttributes.setNotes(c, new Notes(sbase.getNotesString()));
-
-				}
-			} catch (XMLStreamException e) {
-
-				NotesParser.errorsAndWarnings
-						.add("Error while parsing " + c.getClass().getSimpleName() + " " + c.getId() + " notes");
-
 			}
 		}
 	}
@@ -320,6 +293,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
 		String reactionNotes = ReactionAttributes.getNotes(reaction).getXHTMLasString();
 
+		System.err.println("reactionNotes : " + reactionNotes);
+
 		Matcher m;
 
 		if (this.getPathwayPattern() != null
@@ -327,80 +302,96 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
 			String[] pthwList = m.group(1).split(this.getPathwaySep());
 			for (String val : pthwList) {
-				String value = val.replaceAll("[^\\p{ASCII}]", "");
-				if (this.getBionetwork().getPathwaysView().containsId(value)) {
-					this.getBionetwork().affectToPathway(reaction,
-							this.getBionetwork().getPathwaysView().getEntityFromId(value));
-				} else {
-					BioPathway bionetPath = new BioPathway(value, value);
-					this.getBionetwork().add(bionetPath);
-					this.getBionetwork().affectToPathway(reaction, bionetPath);
+				String value = val.trim().replaceAll("[^\\p{ASCII}]", "");
+
+				if (!isVoid(value)) {
+
+					if (this.getBionetwork().getPathwaysView().containsId(value)) {
+						this.getBionetwork().affectToPathway(reaction,
+								this.getBionetwork().getPathwaysView().getEntityFromId(value));
+					} else {
+						BioPathway bionetPath = new BioPathway(value, value);
+						this.getBionetwork().add(bionetPath);
+						this.getBionetwork().affectToPathway(reaction, bionetPath);
+					}
 				}
 			}
 		}
 
 		// get the ec number
-		if (this.getECPattern() != null && (m = Pattern.compile(this.getECPattern()).matcher(reactionNotes)).find()
-				&& !m.group(1).equalsIgnoreCase("NA")) {
-			reaction.setEcNumber(m.group(1));
-		} else if (reaction.getEcNumber().isEmpty()) {
-			reaction.setEcNumber("NA");
+		if (this.getECPattern() != null && (m = Pattern.compile(this.getECPattern()).matcher(reactionNotes)).find()) {
+
+			String ec = m.group(1).trim();
+			if (!isVoid(ec)) {
+				reaction.setEcNumber(ec);
+			}
 		}
 
 		// get the reaction score
 		if (this.getScorePattern() != null
 				&& (m = Pattern.compile(this.getScorePattern()).matcher(reactionNotes)).find()) {
-			String value = m.group(1);
-			ReactionAttributes.setScore(reaction, Double.parseDouble(value));
+			String value = m.group(1).trim();
+
+			if (!isVoid(value)) {
+				try {
+					ReactionAttributes.setScore(reaction, Double.parseDouble(value));
+				} catch (NumberFormatException e) {
+					NotesParser.errorsAndWarnings
+							.add("[Warning] Reaction score must be a double for reaction " + reaction.getId());
+				}
+			}
 		}
 
 		// get the reaction status
 		if (this.getStatusPattern() != null
 				&& (m = Pattern.compile(this.getStatusPattern()).matcher(reactionNotes)).find()) {
-			String value = m.group(1);
+			String value = m.group(1).trim();
 
-			ReactionAttributes.setStatus(reaction, value);
+			if (!isVoid(value)) {
+				ReactionAttributes.setStatus(reaction, value);
+			}
 		}
 
 		// get the PMIDS
 		if (this.getPmidPattern() != null
 				&& (m = Pattern.compile(this.getPmidPattern()).matcher(reactionNotes)).find()) {
 
-			// TODO : to be corrected...
+			String pmidsStr = m.group(1).trim();
 
-			// String[] Authorlist = m.group(1).split("(" + this.separator +
-			// "\\s?)(?=)");
-			//
-			//
-			//
-			//
-			// if(Authorlist.length > 0 && !
-			// reaction.getAttributes().containsKey(Attributes.PMIDS))
-			// {
-			// reaction.addAttribute(Attributes.PMIDS, new HashSet<String>());
-			// }
-			//
-			//
-			// // TODO : see why parsing author Lists...
-			// for (String value : Authorlist) {
-			// ((HashSet<String>)(reaction.getAttribute(Attributes.PMIDS))).add(value);
-			// }
+			System.err.println("pmidsStr : " + pmidsStr);
+			if (!isVoid(pmidsStr)) {
+
+				System.err.println("sep " + this.separator);
+				String[] pmids = pmidsStr.split(this.separator);
+
+				for (int i = 0; i < pmids.length; i++) {
+					String pmid = pmids[i].trim();
+
+					if (!isVoid(pmid)) {
+						try {
+							System.err.println("add pmid " + pmid);
+							ReactionAttributes.addPmid(reaction, Integer.parseInt(pmid));
+						} catch (NumberFormatException e) {
+							NotesParser.errorsAndWarnings.add("[Warning] Pmid must be an integer");
+						}
+					}
+				}
+			}
 		}
 
 		// get the note/comment field (yes there is a note field in the sbml
 		// note element..)
 		if (this.getCommentPattern() != null
 				&& (m = Pattern.compile(this.getCommentPattern()).matcher(reactionNotes)).find()) {
-			String value = m.group(1);
-			if (value == "") {
-				value = "NA";
-			}
+			String value = m.group(1).trim();
 
-			ReactionAttributes.setComment(reaction, value);
+			if (!isVoid(value)) {
+				ReactionAttributes.setComment(reaction, value);
+			}
 
 		}
 
-		if (!reaction.getEnzymesView().isEmpty()) {
+		if (reaction.getEnzymesView().isEmpty()) {
 
 			if (this.getGPRPattern() != null
 					&& (m = Pattern.compile(this.getGPRPattern()).matcher(reactionNotes)).find()) {
@@ -417,6 +408,9 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
 			}
 		}
+
+		this.parseOtherRefs(reaction);
+
 	}
 
 	/**
@@ -440,82 +434,63 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
 		if (this.getFormulaPattern() != null
 				&& (m = Pattern.compile(this.getFormulaPattern()).matcher(metaboNotes)).find()) {
-			String value = m.group(1);
+			String value = m.group(1).trim();
 
 			if (!isVoid(value)) {
-				if (metabolite.getChemicalFormula() != null && (metabolite.getChemicalFormula().isEmpty()
-						|| metabolite.getChemicalFormula().equalsIgnoreCase("NA"))) {
-					metabolite.setChemicalFormula(value);
-				}
+				metabolite.setChemicalFormula(value);
 
 				metaboNotes = metaboNotes.replaceAll(this.getFormulaPattern(), "");
 			}
+
 		}
 
 		if (this.getChargePattern() != null
 				&& (m = Pattern.compile(this.getChargePattern()).matcher(metaboNotes)).find()) {
-			String value = m.group(1);
+			String value = m.group(1).trim();
 
 			if (!isVoid(value)) {
 
 				metabolite.setCharge(Integer.parseInt(value));
-				
+
 				metaboNotes = metaboNotes.replaceAll(this.getChargePattern(), "");
 			}
 		}
 
-		String dbName = null;
-		String values;
+		if (this.getInchiPattern() != null
+				&& (m = Pattern.compile(this.getInchiPattern()).matcher(metaboNotes)).find()) {
+			String value = m.group(1).trim();
 
-		if (this.isOthersAsRefs()) {
+			if (!isVoid(value)) {
 
-			m = Pattern.compile(NotesParser.defaultextDBidsPAttern).matcher(metaboNotes);
+				metabolite.setInchi(value);
 
-			while (m.find()) {
-
-				dbName = m.group(1);
-				values = m.group(2);
-
-				if (isVoid(values)) {
-					metaboNotes = metaboNotes.replace(m.group(0), "");
-					m = Pattern.compile(NotesParser.defaultextDBidsPAttern).matcher(metaboNotes);
-					continue;
-
-				} else if (dbName.equalsIgnoreCase("xmlns")) {
-
-				} else if (dbName.equalsIgnoreCase("INCHI")) {
-					if (!metabolite.hasRef("inchi", values)) {
-						metabolite.setInchi(values);
-						metabolite.addRef(new BioRef("SBML File", "inchi", values, 1));
-					}
-				} else if (dbName.equalsIgnoreCase("SMILES")) {
-					if (!metabolite.hasRef("smiles", values)) {
-						metabolite.setSmiles(values);
-						metabolite.addRef(new BioRef("SBML File", "smiles", values, 1));
-					}
-				} else if (dbName.equalsIgnoreCase("INCHIKEY") || dbName.equalsIgnoreCase("INCHI KEY")) {
-					if (!metabolite.hasRef("inchikey", values)) {
-						metabolite.addRef(new BioRef("SBML File", "inchikey", values, 1));
-					}
-				} else {
-					String[] ids = values.split(this.getSeparator());
-					for (String value : ids) {
-						if (!metabolite.hasRef(dbName.toLowerCase(), value)) {
-							metabolite.addRef(new BioRef("SBML File", dbName.toLowerCase(), value, 1));
-						}
-					}
-				}
-
-				metaboNotes = metaboNotes.replace(m.group(0), "");
-				m = Pattern.compile(NotesParser.defaultextDBidsPAttern).matcher(metaboNotes);
+				metaboNotes = metaboNotes.replaceAll(this.getInchiPattern(), "");
 			}
 		}
 
+		if (this.getSmilesPattern() != null
+				&& (m = Pattern.compile(this.getSmilesPattern()).matcher(metaboNotes)).find()) {
+			String value = m.group(1).trim();
+
+			if (!isVoid(value)) {
+
+				metabolite.setSmiles(value);
+
+				metaboNotes = metaboNotes.replaceAll(this.getSmilesPattern(), "");
+			}
+		}
+
+		this.parseOtherRefs(metabolite);
+
 	}
 
-	private void parseNotes(BioCompartment cpt) {
+	/**
+	 * 
+	 * @param e
+	 */
+	private void parseOtherRefs(BioEntity e) {
 
-		String notes = CompartmentAttributes.getNotes(cpt).getXHTMLasString();
+		String notes = GenericAttributes.getNotes(e).getXHTMLasString();
 
 		String dbName = null;
 		String values;
@@ -528,8 +503,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
 			while (m.find()) {
 
-				dbName = m.group(1);
-				values = m.group(2);
+				dbName = m.group(1).trim();
+				values = m.group(2).trim();
 
 				if (isVoid(values)) {
 					notes = notes.replace(m.group(0), "");
@@ -539,8 +514,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 				} else {
 					String[] ids = values.split(this.getSeparator());
 					for (String value : ids) {
-						if (!cpt.hasRef(dbName.toLowerCase(), value)) {
-							cpt.addRef(new BioRef("SBML File", dbName.toLowerCase(), value, 1));
+						if (!e.hasRef(dbName, value)) {
+							e.addRef(new BioRef("SBML File", dbName, value, 1));
 						}
 					}
 				}
@@ -554,11 +529,21 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
+	 * 
+	 * @param cpt
+	 */
+	private void parseNotes(BioCompartment cpt) {
+
+		this.parseOtherRefs(cpt);
+
+	}
+
+	/**
 	 * Recursive function that parse gene association logical expression
 	 * strings. </br>
 	 * This is an adaptation of
-	 * {@link FBCParser#computeGeneAssocations(org.sbml.jsbml.ext.fbc.Association)} on Strings.
-	 * </br>
+	 * {@link FBCParser#computeGeneAssocations(org.sbml.jsbml.ext.fbc.Association)}
+	 * on Strings. </br>
 	 * </br>
 	 * Internally this uses {@link StringUtils#findClosingParen(char[], int)} to
 	 * split the GPR according to the outer most parenthesis
@@ -576,7 +561,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 */
 	public GeneAssociation computeGeneAssociation(String assosString, FluxReaction flxRxn)
 			throws MalformedGeneAssociationStringException {
-		
+
 		GeneAssociation geneAssociation = new GeneAssociation();
 
 		ArrayList<String> subAssos = new ArrayList<String>();
@@ -619,7 +604,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 			StringUtils.addAllNonEmpty(subAssos, Arrays.asList(tmpAssos.split("(?i) and ")));
 			// foreach items in "and" block
 			for (String s : subAssos) {
-				
+
 				for (GeneSet x : this.computeGeneAssociation(s, flxRxn)) {
 					if (geneAssociation.isEmpty()) {
 						geneAssociation.add(x);
@@ -667,8 +652,9 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 		this.setChargePattern(defaultchargePattern);
 		this.setFormulaPattern(defaultformulaPattern);
 		this.setSeparator(defaultseparator);
+		this.setInchiPattern(defaultInchiPattern);
+		this.setSmilesPattern(defaultSmilesPattern);
 
-		this.setOthersAsRefs(true);
 	}
 
 	/**
@@ -881,81 +867,20 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 		this.othersAsRefs = othersAsRefs;
 	}
 
-	/**
-	 * @return the defaultpathwaypattern
-	 */
-	public static String getDefaultpathwaypattern() {
-		return defaultPathwayPattern;
+	public String getInchiPattern() {
+		return inchiPattern;
 	}
 
-	/**
-	 * @return the defaultecpattern
-	 */
-	public static String getDefaultecpattern() {
-		return defaultECPattern;
+	public void setInchiPattern(String inchiPattern) {
+		this.inchiPattern = inchiPattern;
 	}
 
-	/**
-	 * @return the defaultgprpattern
-	 */
-	public static String getDefaultgprpattern() {
-		return defaultGPRPattern;
+	public String getSmilesPattern() {
+		return smilesPattern;
 	}
 
-	/**
-	 * @return the defaultscorepattern
-	 */
-	public static String getDefaultscorepattern() {
-		return defaultscorePattern;
-	}
-
-	/**
-	 * @return the defaultstatuspattern
-	 */
-	public static String getDefaultstatuspattern() {
-		return defaultstatusPattern;
-	}
-
-	/**
-	 * @return the defaultcommentpattern
-	 */
-	public static String getDefaultcommentpattern() {
-		return defaultcommentPattern;
-	}
-
-	/**
-	 * @return the defaultpmidpattern
-	 */
-	public static String getDefaultpmidpattern() {
-		return defaultpmidPattern;
-	}
-
-	/**
-	 * @return the defaultchargepattern
-	 */
-	public static String getDefaultchargepattern() {
-		return defaultchargePattern;
-	}
-
-	/**
-	 * @return the defaultformulapattern
-	 */
-	public static String getDefaultformulapattern() {
-		return defaultformulaPattern;
-	}
-
-	/**
-	 * @return the defaultextdbidspattern
-	 */
-	public static String getDefaultextdbidspattern() {
-		return defaultextDBidsPAttern;
-	}
-
-	/**
-	 * @return the defaultseparator
-	 */
-	public static String getDefaultseparator() {
-		return defaultseparator;
+	public void setSmilesPattern(String smilesPattern) {
+		this.smilesPattern = smilesPattern;
 	}
 
 }

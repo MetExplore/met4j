@@ -17,10 +17,12 @@ import org.sbml.jsbml.SBMLReader;
 import org.sbml.jsbml.validator.SBMLValidator;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.AnnotationParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBCParser;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.GroupPathwayParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 
@@ -76,7 +78,7 @@ public class JsbmlReader {
 		JsbmlReader reader = new JsbmlReader(inputFile, false);
 
 		HashSet<PackageParser> pkgs = new HashSet<PackageParser>(Arrays.asList(
-				new NotesParser(true), new FBCParser(), new AnnotationParser(
+				new NotesParser(true), new FBCParser(), new GroupPathwayParser(), new AnnotationParser(
 						true)));
 		
 		BioNetwork net = reader.read(pkgs);
@@ -162,6 +164,9 @@ public class JsbmlReader {
 			System.err.println(this.getConverter().getNetwork().getGenesView().size() + " genes");
 			System.err.println(this.getConverter().getNetwork().getEnzymesView().size() + " enzymes");
 			
+			BioPathway p = this.getConverter().getNetwork().getPathwaysView().getEntityFromId("g1");
+			
+			System.err.println(this.getConverter().getNetwork().getReactionsFromPathway(p).size());
 
 			return this.getConverter().getNetwork();
 		} else {

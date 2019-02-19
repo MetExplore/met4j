@@ -11,26 +11,35 @@ import java.util.stream.Collectors;
 import javax.xml.stream.XMLStreamException;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.sbml.jsbml.ASTNode;
 import org.sbml.jsbml.Compartment;
+import org.sbml.jsbml.KineticLaw;
+import org.sbml.jsbml.LocalParameter;
 import org.sbml.jsbml.Model;
+import org.sbml.jsbml.Parameter;
 import org.sbml.jsbml.Reaction;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.Species;
 import org.sbml.jsbml.SpeciesReference;
 import org.sbml.jsbml.Unit.Kind;
 import org.sbml.jsbml.UnitDefinition;
+import org.sbml.jsbml.ASTNode.Type;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageReaderException;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.AnnotationParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBCParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
+import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 
 public class JsbmlToBioNetworkTest {
 
@@ -41,12 +50,29 @@ public class JsbmlToBioNetworkTest {
 	Species m1, m2;
 	Reaction r1, r2;
 
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
+
 	@Before
 	public void init() throws XMLStreamException, JSBMLPackageReaderException {
 
 		doc = new SBMLDocument(3, 1);
 
+		initModel();
+
+		parser = new JsbmlToBioNetwork(model);
+
+		ArrayList<PackageParser> pkgs = new ArrayList<PackageParser>(
+				Arrays.asList(new NotesParser(true), new FBCParser(), new AnnotationParser(true)));
+
+		parser.setPackages(pkgs);
+
+	}
+
+	private void initModel() {
+
 		model = doc.createModel();
+
 		model.setId("modelId");
 		model.setName("modelName");
 
@@ -56,13 +82,24 @@ public class JsbmlToBioNetworkTest {
 		m1 = model.createSpecies("m1", "name1", c1);
 		m2 = model.createSpecies("m2", "name2", c2);
 
-		parser = new JsbmlToBioNetwork(model);
+		r1 = model.createReaction("r1");
+		r1.setName("name1");
+		r1.setReversible(false);
 
-		ArrayList<PackageParser> pkgs = new ArrayList<PackageParser>(
-				Arrays.asList(new NotesParser(true), new FBCParser(), new AnnotationParser(true)));
+		r2 = model.createReaction("r2");
+		r2.setReversible(true);
 
-		parser.setPackages(pkgs);
+		SpeciesReference m1Ref = new SpeciesReference(m1);
+		m1Ref.setStoichiometry(2.0);
 
+		SpeciesReference m1RefBis = new SpeciesReference(m1);
+		m1RefBis.setStoichiometry(3.0);
+
+		SpeciesReference m2Ref = new SpeciesReference(m2);
+
+		r1.addReactant(m1Ref);
+		r1.addProduct(m2Ref);
+		r1.addProduct(m1RefBis);
 	}
 
 	@Test
@@ -144,25 +181,6 @@ public class JsbmlToBioNetworkTest {
 	@Test
 	public void testParseListOfReactions() {
 
-		r1 = model.createReaction("r1");
-		r1.setName("name1");
-		r1.setReversible(false);
-
-		r2 = model.createReaction("r2");
-		r2.setReversible(true);
-
-		SpeciesReference m1Ref = new SpeciesReference(m1);
-		m1Ref.setStoichiometry(2.0);
-
-		SpeciesReference m1RefBis = new SpeciesReference(m1);
-		m1RefBis.setStoichiometry(3.0);
-
-		SpeciesReference m2Ref = new SpeciesReference(m2);
-
-		r1.addReactant(m1Ref);
-		r1.addProduct(m2Ref);
-		r1.addProduct(m1RefBis);
-
 		parser.parseModel();
 
 		assertEquals(2, parser.getNetwork().getReactionsView().size());
@@ -192,21 +210,137 @@ public class JsbmlToBioNetworkTest {
 
 		assertEquals(testIds, parser.getNetwork().getLeftReactants(reaction1).stream()
 				.map(x -> x.getPhysicalEntity().getId()).collect(Collectors.toSet()));
-		
+
 		testIds.add("m2");
-		
+
 		assertEquals(testIds, parser.getNetwork().getRightReactants(reaction1).stream()
 				.map(x -> x.getPhysicalEntity().getId()).collect(Collectors.toSet()));
-		
+
 		Set<Double> testCoeffs = new HashSet<Double>();
 		testCoeffs.add(1.0);
 		testCoeffs.add(3.0);
-		
-		assertEquals(testCoeffs, parser.getNetwork().getRightReactants(reaction1).stream()
-				.map(x -> x.getQuantity()).collect(Collectors.toSet()));
-		
-		// TODO test  flux bounds sans le package FBC et avec model version = 2
 
+		assertEquals(testCoeffs, parser.getNetwork().getRightReactants(reaction1).stream().map(x -> x.getQuantity())
+				.collect(Collectors.toSet()));
+
+	}
+
+	@Test
+	public void testInvalidPackageLevel2() throws JSBMLPackageReaderException {
+		doc.setLevel(2);
+
+		model = doc.createModel();
+
+		parser = new JsbmlToBioNetwork(model);
+
+		ArrayList<PackageParser> pkgs = new ArrayList<PackageParser>(
+				Arrays.asList(new NotesParser(true), new FBCParser(), new AnnotationParser(true)));
+
+		exception.expect(JSBMLPackageReaderException.class);
+		parser.setPackages(pkgs);
+	}
+
+	@Test
+	public void testFluxLevel2() throws JSBMLPackageReaderException {
+		doc.setLevel(2);
+
+		initModel();
+
+		UnitDefinition ud = model.createUnitDefinition();
+		ud.setId(BioUnitDefinition.DEFAULT_UNIT);
+
+		KineticLaw law = r1.createKineticLaw();
+
+		ASTNode ciNode = new ASTNode(Type.NAME);
+		ciNode.setName("FLUX_VALUE");
+		law.setMath(ciNode);
+
+		Parameter lBound = new Parameter();
+		lBound.setId("LOWER_BOUND");
+		lBound.setValue(0.1);
+		lBound.setUnits(StringUtils.convertToSID(BioUnitDefinition.DEFAULT_UNIT));
+
+		law.addParameter(lBound);
+
+		Parameter uBound = new Parameter();
+		uBound.setId("UPPER_BOUND");
+		uBound.setValue(150.0);
+		uBound.setUnits(StringUtils.convertToSID(BioUnitDefinition.DEFAULT_UNIT));
+
+		law.addParameter(uBound);
+
+		parser = new JsbmlToBioNetwork(model);
+
+		ArrayList<PackageParser> pkgs = new ArrayList<PackageParser>(
+				Arrays.asList(new NotesParser(true), new AnnotationParser(true)));
+
+		parser.setPackages(pkgs);
+
+		parser.parseModel();
+
+		BioReaction reaction1 = parser.getNetwork().getReactionsView().getEntityFromId("r1");
+
+		Flux lb = ReactionAttributes.getLowerBound(reaction1);
+
+		assertNotNull(lb);
+
+		assertEquals(0.1, lb.value, 0.0);
+
+		Flux ub = ReactionAttributes.getUpperBound(reaction1);
+
+		assertNotNull(ub);
+
+		assertEquals(150.0, ub.value, 0.0);
+
+	}
+
+	@Test
+	public void testFluxLevel3WithoutFbc() throws JSBMLPackageReaderException {
+		doc.setLevel(2);
+
+		initModel();
+
+		UnitDefinition ud = model.createUnitDefinition();
+		ud.setId(BioUnitDefinition.DEFAULT_UNIT);
+
+		KineticLaw law = r1.createKineticLaw();
+
+		ASTNode ciNode = new ASTNode(Type.NAME);
+		ciNode.setName("FLUX_VALUE");
+		law.setMath(ciNode);
+
+		LocalParameter lBound = law.createLocalParameter();
+		lBound.setId("LOWER_BOUND");
+		lBound.setValue(0.1);
+		lBound.setUnits(StringUtils.convertToSID(BioUnitDefinition.DEFAULT_UNIT));
+
+		LocalParameter UBound = law.createLocalParameter();
+		UBound.setId("UPPER_BOUND");
+		UBound.setValue(150.0);
+		UBound.setUnits(StringUtils.convertToSID(BioUnitDefinition.DEFAULT_UNIT));
+
+		parser = new JsbmlToBioNetwork(model);
+
+		ArrayList<PackageParser> pkgs = new ArrayList<PackageParser>(
+				Arrays.asList(new NotesParser(true), new AnnotationParser(true)));
+
+		parser.setPackages(pkgs);
+
+		parser.parseModel();
+
+		BioReaction reaction1 = parser.getNetwork().getReactionsView().getEntityFromId("r1");
+
+		Flux lb = ReactionAttributes.getLowerBound(reaction1);
+
+		assertNotNull(lb);
+
+		assertEquals(0.1, lb.value, 0.0);
+
+		Flux ub = ReactionAttributes.getUpperBound(reaction1);
+
+		assertNotNull(ub);
+
+		assertEquals(150.0, ub.value, 0.0);
 	}
 
 }

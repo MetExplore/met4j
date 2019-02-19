@@ -634,7 +634,7 @@ public class BioNetwork extends BioEntity {
 			}
 		}
 
-		throw new IllegalArgumentException("BioEntity " + e.getClass().getName() + " not handled by BioNetwork");
+		throw new IllegalArgumentException("BioEntity " + e + " not handled by BioNetwork");
 	}
 
 	/**

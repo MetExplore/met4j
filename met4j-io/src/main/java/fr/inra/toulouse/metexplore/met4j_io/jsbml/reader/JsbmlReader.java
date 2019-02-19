@@ -154,6 +154,14 @@ public class JsbmlReader {
 			this.getConverter().parseModel();
 
 			this.errorsAndWarnings.addAll(PackageParser.errorsAndWarnings);
+			
+			System.err.println(this.getConverter().getNetwork().getCompartmentsView().size() + " compartments");
+			System.err.println(this.getConverter().getNetwork().getPathwaysView().size() + " pathways");
+			System.err.println(this.getConverter().getNetwork().getReactionsView().size() + " reactions");
+			System.err.println(this.getConverter().getNetwork().getMetabolitesView().size() + " metabolites");
+			System.err.println(this.getConverter().getNetwork().getGenesView().size() + " genes");
+			System.err.println(this.getConverter().getNetwork().getEnzymesView().size() + " enzymes");
+			
 
 			return this.getConverter().getNetwork();
 		} else {

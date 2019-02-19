@@ -31,6 +31,7 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageReaderException;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBCParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML2Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
@@ -58,7 +59,7 @@ public class JsbmlToBioNetwork {
 	/**
 	 * The ordered list of {@link PackageParser} activated for this parser
 	 */
-	public ArrayList<PackageParser> setOfPackage = new ArrayList<PackageParser>();
+	public ArrayList<PackageParser> packages = new ArrayList<PackageParser>();
 
 	public JsbmlToBioNetwork(Model model) {
 		this.model = model;
@@ -77,9 +78,6 @@ public class JsbmlToBioNetwork {
 		this.parseListOfUnitDefinitions();
 		this.parseListOfCompartments();
 
-		// Si le metabolite n'intervient dans aucune reaction, ça fait une
-		// erreur !!!!
-		// Cf parsebionet Jsbml3ToBioNetwork
 		this.parseListOfSpecies();
 
 		this.parseListOfReactions();
@@ -161,7 +159,7 @@ public class JsbmlToBioNetwork {
 
 			BioCompartment bionetCompart = this.getNetwork().getCompartmentsView().getEntityFromId(compartId);
 			if (bionetCompart == null) {
-				bionetCompart = new BioCompartment(compartName, compartId);
+				bionetCompart = new BioCompartment(compartId, compartName);
 				this.getNetwork().add(bionetCompart);
 			}
 
@@ -226,6 +224,22 @@ public class JsbmlToBioNetwork {
 	}
 
 	/**
+	 * 
+	 * @return true if the parse contains the FBC package
+	 */
+	private boolean containsFbcPackage() {
+
+		for (PackageParser p : this.packages) {
+			if (p instanceof FBCParser) {
+				return true;
+			}
+		}
+
+		return false;
+
+	}
+
+	/**
 	 * Method to parse the list of reaction of the jsbml model
 	 * 
 	 * @param model
@@ -261,8 +275,6 @@ public class JsbmlToBioNetwork {
 			this.parseReactionListOf(bionetReaction, jSBMLReaction.getListOfReactants(), "left");
 			this.parseReactionListOf(bionetReaction, jSBMLReaction.getListOfProducts(), "right");
 
-			boolean hasBounds = false;
-
 			BioUnitDefinitionCollection udList = NetworkAttributes.getUnitDefinitions(this.getNetwork());
 
 			KineticLaw kine = jSBMLReaction.getKineticLaw();
@@ -279,74 +291,48 @@ public class JsbmlToBioNetwork {
 
 							BioUnitDefinition UD = udList.getEntityFromId(jsbmlUnit.getId());
 
+							/**
+							 * This is to make sure that the unit definition
+							 * associated with the fluxes is not null
+							 */
+							if (UD == null) {
+								UD = new BioUnitDefinition();
+								udList.add(UD);
+							}
+
 							if (kine.getParameter(n).getId().equalsIgnoreCase("UPPER_BOUND")
 									|| kine.getParameter(n).getName().equalsIgnoreCase("UPPER_BOUND")) {
 
-								/**
-								 * This is to make sure that the unit definition
-								 * associated with the fluxes is not null
-								 */
-								if (UD == null && (udList.containsId("mmol_per_gDW_per_hr"))) {
-									UD = udList.getEntityFromId("mmol_per_gDW_per_hr");
-								} else if (UD == null && udList.containsId("FLUX_UNIT")) {
-									UD = udList.getEntityFromId("FLUX_UNIT");
-								}
-								if (UD == null) {
-									UD = new BioUnitDefinition();
-									udList.add(UD);
-								}
-
-								Flux newflux = new Flux(kine.getParameter(n).getValue(), UD);
+								Flux newflux = new Flux(kine.getParameter(n).getId(), kine.getParameter(n).getValue(),
+										UD);
 								ReactionAttributes.setUpperBound(bionetReaction, newflux);
 
-								hasBounds = true;
 							} else if (kine.getParameter(n).getId().equalsIgnoreCase("LOWER_BOUND")
 									|| kine.getParameter(n).getName().equalsIgnoreCase("LOWER_BOUND")) {
 
-								/**
-								 * This is to make sure that the unit definition
-								 * associated with the fluxes is not null
-								 */
-								if (UD == null && udList.containsId("mmol_per_gDW_per_hr")) {
-									UD = udList.getEntityFromId("mmol_per_gDW_per_hr");
-								} else if (UD == null && udList.containsId("FLUX_UNIT")) {
-									UD = udList.getEntityFromId("FLUX_UNIT");
-								}
-								if (UD == null) {
-									UD = new BioUnitDefinition();
-									udList.add(UD);
-
-								}
-
-								Flux newflux = new Flux(kine.getParameter(n).getValue(), UD);
+								Flux newflux = new Flux(kine.getParameter(n).getId(), kine.getParameter(n).getValue(),
+										UD);
 
 								ReactionAttributes.setLowerBound(bionetReaction, newflux);
 
-								hasBounds = true;
-							} else if (UD != null) {
-								Flux newflux = new Flux(kine.getParameter(n).getValue(), UD);
+							} else {
+								Flux newflux = new Flux(kine.getParameter(n).getId(), kine.getParameter(n).getValue(),
+										UD);
 
 								ReactionAttributes.addFlux(bionetReaction, newflux);
 
-							} else if (UD == null
-									&& kine.getParameter(n).getUnits().equalsIgnoreCase("dimensionless")) {
-								UD = new BioUnitDefinition("dimensionless", "dimensionless");
-								Flux newflux = new Flux(kine.getParameter(n).getValue(), UD);
-
-								ReactionAttributes.addFlux(bionetReaction, newflux);
 							}
 						} else {
 
 							BioUnitDefinition UD = new BioUnitDefinition("dimensionless", "dimensionless");
-							Flux newflux = new Flux(kine.getParameter(n).getValue(), UD);
+							Flux newflux = new Flux(kine.getParameter(n).getId(), kine.getParameter(n).getValue(), UD);
 
 							ReactionAttributes.addFlux(bionetReaction, newflux);
 						}
 					}
-				} else { // SBML V3.0
-					
-					// TODO : tester s'il y a le package fbc
-					
+				} else if (!this.containsFbcPackage()) { // SBML V3.0 and not
+															// fbc package
+
 					for (LocalParameter param : kine.getListOfLocalParameters()) {
 
 						UnitDefinition jsbmlUnit = model.getUnitDefinition(param.getUnits());
@@ -354,62 +340,37 @@ public class JsbmlToBioNetwork {
 
 							BioUnitDefinition UD = udList.getEntityFromId(jsbmlUnit.getId());
 
+							/**
+							 * This is to make sure that the unit definition
+							 * associated with the fluxes is not null
+							 */
+							if (UD == null) {
+								UD = new BioUnitDefinition(null, null);
+								udList.add(UD);
+							}
+
 							if (param.getId().equalsIgnoreCase("UPPER_BOUND")
 									|| param.getName().equalsIgnoreCase("UPPER_BOUND")) {
 
-								/**
-								 * This is to make sure that the unit definition
-								 * associated with the fluxes is not null
-								 */
-								if (UD == null && udList.containsId("mmol_per_gDW_per_hr")) {
-									UD = udList.getEntityFromId("mmol_per_gDW_per_hr");
-								} else if (UD == null && udList.containsId("FLUX_UNIT")) {
-									UD = udList.getEntityFromId("FLUX_UNIT");
-								}
-								if (UD == null) {
-									UD = new BioUnitDefinition(null, null);
-									udList.add(UD);
-								}
-
-								Flux newflux = new Flux(param.getValue(), UD);
+								Flux newflux = new Flux(param.getName(), param.getValue(), UD);
 								ReactionAttributes.setUpperBound(bionetReaction, newflux);
 
-								hasBounds = true;
 							} else if (param.getId().equalsIgnoreCase("LOWER_BOUND")
 									|| param.getName().equalsIgnoreCase("LOWER_BOUND")) {
 
-								/**
-								 * This is to make sure that the unit definition
-								 * associated with the fluxes is not null
-								 */
-								if (UD == null && udList.containsId("mmol_per_gDW_per_hr")) {
-									UD = udList.getEntityFromId("mmol_per_gDW_per_hr");
-								} else if (UD == null && udList.containsId("FLUX_UNIT")) {
-									UD = udList.getEntityFromId("FLUX_UNIT");
-								}
-								if (UD == null) {
-									UD = new BioUnitDefinition();
-									udList.add(UD);
-								}
-
-								Flux newflux = new Flux(param.getValue(), UD);
+								Flux newflux = new Flux(param.getName(), param.getValue(), UD);
 								ReactionAttributes.setLowerBound(bionetReaction, newflux);
 
-								hasBounds = true;
-							} else if (UD != null) {
-								Flux newflux = new Flux(param.getValue(), UD);
+							} else {
+								Flux newflux = new Flux(param.getName(), param.getValue(), UD);
 
 								ReactionAttributes.addFlux(bionetReaction, newflux);
 
-							} else if (UD == null && param.getUnits().equalsIgnoreCase("dimensionless")) {
-								UD = new BioUnitDefinition("dimensionless", "dimensionless");
-								Flux newflux = new Flux(param.getValue(), UD);
-								ReactionAttributes.addFlux(bionetReaction, newflux);
 							}
 						} else {
 
 							BioUnitDefinition UD = new BioUnitDefinition("dimensionless", "dimensionless");
-							Flux newflux = new Flux(param.getValue(), UD);
+							Flux newflux = new Flux(param.getName(), param.getValue(), UD);
 							ReactionAttributes.addFlux(bionetReaction, newflux);
 						}
 					}
@@ -531,21 +492,18 @@ public class JsbmlToBioNetwork {
 		String specieId = specie.getId();
 
 		String sto = String.valueOf(specieRef.getStoichiometry());
-		
-		System.err.println(sto);
-		
+
 		Double stoDbl = 1.0;
-		
+
 		try {
-			stoDbl =  Double.parseDouble(sto);
+			stoDbl = Double.parseDouble(sto);
 		} catch (NumberFormatException e) {
-			System.err.println("Warning : invalid coefficient : "+sto+" for "+specieId);
+			System.err.println("Warning : invalid coefficient : " + sto + " for " + specieId);
 			stoDbl = 1.0;
 		}
-		
-		if(Double.isNaN(stoDbl))
-		{
-			System.err.println("Warning : invalid coefficient : "+sto+" for "+specieId);
+
+		if (Double.isNaN(stoDbl)) {
+			System.err.println("Warning : invalid coefficient : " + sto + " for " + specieId);
 			stoDbl = 1.0;
 		}
 
@@ -576,7 +534,7 @@ public class JsbmlToBioNetwork {
 	 * @return the setOfPackage
 	 */
 	public ArrayList<PackageParser> getSetOfPackage() {
-		return setOfPackage;
+		return packages;
 	}
 
 	/**
@@ -600,7 +558,7 @@ public class JsbmlToBioNetwork {
 	}
 
 	/**
-	 * Set the {@link #setOfPackage} to a new list
+	 * Set the {@link #packages} to a new list
 	 * 
 	 * @param packages
 	 *            the ordered list of packages to set

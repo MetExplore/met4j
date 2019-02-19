@@ -293,8 +293,6 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
 		String reactionNotes = ReactionAttributes.getNotes(reaction).getXHTMLasString();
 
-		System.err.println("reactionNotes : " + reactionNotes);
-
 		Matcher m;
 
 		if (this.getPathwayPattern() != null
@@ -358,10 +356,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
 			String pmidsStr = m.group(1).trim();
 
-			System.err.println("pmidsStr : " + pmidsStr);
 			if (!isVoid(pmidsStr)) {
 
-				System.err.println("sep " + this.separator);
 				String[] pmids = pmidsStr.split(this.separator);
 
 				for (int i = 0; i < pmids.length; i++) {
@@ -369,7 +365,6 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
 					if (!isVoid(pmid)) {
 						try {
-							System.err.println("add pmid " + pmid);
 							ReactionAttributes.addPmid(reaction, Integer.parseInt(pmid));
 						} catch (NumberFormatException e) {
 							NotesParser.errorsAndWarnings.add("[Warning] Pmid must be an integer");

@@ -64,9 +64,7 @@ public class GeneSet extends HashSet<BioGene> {
 
 		if (this == obj)
 			return true;
-		else {
-			System.err.println("not the same");
-		}
+		
 		if (getClass() != obj.getClass())
 			return false;
 		GeneSet other = (GeneSet) obj;
@@ -76,7 +74,6 @@ public class GeneSet extends HashSet<BioGene> {
 		} else if (!str.equals(other.toString()))
 			return false;
 
-		System.err.println("equals");
 		return true;
 	}
 

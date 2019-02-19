@@ -50,9 +50,9 @@ public class Flux extends BioEntity {
 	public static Double FLUXMAX = 99999.0;
 	public static Double FLUXMIN = -99999.0;
 
-	public Flux(Double value, BioUnitDefinition unitDefinition) {
+	public Flux(String id, Double value, BioUnitDefinition unitDefinition) {
 
-		super(value + "_" + unitDefinition.getId());
+		super(id);
 
 		this.value = value;
 		this.unitDefinition = unitDefinition;

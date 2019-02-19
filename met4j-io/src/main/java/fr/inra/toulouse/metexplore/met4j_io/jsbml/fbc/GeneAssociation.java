@@ -77,17 +77,12 @@ public class GeneAssociation implements Set<GeneSet> {
 	@Override
 	public boolean add(GeneSet e) {
 
-		System.err.println("Add geneSet " + e);
-
 		for (GeneSet g : this.geneSets) {
 
-			System.err.println("Compare " + e + " with " + g);
 			if (e.equals(g)) {
 				return false;
 			}
 		}
-
-		System.err.println("Ok Add geneSet " + e);
 
 		return geneSets.add(e);
 	}
@@ -99,7 +94,6 @@ public class GeneAssociation implements Set<GeneSet> {
 
 		for (GeneSet g : genes) {
 			if (o.equals(g)) {
-				System.err.println("remove "+g);
 				
 				return geneSets.remove(g);
 			}

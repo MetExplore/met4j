@@ -154,10 +154,9 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 				if (this.getAnnotationPattern() != null
 						&& (m = Pattern.compile(this.getAnnotationPattern()).matcher(ress)).matches()) {
 
-					if (m.group(1).equalsIgnoreCase("ec-code")) {
+					if (m.group(1).equalsIgnoreCase("ec-code") && ent instanceof BioReaction) {
 						((BioReaction) ent).setEcNumber(m.group(2));
 					}
-					System.err.println("add ref "+m.group(1)+" "+m.group(2)+" "+qual);
 					ent.addRef(m.group(1), m.group(2), 1, qual, ORIGIN);
 				}
 			}

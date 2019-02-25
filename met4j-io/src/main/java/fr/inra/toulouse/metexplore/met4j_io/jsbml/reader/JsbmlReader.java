@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -75,11 +76,14 @@ public class JsbmlReader {
 		// String
 		String inputFile = args[0];
 		
+		System.err.println("Start :"+new Date());
+		
 		JsbmlReader reader = new JsbmlReader(inputFile, false);
 
 		HashSet<PackageParser> pkgs = new HashSet<PackageParser>(Arrays.asList(
 				new NotesParser(true), new FBCParser(), new GroupPathwayParser(), new AnnotationParser(
 						true)));
+		
 		
 		BioNetwork net = reader.read(pkgs);
 		if (net == null) {
@@ -92,6 +96,21 @@ public class JsbmlReader {
 				System.err.println(e);
 			}
 		}
+		
+		System.err.println(net.getCompartmentsView().size() + " compartments");
+		System.err.println(net.getPathwaysView().size() + " pathways");
+		System.err.println(net.getReactionsView().size() + " reactions");
+		System.err.println(net.getMetabolitesView().size() + " metabolites");
+		System.err.println(net.getGenesView().size() + " genes");
+		System.err.println(net.getEnzymesView().size() + " enzymes");
+		
+//		BioPathway p = this.getConverter().getNetwork().getPathwaysView().getEntityFromId("g1");
+//		
+//		System.err.println(this.getConverter().getNetwork().getReactionsFromPathway(p).size());
+
+		
+		System.err.println("End :"+new Date());
+
 	}
 
 	/**
@@ -157,17 +176,6 @@ public class JsbmlReader {
 
 			this.errorsAndWarnings.addAll(PackageParser.errorsAndWarnings);
 			
-			System.err.println(this.getConverter().getNetwork().getCompartmentsView().size() + " compartments");
-			System.err.println(this.getConverter().getNetwork().getPathwaysView().size() + " pathways");
-			System.err.println(this.getConverter().getNetwork().getReactionsView().size() + " reactions");
-			System.err.println(this.getConverter().getNetwork().getMetabolitesView().size() + " metabolites");
-			System.err.println(this.getConverter().getNetwork().getGenesView().size() + " genes");
-			System.err.println(this.getConverter().getNetwork().getEnzymesView().size() + " enzymes");
-			
-			BioPathway p = this.getConverter().getNetwork().getPathwaysView().getEntityFromId("g1");
-			
-			System.err.println(this.getConverter().getNetwork().getReactionsFromPathway(p).size());
-
 			return this.getConverter().getNetwork();
 		} else {
 

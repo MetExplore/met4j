@@ -24,8 +24,6 @@ import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttribute
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.tags.WriterSBML2Compatible;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.tags.WriterSBML3Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 
 /**
@@ -35,7 +33,7 @@ import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
  * @author Benjamin
  * @since 3.0
  */
-public class NotesWriter implements PackageWriter, WriterSBML2Compatible, WriterSBML3Compatible, AdditionalDataTag {
+public class NotesWriter implements PackageWriter, AdditionalDataTag {
 
 	/**
 	 * The SBML model

@@ -36,7 +36,6 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxCollection;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxNetwork;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.tags.WriterSBML3Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 
 /**
@@ -46,7 +45,7 @@ import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
  * @author Benjamin
  * @since 3.0
  */
-public class FBCWriter implements PackageWriter, WriterSBML3Compatible, PrimaryDataTag {
+public class FBCWriter implements PackageWriter, PrimaryDataTag {
 
 	/**
 	 * The XML namespace of the FBC version 2 SBML package

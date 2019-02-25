@@ -36,8 +36,6 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.UnitSbml;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.PackageWriter;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.tags.WriterSBML2Compatible;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.tags.WriterSBML3Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 
 
@@ -397,14 +395,7 @@ public class BionetworkToJsbml {
 	 *             level
 	 */
 	public void addPackage(PackageWriter pkg) throws JSBMLPackageWriterException {
-		if (pkg instanceof WriterSBML2Compatible && level < 3) {
 			this.getSetOfPackage().add(pkg);
-		} else if (pkg instanceof WriterSBML3Compatible && level >= 3) {
-			this.getSetOfPackage().add(pkg);
-		} else {
-			throw new JSBMLPackageWriterException("Invalid SBML level and package Writer combination");
-		}
-
 	}
 
 	/**

@@ -21,14 +21,11 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioRef;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inra.toulouse.metexplore.met4j_io.annotations.gene.GeneAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.tags.WriterSBML2Compatible;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.tags.WriterSBML3Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 
 /**
@@ -38,8 +35,7 @@ import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
  * @author Benjamin
  * @since 3.0
  */
-public class AnnotationWriter
-		implements PackageWriter, WriterSBML2Compatible, WriterSBML3Compatible, AdditionalDataTag {
+public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 
 	/**
 	 * The SBML model
@@ -53,7 +49,7 @@ public class AnnotationWriter
 	/**
 	 * The default URL pattern for the annotations
 	 */
-	public static final String defaluftURLpattern = "http://identifiers.org/";
+	public static final String DEFAULT_URL_BASE = "http://identifiers.org/";
 
 	/**
 	 * The user defined URL pattern for the annotations
@@ -65,14 +61,14 @@ public class AnnotationWriter
 	public char separator;
 
 	/**
-	 * Instantiate this Annotation Writer with {@link #defaluftURLpattern}:
+	 * Instantiate this Annotation Writer with {@link #DEFAULT_URL_BASE}:
 	 * <ul>
-	 * <li>{@value #defaluftURLpattern}
+	 * <li>{@value #DEFAULT_URL_BASE}
 	 * </ul>
 	 */
 	public AnnotationWriter() {
 		this.setSeparator('/');
-		this.usedPattern = defaluftURLpattern;
+		this.usedPattern = DEFAULT_URL_BASE;
 	}
 
 	/**
@@ -121,11 +117,9 @@ public class AnnotationWriter
 		this.setModel(model);
 
 		this.createModelAnnotation();
-		this.createCompartAnnotations();
+		this.createAnnotationFromBioEntities(this.getBionetwork().getCompartmentsView());
 		this.createAnnotationFromBioEntities(this.getBionetwork().getMetabolitesView());
 		this.createAnnotationFromBioEntities(this.getBionetwork().getReactionsView());
-		this.createAnnotationFromBioEntities(this.getBionetwork().getGenesView());
-		this.createAnnotationFromBioEntities(this.getBionetwork().getEnzymesView());
 	}
 
 	/**
@@ -133,7 +127,6 @@ public class AnnotationWriter
 	 */
 	private void createModelAnnotation() {
 
-		
 		SbmlAnnotation modelAnnot = NetworkAttributes.getAnnotation(this.getBionetwork());
 
 		if (modelAnnot != null) {
@@ -144,26 +137,6 @@ public class AnnotationWriter
 			} catch (XMLStreamException e) {
 
 				AnnotationWriter.errorsAndWarnings.add("Unable to create Model annotation form the saved annotations");
-			}
-		}
-
-	}
-
-	/**
-	 * Creates the compartments' annotations from their references
-	 */
-	private void createCompartAnnotations() {
-		for (BioCompartment c : this.getBionetwork().getCompartmentsView()) {
-			Annotation annot = createAnnotationsFromRefs(c.getRefs());
-
-			UniqueNamedSBase sbase = this.getModel().findUniqueNamedSBase(StringUtils.convertToSID(c.getId()));
-			if (!annot.isEmpty() && sbase != null) {
-
-				String metaid = model.getSBMLDocument().nextMetaId();
-				sbase.setMetaId(metaid);
-				annot.setAbout(metaid);
-
-				sbase.setAnnotation(annot);
 			}
 		}
 
@@ -186,16 +159,11 @@ public class AnnotationWriter
 
 				Annotation annot = createAnnotationsFromRefs(ent.getRefs());
 
-				switch (ent.getClass().getSimpleName()) {
-				case "BioPhysicalEntity":
+				if (ent instanceof BioMetabolite) {
 					this.getAdditionnalAnnotation((BioMetabolite) ent, annot);
-					break;
-				case "BioReaction":
+				}
+				else if (ent instanceof BioReaction) {
 					this.getAdditionnalAnnotation((BioReaction) ent, annot);
-					break;
-				case "BioGene":
-					this.getAdditionnalAnnotation((BioGene) ent, annot);
-					break;
 				}
 
 				if (!annot.isEmpty()) {
@@ -209,6 +177,7 @@ public class AnnotationWriter
 			}
 
 		}
+
 	}
 
 	/**
@@ -275,7 +244,7 @@ public class AnnotationWriter
 			}
 		}
 
-		String pubChemCid =  MetaboliteAttributes.getPubchem(ent);
+		String pubChemCid = MetaboliteAttributes.getPubchem(ent);
 
 		if (pubChemCid != null && !pubChemCid.isEmpty() && !pubChemCid.equals("NA")) {
 			if (annot.filterCVTerms(Qualifier.BQB_IS, MetaboliteAttributes.PUBCHEM).isEmpty()) {
@@ -300,7 +269,7 @@ public class AnnotationWriter
 			cvIsDescByTerm = annot.filterCVTerms(Qualifier.BQB_IS_DESCRIBED_BY).get(0);
 		}
 		if (MetaboliteAttributes.getPmids(ent) == null) {
-				
+
 			Set<Integer> pmids = MetaboliteAttributes.getPmids(ent);
 
 			for (Integer pmid : pmids) {
@@ -369,37 +338,6 @@ public class AnnotationWriter
 			annot.addCVTerm(cvIsDescByTerm);
 		}
 	}
-	
-	private void getAdditionnalAnnotation(BioGene gene, Annotation annot) {
-
-		boolean newCV = false;
-
-		/**
-		 * Same method for the "isDecribedBy" term
-		 */
-		CVTerm cvIsDescByTerm = new CVTerm();
-		newCV = false;
-		if (annot.filterCVTerms(Qualifier.BQB_IS_DESCRIBED_BY).isEmpty()) {
-			cvIsDescByTerm.setQualifierType(Type.BIOLOGICAL_QUALIFIER);
-			cvIsDescByTerm.setBiologicalQualifierType(Qualifier.BQB_IS_DESCRIBED_BY);
-			newCV = true;
-		} else {
-			cvIsDescByTerm = annot.filterCVTerms(Qualifier.BQB_IS_DESCRIBED_BY).get(0);
-		}
-		
-		if (GeneAttributes.getPmids(gene) != null) {
-
-			Set<Integer> pmids = GeneAttributes.getPmids(gene);
-
-			for (Integer pmid : pmids) {
-				cvIsDescByTerm.addResource(usedPattern + "pubmed" + separator + pmid);
-			}
-		}
-		
-		if (newCV && cvIsDescByTerm.getNumResources() > 0) {
-			annot.addCVTerm(cvIsDescByTerm);
-		}
-	}
 
 	/**
 	 * @return the model
@@ -460,7 +398,5 @@ public class AnnotationWriter
 	public void setSeparator(char separator) {
 		this.separator = separator;
 	}
-
-	
 
 }

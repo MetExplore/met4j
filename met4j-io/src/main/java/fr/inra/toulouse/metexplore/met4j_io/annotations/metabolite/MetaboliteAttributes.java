@@ -145,7 +145,7 @@ public class MetaboliteAttributes {
 	public static Double getInitialAmount(BioMetabolite metabolite) {
 
 		if (metabolite.getAttribute(INITIAL_AMOUNT) == null) {
-			return 0.0;
+			return null;
 		}
 		
 		Double val = (Double) metabolite.getAttribute(INITIAL_AMOUNT);

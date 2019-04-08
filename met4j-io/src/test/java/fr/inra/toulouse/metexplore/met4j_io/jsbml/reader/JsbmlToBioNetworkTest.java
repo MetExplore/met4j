@@ -31,11 +31,13 @@ import org.sbml.jsbml.ASTNode.Type;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.BioCompartmentType;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.reactant.ReactantAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageReaderException;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
@@ -104,9 +106,12 @@ public class JsbmlToBioNetworkTest {
 		m1 = model.createSpecies("m1", "name1", c1);
 		m2 = model.createSpecies("m2", "name2", c2);
 		m3 = model.createSpecies("m3", "name3", c2);
-		
+
 		m1.setConstant(true);
 		m2.setConstant(false);
+
+		m1.setInitialAmount(2.0);
+		m2.setInitialAmount(3.0);
 
 		r1 = model.createReaction("r1");
 		r1.setName("name1");
@@ -117,7 +122,7 @@ public class JsbmlToBioNetworkTest {
 		}
 
 		r1.setFast(true);
-		
+
 		r2 = model.createReaction("r2");
 
 		SpeciesReference m1Ref = new SpeciesReference(m1);
@@ -125,13 +130,20 @@ public class JsbmlToBioNetworkTest {
 
 		SpeciesReference m1RefBis = new SpeciesReference(m1);
 		m1RefBis.setStoichiometry(3.0);
-		
+
 		SpeciesReference m2Ref = new SpeciesReference(m2);
+
+		if (model.getLevel() > 2) {
+			m1Ref.setConstant(true);
+			m2Ref.setConstant(false);
+		}
 
 		r1.addReactant(m1Ref);
 		r1.addProduct(m2Ref);
 		r1.addProduct(m1RefBis);
-		
+
+		System.err.println("m1 REf Bis : " + m1RefBis.getConstant());
+
 		r3 = model.createReaction("r3");
 	}
 
@@ -280,24 +292,25 @@ public class JsbmlToBioNetworkTest {
 		assertEquals(testNames,
 				parser.getNetwork().getMetabolitesView().stream().map(x -> x.getName()).collect(Collectors.toSet()));
 
-		BioMetabolite m1 = parser.getNetwork().getMetabolitesView().getEntityFromId("m1");
-		BioMetabolite m2 = parser.getNetwork().getMetabolitesView().getEntityFromId("m2");
-		BioMetabolite m3 = parser.getNetwork().getMetabolitesView().getEntityFromId("m3");
+		BioMetabolite metabolite1 = parser.getNetwork().getMetabolitesView().getEntityFromId("m1");
+		BioMetabolite metabolite2 = parser.getNetwork().getMetabolitesView().getEntityFromId("m2");
+		BioMetabolite metabolite3 = parser.getNetwork().getMetabolitesView().getEntityFromId("m3");
 
-		assertNotNull(m1);
-		assertNotNull(m2);
-		assertNotNull(m3);
-		
-		assertTrue(MetaboliteAttributes.getConstant(m1));
-		assertFalse(MetaboliteAttributes.getConstant(m2));
-		assertFalse(MetaboliteAttributes.getConstant(m3));
-		
+		assertNotNull(metabolite1);
+		assertNotNull(metabolite2);
+		assertNotNull(metabolite3);
+
+		assertTrue(MetaboliteAttributes.getConstant(metabolite1));
+		assertFalse(MetaboliteAttributes.getConstant(metabolite2));
+		assertFalse(MetaboliteAttributes.getConstant(metabolite3));
+
+		assertEquals(m1.getInitialAmount(), MetaboliteAttributes.getInitialAmount(metabolite1), 0.0);
+		assertEquals(m2.getInitialAmount(), MetaboliteAttributes.getInitialAmount(metabolite2), 0.0);
+		assertNull(MetaboliteAttributes.getInitialAmount(metabolite3));
+
 		assertTrue(parser.getNetwork().getCompartmentsView().getEntityFromId("c1").getComponents().containsId("m1"));
 		assertTrue(parser.getNetwork().getCompartmentsView().getEntityFromId("c2").getComponents().containsId("m2"));
-		
-		
-		
-		
+
 	}
 
 	@Test
@@ -319,14 +332,12 @@ public class JsbmlToBioNetworkTest {
 		testNames.add("r2");
 		testNames.add("r3");
 
-
 		assertEquals(testNames,
 				parser.getNetwork().getReactionsView().stream().map(x -> x.getName()).collect(Collectors.toSet()));
 
 		BioReaction reaction1 = parser.getNetwork().getReactionsView().getEntityFromId("r1");
 		BioReaction reaction2 = parser.getNetwork().getReactionsView().getEntityFromId("r2");
 		BioReaction reaction3 = parser.getNetwork().getReactionsView().getEntityFromId("r3");
-
 
 		assertNotNull(reaction1);
 		assertNotNull(reaction2);
@@ -335,8 +346,6 @@ public class JsbmlToBioNetworkTest {
 		assertFalse(reaction1.isReversible());
 		assertTrue(reaction2.isReversible());
 		assertTrue(reaction3.isReversible());
-
-
 
 		assertEquals(r1.getListOfReactants().size(), parser.getNetwork().getLeftReactants(reaction1).size());
 		assertEquals(r1.getListOfProducts().size(), parser.getNetwork().getRightReactants(reaction1).size());
@@ -358,6 +367,27 @@ public class JsbmlToBioNetworkTest {
 
 		assertEquals(testCoeffs, parser.getNetwork().getRightReactants(reaction1).stream().map(x -> x.getQuantity())
 				.collect(Collectors.toSet()));
+
+		BioReactant m1Ref = parser.getNetwork().getLeftReactants(reaction1).stream()
+				.filter((x) -> x.getPhysicalEntity().getId().compareTo("m1") == 0).findFirst().orElse(null);
+
+		assertNotNull(m1Ref);
+
+		assertTrue(ReactantAttributes.getConstant(m1Ref));
+
+		BioReactant m2Ref = parser.getNetwork().getRightReactants(reaction1).stream()
+				.filter((x) -> x.getPhysicalEntity().getId().compareTo("m2") == 0).findFirst().orElse(null);
+
+		assertNotNull(m2Ref);
+
+		assertFalse(ReactantAttributes.getConstant(m2Ref));
+
+		BioReactant m1RefBis = parser.getNetwork().getRightReactants(reaction1).stream()
+				.filter((x) -> x.getPhysicalEntity().getId().compareTo("m1") == 0).findFirst().orElse(null);
+
+		assertNotNull(m1RefBis);
+
+		assertNull(ReactantAttributes.getConstant(m1RefBis));
 
 		// Test sbo term
 		String sboTerm = ReactionAttributes.getSboTerm(reaction1);

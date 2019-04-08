@@ -52,7 +52,7 @@ public class MetaboliteAttributesTest {
 	@Test
 	public void testGetConstant() {
 		
-		assertTrue(MetaboliteAttributes.getConstant(metabolite));
+		assertNull(MetaboliteAttributes.getConstant(metabolite));
 		
 		metabolite.setAttribute(GenericAttributes.CONSTANT, false);
 		
@@ -145,7 +145,7 @@ public class MetaboliteAttributesTest {
 		
 		Double val = 1.0;
 		
-		assertEquals(0.0, MetaboliteAttributes.getInitialAmount(metabolite), 0.0);
+		assertNull(MetaboliteAttributes.getInitialAmount(metabolite));
 		
 		metabolite.setAttribute(MetaboliteAttributes.INITIAL_AMOUNT, val);
 		

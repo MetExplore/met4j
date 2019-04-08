@@ -34,13 +34,12 @@ public class GenericAttributes {
 			throw new IllegalArgumentException("The entity must be a BioMetabolite, a BioCompartment or a BioReactant");
 		}
 
-		Boolean flag = true;
-
 		if (e.getAttribute(CONSTANT) != null) {
-			flag = (Boolean) e.getAttribute(CONSTANT);
+			return (Boolean) e.getAttribute(CONSTANT);
 		}
-
-		return flag;
+		else {
+			return null;
+		}
 
 	}
 

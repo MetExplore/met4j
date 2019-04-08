@@ -72,7 +72,7 @@ public class JsbmlToBioNetwork {
 	 * in the inheriting classes
 	 * 
 	 * @param model the jsbml model
-	 * @throws Met4jSbmlReaderException 
+	 * @throws Met4jSbmlReaderException
 	 */
 	protected void parseModel() throws Met4jSbmlReaderException {
 
@@ -241,7 +241,7 @@ public class JsbmlToBioNetwork {
 	 * Method to parse the list of reaction of the jsbml model
 	 * 
 	 * @param model the jsbml model
-	 * @throws Met4jSbmlReaderException 
+	 * @throws Met4jSbmlReaderException
 	 */
 	private void parseListOfReactions() throws Met4jSbmlReaderException {
 		for (Reaction jSBMLReaction : model.getListOfReactions()) {
@@ -252,7 +252,7 @@ public class JsbmlToBioNetwork {
 				reactionName = reactionId;
 			}
 			BioReaction bionetReaction = new BioReaction(reactionId, reactionName);
-			
+
 			this.getNetwork().add(bionetReaction);
 
 			if (jSBMLReaction.isSetSBOTerm()) {
@@ -279,25 +279,27 @@ public class JsbmlToBioNetwork {
 			if (kine != null) {
 
 				ReactionAttributes.setKineticFormula(bionetReaction, kine.getMathMLString());
-				
+
 				if (model.getLevel() < 3) {
 					for (int n = 0; n < kine.getNumParameters(); n++) {
 
 						UnitDefinition jsbmlUnit = model.getUnitDefinition(kine.getParameter(n).getUnits());
 
-						if(jsbmlUnit == null) {
-							throw new Met4jSbmlReaderException("Problem with the reaction "+bionetReaction.getId()+" : the flux unit "+kine.getParameter(n).getUnits()+" does not exist in the model");
-						}
-						else {
+						if (jsbmlUnit == null) {
+							throw new Met4jSbmlReaderException(
+									"Problem with the reaction " + bionetReaction.getId() + " : the flux unit "
+											+ kine.getParameter(n).getUnits() + " does not exist in the model");
+						} else {
 
 							BioUnitDefinition UD = udList.getEntityFromId(jsbmlUnit.getId());
 
 							/**
 							 * This is to make sure that the unit definition associated with the fluxes is
-							 * not null
+							 * not null, e.g dimensionless
 							 */
 							if (UD == null) {
-								throw new Met4jSbmlReaderException("Problem with the reaction "+bionetReaction.getId()+" : the flux unit "+jsbmlUnit.getId()+" does not exist in the bioNetwork");
+								UD = new BioUnitDefinition(jsbmlUnit.getId(), jsbmlUnit.getName());
+								udList.add(UD);
 							}
 
 							if (kine.getParameter(n).getId().equalsIgnoreCase("UPPER_BOUND")
@@ -323,7 +325,7 @@ public class JsbmlToBioNetwork {
 
 							}
 						}
-						
+
 					}
 				} else if (!this.containsFbcPackage()) { // SBML V3.0 and not
 															// fbc package
@@ -332,11 +334,9 @@ public class JsbmlToBioNetwork {
 
 						UnitDefinition jsbmlUnit = model.getUnitDefinition(param.getUnits());
 						if (jsbmlUnit == null) {
-							throw new Met4jSbmlReaderException(
-									"Problem with the reaction " + bionetReaction.getId() + " : the flux unit "
-											+ param.getUnits() + " does not exist in the model");
-						}
-						else {
+							throw new Met4jSbmlReaderException("Problem with the reaction " + bionetReaction.getId()
+									+ " : the flux unit " + param.getUnits() + " does not exist in the model");
+						} else {
 
 							BioUnitDefinition UD = udList.getEntityFromId(jsbmlUnit.getId());
 
@@ -345,9 +345,8 @@ public class JsbmlToBioNetwork {
 							 * not null
 							 */
 							if (UD == null) {
-								throw new Met4jSbmlReaderException(
-										"Problem with the reaction " + bionetReaction.getId() + " : the flux unit "
-												+ param.getUnits() + " does not exist in the bioNetwork");
+								UD = new BioUnitDefinition(jsbmlUnit.getId(), jsbmlUnit.getName());
+								udList.add(UD);
 							}
 
 							if (param.getId().equalsIgnoreCase("UPPER_BOUND")
@@ -368,7 +367,7 @@ public class JsbmlToBioNetwork {
 								ReactionAttributes.addFlux(bionetReaction, newflux);
 
 							}
-						} 
+						}
 					}
 
 				}
@@ -397,7 +396,7 @@ public class JsbmlToBioNetwork {
 
 			if (side.equals("left")) {
 				this.getNetwork().affectLeft(reactant, bionetReaction);
-			} else if (side.equals("right")) {
+			} else {
 				this.getNetwork().affectRight(reactant, bionetReaction);
 			}
 

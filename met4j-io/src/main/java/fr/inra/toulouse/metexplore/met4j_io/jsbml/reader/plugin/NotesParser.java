@@ -84,7 +84,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	/**
 	 * The default pattern used to retrieve reaction's PubMeb references
 	 */
-	public static final String defaultpmidPattern = "[> ]+PMID:\\s*([^<]+)<";
+	public static final String defaultpmidPattern = "PMID\\s*:\\s*([0-9,;+]+)";
 	/**
 	 * The default pattern used to retrieve metabolite's charge
 	 */
@@ -108,12 +108,11 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	public static final String defaultseparator = ",";
 
 	/**
-	 * The separator for multiple pathways present in a single pathway key.
-	 * </br>
+	 * The separator for multiple pathways present in a single pathway key. </br>
 	 * </br>
 	 * Most of the time, {@link #separator} is equal to "," and because this
-	 * character is very often used in pathway names, a second separator had to
-	 * be defined
+	 * character is very often used in pathway names, a second separator had to be
+	 * defined
 	 */
 	public String pathwaySep = " \\|\\| ";
 	/**
@@ -163,16 +162,15 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	public String separator = ",";
 
 	/**
-	 * Set this to true if you want unmatched key/value pairs in the Species
-	 * notes to be added as supplementary Identifiers
+	 * Set this to true if you want unmatched key/value pairs in the Species notes
+	 * to be added as supplementary Identifiers
 	 */
 	public boolean othersAsRefs = true;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param useDefault
-	 *            true to use the default patterns when parsing the Notes
+	 * @param useDefault true to use the default patterns when parsing the Notes
 	 */
 	public NotesParser(boolean useDefault) {
 		if (useDefault)
@@ -188,8 +186,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * <li>{@link BioNetwork#getPhysicalEntityList()}
 	 * <li>{@link BioNetwork#getCompartments()}
 	 * </ul>
-	 * {@link BioCompartment} has a different method because it does not extends
-	 * the {@link BioEntity} class
+	 * {@link BioCompartment} has a different method because it does not extends the
+	 * {@link BioEntity} class
 	 */
 	@Override
 	public void parseModel(Model model, BioNetwork bionetwork) {
@@ -219,10 +217,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	/**
 	 * Link the {@link #model}'s notes to the bionetwork
 	 * 
-	 * @param model
-	 *            the sbml model
-	 * @param bionet
-	 *            the bionetwork
+	 * @param model  the sbml model
+	 * @param bionet the bionetwork
 	 */
 	private void addNetworkNotes(Model model, BioNetwork bionet) {
 		try {
@@ -238,8 +234,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * For each {@link BioEntity} of the list, launches the correct parseNotes
 	 * method
 	 * 
-	 * @param list
-	 *            the bionetwork list of {@link BioEntity}
+	 * @param list the bionetwork list of {@link BioEntity}
 	 */
 	private void addNotes(BioCollection<? extends BioEntity> list) {
 
@@ -286,8 +281,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * {@link #getGA(String, FluxReaction)} method
 	 * </ul>
 	 * 
-	 * @param reaction
-	 *            The {@link BioChemicalReaction}
+	 * @param reaction The {@link BioChemicalReaction}
 	 */
 	private void parseNotes(BioReaction reaction) {
 
@@ -351,23 +345,27 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 		}
 
 		// get the PMIDS
-		if (this.getPmidPattern() != null
-				&& (m = Pattern.compile(this.getPmidPattern()).matcher(reactionNotes)).find()) {
+		if (this.getPmidPattern() != null) {
 
-			String pmidsStr = m.group(1).trim();
+			m = Pattern.compile(this.getPmidPattern()).matcher(reactionNotes);
 
-			if (!isVoid(pmidsStr)) {
+			while (m.find()) {
 
-				String[] pmids = pmidsStr.split(this.separator);
+				String pmidsStr = m.group(1).trim();
 
-				for (int i = 0; i < pmids.length; i++) {
-					String pmid = pmids[i].trim();
+				if (!isVoid(pmidsStr)) {
 
-					if (!isVoid(pmid)) {
-						try {
-							ReactionAttributes.addPmid(reaction, Integer.parseInt(pmid));
-						} catch (NumberFormatException e) {
-							NotesParser.errorsAndWarnings.add("[Warning] Pmid must be an integer");
+					String[] pmids = pmidsStr.split(this.separator);
+
+					for (int i = 0; i < pmids.length; i++) {
+						String pmid = pmids[i].trim();
+
+						if (!isVoid(pmid)) {
+							try {
+								ReactionAttributes.addPmid(reaction, Integer.parseInt(pmid));
+							} catch (NumberFormatException e) {
+								NotesParser.errorsAndWarnings.add("[Warning] Pmid " + pmid + " is not an integer");
+							}
 						}
 					}
 				}
@@ -417,8 +415,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * {@link #othersAsRefs} is true
 	 * </ul>
 	 * 
-	 * @param metabolite
-	 *            the metabolite as a {@link BioPhysicalEntity}
+	 * @param metabolite the metabolite as a {@link BioPhysicalEntity}
 	 */
 	private void parseNotes(BioMetabolite metabolite) {
 
@@ -534,8 +531,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * Recursive function that parse gene association logical expression
-	 * strings. </br>
+	 * Recursive function that parse gene association logical expression strings.
+	 * </br>
 	 * This is an adaptation of
 	 * {@link FBCParser#computeGeneAssocations(org.sbml.jsbml.ext.fbc.Association)}
 	 * on Strings. </br>
@@ -543,16 +540,15 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * Internally this uses {@link StringUtils#findClosingParen(char[], int)} to
 	 * split the GPR according to the outer most parenthesis
 	 * 
-	 * @param assosString
-	 *            The full GPR String in the first recursion, an inner part of
-	 *            the initial GPR on the following recursions
-	 * @param flxRxn
-	 *            the flux reaction
+	 * @param assosString The full GPR String in the first recursion, an inner part
+	 *                    of the initial GPR on the following recursions
+	 * @param flxRxn      the flux reaction
 	 * @return a list of {@link GeneSet}
-	 * @throws MalformedGeneAssociationStringException
-	 *             when the GPR is malformed, ie when there is a missing
-	 *             parenthesis in the string that creates a confusions on the
-	 *             AND/OR associations
+	 * @throws MalformedGeneAssociationStringException when the GPR is malformed, ie
+	 *                                                 when there is a missing
+	 *                                                 parenthesis in the string
+	 *                                                 that creates a confusions on
+	 *                                                 the AND/OR associations
 	 */
 	public GeneAssociation computeGeneAssociation(String assosString, FluxReaction flxRxn)
 			throws MalformedGeneAssociationStringException {
@@ -660,8 +656,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * @param model
-	 *            the model to set
+	 * @param model the model to set
 	 */
 	public void setModel(Model model) {
 		this.model = model;
@@ -675,8 +670,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * @param bionetwork
-	 *            the bionetwork to set
+	 * @param bionetwork the bionetwork to set
 	 */
 	public void setBionetwork(BioNetwork bionetwork) {
 		this.bionetwork = bionetwork;
@@ -690,8 +684,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * @param pathwaySep
-	 *            the pathwaySep to set
+	 * @param pathwaySep the pathwaySep to set
 	 */
 	public void setPathwaySep(String pathwaySep) {
 		this.pathwaySep = pathwaySep;
@@ -705,8 +698,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * @param pathwayPattern
-	 *            the pathwayPattern to set
+	 * @param pathwayPattern the pathwayPattern to set
 	 */
 	public void setPathwayPattern(String pathwayPattern) {
 		this.pathwayPattern = pathwayPattern;
@@ -720,8 +712,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * @param eCPattern
-	 *            the eCPattern to set
+	 * @param eCPattern the eCPattern to set
 	 */
 	public void setECPattern(String eCPattern) {
 		ECPattern = eCPattern;
@@ -735,8 +726,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * @param gPRPattern
-	 *            the gPRPattern to set
+	 * @param gPRPattern the gPRPattern to set
 	 */
 	public void setGPRPattern(String gPRPattern) {
 		GPRPattern = gPRPattern;
@@ -750,8 +740,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * @param scorePattern
-	 *            the scorePattern to set
+	 * @param scorePattern the scorePattern to set
 	 */
 	public void setScorePattern(String scorePattern) {
 		this.scorePattern = scorePattern;
@@ -765,8 +754,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * @param statusPattern
-	 *            the statusPattern to set
+	 * @param statusPattern the statusPattern to set
 	 */
 	public void setStatusPattern(String statusPattern) {
 		this.statusPattern = statusPattern;
@@ -780,8 +768,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * @param commentPattern
-	 *            the commentPattern to set
+	 * @param commentPattern the commentPattern to set
 	 */
 	public void setCommentPattern(String commentPattern) {
 		this.commentPattern = commentPattern;
@@ -795,8 +782,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * @param pmidPattern
-	 *            the pmidPattern to set
+	 * @param pmidPattern the pmidPattern to set
 	 */
 	public void setPmidPattern(String pmidPattern) {
 		this.pmidPattern = pmidPattern;
@@ -810,8 +796,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * @param chargePattern
-	 *            the chargePattern to set
+	 * @param chargePattern the chargePattern to set
 	 */
 	public void setChargePattern(String chargePattern) {
 		this.chargePattern = chargePattern;
@@ -825,8 +810,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * @param formulaPattern
-	 *            the formulaPattern to set
+	 * @param formulaPattern the formulaPattern to set
 	 */
 	public void setFormulaPattern(String formulaPattern) {
 		this.formulaPattern = formulaPattern;
@@ -840,8 +824,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * @param separator
-	 *            the separator to set
+	 * @param separator the separator to set
 	 */
 	public void setSeparator(String separator) {
 		this.separator = separator;
@@ -855,8 +838,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * @param othersAsRefs
-	 *            the othersAsRefs to set
+	 * @param othersAsRefs the othersAsRefs to set
 	 */
 	public void setOthersAsRefs(boolean othersAsRefs) {
 		this.othersAsRefs = othersAsRefs;

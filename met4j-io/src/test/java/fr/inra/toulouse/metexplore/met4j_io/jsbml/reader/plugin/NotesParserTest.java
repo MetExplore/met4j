@@ -106,7 +106,7 @@ public class NotesParserTest {
 		Reaction r1 = model.createReaction("r1");
 
 		String notesStr = "<body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-				+ "    <p>Attribut1 : value1</p><p>EC-NUMBER: 1.1.1.1</p>" + "<p>PMID: 10000,12323,12</p>"
+				+ "    <p>Attribut1 : value1</p><p>EC-NUMBER: 1.1.1.1</p>" + "<p>PMID: 10000,12323,PMID: 12</p>"
 				+ "<p>SUBSYSTEM: Pathway1 || Pathway2</p>" + "<p>SCORE: 1</p>" + "<p>STATUS: Not defined</p>"
 				+ "<p>COMMENTS: comment</p>" + "<p>GENE ASSOCIATION: ( G1 ) OR ( G1 AND G3 )</p>\n" + "  </body>";
 

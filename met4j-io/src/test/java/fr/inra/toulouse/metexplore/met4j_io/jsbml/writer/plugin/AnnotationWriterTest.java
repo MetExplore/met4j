@@ -1,6 +1,5 @@
 package fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin;
 
-import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +12,6 @@ import org.sbml.jsbml.Species;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioRef;
 
@@ -37,7 +35,7 @@ public class AnnotationWriterTest {
 		doc = new SBMLDocument(3, 1);
 		model = doc.createModel();
 		network = new BioNetwork();
-
+		
 		r1 = new BioReaction("r1");
 		
 		BioRef refR1 = new BioRef("origin1", "dbName1", "id1", 1);
@@ -53,7 +51,6 @@ public class AnnotationWriterTest {
 		BioRef refR2 = new BioRef("origin2", "dbName2", "id2", 2);
 		m1.addRef(refR2);
 		
-		
 		m2 = new BioMetabolite("m2");
 		
 		network.add(m1);
@@ -65,21 +62,21 @@ public class AnnotationWriterTest {
 		
 		c2 = new BioCompartment("c2");
 		
+		network.add(c1);
+		network.add(c2);
 		
-		
-
-		
-		
-
-		
-		
+		network.affectToCompartment(m1, c1);
+		network.affectToCompartment(m2, c2);
 		
 	}
 	
 	
 	
 	@Test
-	public void test() {
+	public void testModelAnnotation() {
+
+		
+	
 	}
 
 }

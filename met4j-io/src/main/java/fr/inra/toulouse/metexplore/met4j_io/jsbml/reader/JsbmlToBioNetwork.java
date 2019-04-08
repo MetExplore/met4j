@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.sbml.jsbml.Compartment;
 import org.sbml.jsbml.KineticLaw;
 import org.sbml.jsbml.ListOf;
@@ -66,11 +67,10 @@ public class JsbmlToBioNetwork {
 	}
 
 	/**
-	 * Main method of the parser. It should call the different list parser
-	 * defined in the inheriting classes
+	 * Main method of the parser. It should call the different list parser defined
+	 * in the inheriting classes
 	 * 
-	 * @param model
-	 *            the jsbml model
+	 * @param model the jsbml model
 	 */
 	protected void parseModel() {
 
@@ -88,8 +88,7 @@ public class JsbmlToBioNetwork {
 	/**
 	 * Parse the jsbml Model object and retrieves basic information from it
 	 * 
-	 * @param model
-	 *            the jsbml model
+	 * @param model the jsbml model
 	 */
 	private void parseNetworkData() {
 
@@ -101,11 +100,10 @@ public class JsbmlToBioNetwork {
 	}
 
 	/**
-	 * Default way of parsing sbml UnitDefinition. Needs to be overridden to
-	 * modify behavior
+	 * Default way of parsing sbml UnitDefinition. Needs to be overridden to modify
+	 * behavior
 	 * 
-	 * @param model
-	 *            the jsbml model
+	 * @param model the jsbml model
 	 */
 	private void parseListOfUnitDefinitions() {
 
@@ -140,20 +138,19 @@ public class JsbmlToBioNetwork {
 	}
 
 	/**
-	 * Default way of parsing sbml compartements. Needs to be overridden to
-	 * modify behavior
+	 * Default way of parsing sbml compartements. Needs to be overridden to modify
+	 * behavior
 	 * 
-	 * @param model
-	 *            the jsbml model
+	 * @param model the jsbml model
 	 */
 	private void parseListOfCompartments() {
 
 		for (Compartment jSBMLCompart : model.getListOfCompartments()) {
 
 			String compartId = jSBMLCompart.getId();
-			String compartName = jSBMLCompart.getName();
+			String compartName = jSBMLCompart.getName().trim();
 
-			if (compartName.isEmpty()) {
+			if (StringUtils.isEmpty(compartName)) {
 				compartName = compartId;
 			}
 
@@ -175,8 +172,8 @@ public class JsbmlToBioNetwork {
 			}
 
 			/*
-			 * If the compartment has an outside attribute, we need to look if
-			 * the outside compartment exists in the bioNetwork
+			 * If the compartment has an outside attribute, we need to look if the outside
+			 * compartment exists in the bioNetwork
 			 */
 			if (jSBMLCompart.isSetOutside()) {
 
@@ -187,7 +184,7 @@ public class JsbmlToBioNetwork {
 
 				// if it's null, we create it and add it to the bionetwork
 				if (outsideCompart == null) {
-					outsideCompart = new BioCompartment(outsideJSBMLComp.getName(), outsideJSBMLComp.getId());
+					outsideCompart = new BioCompartment(outsideJSBMLComp.getId(), outsideJSBMLComp.getName());
 					this.getNetwork().add(outsideCompart);
 				}
 
@@ -210,9 +207,8 @@ public class JsbmlToBioNetwork {
 
 			if (jSBMLCompart.isSetSize()) {
 				CompartmentAttributes.setSize(bionetCompart, jSBMLCompart.getSize());
-			} else {
-				CompartmentAttributes.setSize(bionetCompart, jSBMLCompart.getSize());
 			}
+
 			if (jSBMLCompart.isSetSpatialDimensions()) {
 				CompartmentAttributes.setSpatialDimensions(bionetCompart, (int) jSBMLCompart.getSpatialDimensions());
 			} else {
@@ -242,8 +238,7 @@ public class JsbmlToBioNetwork {
 	/**
 	 * Method to parse the list of reaction of the jsbml model
 	 * 
-	 * @param model
-	 *            the jsbml model
+	 * @param model the jsbml model
 	 */
 	private void parseListOfReactions() {
 		for (Reaction jSBMLReaction : model.getListOfReactions()) {
@@ -254,7 +249,7 @@ public class JsbmlToBioNetwork {
 				reactionName = reactionId;
 			}
 			BioReaction bionetReaction = new BioReaction(reactionId, reactionName);
-
+			
 			this.getNetwork().add(bionetReaction);
 
 			if (jSBMLReaction.isSetSBOTerm()) {
@@ -281,8 +276,8 @@ public class JsbmlToBioNetwork {
 			if (kine != null) {
 
 				ReactionAttributes.setKineticFormula(bionetReaction, kine.getMathMLString());
-
-				if (model.getVersion() < 3) {
+				
+				if (model.getLevel() < 3) {
 					for (int n = 0; n < kine.getNumParameters(); n++) {
 
 						UnitDefinition jsbmlUnit = model.getUnitDefinition(kine.getParameter(n).getUnits());
@@ -292,11 +287,11 @@ public class JsbmlToBioNetwork {
 							BioUnitDefinition UD = udList.getEntityFromId(jsbmlUnit.getId());
 
 							/**
-							 * This is to make sure that the unit definition
-							 * associated with the fluxes is not null
+							 * This is to make sure that the unit definition associated with the fluxes is
+							 * not null
 							 */
 							if (UD == null) {
-								UD = new BioUnitDefinition();
+								UD = new BioUnitDefinition(jsbmlUnit.getId(), jsbmlUnit.getName());
 								udList.add(UD);
 							}
 
@@ -322,12 +317,6 @@ public class JsbmlToBioNetwork {
 								ReactionAttributes.addFlux(bionetReaction, newflux);
 
 							}
-						} else {
-
-							BioUnitDefinition UD = new BioUnitDefinition("dimensionless", "dimensionless");
-							Flux newflux = new Flux(kine.getParameter(n).getId(), kine.getParameter(n).getValue(), UD);
-
-							ReactionAttributes.addFlux(bionetReaction, newflux);
 						}
 					}
 				} else if (!this.containsFbcPackage()) { // SBML V3.0 and not
@@ -341,11 +330,11 @@ public class JsbmlToBioNetwork {
 							BioUnitDefinition UD = udList.getEntityFromId(jsbmlUnit.getId());
 
 							/**
-							 * This is to make sure that the unit definition
-							 * associated with the fluxes is not null
+							 * This is to make sure that the unit definition associated with the fluxes is
+							 * not null
 							 */
 							if (UD == null) {
-								UD = new BioUnitDefinition(null, null);
+								UD = new BioUnitDefinition(jsbmlUnit.getId(), jsbmlUnit.getName());
 								udList.add(UD);
 							}
 
@@ -362,17 +351,12 @@ public class JsbmlToBioNetwork {
 								ReactionAttributes.setLowerBound(bionetReaction, newflux);
 
 							} else {
-								Flux newflux = new Flux(param.getName(), param.getValue(), UD);
+								Flux newflux = new Flux(param.getId(), param.getValue(), UD);
 
 								ReactionAttributes.addFlux(bionetReaction, newflux);
 
 							}
-						} else {
-
-							BioUnitDefinition UD = new BioUnitDefinition("dimensionless", "dimensionless");
-							Flux newflux = new Flux(param.getName(), param.getValue(), UD);
-							ReactionAttributes.addFlux(bionetReaction, newflux);
-						}
+						} 
 					}
 
 				}
@@ -383,16 +367,13 @@ public class JsbmlToBioNetwork {
 	/**
 	 * Abstract class to parse the list of SpeciesReferences of a given Reaction
 	 * 
-	 * @param bionetReaction
-	 *            the {@link BioChemicalReaction}
-	 * @param listOf
-	 *            the jsbml list of SpeciesReferences
-	 * @param side
-	 *            The side of the SpeciesReferences
-	 *            <ul>
-	 *            <li>left = reactants
-	 *            <li>right = products
-	 *            </ul>
+	 * @param bionetReaction the {@link BioChemicalReaction}
+	 * @param listOf         the jsbml list of SpeciesReferences
+	 * @param side           The side of the SpeciesReferences
+	 *                       <ul>
+	 *                       <li>left = reactants
+	 *                       <li>right = products
+	 *                       </ul>
 	 */
 	private void parseReactionListOf(BioReaction bionetReaction, ListOf<SpeciesReference> listOf, String side) {
 		for (SpeciesReference specieRef : listOf) {
@@ -483,8 +464,7 @@ public class JsbmlToBioNetwork {
 	 * parse the jsbml species participating in a reaction and create the
 	 * corresponding metabolite as {@link BioPhysicalEntity} object
 	 * 
-	 * @param specie
-	 *            the Jsbml Species object
+	 * @param specie the Jsbml Species object
 	 * @return BioPhysicalEntity
 	 */
 	private BioReactant parseParticipantSpecies(SpeciesReference specieRef) {
@@ -523,8 +503,7 @@ public class JsbmlToBioNetwork {
 	}
 
 	/**
-	 * @param bionet
-	 *            the bionet to set
+	 * @param bionet the bionet to set
 	 */
 	public void setNetwork(BioNetwork bionet) {
 		this.network = bionet;
@@ -540,11 +519,9 @@ public class JsbmlToBioNetwork {
 	/**
 	 * Add a package to this parser
 	 * 
-	 * @param pkg
-	 *            the package to add
-	 * @throws JSBMLPackageReaderException
-	 *             if the package is not compatible with the the current SBML
-	 *             level
+	 * @param pkg the package to add
+	 * @throws JSBMLPackageReaderException if the package is not compatible with the
+	 *                                     the current SBML level
 	 */
 	public void addPackage(PackageParser pkg) throws JSBMLPackageReaderException {
 
@@ -560,11 +537,9 @@ public class JsbmlToBioNetwork {
 	/**
 	 * Set the {@link #packages} to a new list
 	 * 
-	 * @param packages
-	 *            the ordered list of packages to set
-	 * @throws JSBMLPackageReaderException
-	 *             if one of the package in the list is not compatible with the
-	 *             current SBML level
+	 * @param packages the ordered list of packages to set
+	 * @throws JSBMLPackageReaderException if one of the package in the list is not
+	 *                                     compatible with the current SBML level
 	 */
 	public void setPackages(ArrayList<PackageParser> packages) throws JSBMLPackageReaderException {
 		for (PackageParser pkg : packages) {
@@ -575,8 +550,7 @@ public class JsbmlToBioNetwork {
 	/**
 	 * Launch the parsing of the jsbml model by the different packages
 	 * 
-	 * @param model
-	 *            the jsbml model
+	 * @param model the jsbml model
 	 */
 	public void parsePackageAdditionalData() {
 		for (PackageParser parser : this.getSetOfPackage()) {

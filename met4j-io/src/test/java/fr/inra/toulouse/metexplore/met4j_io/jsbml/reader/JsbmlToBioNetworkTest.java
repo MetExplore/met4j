@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.sbml.jsbml.ASTNode;
 import org.sbml.jsbml.Compartment;
+import org.sbml.jsbml.CompartmentType;
 import org.sbml.jsbml.KineticLaw;
 import org.sbml.jsbml.LocalParameter;
 import org.sbml.jsbml.Model;
@@ -28,7 +29,10 @@ import org.sbml.jsbml.Unit.Kind;
 import org.sbml.jsbml.UnitDefinition;
 import org.sbml.jsbml.ASTNode.Type;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.BioCompartmentType;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageReaderException;
@@ -76,8 +80,21 @@ public class JsbmlToBioNetworkTest {
 		model.setId("modelId");
 		model.setName("modelName");
 
+		System.err.println("model :" + model.getLevel() + " - " + model.getVersion());
+
 		c1 = model.createCompartment("c1");
 		c2 = model.createCompartment("c2");
+
+		CompartmentType compartmentType = new CompartmentType("cType");
+		model.addCompartmentType(compartmentType);
+		c1.setCompartmentType(compartmentType);
+
+		c1.setOutside(c2);
+		c2.setOutside(c1);
+
+		c1.setSize(2.0);
+
+		c1.setSpatialDimensions(4.0);
 
 		m1 = model.createSpecies("m1", "name1", c1);
 		m2 = model.createSpecies("m2", "name2", c2);
@@ -85,6 +102,12 @@ public class JsbmlToBioNetworkTest {
 		r1 = model.createReaction("r1");
 		r1.setName("name1");
 		r1.setReversible(false);
+
+		if (model.getLevel() > 2) {
+			r1.setSBOTerm("SBO:0000167");
+		}
+		
+		r1.setFast(true);
 
 		r2 = model.createReaction("r2");
 		r2.setReversible(true);
@@ -145,6 +168,13 @@ public class JsbmlToBioNetworkTest {
 	@Test
 	public void testParseListOfCompartments() {
 
+		UnitDefinition testUd1 = new UnitDefinition("testUd");
+		testUd1.addUnit(Kind.METRE);
+
+		model.addUnitDefinition(testUd1);
+
+		c1.setUnits(testUd1);
+
 		parser.parseModel();
 
 		Set<String> testIds = new HashSet<String>();
@@ -152,6 +182,67 @@ public class JsbmlToBioNetworkTest {
 		testIds.add("c2");
 
 		assertEquals(testIds, parser.getNetwork().getCompartmentsView().getIds());
+
+		BioCompartment c1 = parser.getNetwork().getCompartmentsView().getEntityFromId("c1");
+		BioCompartment c2 = parser.getNetwork().getCompartmentsView().getEntityFromId("c2");
+
+		assertNotNull(c1);
+		assertNotNull(c2);
+
+		// test outside compartment
+
+		BioCompartment cOutside = CompartmentAttributes.getOutsideCompartment(c1);
+		assertEquals(c2, cOutside);
+
+		cOutside = CompartmentAttributes.getOutsideCompartment(c2);
+		assertEquals(c1, cOutside);
+
+		// test units
+		BioUnitDefinition u = CompartmentAttributes.getUnitDefinition(c1);
+
+		assertNotNull(u);
+
+		assertTrue(u.getUnits().containsKey(Kind.METRE.getName()));
+
+		// test size
+		Double size = CompartmentAttributes.getSize(c1);
+		assertEquals(2.0, size, 0.0);
+
+		// test spatial dimensions
+		int dims = CompartmentAttributes.getSpatialDimensions(c1);
+		assertEquals(4, dims);
+
+	}
+
+	@Test
+	public void testCompartmentsLevel2() throws JSBMLPackageReaderException {
+		doc.setLevel(2);
+
+		initModel();
+
+		parser = new JsbmlToBioNetwork(model);
+
+		ArrayList<PackageParser> pkgs = new ArrayList<PackageParser>(
+				Arrays.asList(new NotesParser(true), new AnnotationParser(true)));
+
+		parser.setPackages(pkgs);
+
+		parser.parseModel();
+
+		// Test compartment type
+		BioCompartment compartment1 = parser.getNetwork().getCompartmentsView().getEntityFromId("c1");
+
+		BioCompartmentType type = CompartmentAttributes.getType(compartment1);
+
+		assertNotNull(type);
+
+		assertEquals("cType", type.getId());
+
+		compartment1 = parser.getNetwork().getCompartmentsView().getEntityFromId("c2");
+
+		type = CompartmentAttributes.getType(compartment1);
+
+		assertNull(type);
 
 	}
 
@@ -222,6 +313,22 @@ public class JsbmlToBioNetworkTest {
 
 		assertEquals(testCoeffs, parser.getNetwork().getRightReactants(reaction1).stream().map(x -> x.getQuantity())
 				.collect(Collectors.toSet()));
+
+		// Test sbo term
+		String sboTerm = ReactionAttributes.getSboTerm(reaction1);
+
+		assertNotNull(sboTerm);
+		assertEquals("SBO:0000167", sboTerm);
+		
+		// Test fast
+		Boolean fast = ReactionAttributes.getFast(reaction1);
+		assertNotNull(fast);
+		assertTrue(fast);
+		
+		BioReaction reaction2 = parser.getNetwork().getReactionsView().getEntityFromId("r2");
+
+		fast = ReactionAttributes.getFast(reaction2);
+		assertFalse(fast);
 
 	}
 
@@ -296,7 +403,7 @@ public class JsbmlToBioNetworkTest {
 
 	@Test
 	public void testFluxLevel3WithoutFbc() throws JSBMLPackageReaderException {
-		doc.setLevel(2);
+		doc.setLevel(3);
 
 		initModel();
 
@@ -319,6 +426,18 @@ public class JsbmlToBioNetworkTest {
 		UBound.setValue(150.0);
 		UBound.setUnits(StringUtils.convertToSID(BioUnitDefinition.DEFAULT_UNIT));
 
+		KineticLaw law2 = r2.createKineticLaw();
+
+		ASTNode ciNode2 = new ASTNode(Type.NAME);
+		ciNode2.setName("FLUX_VALUE");
+		law2.setMath(ciNode2);
+		
+		LocalParameter flux = law2.createLocalParameter();
+		flux.setId("FLUX");
+		flux.setName("FLUX");
+		flux.setValue(10.0);
+		flux.setUnits(StringUtils.convertToSID(BioUnitDefinition.DEFAULT_UNIT));
+		
 		parser = new JsbmlToBioNetwork(model);
 
 		ArrayList<PackageParser> pkgs = new ArrayList<PackageParser>(
@@ -341,6 +460,16 @@ public class JsbmlToBioNetworkTest {
 		assertNotNull(ub);
 
 		assertEquals(150.0, ub.value, 0.0);
+		
+		BioReaction reaction2 = parser.getNetwork().getReactionsView().getEntityFromId("r2");
+
+		Flux f = ReactionAttributes.getFlux(reaction2, "FLUX");
+		
+		assertNotNull(f);
+		assertEquals(flux.getValue(), f.value, 0.0);
+		
+		
+		
 	}
 
 }

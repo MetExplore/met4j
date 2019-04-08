@@ -30,9 +30,11 @@ import org.sbml.jsbml.UnitDefinition;
 import org.sbml.jsbml.ASTNode.Type;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.BioCompartmentType;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageReaderException;
@@ -51,7 +53,7 @@ public class JsbmlToBioNetworkTest {
 	Model model;
 	JsbmlToBioNetwork parser;
 	Compartment c1, c2, c3;
-	Species m1, m2;
+	Species m1, m2, m3;
 	Reaction r1, r2, r3;
 
 	@Rule
@@ -101,6 +103,10 @@ public class JsbmlToBioNetworkTest {
 
 		m1 = model.createSpecies("m1", "name1", c1);
 		m2 = model.createSpecies("m2", "name2", c2);
+		m3 = model.createSpecies("m3", "name3", c2);
+		
+		m1.setConstant(true);
+		m2.setConstant(false);
 
 		r1 = model.createReaction("r1");
 		r1.setName("name1");
@@ -111,7 +117,7 @@ public class JsbmlToBioNetworkTest {
 		}
 
 		r1.setFast(true);
-
+		
 		r2 = model.createReaction("r2");
 
 		SpeciesReference m1Ref = new SpeciesReference(m1);
@@ -119,7 +125,7 @@ public class JsbmlToBioNetworkTest {
 
 		SpeciesReference m1RefBis = new SpeciesReference(m1);
 		m1RefBis.setStoichiometry(3.0);
-
+		
 		SpeciesReference m2Ref = new SpeciesReference(m2);
 
 		r1.addReactant(m1Ref);
@@ -262,19 +268,36 @@ public class JsbmlToBioNetworkTest {
 		Set<String> testIds = new HashSet<String>();
 		testIds.add("m1");
 		testIds.add("m2");
+		testIds.add("m3");
 
 		assertEquals(testIds, parser.getNetwork().getMetabolitesView().getIds());
 
 		Set<String> testNames = new HashSet<String>();
 		testNames.add("name1");
 		testNames.add("name2");
+		testNames.add("name3");
 
 		assertEquals(testNames,
 				parser.getNetwork().getMetabolitesView().stream().map(x -> x.getName()).collect(Collectors.toSet()));
 
+		BioMetabolite m1 = parser.getNetwork().getMetabolitesView().getEntityFromId("m1");
+		BioMetabolite m2 = parser.getNetwork().getMetabolitesView().getEntityFromId("m2");
+		BioMetabolite m3 = parser.getNetwork().getMetabolitesView().getEntityFromId("m3");
+
+		assertNotNull(m1);
+		assertNotNull(m2);
+		assertNotNull(m3);
+		
+		assertTrue(MetaboliteAttributes.getConstant(m1));
+		assertFalse(MetaboliteAttributes.getConstant(m2));
+		assertFalse(MetaboliteAttributes.getConstant(m3));
+		
 		assertTrue(parser.getNetwork().getCompartmentsView().getEntityFromId("c1").getComponents().containsId("m1"));
 		assertTrue(parser.getNetwork().getCompartmentsView().getEntityFromId("c2").getComponents().containsId("m2"));
-
+		
+		
+		
+		
 	}
 
 	@Test

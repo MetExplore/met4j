@@ -105,13 +105,19 @@ public class JsbmlToBioNetworkTest {
 
 		m1 = model.createSpecies("m1", "name1", c1);
 		m2 = model.createSpecies("m2", "name2", c2);
-		m3 = model.createSpecies("m3", "name3", c2);
+		m3 = model.createSpecies("m3");
+		m3.setCompartment(c1);
 
 		m1.setConstant(true);
 		m2.setConstant(false);
 
 		m1.setInitialAmount(2.0);
 		m2.setInitialAmount(3.0);
+
+		if (model.getLevel() < 3) {
+			m1.setCharge(3);
+			m2.setCharge(4);
+		}
 
 		r1 = model.createReaction("r1");
 		r1.setName("name1");
@@ -141,8 +147,6 @@ public class JsbmlToBioNetworkTest {
 		r1.addReactant(m1Ref);
 		r1.addProduct(m2Ref);
 		r1.addProduct(m1RefBis);
-
-		System.err.println("m1 REf Bis : " + m1RefBis.getConstant());
 
 		r3 = model.createReaction("r3");
 	}
@@ -273,6 +277,37 @@ public class JsbmlToBioNetworkTest {
 	}
 
 	@Test
+	public void testParseListOfSpeciesLevel2() throws Met4jSbmlReaderException, JSBMLPackageReaderException {
+
+		doc.setLevel(2);
+
+		initModel();
+
+		parser = new JsbmlToBioNetwork(model);
+
+		ArrayList<PackageParser> pkgs = new ArrayList<PackageParser>(
+				Arrays.asList(new NotesParser(true), new AnnotationParser(true)));
+
+		parser.setPackages(pkgs);
+
+		parser.parseModel();
+		
+		BioMetabolite metabolite1 = parser.getNetwork().getMetabolitesView().getEntityFromId("m1");
+		BioMetabolite metabolite2 = parser.getNetwork().getMetabolitesView().getEntityFromId("m2");
+		BioMetabolite metabolite3 = parser.getNetwork().getMetabolitesView().getEntityFromId("m3");
+
+		assertNotNull(metabolite1);
+		assertNotNull(metabolite2);
+		assertNotNull(metabolite3);
+		
+		assertEquals(3,metabolite1.getCharge());
+		assertEquals(4, metabolite2.getCharge());
+		assertEquals(0, metabolite3.getCharge());
+		
+
+	}
+
+	@Test
 	public void testParseListOfSpecies() throws Met4jSbmlReaderException {
 
 		parser.parseModel();
@@ -287,7 +322,7 @@ public class JsbmlToBioNetworkTest {
 		Set<String> testNames = new HashSet<String>();
 		testNames.add("name1");
 		testNames.add("name2");
-		testNames.add("name3");
+		testNames.add("m3");
 
 		assertEquals(testNames,
 				parser.getNetwork().getMetabolitesView().stream().map(x -> x.getName()).collect(Collectors.toSet()));
@@ -304,12 +339,36 @@ public class JsbmlToBioNetworkTest {
 		assertFalse(MetaboliteAttributes.getConstant(metabolite2));
 		assertFalse(MetaboliteAttributes.getConstant(metabolite3));
 
+		System.err.println("initial amount : " + MetaboliteAttributes.getInitialAmount(metabolite1));
+
 		assertEquals(m1.getInitialAmount(), MetaboliteAttributes.getInitialAmount(metabolite1), 0.0);
 		assertEquals(m2.getInitialAmount(), MetaboliteAttributes.getInitialAmount(metabolite2), 0.0);
 		assertNull(MetaboliteAttributes.getInitialAmount(metabolite3));
 
 		assertTrue(parser.getNetwork().getCompartmentsView().getEntityFromId("c1").getComponents().containsId("m1"));
 		assertTrue(parser.getNetwork().getCompartmentsView().getEntityFromId("c2").getComponents().containsId("m2"));
+
+		m1.setInitialConcentration(2.0);
+		m2.setInitialConcentration(3.0);
+		
+		// Level 3 : the charge is not an attribute
+		assertEquals(0,metabolite1.getCharge());
+		assertEquals(0, metabolite2.getCharge());
+		assertEquals(0, metabolite3.getCharge());
+
+
+		// We reparse the model because a specie can't have initial amount AND initial
+		// concentration
+		parser.parseModel();
+
+		metabolite1 = parser.getNetwork().getMetabolitesView().getEntityFromId("m1");
+		metabolite2 = parser.getNetwork().getMetabolitesView().getEntityFromId("m2");
+		metabolite3 = parser.getNetwork().getMetabolitesView().getEntityFromId("m3");
+
+		assertEquals(m1.getInitialConcentration(), MetaboliteAttributes.getInitialConcentration(metabolite1), 0.0);
+		assertEquals(m2.getInitialConcentration(), MetaboliteAttributes.getInitialConcentration(metabolite2), 0.0);
+		assertNull(MetaboliteAttributes.getInitialConcentration(metabolite3));
+		
 
 	}
 

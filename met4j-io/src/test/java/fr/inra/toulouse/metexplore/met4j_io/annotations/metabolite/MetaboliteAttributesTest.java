@@ -169,7 +169,7 @@ public class MetaboliteAttributesTest {
 		
 		Double val = 1.0;
 		
-		assertEquals(0.0, MetaboliteAttributes.getInitialConcentration(metabolite), 0.0);
+		assertNull(MetaboliteAttributes.getInitialConcentration(metabolite));
 		
 		metabolite.setAttribute(MetaboliteAttributes.INITIAL_CONCENTRATION, val);
 		

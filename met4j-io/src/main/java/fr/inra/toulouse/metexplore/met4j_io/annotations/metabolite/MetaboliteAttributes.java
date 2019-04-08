@@ -144,13 +144,12 @@ public class MetaboliteAttributes {
 	 */
 	public static Double getInitialAmount(BioMetabolite metabolite) {
 
-		if (metabolite.getAttribute(INITIAL_AMOUNT) == null) {
+		if(metabolite.getAttribute(INITIAL_AMOUNT) == null)
+		{
 			return null;
 		}
 		
-		Double val = (Double) metabolite.getAttribute(INITIAL_AMOUNT);
-
-		return val;
+		return (Double) metabolite.getAttribute(INITIAL_AMOUNT);
 
 	}
 
@@ -171,10 +170,6 @@ public class MetaboliteAttributes {
 	 */
 	public static Double getInitialConcentration(BioMetabolite metabolite) {
 		Double val = (Double) metabolite.getAttribute(INITIAL_CONCENTRATION);
-
-		if (val == null) {
-			val = 0.0;
-		}
 
 		return val;
 	}

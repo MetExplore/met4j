@@ -154,7 +154,11 @@ public class CompartmentAttributes {
 	 * @param c
 	 * @return
 	 */
-	public static double getSize(BioCompartment c) {
+	public static Double getSize(BioCompartment c) {
+		
+		if(c.getAttribute(SIZE) == null) {
+			return null;
+		}
 		return (double) c.getAttribute(SIZE);
 	}
 	

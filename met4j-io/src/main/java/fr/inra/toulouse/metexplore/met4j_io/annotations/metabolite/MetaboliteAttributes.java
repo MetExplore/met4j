@@ -55,7 +55,6 @@ public class MetaboliteAttributes {
 	 * @return
 	 */
 	public static Boolean getConstant(BioMetabolite m) {
-
 		return GenericAttributes.getConstant(m);
 	}
 
@@ -252,8 +251,8 @@ public class MetaboliteAttributes {
 	 * @param metabolite
 	 * @return
 	 */
-	public static boolean getHasOnlySubstanceUnits(BioMetabolite metabolite) {
-		return (boolean) metabolite.getAttribute(HAS_ONLY_SUBSTANCE_UNITS);
+	public static Boolean getHasOnlySubstanceUnits(BioMetabolite metabolite) {
+		return (Boolean) metabolite.getAttribute(HAS_ONLY_SUBSTANCE_UNITS);
 	}
 
 	/**

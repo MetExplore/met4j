@@ -71,8 +71,9 @@ public class JsbmlReader {
 	 * 
 	 * @param args
 	 *            the arguments
+	 * @throws Met4jSbmlReaderException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Met4jSbmlReaderException {
 		// String
 		String inputFile = args[0];
 		
@@ -144,8 +145,9 @@ public class JsbmlReader {
 	 *            by the sbml level and/or version of the file, it will not be
 	 *            used.
 	 * @return the created Bionetwork
+	 * @throws Met4jSbmlReaderException 
 	 */
-	public BioNetwork read(HashSet<PackageParser> userEnabledPackages) {
+	public BioNetwork read(HashSet<PackageParser> userEnabledPackages) throws Met4jSbmlReaderException {
 		try {
 			this.initiateModel();
 		} catch (IOException | XMLStreamException e) {

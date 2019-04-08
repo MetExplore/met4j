@@ -1,5 +1,6 @@
 package fr.inra.toulouse.metexplore.met4j_io.jsbml.reader;
 
+import java.lang.instrument.IllegalClassFormatException;
 import java.util.ArrayList;
 
 import javax.xml.stream.XMLStreamException;
@@ -71,8 +72,9 @@ public class JsbmlToBioNetwork {
 	 * in the inheriting classes
 	 * 
 	 * @param model the jsbml model
+	 * @throws Met4jSbmlReaderException 
 	 */
-	protected void parseModel() {
+	protected void parseModel() throws Met4jSbmlReaderException {
 
 		this.parseNetworkData();
 		this.parseListOfUnitDefinitions();
@@ -239,8 +241,9 @@ public class JsbmlToBioNetwork {
 	 * Method to parse the list of reaction of the jsbml model
 	 * 
 	 * @param model the jsbml model
+	 * @throws Met4jSbmlReaderException 
 	 */
-	private void parseListOfReactions() {
+	private void parseListOfReactions() throws Met4jSbmlReaderException {
 		for (Reaction jSBMLReaction : model.getListOfReactions()) {
 			String reactionId = jSBMLReaction.getId();
 
@@ -261,8 +264,8 @@ public class JsbmlToBioNetwork {
 			}
 
 			// if reversible attribute is present and is set to false
-			if (jSBMLReaction.isSetReversible() && !jSBMLReaction.getReversible()) {
-				bionetReaction.setReversible(false);
+			if (jSBMLReaction.isSetReversible()) {
+				bionetReaction.setReversible(jSBMLReaction.getReversible());
 			} else {
 				bionetReaction.setReversible(true);
 			}
@@ -282,7 +285,10 @@ public class JsbmlToBioNetwork {
 
 						UnitDefinition jsbmlUnit = model.getUnitDefinition(kine.getParameter(n).getUnits());
 
-						if (jsbmlUnit != null) {
+						if(jsbmlUnit == null) {
+							throw new Met4jSbmlReaderException("Problem with the reaction "+bionetReaction.getId()+" : the flux unit "+kine.getParameter(n).getUnits()+" does not exist in the model");
+						}
+						else {
 
 							BioUnitDefinition UD = udList.getEntityFromId(jsbmlUnit.getId());
 
@@ -291,8 +297,7 @@ public class JsbmlToBioNetwork {
 							 * not null
 							 */
 							if (UD == null) {
-								UD = new BioUnitDefinition(jsbmlUnit.getId(), jsbmlUnit.getName());
-								udList.add(UD);
+								throw new Met4jSbmlReaderException("Problem with the reaction "+bionetReaction.getId()+" : the flux unit "+jsbmlUnit.getId()+" does not exist in the bioNetwork");
 							}
 
 							if (kine.getParameter(n).getId().equalsIgnoreCase("UPPER_BOUND")
@@ -318,6 +323,7 @@ public class JsbmlToBioNetwork {
 
 							}
 						}
+						
 					}
 				} else if (!this.containsFbcPackage()) { // SBML V3.0 and not
 															// fbc package
@@ -325,7 +331,12 @@ public class JsbmlToBioNetwork {
 					for (LocalParameter param : kine.getListOfLocalParameters()) {
 
 						UnitDefinition jsbmlUnit = model.getUnitDefinition(param.getUnits());
-						if (jsbmlUnit != null) {
+						if (jsbmlUnit == null) {
+							throw new Met4jSbmlReaderException(
+									"Problem with the reaction " + bionetReaction.getId() + " : the flux unit "
+											+ param.getUnits() + " does not exist in the model");
+						}
+						else {
 
 							BioUnitDefinition UD = udList.getEntityFromId(jsbmlUnit.getId());
 
@@ -334,8 +345,9 @@ public class JsbmlToBioNetwork {
 							 * not null
 							 */
 							if (UD == null) {
-								UD = new BioUnitDefinition(jsbmlUnit.getId(), jsbmlUnit.getName());
-								udList.add(UD);
+								throw new Met4jSbmlReaderException(
+										"Problem with the reaction " + bionetReaction.getId() + " : the flux unit "
+												+ param.getUnits() + " does not exist in the bioNetwork");
 							}
 
 							if (param.getId().equalsIgnoreCase("UPPER_BOUND")

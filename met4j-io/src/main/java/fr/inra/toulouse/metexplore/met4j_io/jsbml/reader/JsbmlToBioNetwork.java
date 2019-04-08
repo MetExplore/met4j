@@ -259,7 +259,8 @@ public class JsbmlToBioNetwork {
 				ReactionAttributes.setSboTerm(bionetReaction, jSBMLReaction.getSBOTermID());
 			}
 
-			if (jSBMLReaction.isSetFast()) {
+			if (jSBMLReaction.isSetFast()
+					&& ((model.getLevel() < 3) || (model.getLevel() == 3 && model.getVersion() == 1))) {
 				ReactionAttributes.setFast(bionetReaction, jSBMLReaction.getFast());
 			}
 
@@ -430,7 +431,10 @@ public class JsbmlToBioNetwork {
 				bionetSpecies.setCharge(specie.getCharge());
 			}
 
-			if (model.getVersion() < 3) {
+			MetaboliteAttributes.setSubstanceUnits(bionetSpecies, specie.getSubstanceUnits());
+			MetaboliteAttributes.setSboTerm(bionetSpecies, specie.getSBOTermID());
+
+			if (model.getLevel() == 2 && model.getVersion() >= 2 && model.getVersion() <= 4) {
 				if (specie.isSetSpeciesType()) {
 
 					SpeciesType stype = specie.getSpeciesTypeInstance();
@@ -452,16 +456,6 @@ public class JsbmlToBioNetwork {
 						e.printStackTrace();
 					}
 				}
-			} else {
-
-				MetaboliteAttributes.setSubstanceUnits(bionetSpecies, specie.getSubstanceUnits());
-				MetaboliteAttributes.setSboTerm(bionetSpecies, specie.getSBOTermID());
-
-				if (specie.isSetInitialAmount()) {
-					MetaboliteAttributes.setInitialAmount(bionetSpecies, specie.getInitialAmount());
-				} else if (specie.isSetInitialConcentration()) {
-					MetaboliteAttributes.setInitialConcentration(bionetSpecies, specie.getInitialConcentration());
-				}
 			}
 
 			this.getNetwork().add(bionetSpecies);
@@ -482,19 +476,10 @@ public class JsbmlToBioNetwork {
 		Species specie = this.getModel().getSpecies(specieRef.getSpecies());
 		String specieId = specie.getId();
 
-		String sto = String.valueOf(specieRef.getStoichiometry());
-
-		Double stoDbl = 1.0;
-
-		try {
-			stoDbl = Double.parseDouble(sto);
-		} catch (NumberFormatException e) {
-			System.err.println("Warning : invalid coefficient : " + sto + " for " + specieId);
-			stoDbl = 1.0;
-		}
+		Double stoDbl = specieRef.getStoichiometry();
 
 		if (Double.isNaN(stoDbl)) {
-			System.err.println("Warning : invalid coefficient : " + sto + " for " + specieId);
+			System.err.println("Warning : invalid coefficient : " + stoDbl + " for " + specieId);
 			stoDbl = 1.0;
 		}
 

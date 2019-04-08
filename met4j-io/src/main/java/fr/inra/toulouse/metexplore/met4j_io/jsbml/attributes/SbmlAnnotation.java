@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
  * @author Benjamin
  * @since 2.0
  */
-public class SbmlAnnotation  extends BioEntity{
+public class SbmlAnnotation extends BioEntity {
 
 	/**
 	 * The annotations are successive xml elements used to cross reference
@@ -60,29 +60,24 @@ public class SbmlAnnotation  extends BioEntity{
 	/**
 	 * Constructor
 	 * 
-	 * @param metaId
-	 *            the metaID
-	 * @param xmlasString
-	 *            the XML string
+	 * @param metaId      the metaID
+	 * @param xmlasString the XML string
 	 */
 	public SbmlAnnotation(String metaId, String xmlasString) {
 
 		super(metaId);
-		
+
 		Pattern p = Pattern.compile("<annotation>.*</annotation>", Pattern.DOTALL);
-		
+
 		Matcher m = p.matcher(xmlasString);
-		
-		if(! m.matches()) 
-		{
-			throw new IllegalArgumentException("The annotation must fit the pattern <annotation>.*</annotation");
+
+		if (!m.matches()) {
+			throw new IllegalArgumentException(
+					"The annotation must fit the pattern <annotation>.*</annotation> (" + xmlAsString + ")");
 		}
-		
+
 		this.xmlAsString = xmlasString;
-		
-		
-		
-		
+
 	}
 
 	/**

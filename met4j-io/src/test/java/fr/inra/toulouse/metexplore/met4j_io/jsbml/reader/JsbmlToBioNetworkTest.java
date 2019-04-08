@@ -25,9 +25,13 @@ import org.sbml.jsbml.Reaction;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.Species;
 import org.sbml.jsbml.SpeciesReference;
+import org.sbml.jsbml.SpeciesType;
 import org.sbml.jsbml.Unit.Kind;
 import org.sbml.jsbml.UnitDefinition;
 import org.sbml.jsbml.ASTNode.Type;
+import org.sbml.jsbml.CVTerm.Qualifier;
+import org.sbml.jsbml.Annotation;
+import org.sbml.jsbml.CVTerm;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
@@ -39,6 +43,8 @@ import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAtt
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reactant.ReactantAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageReaderException;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.AnnotationParser;
@@ -57,6 +63,7 @@ public class JsbmlToBioNetworkTest {
 	Compartment c1, c2, c3;
 	Species m1, m2, m3;
 	Reaction r1, r2, r3;
+	SpeciesType type1, type2, type3;
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -83,8 +90,6 @@ public class JsbmlToBioNetworkTest {
 
 		model.setId("modelId");
 		model.setName("modelName");
-
-		System.err.println("model :" + model.getLevel() + " - " + model.getVersion());
 
 		c1 = model.createCompartment("c1");
 		c2 = model.createCompartment("c2");
@@ -117,6 +122,32 @@ public class JsbmlToBioNetworkTest {
 		if (model.getLevel() < 3) {
 			m1.setCharge(3);
 			m2.setCharge(4);
+
+			type1 = model.createSpeciesType("type1");
+			type1.setSBOTerm(1234567);
+			
+			type2 = model.createSpeciesType("type2");
+			Annotation annotation = new Annotation();
+			CVTerm cvterm = new CVTerm();
+			cvterm.addResource("urn.miriam.obo.go#GO%3A1234567");
+			cvterm.setQualifierType(org.sbml.jsbml.CVTerm.Type.BIOLOGICAL_QUALIFIER);
+			cvterm.setBiologicalQualifierType(Qualifier.BQB_IS);
+			annotation.addCVTerm(cvterm);
+			type2.setAnnotation(annotation);
+
+			type3 = model.createSpeciesType("type3");
+			try {
+				type3.setNotes(
+						"<notes>\n" + "<body xmlns=\"http://www.w3.org/1999/xhtml\"><p>Attr:val</p></body></notes>");
+			} catch (XMLStreamException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			m1.setSpeciesType(type1);
+			m2.setSpeciesType(type2);
+			m3.setSpeciesType(type3);
+
 		}
 
 		r1 = model.createReaction("r1");
@@ -247,6 +278,7 @@ public class JsbmlToBioNetworkTest {
 	@Test
 	public void testCompartmentsLevel2() throws JSBMLPackageReaderException, Met4jSbmlReaderException {
 		doc.setLevel(2);
+		doc.setVersion(2);
 
 		initModel();
 
@@ -277,9 +309,10 @@ public class JsbmlToBioNetworkTest {
 	}
 
 	@Test
-	public void testParseListOfSpeciesLevel2() throws Met4jSbmlReaderException, JSBMLPackageReaderException {
+	public void testParseListOfSpeciesLevel2() throws Met4jSbmlReaderException, JSBMLPackageReaderException, XMLStreamException {
 
 		doc.setLevel(2);
+		doc.setVersion(2);
 
 		initModel();
 
@@ -291,7 +324,7 @@ public class JsbmlToBioNetworkTest {
 		parser.setPackages(pkgs);
 
 		parser.parseModel();
-		
+
 		BioMetabolite metabolite1 = parser.getNetwork().getMetabolitesView().getEntityFromId("m1");
 		BioMetabolite metabolite2 = parser.getNetwork().getMetabolitesView().getEntityFromId("m2");
 		BioMetabolite metabolite3 = parser.getNetwork().getMetabolitesView().getEntityFromId("m3");
@@ -299,11 +332,20 @@ public class JsbmlToBioNetworkTest {
 		assertNotNull(metabolite1);
 		assertNotNull(metabolite2);
 		assertNotNull(metabolite3);
-		
-		assertEquals(3,metabolite1.getCharge());
+
+		assertEquals(3, metabolite1.getCharge());
 		assertEquals(4, metabolite2.getCharge());
 		assertEquals(0, metabolite3.getCharge());
 		
+		String sboTerm = MetaboliteAttributes.getSboTerm(metabolite1);
+		assertEquals(type1.getSBOTermID(), sboTerm);
+		
+		SbmlAnnotation annot = MetaboliteAttributes.getAnnotation(metabolite2);
+		assertEquals(type2.getAnnotationString(), annot.getXMLasString());
+		
+		Notes notes = MetaboliteAttributes.getNotes(metabolite3);
+		assertEquals(type3.getNotes().toXMLString(), notes.getXHTMLasString());
+
 
 	}
 
@@ -339,8 +381,6 @@ public class JsbmlToBioNetworkTest {
 		assertFalse(MetaboliteAttributes.getConstant(metabolite2));
 		assertFalse(MetaboliteAttributes.getConstant(metabolite3));
 
-		System.err.println("initial amount : " + MetaboliteAttributes.getInitialAmount(metabolite1));
-
 		assertEquals(m1.getInitialAmount(), MetaboliteAttributes.getInitialAmount(metabolite1), 0.0);
 		assertEquals(m2.getInitialAmount(), MetaboliteAttributes.getInitialAmount(metabolite2), 0.0);
 		assertNull(MetaboliteAttributes.getInitialAmount(metabolite3));
@@ -350,12 +390,11 @@ public class JsbmlToBioNetworkTest {
 
 		m1.setInitialConcentration(2.0);
 		m2.setInitialConcentration(3.0);
-		
+
 		// Level 3 : the charge is not an attribute
-		assertEquals(0,metabolite1.getCharge());
+		assertEquals(0, metabolite1.getCharge());
 		assertEquals(0, metabolite2.getCharge());
 		assertEquals(0, metabolite3.getCharge());
-
 
 		// We reparse the model because a specie can't have initial amount AND initial
 		// concentration
@@ -368,7 +407,6 @@ public class JsbmlToBioNetworkTest {
 		assertEquals(m1.getInitialConcentration(), MetaboliteAttributes.getInitialConcentration(metabolite1), 0.0);
 		assertEquals(m2.getInitialConcentration(), MetaboliteAttributes.getInitialConcentration(metabolite2), 0.0);
 		assertNull(MetaboliteAttributes.getInitialConcentration(metabolite3));
-		
 
 	}
 
@@ -482,6 +520,7 @@ public class JsbmlToBioNetworkTest {
 	@Test
 	public void testFluxLevel2() throws JSBMLPackageReaderException, Met4jSbmlReaderException {
 		doc.setLevel(2);
+		doc.setVersion(2);
 
 		initModel();
 

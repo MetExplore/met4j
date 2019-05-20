@@ -1,7 +1,7 @@
 package fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc;
 
 /**
- * Simple Enumeration to fix the possible values for the types of {@link Objectives} present in the model
+ * Simple Enumeration to fix the possible values for the types of {@link BioObjective} present in the model
  * @author Benjamin
  * @since 3.0
  */

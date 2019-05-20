@@ -22,17 +22,17 @@ public class FluxNetwork {
 	/**
 	 * The list of possible flux objectives defined in this model
 	 * 
-	 * @see Objectives
+	 * @see BioObjective
 	 */
-	private HashMap<String, Objectives> listOfObjectives = new HashMap<String, Objectives>();
+	private HashMap<String, BioObjective> listOfObjectives = new HashMap<String, BioObjective>();
 	/**
-	 * This required attribute exists so that when multiple {@link Objectives}
+	 * This required attribute exists so that when multiple {@link BioObjective}
 	 * are included in a single model, the model will always be well described
 	 * i.e., there is a single, primary objective function which defines a
 	 * single optimum and its associated solution space. </br></br>From the SBML
 	 * FBC2 specification
 	 */
-	private Objectives activeObjective;
+	private BioObjective activeObjective;
 	/**
 	 * A strict model is fully described and mathematically consistent, for
 	 * example, it ensures that all fluxes have a valid upper or lower bound.
@@ -83,7 +83,7 @@ public class FluxNetwork {
 	 * @return the {@link #listOfObjectives}
 	 * 
 	 */
-	public HashMap<String, Objectives> getListOfObjectives() {
+	public HashMap<String, BioObjective> getListOfObjectives() {
 		return this.listOfObjectives;
 	}
 
@@ -93,17 +93,17 @@ public class FluxNetwork {
 	 * @param listOfObjectives
 	 *            the new {@link #listOfObjectives}
 	 */
-	public void setListOfObjectives(HashMap<String, Objectives> listOfObjectives) {
+	public void setListOfObjectives(HashMap<String, BioObjective> listOfObjectives) {
 		this.listOfObjectives = listOfObjectives;
 	}
 
 	/**
-	 * Add an {@link Objectives} to the list
+	 * Add an {@link BioObjective} to the list
 	 * 
 	 * @param objective
-	 *            the {@link Objectives} to add
+	 *            the {@link BioObjective} to add
 	 */
-	public void addObjective(Objectives objective) {
+	public void addObjective(BioObjective objective) {
 		this.listOfObjectives.put(objective.getId(), objective);
 	}
 
@@ -112,7 +112,7 @@ public class FluxNetwork {
 	 * 
 	 * @return the {@link #activeObjective}
 	 */
-	public Objectives getActiveObjective() {
+	public BioObjective getActiveObjective() {
 		return this.activeObjective;
 	}
 
@@ -122,9 +122,9 @@ public class FluxNetwork {
 	 * method also adds it to the list.
 	 * 
 	 * @param activeObjective
-	 *            the {@link Objectives} to set as Active
+	 *            the {@link BioObjective} to set as Active
 	 */
-	public void setActiveObjective(Objectives activeObjective) {
+	public void setActiveObjective(BioObjective activeObjective) {
 		if (!this.getListOfObjectives().containsKey(activeObjective.getId())) {
 			this.addObjective(activeObjective);
 		}
@@ -132,11 +132,11 @@ public class FluxNetwork {
 	}
 
 	/**
-	 * Set the {@link #activeObjective} to the {@link Objectives} which has the
+	 * Set the {@link #activeObjective} to the {@link BioObjective} which has the
 	 * given Id
 	 * 
 	 * @param objectiveID
-	 *            the ID of the {@link Objectives} to set as active
+	 *            the ID of the {@link BioObjective} to set as active
 	 */
 	public void setActiveObjective(String objectiveID) {
 		if (this.getListOfObjectives().containsKey(objectiveID)) {

@@ -28,7 +28,8 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxNetwork;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxReaction;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.GeneSet;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Objectives;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjective;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjectiveCollection;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.ReactionObjective;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
@@ -289,14 +290,18 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 	/**
 	 * Parse the list of Flux objective of this FBC model
 	 * 
-	 * @see Objectives
+	 * @see BioObjective
 	 */
 	private void parseListOfFluxObjectives() {
 
+		
+		BioObjectiveCollection objectives = new BioObjectiveCollection();
+
 		for (Objective fbcObj : this.getFbcModel().getListOfObjectives()) {
 
-			Objectives biodatObj = new Objectives(fbcObj.getId(), fbcObj.getName());
-			biodatObj.setType(fbcObj.getType().toString());
+			BioObjective objective = new BioObjective(fbcObj.getId(), fbcObj.getName());
+			
+			objective.setType(fbcObj.getType().toString());
 
 			for (FluxObjective fbcFluxObj : fbcObj.getListOfFluxObjectives()) {
 				
@@ -327,11 +332,17 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 
 				biodataFluxObj.setFlxReaction(new FluxReaction(r));
 
-				biodatObj.getListOfReactionObjectives().add(biodataFluxObj);
-				
+				objective.getListOfReactionObjectives().add(biodataFluxObj);
 			}
-			this.flxNet.getListOfObjectives().put(biodatObj.getId(), biodatObj);
+			
+			objectives.add(objective);
+			
+			this.flxNet.getListOfObjectives().put(objective.getId(), objective);
+			
 		}
+		
+		NetworkAttributes.setObjectives(this.flxNet.getUnderlyingBionet(), objectives);
+
 
 		this.flxNet.setActiveObjective(this.getFbcModel().getActiveObjective());
 

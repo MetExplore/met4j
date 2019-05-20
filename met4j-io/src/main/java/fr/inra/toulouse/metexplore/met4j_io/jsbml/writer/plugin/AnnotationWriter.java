@@ -12,9 +12,7 @@ import org.sbml.jsbml.CVTerm.Type;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.UniqueNamedSBase;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
@@ -74,8 +72,7 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 	/**
 	 * Constructor
 	 * 
-	 * @param pattern
-	 *            the user defined url pattern
+	 * @param pattern the user defined url pattern
 	 */
 	public AnnotationWriter(String pattern) {
 		this.setUsedPattern(pattern);
@@ -85,10 +82,8 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 	/**
 	 * Constructor
 	 * 
-	 * @param pattern
-	 *            the user defined url pattern
-	 * @param separator
-	 *            the user defined separator
+	 * @param pattern   the user defined url pattern
+	 * @param separator the user defined separator
 	 */
 	public AnnotationWriter(String pattern, char separator) {
 		this.setUsedPattern(pattern);
@@ -106,20 +101,22 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 	}
 
 	/**
-	 * Parse the different HashMaps present in the BioNetwork and create
-	 * annotations
+	 * Parse the different HashMaps present in the BioNetwork and create annotations
 	 */
 	@Override
 	public void parseBionetwork(Model model, BioNetwork bionetwork) {
-		System.err.println("Generating Model Annotations...");
 
 		this.setBionetwork(bionetwork);
 		this.setModel(model);
 
 		this.createModelAnnotation();
-		this.createAnnotationFromBioEntities(this.getBionetwork().getCompartmentsView());
-		this.createAnnotationFromBioEntities(this.getBionetwork().getMetabolitesView());
-		this.createAnnotationFromBioEntities(this.getBionetwork().getReactionsView());
+		try {
+			this.createAnnotationFromBioEntities(this.getBionetwork().getCompartmentsView());
+			this.createAnnotationFromBioEntities(this.getBionetwork().getMetabolitesView());
+			this.createAnnotationFromBioEntities(this.getBionetwork().getReactionsView());
+		} catch (XMLStreamException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -127,30 +124,40 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 	 */
 	private void createModelAnnotation() {
 
+		System.err.println("Generating Model Annotations...");
+
+		this.getModel().setMetaId(this.getBionetwork().getId());
+
+		HashMap<String, Set<BioRef>> refs = this.getBionetwork().getRefs();
+
+		Annotation annot = this.createAnnotationsFromRefs(refs);
+
+		this.getModel().setAnnotation(annot);
+
 		SbmlAnnotation modelAnnot = NetworkAttributes.getAnnotation(this.getBionetwork());
 
 		if (modelAnnot != null) {
 
 			try {
-				this.getModel().setMetaId(modelAnnot.getId());
 				this.getModel().setAnnotation(new Annotation(modelAnnot.getXMLasString()));
 			} catch (XMLStreamException e) {
 
-				AnnotationWriter.errorsAndWarnings.add("Unable to create Model annotation form the saved annotations");
+				AnnotationWriter.errorsAndWarnings.add("Network annotations mal formatted");
 			}
 		}
 
 	}
 
 	/**
-	 * Loop through the list of entities and creates annotations from their set
-	 * of references and, depending on the type of the entity, from several
-	 * other attributes
+	 * Loop through the list of entities and creates annotations from their set of
+	 * references and, depending on the type of the entity, from several other
+	 * attributes
 	 * 
-	 * @param entityList
-	 *            the list of {@link BioEntity}
+	 * @param entityList the list of {@link BioEntity}
+	 * @throws XMLStreamException
 	 */
-	private void createAnnotationFromBioEntities(BioCollection<? extends BioEntity> entityList) {
+	private void createAnnotationFromBioEntities(BioCollection<? extends BioEntity> entityList)
+			throws XMLStreamException {
 		for (BioEntity ent : entityList) {
 
 			UniqueNamedSBase sbase = this.getModel().findUniqueNamedSBase(StringUtils.convertToSID(ent.getId()));
@@ -159,17 +166,18 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 
 				Annotation annot = createAnnotationsFromRefs(ent.getRefs());
 
+				String metaId = model.getSBMLDocument().nextMetaId();
+				sbase.setMetaId(metaId);
+				annot.setAbout(metaId);
+
 				if (ent instanceof BioMetabolite) {
+					this.addInchiAnnotation((BioMetabolite) ent, annot, metaId);
 					this.getAdditionnalAnnotation((BioMetabolite) ent, annot);
-				}
-				else if (ent instanceof BioReaction) {
+				} else if (ent instanceof BioReaction) {
 					this.getAdditionnalAnnotation((BioReaction) ent, annot);
 				}
 
 				if (!annot.isEmpty()) {
-					String metaid = model.getSBMLDocument().nextMetaId();
-					sbase.setMetaId(metaid);
-					annot.setAbout(metaid);
 
 					sbase.setAnnotation(annot);
 				}
@@ -184,9 +192,8 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 	 * Creates the appropriate biological annotations from an entity's external
 	 * references.
 	 * 
-	 * @param setOfRef
-	 *            a set of extenal references coming from an object of the
-	 *            {@link BioNetwork}
+	 * @param setOfRef a set of extenal references coming from an object of the
+	 *                 {@link BioNetwork}
 	 * @return The SBML Annotation object
 	 */
 	private Annotation createAnnotationsFromRefs(HashMap<String, Set<BioRef>> setOfRef) {
@@ -215,13 +222,32 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 	}
 
 	/**
+	 * Cf
+	 * http://sbml.org/Community/Wiki/About_annotations_in_Level_2#How_do_I_put_InChI_strings_in_annotations.3F
+	 * 
+	 * @param ent
+	 * @param annot
+	 * @param metaId
+	 * @throws XMLStreamException
+	 */
+	private void addInchiAnnotation(BioMetabolite ent, Annotation annot, String metaId) throws XMLStreamException {
+
+		if (ent.getInchi() != null && !ent.getInchi().isEmpty() && !ent.getInchi().equals("NA")) {
+
+			annot.appendNonRDFAnnotation("<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"  "
+					+ "xmlns:bqbiol=\"http://biomodels.net/biology-qualifiers/\"  >" + "<rdf:Description rdf:about=\"#"
+					+ metaId + "\"> <in:inchi xmlns:in=\"http://biomodels.net/inchi\">" + "InChI=" + ent.getInchi()
+					+ "</in:inchi></rdf:Description>" + "</rdf:RDF>");
+
+		}
+	}
+
+	/**
 	 * Add additional annotation CV Terms from attributes of the input
 	 * {@link BioPhysicalEntity}
 	 * 
-	 * @param ent
-	 *            the entity
-	 * @param annot
-	 *            The SBMl annotation object
+	 * @param ent   the entity
+	 * @param annot The SBMl annotation object
 	 */
 	private void getAdditionnalAnnotation(BioMetabolite ent, Annotation annot) {
 
@@ -234,14 +260,6 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 			newCV = true;
 		} else {
 			cvIsTerm = annot.filterCVTerms(Qualifier.BQB_IS).get(0);
-		}
-
-		if (ent.getInchi() != null && !ent.getInchi().isEmpty() && !ent.getInchi().equals("NA")) {
-			// TODO : it's not the good way to write inchi :
-			// http://sbml.org/Community/Wiki/About_annotations_in_Level_2
-			if (annot.filterCVTerms(Qualifier.BQB_IS, "inchi").isEmpty()) {
-				cvIsTerm.addResource(usedPattern + "inchi" + separator + ent.getInchi());
-			}
 		}
 
 		String pubChemCid = MetaboliteAttributes.getPubchem(ent);
@@ -268,7 +286,7 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 		} else {
 			cvIsDescByTerm = annot.filterCVTerms(Qualifier.BQB_IS_DESCRIBED_BY).get(0);
 		}
-		if (MetaboliteAttributes.getPmids(ent) == null) {
+		if (MetaboliteAttributes.getPmids(ent) != null) {
 
 			Set<Integer> pmids = MetaboliteAttributes.getPmids(ent);
 
@@ -285,10 +303,8 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 	 * Add additional annotation CV Terms from attributes of the input
 	 * {@link BioChemicalReaction}
 	 * 
-	 * @param rxn
-	 *            the reaction
-	 * @param annot
-	 *            The SBMl annotation object
+	 * @param rxn   the reaction
+	 * @param annot The SBMl annotation object
 	 */
 	private void getAdditionnalAnnotation(BioReaction rxn, Annotation annot) {
 
@@ -347,8 +363,7 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 	}
 
 	/**
-	 * @param model
-	 *            the model to set
+	 * @param model the model to set
 	 */
 	public void setModel(Model model) {
 		this.model = model;
@@ -362,8 +377,7 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 	}
 
 	/**
-	 * @param bionetwork
-	 *            the bionetwork to set
+	 * @param bionetwork the bionetwork to set
 	 */
 	public void setBionetwork(BioNetwork bionetwork) {
 		this.bionetwork = bionetwork;
@@ -377,8 +391,7 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 	}
 
 	/**
-	 * @param usedPattern
-	 *            the usedPattern to set
+	 * @param usedPattern the usedPattern to set
 	 */
 	public void setUsedPattern(String usedPattern) {
 		this.usedPattern = usedPattern;
@@ -392,8 +405,7 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 	}
 
 	/**
-	 * @param separator
-	 *            the separator to set
+	 * @param separator the separator to set
 	 */
 	public void setSeparator(char separator) {
 		this.separator = separator;

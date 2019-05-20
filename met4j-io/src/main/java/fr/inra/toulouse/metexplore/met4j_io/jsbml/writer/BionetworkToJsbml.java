@@ -32,12 +32,12 @@ import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttribute
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageWriterException;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxCollection;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.UnitSbml;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.PackageWriter;
 import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
-
 
 import org.sbml.jsbml.Unit.Kind;
 
@@ -80,12 +80,17 @@ public class BionetworkToJsbml {
 		this.doc = doc;
 	}
 
+	public BionetworkToJsbml() {
+		this.level = 3;
+		this.vs = 2;
+		this.doc = new SBMLDocument();
+	}
+
 	/**
 	 * Launches the parsing of the BioNetwork and create all the SBML components
 	 * from it
 	 * 
-	 * @param net
-	 *            the input {@link BioNetwork}
+	 * @param net the input {@link BioNetwork}
 	 * @return The completed SBML Model
 	 */
 	public Model parseBioNetwork(BioNetwork net) {
@@ -102,11 +107,10 @@ public class BionetworkToJsbml {
 	}
 
 	/**
-	 * Abstract method to create the top {@link Model} object that will contain
-	 * all the other SBMl components
+	 * Abstract method to create the top {@link Model} object that will contain all
+	 * the other SBMl components
 	 * 
-	 * @param net
-	 *            the input {@link BioNetwork}
+	 * @param net the input {@link BioNetwork}
 	 * @return a simple model created from the attribute of the Bionetwork
 	 */
 	protected Model createModel(BioNetwork net) {
@@ -125,26 +129,28 @@ public class BionetworkToJsbml {
 	 * Default way of creating SBML Unit definitions. This method should be
 	 * overridden to change its behavior.
 	 * 
-	 * @param net
-	 *            The bionetwork
+	 * @param net The bionetwork
 	 */
 	protected void createUnits(BioNetwork net) {
 
 		BioUnitDefinitionCollection unitDefinitions = NetworkAttributes.getUnitDefinitions(net);
 
-		for (BioUnitDefinition bioUD : unitDefinitions) {
-			UnitDefinition ud = model.createUnitDefinition();
+		if (unitDefinitions != null) {
 
-			ud.setId(StringUtils.convertToSID(bioUD.getId()));
-			ud.setName(bioUD.getName());
+			for (BioUnitDefinition bioUD : unitDefinitions) {
+				UnitDefinition ud = model.createUnitDefinition();
 
-			for (UnitSbml bioUnits : bioUD.getUnits().values()) {
-				Unit libSBMLUnit = ud.createUnit();
-				libSBMLUnit.setExponent(Double.parseDouble(bioUnits.getExponent()));
-				libSBMLUnit.setMultiplier(Double.parseDouble(bioUnits.getMultiplier()));
-				libSBMLUnit.setScale(Integer.parseInt(bioUnits.getScale()));
+				ud.setId(StringUtils.convertToSID(bioUD.getId()));
+				ud.setName(bioUD.getName());
 
-				libSBMLUnit.setKind(Kind.valueOf(bioUnits.getKind().toUpperCase()));
+				for (UnitSbml bioUnits : bioUD.getUnits().values()) {
+					Unit libSBMLUnit = ud.createUnit();
+					libSBMLUnit.setExponent(Double.parseDouble(bioUnits.getExponent()));
+					libSBMLUnit.setMultiplier(Double.parseDouble(bioUnits.getMultiplier()));
+					libSBMLUnit.setScale(Integer.parseInt(bioUnits.getScale()));
+
+					libSBMLUnit.setKind(Kind.valueOf(bioUnits.getKind().toUpperCase()));
+				}
 			}
 		}
 	}
@@ -153,46 +159,41 @@ public class BionetworkToJsbml {
 	 * Abstract method to create SBML Comparments in {@link #model} from the
 	 * {@link BioNetwork}
 	 * 
-	 * @param net
-	 *            The Bionetwork
+	 * @param net The Bionetwork
 	 */
 	protected void createCompartments(BioNetwork net) {
 		for (BioCompartment compart : net.getCompartmentsView()) {
-			Compartment LibSBMLCompart = model.createCompartment();
+			Compartment sbmlCompart = model.createCompartment();
 
-			LibSBMLCompart.setName(compart.getName());
-			LibSBMLCompart.setId(StringUtils.convertToSID(compart.getId()));
+			sbmlCompart.setName(compart.getName());
+			sbmlCompart.setId(StringUtils.convertToSID(compart.getId()));
 
-			LibSBMLCompart.setConstant(CompartmentAttributes.getConstant(compart));
-
-			if (!isVoid(CompartmentAttributes.getSboTerm(compart))) {
-				LibSBMLCompart.setSBOTerm(CompartmentAttributes.getSboTerm(compart));
+			Boolean constant = CompartmentAttributes.getConstant(compart);
+			if (constant != null) {
+				sbmlCompart.setConstant(CompartmentAttributes.getConstant(compart));
 			}
 
-			LibSBMLCompart.setSpatialDimensions(CompartmentAttributes.getSpatialDimensions(compart));
+			if (!isVoid(CompartmentAttributes.getSboTerm(compart))) {
+				sbmlCompart.setSBOTerm(CompartmentAttributes.getSboTerm(compart));
+			}
 
-			// TODO : On cree dans la mauvaise direction, non ?
-			if ((Double) LibSBMLCompart.getSize() != null && LibSBMLCompart.getSpatialDimensions() == 0) {
-				CompartmentAttributes.setSpatialDimensions(compart, 3);
-				CompartmentAttributes.setSize(compart, LibSBMLCompart.getSize());
-			} else {
+			Integer sd = CompartmentAttributes.getSpatialDimensions(compart);
+			if (sd != null) {
+				sbmlCompart.setSpatialDimensions(CompartmentAttributes.getSpatialDimensions(compart));
+			}
 
-				CompartmentAttributes.setSize(compart, LibSBMLCompart.getSize());
+			Double size = CompartmentAttributes.getSize(compart);
+			if (size != null) {
+				CompartmentAttributes.setSize(compart, sbmlCompart.getSize());
 			}
 
 			if (CompartmentAttributes.getOutsideCompartment(compart) != null && model.getLevel() < 3) {
-				LibSBMLCompart.setOutside(
+				sbmlCompart.setOutside(
 						StringUtils.convertToSID(CompartmentAttributes.getOutsideCompartment(compart).getId()));
 			}
-			if (CompartmentAttributes.getType(compart) != null && model.getLevel() != 3) {
-
-				if (model.getCompartmentType(CompartmentAttributes.getType(compart).getId()) == null) {
-					CompartmentType cmpType = model.createCompartmentType();
-					cmpType.setId(CompartmentAttributes.getType(compart).getId());
-					cmpType.setName(CompartmentAttributes.getType(compart).getName());
-				}
-				LibSBMLCompart.setCompartmentType(CompartmentAttributes.getType(compart).getId());
-
+			if (CompartmentAttributes.getType(compart) != null
+					&& (model.getLevel() == 2 && model.getVersion() >= 2 && model.getVersion() <= 4)) {
+				sbmlCompart.setCompartmentType(CompartmentAttributes.getType(compart).getId());
 			}
 		}
 	}
@@ -201,8 +202,7 @@ public class BionetworkToJsbml {
 	 * Common Method to create SBML Species in {@link #model} from the
 	 * {@link BioNetwork}
 	 * 
-	 * @param net
-	 *            The Bionetwork
+	 * @param net The Bionetwork
 	 */
 	protected void createSpecies(BioNetwork net) {
 
@@ -219,7 +219,10 @@ public class BionetworkToJsbml {
 				metab.setName(bioMetab.getName());
 				metab.setBoundaryCondition(MetaboliteAttributes.getBoundaryCondition(bioMetab));
 
-				metab.setConstant(MetaboliteAttributes.getConstant(bioMetab));
+				Boolean constant = MetaboliteAttributes.getConstant(bioMetab);
+				if (constant != null) {
+					metab.setConstant(MetaboliteAttributes.getConstant(bioMetab));
+				}
 
 				if (!isVoid(MetaboliteAttributes.getSboTerm(bioMetab))) {
 					metab.setSBOTerm(MetaboliteAttributes.getSboTerm(bioMetab));
@@ -228,7 +231,10 @@ public class BionetworkToJsbml {
 				}
 
 				// TODO Ne semble pas exister du côté reader...
-				metab.setHasOnlySubstanceUnits(MetaboliteAttributes.getHasOnlySubstanceUnits(bioMetab));
+				Boolean hasOnlySubstanceUnits = MetaboliteAttributes.getHasOnlySubstanceUnits(bioMetab);
+				if (hasOnlySubstanceUnits != null) {
+					metab.setHasOnlySubstanceUnits(MetaboliteAttributes.getHasOnlySubstanceUnits(bioMetab));
+				}
 
 				if (MetaboliteAttributes.getInitialAmount(bioMetab) != null) {
 					metab.setInitialAmount(MetaboliteAttributes.getInitialAmount(bioMetab));
@@ -244,8 +250,7 @@ public class BionetworkToJsbml {
 	 * Abstract method to create SBML Reactions in {@link #model} from the
 	 * {@link BioNetwork}
 	 * 
-	 * @param net
-	 *            The Bionetwork
+	 * @param net The Bionetwork
 	 */
 	protected void createReactions(BioNetwork net) {
 		for (BioReaction bionetReaction : net.getReactionsView()) {
@@ -253,7 +258,15 @@ public class BionetworkToJsbml {
 
 			reaction.setId(StringUtils.convertToSID(bionetReaction.getId()));
 			reaction.setName(bionetReaction.getName());
-			reaction.setFast(ReactionAttributes.getFast(bionetReaction));
+
+			if (model.getLevel() < 3 || (model.getLevel() == 3 && model.getVersion() == 1)) {
+				Boolean fast = ReactionAttributes.getFast(bionetReaction);
+
+				if (fast != null) {
+					reaction.setFast(ReactionAttributes.getFast(bionetReaction));
+				}
+
+			}
 
 			if (!isVoid(ReactionAttributes.getSboTerm(bionetReaction))) {
 				reaction.setSBOTerm(ReactionAttributes.getSboTerm(bionetReaction));
@@ -318,34 +331,26 @@ public class BionetworkToJsbml {
 							.convertToSID(ReactionAttributes.getUpperBound(bionetReaction).unitDefinition.getId()));
 				}
 			}
-			for (Flux flux : ReactionAttributes.getAdditionalFluxParams(bionetReaction)) {
 
-				if (level < 3) {
-					Parameter param = new Parameter();
-					param.setId(flux.getId());
-					param.setValue(flux.value);
-					param.setUnits(StringUtils.convertToSID(flux.unitDefinition.getId()));
+			FluxCollection additionalFluxParams = ReactionAttributes.getAdditionalFluxParams(bionetReaction);
+			if (additionalFluxParams != null) {
 
-					law.addParameter(param);
-				} else {
-					LocalParameter param = law.createLocalParameter();
-					param.setId(flux.getId());
-					param.setValue(flux.value);
-					param.setUnits(StringUtils.convertToSID(flux.unitDefinition.getId()));
+				for (Flux flux : additionalFluxParams) {
 
-				}
-			}
+					if (level < 3) {
+						Parameter param = new Parameter();
+						param.setId(flux.getId());
+						param.setValue(flux.value);
+						param.setUnits(StringUtils.convertToSID(flux.unitDefinition.getId()));
 
-			if (law.getLocalParameter("FLUX_VALUE") == null) {
-				if (level < 3) {
-					Parameter flxVal = new Parameter("FLUX_VALUE");
-					flxVal.setValue(0);
-					flxVal.setUnits(StringUtils.convertToSID(ReactionAttributes.getLowerBound(bionetReaction).unitDefinition.getId()));
-					law.addParameter(flxVal);
-				} else {
-					LocalParameter flxVal = law.createLocalParameter("FLUX_VALUE");
-					flxVal.setValue(0);
-					flxVal.setUnits(StringUtils.convertToSID(ReactionAttributes.getLowerBound(bionetReaction).unitDefinition.getId()));
+						law.addParameter(param);
+					} else {
+						LocalParameter param = law.createLocalParameter();
+						param.setId(flux.getId());
+						param.setValue(flux.value);
+						param.setUnits(StringUtils.convertToSID(flux.unitDefinition.getId()));
+
+					}
 				}
 			}
 		}
@@ -354,8 +359,7 @@ public class BionetworkToJsbml {
 	/**
 	 * Launches the set writer Package on the Input {@link BioNetwork}
 	 * 
-	 * @param net
-	 *            The Bionetwork
+	 * @param net The Bionetwork
 	 */
 	public void parsePackages(BioNetwork net) {
 		for (PackageWriter parser : this.getSetOfPackage()) {
@@ -371,8 +375,7 @@ public class BionetworkToJsbml {
 	}
 
 	/**
-	 * @param model
-	 *            the model to set
+	 * @param model the model to set
 	 */
 	public void setModel(Model model) {
 		this.model = model;
@@ -388,24 +391,20 @@ public class BionetworkToJsbml {
 	/**
 	 * add a package to the list
 	 * 
-	 * @param pkg
-	 *            the package to add
-	 * @throws JSBMLPackageWriterException
-	 *             when the added package is incompatible with the current SBML
-	 *             level
+	 * @param pkg the package to add
+	 * @throws JSBMLPackageWriterException when the added package is incompatible
+	 *                                     with the current SBML level
 	 */
 	public void addPackage(PackageWriter pkg) throws JSBMLPackageWriterException {
-			this.getSetOfPackage().add(pkg);
+		this.getSetOfPackage().add(pkg);
 	}
 
 	/**
 	 * Set the {@link #setOfPackage} to a new list
 	 * 
-	 * @param packages
-	 *            the ordered list of packages to set
-	 * @throws JSBMLPackageWriterException
-	 *             if one of the package in the list is not compatible with the
-	 *             current SBML level
+	 * @param packages the ordered list of packages to set
+	 * @throws JSBMLPackageWriterException if one of the package in the list is not
+	 *                                     compatible with the current SBML level
 	 */
 	public void setPackages(ArrayList<PackageWriter> packages) throws JSBMLPackageWriterException {
 		for (PackageWriter pkg : packages) {

@@ -134,27 +134,12 @@ public class AnnotationParserTest {
 		pubmedAnnotation.addCVTerm(cvtermPubmed);
 		pubmedAnnotation.addCVTerm(cvtermPubmed2);
 
-		inchiAnnotation = new Annotation();
-		CVTerm cvInchi = new CVTerm();
-		cvInchi.addResource("http://biomodels.net/inchi");
-		model.addDeclaredNamespace("inchi", "http://biomodels.net/inchi");
-
 		CVTerm cvEc = new CVTerm();
 		cvEc.addResource("http://identifiers.org/ec-code/1.1.1.1");
 		cvEc.setQualifierType(Type.BIOLOGICAL_QUALIFIER);
 		cvEc.setBiologicalQualifierType(Qualifier.BQB_IS);
 		genericAnnotation.addCVTerm(cvEc);
 
-		// inchiAnnotation.append("<rdf:Description rdf:about=\"#s1\"> <in:inchi
-		// xmlns:in=\"http://biomodels.net/inchi\">"
-		// +
-		// "InChI=1/C7H8N2O/c1-9-4-2-3-6(5-9)7(8)10/h2-5H,1H3,(H-,8,10)/p+1</in:inchi></rdf:Description>
-		// ");
-		// inchiAnnotation.appendNonRDFAnnotation("<rdf:Description
-		// rdf:about=\"#s1\"><in:inchi
-		// xmlns:in=\"http://biomodels.net/inchi\"></rdf:Description> "
-		// + "InChI=truc</in:inchi>");
-		//
 		model.getReaction("r1").setAnnotation(genericAnnotation);
 
 		model.getReaction("r2").setAnnotation(pubmedAnnotation);

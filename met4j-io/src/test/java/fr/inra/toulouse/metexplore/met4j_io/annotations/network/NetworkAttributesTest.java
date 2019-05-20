@@ -9,8 +9,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjective;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjectiveCollection;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
@@ -163,6 +166,39 @@ public class NetworkAttributesTest {
 		network.setAttribute(GenericAttributes.SBML_ANNOTATION, val);
 		
 		assertEquals(val, NetworkAttributes.getAnnotation(network));
+		
+	}
+	
+	
+	@Test
+	public void testGetObjectives() {
+		
+		BioObjective obj1 = new BioObjective("obj1", "obj1");
+		BioObjective obj2 = new BioObjective("obj2", "obj2");
+		
+		BioObjectiveCollection objs = new BioObjectiveCollection();
+		objs.add(obj1);
+		objs.add(obj2);
+		
+		network.setAttribute(NetworkAttributes.OBJECTIVES, objs);
+		
+		assertEquals(objs, NetworkAttributes.getObjectives(network));
+		
+	}
+	
+	@Test
+	public void testSetObjectives() {
+		
+		BioObjective obj1 = new BioObjective("obj1", "obj1");
+		BioObjective obj2 = new BioObjective("obj2", "obj2");
+		
+		BioObjectiveCollection objs = new BioObjectiveCollection();
+		objs.add(obj1);
+		objs.add(obj2);
+		
+		NetworkAttributes.setObjectives(network, objs);
+		
+		assertEquals(objs, network.getAttribute(NetworkAttributes.OBJECTIVES));
 		
 	}
 

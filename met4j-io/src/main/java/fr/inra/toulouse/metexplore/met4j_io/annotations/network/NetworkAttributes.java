@@ -5,6 +5,8 @@ import java.util.Set;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjective;
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjectiveCollection;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
@@ -12,6 +14,7 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollect
 public class NetworkAttributes {
 
 	public static final String UNIT_DEFINITIONS = "unit_definitions";
+	public static final String OBJECTIVES = "objectives";
 
 	/**
 	 * Get BioUnitDefinitions of a network
@@ -120,7 +123,7 @@ public class NetworkAttributes {
 		GenericAttributes.setPmids(n, pmids);
 
 	}
-	
+
 	/**
 	 * Set annotation
 	 * 
@@ -141,5 +144,22 @@ public class NetworkAttributes {
 		return GenericAttributes.getAnnotation(network);
 	}
 
+	/**
+	 * Set list of objectives
+	 * @param network
+	 * @param objectives
+	 */
+	public static void setObjectives(BioNetwork network,BioObjectiveCollection objectives) {
+		network.setAttribute(OBJECTIVES, objectives);
+	}
+
+	/**
+	 * Get list of objectives
+	 * @param network
+	 * @return
+	 */
+	public static BioObjectiveCollection getObjectives(BioNetwork network) {
+		return (BioObjectiveCollection) network.getAttribute(OBJECTIVES);
+	}
 
 }

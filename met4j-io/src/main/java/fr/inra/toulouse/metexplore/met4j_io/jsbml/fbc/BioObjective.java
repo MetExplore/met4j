@@ -6,7 +6,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * This represents a complete flux objectives present in the model. A Flux
- * obective is a linear combination of reactions of the model that need their fluxes to be
+ * objective is a linear combination of reactions of the model that need their fluxes to be
  * maximized or minimised to attain a particular biological objective.</br> e.g.
  * <ul>
  * <li>Maximize the biomass
@@ -17,7 +17,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
  * @author Benjamin
  * @since 3.0
  */
-public class Objectives extends BioEntity {
+public class BioObjective extends BioEntity {
 	/**
 	 * The type of the objective. can be {@link FbcType#maximize} or
 	 * {@link FbcType#minimize}
@@ -37,7 +37,7 @@ public class Objectives extends BioEntity {
 	 * @param name
 	 *            the name of the objective
 	 */
-	public Objectives(String id, String name) {
+	public BioObjective(String id, String name) {
 		super(id, name);
 	}
 

@@ -286,7 +286,7 @@ public class FBCParserTest {
 		FluxObjective sObj3 = obj2.createFluxObjective();
 		sObj3.setReaction("r3");
 		sObj3.setCoefficient(1.5);
-
+		
 		SBMLWriter s = new SBMLWriter();
 		System.err.println(s.writeSBMLToString(doc));
 
@@ -327,6 +327,10 @@ public class FBCParserTest {
 		assertEquals(testReactions, parser.getFlxNet().getListOfObjectives().get("obj1").getListOfReactionObjectives().stream()
 		.map(x -> x.getFlxReaction().getUnderlyingReaction()).collect(Collectors.toSet()));
 		
+		
+		// test active
+		assertTrue(parser.getFlxNet().getListOfObjectives().get("obj1").active);
+		assertFalse(parser.getFlxNet().getListOfObjectives().get("obj2").active);
 
 	}
 

@@ -302,6 +302,8 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 			BioObjective objective = new BioObjective(fbcObj.getId(), fbcObj.getName());
 			
 			objective.setType(fbcObj.getType().toString());
+			
+			objective.active = this.getFbcModel().getActiveObjective().equals(fbcObj.getId()) ? true : false;
 
 			for (FluxObjective fbcFluxObj : fbcObj.getListOfFluxObjectives()) {
 				

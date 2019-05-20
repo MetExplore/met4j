@@ -3,6 +3,7 @@ package fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc;
 import java.util.HashSet;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 /**
  * This represents a complete flux objectives present in the model. A Flux
@@ -27,7 +28,10 @@ public class BioObjective extends BioEntity {
 	/**
 	 * The list of {@link ReactionObjective} that are part of this objective
 	 */
-	private HashSet<ReactionObjective> listOfReactionObjectives = new HashSet<ReactionObjective>();
+	private BioCollection<ReactionObjective> listOfReactionObjectives = new BioCollection<ReactionObjective>();
+	
+	public Boolean active = false;
+	
 
 	/**
 	 * Constructor with id and name parameter
@@ -65,7 +69,7 @@ public class BioObjective extends BioEntity {
 	 * 
 	 * @return the complete list of {link ReactionObjective}
 	 */
-	public HashSet<ReactionObjective> getListOfReactionObjectives() {
+	public BioCollection<ReactionObjective> getListOfReactionObjectives() {
 		return this.listOfReactionObjectives;
 	}
 
@@ -76,7 +80,7 @@ public class BioObjective extends BioEntity {
 	 *            the new {@link #listOfReactionObjectives}
 	 */
 	public void setListOfReactionObjectives(
-			HashSet<ReactionObjective> listOfReactionObjectives) {
+			BioCollection<ReactionObjective> listOfReactionObjectives) {
 		this.listOfReactionObjectives = listOfReactionObjectives;
 	}
 

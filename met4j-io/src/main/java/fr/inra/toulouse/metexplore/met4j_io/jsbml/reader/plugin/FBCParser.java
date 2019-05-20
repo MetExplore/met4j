@@ -339,6 +339,7 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 			
 			objectives.add(objective);
 			
+			// TODO : est ce qu'on s'en sert encore ?
 			this.flxNet.getListOfObjectives().put(objective.getId(), objective);
 			
 		}

@@ -18,8 +18,9 @@ public class GenericAttributes {
 	public static final String COMMENT = "comment";
 	public static final String SBO_TERM = "sbo_term";
 	public static final String CONSTANT = "constant";
-
 	public static final String SBML_ANNOTATION = "annotation";
+	public static final String GENERIC = "generic";
+	public static final String TYPE = "type";
 
 	/**
 	 * get Constant condition of a compartment
@@ -36,8 +37,7 @@ public class GenericAttributes {
 
 		if (e.getAttribute(CONSTANT) != null) {
 			return (Boolean) e.getAttribute(CONSTANT);
-		}
-		else {
+		} else {
 			return null;
 		}
 
@@ -96,24 +96,22 @@ public class GenericAttributes {
 
 	}
 
-	
 	/**
 	 * add pmid
 	 * 
 	 * @param e
 	 * @param pmids
 	 */
-	public static void addPmid(BioEntity e,Integer pmid) {
+	public static void addPmid(BioEntity e, Integer pmid) {
 
-		if(getPmids(e) == null) {
-			setPmids(e,	 new HashSet<Integer>());
+		if (getPmids(e) == null) {
+			setPmids(e, new HashSet<Integer>());
 		}
-		
+
 		getPmids(e).add(pmid);
-		
+
 	}
 
-	
 	/**
 	 * get pmids
 	 * 
@@ -156,7 +154,7 @@ public class GenericAttributes {
 	 * @param sboTerm
 	 */
 	public static void setSboTerm(BioEntity e, String sboTerm) {
-		if(! sboTerm.matches("SBO:\\d{7}")) {
+		if (!sboTerm.matches("SBO:\\d{7}")) {
 			throw new IllegalArgumentException("SBO term badly formatted (must be SBO:1234567");
 		}
 		e.setAttribute(SBO_TERM, sboTerm);
@@ -193,4 +191,51 @@ public class GenericAttributes {
 
 	}
 
+	/**
+	 * get the generic attribute of an entity
+	 * 
+	 * @param m
+	 * @return
+	 */
+	public static Boolean getGeneric(BioEntity e) {
+
+		Boolean flag = false;
+
+		if (e.getAttribute(GENERIC) != null) {
+			flag = (Boolean) e.getAttribute(GENERIC);
+		}
+
+		return flag;
+	}
+
+	/**
+	 * Set generic attribute
+	 * 
+	 * @param m
+	 */
+	public static void setGeneric(BioEntity e, Boolean flag) {
+		e.setAttribute(GENERIC, flag);
+	}
+	
+	/**
+	 * 
+	 * get type
+	 * 
+	 * @param e
+	 * @return
+	 */
+	public static String getType(BioEntity e) {
+		return (String) e.getAttribute(TYPE);
+	}
+
+	/**
+	 * 
+	 * set comment
+	 * 
+	 * @param e
+	 * @return
+	 */
+	public static void setType(BioEntity e, String type) {
+		e.setAttribute(TYPE, type);
+	}
 }

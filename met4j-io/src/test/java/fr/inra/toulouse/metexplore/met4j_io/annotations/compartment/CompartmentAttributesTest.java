@@ -169,7 +169,7 @@ public class CompartmentAttributesTest {
 	@Test
 	public void testSetSboTerm() {
 
-		String sbo = "sbo";
+		String sbo = "SBO:1234567";
 		CompartmentAttributes.setSboTerm(compartment, sbo);
 
 		assertEquals((String) compartment.getAttribute(GenericAttributes.SBO_TERM), sbo);

@@ -156,8 +156,10 @@ public class GenericAttributes {
 	 * @param sboTerm
 	 */
 	public static void setSboTerm(BioEntity e, String sboTerm) {
+		if(! sboTerm.matches("SBO:\\d{7}")) {
+			throw new IllegalArgumentException("SBO term badly formatted (must be SBO:1234567");
+		}
 		e.setAttribute(SBO_TERM, sboTerm);
-
 	}
 
 	/**

@@ -262,7 +262,7 @@ public class ReactionAttributesTest {
 	@Test
 	public void testSetSboTerm() {
 
-		String sbo = "sbo";
+		String sbo = "SBO:1234567";
 		ReactionAttributes.setSboTerm(r, sbo);
 
 		assertEquals((String) r.getAttribute(GenericAttributes.SBO_TERM), sbo);

@@ -6,7 +6,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
@@ -15,6 +17,8 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 
 public class MetaboliteAttributesTest {
 	
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
 	
 	BioMetabolite metabolite;
 	
@@ -134,10 +138,29 @@ public class MetaboliteAttributesTest {
 	@Test
 	public void testSetSboTerm() {
 
-		String sbo = "sbo";
+		String sbo = "SBO:1234567";
 		MetaboliteAttributes.setSboTerm(metabolite, sbo);
 
 		assertEquals((String) metabolite.getAttribute(GenericAttributes.SBO_TERM), sbo);
+	}
+	
+	
+	@Test
+	public void testSetSboTermBadlyFormatted() {
+		exception.expect(IllegalArgumentException.class);
+
+		String sbo = "SBO:134567";
+		MetaboliteAttributes.setSboTerm(metabolite, sbo);
+
+	}
+	
+	@Test
+	public void testSetSboTermBadlyFormatted2() {
+		exception.expect(IllegalArgumentException.class);
+
+		String sbo = "SB:1234567";
+		MetaboliteAttributes.setSboTerm(metabolite, sbo);
+
 	}
 
 	@Test

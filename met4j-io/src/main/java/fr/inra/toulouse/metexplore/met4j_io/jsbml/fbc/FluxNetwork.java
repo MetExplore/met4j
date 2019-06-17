@@ -3,6 +3,7 @@ package fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc;
 import java.util.HashMap;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.Flux;
 
 
 /**

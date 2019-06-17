@@ -42,11 +42,11 @@ import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentA
 import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reactant.ReactantAttributes;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.Flux;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageReaderException;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.AnnotationParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBCParser;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser;

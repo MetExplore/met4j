@@ -5,8 +5,6 @@ import java.util.Set;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.Flux;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxCollection;
 
 
 public class ReactionAttributes {
@@ -22,7 +20,7 @@ public class ReactionAttributes {
 	public static final String SUBSYSTEM = "SUBSYSTEM";
 	public static final String EC_NUMBER = "EC_NUMBER";
 	public static final String GENE_ASSOCIATION = "GENE_ASSOCIATION";
-
+	public static final String HOLE = "hole";
 
 
 	public static final double MIN_LOWER_BOUND = Flux.FLUXMIN;
@@ -331,6 +329,32 @@ public class ReactionAttributes {
 		
 		
 	}
+	/**
+	 * get the hole attribute of a metabolite
+	 * 
+	 * @param r
+	 * @return
+	 */
+	public static Boolean getHole(BioReaction r) {
+
+		Boolean flag = false;
+
+		if (r.getAttribute(HOLE) != null) {
+			flag = (Boolean) r.getAttribute(HOLE);
+		}
+
+		return flag;
+	}
+
+	/**
+	 * Set hole attribute
+	 * 
+	 * @param m
+	 */
+	public static void setHole(BioReaction r, Boolean flag) {
+		r.setAttribute(HOLE, flag);
+	}
+
 	
 	
 }

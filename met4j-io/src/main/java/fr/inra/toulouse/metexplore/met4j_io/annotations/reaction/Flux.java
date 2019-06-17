@@ -31,7 +31,7 @@
 /**
  * 1 juin 2011 
  */
-package fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc;
+package fr.inra.toulouse.metexplore.met4j_io.annotations.reaction;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;

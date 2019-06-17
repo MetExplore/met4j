@@ -93,8 +93,8 @@ public class Notes {
 	public void addAttributeToNotes(String key, String value,
 			boolean updateValue) {
 
-		String formattedKey = StringUtils.forXML(key.trim().replaceAll("\\s+", "_"));
-		String formattedValue = StringUtils.forXML(value.trim().replaceAll("\\s+", "_"));
+		String formattedKey = StringUtils.forXML(key.trim());
+		String formattedValue = StringUtils.forXML(value.trim());
 		
 		String existingNotes = this.getXHTMLasString();
 		String newNote = existingNotes;

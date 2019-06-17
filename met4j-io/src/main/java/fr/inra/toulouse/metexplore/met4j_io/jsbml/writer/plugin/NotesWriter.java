@@ -1,6 +1,8 @@
 package fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
@@ -25,6 +27,8 @@ import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttribu
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
+
+import static fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
 
 /**
  * Creates Notes for the SBML entities of the model created by
@@ -99,7 +103,7 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
 		
 			Notes notes = NetworkAttributes.getNotes(this.getBionetwork());
 
-			if (!notes.getXHTMLasString().isEmpty()) {
+			if (!isVoid(notes.getXHTMLasString())) {
 				try {
 					this.getModel().setNotes(notes.getXHTMLasString());
 				} catch (XMLStreamException e) {
@@ -125,6 +129,32 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
 				return;
 			}
 			Notes n = GenericAttributes.getNotes(ent);
+			
+			if(n == null) {
+				n = new Notes();
+			}
+			
+			for (String BDName : ent.getRefs().keySet()) {
+				if (BDName.equalsIgnoreCase("SBO")) {
+					continue;
+				}
+				String refNotes = "";
+				int i = 0;
+				for (BioRef ref : ent.getRefs(BDName)) {
+
+					if (isVoid(ref.getId()) || ref.getId().equalsIgnoreCase("NA"))
+						continue;
+
+					if (i == 0) {
+						refNotes += ref.getId();
+					} else {
+						refNotes += " || " + ref.getId();
+					}
+					i++;
+				}
+				n.addAttributeToNotes(BDName, refNotes, this.updateValue);
+
+			}
 
 			if(ent.getClass() == BioCompartment.class)
 			{
@@ -158,7 +188,7 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
 	 * @see Notes#addAttributeToNotes(String, String, boolean)
 	 */
 	private void addAdditionnalNotes(BioMetabolite met, Notes n) {
-		if (!met.getChemicalFormula().isEmpty()) {
+		if (! isVoid(met.getChemicalFormula())) {
 			n.addAttributeToNotes(MetaboliteAttributes.FORMULA, met.getChemicalFormula(), this.updateValue);
 		}
 
@@ -166,7 +196,7 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
 			n.addAttributeToNotes(MetaboliteAttributes.CHARGE, Integer.toString(met.getCharge()), this.updateValue);
 		}
 			
-		if (met.getInchi() != null && !met.getInchi().isEmpty() && !met.getRefs().containsKey("inchi")
+		if (!isVoid(met.getInchi()) && !met.getRefs().containsKey("inchi")
 				&& !met.getInchi().equalsIgnoreCase("NA")) {
 			n.addAttributeToNotes(MetaboliteAttributes.INCHI, met.getInchi(), this.updateValue);
 		}
@@ -175,32 +205,11 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
 			n.addAttributeToNotes(MetaboliteAttributes.PUBCHEM, MetaboliteAttributes.getPubchem(met), this.updateValue);
 		}
 
-		if (met.getSmiles() != null && !met.getSmiles().isEmpty() && !met.getRefs().containsKey("smiles")
+		if (!isVoid(met.getSmiles()) && !met.getRefs().containsKey("smiles")
 				&& !met.getSmiles().equalsIgnoreCase("NA")) {
 			n.addAttributeToNotes("smiles", met.getSmiles(), this.updateValue);
 		}
 
-		for (String BDName : met.getRefs().keySet()) {
-			if (BDName.equalsIgnoreCase("SBO")) {
-				continue;
-			}
-			String refNotes = "";
-			int i = 0;
-			for (BioRef ref : met.getRefs(BDName)) {
-
-				if (ref.getId().isEmpty() || ref.getId().equalsIgnoreCase("NA"))
-					continue;
-
-				if (i == 0) {
-					refNotes += ref.getId();
-				} else {
-					refNotes += " || " + ref.getId();
-				}
-				i++;
-			}
-			n.addAttributeToNotes(BDName, refNotes, this.updateValue);
-
-		}
 	}
 
 	/**
@@ -223,7 +232,7 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
 			int i = 0;
 			for (BioRef ref : cpt.getRefs(BDName)) {
 
-				if (ref.getId().isEmpty() || ref.getId().equalsIgnoreCase("NA"))
+				if (isVoid(ref.getId()) || ref.getId().equalsIgnoreCase("NA"))
 					continue;
 
 				if (i == 0) {
@@ -269,7 +278,7 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
 			n.addAttributeToNotes(ReactionAttributes.SUBSYSTEM, newPathwayNotes, this.updateValue);
 		}
 
-		if (!bioRxn.getEcNumber().isEmpty()) {
+		if (! isVoid(bioRxn.getEcNumber())) {
 			n.addAttributeToNotes(ReactionAttributes.EC_NUMBER, bioRxn.getEcNumber(), this.updateValue);
 		}
 
@@ -285,11 +294,16 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
 		if (pmids != null && pmids.size() > 0 ) {
 			String newAuthorsNote = "";
 			int i = 0;
-			for (Integer pmid : pmids) {
+			
+			ArrayList<Integer> sortedPmids = new ArrayList<Integer>(pmids);
+			
+			Collections.sort(sortedPmids);
+			
+			for (Integer pmid : sortedPmids) {
 				if (i == 0) {
 					newAuthorsNote += pmid;
 				} else {
-					newAuthorsNote += " || " + pmid;
+					newAuthorsNote += "," + pmid;
 				}
 				i++;
 			}
@@ -298,7 +312,7 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
 		
 		
 		String geneAssociation = BioChemicalReactionUtils.getGPR(this.getBionetwork(), bioRxn, true);
-		if(! geneAssociation.isEmpty())
+		if(!isVoid(geneAssociation))
 		{
 			n.addAttributeToNotes(ReactionAttributes.GENE_ASSOCIATION, geneAssociation, this.updateValue);
 		}

@@ -146,9 +146,9 @@ public class BionetworkToJsbml {
 
 				for (UnitSbml bioUnits : bioUD.getUnits().values()) {
 					Unit libSBMLUnit = ud.createUnit();
-					libSBMLUnit.setExponent(Double.parseDouble(bioUnits.getExponent()));
-					libSBMLUnit.setMultiplier(Double.parseDouble(bioUnits.getMultiplier()));
-					libSBMLUnit.setScale(Integer.parseInt(bioUnits.getScale()));
+					libSBMLUnit.setExponent(bioUnits.getExponent());
+					libSBMLUnit.setMultiplier(bioUnits.getMultiplier());
+					libSBMLUnit.setScale(bioUnits.getScale());
 
 					libSBMLUnit.setKind(Kind.valueOf(bioUnits.getKind().toUpperCase()));
 				}

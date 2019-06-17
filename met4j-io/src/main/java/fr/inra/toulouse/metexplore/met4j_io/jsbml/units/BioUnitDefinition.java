@@ -64,9 +64,9 @@ public class BioUnitDefinition extends BioEntity {
 		
 		this.units = new HashMap<String, UnitSbml>();
 		
-		this.units.put("mole", new UnitSbml("mole", "", "-3", ""));
-		this.units.put("gram", new UnitSbml("gram", "-1", "", ""));
-		this.units.put("second", new UnitSbml("second", "-1", "", "0.00027777"));
+		this.units.put("mole", new UnitSbml("mole", null, -3, null));
+		this.units.put("gram", new UnitSbml("gram", -1.0, null, null));
+		this.units.put("second", new UnitSbml("second", -1.0, null, 0.00027777));
 		
 	}
 	

@@ -125,9 +125,9 @@ public class JsbmlToBioNetwork {
 					Unit jSBMLUnit = listofunits.get(n);
 
 					Kind kind = jSBMLUnit.getKind();
-					String Exp = String.valueOf(jSBMLUnit.getExponent());
-					String Scale = String.valueOf(jSBMLUnit.getScale());
-					String Multiplier = String.valueOf(jSBMLUnit.getMultiplier());
+					Double Exp = jSBMLUnit.getExponent();
+					Integer Scale = jSBMLUnit.getScale();
+					Double Multiplier = jSBMLUnit.getMultiplier();
 
 					UnitSbml bionetUnit = new UnitSbml(kind.getName(), Exp, Scale, Multiplier);
 					bionetUD.addUnit(bionetUnit);
@@ -203,7 +203,10 @@ public class JsbmlToBioNetwork {
 				CompartmentAttributes.setUnitDefinition(bionetCompart, bionetUnitDef);
 			}
 
-			CompartmentAttributes.setSboTerm(bionetCompart, jSBMLCompart.getSBOTermID());
+			System.err.println("SBO:" + jSBMLCompart.getSBOTerm());
+			if (jSBMLCompart.getSBOTerm() != -1) {
+				CompartmentAttributes.setSboTerm(bionetCompart, "SBO:" + jSBMLCompart.getSBOTerm());
+			}
 
 			CompartmentAttributes.setConstant(bionetCompart, jSBMLCompart.getConstant());
 
@@ -419,7 +422,9 @@ public class JsbmlToBioNetwork {
 			MetaboliteAttributes.setConstant(bionetSpecies, specie.getConstant());
 
 			MetaboliteAttributes.setSubstanceUnits(bionetSpecies, specie.getSubstanceUnits());
-			MetaboliteAttributes.setSboTerm(bionetSpecies, specie.getSBOTermID());
+			if (specie.getSBOTerm() != -1) {
+				MetaboliteAttributes.setSboTerm(bionetSpecies, "SBO:" + specie.getSBOTermID());
+			}
 
 			if (specie.isSetInitialAmount()) {
 				MetaboliteAttributes.setInitialAmount(bionetSpecies, specie.getInitialAmount());
@@ -432,7 +437,10 @@ public class JsbmlToBioNetwork {
 			}
 
 			MetaboliteAttributes.setSubstanceUnits(bionetSpecies, specie.getSubstanceUnits());
-			MetaboliteAttributes.setSboTerm(bionetSpecies, specie.getSBOTermID());
+
+			if (specie.getSBOTerm() != -1) {
+				MetaboliteAttributes.setSboTerm(bionetSpecies, "SBO:" + specie.getSBOTerm());
+			}
 
 			if (model.getLevel() == 2 && model.getVersion() >= 2 && model.getVersion() <= 4) {
 				if (specie.isSetSpeciesType()) {

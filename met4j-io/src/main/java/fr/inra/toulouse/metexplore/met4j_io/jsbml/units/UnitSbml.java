@@ -41,106 +41,71 @@ import java.util.Map.Entry;
  *
  */
 public class UnitSbml {
-	
-	private static final HashMap<String,Integer> SbmlKindConverter=new HashMap<String,Integer>();
-	
+
+	private static final HashMap<String, Integer> SbmlKindConverter = new HashMap<String, Integer>();
+
 	/**
-	 * Static initializer for the SbmlKindConverter variable. This code is executed once the class is first referenced.
+	 * Static initializer for the SbmlKindConverter variable. This code is executed
+	 * once the class is first referenced.
 	 */
-	static{
-		SbmlKindConverter.put("AMPERE",0);
-		SbmlKindConverter.put("AVOGADRO",1);
-		SbmlKindConverter.put("BECQUEREL",2);
-		SbmlKindConverter.put("CANDELA",3);
-		SbmlKindConverter.put("CELSIUS",4);
-		SbmlKindConverter.put("COULOMB",5);
-		SbmlKindConverter.put("DIMENSIONLESS",6);
-		SbmlKindConverter.put("FARAD",7);
-		SbmlKindConverter.put("GRAM",8);
-		SbmlKindConverter.put("GRAY",9);
-		SbmlKindConverter.put("HENRY",10);
-		SbmlKindConverter.put("HERTZ",11);
-		SbmlKindConverter.put("INVALID",36);
-		SbmlKindConverter.put("ITEM",12);
-		SbmlKindConverter.put("JOULE",13);
-		SbmlKindConverter.put("KATAL",14);
-		SbmlKindConverter.put("KELVIN",15);
-		SbmlKindConverter.put("KILOGRAM",16);
-		SbmlKindConverter.put("LITER",17);
-		SbmlKindConverter.put("LITRE",18);
-		SbmlKindConverter.put("LUMEN",19);
-		SbmlKindConverter.put("LUX",20);
-		SbmlKindConverter.put("METER",21);
-		SbmlKindConverter.put("METRE",22);
-		SbmlKindConverter.put("MOLE",23);
-		SbmlKindConverter.put("NEWTON",24);
-		SbmlKindConverter.put("OHM",25);
-		SbmlKindConverter.put("PASCAL",26);
-		SbmlKindConverter.put("RADIAN",27);
-		SbmlKindConverter.put("SECOND",28);
-		SbmlKindConverter.put("SIEMENS",29);
-		SbmlKindConverter.put("SIEVERT",30);
-		SbmlKindConverter.put("STERADIAN",31);
-		SbmlKindConverter.put("TESLA",32);
-		SbmlKindConverter.put("VOLT",33);
-		SbmlKindConverter.put("WATT",34);
-		SbmlKindConverter.put("WEBER",35);
-		
+	static {
+		SbmlKindConverter.put("AMPERE", 0);
+		SbmlKindConverter.put("AVOGADRO", 1);
+		SbmlKindConverter.put("BECQUEREL", 2);
+		SbmlKindConverter.put("CANDELA", 3);
+		SbmlKindConverter.put("CELSIUS", 4);
+		SbmlKindConverter.put("COULOMB", 5);
+		SbmlKindConverter.put("DIMENSIONLESS", 6);
+		SbmlKindConverter.put("FARAD", 7);
+		SbmlKindConverter.put("GRAM", 8);
+		SbmlKindConverter.put("GRAY", 9);
+		SbmlKindConverter.put("HENRY", 10);
+		SbmlKindConverter.put("HERTZ", 11);
+		SbmlKindConverter.put("INVALID", 36);
+		SbmlKindConverter.put("ITEM", 12);
+		SbmlKindConverter.put("JOULE", 13);
+		SbmlKindConverter.put("KATAL", 14);
+		SbmlKindConverter.put("KELVIN", 15);
+		SbmlKindConverter.put("KILOGRAM", 16);
+		SbmlKindConverter.put("LITER", 17);
+		SbmlKindConverter.put("LITRE", 18);
+		SbmlKindConverter.put("LUMEN", 19);
+		SbmlKindConverter.put("LUX", 20);
+		SbmlKindConverter.put("METER", 21);
+		SbmlKindConverter.put("METRE", 22);
+		SbmlKindConverter.put("MOLE", 23);
+		SbmlKindConverter.put("NEWTON", 24);
+		SbmlKindConverter.put("OHM", 25);
+		SbmlKindConverter.put("PASCAL", 26);
+		SbmlKindConverter.put("RADIAN", 27);
+		SbmlKindConverter.put("SECOND", 28);
+		SbmlKindConverter.put("SIEMENS", 29);
+		SbmlKindConverter.put("SIEVERT", 30);
+		SbmlKindConverter.put("STERADIAN", 31);
+		SbmlKindConverter.put("TESLA", 32);
+		SbmlKindConverter.put("VOLT", 33);
+		SbmlKindConverter.put("WATT", 34);
+		SbmlKindConverter.put("WEBER", 35);
+
 	}
-		
-	
+
 	private String kind;
-	private String exponent;
-	private String scale;
-	private String multiplier;
-	
-	public UnitSbml(String kind, String exponent, String scale, String multiplier) {
+	private Double exponent = 1.0;
+	private Integer scale = 0;
+	private Double multiplier = 1.0;
+
+	public UnitSbml(String kind, Double exponent, Integer scale, Double multiplier) {
 		super();
 		this.kind = kind;
-		if(exponent.compareTo("")==0)
-		{
-			exponent = "1";
-		}
-		
-		try {
-			Double.parseDouble(exponent);
-		}
-		catch(NumberFormatException e) {
-			e.printStackTrace();
-			System.err.println("[ERROR] exponent in the unit definition must be a double");
-		}
-		
-		this.exponent = exponent;
-		
-		
-		if(scale.compareTo("")==0)
-		{
-			scale = "1";
-		}
-		
-		try {
-			Double.parseDouble(scale);
-		}
-		catch(NumberFormatException e) {
-			e.printStackTrace();
-			System.err.println("[ERROR] scale in the unit definition must be a double");
-		}
-		
-		this.scale = scale;
-		
-		if(multiplier.compareTo("")==0) {
-			multiplier = "1";
-		}
-		try {
-			Double.parseDouble(multiplier);
-		}
-		catch(NumberFormatException e) {
-			e.printStackTrace();
-			System.err.println("[ERROR] multiplier in the unit definition must be a double");
-		}
-		
-		
-		this.multiplier = multiplier;
+
+		if (exponent != null)
+			this.exponent = exponent;
+
+		if (scale != null)
+			this.scale = scale;
+
+		if (multiplier != null)
+			this.multiplier = multiplier;
 	}
 
 	public String getKind() {
@@ -151,47 +116,45 @@ public class UnitSbml {
 		this.kind = kind.toUpperCase();
 	}
 
-	public String getExponent() {
+	public Double getExponent() {
 		return exponent;
 	}
 
-	public void setExponent(String exponent) {
+	public void setExponent(Double exponent) {
 		this.exponent = exponent;
 	}
 
-	public String getScale() {
+	public Integer getScale() {
 		return scale;
 	}
 
-	public void setScale(String scale) {
+	public void setScale(Integer scale) {
 		this.scale = scale;
 	}
 
-	public String getMultiplier() {
+	public Double getMultiplier() {
 		return multiplier;
 	}
 
-	public void setMultiplier(String multiplier) {
+	public void setMultiplier(Double multiplier) {
 		this.multiplier = multiplier;
 	}
-	
+
 	public static HashMap<String, Integer> getSbmlkindconverter() {
 		return SbmlKindConverter;
 	}
 
-	public void convertKindtoString(int sbmlKindAsInt){
-		for (Entry<String, Integer> kindEntry :UnitSbml.getSbmlkindconverter().entrySet()){
-			if(kindEntry.getValue()==sbmlKindAsInt){
+	public void convertKindtoString(int sbmlKindAsInt) {
+		for (Entry<String, Integer> kindEntry : UnitSbml.getSbmlkindconverter().entrySet()) {
+			if (kindEntry.getValue() == sbmlKindAsInt) {
 				this.setKind(kindEntry.getKey());
 				break;
 			}
 		}
 	}
-	
-	public int getSBMLKindCode(){
+
+	public int getSBMLKindCode() {
 		return UnitSbml.getSbmlkindconverter().get(this.kind);
 	}
-	
-	
 
 }

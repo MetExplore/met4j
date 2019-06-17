@@ -21,6 +21,7 @@ public class GenericAttributes {
 	public static final String SBML_ANNOTATION = "annotation";
 	public static final String GENERIC = "generic";
 	public static final String TYPE = "type";
+	public static final String ANNOTATOR_COMMENTS = "annotator_comments";
 
 	/**
 	 * get Constant condition of a compartment
@@ -238,4 +239,46 @@ public class GenericAttributes {
 	public static void setType(BioEntity e, String type) {
 		e.setAttribute(TYPE, type);
 	}
+	
+	/**
+	 * set annotator comments
+	 * 
+	 * @param e
+	 * @param comments
+	 */
+	public static void setAnnotatorComments(BioEntity e, Set<AnnotatorComment> comments) {
+
+		e.setAttribute(ANNOTATOR_COMMENTS, comments);
+
+	}
+
+	/**
+	 * add comment
+	 * 
+	 * @param e
+	 * @param comment
+	 */
+	public static void addAnnotatorComment(BioEntity e, AnnotatorComment comment) {
+
+		if (getAnnotatorComments(e) == null) {
+			setAnnotatorComments(e, new HashSet<AnnotatorComment>());
+		}
+
+		getAnnotatorComments(e).add(comment);
+
+	}
+
+	/**
+	 * get comments
+	 * 
+	 * @param e
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static Set<AnnotatorComment> getAnnotatorComments(BioEntity e) {
+
+		return (Set<AnnotatorComment>) e.getAttribute(ANNOTATOR_COMMENTS);
+
+	}
+	
 }

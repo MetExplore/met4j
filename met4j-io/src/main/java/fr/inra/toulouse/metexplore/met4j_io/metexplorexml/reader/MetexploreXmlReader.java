@@ -2,8 +2,6 @@ package fr.inra.toulouse.metexplore.met4j_io.metexplorexml.reader;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.sbml.jsbml.text.parser.ParseException;
 import org.w3c.dom.DOMException;
@@ -21,6 +19,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inra.toulouse.metexplore.met4j_io.annotations.AnnotatorComment;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
@@ -28,7 +27,6 @@ import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.Flux;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.UnitSbml;
-import fr.inra.toulouse.metexplore.met4j_io.metexplorexml.annotations.AnnotatorComment;
 import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 import fr.inra.toulouse.metexplore.met4j_io.utils.XmlUtils;
 
@@ -630,7 +628,7 @@ public class MetexploreXmlReader {
 
 			AnnotatorComment comment = new AnnotatorComment(text, annotator);
 
-			rxn.setAttribute("ANNOTATOR_COMMENT", comment);
+			GenericAttributes.addAnnotatorComment(rxn, comment);
 
 		}
 
@@ -732,8 +730,6 @@ public class MetexploreXmlReader {
 		// Get side-compounds
 		NodeList sideCompoundNodes = reaction.getElementsByTagName("side-compounds");
 
-		Set<String> sideCompounds = new HashSet<String>();
-
 		for (int i = 0; i < sideCompoundNodes.getLength(); i++) {
 
 			Element sideCompoundNode = (Element) sideCompoundNodes.item(i);
@@ -744,37 +740,8 @@ public class MetexploreXmlReader {
 				Element speciesReference = (Element) speciesReferences.item(j);
 
 				String idSpecies = speciesReference.getAttribute("species");
-				sideCompounds.add(StringUtils.sbmlDecode(idSpecies));
-
+				ReactionAttributes.addSideCompound(rxn, StringUtils.sbmlDecode(idSpecies));
 			}
-		}
-
-		if (sideCompounds.size() > 0) {
-			rxn.setAttribute("side-compounds", sideCompounds);
-		}
-
-		// Get Cofactors
-		sideCompoundNodes = reaction.getElementsByTagName("cofactors");
-
-		Set<String> cofactors = new HashSet<String>();
-
-		for (int i = 0; i < sideCompoundNodes.getLength(); i++) {
-
-			Element sideCompoundNode = (Element) sideCompoundNodes.item(i);
-
-			NodeList speciesReferences = sideCompoundNode.getElementsByTagName("speciesReference");
-
-			for (int j = 0; j < speciesReferences.getLength(); j++) {
-				Element speciesReference = (Element) speciesReferences.item(j);
-
-				String idSpecies = speciesReference.getAttribute("species");
-
-				cofactors.add(StringUtils.sbmlDecode(idSpecies));
-			}
-		}
-
-		if (cofactors.size() > 0) {
-			rxn.setAttribute("cofactors", cofactors);
 		}
 
 	}
@@ -812,4 +779,12 @@ public class MetexploreXmlReader {
 					"Reactant " + reactant.getAttribute("species") + " not found in the reaction " + rxn.getId());
 		}
 	}
+
+	public BioNetwork getNetwork() {
+		return network;
+	}
+	
+	
+	
+	
 }

@@ -1,7 +1,9 @@
 package fr.inra.toulouse.metexplore.met4j_io.annotations.reaction;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
@@ -21,7 +23,7 @@ public class ReactionAttributes {
 	public static final String EC_NUMBER = "EC_NUMBER";
 	public static final String GENE_ASSOCIATION = "GENE_ASSOCIATION";
 	public static final String HOLE = "hole";
-
+	public static final String SIDE_COMPOUNDS = "side_compounds";
 
 	public static final double MIN_LOWER_BOUND = Flux.FLUXMIN;
 	public static final double MAX_UPPER_BOUND = Flux.FLUXMAX;
@@ -355,6 +357,45 @@ public class ReactionAttributes {
 		r.setAttribute(HOLE, flag);
 	}
 
-	
+	/**
+	 * set side compounds
+	 * 
+	 * @param e
+	 * @param side compounds
+	 */
+	public static void setSideCompounds(BioReaction e, Set<String> sideCompounds) {
+
+		e.setAttribute(SIDE_COMPOUNDS, sideCompounds);
+
+	}
+
+	/**
+	 * add side compound
+	 * 
+	 * @param e
+	 * @param side compound
+	 */
+	public static void addSideCompound(BioReaction e, String id) {
+
+		if (getSideCompounds(e) == null) {
+			setSideCompounds(e, new HashSet<String>());
+		}
+
+		getSideCompounds(e).add(id);
+
+	}
+
+	/**
+	 * get side compounds
+	 * 
+	 * @param e
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static Set<String> getSideCompounds(BioReaction e) {
+
+		return (Set<String>) e.getAttribute(SIDE_COMPOUNDS);
+
+	}
 	
 }

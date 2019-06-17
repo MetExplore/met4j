@@ -227,6 +227,7 @@ public class BionetworkToJsbml {
 
 			BioCollection<BioCompartment> cpts = net.getCompartmentsFromMetabolite(bioMetab);
 
+			// TODO : to check : if the metabolite has several compartments, it will fail
 			for (BioCompartment cpt : cpts) {
 
 				Compartment comp = model.getCompartment(StringUtils.convertToSID(cpt.getId()));

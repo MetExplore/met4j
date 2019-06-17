@@ -1,4 +1,4 @@
-package fr.inra.toulouse.metexplore.met4j_io.metexplorexml.annotations;
+package fr.inra.toulouse.metexplore.met4j_io.annotations;
 
 public class AnnotatorComment {
 	

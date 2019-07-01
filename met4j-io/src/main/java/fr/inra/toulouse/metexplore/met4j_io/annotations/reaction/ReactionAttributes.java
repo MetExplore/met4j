@@ -3,7 +3,6 @@ package fr.inra.toulouse.metexplore.met4j_io.annotations.reaction;
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
@@ -229,7 +228,7 @@ public class ReactionAttributes {
 	 * @return
 	 */
 	public static boolean getFast(BioReaction r) {
-		return r.getAttribute(FAST)!=null ? (boolean) r.getAttribute(FAST) : false;
+		return r.getAttribute(FAST)!=null ? (Boolean) r.getAttribute(FAST) : false;
 	}
 	
 	/**

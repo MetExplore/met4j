@@ -159,7 +159,7 @@ public class CompartmentAttributes {
 		if(c.getAttribute(SIZE) == null) {
 			return null;
 		}
-		return (double) c.getAttribute(SIZE);
+		return (Double) c.getAttribute(SIZE);
 	}
 	
 	/**

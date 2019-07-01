@@ -106,6 +106,7 @@ public class BioChemicalReactionUtilsTest {
 	public void testAreRedundantIrreversible() {
 
 		BioReaction r2 = new BioReaction("r2");
+		r2.setReversible(false);
 		network.add(r2);
 
 		network.affectLeft(m1, 1.0, c, r2);

@@ -184,6 +184,19 @@ public class JsbmlReader {
 			return null;
 		}
 	}
+	
+	/**
+	 * Read with all the parsers enabled
+	 * @return
+	 * @throws Met4jSbmlReaderException
+	 */
+	public BioNetwork read() throws Met4jSbmlReaderException {
+		HashSet<PackageParser> pkgs = new HashSet<PackageParser>(Arrays.asList(
+				new NotesParser(true), new FBCParser(), new GroupPathwayParser(), new AnnotationParser(
+						true)));
+		
+		return this.read(pkgs);
+	}
 
 	/**
 	 * Verifies the Set of user defined packages and orders them

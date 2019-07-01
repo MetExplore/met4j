@@ -86,7 +86,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @return {@link Boolean}
 	 */
 	public Boolean containsName(String name) {
-		return entities.values().stream().filter(o -> o.getId().equals(name)).findFirst().isPresent();
+		return entities.values().stream().filter(o -> o.getName().equals(name)).findFirst().isPresent();
 	}
 
 	/**

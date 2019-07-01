@@ -156,8 +156,8 @@ public class BioNetwork extends BioEntity {
 	}
 
 	/**
-	 * Remove a metabolite from the network and from the reactions and
-	 * compartments where it is involved and from the c
+	 * Remove a metabolite from the network and from the reactions and compartments
+	 * where it is involved and from the c
 	 */
 	private void removeMetabolite(BioMetabolite m) {
 		this.metabolites.remove(m);
@@ -241,8 +241,7 @@ public class BioNetwork extends BioEntity {
 	}
 
 	/**
-	 * Remove a reaction from the network and from the pathways where it is
-	 * involved
+	 * Remove a reaction from the network and from the pathways where it is involved
 	 */
 	private void removeReaction(BioReaction r) {
 
@@ -579,15 +578,15 @@ public class BioNetwork extends BioEntity {
 	};
 
 	/**
-	 * Return true if the entity is in the list of metabolites, reactions,
-	 * genes, pathways, proteins, etc...
+	 * Return true if the entity is in the list of metabolites, reactions, genes,
+	 * pathways, proteins, etc...
 	 */
 	public Boolean contains(BioEntity e) {
 
 		if (e == null) {
 			throw new NullPointerException();
 		}
-		
+
 		if (e instanceof BioProtein) {
 			if (this.proteins.contains(e)) {
 				return true;
@@ -645,9 +644,8 @@ public class BioNetwork extends BioEntity {
 	 * returns the list of reactions that can use as substrates a list of
 	 * metabolites
 	 * 
-	 * @param exact
-	 *            if true, the match must be exact, if false, the reactions
-	 *            returned can have a superset of the specified substrates
+	 * @param exact if true, the match must be exact, if false, the reactions
+	 *              returned can have a superset of the specified substrates
 	 */
 	public BioCollection<BioReaction> getReactionsFromSubstrates(Collection<String> substrates, Boolean exact) {
 
@@ -658,9 +656,8 @@ public class BioNetwork extends BioEntity {
 	/**
 	 * returns the list of reactions that can prodice a list of metabolites
 	 * 
-	 * @param exact
-	 *            if true, the match must be exact, if false, the reactions
-	 *            returned can have a superset of the specified products
+	 * @param exact if true, the match must be exact, if false, the reactions
+	 *              returned can have a superset of the specified products
 	 */
 	public BioCollection<BioReaction> getReactionsFromProducts(Collection<String> substrates, Boolean exact) {
 
@@ -796,6 +793,62 @@ public class BioNetwork extends BioEntity {
 			});
 
 		});
+
+		return genes;
+
+	}
+
+	/**
+	 * Return genes involved in enzymes
+	 * 
+	 * @param enzymeIds
+	 * @return
+	 */
+	public BioCollection<BioGene> getGenesFromEnzymes(Collection<String> enzymeIds) {
+
+		BioCollection<BioGene> genes = new BioCollection<BioGene>();
+
+		for (String id : enzymeIds) {
+			BioEnzyme e = this.getEnzymesView().getEntityFromId(id);
+			if (e != null) {
+				genes.addAll(this.getGenesFromEnzyme(e));
+			}
+		}
+
+		return genes;
+
+	}
+
+	/**
+	 * Return the collection of genes coding for an enzyme
+	 * 
+	 * @param e
+	 * @return
+	 */
+	public BioCollection<BioGene> getGenesFromEnzyme(BioEnzyme e) {
+
+		if (!this.getEnzymesView().contains(e)) {
+			throw new IllegalArgumentException("Enzyme " + e.getId() + " not present in the network");
+		}
+
+		BioCollection<BioGene> genes = new BioCollection<BioGene>();
+
+		BioCollection<BioEnzymeParticipant> participants = e.getParticipantsView();
+
+		for (BioEnzymeParticipant ep : participants) {
+
+			BioPhysicalEntity p = ep.getPhysicalEntity();
+
+			if (p.getClass().equals(BioProtein.class)) {
+				BioProtein prot = (BioProtein) p;
+
+				BioGene g = prot.getGene();
+
+				if (g != null) {
+					genes.add(g);
+				}
+			}
+		}
 
 		return genes;
 
@@ -980,14 +1033,60 @@ public class BioNetwork extends BioEntity {
 
 	public BioCollection<BioReactant> getLeftReactants(BioReaction r) {
 
-		return r.getLeftReactants();
+		return r.getLeftReactants().getView();
 
 	}
 
 	public BioCollection<BioReactant> getRightReactants(BioReaction r) {
 
-		return r.getRightReactants();
+		return r.getRightReactants().getView();
 
+	}
+
+	/**
+	 * 
+	 * @param r
+	 * @param left
+	 * @return
+	 */
+	private BioCollection<BioMetabolite> getLeftsOrRights(BioReaction r, Boolean left) {
+
+		if (!this.contains(r)) {
+			throw new IllegalArgumentException("Reaction " + r.getId() + " not present in the network");
+		}
+
+		BioCollection<BioReactant> reactants = left ? r.getLeftReactants() : r.getRightReactants();
+
+		BioCollection<BioMetabolite> metabolites = new BioCollection<BioMetabolite>();
+
+		reactants.forEach(m -> {
+
+			metabolites.add(m.getMetabolite());
+
+		});
+
+		return metabolites;
+
+	}
+
+	/**
+	 * Return the left metabolites of a reaction
+	 * 
+	 * @param r
+	 * @return
+	 */
+	public BioCollection<BioMetabolite> getLefts(BioReaction r) {
+		return this.getLeftsOrRights(r, true);
+	}
+
+	/**
+	 * Return the right metabolites of a reaction
+	 * 
+	 * @param r
+	 * @return
+	 */
+	public BioCollection<BioMetabolite> getRights(BioReaction r) {
+		return this.getLeftsOrRights(r, false);
 	}
 
 }

@@ -93,7 +93,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * Get entity with a specific id
 	 * 
 	 * @param id
-	 * @return
+	 * @return the entity or null
 	 */
 	public E getEntityFromId(String id) {
 

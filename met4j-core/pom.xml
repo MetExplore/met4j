@@ -20,14 +20,6 @@
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>JSBML-SNAPSHOT</id>
-      <name>The JSBML Snapshot repository</name>
-      <url>http://jsbml.sourceforge.net/m2repo_snapshots/</url>
-    </repository>
-  </repositories>
-
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

@@ -584,6 +584,10 @@ public class BioNetwork extends BioEntity {
 	 */
 	public Boolean contains(BioEntity e) {
 
+		if (e == null) {
+			throw new NullPointerException();
+		}
+		
 		if (e instanceof BioProtein) {
 			if (this.proteins.contains(e)) {
 				return true;

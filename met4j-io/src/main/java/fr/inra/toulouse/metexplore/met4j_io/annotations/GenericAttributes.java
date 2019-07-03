@@ -24,7 +24,7 @@ public class GenericAttributes {
 	public static final String ANNOTATOR_COMMENTS = "annotator_comments";
 
 	/**
-	 * get Constant condition of a compartment
+	 * get Constant condition 
 	 * 
 	 * @param e
 	 * @return

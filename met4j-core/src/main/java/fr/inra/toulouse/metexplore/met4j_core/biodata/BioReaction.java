@@ -198,7 +198,7 @@ public class BioReaction extends BioEntity {
 	 * @return unmodifiable {@link BioCollection} of entities involved in left
 	 *         {@link BioReactant}
 	 */
-	protected BioCollection<BioPhysicalEntity> getLeft() {
+	protected BioCollection<BioMetabolite> getLefts() {
 		return getSideEntities(Side.LEFT);
 	}
 
@@ -207,7 +207,7 @@ public class BioReaction extends BioEntity {
 	 * @return unmodifiable {@link BioCollection} of entities involved in right
 	 *         {@link BioReactant}
 	 */
-	protected BioCollection<BioPhysicalEntity> getRight() {
+	protected BioCollection<BioMetabolite> getRights() {
 		return getSideEntities(Side.RIGHT);
 	}
 
@@ -290,7 +290,7 @@ public class BioReaction extends BioEntity {
 	 * @return unmodifiable {@link BioCollection} of {@link BioPhysicalEntity}
 	 *         involved in reactants
 	 */
-	private BioCollection<BioPhysicalEntity> getSideEntities(Side side) {
+	private BioCollection<BioMetabolite> getSideEntities(Side side) {
 
 		BioCollection<BioReactant> reactantCollection;
 
@@ -300,7 +300,7 @@ public class BioReaction extends BioEntity {
 			reactantCollection = this.right;
 		}
 
-		BioCollection<BioPhysicalEntity> entityCollection = new BioCollection<BioPhysicalEntity>();
+		BioCollection<BioMetabolite> entityCollection = new BioCollection<BioMetabolite>();
 
 		for (BioReactant reactant : reactantCollection) {
 			entityCollection.add(reactant.getMetabolite());

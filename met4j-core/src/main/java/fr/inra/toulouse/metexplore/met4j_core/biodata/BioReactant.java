@@ -60,7 +60,7 @@ public class BioReactant extends BioParticipant {
 		this.location = location;
 	}
 
-	protected BioMetabolite getMetabolite() {
+	public BioMetabolite getMetabolite() {
 		return (BioMetabolite) this.getPhysicalEntity();
 	}
 

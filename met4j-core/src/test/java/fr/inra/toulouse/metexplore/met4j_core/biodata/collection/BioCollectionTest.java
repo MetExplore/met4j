@@ -181,7 +181,6 @@ public class BioCollectionTest {
 
 	}
 
-	@Test(expected = IllegalArgumentException.class)
 	public void testAddAll() {
 
 		BioMetabolite m3 = new BioMetabolite("m3");

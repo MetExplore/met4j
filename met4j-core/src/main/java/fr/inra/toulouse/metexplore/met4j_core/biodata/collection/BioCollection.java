@@ -171,8 +171,6 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	@Override
 	public boolean add(E e) {
 		String id = e.getId();
-		if (entities.containsKey(id))
-			throw new IllegalArgumentException("Duplicated identifier in BioCollection. Identifiers must be unique");
 		entities.put(e.getId(), e);
 		return true;
 	}
@@ -180,11 +178,6 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	@Override
 	public boolean remove(Object o) {
 		Boolean flag = entities.values().remove(o);
-
-		if (!flag) {
-			throw new IllegalArgumentException("Impossible to remove an object absent from a collection");
-		}
-
 		return flag;
 
 	}

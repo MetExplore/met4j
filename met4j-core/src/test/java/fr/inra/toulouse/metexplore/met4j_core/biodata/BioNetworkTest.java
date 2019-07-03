@@ -199,13 +199,6 @@ public class BioNetworkTest {
 
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testRemoveProteinAbsent() {
-
-		BioProtein p = new BioProtein("absent");
-		network.remove(p);
-	}
-
 	@Test()
 	public void testRemovePathway() {
 
@@ -223,13 +216,6 @@ public class BioNetworkTest {
 		assertEquals("Reactions of a pathway must not be removed from the network after a pathway is removed", 1,
 				network.getReactionsView().size());
 
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testRemovePathwayAbsent() {
-		BioPathway pathway = new BioPathway("pathwayId");
-		// Must return an exception
-		network.remove(pathway);
 	}
 
 	@Test
@@ -259,14 +245,6 @@ public class BioNetworkTest {
 
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testRemoveMetaboliteAbsent() {
-
-		BioMetabolite m = new BioMetabolite("m");
-
-		network.remove(m);
-	}
-
 	@Test
 	public void testRemoveGene() {
 
@@ -286,15 +264,6 @@ public class BioNetworkTest {
 
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testRemoveGeneAbsent() {
-
-		BioGene g = new BioGene("g");
-
-		// Must return an exception
-		network.remove(g);
-	}
-
 	@Test
 	public void testRemoveReaction() {
 
@@ -312,17 +281,6 @@ public class BioNetworkTest {
 		network.affectToPathway(reaction, pathway);
 		network.remove(reaction);
 		assertEquals("Reaction not removed from pathway", 0, pathway.getReactions().size());
-
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testRemoveReactionAbsent() {
-
-		// remove one reaction alone
-		BioReaction reaction = new BioReaction("reactionId");
-
-		// Must return an exception
-		network.remove(reaction);
 
 	}
 
@@ -350,15 +308,6 @@ public class BioNetworkTest {
 
 		assertEquals("Substrate not removed from reaction when the compartment is removed", 0,
 				network.getReactionsView().size());
-
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testRemoveCompartmentAbsent() {
-
-		BioCompartment c = new BioCompartment("id");
-
-		network.remove(c);
 
 	}
 

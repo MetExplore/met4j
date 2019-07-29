@@ -800,6 +800,28 @@ public class BioNetwork extends BioEntity {
 		return new BioCollection<BioReaction>(reactionSet);
 
 	}
+	
+	public BioCollection<BioReaction> getReactionsFromGene(String geneId) {
+
+			if (!this.genes.containsId(geneId)) {
+				throw new IllegalArgumentException("Gene " + geneId + " not present in the network");
+			}
+
+		HashSet<BioReaction> reactionSet = new HashSet<BioReaction>(this.getReactionsView().stream().filter(o -> {
+			BioReaction r = (BioReaction) o;
+			Set<String> geneRefIds = r.getGenes().getIds();
+
+			return geneRefIds.contains(geneId);
+
+		}).collect(Collectors.toSet()));
+
+		return new BioCollection<BioReaction>(reactionSet);
+
+	}
+	
+	
+	
+	
 
 	/**
 	 * Get genes involved in a set of reactions

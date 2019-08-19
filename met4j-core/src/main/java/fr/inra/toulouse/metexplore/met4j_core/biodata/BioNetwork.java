@@ -70,7 +70,23 @@ public class BioNetwork extends BioEntity {
 	public BioNetwork() {
 		super("NA");
 	}
+	
+	/**
+	 * Add several entities
+	 * @param bioEntities
+	 */
+	public void add(BioEntity... bioEntities) {
+		
+		for(BioEntity e : bioEntities)
+		{
+			this.add(e);
+		}
+	}
 
+	/**
+	 * Add one entity
+	 * @param e
+	 */
 	public void add(BioEntity e) {
 		if (e instanceof BioPathway) {
 			this.pathways.add((BioPathway) e);
@@ -92,12 +108,12 @@ public class BioNetwork extends BioEntity {
 		}
 	}
 
-	public void remove(BioEntity e) throws IllegalArgumentException {
+	public void removeOnCascade(BioEntity e) throws IllegalArgumentException {
 
 		if (e instanceof BioPathway) {
 			this.pathways.remove((BioPathway) e);
 		} else if (e instanceof BioMetabolite) {
-			this.removeMetaboliteFromAllEntities((BioMetabolite) e);
+			this.removeMetabolite((BioMetabolite) e);
 		} else if (e instanceof BioProtein) {
 			this.removeProtein((BioProtein) e);
 		} else if (e instanceof BioGene) {
@@ -139,7 +155,7 @@ public class BioNetwork extends BioEntity {
 			}
 
 			if (remove) {
-				this.remove(e);
+				this.removeOnCascade(e);
 			}
 		});
 
@@ -159,37 +175,25 @@ public class BioNetwork extends BioEntity {
 	 * Remove a metabolite from the network and from the reactions and compartments
 	 * where it is involved and from the c
 	 */
-	private void removeMetaboliteFromAllEntities(BioMetabolite m) {
-		this.metabolites.remove(m);
+	private void removeMetabolite(BioMetabolite m) {
 
-		BioCollection<BioReaction> reactionsCopy = new BioCollection<BioReaction>(reactions);
+		BioCollection<BioReaction> reactions = this.getReactionsFromMetabolite(m);
 
-		reactionsCopy.forEach(r -> {
+		reactions.forEach(r -> {
 			BioCollection<BioReactant> lefts = new BioCollection<BioReactant>(r.getLeftReactants());
-
-			Boolean remove = false;
 
 			for (BioReactant participant : lefts) {
 				if (participant.getPhysicalEntity().equals(m)) {
-					remove = true;
-					break;
+					r.getLeftReactants().remove(participant);
 				}
 			}
 
-			if (remove == false) {
-				BioCollection<BioReactant> rights = new BioCollection<BioReactant>(r.getRightReactants());
-				for (BioReactant participant : rights) {
-					if (participant.getPhysicalEntity().equals(m)) {
-						remove = true;
-						break;
-					}
+			BioCollection<BioReactant> rights = new BioCollection<BioReactant>(r.getRightReactants());
+			for (BioReactant participant : rights) {
+				if (participant.getPhysicalEntity().equals(m)) {
+					r.getRightReactants().remove(participant);
 				}
 			}
-
-			if (remove == true) {
-				this.remove(r);
-			}
-
 		});
 
 		this.compartments.forEach(c -> {
@@ -208,19 +212,15 @@ public class BioNetwork extends BioEntity {
 			BioCollection<BioEnzymeParticipant> participants = new BioCollection<BioEnzymeParticipant>(
 					e.getParticipants());
 
-			Boolean remove = false;
 			for (BioEnzymeParticipant p : participants) {
 				if (p.getPhysicalEntity().equals(m)) {
-					remove = true;
-					break;
+					e.getParticipants().remove(p);
 				}
 			}
-
-			if (remove) {
-				this.remove(e);
-			}
-
 		});
+
+		this.metabolites.remove(m);
+
 	}
 
 	/**
@@ -234,7 +234,7 @@ public class BioNetwork extends BioEntity {
 		BioCollection<BioProtein> proteinsCopy = new BioCollection<BioProtein>(proteins);
 		proteinsCopy.forEach(p -> {
 			if (p.getGene().equals(g)) {
-				this.remove(p);
+				this.removeOnCascade(p);
 			}
 		});
 
@@ -248,10 +248,7 @@ public class BioNetwork extends BioEntity {
 		this.reactions.remove(r);
 
 		this.pathways.forEach(p -> {
-			try {
-				p.removeReaction(r);
-			} catch (IllegalArgumentException e) {
-			}
+			p.removeReaction(r);
 			;
 		});
 
@@ -262,7 +259,6 @@ public class BioNetwork extends BioEntity {
 	 * compartment
 	 */
 	private void removeCompartment(BioCompartment c) {
-		this.compartments.remove(c);
 
 		this.reactions.forEach(r -> {
 
@@ -274,6 +270,8 @@ public class BioNetwork extends BioEntity {
 				}
 			}
 		});
+
+		this.compartments.remove(c);
 
 	}
 
@@ -576,6 +574,19 @@ public class BioNetwork extends BioEntity {
 		compartment.addComponent(entity);
 
 	};
+	
+	/**
+	 * Affect several metabolites to a compartment
+	 * @param compartment
+	 * @param entities
+	 */
+	public void affectToCompartment(BioCompartment compartment, BioPhysicalEntity... entities) {
+
+		for(BioPhysicalEntity ent : entities) {
+			this.affectToCompartment(ent, compartment);
+		}
+
+	};
 
 	/**
 	 * Return true if the entity is in the list of metabolites, reactions, genes,
@@ -593,43 +604,37 @@ public class BioNetwork extends BioEntity {
 			} else {
 				return false;
 			}
-		}
-		if (e instanceof BioMetabolite) {
+		} else if (e instanceof BioMetabolite) {
 			if (this.metabolites.contains(e)) {
 				return true;
 			} else {
 				return false;
 			}
-		}
-		if (e instanceof BioGene) {
+		} else if (e instanceof BioGene) {
 			if (this.genes.contains(e)) {
 				return true;
 			} else {
 				return false;
 			}
-		}
-		if (e instanceof BioEnzyme) {
+		} else if (e instanceof BioEnzyme) {
 			if (this.enzymes.contains(e)) {
 				return true;
 			} else {
 				return false;
 			}
-		}
-		if (e instanceof BioReaction) {
+		} else if (e instanceof BioReaction) {
 			if (this.reactions.contains(e)) {
 				return true;
 			} else {
 				return false;
 			}
-		}
-		if (e instanceof BioPathway) {
+		} else if (e instanceof BioPathway) {
 			if (this.pathways.contains(e)) {
 				return true;
 			} else {
 				return false;
 			}
-		}
-		if (e instanceof BioCompartment) {
+		} else if (e instanceof BioCompartment) {
 			if (this.compartments.contains(e)) {
 				return true;
 			} else {
@@ -652,8 +657,7 @@ public class BioNetwork extends BioEntity {
 		return this.getReactionsFromSubstratesOrProducts(substrates, exact, true);
 
 	}
-	
-	
+
 	/**
 	 * returns the list of reactions that can prodice a list of metabolites
 	 * 
@@ -689,13 +693,14 @@ public class BioNetwork extends BioEntity {
 
 			} else {
 				return exact ? r.getRights().getIds().equals(substrates) || r.getLefts().getIds().equals(substrates)
-						: r.getRights().getIds().containsAll(substrates) || r.getLefts().getIds().containsAll(substrates);
+						: r.getRights().getIds().containsAll(substrates)
+								|| r.getLefts().getIds().containsAll(substrates);
 			}
 		}).collect(Collectors.toSet()));
 
 		return new BioCollection<BioReaction>(reactionSet);
 	}
-	
+
 	/**
 	 * 
 	 * @param m
@@ -703,54 +708,54 @@ public class BioNetwork extends BioEntity {
 	 * @return
 	 */
 	private BioCollection<BioReaction> getReactionsFromSubstrateOrProduct(BioMetabolite m, Boolean isSubstrate) {
-		
-		if(m==null || ! this.contains(m)) {
+
+		if (m == null || !this.contains(m)) {
 			throw new IllegalArgumentException("Metabolite not present in the network");
 		}
-		
+
 		BioCollection<BioReaction> reactions = new BioCollection<BioReaction>();
-		
+
 		this.getReactionsView().stream().forEach(r -> {
 			Boolean flag = false;
-			
+
 			BioCollection<BioMetabolite> lefts = r.getLefts();
 			BioCollection<BioMetabolite> rights = r.getRights();
-			
-			if(!r.isReversible()) {
+
+			if (!r.isReversible()) {
 				flag = isSubstrate ? lefts.contains(m) : rights.contains(m);
-			}
-			else {
+			} else {
 				flag = lefts.contains(m) || rights.contains(m);
 			}
-			
-			if(flag) {
+
+			if (flag) {
 				reactions.add(r);
 			}
-			
+
 		});
-		
+
 		return reactions;
-		
+
 	}
-	
+
 	/**
 	 * Return the reactions involving m as substrate
+	 * 
 	 * @param m
 	 * @return
 	 */
 	public BioCollection<BioReaction> getReactionsFromSubstrate(BioMetabolite m) {
 		return this.getReactionsFromSubstrateOrProduct(m, true);
 	}
-	
+
 	/**
 	 * Return the reactions involving m as product
+	 * 
 	 * @param m
 	 * @return
 	 */
 	public BioCollection<BioReaction> getReactionsFromProduct(BioMetabolite m) {
 		return this.getReactionsFromSubstrateOrProduct(m, false);
 	}
-	
 
 	/**
 	 * Get pathways where a metabolite is involved
@@ -800,12 +805,12 @@ public class BioNetwork extends BioEntity {
 		return new BioCollection<BioReaction>(reactionSet);
 
 	}
-	
+
 	public BioCollection<BioReaction> getReactionsFromGene(String geneId) {
 
-			if (!this.genes.containsId(geneId)) {
-				throw new IllegalArgumentException("Gene " + geneId + " not present in the network");
-			}
+		if (!this.genes.containsId(geneId)) {
+			throw new IllegalArgumentException("Gene " + geneId + " not present in the network");
+		}
 
 		HashSet<BioReaction> reactionSet = new HashSet<BioReaction>(this.getReactionsView().stream().filter(o -> {
 			BioReaction r = (BioReaction) o;
@@ -818,10 +823,6 @@ public class BioNetwork extends BioEntity {
 		return new BioCollection<BioReaction>(reactionSet);
 
 	}
-	
-	
-	
-	
 
 	/**
 	 * Get genes involved in a set of reactions
@@ -1168,5 +1169,40 @@ public class BioNetwork extends BioEntity {
 		return this.getLeftsOrRights(r, false);
 	}
 
-	
+	/**
+	 * Return all the metabolites involved in a set of reactions
+	 * 
+	 * @param reactions
+	 * @return
+	 */
+	public BioCollection<BioMetabolite> getMetabolitesFromReactions(BioCollection<BioReaction> reactions) {
+
+		BioCollection<BioMetabolite> allMetabolites = new BioCollection<BioMetabolite>();
+
+		for (BioReaction reaction : reactions) {
+			if (this.contains(reaction)) {
+				allMetabolites.addAll(this.getLefts(reaction));
+				allMetabolites.addAll(this.getRights(reaction));
+			}
+		}
+		return allMetabolites;
+
+	}
+
+	/**
+	 * Get all the reactions where the metabolite m is involved
+	 * 
+	 * @param m
+	 * @return
+	 */
+	public BioCollection<BioReaction> getReactionsFromMetabolite(BioMetabolite m) {
+
+		BioCollection<BioReaction> reactions = new BioCollection<BioReaction>();
+
+		reactions.addAll(this.getReactionsFromSubstrate(m));
+		reactions.addAll(this.getReactionsFromProduct(m));
+
+		return reactions;
+	}
+
 }

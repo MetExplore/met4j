@@ -203,7 +203,6 @@ public class JsbmlToBioNetwork {
 				CompartmentAttributes.setUnitDefinition(bionetCompart, bionetUnitDef);
 			}
 
-			System.err.println("SBO:" + jSBMLCompart.getSBOTerm());
 			if (jSBMLCompart.getSBOTerm() != -1) {
 				CompartmentAttributes.setSboTerm(bionetCompart, "SBO:" + jSBMLCompart.getSBOTerm());
 			}
@@ -289,11 +288,8 @@ public class JsbmlToBioNetwork {
 
 						UnitDefinition jsbmlUnit = model.getUnitDefinition(kine.getParameter(n).getUnits());
 
-						if (jsbmlUnit == null) {
-							throw new Met4jSbmlReaderException(
-									"Problem with the reaction " + bionetReaction.getId() + " : the flux unit "
-											+ kine.getParameter(n).getUnits() + " does not exist in the model");
-						} else {
+						// This means that <parameter id="REDUCED_COST" value="0.000000"/> won't be taken into account
+						if (jsbmlUnit != null) {
 
 							BioUnitDefinition UD = udList.getEntityFromId(jsbmlUnit.getId());
 
@@ -482,6 +478,11 @@ public class JsbmlToBioNetwork {
 	 */
 	private BioReactant parseParticipantSpecies(SpeciesReference specieRef) {
 		Species specie = this.getModel().getSpecies(specieRef.getSpecies());
+		if(specie == null)
+		{
+			throw new IllegalArgumentException("The specie "+specieRef.getSpecies()+ " does not exist");
+		}
+		
 		String specieId = specie.getId();
 
 		Double stoDbl = specieRef.getStoichiometry();

@@ -526,11 +526,11 @@ public class Merger {
 				//update compounds links to reactions
 				BioReaction choosenOne = uniqReaction.get(hash);
 				for(BioPhysicalEntity e : r.getListOfSubstrates().values()){
-					e.getReactionsAsSubstrate().remove(r.getId());
+					e.getReactionsAsSubstrate().removeOnCascade(r.getId());
 					e.getReactionsAsSubstrate().put(choosenOne.getId(), choosenOne);
 				}
 				for(BioPhysicalEntity e : r.getListOfProducts().values()){
-					e.getReactionsAsProduct().remove(r.getId());
+					e.getReactionsAsProduct().removeOnCascade(r.getId());
 					e.getReactionsAsProduct().put(choosenOne.getId(), choosenOne);
 				}
 			}

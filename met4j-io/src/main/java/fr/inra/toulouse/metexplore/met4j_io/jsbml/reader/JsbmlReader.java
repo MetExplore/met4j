@@ -36,6 +36,8 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
  */
 public class JsbmlReader {
 
+	public Boolean verbose = false;
+	
 	/**
 	 * The SBML filename
 	 */
@@ -122,6 +124,7 @@ public class JsbmlReader {
 	 */
 	public JsbmlReader(String filename) {
 		this.filename = filename;
+		this.useValidator = false;
 	}
 
 	/**
@@ -175,6 +178,8 @@ public class JsbmlReader {
 			System.err.println("Parsing model " + this.getModel().getId());
 
 			this.getConverter().parseModel();
+			
+			System.err.println("End Parsing model " + this.getModel().getId());
 
 			this.errorsAndWarnings.addAll(PackageParser.errorsAndWarnings);
 			
@@ -252,6 +257,7 @@ public class JsbmlReader {
 		if (this.useValidator) {
 			System.err.println("Validating Input SBML..");
 			this.setValidSBML(this.validateSBML(doc));
+			System.err.println("Validation of input SBML done : "+this.validSBML);
 
 		} else {
 			System.err.println("Validator disabled by user.");

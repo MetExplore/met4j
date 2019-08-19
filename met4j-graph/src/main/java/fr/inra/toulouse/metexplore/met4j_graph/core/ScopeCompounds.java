@@ -39,225 +39,211 @@ import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.sbml.jsbml.SBMLException;
-import org.sbml.jsbml.text.parser.ParseException;
-
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
-import fr.inra.toulouse.metexplore.met4j_core.io.BioNetworkToJSBML;
-import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
-
-
 
 public class ScopeCompounds {
-	
+
 	private BioNetwork originalBioNetwork;
 	private BioNetwork scopeNetwork;
 	private BioNetwork inverseScopeNetwork;
-	private Set <String> inCpds;
+	private Set<String> inCpds;
 	private Set<String> bootstrapCpds;
-	private Integer stepNo; 					// Current numero of the iteration
-	private HashMap<String, BioReaction> availableReactions; // Reactions still available
-	
-	//	Indicates the ids of the added elements and the numero of the step when they have appeared 
-	private HashMap<String, Integer> currentCpdsSteps = new  HashMap<String, Integer>();
-	
-	private HashMap<String, Integer> currentReactionsSteps = new  HashMap<String, Integer>();
-	
+	private Integer stepNo; // Current numero of the iteration
+	private BioCollection<BioReaction> availableReactions; // Reactions still available
+
+	// Indicates the ids of the added elements and the numero of the step when they
+	// have appeared
+	private HashMap<String, Integer> currentCpdsSteps = new HashMap<String, Integer>();
+
+	private HashMap<String, Integer> currentReactionsSteps = new HashMap<String, Integer>();
+
 	private Set<String> cpdToReach;
 	public Boolean useReversibleReactionsOnlyOnce;
-	
 
 	public Boolean forward;
-	
-	
-	
-	
+
 	/*
 	 * Constructor
 	 */
-	
-	public ScopeCompounds(BioNetwork bioNetwork, Set <String> in, Set<String> bs, String cpdToReach, Set<String> reactionsToAvoid, Boolean useReversibleReactionsOnlyOnce, Boolean forward) {
+
+	public ScopeCompounds(BioNetwork bioNetwork, Set<String> in, Set<String> bs, String cpdToReach,
+			Set<String> reactionsToAvoid, Boolean useReversibleReactionsOnlyOnce, Boolean forward) {
 		this.setOriginalBioNetwork(bioNetwork);
 		this.setInCpds(in);
 		this.setBootstrapCpds(bs);
 		this.setStepNo(0);
 		this.setCpdToReach(new HashSet<String>());
-		this.getCpdToReach().add(cpdToReach);		
-		
+		this.getCpdToReach().add(cpdToReach);
+
 		this.setScopeNetwork(new BioNetwork());
-		
+
 		this.useReversibleReactionsOnlyOnce = useReversibleReactionsOnlyOnce;
 		this.forward = forward;
-		
-		HashMap <String, BioReaction> listOfReactions = new HashMap <String, BioReaction>(bioNetwork.getBiochemicalReactionList());
+
+		BioCollection<BioReaction> listOfReactions = new BioCollection<BioReaction>(bioNetwork.getReactionsView());
 		this.setAvailableReactions(listOfReactions);
-		
-		for(String reactionToAvoid : reactionsToAvoid) {
+
+		for (String reactionToAvoid : reactionsToAvoid) {
 			this.getAvailableReactions().remove(reactionToAvoid);
 		}
-		
-		for(Iterator<String> iter=in.iterator(); iter.hasNext();) {
+
+		for (Iterator<String> iter = in.iterator(); iter.hasNext();) {
 			String cpdId = iter.next();
-			
-			if(this.getOriginalBioNetwork().getPhysicalEntityList().containsKey(cpdId) == true) {
+
+			if (this.getOriginalBioNetwork().getMetabolitesView().containsId(cpdId)) {
 				this.putCpdStep(cpdId, 0);
 			}
 		}
-		
-	}	
-	
-	
-	public ScopeCompounds(BioNetwork bioNetwork, Set <String> in, Set<String> bs, Set<String> cpdsToReach, Set<String> reactionsToAvoid, Boolean useReversibleReactionsOnlyOnce, Boolean forward) {
+
+	}
+
+	public ScopeCompounds(BioNetwork bioNetwork, Set<String> in, Set<String> bs, Set<String> cpdsToReach,
+			Set<String> reactionsToAvoid, Boolean useReversibleReactionsOnlyOnce, Boolean forward) {
 		this.setOriginalBioNetwork(bioNetwork);
 		this.setInCpds(in);
 		this.setBootstrapCpds(bs);
 		this.setStepNo(0);
-		if(cpdsToReach != null) {
+		if (cpdsToReach != null) {
 			this.setCpdToReach(cpdsToReach);
-		}
-		else {
+		} else {
 			this.setCpdToReach(new HashSet<String>());
 		}
 		this.setScopeNetwork(new BioNetwork());
-		
+
 		this.useReversibleReactionsOnlyOnce = useReversibleReactionsOnlyOnce;
 		this.forward = forward;
-		
-		HashMap <String, BioReaction> listOfReactions = new HashMap <String, BioReaction>(bioNetwork.getBiochemicalReactionList());
+
+		BioCollection<BioReaction> listOfReactions = new BioCollection<BioReaction>(bioNetwork.getReactionsView());
 		this.setAvailableReactions(listOfReactions);
-		
-		for(String reactionToAvoid : reactionsToAvoid) {
+
+		for (String reactionToAvoid : reactionsToAvoid) {
 			this.getAvailableReactions().remove(reactionToAvoid);
 		}
-		
-		for(Iterator<String> iter=in.iterator(); iter.hasNext();) {
+
+		for (Iterator<String> iter = in.iterator(); iter.hasNext();) {
 			String cpdId = iter.next();
-			
-			if(this.getOriginalBioNetwork().getPhysicalEntityList().containsKey(cpdId) == true) {
+
+			if (this.getOriginalBioNetwork().getMetabolitesView().containsId(cpdId)) {
 				this.putCpdStep(cpdId, 0);
 			}
 		}
-		
-	}	
-	
-	
-	
-	
-	/*
-	 ** Iteration of the process
-	 * returns the number of compounds added in the step
-	 */
-	
-	public int run () {
-		
-		int nbCpdsSupp = 0;
-		
-		HashMap<String, Integer> currentListOfcurrentSteps = new HashMap<String, Integer>();
-		
-		currentListOfcurrentSteps.putAll(this.getCurrentCpdsSteps());
-		
-		this.setStepNo(this.getStepNo() + 1);
-		
-		for(Iterator<String> iterCpd = currentListOfcurrentSteps.keySet().iterator(); iterCpd.hasNext();) {
-			String cpdId = iterCpd.next();
-			
-			BioPhysicalEntity cpd = this.getOriginalBioNetwork().getPhysicalEntityList().get(cpdId);
-			
-			this.getScopeNetwork().addPhysicalEntity(this.getOriginalBioNetwork().getPhysicalEntityList().get(cpdId));
-			HashMap<String, BioReaction> listOfReactions;
-			
-			if(this.forward == true) {
-//				listOfReactions = this.getOriginalBioNetwork().getListOfReactionsAsSubstrate(cpdId);
-				listOfReactions = cpd.getReactionsAsSubstrate();
-			}
-			else {
-//				listOfReactions = this.getOriginalBioNetwork().getListOfReactionsAsProduct(cpdId);
-				listOfReactions = cpd.getReactionsAsProduct();
-			}
-			
-			for(BioReaction reaction : listOfReactions.values()) {
-				
-//				System.out.println("Reaction : "+reaction);
-				
-				if(this.getAvailableReactions().containsKey(reaction.getId())) {
-					
-//					System.out.println("Available");
-					
-					HashMap<String, BioPhysicalEntity> lefts = reaction.getListOfSubstrates();
-					HashMap<String, BioPhysicalEntity> rights = reaction.getListOfProducts();
-					
-					if(reaction.getReversiblity().compareToIgnoreCase("reversible") == 0) {
 
-						HashMap<String, BioPhysicalEntity> tmpLeft;
-						HashMap<String, BioPhysicalEntity> tmpRight;
-						
-							tmpLeft = reaction.getLeftList();
-							tmpRight = reaction.getRightList();
-						
-							if(this.forward == true) {
-								
+	}
+
+	/*
+	 ** Iteration of the process returns the number of compounds added in the step
+	 */
+
+	public int run() {
+
+		int nbCpdsSupp = 0;
+
+		HashMap<String, Integer> currentListOfcurrentSteps = new HashMap<String, Integer>();
+
+		currentListOfcurrentSteps.putAll(this.getCurrentCpdsSteps());
+
+		this.setStepNo(this.getStepNo() + 1);
+
+		for (Iterator<String> iterCpd = currentListOfcurrentSteps.keySet().iterator(); iterCpd.hasNext();) {
+			String cpdId = iterCpd.next();
+
+			BioMetabolite cpd = this.getOriginalBioNetwork().getMetabolitesView().getEntityFromId(cpdId);
+
+			this.getScopeNetwork().add(cpd);
+			BioCollection<BioReaction> listOfReactions;
+
+			if (this.forward == true) {
+//				listOfReactions = this.getOriginalBioNetwork().getListOfReactionsAsSubstrate(cpdId);
+				listOfReactions = this.getOriginalBioNetwork().getReactionsFromSubstrate(cpd);
+			} else {
+//				listOfReactions = this.getOriginalBioNetwork().getListOfReactionsAsProduct(cpdId);
+				listOfReactions = this.getOriginalBioNetwork().getReactionsFromProduct(cpd);
+			}
+
+			for (BioReaction reaction : listOfReactions) {
+
+//				System.out.println("Reaction : "+reaction);
+
+				if (this.getAvailableReactions().containsId(reaction.getId())) {
+
+//					System.out.println("Available");
+
+					BioCollection<BioMetabolite> lefts;
+					BioCollection<BioMetabolite> rights;
+
+					if (reaction.isReversible()) {
+
+						BioCollection<BioMetabolite> tmpLeft;
+						BioCollection<BioMetabolite> tmpRight;
+
+						tmpLeft = this.getOriginalBioNetwork().getLefts(reaction);
+						tmpRight = this.getOriginalBioNetwork().getRights(reaction);
+
+						rights = tmpRight;
+						lefts = tmpLeft;
+
+						if (this.forward == true) {
+
+							if (tmpRight.contains(cpd)) {
+								lefts = tmpRight;
+								rights = tmpLeft;
+								// To indicate the direction used in the reaction
+								reaction.getAttributes().put("flag", false);
+							}
+							if (tmpLeft.contains(cpd)) {
 								rights = tmpRight;
 								lefts = tmpLeft;
-								
-								if(tmpRight.containsKey(cpdId))  {
-									lefts = tmpRight;
-									rights = tmpLeft;
-									// To indicate the direction used in the reaction
-									reaction.setFlag(false);
-								}
-								if(tmpLeft.containsKey(cpdId))  { 
-									rights = tmpRight;
-									lefts = tmpLeft;
-									// To indicate the direction used in the reaction
-									reaction.setFlag(true);
-								}
+								// To indicate the direction used in the reaction
+								reaction.getAttributes().put("flag", true);
 							}
-							else {
-								
+						} else {
+
+							if (tmpLeft.contains(cpd)) {
+								lefts = tmpRight;
+								rights = tmpLeft;
+								// To indicate the direction used in the reaction
+								reaction.getAttributes().put("flag", false);
+							}
+							if (tmpRight.contains(cpd)) {
 								rights = tmpRight;
 								lefts = tmpLeft;
-								
-								if(tmpLeft.containsKey(cpdId)) {
-									lefts = tmpRight;
-									rights = tmpLeft;
-									// To indicate the direction used in the reaction
-									reaction.setFlag(false);
-								}
-								if(tmpRight.containsKey(cpdId))  {
-									rights = tmpRight;
-									lefts = tmpLeft;
-									// To indicate the direction used in the reaction
-									reaction.setFlag(true);
-								}
+								// To indicate the direction used in the reaction
+								reaction.getAttributes().put("flag", true);
 							}
+						}
+					} else {
+						lefts = this.getOriginalBioNetwork().getLefts(reaction);
+						rights = this.getOriginalBioNetwork().getRights(reaction);
 					}
-					
-					HashMap<String, BioPhysicalEntity> toAdd;
-					
-					if(this.forward==true) {
+
+					BioCollection<BioMetabolite> toAdd;
+
+					if (this.forward == true) {
 						toAdd = rights;
-					}
-					else {
+					} else {
 						toAdd = lefts;
 					}
-					
+
 					Boolean success = true;
-					
+
 					int nBoot = 0;
-					
-					if(this.forward==true) {
-						for(Iterator<String> iterLeft = lefts.keySet().iterator(); iterLeft.hasNext(); ){
-							String cpdLeft = lefts.get(iterLeft.next()).getId();
+
+					if (this.forward == true) {
+
+						for (String cpdLeft : lefts.getIds()) {
 
 //							System.out.println("Cpd Left:"+cpdLeft);
-							
-							if(! currentListOfcurrentSteps.containsKey(cpdLeft) && this.getBootstrapCpds().contains(cpdLeft) == false) {
+
+							if (!currentListOfcurrentSteps.containsKey(cpdLeft)
+									&& this.getBootstrapCpds().contains(cpdLeft) == false) {
 								success = false;
 							}
-							
+
 //							if(currentListOfcurrentSteps.containsKey(cpdLeft)) {
 //								System.out.println(cpdLeft+" contained in current steps");
 //							}
@@ -272,18 +258,19 @@ public class ScopeCompounds {
 //							else {
 //								System.out.println("Failed cpd !");
 //							}
-								
+
 							// We check if all the substrates are not bootstrap compounds
-							if(this.getBootstrapCpds().contains(cpdLeft) == true && currentListOfcurrentSteps.containsKey(cpdLeft) == false) {
+							if (this.getBootstrapCpds().contains(cpdLeft) == true
+									&& currentListOfcurrentSteps.containsKey(cpdLeft) == false) {
 								nBoot++;
 							}
 						}
 					}
-					
-					if(nBoot==lefts.size()) {
+
+					if (nBoot == lefts.size()) {
 						success = false;
 					}
-					
+
 //					if(success == true) {
 //						System.out.println("Success !");
 //					}
@@ -291,69 +278,68 @@ public class ScopeCompounds {
 //						System.out.println("Failed !");
 //					}
 
-					if(success == true) { // All the substrates are present in the current cpds.
-						
-						for(String cpdToAdd : toAdd.keySet()) {
-							
+					if (success == true) { // All the substrates are present in the current cpds.
+
+						for (String cpdToAdd : toAdd.getIds()) {
+
 //							System.out.println("On ajoute "+cpdToAdd);
 
-							if(this.getCurrentCpdsSteps().containsKey(cpdToAdd) == false) {
+							if (this.getCurrentCpdsSteps().containsKey(cpdToAdd) == false) {
 								// The product is not yet in the current compounds
 								this.putCpdStep(cpdToAdd, this.getStepNo());
 								nbCpdsSupp++;
-							}
-							else {
-								if(this.getCurrentCpdsSteps().get(cpdToAdd) == 0) {
+							} else {
+								if (this.getCurrentCpdsSteps().get(cpdToAdd) == 0) {
 									// The product is an input compound
 									this.putCpdStep(cpdToAdd, this.getStepNo());
 								}
 							}
 						}
-						
-						if(this.useReversibleReactionsOnlyOnce) {
+
+						if (this.useReversibleReactionsOnlyOnce) {
 							this.getAvailableReactions().remove(reaction.getId());
-						}
-						else {
-							if(reaction.getReversiblity().equalsIgnoreCase("reversible")) {
-								if(this.getCurrentCpdsSteps().keySet().containsAll(reaction.getListOfSubstrates().keySet())) {
+						} else {
+							if (reaction.isReversible()) {
+								if (this.getCurrentCpdsSteps().keySet()
+										.containsAll(this.getOriginalBioNetwork().getLefts(reaction).getIds())
+										&& this.getCurrentCpdsSteps().keySet().containsAll(
+												this.getOriginalBioNetwork().getRights(reaction).getIds())) {
 									this.getAvailableReactions().remove(reaction.getId());
 								}
-							}
-							else {
+							} else {
 								this.getAvailableReactions().remove(reaction.getId());
 							}
-						}						
-					
-						
+						}
+
 						this.putReactionStep(reaction.getId(), this.getStepNo());
-						this.getScopeNetwork().addBiochemicalReaction(reaction);
-						
+						this.getScopeNetwork().add(reaction);
+
 					}
 				}
 			}
 		}
-		
+
 		return nbCpdsSupp;
 	}
-	
+
 	/**
 	 * 
 	 *
 	 */
 	public void compute() {
-		while(this.run() != 0 && ! (this.getCpdToReach().size() > 0 && this.getCurrentCpdsSteps().keySet().containsAll(this.getCpdToReach()))) { // While new compounds are added
+		while (this.run() != 0 && !(this.getCpdToReach().size() > 0
+				&& this.getCurrentCpdsSteps().keySet().containsAll(this.getCpdToReach()))) { // While new compounds are
+																								// added
 			;
 		}
 	}
-	
-	
+
 	/**
 	 * @return the inCpds
 	 */
 	public Set<String> getInCpds() {
 		return inCpds;
 	}
-
 
 	/**
 	 * @param inCpds the inCpds to set
@@ -362,14 +348,12 @@ public class ScopeCompounds {
 		this.inCpds = inCpds;
 	}
 
-
 	/**
 	 * @return the originalBioNetwork
 	 */
 	public BioNetwork getOriginalBioNetwork() {
 		return originalBioNetwork;
 	}
-
 
 	/**
 	 * @param originalBioNetwork the originalBioNetwork to set
@@ -381,14 +365,14 @@ public class ScopeCompounds {
 	/**
 	 * @return the availableReactions
 	 */
-	public HashMap<String, BioReaction> getAvailableReactions() {
+	public BioCollection<BioReaction> getAvailableReactions() {
 		return availableReactions;
 	}
 
 	/**
 	 * @param availableReactions the availableReactions to set
 	 */
-	public void setAvailableReactions(HashMap<String, BioReaction> availableReactions) {
+	public void setAvailableReactions(BioCollection<BioReaction> availableReactions) {
 		this.availableReactions = availableReactions;
 	}
 
@@ -439,248 +423,100 @@ public class ScopeCompounds {
 	public Integer putReactionStep(String key, Integer value) {
 		return currentReactionsSteps.put(key, value);
 	}
-	
-	/**
-	 * Write the results in a Cytoscape-Like attribute file
-	 * 
-	 */
-	/**
-	 * Write the results in a Cytoscape-Like attribute file
-	 * 
-	 */
-	public void writeAttributeFile(String fileOut, Boolean encodeSbml, Boolean onlyResults) throws IOException {
-		FileWriter writer = new FileWriter(fileOut);
-		writer.write("Step\n");
-		for(Iterator<String> iterCpd = this.getCurrentCpdsSteps().keySet().iterator(); iterCpd.hasNext();) {
-			String cpdId = iterCpd.next();
-			Integer stepNo = this.getCurrentCpdsSteps().get(cpdId);
-			
-			Boolean flag = false;
-			
-			if(onlyResults) {
-				
-				HashMap<String, BioReaction> reactions;
-				
-				if(this.forward == false)
-					reactions = this.getOriginalBioNetwork().getListOfReactionsAsProduct(cpdId);
-				else
-					reactions = this.getOriginalBioNetwork().getListOfReactionsAsProduct(cpdId);
 
-				
-				int nbReactions = reactions.size();
-				
-				if(nbReactions == 1) {
-					
-					BioReaction rxn = reactions.values().iterator().next();
-					
-					if(rxn.getReversiblity().compareToIgnoreCase("reversible") == 0) {
-						flag = true;
-					}
-					
-				}
-				else if(nbReactions == 0) {
-					flag = true;
-				}
-			}
-			
-		
-			if(!onlyResults || flag == true) {
-				if(encodeSbml)
-					cpdId = StringUtils.sbmlEncode(cpdId);
-				writer.write(cpdId+" = "+stepNo+"\n");
-			}
-		}
-		
-		if(! onlyResults) {
-			for(Iterator<String> iterReaction= this.getCurrentReactionsSteps().keySet().iterator(); iterReaction.hasNext();) {
-				String reacId = iterReaction.next();
-				Integer stepNo = this.getCurrentReactionsSteps().get(reacId);
-				if(encodeSbml)
-					reacId = StringUtils.sbmlEncode(reacId);
-				writer.write(reacId+" = "+stepNo+"\n");
-			}
-		}
-		
-		writer.close();
-		
-	}
-	/**
-	 * Write the scope of compounds as a list of compounds generated by the program
-	 * 
-	 */
-	public void writeListOfCompounds(String fileOut, Boolean encodeSbml) throws IOException {
-		FileWriter writer = new FileWriter(fileOut);
-		for(Iterator<String> iterCpd = this.getCurrentCpdsSteps().keySet().iterator(); iterCpd.hasNext();) {
-			String cpdId = iterCpd.next();
-			if(encodeSbml)
-				cpdId = StringUtils.sbmlEncode(cpdId);
-			writer.write(cpdId+"\n");
-		}
-		
-		writer.close();
-	}
 	
-	/**
-	 * Write the used reactionNodes as a list
-	 * 
-	 */
-	public void writeListOfReactions(String fileOut, Boolean encodeSbml) throws IOException {
-		FileWriter writer = new FileWriter(fileOut);
-		for(Iterator<String> iterCpd = this.getCurrentReactionsSteps().keySet().iterator(); iterCpd.hasNext();) {
-			String reacId = iterCpd.next();
-			if(encodeSbml)
-				reacId = StringUtils.sbmlEncode(reacId);
-			writer.write(reacId+"\n");
-		}
-		
-		writer.close();
-	}
-	
-	/**
-	 * Write the results in a file which can be used in GenePro as cluster file
-	 * 
-	 */
-	public void writeClustersFiles(String fileOut, Boolean encodeSbml) throws IOException {
-		
-		String clustersFile = fileOut+".clusters"; 
-		
-		FileWriter writer = new FileWriter(clustersFile);
-		writer.write("CID\tORF\n");
-		for(Iterator<String> iterCpd = this.getCurrentCpdsSteps().keySet().iterator(); iterCpd.hasNext();) {
-			String cpdId = iterCpd.next();
-			Integer stepNo = this.getCurrentCpdsSteps().get(cpdId);
-			if(encodeSbml)
-				cpdId = StringUtils.sbmlEncode(cpdId);
-			writer.write(stepNo+"\t"+cpdId+"\n");
-		}
-
-		for(Iterator<String> iterReaction= this.getCurrentReactionsSteps().keySet().iterator(); iterReaction.hasNext();) {
-			String reacId = iterReaction.next();
-			Integer stepNo = this.getCurrentReactionsSteps().get(reacId);
-			if(encodeSbml)
-				reacId = StringUtils.sbmlEncode(reacId);
-			writer.write(stepNo+"\t"+reacId+"\n");
-		}
-		
-		writer.close();
-		
-		String interactionsFile = fileOut+".interactions";
-		
-		writer = new FileWriter(interactionsFile);
-		writer.write("\n");
-		
-		for(Iterator<String> iterReaction= this.getCurrentReactionsSteps().keySet().iterator(); iterReaction.hasNext();) {
-			String reacId = iterReaction.next();
-			BioReaction reaction = this.getOriginalBioNetwork().getBiochemicalReactionList().get(reacId);
-			
-			Set<String> left;
-			Set<String> right;
-			
-			left = reaction.getLeftParticipantList().keySet();
-			right =reaction.getRightParticipantList().keySet();		
-
-			for(Iterator<String> iterLeft = left.iterator(); iterLeft.hasNext(); ) {
-				writer.write(reacId+"\t"+iterLeft.next()+"\t1.0\n");
-			}
-			
-			for(Iterator<String> iterRight = right.iterator(); iterRight.hasNext(); ) {
-				writer.write(reacId+"\t"+iterRight.next()+"\t1.0\n");
-			}
-		}
-		
-		writer.close();
-		
-	}
 	
 	public void createScopeNetwork() {
-		
+
 		Set<String> compounds = this.getCurrentCpdsSteps().keySet();
 		Set<String> reactions = this.getCurrentReactionsSteps().keySet();
-		
+
 //		System.out.println("Current reactions : "+reactions);
-		
+
 		BioNetwork network = new BioNetwork(this.originalBioNetwork, reactions, compounds);
-		
-		if(this.useReversibleReactionsOnlyOnce) {
+
+		if (this.useReversibleReactionsOnlyOnce) {
 			// We keep only the direction used in each reaction
-			HashMap<String, BioReaction> listReactions = new HashMap<String, BioReaction>(network.getBiochemicalReactionList());
-			
-			for(BioReaction rxn : listReactions.values()) {
-				if(rxn.getReversiblity().equalsIgnoreCase("reversible")) {
+			HashMap<String, BioReaction> listReactions = new HashMap<String, BioReaction>(
+					network.getBiochemicalReactionList());
+
+			for (BioReaction rxn : listReactions.values()) {
+				if (rxn.getReversiblity().equalsIgnoreCase("reversible")) {
 					rxn.setReversibility(false);
-					
-					if(rxn.getFlag() == false) {
+
+					if (rxn.getFlag() == false) {
 						// The reaction is used in the backtrack direction
-						HashMap<String, BioParticipant> lefts = new HashMap<String, BioParticipant>(rxn.getLeftParticipantList());
-						HashMap<String, BioParticipant> rights = new HashMap<String, BioParticipant>(rxn.getRightParticipantList());
+						HashMap<String, BioParticipant> lefts = new HashMap<String, BioParticipant>(
+								rxn.getLeftParticipantList());
+						HashMap<String, BioParticipant> rights = new HashMap<String, BioParticipant>(
+								rxn.getRightParticipantList());
 						rxn.setLeftParticipantList(rights);
 						rxn.setRightParticipantList(lefts);
-						
-						for(BioPhysicalEntity cpd : rxn.getLeftList().values()) {
+
+						for (BioPhysicalEntity cpd : rxn.getLeftList().values()) {
 							cpd.removeReactionAsProduct(rxn.getId());
 						}
-						
-						for(BioPhysicalEntity cpd : rxn.getRightList().values()) {
+
+						for (BioPhysicalEntity cpd : rxn.getRightList().values()) {
 							cpd.removeReactionAsSubstrate(rxn.getId());
 						}
 					}
-					
-					for(BioPhysicalEntity cpd : rxn.getLeftList().values()) {
+
+					for (BioPhysicalEntity cpd : rxn.getLeftList().values()) {
 						cpd.removeReactionAsProduct(rxn.getId());
 					}
-					
-					for(BioPhysicalEntity cpd : rxn.getRightList().values()) {
+
+					for (BioPhysicalEntity cpd : rxn.getRightList().values()) {
 						cpd.removeReactionAsSubstrate(rxn.getId());
 					}
-						
+
 				}
 			}
 		}
-		
+
 //		System.out.println("Reactions in the scope network : "+network.getBiochemicalReactionList().keySet());
 
-		
 		this.setScopeNetwork(network);
 	}
-	
+
 	public void createInverseScopeNetwork() {
 		BioNetwork network = new BioNetwork(this.getAvailableReactions());
-		
+
 		this.setInverseScopeNetwork(network);
-		
+
 	}
-	
-	
-	
-	public BioNetwork writeScopeAsSbml(String fileOut) throws IOException, SBMLException, XMLStreamException, ParseException {
+
+	public BioNetwork writeScopeAsSbml(String fileOut)
+			throws IOException, SBMLException, XMLStreamException, ParseException {
 		BioNetwork network = this.getScopeNetwork();
-		
+
 		BioNetworkToJSBML fw = new BioNetworkToJSBML(network, fileOut);
-		
+
 		fw.write();
-		
+
 		return network;
-		
+
 	}
-	
-	public BioNetwork writeInvScopeAsSbml(String fileOut) throws IOException, SBMLException, XMLStreamException, ParseException {
-		
-		if(this.getInverseScopeNetwork() == null) {
+
+	public BioNetwork writeInvScopeAsSbml(String fileOut)
+			throws IOException, SBMLException, XMLStreamException, ParseException {
+
+		if (this.getInverseScopeNetwork() == null) {
 			this.createInverseScopeNetwork();
 		}
-		
+
 		BioNetwork network = this.getInverseScopeNetwork();
-		
+
 		BioNetworkToJSBML fw = new BioNetworkToJSBML(network, fileOut);
-		
+
 		fw.write();
-		
+
 		return network;
-		
+
 	}
 
 	public BioNetwork getScopeNetwork() {
-		if(scopeNetwork == null) {
+		if (scopeNetwork == null) {
 			this.createScopeNetwork();
 		}
 		return scopeNetwork;
@@ -699,7 +535,7 @@ public class ScopeCompounds {
 	}
 
 	public BioNetwork getInverseScopeNetwork() {
-		if(inverseScopeNetwork == null) {
+		if (inverseScopeNetwork == null) {
 			this.createInverseScopeNetwork();
 		}
 		return inverseScopeNetwork;
@@ -708,47 +544,44 @@ public class ScopeCompounds {
 	public void setInverseScopeNetwork(BioNetwork inverseScopeNetwork) {
 		this.inverseScopeNetwork = inverseScopeNetwork;
 	}
-	
 
-/**
- * @return the cpdToReach
- */
-public Set<String> getCpdToReach() {
-	return cpdToReach;
-}
-
-
-/**
- * @param cpdToReach the cpdToReach to set
- */
-public void setCpdToReach(Set<String> cpdToReach) {
-	this.cpdToReach = cpdToReach;
-}
-	
 	/**
-	 * Eliminate all the reactions involved in scopes not containing
-	 * interestingCpds Be careful : does not work with reversible reactions
+	 * @return the cpdToReach
+	 */
+	public Set<String> getCpdToReach() {
+		return cpdToReach;
+	}
+
+	/**
+	 * @param cpdToReach the cpdToReach to set
+	 */
+	public void setCpdToReach(Set<String> cpdToReach) {
+		this.cpdToReach = cpdToReach;
+	}
+
+	/**
+	 * Eliminate all the reactions involved in scopes not containing interestingCpds
+	 * Be careful : does not work with reversible reactions
 	 * 
 	 * @param interestingCpds
 	 */
 	public static BioNetwork compressAroundMetabolites(Set<String> interestingCpds,
 			Boolean useReversibleReactionOnlyOnce, BioNetwork bn) {
-	
-		Set<String> bs = new HashSet<String>(bn.getPhysicalEntityList()
-				.keySet());
-	
+
+		Set<String> bs = new HashSet<String>(bn.getPhysicalEntityList().keySet());
+
 		// 1. we keep only the network produced by the scope of the interesting
 		// cpds
-	
-		ScopeCompounds sc1 = new ScopeCompounds(bn, interestingCpds, bs, "",
-				new HashSet<String>(), useReversibleReactionOnlyOnce, true);
-	
+
+		ScopeCompounds sc1 = new ScopeCompounds(bn, interestingCpds, bs, "", new HashSet<String>(),
+				useReversibleReactionOnlyOnce, true);
+
 		sc1.compute();
-	
+
 		sc1.createScopeNetwork();
-	
+
 		BioNetwork networkCompressed = sc1.getScopeNetwork();
-	
+
 		//
 		// try {
 		// System.out.println("Ecriture de scope.xml");
@@ -902,7 +735,7 @@ public void setCpdToReach(Set<String> cpdToReach) {
 		// sc1.createScopeNetwork();
 		//
 		// networkCompressed = sc1.getScopeNetwork();
-	
+
 		return networkCompressed;
 	}
 }

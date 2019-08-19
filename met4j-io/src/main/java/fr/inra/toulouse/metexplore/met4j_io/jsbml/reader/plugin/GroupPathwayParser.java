@@ -28,6 +28,8 @@ public class GroupPathwayParser implements PackageParser, PrimaryDataTag, Reader
 	@Override
 	public void parseModel(Model model, BioNetwork network) {
 
+		System.err.println("Starting " + this.getAssociatedPackageName() + " plugin...");
+
 		this.model = model;
 		this.network = network;
 

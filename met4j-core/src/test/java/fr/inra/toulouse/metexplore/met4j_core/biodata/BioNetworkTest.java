@@ -169,7 +169,7 @@ public class BioNetworkTest {
 		network.add(protein);
 		BioProtein protein2 = new BioProtein("protein2");
 		network.add(protein2);
-		network.remove(protein2);
+		network.removeOnCascade(protein2);
 		assertEquals("not the good number of proteins after removal", 1, network.getProteinsView().size());
 
 		// If a protein is linked to a gene, its removal does not affect the
@@ -177,7 +177,7 @@ public class BioNetworkTest {
 		BioGene gene = new BioGene("gene");
 		network.add(gene);
 		network.affectGeneProduct(protein, gene);
-		network.remove(protein);
+		network.removeOnCascade(protein);
 		assertEquals("not the good number of genes after removal a protein linked to a gene", 1,
 				network.getGenesView().size());
 
@@ -186,7 +186,7 @@ public class BioNetworkTest {
 		network.add(enzyme);
 		network.add(protein);
 		network.affectSubUnit(protein, 1.0, enzyme);
-		network.remove(protein);
+		network.removeOnCascade(protein);
 		assertEquals("Enzyme not removed", 0, network.getEnzymesView().size());
 
 		// Test if the compartment still contains the protein
@@ -194,7 +194,7 @@ public class BioNetworkTest {
 		network.add(compartment);
 		network.add(protein);
 		network.affectToCompartment(protein, compartment);
-		network.remove(protein);
+		network.removeOnCascade(protein);
 		assertEquals("Protein not removed from compartment", 0, compartment.getComponents().size());
 
 	}
@@ -210,11 +210,13 @@ public class BioNetworkTest {
 		network.add(reaction);
 		network.affectToPathway(reaction, pathway);
 
-		network.remove(pathway);
+		network.removeOnCascade(pathway);
 		assertEquals("Pathway not removed from the network", 0, network.getPathwaysView().size());
 
 		assertEquals("Reactions of a pathway must not be removed from the network after a pathway is removed", 1,
 				network.getReactionsView().size());
+		
+		assertEquals("Removed pathway can't appear in the list of pathways of a reaction", 0, network.getPathwaysFromReaction(reaction).size());
 
 	}
 
@@ -224,7 +226,7 @@ public class BioNetworkTest {
 		// Remove one metabolite
 		BioMetabolite metabolite = new BioMetabolite("metaboliteId");
 		network.add(metabolite);
-		network.remove(metabolite);
+		network.removeOnCascade(metabolite);
 		assertEquals("Metabolite not removed from the network", 0, network.getMetabolitesView().size());
 
 		// Remove metabolite from reaction interactions
@@ -236,12 +238,15 @@ public class BioNetworkTest {
 		network.add(cpt);
 		network.affectToCompartment(metabolite, cpt);
 		network.affectLeft(metabolite, 1.0, cpt, reaction);
+		network.affectRight(metabolite, 1.0, cpt, reaction);
 		network.add(enz);
 		network.affectSubUnit(metabolite, 1.0, enz);
-		network.remove(metabolite);
-		assertEquals("Reaction not removed", 0, network.getReactionsView().size());
+		network.removeOnCascade(metabolite);
+		
+		assertEquals(reaction.getLeftReactants().size(), 0);
+		assertEquals(reaction.getRightReactants().size(), 0);
+		assertEquals(enz.getParticipants().size(), 0);
 
-		assertEquals("Enzyme not removed", 0, network.getEnzymesView().size());
 
 	}
 
@@ -251,7 +256,7 @@ public class BioNetworkTest {
 		// Remove one gene
 		BioGene gene = new BioGene("geneId");
 		network.add(gene);
-		network.remove(gene);
+		network.removeOnCascade(gene);
 		assertEquals("Gene not removed from the network", 0, network.getGenesView().size());
 
 		// Test if the protein still contains the gene
@@ -259,7 +264,7 @@ public class BioNetworkTest {
 		network.add(gene);
 		network.add(protein);
 		network.affectGeneProduct(protein, gene);
-		network.remove(gene);
+		network.removeOnCascade(gene);
 		assertEquals("Protein not removed", 0, network.getProteinsView().size());
 
 	}
@@ -270,7 +275,7 @@ public class BioNetworkTest {
 		// remove one reaction alone
 		BioReaction reaction = new BioReaction("reactionId");
 		network.add(reaction);
-		network.remove(reaction);
+		network.removeOnCascade(reaction);
 
 		assertEquals("Reaction not removed from the network", 0, network.getReactionsView().size());
 
@@ -279,7 +284,7 @@ public class BioNetworkTest {
 		network.add(pathway);
 		network.add(reaction);
 		network.affectToPathway(reaction, pathway);
-		network.remove(reaction);
+		network.removeOnCascade(reaction);
 		assertEquals("Reaction not removed from pathway", 0, pathway.getReactions().size());
 
 	}
@@ -290,7 +295,7 @@ public class BioNetworkTest {
 		// Remove one compartment alone
 		BioCompartment cpt = new BioCompartment("cpt");
 		network.add(cpt);
-		network.remove(cpt);
+		network.removeOnCascade(cpt);
 
 		assertEquals("Compartment not removed from the network", 0, network.getCompartmentsView().size());
 
@@ -304,7 +309,7 @@ public class BioNetworkTest {
 		network.affectLeft(met, 1.0, cpt, reaction);
 		network.affectRight(met, 1.0, cpt, reaction);
 
-		network.remove(cpt);
+		network.removeOnCascade(cpt);
 
 		assertEquals("Substrate not removed from reaction when the compartment is removed", 0,
 				network.getReactionsView().size());
@@ -327,7 +332,9 @@ public class BioNetworkTest {
 		network.affectToCompartment(s2, cpt);
 
 		network.affectLeft(s1, 1.0, cpt, reaction);
-		network.affectLeft(s2, 1.0, cpt, reaction);
+
+		BioReactant reactant = new BioReactant(s2, 1.0, cpt);
+		network.affectLeft(reactant, reaction);
 
 		assertEquals("Substrate not well added", 2, reaction.getLeftReactants().size());
 
@@ -412,7 +419,8 @@ public class BioNetworkTest {
 		network.affectToCompartment(s2, cpt);
 
 		network.affectRight(s1, 1.0, cpt, reaction);
-		network.affectRight(s2, 1.0, cpt, reaction);
+		BioReactant reactant = new BioReactant(s2, 1.0, cpt);
+		network.affectRight(reactant, reaction);
 
 		assertEquals("Product not well added", 2, reaction.getRightReactants().size());
 	}
@@ -729,6 +737,56 @@ public class BioNetworkTest {
 	}
 
 	@Test
+	public void testGetReactionsFromSubstrate() {
+		BioReaction r1 = addTestReactionToNetwork();
+		r1.setReversible(false);
+
+		BioReaction r2 = new BioReaction("id2");
+		network.add(r2);
+		
+		BioCollection<BioReaction> reactions = network.getReactionsFromSubstrate(s1);
+		
+		assertEquals("Get the bad number of reactions with this substrate", 1, reactions.size());
+
+		assertEquals("Get the bad reaction with this substrate", r1, reactions.iterator().next());
+
+		r1.setReversible(true);
+		
+		reactions = network.getReactionsFromSubstrate(p1);
+		
+		assertEquals("Get the bad number of reactions with this substrate", 1, reactions.size());
+
+		assertEquals("Get the bad reaction with this substrate", r1, reactions.iterator().next());
+
+		
+	}
+	
+	@Test
+	public void testGetReactionsFromProduct() {
+		BioReaction r1 = addTestReactionToNetwork();
+		r1.setReversible(false);
+
+		BioReaction r2 = new BioReaction("id2");
+		network.add(r2);
+		
+		BioCollection<BioReaction> reactions = network.getReactionsFromProduct(p1);
+		
+		assertEquals("Get the bad number of reactions with this substrate", 1, reactions.size());
+
+		assertEquals("Get the bad reaction with this substrate", r1, reactions.iterator().next());
+
+		r1.setReversible(true);
+		
+		reactions = network.getReactionsFromProduct(s1);
+		
+		assertEquals("Get the bad number of reactions with this substrate", 1, reactions.size());
+
+		assertEquals("Get the bad reaction with this substrate", r1, reactions.iterator().next());
+
+		
+	}
+	
+	@Test
 	public void testGetReactionsFromSubstrates() {
 		BioReaction r1 = addTestReactionToNetwork();
 		r1.setReversible(false);
@@ -924,7 +982,7 @@ public class BioNetworkTest {
 
 		network.affectToPathway(r, p);
 
-		network.remove(p);
+		network.removeOnCascade(p);
 		// Must return an exception
 		network.getMetabolitesFromPathway(p);
 
@@ -955,12 +1013,28 @@ public class BioNetworkTest {
 		pathways = network.getPathwaysFromMetabolites(cpds, false);
 
 		assertEquals("Bad number of pathways containing at least one  compound of this list", 1, pathways.size());
-
+		
 		cpds.remove("s1");
 
 		pathways = network.getPathwaysFromMetabolites(cpds, false);
 
 		assertEquals("No pathway contains this compound", 0, pathways.size());
+		
+		cpds.clear();
+		cpds.add("s1");
+		cpds.add("s2");
+		cpds.add("p1");
+		
+		pathways = network.getPathwaysFromMetabolites(cpds, true);
+		
+		assertEquals("Bad number of pathways containing all these compounds", 1, pathways.size());
+		
+		cpds.add("id3");
+		
+		pathways = network.getPathwaysFromMetabolites(cpds, true);
+		
+		assertEquals("Bad number of pathways containing all these compounds", 0, pathways.size());
+
 
 	}
 

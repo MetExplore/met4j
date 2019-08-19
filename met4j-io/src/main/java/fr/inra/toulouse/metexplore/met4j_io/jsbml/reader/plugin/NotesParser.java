@@ -201,7 +201,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 		this.addNotes(bionetwork.getReactionsView());
 		this.addNotes(bionetwork.getMetabolitesView());
 		this.addNotes(bionetwork.getCompartmentsView());
-
+		
 	}
 
 	@Override
@@ -258,7 +258,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 					}
 
 				} catch (XMLStreamException e) {
-
+					e.printStackTrace();
 					NotesParser.errorsAndWarnings.add(
 							"Error while parsing " + ent.getClass().getSimpleName() + " " + ent.getId() + " notes");
 

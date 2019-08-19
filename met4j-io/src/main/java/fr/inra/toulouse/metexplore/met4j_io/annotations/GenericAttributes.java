@@ -24,7 +24,7 @@ public class GenericAttributes {
 	public static final String ANNOTATOR_COMMENTS = "annotator_comments";
 
 	/**
-	 * get Constant condition 
+	 * get Constant condition
 	 * 
 	 * @param e
 	 * @return
@@ -156,9 +156,11 @@ public class GenericAttributes {
 	 */
 	public static void setSboTerm(BioEntity e, String sboTerm) {
 		if (!sboTerm.matches("SBO:\\d{7}")) {
-			throw new IllegalArgumentException("SBO term badly formatted (must be SBO:1234567");
+			System.err.println("[Warning] SBO term badly formatted for " + e.getId()
+					+ " (must be SBO:1234567). It has not been set.");
+		} else {
+			e.setAttribute(SBO_TERM, sboTerm);
 		}
-		e.setAttribute(SBO_TERM, sboTerm);
 	}
 
 	/**
@@ -217,7 +219,7 @@ public class GenericAttributes {
 	public static void setGeneric(BioEntity e, Boolean flag) {
 		e.setAttribute(GENERIC, flag);
 	}
-	
+
 	/**
 	 * 
 	 * get type
@@ -239,7 +241,7 @@ public class GenericAttributes {
 	public static void setType(BioEntity e, String type) {
 		e.setAttribute(TYPE, type);
 	}
-	
+
 	/**
 	 * set annotator comments
 	 * 
@@ -280,5 +282,5 @@ public class GenericAttributes {
 		return (Set<AnnotatorComment>) e.getAttribute(ANNOTATOR_COMMENTS);
 
 	}
-	
+
 }

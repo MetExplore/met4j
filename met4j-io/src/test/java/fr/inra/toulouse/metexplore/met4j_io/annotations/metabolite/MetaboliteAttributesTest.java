@@ -147,19 +147,21 @@ public class MetaboliteAttributesTest {
 	
 	@Test
 	public void testSetSboTermBadlyFormatted() {
-		exception.expect(IllegalArgumentException.class);
 
 		String sbo = "SBO:134567";
 		MetaboliteAttributes.setSboTerm(metabolite, sbo);
+		
+		assertNull(MetaboliteAttributes.getSboTerm(metabolite));
 
 	}
 	
 	@Test
 	public void testSetSboTermBadlyFormatted2() {
-		exception.expect(IllegalArgumentException.class);
 
 		String sbo = "SB:1234567";
 		MetaboliteAttributes.setSboTerm(metabolite, sbo);
+
+		assertNull(MetaboliteAttributes.getSboTerm(metabolite));
 
 	}
 

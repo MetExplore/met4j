@@ -52,7 +52,7 @@ public class BioReactant extends BioParticipant {
 		this.setLocation(location);
 	}
 
-	protected BioCompartment getLocation() {
+	public BioCompartment getLocation() {
 		return location;
 	}
 

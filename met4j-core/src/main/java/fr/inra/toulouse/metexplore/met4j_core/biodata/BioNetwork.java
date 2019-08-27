@@ -1034,29 +1034,6 @@ public class BioNetwork extends BioEntity {
 	}
 
 	/**
-	 * Get compartments where are involved a metabolite
-	 * 
-	 * @param m
-	 * @return
-	 */
-	public BioCollection<BioCompartment> getCompartmentsFromMetabolite(BioMetabolite m) {
-		if (!this.contains(m)) {
-			throw new IllegalArgumentException("Metabolite " + m + " not present in the network");
-		}
-
-		BioCollection<BioCompartment> cpts = new BioCollection<BioCompartment>();
-
-		for (BioCompartment c : this.compartments) {
-			if (c.getComponents().contains(m)) {
-				cpts.add(c);
-			}
-		}
-
-		return cpts;
-
-	}
-
-	/**
 	 * @param cpd
 	 * @return the list of reactionNodes which involves the compound cpd as
 	 *         substrate
@@ -1204,5 +1181,31 @@ public class BioNetwork extends BioEntity {
 
 		return reactions;
 	}
+	
+	/**
+	 * 
+	 * @param e
+	 * @return
+	 */
+	public BioCollection<BioCompartment> getCompartmentsOf(BioPhysicalEntity e) {
+		
+		BioCollection<BioCompartment> cpts = new BioCollection<BioCompartment>();
+		
+		if (!this.contains(e)) {
+			throw new IllegalArgumentException("Entity " + e + " not present in the network");
+		}
+		
+		for(BioCompartment c : this.getCompartmentsView()) 
+		{
+			if(c.getComponents().contains(e))
+			{
+				cpts.add(c);
+			}
+		}
+		
+		return cpts;
+		
+	}
+	
 
 }

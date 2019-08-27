@@ -225,7 +225,7 @@ public class BionetworkToJsbml {
 
 		for (BioMetabolite bioMetab : net.getMetabolitesView()) {
 
-			BioCollection<BioCompartment> cpts = net.getCompartmentsFromMetabolite(bioMetab);
+			BioCollection<BioCompartment> cpts = net.getCompartmentsOf(bioMetab);
 
 			// TODO : to check : if the metabolite has several compartments, it will fail
 			for (BioCompartment cpt : cpts) {

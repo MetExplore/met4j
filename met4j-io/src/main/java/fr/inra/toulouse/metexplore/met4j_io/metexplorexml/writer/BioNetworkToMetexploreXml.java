@@ -178,7 +178,7 @@ public class BioNetworkToMetexploreXml {
 			generic = "true";
 		}
 
-		BioCollection<BioCompartment> cpts = network.getCompartmentsFromMetabolite(cpd);
+		BioCollection<BioCompartment> cpts = network.getCompartmentsOf(cpd);
 
 		// TODO : to check : if the metabolite has several compartments, it will fail
 		for (BioCompartment cpt : cpts) {

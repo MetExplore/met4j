@@ -39,7 +39,7 @@ public class BioNetworkTest {
 		network.add(p1);
 		network.add(p2);
 		network.add(cpt);
-
+		
 		network.affectToCompartment(s1, cpt);
 		network.affectToCompartment(s2, cpt);
 		network.affectToCompartment(p1, cpt);
@@ -68,7 +68,6 @@ public class BioNetworkTest {
 		
 		e2 = new BioEnzyme("e2");
 		network.add(e2);
-		
 		
 		network.affectGeneProduct(prot1, g1);
 		network.affectGeneProduct(prot2, g2);
@@ -1376,7 +1375,7 @@ public class BioNetworkTest {
 	}
 	
 	@Test
-	public void testGetCompartmentsFromMetabolite() {
+	public void testGetCompartmentsOf() {
 		
 		BioCompartment c1 = new BioCompartment("cpt1");
 		BioCompartment c2 = new BioCompartment("cpt2");
@@ -1393,11 +1392,10 @@ public class BioNetworkTest {
 		ref.add(c1);
 		ref.add(c2);
 		
-		BioCollection<BioCompartment> test = network.getCompartmentsFromMetabolite(s1);
+		BioCollection<BioCompartment> test = network.getCompartmentsOf(s1);
 		
-		assertEquals("Test getCompartmentsFromMetabolite", ref, test);
+		assertEquals("Test getCompartmentsOf", ref, test);
 		
 	}
 	
-
 }

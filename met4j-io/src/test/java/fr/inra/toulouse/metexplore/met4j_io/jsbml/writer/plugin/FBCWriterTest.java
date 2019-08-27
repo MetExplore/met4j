@@ -171,7 +171,7 @@ public class FBCWriterTest {
 
 		FBCSpeciesPlugin speciePlugin1 = (FBCSpeciesPlugin) s1.getPlugin("fbc");
 
-		assertEquals(m1.getCharge(), speciePlugin1.getCharge());
+		assertEquals(m1.getCharge(), speciePlugin1.getCharge(), 0);
 
 	}
 

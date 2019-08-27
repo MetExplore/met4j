@@ -35,11 +35,11 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
  */
 public class BioMetabolite extends BioPhysicalEntity {
 	
-	private double molecularWeight;
+	private Double molecularWeight;
 	private String chemicalFormula;
 	private String inchi;
 	private String smiles;
-	private int charge = 0;
+	private Integer charge = 0;
 	
 	public BioMetabolite(String id) {
 		super(id);
@@ -111,7 +111,7 @@ public class BioMetabolite extends BioPhysicalEntity {
 	/**
 	 * @return the charge
 	 */
-	public int getCharge() {
+	public Integer getCharge() {
 		return charge;
 	}
 
@@ -119,7 +119,7 @@ public class BioMetabolite extends BioPhysicalEntity {
 	/**
 	 * @param charge the charge to set
 	 */
-	public void setCharge(int charge) {
+	public void setCharge(Integer charge) {
 		this.charge = charge;
 	}
 

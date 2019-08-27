@@ -256,9 +256,9 @@ public class FBCParserTest {
 
 		assertNull(m1.getChemicalFormula());
 		assertNull(m3.getChemicalFormula());
-		assertEquals(3, m1.getCharge());
-		assertEquals(0, m2.getCharge());
-		assertEquals(0, m3.getCharge());
+		assertEquals(3, m1.getCharge(), 0);
+		assertEquals(0, m2.getCharge(), 0);
+		assertEquals(0, m3.getCharge(), 0);
 		assertEquals("C6H6O2", m2.getChemicalFormula());
 
 	}

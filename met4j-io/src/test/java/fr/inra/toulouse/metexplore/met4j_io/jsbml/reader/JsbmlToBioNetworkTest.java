@@ -333,9 +333,9 @@ public class JsbmlToBioNetworkTest {
 		assertNotNull(metabolite2);
 		assertNotNull(metabolite3);
 
-		assertEquals(3, metabolite1.getCharge());
-		assertEquals(4, metabolite2.getCharge());
-		assertEquals(0, metabolite3.getCharge());
+		assertEquals(3, metabolite1.getCharge(), 0);
+		assertEquals(4, metabolite2.getCharge(), 0);
+		assertEquals(0, metabolite3.getCharge(), 0);
 		
 		String sboTerm = MetaboliteAttributes.getSboTerm(metabolite1);
 		assertEquals(type1.getSBOTermID(), sboTerm);
@@ -392,9 +392,9 @@ public class JsbmlToBioNetworkTest {
 		m2.setInitialConcentration(3.0);
 
 		// Level 3 : the charge is not an attribute
-		assertEquals(0, metabolite1.getCharge());
-		assertEquals(0, metabolite2.getCharge());
-		assertEquals(0, metabolite3.getCharge());
+		assertEquals(0, metabolite1.getCharge(), 0);
+		assertEquals(0, metabolite2.getCharge(), 0);
+		assertEquals(0, metabolite3.getCharge(), 0);
 
 		// We reparse the model because a specie can't have initial amount AND initial
 		// concentration

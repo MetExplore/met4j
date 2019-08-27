@@ -199,7 +199,7 @@ public class NotesParserTest {
 		
 		assertNotNull(metabolite1.getCharge());
 		
-		assertEquals(3, metabolite1.getCharge());
+		assertEquals(3, metabolite1.getCharge(), 0);
 		
 		assertNotNull(metabolite1.getInchi());
 		

@@ -170,7 +170,6 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	@Override
 	public boolean add(E e) {
-		String id = e.getId();
 		entities.put(e.getId(), e);
 		return true;
 	}

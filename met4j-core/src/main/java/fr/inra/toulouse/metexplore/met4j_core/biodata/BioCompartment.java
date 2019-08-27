@@ -46,35 +46,35 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 public class BioCompartment extends BioPhysicalEntity{
 
 	
-	private BioCollection<BioPhysicalEntity> components;
+	private BioCollection<BioEntity> components;
 	
 	public BioCompartment(String id) {
 		super(id);
 
-		components  = new BioCollection<BioPhysicalEntity>();
+		components  = new BioCollection<BioEntity>();
 	}
 	
 	public BioCompartment(String id, String name) {
 		super(id, name);
 
-		components  = new BioCollection<BioPhysicalEntity>();
+		components  = new BioCollection<BioEntity>();
 	}
 
 	/**
 	 * @return the components
 	 */
-	public BioCollection<BioPhysicalEntity> getComponents() {
+	public BioCollection<BioEntity> getComponents() {
 		return components;
 	}
 
 	/**
 	 * @param components the components to set
 	 */
-	public void setComponents(BioCollection<BioPhysicalEntity> components) {
+	public void setComponents(BioCollection<BioEntity> components) {
 		this.components = components;
 	}
 	
-	public void addComponent(BioPhysicalEntity e)
+	public void addComponent(BioEntity e)
 	{
 		this.components.add(e);
 	}

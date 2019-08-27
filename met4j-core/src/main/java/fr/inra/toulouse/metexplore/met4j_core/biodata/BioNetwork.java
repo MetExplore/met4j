@@ -160,7 +160,7 @@ public class BioNetwork extends BioEntity {
 		});
 
 		this.compartments.forEach(c -> {
-			BioCollection<BioPhysicalEntity> components = new BioCollection<BioPhysicalEntity>(c.getComponents());
+			BioCollection<BioEntity> components = new BioCollection<BioEntity>(c.getComponents());
 
 			components.forEach(p -> {
 				if (p.equals(protein)) {
@@ -197,7 +197,7 @@ public class BioNetwork extends BioEntity {
 		});
 
 		this.compartments.forEach(c -> {
-			BioCollection<BioPhysicalEntity> components = new BioCollection<BioPhysicalEntity>(c.getComponents());
+			BioCollection<BioEntity> components = new BioCollection<BioEntity>(c.getComponents());
 
 			components.forEach(p -> {
 				if (p.equals(m)) {
@@ -1187,7 +1187,7 @@ public class BioNetwork extends BioEntity {
 	 * @param e
 	 * @return
 	 */
-	public BioCollection<BioCompartment> getCompartmentsOf(BioPhysicalEntity e) {
+	public BioCollection<BioCompartment> getCompartmentsOf(BioEntity e) {
 		
 		BioCollection<BioCompartment> cpts = new BioCollection<BioCompartment>();
 		

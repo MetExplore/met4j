@@ -2,59 +2,15 @@ package fr.inra.toulouse.metexplore.met4j_io.annotations.compartment;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 
-public class CompartmentAttributes {
+public class CompartmentAttributes extends GenericAttributes {
 
 	public static final String OUTSIDE_COMPARTMENT = "outside_compartment";
 	public static final String TYPE = "type";
 	public static final String SIZE = "size";
 	public static final String SPATIAL_DIMENSIONS = "spatial_dimensions";
 	public static final String UNIT_DEFINITION = "unit_definition";
-
-	/**
-	 * get Constant condition of a compartment
-	 * 
-	 * @param c
-	 * @return
-	 */
-	public static Boolean getConstant(BioCompartment c) {
-
-		return GenericAttributes.getConstant(c);
-	}
-
-	/**
-	 * Set constant condition
-	 * 
-	 * @param m
-	 */
-	public static void setConstant(BioCompartment c, Boolean flag) {
-
-		GenericAttributes.setConstant(c, flag);
-	}
-
-	/**
-	 * 
-	 * @param compartment
-	 * @param notes
-	 */
-	public static void setNotes(BioCompartment c, Notes notes) {
-
-		GenericAttributes.setNotes(c, notes);
-
-	}
-
-	/**
-	 * 
-	 * @param compartment
-	 * @param notes
-	 */
-	public static Notes getNotes(BioCompartment c) {
-
-		return GenericAttributes.getNotes(c);
-
-	}
 
 	/**
 	 * Set outside compartment
@@ -129,39 +85,19 @@ public class CompartmentAttributes {
 	}
 
 	/**
-	 * Get Sbo term
-	 * 
-	 * @param c
-	 * @return
-	 */
-	public static String getSboTerm(BioCompartment c) {
-		return GenericAttributes.getSboTerm(c);
-	}
-
-	/**
-	 * Set Sbo term
-	 * 
-	 * @param c
-	 * @param sboTerm
-	 */
-	public static void setSboTerm(BioCompartment c, String sboTerm) {
-		GenericAttributes.setSboTerm(c, sboTerm);
-	}
-
-	/**
 	 * get size
 	 * 
 	 * @param c
 	 * @return
 	 */
 	public static Double getSize(BioCompartment c) {
-		
-		if(c.getAttribute(SIZE) == null) {
+
+		if (c.getAttribute(SIZE) == null) {
 			return null;
 		}
 		return (Double) c.getAttribute(SIZE);
 	}
-	
+
 	/**
 	 * Set size
 	 * 
@@ -169,11 +105,11 @@ public class CompartmentAttributes {
 	 * @param s
 	 */
 	public static void setSize(BioCompartment c, Double s) {
-		
+
 		c.setAttribute(SIZE, s);
-		
+
 	}
-	
+
 	/**
 	 * get spatial dimensions
 	 * 
@@ -183,7 +119,7 @@ public class CompartmentAttributes {
 	public static Integer getSpatialDimensions(BioCompartment c) {
 		return (Integer) c.getAttribute(SPATIAL_DIMENSIONS);
 	}
-	
+
 	/**
 	 * Set spatial dimensions
 	 * 
@@ -191,11 +127,9 @@ public class CompartmentAttributes {
 	 * @param s
 	 */
 	public static void setSpatialDimensions(BioCompartment c, Integer s) {
-		
+
 		c.setAttribute(SPATIAL_DIMENSIONS, s);
-		
+
 	}
-	
-	
 
 }

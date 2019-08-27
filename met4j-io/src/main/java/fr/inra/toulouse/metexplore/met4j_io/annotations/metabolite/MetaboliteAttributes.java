@@ -7,7 +7,7 @@ import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 
-public class MetaboliteAttributes {
+public class MetaboliteAttributes extends GenericAttributes {
 
 	public static final String NOTES = "notes";
 	public static final String COMMENT = "comment";
@@ -49,50 +49,6 @@ public class MetaboliteAttributes {
 	}
 
 	/**
-	 * get Constant condition of a metabolite
-	 * 
-	 * @param m
-	 * @return
-	 */
-	public static Boolean getConstant(BioMetabolite m) {
-		return GenericAttributes.getConstant(m);
-	}
-
-	/**
-	 * Set constant condition
-	 * 
-	 * @param m
-	 */
-	public static void setConstant(BioMetabolite m, Boolean flag) {
-
-		GenericAttributes.setConstant(m, flag);
-
-	}
-
-	/**
-	 * 
-	 * @param metabolite
-	 * @param notes
-	 */
-	public static void setNotes(BioMetabolite m, Notes notes) {
-
-		GenericAttributes.setNotes(m, notes);
-
-	}
-
-	/**
-	 * 
-	 * @param metabolite
-	 * @param notes
-	 */
-	public static Notes getNotes(BioMetabolite m) {
-
-		return GenericAttributes.getNotes(m);
-
-	}
-
-
-	/**
 	 * Get Metabolite units
 	 * 
 	 * @param m
@@ -113,26 +69,6 @@ public class MetaboliteAttributes {
 
 		m.setAttribute(SUBSTANCE_UNITS, u);
 
-	}
-
-	/**
-	 * Get Sbo term
-	 * 
-	 * @param c
-	 * @return
-	 */
-	public static String getSboTerm(BioMetabolite m) {
-		return GenericAttributes.getSboTerm(m);
-	}
-
-	/**
-	 * Set Sbo term
-	 * 
-	 * @param c
-	 * @param sboTerm
-	 */
-	public static void setSboTerm(BioMetabolite m, String sboTerm) {
-		GenericAttributes.setSboTerm(m, sboTerm);
 	}
 
 	/**
@@ -184,26 +120,6 @@ public class MetaboliteAttributes {
 	}
 
 	/**
-	 * Set annotation
-	 * 
-	 * @param metabolite
-	 * @param val
-	 */
-	public static void setAnnotation(BioMetabolite metabolite, SbmlAnnotation val) {
-		GenericAttributes.setAnnotation(metabolite, val);
-	}
-
-	/**
-	 * Get annotation
-	 * 
-	 * @param metabolite
-	 * @return
-	 */
-	public static SbmlAnnotation getAnnotation(BioMetabolite metabolite) {
-		return GenericAttributes.getAnnotation(metabolite);
-	}
-
-	/**
 	 * Get pubchem
 	 * @param metabolite
 	 * @return
@@ -221,31 +137,6 @@ public class MetaboliteAttributes {
 		metabolite.setAttribute(PUBCHEM, val);
 	}
 	
-	/**
-	 * get pmids
-	 * 
-	 * @param r
-	 * @return
-	 */
-	public static Set<Integer> getPmids(BioMetabolite m) {
-
-		return GenericAttributes.getPmids(m);
-
-	}
-
-	/**
-	 * 
-	 * set pmids
-	 * 
-	 * @param r
-	 * @param pmids
-	 */
-	public static void setPmids(BioMetabolite m, Set<Integer> pmids) {
-
-		GenericAttributes.setPmids(m, pmids);
-
-	}
-
 	/**
 	 * Get hasOnlySubstanceUnit value
 	 * @param metabolite

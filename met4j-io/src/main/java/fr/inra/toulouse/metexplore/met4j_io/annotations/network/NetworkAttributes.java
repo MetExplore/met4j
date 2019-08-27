@@ -11,7 +11,7 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
 
-public class NetworkAttributes {
+public class NetworkAttributes extends GenericAttributes {
 
 	public static final String UNIT_DEFINITIONS = "unit_definitions";
 	public static final String OBJECTIVES = "objectives";
@@ -75,73 +75,6 @@ public class NetworkAttributes {
 
 		getUnitDefinitions(network).add(unit);
 
-	}
-
-	/**
-	 * 
-	 * @param network
-	 * @param notes
-	 */
-	public static void setNotes(BioNetwork network, Notes notes) {
-
-		GenericAttributes.setNotes(network, notes);
-
-	}
-
-	/**
-	 * 
-	 * @param network
-	 * @param notes
-	 */
-	public static Notes getNotes(BioNetwork network) {
-
-		return GenericAttributes.getNotes(network);
-
-	}
-
-	/**
-	 * get pmids
-	 * 
-	 * @param r
-	 * @return
-	 */
-	public static Set<Integer> getPmids(BioNetwork n) {
-
-		return GenericAttributes.getPmids(n);
-
-	}
-
-	/**
-	 * 
-	 * set pmids
-	 * 
-	 * @param r
-	 * @param pmids
-	 */
-	public static void setPmids(BioNetwork n, Set<Integer> pmids) {
-
-		GenericAttributes.setPmids(n, pmids);
-
-	}
-
-	/**
-	 * Set annotation
-	 * 
-	 * @param metabolite
-	 * @param val
-	 */
-	public static void setAnnotation(BioNetwork network, SbmlAnnotation val) {
-		GenericAttributes.setAnnotation(network, val);
-	}
-
-	/**
-	 * Get annotation
-	 * 
-	 * @param metabolite
-	 * @return
-	 */
-	public static SbmlAnnotation getAnnotation(BioNetwork network) {
-		return GenericAttributes.getAnnotation(network);
 	}
 
 	/**

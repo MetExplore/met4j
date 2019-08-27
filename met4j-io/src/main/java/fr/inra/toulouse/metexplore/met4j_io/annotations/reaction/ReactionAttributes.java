@@ -8,7 +8,7 @@ import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 
 
-public class ReactionAttributes {
+public class ReactionAttributes extends GenericAttributes {
 
 	public static final String LOWER_BOUND = "flux_lower_bound";
 	public static final String UPPER_BOUND = "flux_upper_bound";
@@ -84,28 +84,6 @@ public class ReactionAttributes {
 
 	
 	/**
-	 * 
-	 * @param network
-	 * @param notes
-	 */
-	public static void setNotes(BioReaction r, Notes notes) {
-		
-		GenericAttributes.setNotes(r, notes);
-		
-	}
-	
-	/**
-	 * 
-	 * @param network
-	 * @param notes
-	 */
-	public static Notes getNotes(BioReaction r) {
-		
-		return GenericAttributes.getNotes(r);
-		
-	}
-	
-	/**
 	 * Get Score
 	 * @param r
 	 * @return
@@ -145,81 +123,6 @@ public class ReactionAttributes {
 		r.setAttribute(STATUS, status);
 	}
 	
-	/**
-	 * get pmids
-	 * @param r
-	 * @return
-	 */
-	public static Set<Integer> getPmids(BioReaction r) {
-		
-		return GenericAttributes.getPmids(r);
-		
-	}
-	
-	/**
-	 * 
-	 * set pmids
-	 * 
-	 * @param r
-	 * @param pmids
-	 */
-	public static void setPmids(BioReaction r, Set<Integer> pmids) {
-		
-		GenericAttributes.setPmids(r, pmids);
-		
-	}
-	
-	/**
-	 * Add pmid
-	 * @param r
-	 * @param pmid
-	 */
-	public static void addPmid(BioReaction r, Integer pmid) {
-		GenericAttributes.addPmid(r, pmid);
-	}
-	
-	/**
-	 * Set comment
-	 * @param r
-	 * @param comment
-	 */
-	public static void setComment(BioReaction r, String comment) {
-		
-		GenericAttributes.setComment(r, comment);
-		
-	}
-	
-	/**
-	 * Get comment
-	 * @param r
-	 * @return
-	 */
-	public static String getComment(BioReaction r) {
-		
-		return GenericAttributes.getComment(r);
-		
-		
-	}
-	
-	/**
-	 * Get Sbo term
-	 * 
-	 * @param c
-	 * @return
-	 */
-	public static String getSboTerm(BioReaction r) {
-		return GenericAttributes.getSboTerm(r);
-	}
-
-	/**
-	 * Set Sbo term
-	 * 
-	 * @param c
-	 * @param sboTerm
-	 */
-	public static void setSboTerm(BioReaction r, String sboTerm) {
-		GenericAttributes.setSboTerm(r, sboTerm);
-	}
 
 	
 	/**

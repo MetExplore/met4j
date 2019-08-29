@@ -429,4 +429,31 @@ public class ReactionAttributesTest {
 		assertNull(ReactionAttributes.getFlux(r, "f"));
 	}
 	
+	@Test
+	public void testSetSpontaneous() {
+
+		Boolean flag = true;
+		ReactionAttributes.setSpontaneous(r, flag);
+
+		assertEquals((boolean) r.getAttribute(ReactionAttributes.SPONTANEOUS), true);
+
+		flag = false;
+		ReactionAttributes.setSpontaneous(r, flag);
+		assertEquals((boolean) r.getAttribute(ReactionAttributes.SPONTANEOUS), false);
+
+	}
+
+	@Test
+	public void testGetSpontaneous() {
+
+		assertFalse("By default fast must be false", ReactionAttributes.getSpontaneous(r));
+
+		Boolean flag = true;
+
+		r.setAttribute(ReactionAttributes.SPONTANEOUS, flag);
+
+		assertEquals(flag, ReactionAttributes.getSpontaneous(r));
+
+	}
+	
 }

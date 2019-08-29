@@ -5,7 +5,6 @@ import java.util.Set;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 
 
 public class ReactionAttributes extends GenericAttributes {
@@ -23,6 +22,8 @@ public class ReactionAttributes extends GenericAttributes {
 	public static final String GENE_ASSOCIATION = "GENE_ASSOCIATION";
 	public static final String HOLE = "hole";
 	public static final String SIDE_COMPOUNDS = "side_compounds";
+	public static final String SPONTANEOUS = "spontaneous";
+
 
 	public static final double MIN_LOWER_BOUND = Flux.FLUXMIN;
 	public static final double MAX_UPPER_BOUND = Flux.FLUXMAX;
@@ -132,6 +133,24 @@ public class ReactionAttributes extends GenericAttributes {
 	 */
 	public static boolean getFast(BioReaction r) {
 		return r.getAttribute(FAST)!=null ? (Boolean) r.getAttribute(FAST) : false;
+	}
+	
+	/**
+	 * Set spontaneous attribute
+	 * @param r
+	 * @param flag
+	 */
+	public static void setSpontaneous(BioReaction r, boolean flag) {
+		r.setAttribute(SPONTANEOUS, flag);
+	}
+	
+	/**
+	 * get spontaneous attribute
+	 * @param r
+	 * @return
+	 */
+	public static boolean getSpontaneous(BioReaction r) {
+		return r.getAttribute(SPONTANEOUS)!=null ? (Boolean) r.getAttribute(SPONTANEOUS) : false;
 	}
 	
 	/**

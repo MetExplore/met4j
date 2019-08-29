@@ -40,7 +40,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.algo.SteinerTreeApprox;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -55,7 +55,7 @@ public class TestSteinerTreeApprox {
 
 	public static CompoundGraph g;
 	
-	public static BioPhysicalEntity a,b,c,d,e,f,x,y,z;
+	public static BioMetabolite a,b,c,d,e,f,x,y,z;
 	
 	public static ReactionEdge az,zb,ab,xb,bc,cx,yx,ay,ea,ey,xd,ed,fe,df;
 	 
@@ -63,15 +63,15 @@ public class TestSteinerTreeApprox {
 	@BeforeClass
 	public static void init(){
 		g = new CompoundGraph();
-		a = new BioPhysicalEntity("a"); g.addVertex(a);
-		b = new BioPhysicalEntity("b"); g.addVertex(b);
-		c = new BioPhysicalEntity("c"); g.addVertex(c);
-		d = new BioPhysicalEntity("d"); g.addVertex(d);
-		e = new BioPhysicalEntity("e"); g.addVertex(e);
-		f = new BioPhysicalEntity("f"); g.addVertex(f);
-		x = new BioPhysicalEntity("x"); g.addVertex(x);
-		y = new BioPhysicalEntity("y"); g.addVertex(y);
-		z = new BioPhysicalEntity("z"); g.addVertex(z);
+		a = new BioMetabolite("a"); g.addVertex(a);
+		b = new BioMetabolite("b"); g.addVertex(b);
+		c = new BioMetabolite("c"); g.addVertex(c);
+		d = new BioMetabolite("d"); g.addVertex(d);
+		e = new BioMetabolite("e"); g.addVertex(e);
+		f = new BioMetabolite("f"); g.addVertex(f);
+		x = new BioMetabolite("x"); g.addVertex(x);
+		y = new BioMetabolite("y"); g.addVertex(y);
+		z = new BioMetabolite("z"); g.addVertex(z);
 		az = new ReactionEdge(a,z,new BioReaction("az"));g.addEdge(a, z, az);g.setEdgeWeight(az, 2);
 		zb = new ReactionEdge(z,b,new BioReaction("zb"));g.addEdge(z, b, zb);g.setEdgeWeight(zb, 8);
 		ab = new ReactionEdge(a,b,new BioReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 9);
@@ -94,12 +94,12 @@ public class TestSteinerTreeApprox {
 	 */
 	@Test
 	public void testSteinerTreeList(){
-		HashSet<BioPhysicalEntity> noi = new HashSet<BioPhysicalEntity>();
+		HashSet<BioMetabolite> noi = new HashSet<BioMetabolite>();
 		noi.add(a);noi.add(b);noi.add(c);noi.add(d);noi.add(e);
 		
 		ReactionEdge[] expectedPath = {ey, yx, ay, ed, cx, xb};
-		SteinerTreeApprox<BioPhysicalEntity, ReactionEdge, CompoundGraph> steinerComputer 
-			= new SteinerTreeApprox<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g, true);
+		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer 
+			= new SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph>(g, true);
 		List<ReactionEdge> treeList = steinerComputer.getSteinerTreeList(noi, true);
 		
 		assertNotNull("No path found", treeList);
@@ -114,12 +114,12 @@ public class TestSteinerTreeApprox {
 	 */
 	@Test
 	public void testSteinerTreeList2(){
-		HashSet<BioPhysicalEntity> noi = new HashSet<BioPhysicalEntity>();
+		HashSet<BioMetabolite> noi = new HashSet<BioMetabolite>();
 		noi.add(a);noi.add(b);noi.add(c);noi.add(d);noi.add(e);
 		
 		ReactionEdge[] expectedPath = {ey, yx, ay, ed, cx, xb};
-		SteinerTreeApprox<BioPhysicalEntity, ReactionEdge, CompoundGraph> steinerComputer 
-			= new SteinerTreeApprox<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g);
+		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer 
+			= new SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph>(g);
 		List<ReactionEdge> treeList = steinerComputer.getSteinerTreeList(noi,noi, true);
 		
 		assertNotNull("No path found", treeList);
@@ -133,11 +133,11 @@ public class TestSteinerTreeApprox {
 //	 */
 //	@Test
 //	public void testSteinerTreeSubGraph() {
-//		HashSet<BioPhysicalEntity> noi = new HashSet<BioPhysicalEntity>();
+//		HashSet<BioMetabolite> noi = new HashSet<BioMetabolite>();
 //		noi.add(a);noi.add(b);noi.add(c);noi.add(d);noi.add(e);
 //		
-//		SteinerTreeApprox<BioPhysicalEntity, ReactionEdge, CompoundGraph> steinerComputer 
-//			= new SteinerTreeApprox<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g, true);
+//		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer 
+//			= new SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph>(g, true);
 //		CompoundGraph subGraph = steinerComputer.getSteinerTree(noi, true);
 //		assertEquals(6, subGraph.edgeSet().size());
 //		assertEquals(7, subGraph.vertexSet().size());

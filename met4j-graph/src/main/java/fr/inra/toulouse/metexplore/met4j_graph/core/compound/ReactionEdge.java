@@ -30,19 +30,17 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_graph.core.compound;
 
-import java.util.Collection;
 import java.util.Objects;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 
 /**
- * The edge Class linking two {@link BioPhysicalEntity}, associated with a {@link BioReaction}
+ * The edge Class linking two {@link BioMetabolite}, associated with a {@link BioReaction}
  * @author clement
  */
-public class ReactionEdge extends Edge<BioPhysicalEntity>{
+public class ReactionEdge extends Edge<BioMetabolite>{
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -60,7 +58,7 @@ public class ReactionEdge extends Edge<BioPhysicalEntity>{
      * @param v2 the target vertex
      * @param r the reaction
      */
-    public ReactionEdge(BioPhysicalEntity v1,BioPhysicalEntity v2, BioReaction r) {
+    public ReactionEdge(BioMetabolite v1,BioMetabolite v2, BioReaction r) {
         super(v1,v2);
         this.r=r;
     }
@@ -80,15 +78,7 @@ public class ReactionEdge extends Edge<BioPhysicalEntity>{
     public BioReaction getReaction(){
     	return r;
     }
-    
-    /**
-     * Gets the pathway.
-     *
-     * @return the pathway
-     */
-    public Collection<BioPathway> getPathway(){
-    	return r.getPathwayList().values();
-    }
+
     
 	/**
 	 * Gets the pvalue.

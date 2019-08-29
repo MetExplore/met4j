@@ -85,7 +85,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	}
 	
 	/**
-	 * Get list of set of BioPhysicalEntity, each BioPhysicalEntity in a set belong to the same connected component
+	 * Get list of set of BioMetabolite, each BioMetabolite in a set belong to the same connected component
 	 * @param <V>
 	 * @param <E>
 	 *

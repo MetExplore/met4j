@@ -5,10 +5,11 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -23,57 +24,61 @@ public class TestBionetwork2BioGraph {
 	public static Bionetwork2BioGraph builder;
 	
 	/** The nodes. */
-	public static BioPhysicalEntity a,b,c,d,e,f,h;
+	public static BioMetabolite a,b,c,d,e,f,h;
 	
 	/** The edges. */
-	public static BioChemicalReaction r1,r2,r3,r4,r5,r6,r7;	
+	public static BioReaction r1,r2,r3,r4,r5,r6,r7;	
+	
+	/** The compartment */
+	public static BioCompartment comp;
 	/**
 	 * Inits the graph.
 	 */
 	@BeforeClass
 	public static void init(){
 		bn = new BioNetwork();
-		a = new BioPhysicalEntity("a"); bn.addPhysicalEntity(a);
-		b = new BioPhysicalEntity("b"); bn.addPhysicalEntity(b);
-		c = new BioPhysicalEntity("c"); bn.addPhysicalEntity(c);
-		d = new BioPhysicalEntity("d"); bn.addPhysicalEntity(d);
-		e = new BioPhysicalEntity("e"); bn.addPhysicalEntity(e);
-		f = new BioPhysicalEntity("f"); bn.addPhysicalEntity(f);
-		h = new BioPhysicalEntity("h"); bn.addPhysicalEntity(h);
-		r1 = new BioChemicalReaction("r1");
-		r1.addLeftParticipant(new BioPhysicalEntityParticipant(a));
-		r1.addRightParticipant(new BioPhysicalEntityParticipant(b));
-		r1.addRightParticipant(new BioPhysicalEntityParticipant(h));
-		r2 = new BioChemicalReaction("r2");
-		r2.addLeftParticipant(new BioPhysicalEntityParticipant(b));
-		r2.addLeftParticipant(new BioPhysicalEntityParticipant(d));
-		r2.addLeftParticipant(new BioPhysicalEntityParticipant(h));
-		r2.addRightParticipant(new BioPhysicalEntityParticipant(c));
-		r3 = new BioChemicalReaction("r3");
-		r3.addLeftParticipant(new BioPhysicalEntityParticipant(e));
-		r3.addRightParticipant(new BioPhysicalEntityParticipant(b));
-		r3.setReversibility(true);
-		r4 = new BioChemicalReaction("r4");
-		r4.addLeftParticipant(new BioPhysicalEntityParticipant(e));
-		r4.addRightParticipant(new BioPhysicalEntityParticipant(c));
-		r4.addRightParticipant(new BioPhysicalEntityParticipant(f));
-		r5 = new BioChemicalReaction("r5");
-		r5.addLeftParticipant(new BioPhysicalEntityParticipant(a));
-		r5.addRightParticipant(new BioPhysicalEntityParticipant(e));
-		r5.setReversibility(true);
-		r6 = new BioChemicalReaction("r6");
-		r6.addLeftParticipant(new BioPhysicalEntityParticipant(d));
-		r6.addRightParticipant(new BioPhysicalEntityParticipant(f));
-		r7 = new BioChemicalReaction("r7");
-		r7.addLeftParticipant(new BioPhysicalEntityParticipant(d));
-		r7.addRightParticipant(new BioPhysicalEntityParticipant(f));
-		bn.addBiochemicalReaction(r1);
-		bn.addBiochemicalReaction(r2);
-		bn.addBiochemicalReaction(r3);
-		bn.addBiochemicalReaction(r4);
-		bn.addBiochemicalReaction(r5);
-		bn.addBiochemicalReaction(r6);
-		bn.addBiochemicalReaction(r7);
+		a = new BioMetabolite("a"); bn.add(a);
+		b = new BioMetabolite("b"); bn.add(b);
+		c = new BioMetabolite("c"); bn.add(c);
+		d = new BioMetabolite("d"); bn.add(d);
+		e = new BioMetabolite("e"); bn.add(e);
+		f = new BioMetabolite("f"); bn.add(f);
+		h = new BioMetabolite("h"); bn.add(h);
+		r1 = new BioReaction("r1");
+		comp = new BioCompartment("comp"); bn.add(comp);
+		bn.affectLeft(a, 1.0, comp, r1);
+		bn.affectRight(b, 1.0, comp, r1);
+		bn.affectRight(h, 1.0, comp, r1);
+		r2 = new BioReaction("r2");
+		bn.affectLeft(b, 1.0, comp, r2);
+		bn.affectLeft(d, 1.0, comp, r2);
+		bn.affectLeft(h, 1.0, comp, r2);
+		bn.affectRight(c, 1.0, comp, r2);
+		r3 = new BioReaction("r3");
+		bn.affectLeft(e, 1.0, comp, r3);
+		bn.affectRight(b, 1.0, comp, r3);
+		r3.setReversible(true);
+		r4 = new BioReaction("r4");
+		bn.affectLeft(e, 1.0, comp, r4);
+		bn.affectRight(c, 1.0, comp, r4);
+		bn.affectRight(f, 1.0, comp, r4);
+		r5 = new BioReaction("r5");
+		bn.affectLeft(a, 1.0, comp, r5);
+		bn.affectRight(e, 1.0, comp, r5);
+		r5.setReversible(true);
+		r6 = new BioReaction("r6");
+		bn.affectLeft(d, 1.0, comp, r6);
+		bn.affectRight(f, 1.0, comp, r6);
+		r7 = new BioReaction("r7");
+		bn.affectLeft(d, 1.0, comp, r7);
+		bn.affectRight(f, 1.0, comp, r7);
+		bn.add(r1);
+		bn.add(r2);
+		bn.add(r3);
+		bn.add(r4);
+		bn.add(r5);
+		bn.add(r6);
+		bn.add(r7);
 		
 		try{
 			builder = new Bionetwork2BioGraph(bn);
@@ -88,7 +93,7 @@ public class TestBionetwork2BioGraph {
 		assertEquals("wrong number of vertices",7, g.vertexSet().size());
 		assertEquals("wrong number of edges",9, g.edgeSet().size());
 		
-		assertEquals("wrong in-degree of reaction "+r1.getId(), 1, g.inDegreeOf(r1));
+		assertEquals("wrong in-degree of reaction "+r1.getId(), 1,g.inDegreeOf(r1));
 		assertEquals("wrong out-degree of reaction "+r1.getId(), 3, g.outDegreeOf(r1));
 		assertEquals("wrong in-degree of reaction "+r2.getId(), 3, g.inDegreeOf(r2));
 		assertEquals("wrong out-degree of reaction "+r2.getId(), 0, g.outDegreeOf(r2));

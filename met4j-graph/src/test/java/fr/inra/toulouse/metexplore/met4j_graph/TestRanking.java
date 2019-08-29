@@ -37,7 +37,7 @@ import java.util.HashMap;
 import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.analysis.RankUtils;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -83,11 +83,11 @@ public class TestRanking {
 		CompoundGraph g1 = new CompoundGraph();CompoundGraph g2 = new CompoundGraph();
 		HashMap<String, Integer> expected1 = new HashMap<String, Integer>();
 		HashMap<String, Integer> expected2 = new HashMap<String, Integer>();
-		BioPhysicalEntity a = new BioPhysicalEntity("a");g1.addVertex(a);g2.addVertex(a);
-		BioPhysicalEntity e = new BioPhysicalEntity("e");g1.addVertex(e);g2.addVertex(e);
-		BioPhysicalEntity d = new BioPhysicalEntity("d");g1.addVertex(d);g2.addVertex(d);
-		BioPhysicalEntity b = new BioPhysicalEntity("b");g1.addVertex(b);g2.addVertex(b);
-		BioPhysicalEntity c = new BioPhysicalEntity("c");g1.addVertex(c);g2.addVertex(c);
+		BioMetabolite a = new BioMetabolite("a");g1.addVertex(a);g2.addVertex(a);
+		BioMetabolite e = new BioMetabolite("e");g1.addVertex(e);g2.addVertex(e);
+		BioMetabolite d = new BioMetabolite("d");g1.addVertex(d);g2.addVertex(d);
+		BioMetabolite b = new BioMetabolite("b");g1.addVertex(b);g2.addVertex(b);
+		BioMetabolite c = new BioMetabolite("c");g1.addVertex(c);g2.addVertex(c);
 		
 		ReactionEdge ba = new ReactionEdge(b, a, new BioReaction("ba"));
 		g1.addEdge(b, a, ba); g1.setEdgeScore(ba, 8.0); expected1.put("ba", 0);

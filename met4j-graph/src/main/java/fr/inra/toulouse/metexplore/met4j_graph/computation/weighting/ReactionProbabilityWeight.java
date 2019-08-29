@@ -37,7 +37,7 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 
 /**
@@ -48,7 +48,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
  * Custom reaction probabilities can be used by setting reactions weights.
  * @author clement
  */
-public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioPhysicalEntity, ReactionEdge, CompoundGraph>{
+public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioMetabolite, ReactionEdge, CompoundGraph>{
 	
 	
 	Map<BioReaction,Double> reactionWeights;
@@ -56,14 +56,14 @@ public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioPhysic
 	public ReactionProbabilityWeight() {
 		super();
 	}
-	public ReactionProbabilityWeight(WeightingPolicy<BioPhysicalEntity, ReactionEdge, CompoundGraph> wp) {
+	public ReactionProbabilityWeight(WeightingPolicy<BioMetabolite, ReactionEdge, CompoundGraph> wp) {
 		super(wp);
 	}
 	public ReactionProbabilityWeight(Map<BioReaction,Double> reactionWeights) {
 		super();
 		this.reactionWeights=reactionWeights;
 	}
-	public ReactionProbabilityWeight(WeightingPolicy<BioPhysicalEntity, ReactionEdge, CompoundGraph> wp, Map<BioReaction,Double> reactionWeights) {
+	public ReactionProbabilityWeight(WeightingPolicy<BioMetabolite, ReactionEdge, CompoundGraph> wp, Map<BioReaction,Double> reactionWeights) {
 		super(wp);
 		this.reactionWeights=reactionWeights;
 	}
@@ -75,7 +75,7 @@ public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioPhysic
 	@Override
 	public void computeProba(CompoundGraph g){
 		
-		for(BioPhysicalEntity v : g.vertexSet()){
+		for(BioMetabolite v : g.vertexSet()){
 			
 			//get edge weight sum for each bio-chemical reaction consuming the node
 			Map<BioReaction,Double> sumMap = new HashMap<BioReaction, Double>();

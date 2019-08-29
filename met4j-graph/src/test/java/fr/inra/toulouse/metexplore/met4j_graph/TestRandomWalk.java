@@ -44,7 +44,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.algo.RandomWalk;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -59,7 +59,7 @@ import fr.inra.toulouse.metexplore.met4j_core.io.Sbml2BioNetworkLite;
  */
 public class TestRandomWalk {
 	
-	static RandomWalk<BioPhysicalEntity, ReactionEdge, CompoundGraph> rw;
+	static RandomWalk<BioMetabolite, ReactionEdge, CompoundGraph> rw;
 	
 	static CompoundGraph g;
 	
@@ -123,7 +123,7 @@ public class TestRandomWalk {
 		g = bn2g.getCompoundGraph();
 		wp.setWeight(g);
 		try{
-			rw = new RandomWalk<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g, blackNodesFile);
+			rw = new RandomWalk<BioMetabolite, ReactionEdge, CompoundGraph>(g, blackNodesFile);
 		}catch(Exception e){
 			e.printStackTrace();
 			fail("error during random walk init");

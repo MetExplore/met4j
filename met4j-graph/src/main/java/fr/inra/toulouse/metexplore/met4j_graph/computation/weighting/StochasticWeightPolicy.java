@@ -39,7 +39,7 @@ import java.util.Set;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * The Stochastic weighting policy based on chemical similarity.
@@ -80,7 +80,7 @@ public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 	 */
 	public void normalizeWeight(CompoundGraph g){
 		super.noStructFilter(g);
-		for (BioPhysicalEntity v : g.vertexSet()){
+		for (BioMetabolite v : g.vertexSet()){
 			//double sum = 0;
 			Set<ReactionEdge> edgeSet = g.outgoingEdgesOf(v);
 			HashMap<String, Double> reactionMap = new HashMap<String, Double>();
@@ -111,7 +111,7 @@ public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 	 */
 	public void normalizeWeight(HashMap<String, Double> reactionWeight, CompoundGraph g){
 		super.noStructFilter(g);
-		for (BioPhysicalEntity v : g.vertexSet()){
+		for (BioMetabolite v : g.vertexSet()){
 			Set<ReactionEdge> edgeSet = g.outgoingEdgesOf(v);
 			HashMap<String, Double> reactionMap = new HashMap<String, Double>();
 			if (!edgeSet.isEmpty()){
@@ -181,7 +181,7 @@ public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 	public void normalizeWeight(HashSet<String> meanReaction, CompoundGraph g){
 		super.noStructFilter(g);
 		int numberOfReactionSum = 0;
-		for (BioPhysicalEntity v : g.vertexSet()){
+		for (BioMetabolite v : g.vertexSet()){
 			Set<ReactionEdge> edgeSet = g.outgoingEdgesOf(v);
 			HashSet<String> reactionSet = new HashSet<String>();
 			if (!edgeSet.isEmpty()){

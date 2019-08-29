@@ -9,10 +9,12 @@ import java.util.HashSet;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -27,37 +29,40 @@ public class TestPathwayGraph {
 
 	public static PathwayGraph pg;
 	public static BioPathway p1,p2;
-	public static BioPhysicalEntity v1,v2,v3;
+	public static BioMetabolite v1,v2,v3;
 	public static BioReaction r1,r2,r3;
 	public static PathwayGraphEdge e;
+	public static BioNetwork bn;
+	public static BioCompartment comp;
 	
 	@BeforeClass
 	public static void init(){
 		
 		pg = new PathwayGraph();
-		v1 = new BioPhysicalEntity("v1");
-		v2 = new BioPhysicalEntity("v2");
-		v3 = new BioPhysicalEntity("v3");
+		comp = new BioCompartment("comp");
+		v1 = new BioMetabolite("v1"); bn.add(v1);
+		v2 = new BioMetabolite("v2"); bn.add(v2);
+		v3 = new BioMetabolite("v3"); bn.add(v3);
 		
-		p1 = new BioPathway("p1");
-		p2 = new BioPathway("p2");
+		p1 = new BioPathway("p1");bn.add(p1);
+		p2 = new BioPathway("p2");bn.add(p2);
 		
-		r1 = new BioReaction("r1");
-		r1.addLeftParticipant(new BioParticipant(v1));
-		r1.addRightParticipant(new BioParticipant(v2));
-		r2 = new BioReaction("r2");
-		r2.addLeftParticipant(new BioParticipant(v2));
-		r2.addRightParticipant(new BioParticipant(v3));
-		r3 = new BioReaction("r3");
-		r3.addLeftParticipant(new BioParticipant(v3));
-		r3.addRightParticipant(new BioParticipant(v1));
-		r3.setReversibility(true);
+		r1 = new BioReaction("r1");bn.add(r1);
+		bn.affectLeft(v1, 1.0, comp, r1);
+		bn.affectRight(v2, 1.0, comp, r1);
+		r2 = new BioReaction("r2");bn.add(r2);
+		bn.affectLeft(v2, 1.0, comp, r2);
+		bn.affectRight(v3, 1.0, comp, r2);
+		r3 = new BioReaction("r3");bn.add(r3);
+		bn.affectLeft(v3, 1.0, comp, r3);
+		bn.affectRight(v1, 1.0, comp, r3);
+		r3.setReversible(true);
 		
-		p1.addReaction(r1);
-		p1.addReaction(r3);
-		p2.addReaction(r2);
+		bn.affectToPathway(r1, p1);
+		bn.affectToPathway(r3, p1);
+		bn.affectToPathway(r2, p2);
 		
-		HashSet<BioPhysicalEntity> connectingCompounds = new HashSet<BioPhysicalEntity>();
+		HashSet<BioMetabolite> connectingCompounds = new HashSet<BioMetabolite>();
 		connectingCompounds.add(v1);
 		connectingCompounds.add(v3);
 		

@@ -119,40 +119,7 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 		
 		return randomList;
 	}
-	
 
-	/**
-	 * Gets a random vertex list in given compartment.
-	 *
-	 * @param n the size of the sample
-	 * @param comp the compartment
-	 * @return the random vertex list in given compartment
-	 */
-	public HashSet<V> getRandomVertexListinComp(int n, String comp) throws IllegalArgumentException{
-			
-		ArrayList<V> vertices = new ArrayList<V>();
-		for(V entity : g.vertexSet()){
-			if(entity.getCompartment().getId().equals(comp)){
-				vertices.add(entity);
-			}
-		}
-
-		if(vertices.size()<n){
-			throw new IllegalArgumentException("requested sample size greater than compartment size");
-		}
-		
-		
-		HashSet<V> randomList = new HashSet<V>();
-		Random random = new Random();
-		
-		for(int i=0;i<n;i++){
-			int rand = random.nextInt(vertices.size());
-			randomList.add(vertices.get(rand));
-			vertices.remove(rand);
-		}
-		
-		return randomList;
-	}
 	
 	/**
 	 * Gets the random vertex list in scope.

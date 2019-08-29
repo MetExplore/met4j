@@ -53,7 +53,7 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * Export informations from graphs generated from {@link Bionetwork2Graph} into Cytoscape-readable files
@@ -172,7 +172,7 @@ public class ExportGraph {
     		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
     		bw.write("Name (class=String)");
     		bw.newLine();
-    		for(BioPhysicalEntity e:graph.vertexSet()){
+    		for(BioMetabolite e:graph.vertexSet()){
     			String nodeID = e.getId();
     			String nodeName = e.getName();
     			if(nodeID.contains("=") || nodeName.contains("=")){
@@ -200,7 +200,7 @@ public class ExportGraph {
     		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
     		bw.write("Name (class=String)");
     		bw.newLine();
-    		for(BioPhysicalEntity e:bn.getPhysicalEntityList().values()){
+    		for(BioMetabolite e:bn.getMetabolitesView()){
     			String nodeID = e.getId();
     			String nodeName = e.getName();
     			if(nodeID.contains("=") || nodeName.contains("=")){
@@ -254,7 +254,7 @@ public class ExportGraph {
     		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
     		bw.write("CanonicalName\tName\tCompartment");
     		bw.newLine();
-    		for(BioPhysicalEntity v : graph.vertexSet()){
+    		for(BioMetabolite v : graph.vertexSet()){
 				String entry = v.getId()+"\t"+v.getName()+"\t"+v.getCompartment().getName();
 				bw.write(entry);
 	    		bw.newLine();
@@ -277,7 +277,7 @@ public class ExportGraph {
     		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
     		bw.write("CanonicalName\tName\tCompartment\tWeight");
     		bw.newLine();
-    		for(BioPhysicalEntity v : graph.vertexSet()){
+    		for(BioMetabolite v : graph.vertexSet()){
     			double weight = (weights.get(v.getId())==null) ? 0 : weights.get(v.getId());
 				String entry = v.getId()+"\t"+v.getName()+"\t"+v.getCompartment().getName()+"\t"+weight;
 				bw.write(entry);
@@ -377,8 +377,8 @@ public class ExportGraph {
     		bw.newLine();
     		for(BioEntity v : bip.vertexSet()){
     			String entry=null;
-    			if(v instanceof BioPhysicalEntity){
-    				BioPhysicalEntity e = (BioPhysicalEntity) v;
+    			if(v instanceof BioMetabolite){
+    				BioMetabolite e = (BioMetabolite) v;
 //    				boolean side = (graph.hasVertex(v.getId())) ? false : true ;
     				entry=e.getId()+"\t"+e.getName()+"\tcompound\t"+e.getCompartment().getName()+"\t"+e.getIsSide()+"\tnull\tnull";
     			}

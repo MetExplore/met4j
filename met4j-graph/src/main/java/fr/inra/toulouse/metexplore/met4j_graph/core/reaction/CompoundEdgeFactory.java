@@ -33,7 +33,7 @@ package fr.inra.toulouse.metexplore.met4j_graph.core.reaction;
 import org.jgrapht.EdgeFactory;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -50,6 +50,6 @@ public class CompoundEdgeFactory implements EdgeFactory<BioReaction, CompoundEdg
 	@Override
 	public CompoundEdge createEdge(BioReaction arg0,
 			BioReaction arg1) {
-		return new CompoundEdge(arg0, arg1, new BioPhysicalEntity(""));
+		return new CompoundEdge(arg0, arg1, new BioMetabolite(""));
 	}
 }

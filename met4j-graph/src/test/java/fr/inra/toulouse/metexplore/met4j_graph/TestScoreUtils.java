@@ -16,8 +16,8 @@ import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioGene;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.analysis.ScoreUtils;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -27,7 +27,7 @@ public class TestScoreUtils {
 	
 public static CompoundGraph g;
 	
-	public static BioPhysicalEntity a,b,c,d,e,f,x,y;
+	public static BioMetabolite a,b,c,d,e,f,x,y;
 	public static BioReaction r1,r2,r3,r4;
 	public static ReactionEdge ab,bc,ad,de,ef,fc,bx,eb,yc;
 	 
@@ -37,11 +37,11 @@ public static CompoundGraph g;
 		g=new CompoundGraph();
 		
 		//add nodes
-		a = new BioPhysicalEntity("a");g.addVertex(a);
-		e = new BioPhysicalEntity("e");g.addVertex(e);
-		d = new BioPhysicalEntity("d");g.addVertex(d);
-		b = new BioPhysicalEntity("b");g.addVertex(b);
-		c = new BioPhysicalEntity("c");g.addVertex(c);
+		a = new BioMetabolite("a");g.addVertex(a);
+		e = new BioMetabolite("e");g.addVertex(e);
+		d = new BioMetabolite("d");g.addVertex(d);
+		b = new BioMetabolite("b");g.addVertex(b);
+		c = new BioMetabolite("c");g.addVertex(c);
 		
 		//create genes and enzyme
 		BioGene g1 = new BioGene("1.2","1.2");
@@ -53,25 +53,25 @@ public static CompoundGraph g;
 		
 		//create reactions
 		r1 = new BioReaction("abed");
-		r1.addLeftParticipant(new BioParticipant(a));
-		r1.addLeftParticipant(new BioParticipant(b));
-		r1.addLeftParticipant(new BioParticipant(e));
-		r1.addRightParticipant(new BioParticipant(d));
+		bn.affectLeft(a, 1.0, comp, r1);
+		bn.affectLeft(b, 1.0, comp, r1);
+		bn.affectLeft(e, 1.0, comp, r1);
+		bn.affectRight(d, 1.0, comp, r1);
 		r1.addEnz(enz1);
 		r2 = new BioReaction("cad");
-		r2.addLeftParticipant(new BioParticipant(c));
-		r2.addRightParticipant(new BioParticipant(a));
-		r2.addRightParticipant(new BioParticipant(d));
+		bn.affectLeft(c, 1.0, comp, r2);
+		bn.affectRight(a, 1.0, comp, r2);
+		bn.affectRight(d, 1.0, comp, r2);
 		r2.addEnz(enz1);
 		r3 = new BioReaction("ade");
-		r3.addLeftParticipant(new BioParticipant(a));
-		r3.addLeftParticipant(new BioParticipant(d));
-		r3.addRightParticipant(new BioParticipant(e));
+		bn.affectLeft(a, 1.0, comp, r3);
+		bn.affectLeft(d, 1.0, comp, r3);
+		bn.affectRight(e, 1.0, comp, r3);
 		r3.addEnz(enz2);
 		r4 = new BioReaction("eca");
-		r4.addLeftParticipant(new BioParticipant(e));
-		r4.addRightParticipant(new BioParticipant(a));
-		r4.addRightParticipant(new BioParticipant(c));
+		bn.affectLeft(e, 1.0, comp, r4);
+		bn.affectRight(a, 1.0, comp, r4);
+		bn.affectRight(c, 1.0, comp, r4);
 		r4.addEnz(enz2);
 		
 		//add egdges

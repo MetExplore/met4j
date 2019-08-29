@@ -38,7 +38,7 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * Class to compute choke points, i.e. reaction that are required to consume or produce one compound.
@@ -56,7 +56,7 @@ public class ChokePoint {
 	 */
 	public static HashSet<BioReaction> getChokePoint(CompoundGraph g){
 		HashSet<BioReaction> chokePoints = new HashSet<BioReaction>();
-		for(BioPhysicalEntity v : g.vertexSet()){
+		for(BioMetabolite v : g.vertexSet()){
 			Set<ReactionEdge> in = g.incomingEdgesOf(v);
 			Set<ReactionEdge> out = g.outgoingEdgesOf(v);
 			if(in.size() == 1 ){
@@ -79,7 +79,7 @@ public class ChokePoint {
 	public static HashSet<BioReaction> getChokePoint(BipartiteGraph g){
 		HashSet<BioReaction> chokePoints = new HashSet<BioReaction>();
 		for(BioEntity v : g.vertexSet()){
-			if(v instanceof BioPhysicalEntity){
+			if(v instanceof BioMetabolite){
 				Set<BioEntity> in = g.predecessorListOf(v);
 				Set<BioEntity> out = g.successorListOf(v);
 				if(in.size() == 1 ){

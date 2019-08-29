@@ -37,8 +37,9 @@ import org.jgrapht.EdgeFactory;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.GraphFactory;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * The Class CompoundGraph.
@@ -102,8 +103,8 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 	 *
 	 * @return the biochemical reaction list
 	 */
-	public HashMap<String, BioPhysicalEntity> getCompoundList(){
-		HashMap<String, BioPhysicalEntity> compoundMap = new HashMap<String, BioPhysicalEntity>();
+	public HashMap<String, BioMetabolite> getCompoundList(){
+		HashMap<String, BioMetabolite> compoundMap = new HashMap<String, BioMetabolite>();
 		for(CompoundEdge e: this.edgeSet()){
 			if(!compoundMap.containsKey(e.toString())){
 				compoundMap.put(e.toString(), e.getCompound());
@@ -117,10 +118,10 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 	 *
 	 * @param r the reaction
 	 */
-	public void addEdgesFromCompound(BioPhysicalEntity c){
-		for(BioReaction in : c.getReactionsAsProduct().values()){
+	public void addEdgesFromCompound(BioNetwork model, BioMetabolite c){
+		for(BioReaction in : model.getReactionsFromProduct(c)){
 			if(this.hasVertex(in.getId())){
-				for(BioReaction out : c.getReactionsAsSubstrate().values()){
+				for(BioReaction out : model.getReactionsFromSubstrate(c)){
 					if(this.hasVertex(out.getId())){
 						if(in!=out){
 							CompoundEdge edge = new CompoundEdge(in, out, c);

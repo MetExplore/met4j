@@ -43,15 +43,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.weighting.DefaultWeightPolicy;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.weighting.DegreeWeightPolicy;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.weighting.ProbabilityWeightPolicy;
-import fr.inra.toulouse.metexplore.met4j_graph.computation.weighting.RPairsTagPolicy;
-import fr.inra.toulouse.metexplore.met4j_graph.computation.weighting.RPairsWeightPolicy;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.weighting.ReactionProbabilityWeight;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.weighting.SimilarityWeightPolicy;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.weighting.StochasticWeightPolicy;
@@ -59,35 +57,35 @@ import fr.inra.toulouse.metexplore.met4j_graph.computation.weighting.WeightUtils
 import fr.inra.toulouse.metexplore.met4j_graph.computation.weighting.WeightsFromFile;
 
 /**
- * Test {@link Bionetwork2CompoundGraph} with {@link WeightingPolicy<BioPhysicalEntity,ReactionEdge,CompoundGraph>}
+ * Test {@link Bionetwork2CompoundGraph} with {@link WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph>}
  * @author clement
  */
 public class TestWeightingPolicy {
 	
 	public static CompoundGraph g;
 	
-	public static BioPhysicalEntity a,b,c,d,e,f,x,y;
+	public static BioMetabolite a,b,c,d,e,f,x,y;
 	
 	public static ReactionEdge ab,bc,ad,de,ef,fc,bx,eb,yc;
 	 
 	@BeforeClass
 	public static void init(){
 		g = new CompoundGraph();
-		a = new BioPhysicalEntity("a"); a.setName("glucose"); a.setInchi("InChI=1S/C6H12O6/c7-1-2-3(8)4(9)5(10)6(11)12-2/h2-11H,1H2/t2-,3-,4+,5-,6?/m1/s1");
+		a = new BioMetabolite("a"); a.setName("glucose"); a.setInchi("InChI=1S/C6H12O6/c7-1-2-3(8)4(9)5(10)6(11)12-2/h2-11H,1H2/t2-,3-,4+,5-,6?/m1/s1");
 		g.addVertex(a);
-		b = new BioPhysicalEntity("b"); b.setName("atp"); b.setInchi("InChI=1S/C10H16N5O13P3/c11-8-5-9(13-2-12-8)15(3-14-5)10-7(17)6(16)4(26-10)1-25-30(21,22)28-31(23,24)27-29(18,19)20/h2-4,6-7,10,16-17H,1H2,(H,21,22)(H,23,24)(H2,11,12,13)(H2,18,19,20)/p-4/t4-,6-,7-,10-/m1/s1");
+		b = new BioMetabolite("b"); b.setName("atp"); b.setInchi("InChI=1S/C10H16N5O13P3/c11-8-5-9(13-2-12-8)15(3-14-5)10-7(17)6(16)4(26-10)1-25-30(21,22)28-31(23,24)27-29(18,19)20/h2-4,6-7,10,16-17H,1H2,(H,21,22)(H,23,24)(H2,11,12,13)(H2,18,19,20)/p-4/t4-,6-,7-,10-/m1/s1");
 		g.addVertex(b);
-		c = new BioPhysicalEntity("c"); c.setName("Dihydroxyacetone phosphate"); c.setInchi("InChI=1S/C3H7O6P/c4-1-3(5)2-9-10(6,7)8/h1,3,5H,2H2,(H2,6,7,8)/p-2");
+		c = new BioMetabolite("c"); c.setName("Dihydroxyacetone phosphate"); c.setInchi("InChI=1S/C3H7O6P/c4-1-3(5)2-9-10(6,7)8/h1,3,5H,2H2,(H2,6,7,8)/p-2");
 		g.addVertex(c);
-		d = new BioPhysicalEntity("d"); d.setName("glucose-6-P"); d.setInchi("InChI=1S/C6H13O9P/c7-3-2(1-14-16(11,12)13)15-6(10)5(9)4(3)8/h2-10H,1H2,(H2,11,12,13)/t2-,3-,4+,5-,6?/m1/s1");
+		d = new BioMetabolite("d"); d.setName("glucose-6-P"); d.setInchi("InChI=1S/C6H13O9P/c7-3-2(1-14-16(11,12)13)15-6(10)5(9)4(3)8/h2-10H,1H2,(H2,11,12,13)/t2-,3-,4+,5-,6?/m1/s1");
 		g.addVertex(d);
-		e = new BioPhysicalEntity("e"); e.setName("fructose-6-P"); e.setInchi("InChI=1S/C6H13O9P/c7-1-3(8)5(10)6(11)4(9)2-15-16(12,13)14/h4-7,9-11H,1-2H2,(H2,12,13,14)/p-2/t4-,5-,6-/m1/s1");
+		e = new BioMetabolite("e"); e.setName("fructose-6-P"); e.setInchi("InChI=1S/C6H13O9P/c7-1-3(8)5(10)6(11)4(9)2-15-16(12,13)14/h4-7,9-11H,1-2H2,(H2,12,13,14)/p-2/t4-,5-,6-/m1/s1");
 		g.addVertex(e);
-		f = new BioPhysicalEntity("f"); f.setName("fructose 1,6-bisphosphate"); f.setInchi("InChI=1S/C6H14O12P2/c7-3(1-17-19(11,12)13)5(9)6(10)4(8)2-18-20(14,15)16/h3,5-7,9-10H,1-2H2,(H2,11,12,13)(H2,14,15,16)/t3-,5-,6-/m1/s1");
+		f = new BioMetabolite("f"); f.setName("fructose 1,6-bisphosphate"); f.setInchi("InChI=1S/C6H14O12P2/c7-3(1-17-19(11,12)13)5(9)6(10)4(8)2-18-20(14,15)16/h3,5-7,9-10H,1-2H2,(H2,11,12,13)(H2,14,15,16)/t3-,5-,6-/m1/s1");
 		g.addVertex(f);
-		x = new BioPhysicalEntity("x"); x.setName("lipoate"); x.setInchi("InChI=1S/C8H14O2S2/c9-8(10)4-2-1-3-7-5-6-11-12-7/h7H,1-6H2,(H,9,10)");
+		x = new BioMetabolite("x"); x.setName("lipoate"); x.setInchi("InChI=1S/C8H14O2S2/c9-8(10)4-2-1-3-7-5-6-11-12-7/h7H,1-6H2,(H,9,10)");
 		g.addVertex(x);
-		y = new BioPhysicalEntity("y"); y.setName("glycerol 3-phosphate"); y.setInchi("InChI=1S/C3H9O6P/c4-1-3(5)2-9-10(6,7)8/h3-5H,1-2H2,(H2,6,7,8)/p-2/t3-/m1/s1");
+		y = new BioMetabolite("y"); y.setName("glycerol 3-phosphate"); y.setInchi("InChI=1S/C3H9O6P/c4-1-3(5)2-9-10(6,7)8/h3-5H,1-2H2,(H2,6,7,8)/p-2/t3-/m1/s1");
 		g.addVertex(y);
 		BioReaction abd = new BioReaction("abd");
 		BioReaction efb = new BioReaction("efb");
@@ -119,7 +117,7 @@ public class TestWeightingPolicy {
 	 */
 	@Test
 	public void testDefaultWeightPolicy() {
-		WeightingPolicy<BioPhysicalEntity,ReactionEdge,CompoundGraph> wp = new DefaultWeightPolicy<BioPhysicalEntity,ReactionEdge,CompoundGraph>();
+		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new DefaultWeightPolicy<BioMetabolite,ReactionEdge,CompoundGraph>();
 		wp.setWeight(g);
 		double defautValue = 1.0;
 		for(ReactionEdge e : g.edgeSet()){
@@ -132,7 +130,7 @@ public class TestWeightingPolicy {
 	 */
 	@Test
 	public void testProbabilityWeightPolicy() {
-		WeightingPolicy<BioPhysicalEntity,ReactionEdge,CompoundGraph> wp = new ProbabilityWeightPolicy<BioPhysicalEntity,ReactionEdge,CompoundGraph>();
+		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new ProbabilityWeightPolicy<BioMetabolite,ReactionEdge,CompoundGraph>();
 		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
 		abWeight=bcWeight=adWeight=efWeight=bxWeight=ebWeight = 0.5;
 		deWeight=fcWeight=ycWeight = 1.0;
@@ -153,7 +151,7 @@ public class TestWeightingPolicy {
 	 */
 	@Test
 	public void testDegreeWeightPolicy() {
-		WeightingPolicy<BioPhysicalEntity,ReactionEdge,CompoundGraph> wp = new DegreeWeightPolicy(2);
+		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new DegreeWeightPolicy(2);
 		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
 		abWeight=ebWeight=16;
 		bcWeight=fcWeight=ycWeight=deWeight=9;
@@ -176,7 +174,7 @@ public class TestWeightingPolicy {
 	 */
 	@Test
 	public void testSimilarityWeightPolicy() {
-		WeightingPolicy<BioPhysicalEntity,ReactionEdge,CompoundGraph> wp = new SimilarityWeightPolicy();
+		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new SimilarityWeightPolicy();
 		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
 		wp.setWeight(g);
 //		System.out.println("abWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(ab.getV1()),FingerprintBuilder.getExtendedFingerprint(ab.getV2())));
@@ -214,8 +212,8 @@ public class TestWeightingPolicy {
 	 */
 	@Test
 	public void testStochasticWeightPolicy() {
-//		WeightingPolicy<BioPhysicalEntity,ReactionEdge,CompoundGraph> wp = new ProbabilityWeightPolicy(new SimilarityWeightPolicy());
-		WeightingPolicy<BioPhysicalEntity,ReactionEdge,CompoundGraph> wp = new StochasticWeightPolicy();
+//		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new ProbabilityWeightPolicy(new SimilarityWeightPolicy());
+		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new StochasticWeightPolicy();
 		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
 		wp.setWeight(g);
 		abWeight=0.15566037735849056/(0.15566037735849056+0.5751633986928104);
@@ -243,7 +241,7 @@ public class TestWeightingPolicy {
 	 */
 	@Test
 	public void testReactionProbabilityPolicy() {
-		WeightingPolicy<BioPhysicalEntity,ReactionEdge,CompoundGraph> wp = new ReactionProbabilityWeight(new SimilarityWeightPolicy());
+		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new ReactionProbabilityWeight(new SimilarityWeightPolicy());
 		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
 		wp.setWeight(g);
 		abWeight=0.15566037735849056/(0.15566037735849056+0.5751633986928104);
@@ -297,7 +295,7 @@ public class TestWeightingPolicy {
 		}
 		
 		resetWeight();
-		WeightsFromFile<BioPhysicalEntity,ReactionEdge,CompoundGraph> wp = new WeightsFromFile<BioPhysicalEntity,ReactionEdge,CompoundGraph>(tmpPath.toString());
+		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp = new WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph>(tmpPath.toString());
 		wp.setWeight(g);
 		
 		assertEquals("wrong weight after export", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
@@ -343,7 +341,7 @@ public class TestWeightingPolicy {
 		fcWeight=0.8;
 		ycWeight=0.9;
 		
-		WeightsFromFile<BioPhysicalEntity,ReactionEdge,CompoundGraph> wp = new WeightsFromFile<BioPhysicalEntity,ReactionEdge,CompoundGraph>(filePath);
+		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp = new WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph>(filePath);
 		wp.setWeight(g);
 		
 		assertEquals("wrong weight after export", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
@@ -358,86 +356,6 @@ public class TestWeightingPolicy {
 
 	}
 	
-	@Ignore
-	@Test
-	public void testRPairsWeight(){
-		RPairsWeightPolicy wp = new RPairsWeightPolicy(false);		
-		
-		//Test web service
-		assertEquals("Unable to retreive RPairs id","RP00060",wp.getRPairEntry("C00031","C00092"));
-		assertEquals("Unable to retreive atom conservation rate",1.0,wp.getAtomConservation("RP00060",false),Double.MIN_VALUE);
-		assertEquals("Unable to retreive atom conservation rate",12.0/16.0,wp.getAtomConservation("RP00060",true),Double.MIN_VALUE);
-		
-		//Test Graph weighting
-		CompoundGraph g = new CompoundGraph();
-		BioPhysicalEntity glc = new BioPhysicalEntity("M_glc_D_c");g.addVertex(glc);
-		glc.addRef("KEGG.COMPOUND", "C00031", 1, "is", "none");
-		glc.addRef("KEGG.COMPOUND", "C00221", 1, "is", "none");
-		BioPhysicalEntity g6p = new BioPhysicalEntity("M_g6p_c");g.addVertex(g6p);
-		g6p.addRef("KEGG.COMPOUND", "C00092", 1, "is", "none");
-		BioPhysicalEntity glc_e = new BioPhysicalEntity("M_glc_D_e");g.addVertex(glc_e);
-		glc_e.addRef("KEGG.COMPOUND", "C00031", 1, "is", "none");
-		BioPhysicalEntity noKegg = new BioPhysicalEntity("M_nokeg_g");g.addVertex(noKegg);
-		
-		BioReaction glcToG6p = new BioReaction("glcToG6p");
-		glcToG6p.setReversibility(true);
-		
-		ReactionEdge e1 = new ReactionEdge(glc,g6p,glcToG6p);g.addEdge(glc, g6p, e1);
-		ReactionEdge e2 = new ReactionEdge(g6p,glc,glcToG6p);g.addEdge(g6p, glc, e2);
-		ReactionEdge e3 = new ReactionEdge(glc,glc_e,new BioReaction("transport"));g.addEdge(glc, glc_e, e3);
-		ReactionEdge e4 = new ReactionEdge(g6p,glc,new BioReaction("glcToG6pII"));g.addEdge(g6p, glc, e4);
-		
-		wp.setWeight(g);
-		
-		assertEquals("wrong atom conservation ", 1.0,g.getEdgeWeight(e1),Double.MIN_VALUE);
-		assertEquals("wrong atom conservation ", 12.0/16.0,g.getEdgeWeight(e2),Double.MIN_VALUE);
-		assertEquals("wrong atom conservation ", 1.0,g.getEdgeWeight(e3),Double.MIN_VALUE);
-		assertEquals("wrong atom conservation ", 12.0/16.0,g.getEdgeWeight(e4),Double.MIN_VALUE);
-		assertFalse("Compound without Kegg in graph ",g.containsVertex(noKegg));
-	}
-	
-	@Ignore
-	@Test
-	public void testRPairsTagWeight(){
-		RPairsTagPolicy wp = new RPairsTagPolicy();
-		wp.setLeaveWeight(42.0);
-		
-		//Test web service
-		assertEquals("Unable to retreive RPairs id","RP00060",wp.getRPairEntry("C00031","C00092"));
-		assertEquals("Unable to retreive rpair tag","main",wp.getPairType("RP00060"));
-		assertEquals("Unable to retreive RPairs id","RP04650",wp.getRPairEntry("C00009","C00092"));
-		assertEquals("Unable to retreive rpair tag","leave",wp.getPairType("RP04650"));
-		
-		//Test Graph weighting
-		CompoundGraph g = new CompoundGraph();
-		BioPhysicalEntity glc = new BioPhysicalEntity("M_glc_D_c");g.addVertex(glc);
-		glc.addRef("KEGG.COMPOUND", "C00031", 1, "is", "none");
-		glc.addRef("KEGG.COMPOUND", "C00221", 1, "is", "none");
-		BioPhysicalEntity g6p = new BioPhysicalEntity("M_g6p_c");g.addVertex(g6p);
-		g6p.addRef("KEGG.COMPOUND", "C00092", 1, "is", "none");
-		BioPhysicalEntity glc_e = new BioPhysicalEntity("M_glc_D_e");g.addVertex(glc_e);
-		glc_e.addRef("KEGG.COMPOUND", "C00031", 1, "is", "none");
-		BioPhysicalEntity pho = new BioPhysicalEntity("M_pho_c");g.addVertex(pho);
-		pho.addRef("KEGG.COMPOUND", "C00009", 1, "is", "none");
-		BioPhysicalEntity noKegg = new BioPhysicalEntity("M_nokeg_g");g.addVertex(noKegg);
-		
-		BioReaction glcToG6p = new BioReaction("glcToG6p");
-		glcToG6p.setReversibility(true);
-		
-		ReactionEdge e1 = new ReactionEdge(glc,g6p,glcToG6p);g.addEdge(glc, g6p, e1);
-		ReactionEdge e2 = new ReactionEdge(g6p,glc,glcToG6p);g.addEdge(g6p, glc, e2);
-		ReactionEdge e3 = new ReactionEdge(glc,glc_e,new BioReaction("transport"));g.addEdge(glc, glc_e, e3);
-		ReactionEdge e4 = new ReactionEdge(g6p,glc,new BioReaction("glcToG6pII"));g.addEdge(g6p, glc, e4);
-		ReactionEdge e5 = new ReactionEdge(pho,g6p,new BioReaction("glcToG6pIII"));g.addEdge(pho, g6p, e5);
-		wp.setWeight(g);
-		
-		assertEquals("wrong atom conservation ", 1.0,g.getEdgeWeight(e1),Double.MIN_VALUE);
-		assertEquals("wrong atom conservation ", 1.0,g.getEdgeWeight(e2),Double.MIN_VALUE);
-		assertEquals("wrong atom conservation ", Double.NaN,g.getEdgeWeight(e3),Double.MIN_VALUE);
-		assertEquals("wrong atom conservation ", 1.0,g.getEdgeWeight(e4),Double.MIN_VALUE);
-		assertEquals("wrong atom conservation ", 42.0,g.getEdgeWeight(e5),Double.MIN_VALUE);
-		assertFalse("Compound without Kegg in graph ",g.containsVertex(noKegg));
-	}
 	
 //	@Test
 //	public void testAtomConservationWeight(){
@@ -445,20 +363,20 @@ public class TestWeightingPolicy {
 //		
 //		
 //		CompoundGraph g = new CompoundGraph();
-//		BioPhysicalEntity glc = new BioPhysicalEntity("M_glc_D_c");g.addVertex(glc);
+//		BioMetabolite glc = new BioMetabolite("M_glc_D_c");g.addVertex(glc);
 //		glc.setInchi("InChI=1S/C6H12O6/c7-1-2-3(8)4(9)5(10)6(11)12-2/h2-11H,1H2/t2-,3-,4+,5-,6?/m1/s1");
-//		BioPhysicalEntity g6p = new BioPhysicalEntity("M_g6p_c");g.addVertex(g6p);
+//		BioMetabolite g6p = new BioMetabolite("M_g6p_c");g.addVertex(g6p);
 //		g6p.setInchi("InChI=1S/C6H13O9P/c7-3-2(1-14-16(11,12)13)15-6(10)5(9)4(3)8/h2-10H,1H2,(H2,11,12,13)/t2-,3-,4+,5-,6?/m1/s1");
-//		BioPhysicalEntity glc_e = new BioPhysicalEntity("M_glc_D_e");g.addVertex(glc_e);
+//		BioMetabolite glc_e = new BioMetabolite("M_glc_D_e");g.addVertex(glc_e);
 //		glc_e.setInchi("InChI=1S/C6H12O6/c7-1-2-3(8)4(9)5(10)6(11)12-2/h2-11H,1H2/t2-,3-,4+,5-,6?/m1/s1");
-//		BioPhysicalEntity noInChI = new BioPhysicalEntity("M_noInCh_i");g.addVertex(noInChI);
+//		BioMetabolite noInChI = new BioMetabolite("M_noInCh_i");g.addVertex(noInChI);
 //		
-//		BioChemicalReaction glcToG6p = new BioChemicalReaction("glcToG6p");
-//		glcToG6p.setReversibility(true);
+//		BioReaction glcToG6p = new BioReaction("glcToG6p");
+//		glcToG6p.setReversible(true);
 //		ReactionEdge e1 = new ReactionEdge(glc,g6p,glcToG6p);g.addEdge(glc, g6p, e1);
 //		ReactionEdge e2 = new ReactionEdge(g6p,glc,glcToG6p);g.addEdge(g6p, glc, e2);
-//		ReactionEdge e3 = new ReactionEdge(glc,glc_e,new BioChemicalReaction("transport"));g.addEdge(glc, glc_e, e3);
-//		ReactionEdge e4 = new ReactionEdge(g6p,glc,new BioChemicalReaction("glcToG6pII"));g.addEdge(g6p, glc, e4);
+//		ReactionEdge e3 = new ReactionEdge(glc,glc_e,new BioReaction("transport"));g.addEdge(glc, glc_e, e3);
+//		ReactionEdge e4 = new ReactionEdge(g6p,glc,new BioReaction("glcToG6pII"));g.addEdge(g6p, glc, e4);
 //		long t0=System.nanoTime();
 //		wp.setWeight(g);
 //		long t1=System.nanoTime();

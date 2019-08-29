@@ -46,7 +46,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjancyMatrix;
@@ -75,38 +75,38 @@ public class TestMatrix {
 //		{0,0,0,0,1,1,1},
 //		{0,0,0,0,1,1,1},
 		graph = new CompoundGraph();
-		BioPhysicalEntity a = new BioPhysicalEntity("a");graph.addVertex(a);
-		BioPhysicalEntity b = new BioPhysicalEntity("b");graph.addVertex(b);
-		BioPhysicalEntity c = new BioPhysicalEntity("c");graph.addVertex(c);
-		BioPhysicalEntity d = new BioPhysicalEntity("d");graph.addVertex(d);
-		BioPhysicalEntity e = new BioPhysicalEntity("e");graph.addVertex(e);
-		BioPhysicalEntity f = new BioPhysicalEntity("f");graph.addVertex(f);
-		BioPhysicalEntity g = new BioPhysicalEntity("g");graph.addVertex(g);
-//		ReactionEdge aa = new ReactionEdge(a, a, new BioChemicalReaction("aa")); graph.addEdge(a, a, aa);
+		BioMetabolite a = new BioMetabolite("a");graph.addVertex(a);
+		BioMetabolite b = new BioMetabolite("b");graph.addVertex(b);
+		BioMetabolite c = new BioMetabolite("c");graph.addVertex(c);
+		BioMetabolite d = new BioMetabolite("d");graph.addVertex(d);
+		BioMetabolite e = new BioMetabolite("e");graph.addVertex(e);
+		BioMetabolite f = new BioMetabolite("f");graph.addVertex(f);
+		BioMetabolite g = new BioMetabolite("g");graph.addVertex(g);
+//		ReactionEdge aa = new ReactionEdge(a, a, new BioReaction("aa")); graph.addEdge(a, a, aa);
 		ReactionEdge ab = new ReactionEdge(a, b, new BioReaction("ab")); graph.addEdge(a, b, ab);
 		ReactionEdge ae = new ReactionEdge(a, e, new BioReaction("ae")); graph.addEdge(a, e, ae);
 		ReactionEdge ba = new ReactionEdge(b, a, new BioReaction("ba")); graph.addEdge(b, a, ba);
-//		ReactionEdge bb = new ReactionEdge(b, b, new BioChemicalReaction("bb")); graph.addEdge(b, b, bb);
+//		ReactionEdge bb = new ReactionEdge(b, b, new BioReaction("bb")); graph.addEdge(b, b, bb);
 		ReactionEdge be = new ReactionEdge(b, e, new BioReaction("be")); graph.addEdge(b, e, be);
-//		ReactionEdge cc = new ReactionEdge(c, c, new BioChemicalReaction("cc")); graph.addEdge(c, c, cc);
+//		ReactionEdge cc = new ReactionEdge(c, c, new BioReaction("cc")); graph.addEdge(c, c, cc);
 		ReactionEdge cd = new ReactionEdge(c, d, new BioReaction("cd")); graph.addEdge(c, d, cd);
 		ReactionEdge ce = new ReactionEdge(c, e, new BioReaction("ce")); graph.addEdge(c, e, ce);
 		ReactionEdge dc = new ReactionEdge(d, c, new BioReaction("dc")); graph.addEdge(d, c, dc);
-//		ReactionEdge dd = new ReactionEdge(d, d, new BioChemicalReaction("dd")); graph.addEdge(d, d, dd);
+//		ReactionEdge dd = new ReactionEdge(d, d, new BioReaction("dd")); graph.addEdge(d, d, dd);
 		ReactionEdge de = new ReactionEdge(d, e, new BioReaction("de")); graph.addEdge(d, e, de);
 		ReactionEdge ea = new ReactionEdge(e, a, new BioReaction("ea")); graph.addEdge(e, a, ea);
 		ReactionEdge eb = new ReactionEdge(e, b, new BioReaction("eb")); graph.addEdge(e, b, eb);
 		ReactionEdge ec = new ReactionEdge(e, c, new BioReaction("ec")); graph.addEdge(e, c, ec);
 		ReactionEdge ed = new ReactionEdge(e, d, new BioReaction("ed")); graph.addEdge(e, d, ed);
-//		ReactionEdge ee = new ReactionEdge(e, e, new BioChemicalReaction("ee")); graph.addEdge(e, e, ee);
+//		ReactionEdge ee = new ReactionEdge(e, e, new BioReaction("ee")); graph.addEdge(e, e, ee);
 		ReactionEdge ef = new ReactionEdge(e, f, new BioReaction("ef")); graph.addEdge(e, f, ef);
 		ReactionEdge eg = new ReactionEdge(e, g, new BioReaction("eg")); graph.addEdge(e, g, eg);
 		ReactionEdge fe = new ReactionEdge(f, e, new BioReaction("fe")); graph.addEdge(f, e, fe);
-//		ReactionEdge ff = new ReactionEdge(f, f, new BioChemicalReaction("ff")); graph.addEdge(f, f, ff);
+//		ReactionEdge ff = new ReactionEdge(f, f, new BioReaction("ff")); graph.addEdge(f, f, ff);
 		ReactionEdge fg = new ReactionEdge(f, g, new BioReaction("fg")); graph.addEdge(f, g, fg);
 		ReactionEdge ge = new ReactionEdge(g, e, new BioReaction("ge")); graph.addEdge(g, e, ge);
 		ReactionEdge gf = new ReactionEdge(g, f, new BioReaction("gf")); graph.addEdge(g, f, gf);	
-//		ReactionEdge gg = new ReactionEdge(g, g, new BioChemicalReaction("gg")); graph.addEdge(g, g, gg);
+//		ReactionEdge gg = new ReactionEdge(g, g, new BioReaction("gg")); graph.addEdge(g, g, gg);
 	}
 
 	
@@ -126,7 +126,7 @@ public class TestMatrix {
 		
 		for(Class<?> matrixClass : matrixClasses){
 			try {
-				adjancy = (new ComputeAdjancyMatrix<BioPhysicalEntity,ReactionEdge,CompoundGraph>(graph, matrixClass)).getAdjancyMatrix();
+				adjancy = (new ComputeAdjancyMatrix<BioMetabolite,ReactionEdge,CompoundGraph>(graph, matrixClass)).getAdjancyMatrix();
 				//check if matrix is square
 				assertEquals("error in "+ComputeAdjancyMatrix.class.getCanonicalName()+" using "+matrixClass.getCanonicalName()+": adjancy matrix not square.",adjancy.numCols(), adjancy.numRows());
 				//check matrix size
@@ -153,7 +153,7 @@ public class TestMatrix {
 			//compute adjancy matrix
 			BioMatrix adjancy = null;
 			try {
-				adjancy = (new ComputeAdjancyMatrix<BioPhysicalEntity,ReactionEdge,CompoundGraph>(graph, matrixClass)).getAdjancyMatrix();
+				adjancy = (new ComputeAdjancyMatrix<BioMetabolite,ReactionEdge,CompoundGraph>(graph, matrixClass)).getAdjancyMatrix();
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail();
@@ -276,7 +276,7 @@ public class TestMatrix {
 	 */
 	@Test
 	public void testMatrix2CSV() {
-		ComputeAdjancyMatrix<BioPhysicalEntity,ReactionEdge,CompoundGraph> adj = new ComputeAdjancyMatrix<BioPhysicalEntity,ReactionEdge,CompoundGraph>(graph);
+		ComputeAdjancyMatrix<BioMetabolite,ReactionEdge,CompoundGraph> adj = new ComputeAdjancyMatrix<BioMetabolite,ReactionEdge,CompoundGraph>(graph);
 		Path tmpPath = null;
 		try {
 			tmpPath = Files.createTempFile("test_Matrix2Csv", ".csv");

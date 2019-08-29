@@ -8,39 +8,45 @@ import java.util.Set;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 
 public class TestBipartiteGraph {
 
 	public static BipartiteGraph bg;
-	public static BioPhysicalEntity v1,v2,v3,side;
+	public static BioMetabolite v1,v2,v3,side;
 	public static BioReaction r1,r2;
 
 	public static BipartiteEdge e1,e2,e3,e4,e5,e6;
+	public static BioCompartment comp;
+	public static BioNetwork bn;
 	
 	@BeforeClass
 	public static void init(){
 		
 		bg = new BipartiteGraph();
-		v1 = new BioPhysicalEntity("v1");
-		v2 = new BioPhysicalEntity("v2");
-		v3 = new BioPhysicalEntity("v3");
-		side = new BioPhysicalEntity("adp");
+		v1 = new BioMetabolite("v1");bn.add(v1);
+		v2 = new BioMetabolite("v2");bn.add(v2);
+		v3 = new BioMetabolite("v3");bn.add(v3);
+		side = new BioMetabolite("adp");bn.add(side);
+		comp = new BioCompartment("comp");bn.add(comp);
+		bn = new BioNetwork();
 		side.setIsSide(true);
 		
-		r1 = new BioReaction("r1");
-		r1.addLeftParticipant(new BioParticipant(v1));
-		r1.addLeftParticipant(new BioParticipant(side));
-		r1.addRightParticipant(new BioParticipant(v2));
-		r2 = new BioReaction("r2");
-		r2.addLeftParticipant(new BioParticipant(v2));
-		r2.addRightParticipant(new BioParticipant(v3));
-		r2.addRightParticipant(new BioParticipant(side));
-		r2.setReversibility(true);
+		r1 = new BioReaction("r1"); bn.add(r1);
+		bn.affectLeft(v1, 1.0, comp, r1);
+		bn.affectLeft(side, 1.0, comp, r1);
+		bn.affectRight(v2, 1.0, comp, r1);
+		r2 = new BioReaction("r2"); bn.add(r2);
+		bn.affectLeft(v2, 1.0, comp, r2);
+		bn.affectRight(v3, 1.0, comp, r2);
+		bn.affectRight(side, 1.0, comp, r2);
+		r2.setReversible(true);
 		
 		bg.addVertex(v1);
 		bg.addVertex(v2);
@@ -67,7 +73,7 @@ public class TestBipartiteGraph {
 	
 	@Test
 	public void testCompoundVertexSet(){
-		Set<BioPhysicalEntity> cpds = bg.compoundVertexSet();
+		Set<BioMetabolite> cpds = bg.compoundVertexSet();
 		assertEquals(3, cpds.size());
 		assertTrue(cpds.contains(v1));
 		assertTrue(cpds.contains(v2));
@@ -126,7 +132,7 @@ public class TestBipartiteGraph {
 		assertEquals(8, bg2.edgeSet().size());
 		assertFalse(bg2.vertexSet().contains(side));
 		
-		for(BioPhysicalEntity v : bg2.compoundVertexSet()){
+		for(BioMetabolite v : bg2.compoundVertexSet()){
 			if(v.getIsSide()){
 				for(BipartiteEdge e : bg2.edgesOf(v)){
 					assertTrue(e.isSide());

@@ -8,10 +8,12 @@ import java.util.HashSet;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.reaction.CompoundEdge;
@@ -20,38 +22,42 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
 public class TestReactionGraph {
 
 	public static ReactionGraph rg;
-	public static BioPhysicalEntity v1,v2,v3;
+	public static BioMetabolite v1,v2,v3;
 	public static BioReaction r1,r2,r3,r4;
 	public static BioPathway p;
 	public static CompoundEdge e1,e2;
+	public static BioNetwork bn;
+	public static BioCompartment comp;
 	
 	@BeforeClass
 	public static void init(){
 		
 		rg = new ReactionGraph();
+		bn = new BioNetwork();
+		comp = new BioCompartment("comp");bn.add(comp);
 		
-		v1 = new BioPhysicalEntity("v1");
-		v2 = new BioPhysicalEntity("v2");
-		v3 = new BioPhysicalEntity("v3");
+		v1 = new BioMetabolite("v1");bn.add(v1);
+		v2 = new BioMetabolite("v2");bn.add(v2);
+		v3 = new BioMetabolite("v3");bn.add(v3);
 		
-		p = new BioPathway("p");
+		p = new BioPathway("p");bn.add(p);
 		
-		r1 = new BioReaction("r1");
-		r1.addLeftParticipant(new BioParticipant(v1));
-		r1.addRightParticipant(new BioParticipant(v2));
-		r1.addPathway(p);
-		r2 = new BioReaction("r2");
-		r2.addLeftParticipant(new BioParticipant(v2));
-		r2.addRightParticipant(new BioParticipant(v3));
-		r2.addPathway(p);
-		r3 = new BioReaction("r3");
-		r3.addLeftParticipant(new BioParticipant(v2));
-		r3.addRightParticipant(new BioParticipant(v3));
-		r3.setReversibility(true);
-		r4 = new BioReaction("r4");
-		r4.addLeftParticipant(new BioParticipant(v3));
-		r4.addRightParticipant(new BioParticipant(v1));
-		r4.setReversibility(true);
+		r1 = new BioReaction("r1");bn.add(r1);
+		bn.affectLeft(v1, 1.0, comp, r1);
+		bn.affectRight(v2, 1.0, comp, r1);
+		bn.affectToPathway(r1,p);
+		r2 = new BioReaction("r2");bn.add(r2);
+		bn.affectLeft(v2, 1.0, comp, r2);
+		bn.affectRight(v3, 1.0, comp, r2);
+		bn.affectToPathway(r2,p);
+		r3 = new BioReaction("r3");bn.add(r3);
+		bn.affectLeft(v2, 1.0, comp, r3);
+		bn.affectRight(v3, 1.0, comp, r3);
+		r3.setReversible(true);
+		r4 = new BioReaction("r4");bn.add(r4);
+		bn.affectLeft(v3, 1.0, comp, r4);
+		bn.affectRight(v1, 1.0, comp, r4);
+		r4.setReversible(true);
 		
 		e1 = new CompoundEdge(r1, r2, v2);
 		e2 = new CompoundEdge(r2, r3, v3);
@@ -79,7 +85,7 @@ public class TestReactionGraph {
 	
 	@Test
 	public void testGetBiochemicalReactionList(){
-		 HashMap<String, BioPhysicalEntity> cpds = rg.getCompoundList();
+		 HashMap<String, BioMetabolite> cpds = rg.getCompoundList();
 		 assertTrue(cpds.containsKey("v2"));
 		 assertTrue(cpds.containsKey("v3"));
 		 assertEquals(v2, cpds.get("v2"));

@@ -6,7 +6,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.analysis.GraphLocalMeasure;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -15,27 +15,27 @@ public class TestGraphLocalMeasure {
 	
 	public static CompoundGraph g;
 	
-	public static BioPhysicalEntity a,b,c,d,e;
+	public static BioMetabolite a,b,c,d,e;
 	
 	public static ReactionEdge ab,ac,ae,ea,ec,ed;
 	
-	public static GraphLocalMeasure<BioPhysicalEntity, ReactionEdge, CompoundGraph> measure;
+	public static GraphLocalMeasure<BioMetabolite, ReactionEdge, CompoundGraph> measure;
 	 
 	@BeforeClass
 	public static void init(){
 		g = new CompoundGraph();
-		a = new BioPhysicalEntity("a"); g.addVertex(a);
-		b = new BioPhysicalEntity("b"); g.addVertex(b);
-		c = new BioPhysicalEntity("c"); g.addVertex(c);
-		d = new BioPhysicalEntity("d"); g.addVertex(d);
-		e = new BioPhysicalEntity("e"); g.addVertex(e);
+		a = new BioMetabolite("a"); g.addVertex(a);
+		b = new BioMetabolite("b"); g.addVertex(b);
+		c = new BioMetabolite("c"); g.addVertex(c);
+		d = new BioMetabolite("d"); g.addVertex(d);
+		e = new BioMetabolite("e"); g.addVertex(e);
 		ab = new ReactionEdge(a,b,new BioReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 1.0);
 		ac = new ReactionEdge(a,c,new BioReaction("ac"));g.addEdge(a, c, ac);g.setEdgeWeight(ac, 1.0);
 		ae = new ReactionEdge(a,e,new BioReaction("ae"));g.addEdge(a, e, ae);g.setEdgeWeight(ae, 1.0);
 		ea = new ReactionEdge(e,a,new BioReaction("ea"));g.addEdge(e, a, ea);g.setEdgeWeight(ea, 1.0);
 		ec = new ReactionEdge(e,c,new BioReaction("ec"));g.addEdge(e, c, ec);g.setEdgeWeight(ec, 1.0);
 		ed = new ReactionEdge(e,d,new BioReaction("ed"));g.addEdge(e, d, ed);g.setEdgeWeight(ed, 1.0);
-		measure = new GraphLocalMeasure<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g);
+		measure = new GraphLocalMeasure<BioMetabolite, ReactionEdge, CompoundGraph>(g);
 
 	}
 	

@@ -204,8 +204,8 @@ public class TestExportGraph{
 		assertEquals("missing edge in exported file", g.edgeSet().size(), edgeCount);
 		
 		HashSet<String> bnReactions=new HashSet<String>();
-		for(BioReaction r : bn.getBiochemicalReactionList().values()){
-			if(r.getLeftList().size()!=0 && r.getRightList().size()!=0){
+		for(BioReaction r : bn.getReactionsView()){
+			if(bn.getLefts(r).size()!=0 && bn.getRights(r).size()!=0){
 				bnReactions.add(r.getId());
 			}
 		}

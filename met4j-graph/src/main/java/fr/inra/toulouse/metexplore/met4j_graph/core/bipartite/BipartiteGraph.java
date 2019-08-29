@@ -30,6 +30,7 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_graph.core.bipartite;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,9 +38,11 @@ import org.jgrapht.EdgeFactory;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.GraphFactory;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 
@@ -59,10 +62,10 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 		
 	}
 	
-	public Set<BioPhysicalEntity> compoundVertexSet(){
-		HashSet<BioPhysicalEntity> vertexSet = new HashSet<BioPhysicalEntity>();
+	public Set<BioMetabolite> compoundVertexSet(){
+		HashSet<BioMetabolite> vertexSet = new HashSet<BioMetabolite>();
 		for(BioEntity v : this.vertexSet()){
-			if(v instanceof BioPhysicalEntity) vertexSet.add((BioPhysicalEntity) v);
+			if(v instanceof BioMetabolite) vertexSet.add((BioMetabolite) v);
 		}
 		return vertexSet;
 	}
@@ -90,24 +93,24 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 	 *
 	 * @param bip the bipartite graph
 	 */
-	public void mergeReversibleEdges(){
+	public void mergeReversibleEdges(BioNetwork bn){
 
 		HashSet<BipartiteEdge> toRemove = new HashSet<BipartiteEdge>();
 		for(BipartiteEdge e : this.edgeSet()){
 			BioEntity v1 = this.getEdgeSource(e);
 			BioEntity v2 = this.getEdgeTarget(e);
 			
-			if(v1 instanceof BioPhysicalEntity){
+			if(v1 instanceof BioMetabolite){
 				BioReaction reaction = (BioReaction) v2;
 				if(reaction.isReversible()){
 					e.setReversible(true);
-					if(reaction.getRightList().containsKey(v1.getId())) toRemove.add(e);
+					if(bn.getRights(reaction).contains(v1)) toRemove.add(e);
 				}
 			}else if(v1 instanceof BioReaction){
 				BioReaction reaction = (BioReaction) v1;
 				if(reaction.isReversible()){
 					e.setReversible(true);
-					if(reaction.getLeftList().containsKey(v2.getId())) toRemove.add(e);
+					if(bn.getLefts(reaction).contains(v2)) toRemove.add(e);
 				}
 			}
 		}
@@ -119,8 +122,8 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 	 *  Add edge if a compound is referred in reaction's reactant list but the edge between this compound and the reaction is missing
 	 *  Newly added elements will be flagged as "side" compounds.
 	 */
-	public void addMissingCompoundAsSide(){
-		HashSet<BioPhysicalEntity> sideCompoundToAdd = new HashSet<BioPhysicalEntity>();
+	public void addMissingCompoundAsSide(BioNetwork bn){
+		HashSet<BioMetabolite> sideCompoundToAdd = new HashSet<BioMetabolite>();
 		HashSet<BipartiteEdge> edgesToAdd = new HashSet<BipartiteEdge>();
 		
 		
@@ -131,7 +134,7 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 			if(v instanceof BioReaction){
 				BioReaction r = (BioReaction) v;
 				//check all substrates
-				for(BioPhysicalEntity s : r.getListOfSubstrates().values()){
+				for(BioMetabolite s : bn.getLefts(r)){
 					//add compound if missing
 					if(!this.containsVertex(s) && !sideCompoundToAdd.contains(s)){
 						s.setIsSide(true);
@@ -151,7 +154,7 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 					}
 				}
 				//check all products
-				for(BioPhysicalEntity p : r.getListOfProducts().values()){
+				for(BioMetabolite p : bn.getRights(r)){
 					//add compound if missing
 					if(!this.containsVertex(p) && !sideCompoundToAdd.contains(p)){
 						p.setIsSide(true);
@@ -173,58 +176,10 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 			}
 		}
 		
-		for(BioPhysicalEntity sideCompounds : sideCompoundToAdd){
+		for(BioMetabolite sideCompounds : sideCompoundToAdd){
 			this.addVertex(sideCompounds);
 		}
 		for(BipartiteEdge e : edgesToAdd){
-			this.addEdge(e.getV1(), e.getV2(), e);
-		}
-	}
-	
-	/**
-	 * Duplicate side compounds
-	 *
-	 */
-	public void duplicateSideCompounds(){
-		HashSet<BioEntity> sideCompoundList = new HashSet<BioEntity>();
-		HashSet<BipartiteEdge> edgesToAdd = new HashSet<BipartiteEdge>();
-		for(BioEntity v : this.vertexSet()){
-			if(v instanceof BioPhysicalEntity){
-				BioPhysicalEntity c = (BioPhysicalEntity) v;
-				if(c.getIsSide()){
-					sideCompoundList.add(c);
-					
-					for(BipartiteEdge e : this.incomingEdgesOf(c)){
-						BioReaction r = (BioReaction) e.getV1();
-						BioPhysicalEntity cCopy = new BioPhysicalEntity(c);
-						cCopy.setIsSide(true);
-						cCopy.setId(c.getId()+"_"+r.getId());
-						BipartiteEdge e2 = new BipartiteEdge(r, cCopy);
-						e2.setReversible(e.isReversible());
-						e2.setSide(true);
-						edgesToAdd.add(e2);
-					}
-					
-					for(BipartiteEdge e : this.outgoingEdgesOf(c)){
-						BioReaction r = (BioReaction) e.getV2();
-						BioPhysicalEntity cCopy = new BioPhysicalEntity(c);
-						cCopy.setIsSide(true);
-						cCopy.setId(c.getId()+"_"+r.getId());
-						BipartiteEdge e2 = new BipartiteEdge(cCopy,r);
-						e2.setReversible(e.isReversible());
-						e2.setSide(true);
-						edgesToAdd.add(e2);
-					}
-				}
-			}
-		}
-		this.removeAllVertices(sideCompoundList);
-		for(BipartiteEdge e : edgesToAdd){
-			if(e.getV1() instanceof BioPhysicalEntity){
-				this.addVertex(e.getV1());
-			}else{
-				this.addVertex(e.getV2());
-			}
 			this.addEdge(e.getV1(), e.getV2(), e);
 		}
 	}

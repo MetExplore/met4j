@@ -607,4 +607,18 @@ public class StringUtils {
 		return id;
 
 	}
+	
+	/**
+	 * return true if a sboTerm is valid
+	 * sbo:1234567
+	 * SBO : 1234567
+	 * 1234567
+	 * @param sboTerm
+	 * @return
+	 */
+	public static Boolean isValidSboTerm(String sboTerm) {
+		return sboTerm.matches("(?)SBO\\s*:\\s*\\d{7}") ||  sboTerm.matches("\\d{7}");
+	}
+	
+	
 }

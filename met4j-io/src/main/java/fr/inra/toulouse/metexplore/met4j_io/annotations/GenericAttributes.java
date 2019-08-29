@@ -8,6 +8,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
+import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 
 public class GenericAttributes {
@@ -155,7 +156,7 @@ public class GenericAttributes {
 	 * @param sboTerm
 	 */
 	public static void setSboTerm(BioEntity e, String sboTerm) {
-		if (!sboTerm.matches("SBO:\\d{7}")) {
+		if (!StringUtils.isValidSboTerm(sboTerm)) {
 			System.err.println("[Warning] SBO term badly formatted for " + e.getId()
 					+ " (must be SBO:1234567). It has not been set.");
 		} else {

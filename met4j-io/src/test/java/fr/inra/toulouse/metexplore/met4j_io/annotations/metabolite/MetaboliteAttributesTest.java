@@ -56,7 +56,7 @@ public class MetaboliteAttributesTest {
 	@Test
 	public void testGetConstant() {
 		
-		assertNull(MetaboliteAttributes.getConstant(metabolite));
+		assertFalse(MetaboliteAttributes.getConstant(metabolite));
 		
 		metabolite.setAttribute(GenericAttributes.CONSTANT, false);
 		

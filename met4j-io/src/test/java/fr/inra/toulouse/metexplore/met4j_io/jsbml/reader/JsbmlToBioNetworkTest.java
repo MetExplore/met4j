@@ -484,7 +484,7 @@ public class JsbmlToBioNetworkTest {
 
 		assertNotNull(m1RefBis);
 
-		assertNull(ReactantAttributes.getConstant(m1RefBis));
+		assertFalse(ReactantAttributes.getConstant(m1RefBis));
 
 		// Test sbo term
 		String sboTerm = ReactionAttributes.getSboTerm(reaction1);

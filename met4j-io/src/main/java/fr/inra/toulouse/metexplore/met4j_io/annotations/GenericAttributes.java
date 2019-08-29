@@ -39,7 +39,7 @@ public class GenericAttributes {
 		if (e.getAttribute(CONSTANT) != null) {
 			return (Boolean) e.getAttribute(CONSTANT);
 		} else {
-			return null;
+			return false;
 		}
 
 	}

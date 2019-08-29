@@ -27,7 +27,7 @@ public class ReactantAttributesTest {
 	@Test
 	public void testGetConstant() {
 
-		assertNull(ReactantAttributes.getConstant(r));
+		assertFalse(ReactantAttributes.getConstant(r));
 
 		r.setAttribute(GenericAttributes.CONSTANT, false);
 

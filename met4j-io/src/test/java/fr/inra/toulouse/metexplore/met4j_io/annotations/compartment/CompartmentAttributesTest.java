@@ -26,7 +26,7 @@ public class CompartmentAttributesTest {
 	@Test
 	public void testGetConstant() {
 
-		assertNull(CompartmentAttributes.getConstant(compartment));
+		assertFalse(CompartmentAttributes.getConstant(compartment));
 
 		compartment.setAttribute(GenericAttributes.CONSTANT, false);
 

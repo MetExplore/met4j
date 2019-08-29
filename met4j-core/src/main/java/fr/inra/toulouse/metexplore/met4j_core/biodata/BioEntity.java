@@ -103,6 +103,11 @@ public abstract class BioEntity {
 		return c.getId().equals(this.getId());
 	}
 
+	@Override
+	public int hashCode() {
+		return this.getId().hashCode();
+	}
+	
 	/**
 	 * Set the name of the entity
 	 * 

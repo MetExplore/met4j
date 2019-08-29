@@ -30,6 +30,7 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_core.biodata.collection;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -226,12 +227,17 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	@Override
 	public int hashCode() {
 
-		int h = 0;
+		String idsString = "";
 
-		for (BioEntity e : this.entities.values()) {
-			h += e.hashCode();
+		ArrayList<String> ids = new ArrayList<String>(this.getIds());
+
+		Collections.sort(ids);
+
+		for (String id : ids) {
+			idsString += id;
 		}
-		return h;
+
+		return idsString.hashCode();
 
 	}
 

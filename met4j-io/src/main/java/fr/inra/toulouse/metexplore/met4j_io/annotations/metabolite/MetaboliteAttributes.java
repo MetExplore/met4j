@@ -1,11 +1,7 @@
 package fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite;
 
-import java.util.Set;
-
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 
 public class MetaboliteAttributes extends GenericAttributes {
 
@@ -21,6 +17,9 @@ public class MetaboliteAttributes extends GenericAttributes {
 	public static final String INITIAL_CONCENTRATION = "initial_quantity_concentration";
 	public static final String PUBCHEM = "pubchem.compound";
 	public static final String HAS_ONLY_SUBSTANCE_UNITS = "has_only_substance_units";
+	
+	
+	public static final String IS_COFACTOR = "is_cofactor";
 
 	/**
 	 * get Boundary condition of a metabolite
@@ -153,6 +152,28 @@ public class MetaboliteAttributes extends GenericAttributes {
 	 */
 	public static void setHasOnlySubstanceUnits(BioMetabolite metabolite, boolean b) {
 		metabolite.setAttribute(HAS_ONLY_SUBSTANCE_UNITS, b);
+	}
+	
+	/**
+	 * get is cofactor attribute
+	 * @param metabolite
+	 * @return
+	 */
+	public static Boolean getIsCofactor(BioMetabolite metabolite) {
+		if(metabolite.getAttribute(IS_COFACTOR) == null) {
+			return false;
+		}
+		return (Boolean) metabolite.getAttribute(IS_COFACTOR);
+
+	}
+	
+	/**
+	 * Set IsCofactor value
+	 * @param metabolite
+	 * @param b
+	 */
+	public static void setIsCofactor(BioMetabolite metabolite, boolean b) {
+		metabolite.setAttribute(IS_COFACTOR, b);
 	}
 	
 }

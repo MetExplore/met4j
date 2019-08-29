@@ -310,5 +310,31 @@ public class MetaboliteAttributesTest {
 		assertFalse((Boolean)metabolite.getAttribute(MetaboliteAttributes.HAS_ONLY_SUBSTANCE_UNITS));
 		
 	}
+	
+	@Test
+	public void testGetIsCofactor() {
+		
+		assertFalse(MetaboliteAttributes.getIsCofactor(metabolite));
+
+		metabolite.setAttribute(MetaboliteAttributes.IS_COFACTOR, true);
+		
+		assertTrue(MetaboliteAttributes.getIsCofactor(metabolite));
+		
+		metabolite.setAttribute(MetaboliteAttributes.IS_COFACTOR, false);
+		
+		assertFalse(MetaboliteAttributes.getIsCofactor(metabolite));
+		
+	}
+	
+	@Test
+	public void testSetIsCofactor() {
+		
+		MetaboliteAttributes.setIsCofactor(metabolite, true);
+		assertTrue((Boolean)metabolite.getAttribute(MetaboliteAttributes.IS_COFACTOR));
+		
+		MetaboliteAttributes.setIsCofactor(metabolite, false);
+		assertFalse((Boolean)metabolite.getAttribute(MetaboliteAttributes.IS_COFACTOR));
+		
+	}
 
 }

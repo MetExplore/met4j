@@ -30,8 +30,6 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_graph.core;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -45,7 +43,6 @@ import org.jgrapht.graph.DirectedWeightedMultigraph;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 
 /**
  * The Class BioGraph.

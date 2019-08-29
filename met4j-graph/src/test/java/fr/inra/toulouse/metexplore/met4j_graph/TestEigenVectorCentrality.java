@@ -39,7 +39,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.algo.EigenVectorCentrality;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjancyMatrix;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -65,38 +65,38 @@ public class TestEigenVectorCentrality {
 //		{0,0,0,0,1,1,1},
 //		{0,0,0,0,1,1,1}
 		graph = new CompoundGraph();
-		BioPhysicalEntity a = new BioPhysicalEntity("a");graph.addVertex(a);
-		BioPhysicalEntity b = new BioPhysicalEntity("b");graph.addVertex(b);
-		BioPhysicalEntity c = new BioPhysicalEntity("c");graph.addVertex(c);
-		BioPhysicalEntity d = new BioPhysicalEntity("d");graph.addVertex(d);
-		BioPhysicalEntity e = new BioPhysicalEntity("e");graph.addVertex(e);
-		BioPhysicalEntity f = new BioPhysicalEntity("f");graph.addVertex(f);
-		BioPhysicalEntity g = new BioPhysicalEntity("g");graph.addVertex(g);
-//		ReactionEdge aa = new ReactionEdge(a, a, new BioChemicalReaction("aa")); graph.addEdge(a, a, aa);
+		BioMetabolite a = new BioMetabolite("a");graph.addVertex(a);
+		BioMetabolite b = new BioMetabolite("b");graph.addVertex(b);
+		BioMetabolite c = new BioMetabolite("c");graph.addVertex(c);
+		BioMetabolite d = new BioMetabolite("d");graph.addVertex(d);
+		BioMetabolite e = new BioMetabolite("e");graph.addVertex(e);
+		BioMetabolite f = new BioMetabolite("f");graph.addVertex(f);
+		BioMetabolite g = new BioMetabolite("g");graph.addVertex(g);
+//		ReactionEdge aa = new ReactionEdge(a, a, new BioReaction("aa")); graph.addEdge(a, a, aa);
 		ReactionEdge ab = new ReactionEdge(a, b, new BioReaction("ab")); graph.addEdge(a, b, ab);
 		ReactionEdge ae = new ReactionEdge(a, e, new BioReaction("ae")); graph.addEdge(a, e, ae);
 		ReactionEdge ba = new ReactionEdge(b, a, new BioReaction("ba")); graph.addEdge(b, a, ba);
-//		ReactionEdge bb = new ReactionEdge(b, b, new BioChemicalReaction("bb")); graph.addEdge(b, b, bb);
+//		ReactionEdge bb = new ReactionEdge(b, b, new BioReaction("bb")); graph.addEdge(b, b, bb);
 		ReactionEdge be = new ReactionEdge(b, e, new BioReaction("be")); graph.addEdge(b, e, be);
-//		ReactionEdge cc = new ReactionEdge(c, c, new BioChemicalReaction("cc")); graph.addEdge(c, c, cc);
+//		ReactionEdge cc = new ReactionEdge(c, c, new BioReaction("cc")); graph.addEdge(c, c, cc);
 		ReactionEdge cd = new ReactionEdge(c, d, new BioReaction("cd")); graph.addEdge(c, d, cd);
 		ReactionEdge ce = new ReactionEdge(c, e, new BioReaction("ce")); graph.addEdge(c, e, ce);
 		ReactionEdge dc = new ReactionEdge(d, c, new BioReaction("dc")); graph.addEdge(d, c, dc);
-//		ReactionEdge dd = new ReactionEdge(d, d, new BioChemicalReaction("dd")); graph.addEdge(d, d, dd);
+//		ReactionEdge dd = new ReactionEdge(d, d, new BioReaction("dd")); graph.addEdge(d, d, dd);
 		ReactionEdge de = new ReactionEdge(d, e, new BioReaction("de")); graph.addEdge(d, e, de);
 		ReactionEdge ea = new ReactionEdge(e, a, new BioReaction("ea")); graph.addEdge(e, a, ea);
 		ReactionEdge eb = new ReactionEdge(e, b, new BioReaction("eb")); graph.addEdge(e, b, eb);
 		ReactionEdge ec = new ReactionEdge(e, c, new BioReaction("ec")); graph.addEdge(e, c, ec);
 		ReactionEdge ed = new ReactionEdge(e, d, new BioReaction("ed")); graph.addEdge(e, d, ed);
-//		ReactionEdge ee = new ReactionEdge(e, e, new BioChemicalReaction("ee")); graph.addEdge(e, e, ee);
+//		ReactionEdge ee = new ReactionEdge(e, e, new BioReaction("ee")); graph.addEdge(e, e, ee);
 		ReactionEdge ef = new ReactionEdge(e, f, new BioReaction("ef")); graph.addEdge(e, f, ef);
 		ReactionEdge eg = new ReactionEdge(e, g, new BioReaction("eg")); graph.addEdge(e, g, eg);
 		ReactionEdge fe = new ReactionEdge(f, e, new BioReaction("fe")); graph.addEdge(f, e, fe);
-//		ReactionEdge ff = new ReactionEdge(f, f, new BioChemicalReaction("ff")); graph.addEdge(f, f, ff);
+//		ReactionEdge ff = new ReactionEdge(f, f, new BioReaction("ff")); graph.addEdge(f, f, ff);
 		ReactionEdge fg = new ReactionEdge(f, g, new BioReaction("fg")); graph.addEdge(f, g, fg);
 		ReactionEdge ge = new ReactionEdge(g, e, new BioReaction("ge")); graph.addEdge(g, e, ge);
 		ReactionEdge gf = new ReactionEdge(g, f, new BioReaction("gf")); graph.addEdge(g, f, gf);	
-//		ReactionEdge gg = new ReactionEdge(g, g, new BioChemicalReaction("gg")); graph.addEdge(g, g, gg);
+//		ReactionEdge gg = new ReactionEdge(g, g, new BioReaction("gg")); graph.addEdge(g, g, gg);
 	}
 	
 	/**
@@ -104,7 +104,7 @@ public class TestEigenVectorCentrality {
 	 */
 	@Test
 	public void testGolbalEigenVectorCentrality() {
-		EigenVectorCentrality<BioPhysicalEntity,ReactionEdge,CompoundGraph> pg = new EigenVectorCentrality<BioPhysicalEntity,ReactionEdge,CompoundGraph>(graph);
+		EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph> pg = new EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph>(graph);
 		for(int i=0; i<pg.adjancyMatrix.numRows(); i++){
 			pg.adjancyMatrix.set(i, i, 1.0);
 		}
@@ -124,11 +124,11 @@ public class TestEigenVectorCentrality {
 	@Test
 	public void testPageRankWithPrior() {
 		CompoundGraph graph = new CompoundGraph();
-		BioPhysicalEntity a = new BioPhysicalEntity("a");graph.addVertex(a);
-		BioPhysicalEntity e = new BioPhysicalEntity("e");graph.addVertex(e);
-		BioPhysicalEntity d = new BioPhysicalEntity("d");graph.addVertex(d);
-		BioPhysicalEntity b = new BioPhysicalEntity("b");graph.addVertex(b);
-		BioPhysicalEntity c = new BioPhysicalEntity("c");graph.addVertex(c);
+		BioMetabolite a = new BioMetabolite("a");graph.addVertex(a);
+		BioMetabolite e = new BioMetabolite("e");graph.addVertex(e);
+		BioMetabolite d = new BioMetabolite("d");graph.addVertex(d);
+		BioMetabolite b = new BioMetabolite("b");graph.addVertex(b);
+		BioMetabolite c = new BioMetabolite("c");graph.addVertex(c);
 		ReactionEdge ba = new ReactionEdge(b, a, new BioReaction("ba")); graph.addEdge(b, a, ba); graph.setEdgeWeight(ba, 1.0);
 		ReactionEdge ae = new ReactionEdge(a, e, new BioReaction("ae")); graph.addEdge(a, e, ae); graph.setEdgeWeight(ae, 1.0);
 		ReactionEdge ca = new ReactionEdge(c, a, new BioReaction("ca")); graph.addEdge(c, a, ca); graph.setEdgeWeight(ca, 0.5);
@@ -137,10 +137,10 @@ public class TestEigenVectorCentrality {
 		ReactionEdge ec = new ReactionEdge(e, c, new BioReaction("ec")); graph.addEdge(e, c, ec); graph.setEdgeWeight(ec, 0.2);
 		ReactionEdge eb = new ReactionEdge(e, b, new BioReaction("eb")); graph.addEdge(e, b, eb); graph.setEdgeWeight(eb, 0.4);
 		ReactionEdge ed = new ReactionEdge(e, d, new BioReaction("ed")); graph.addEdge(e, d, ed); graph.setEdgeWeight(ed, 0.4);
-		EigenVectorCentrality<BioPhysicalEntity,ReactionEdge,CompoundGraph> pg = new EigenVectorCentrality<BioPhysicalEntity,ReactionEdge,CompoundGraph>(graph);
+		EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph> pg = new EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph>(graph);
 		HashMap<String, Double> seeds = new HashMap<String, Double>();
 //		double p = 1.0/graph.vertexSet().size();
-		for(BioPhysicalEntity entity: graph.vertexSet()){
+		for(BioMetabolite entity: graph.vertexSet()){
 			if(entity==a){
 				seeds.put(entity.getId(), 1.0);
 			}else{
@@ -172,16 +172,16 @@ public class TestEigenVectorCentrality {
 		//see : 1.        White, S., Smyth, P., (2003). Algorithms for estimating relative importance in networks. KDD 2003: 266-275.	
 		
 		CompoundGraph graph = new CompoundGraph();
-		BioPhysicalEntity a = new BioPhysicalEntity("a");graph.addVertex(a);
-		BioPhysicalEntity b = new BioPhysicalEntity("b");graph.addVertex(b);
-		BioPhysicalEntity c = new BioPhysicalEntity("c");graph.addVertex(c);
-		BioPhysicalEntity d = new BioPhysicalEntity("d");graph.addVertex(d);
-		BioPhysicalEntity e = new BioPhysicalEntity("e");graph.addVertex(e);
-		BioPhysicalEntity f = new BioPhysicalEntity("f");graph.addVertex(f);
-		BioPhysicalEntity g = new BioPhysicalEntity("g");graph.addVertex(g);
-		BioPhysicalEntity h = new BioPhysicalEntity("h");graph.addVertex(h);
-		BioPhysicalEntity i = new BioPhysicalEntity("i");graph.addVertex(i);
-		BioPhysicalEntity j = new BioPhysicalEntity("j");graph.addVertex(j);
+		BioMetabolite a = new BioMetabolite("a");graph.addVertex(a);
+		BioMetabolite b = new BioMetabolite("b");graph.addVertex(b);
+		BioMetabolite c = new BioMetabolite("c");graph.addVertex(c);
+		BioMetabolite d = new BioMetabolite("d");graph.addVertex(d);
+		BioMetabolite e = new BioMetabolite("e");graph.addVertex(e);
+		BioMetabolite f = new BioMetabolite("f");graph.addVertex(f);
+		BioMetabolite g = new BioMetabolite("g");graph.addVertex(g);
+		BioMetabolite h = new BioMetabolite("h");graph.addVertex(h);
+		BioMetabolite i = new BioMetabolite("i");graph.addVertex(i);
+		BioMetabolite j = new BioMetabolite("j");graph.addVertex(j);
 		ReactionEdge ab = new ReactionEdge(a, b, new BioReaction("ab")); graph.addEdge(a, b, ab); graph.setEdgeWeight(ab, 1.0/3.0);
 		ReactionEdge bc = new ReactionEdge(b, c, new BioReaction("bc")); graph.addEdge(b, c, bc); graph.setEdgeWeight(bc, 1.0/3.0);
 		ReactionEdge ca = new ReactionEdge(c, a, new BioReaction("ca")); graph.addEdge(c, a, ca); graph.setEdgeWeight(ca, 1.0/3.0);
@@ -214,13 +214,13 @@ public class TestEigenVectorCentrality {
 		ReactionEdge gf = new ReactionEdge(g, f, new BioReaction("gf")); graph.addEdge(g, f, gf); graph.setEdgeWeight(gf, 1.0/3.0);
 		ReactionEdge ib = new ReactionEdge(i, b, new BioReaction("ib")); graph.addEdge(i, b, ib); graph.setEdgeWeight(ib, 1.0/3.0);
 
-		EigenVectorCentrality<BioPhysicalEntity,ReactionEdge,CompoundGraph> pg = new EigenVectorCentrality<BioPhysicalEntity,ReactionEdge,CompoundGraph>(graph);
+		EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph> pg = new EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph>(graph);
 		HashMap<String, Double> seeds = new HashMap<String, Double>();
 		double p = 1.0/graph.vertexSet().size();
 		
 		HashSet<String>  roots = new HashSet<String>();
 		roots.add(a.getId()); roots.add(f.getId());
-		for(BioPhysicalEntity entity: graph.vertexSet()){
+		for(BioMetabolite entity: graph.vertexSet()){
 //			if(roots.contains(entity.getId())){
 //				seeds.put(entity.getId(), 0.5);
 //			}else{
@@ -261,11 +261,11 @@ public class TestEigenVectorCentrality {
 	@Test
 	public void testPageRankWithPrior3() {
 		CompoundGraph graph = new CompoundGraph();
-		BioPhysicalEntity a = new BioPhysicalEntity("a");graph.addVertex(a);
-		BioPhysicalEntity e = new BioPhysicalEntity("e");graph.addVertex(e);
-		BioPhysicalEntity d = new BioPhysicalEntity("d");graph.addVertex(d);
-		BioPhysicalEntity b = new BioPhysicalEntity("b");graph.addVertex(b);
-		BioPhysicalEntity c = new BioPhysicalEntity("c");graph.addVertex(c);
+		BioMetabolite a = new BioMetabolite("a");graph.addVertex(a);
+		BioMetabolite e = new BioMetabolite("e");graph.addVertex(e);
+		BioMetabolite d = new BioMetabolite("d");graph.addVertex(d);
+		BioMetabolite b = new BioMetabolite("b");graph.addVertex(b);
+		BioMetabolite c = new BioMetabolite("c");graph.addVertex(c);
 		ReactionEdge ba = new ReactionEdge(b, a, new BioReaction("ba")); graph.addEdge(b, a, ba); graph.setEdgeWeight(ba, 1.0);
 		ReactionEdge ae = new ReactionEdge(a, e, new BioReaction("ae")); graph.addEdge(a, e, ae); graph.setEdgeWeight(ae, 1.0);
 		ReactionEdge ca = new ReactionEdge(c, a, new BioReaction("ca")); graph.addEdge(c, a, ca); graph.setEdgeWeight(ca, 0.5);
@@ -275,15 +275,15 @@ public class TestEigenVectorCentrality {
 		ReactionEdge eb = new ReactionEdge(e, b, new BioReaction("eb")); graph.addEdge(e, b, eb); graph.setEdgeWeight(eb, 0.4);
 		ReactionEdge ed = new ReactionEdge(e, d, new BioReaction("ed")); graph.addEdge(e, d, ed); graph.setEdgeWeight(ed, 0.4);
 		
-		BioMatrix adj = new ComputeAdjancyMatrix<BioPhysicalEntity, ReactionEdge, CompoundGraph>(graph).getAdjancyMatrix();
+		BioMatrix adj = new ComputeAdjancyMatrix<BioMetabolite, ReactionEdge, CompoundGraph>(graph).getAdjancyMatrix();
 		
-		EigenVectorCentrality<BioPhysicalEntity, ReactionEdge, CompoundGraph> pg;
+		EigenVectorCentrality<BioMetabolite, ReactionEdge, CompoundGraph> pg;
 		try {
-			pg = new EigenVectorCentrality<BioPhysicalEntity,ReactionEdge,CompoundGraph>(adj);
+			pg = new EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph>(adj);
 			HashMap<String, Double> seeds = new HashMap<String, Double>();
 			HashMap<String, Double> weights = new HashMap<String, Double>();
 //			double p = 1.0/graph.vertexSet().size();
-			for(BioPhysicalEntity entity: graph.vertexSet()){
+			for(BioMetabolite entity: graph.vertexSet()){
 				if(entity==a){
 					seeds.put(entity.getId(), 1.0);
 				}else{

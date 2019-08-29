@@ -7,9 +7,10 @@ import java.util.Set;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.analysis.GraphSampler;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -19,29 +20,29 @@ import fr.inra.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
 public class TestGraphSampler {
 	
 	public static CompoundGraph g;
+	public static BioNetwork bn;
 	
-	public static BioPhysicalEntity a,b,c,d,e;
+	public static BioMetabolite a,b,c,d,e;
 	public static BioCompartment comp;
 	
 	public static ReactionEdge ab,ac,ae,ad;
 	
-	public static GraphSampler<BioPhysicalEntity, ReactionEdge, CompoundGraph> sampler;
+	public static GraphSampler<BioMetabolite, ReactionEdge, CompoundGraph> sampler;
 	 
 	@BeforeClass
 	public static void init(){
 		g = new CompoundGraph();
-		comp = new BioCompartment();
-		comp.setId("comp");
-		a = new BioPhysicalEntity("a"); a.setCompartment(comp);g.addVertex(a);
-		b = new BioPhysicalEntity("b"); g.addVertex(b);
-		c = new BioPhysicalEntity("c"); g.addVertex(c);
-		d = new BioPhysicalEntity("d"); g.addVertex(d);
-		e = new BioPhysicalEntity("e"); g.addVertex(e);
+		comp = new BioCompartment("comp"); bn.add(comp);
+		a = new BioMetabolite("a"); a.setCompartment(comp);g.addVertex(a);
+		b = new BioMetabolite("b"); g.addVertex(b);
+		c = new BioMetabolite("c"); g.addVertex(c);
+		d = new BioMetabolite("d"); g.addVertex(d);
+		e = new BioMetabolite("e"); g.addVertex(e);
 		ab = new ReactionEdge(a,b,new BioReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 1.0);
 		ac = new ReactionEdge(a,c,new BioReaction("ac"));g.addEdge(a, c, ac);g.setEdgeWeight(ac, 1.0);
 		ae = new ReactionEdge(a,e,new BioReaction("ae"));g.addEdge(a, e, ae);g.setEdgeWeight(ae, 1.0);
 		ad = new ReactionEdge(a,d,new BioReaction("ad"));g.addEdge(a, d, ad);g.setEdgeWeight(ad, 1.0);
-		sampler = new GraphSampler<BioPhysicalEntity, ReactionEdge, CompoundGraph>(g);
+		sampler = new GraphSampler<BioMetabolite, ReactionEdge, CompoundGraph>(g);
 
 	}
 	
@@ -62,7 +63,7 @@ public class TestGraphSampler {
 	
 	@Test
 	public void testGetRandomVertexListinComp(){
-		Set<BioPhysicalEntity> sample = sampler.getRandomVertexListinComp(1, "comp");
+		Set<BioMetabolite> sample = sampler.getRandomVertexListinComp(1, "comp");
 		assertEquals(1, sample.size());
 		assertTrue(sample.contains(a));
 	}
@@ -74,7 +75,7 @@ public class TestGraphSampler {
 	
 	@Test
 	public void testGetRandomVertexListinScope(){
-		Set<BioPhysicalEntity> sample = sampler.getRandomVertexListinScope(3, 1);
+		Set<BioMetabolite> sample = sampler.getRandomVertexListinScope(3, 1);
 		assertEquals(3, sample.size());
 		assertTrue(sample.contains(a));
 	}

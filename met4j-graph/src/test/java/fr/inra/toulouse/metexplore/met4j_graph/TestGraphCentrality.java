@@ -8,7 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.analysis.GraphCentralityMeasure;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.analysis.GraphMeasure;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -19,44 +19,44 @@ public class TestGraphCentrality {
 	public static CompoundGraph toyGraph;
 	public static CompoundGraph linearGraph;
 	public static CompoundGraph starGraph;
-	public static BioPhysicalEntity a,b,c,d,e,f,h,g;
-	public static GraphCentralityMeasure<BioPhysicalEntity, ReactionEdge, CompoundGraph> toyMeasure;
-	public static GraphCentralityMeasure<BioPhysicalEntity, ReactionEdge, CompoundGraph> linearMeasure;
-	public static GraphCentralityMeasure<BioPhysicalEntity, ReactionEdge, CompoundGraph> starMeasure;
+	public static BioMetabolite a,b,c,d,e,f,h,g;
+	public static GraphCentralityMeasure<BioMetabolite, ReactionEdge, CompoundGraph> toyMeasure;
+	public static GraphCentralityMeasure<BioMetabolite, ReactionEdge, CompoundGraph> linearMeasure;
+	public static GraphCentralityMeasure<BioMetabolite, ReactionEdge, CompoundGraph> starMeasure;
 	
 	@BeforeClass
 	public static void init(){
 		
-		a = new BioPhysicalEntity("a");
-		b = new BioPhysicalEntity("b");
-		c = new BioPhysicalEntity("c");
-		d = new BioPhysicalEntity("d");
-		e = new BioPhysicalEntity("e"); 
-		f = new BioPhysicalEntity("f"); 
-		h = new BioPhysicalEntity("h"); 
-		g = new BioPhysicalEntity("g"); 
-		ReactionEdge ab = new ReactionEdge(a, b, new BioReaction());
-		ReactionEdge bc = new ReactionEdge(b, c, new BioReaction());
-		ReactionEdge cd = new ReactionEdge(c, d, new BioReaction());
-		ReactionEdge de = new ReactionEdge(d, e, new BioReaction());
-		ReactionEdge ec = new ReactionEdge(e, c, new BioReaction());
-		ReactionEdge af = new ReactionEdge(a, f, new BioReaction());
-		ReactionEdge fg = new ReactionEdge(f, g, new BioReaction());
-		ReactionEdge ba = new ReactionEdge(b, a, new BioReaction());
-		ReactionEdge ca = new ReactionEdge(c, a, new BioReaction());
-		ReactionEdge da = new ReactionEdge(d, a, new BioReaction());
-		ReactionEdge ea = new ReactionEdge(e, a, new BioReaction());
-		ReactionEdge fa = new ReactionEdge(f, a, new BioReaction());
-		ReactionEdge ga = new ReactionEdge(g, a, new BioReaction());
-		ReactionEdge cb = new ReactionEdge(c, b, new BioReaction());
-		ReactionEdge dc = new ReactionEdge(d, c, new BioReaction());
-		ReactionEdge ed = new ReactionEdge(e, d, new BioReaction());
-		ReactionEdge ce = new ReactionEdge(c, e, new BioReaction());
-		ReactionEdge gf = new ReactionEdge(g, f, new BioReaction());
-		ReactionEdge ac = new ReactionEdge(a, c, new BioReaction());
-		ReactionEdge ad = new ReactionEdge(a, d, new BioReaction());
-		ReactionEdge ae = new ReactionEdge(a, e, new BioReaction());
-		ReactionEdge ag = new ReactionEdge(a, g, new BioReaction());
+		a = new BioMetabolite("a");
+		b = new BioMetabolite("b");
+		c = new BioMetabolite("c");
+		d = new BioMetabolite("d");
+		e = new BioMetabolite("e"); 
+		f = new BioMetabolite("f"); 
+		h = new BioMetabolite("h"); 
+		g = new BioMetabolite("g"); 
+		ReactionEdge ab = new ReactionEdge(a, b, new BioReaction("r1"));
+		ReactionEdge bc = new ReactionEdge(b, c, new BioReaction("r2"));
+		ReactionEdge cd = new ReactionEdge(c, d, new BioReaction("r3"));
+		ReactionEdge de = new ReactionEdge(d, e, new BioReaction("r4"));
+		ReactionEdge ec = new ReactionEdge(e, c, new BioReaction("r5"));
+		ReactionEdge af = new ReactionEdge(a, f, new BioReaction("r6"));
+		ReactionEdge fg = new ReactionEdge(f, g, new BioReaction("r7"));
+		ReactionEdge ba = new ReactionEdge(b, a, new BioReaction("r8"));
+		ReactionEdge ca = new ReactionEdge(c, a, new BioReaction("r9"));
+		ReactionEdge da = new ReactionEdge(d, a, new BioReaction("r10"));
+		ReactionEdge ea = new ReactionEdge(e, a, new BioReaction("r11"));
+		ReactionEdge fa = new ReactionEdge(f, a, new BioReaction("r12"));
+		ReactionEdge ga = new ReactionEdge(g, a, new BioReaction("r13"));
+		ReactionEdge cb = new ReactionEdge(c, b, new BioReaction("r14"));
+		ReactionEdge dc = new ReactionEdge(d, c, new BioReaction("r15"));
+		ReactionEdge ed = new ReactionEdge(e, d, new BioReaction("r16"));
+		ReactionEdge ce = new ReactionEdge(c, e, new BioReaction("r17"));
+		ReactionEdge gf = new ReactionEdge(g, f, new BioReaction("r18"));
+		ReactionEdge ac = new ReactionEdge(a, c, new BioReaction("r19"));
+		ReactionEdge ad = new ReactionEdge(a, d, new BioReaction("r20"));
+		ReactionEdge ae = new ReactionEdge(a, e, new BioReaction("r21"));
+		ReactionEdge ag = new ReactionEdge(a, g, new BioReaction("r22"));
 		
 		
 		toyGraph = new CompoundGraph();
@@ -118,15 +118,15 @@ public class TestGraphCentrality {
 		linearGraph.addEdge(e, d, ed);
 		
 		
-		toyMeasure = new GraphCentralityMeasure<BioPhysicalEntity, ReactionEdge, CompoundGraph>(toyGraph);
-		linearMeasure = new GraphCentralityMeasure<BioPhysicalEntity, ReactionEdge, CompoundGraph>(linearGraph);
-		starMeasure = new GraphCentralityMeasure<BioPhysicalEntity, ReactionEdge, CompoundGraph>(starGraph);
+		toyMeasure = new GraphCentralityMeasure<BioMetabolite, ReactionEdge, CompoundGraph>(toyGraph);
+		linearMeasure = new GraphCentralityMeasure<BioMetabolite, ReactionEdge, CompoundGraph>(linearGraph);
+		starMeasure = new GraphCentralityMeasure<BioMetabolite, ReactionEdge, CompoundGraph>(starGraph);
 	}
 	@Test
 	public void testBetweenness() {
-		Map<BioPhysicalEntity, Integer> toyBetweenness = toyMeasure.getGeodesicBetweenness();
-		Map<BioPhysicalEntity, Integer> linearBetweenness = linearMeasure.getGeodesicBetweenness();
-		Map<BioPhysicalEntity, Integer> starBetweenness = starMeasure.getGeodesicBetweenness();
+		Map<BioMetabolite, Integer> toyBetweenness = toyMeasure.getGeodesicBetweenness();
+		Map<BioMetabolite, Integer> linearBetweenness = linearMeasure.getGeodesicBetweenness();
+		Map<BioMetabolite, Integer> starBetweenness = starMeasure.getGeodesicBetweenness();
 		
 		assertEquals(8.0*2, toyBetweenness.get(a), 0.00000001);
 		assertEquals(9.0*2, toyBetweenness.get(b), 0.00000001);
@@ -152,9 +152,9 @@ public class TestGraphCentrality {
 	
 	@Test
 	public void testCloseness() {
-		Map<BioPhysicalEntity, Double> toyCloseness = toyMeasure.getInCloseness(toyMeasure.getAllShortestPaths());
-		Map<BioPhysicalEntity, Double> linearCloseness = linearMeasure.getInCloseness(linearMeasure.getAllShortestPaths());
-		Map<BioPhysicalEntity, Double> starCloseness= starMeasure.getInCloseness(starMeasure.getAllShortestPaths());
+		Map<BioMetabolite, Double> toyCloseness = toyMeasure.getInCloseness(toyMeasure.getAllShortestPaths());
+		Map<BioMetabolite, Double> linearCloseness = linearMeasure.getInCloseness(linearMeasure.getAllShortestPaths());
+		Map<BioMetabolite, Double> starCloseness= starMeasure.getInCloseness(starMeasure.getAllShortestPaths());
 		
 		assertEquals(0.55/6.0, toyCloseness.get(a), 0.01);
 		assertEquals(0.6/6.0, toyCloseness.get(b), 0.01);
@@ -232,9 +232,9 @@ public class TestGraphCentrality {
 
 	@Test
 	public void testFarness() {
-		Map<BioPhysicalEntity, Double> toyBetweenness = toyMeasure.getFarness(toyMeasure.getAllShortestPaths());
-		Map<BioPhysicalEntity, Double> linearBetweenness = linearMeasure.getFarness(linearMeasure.getAllShortestPaths());
-		Map<BioPhysicalEntity, Double> starBetweenness = starMeasure.getFarness(starMeasure.getAllShortestPaths());
+		Map<BioMetabolite, Double> toyBetweenness = toyMeasure.getFarness(toyMeasure.getAllShortestPaths());
+		Map<BioMetabolite, Double> linearBetweenness = linearMeasure.getFarness(linearMeasure.getAllShortestPaths());
+		Map<BioMetabolite, Double> starBetweenness = starMeasure.getFarness(starMeasure.getAllShortestPaths());
 		
 		assertEquals(11.0, toyBetweenness.get(a), 0.00000001);
 		assertEquals(10.0, toyBetweenness.get(b), 0.00000001);
@@ -260,9 +260,9 @@ public class TestGraphCentrality {
 	
 	@Test
 	public void testEccentricity() {
-		Map<BioPhysicalEntity, Double> toyEccentricity = toyMeasure.getEccentricity(toyMeasure.getAllShortestPaths());
-		Map<BioPhysicalEntity, Double> linearEccentricity = linearMeasure.getEccentricity(linearMeasure.getAllShortestPaths());
-		Map<BioPhysicalEntity, Double> starEccentricity = starMeasure.getEccentricity(starMeasure.getAllShortestPaths());
+		Map<BioMetabolite, Double> toyEccentricity = toyMeasure.getEccentricity(toyMeasure.getAllShortestPaths());
+		Map<BioMetabolite, Double> linearEccentricity = linearMeasure.getEccentricity(linearMeasure.getAllShortestPaths());
+		Map<BioMetabolite, Double> starEccentricity = starMeasure.getEccentricity(starMeasure.getAllShortestPaths());
 		
 		assertEquals(3.0, toyEccentricity.get(a), 0.00000001);
 		assertEquals(2.0, toyEccentricity.get(b), 0.00000001);
@@ -288,8 +288,8 @@ public class TestGraphCentrality {
 	
 	@Test
 	public void testOCCI(){
-		GraphMeasure<BioPhysicalEntity, ReactionEdge> measure = 
-				new GraphMeasure<BioPhysicalEntity, ReactionEdge>(starGraph);
+		GraphMeasure<BioMetabolite, ReactionEdge> measure = 
+				new GraphMeasure<BioMetabolite, ReactionEdge>(starGraph);
 		
 		assertEquals(1.0, measure.getOCCI(), 0.000001);
 		

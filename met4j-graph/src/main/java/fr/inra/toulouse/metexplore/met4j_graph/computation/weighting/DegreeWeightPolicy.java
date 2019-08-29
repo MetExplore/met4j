@@ -33,13 +33,13 @@ package fr.inra.toulouse.metexplore.met4j_graph.computation.weighting;
 import fr.inra.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * The Class DegreeWeightPolicy which set as edge weight the target node's degree to the power of n.
  * @author clement
  */
-public class DegreeWeightPolicy extends WeightingPolicy<BioPhysicalEntity,ReactionEdge,CompoundGraph> {
+public class DegreeWeightPolicy extends WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> {
 	
 	/** The exponent. */
 	double pow = 2;

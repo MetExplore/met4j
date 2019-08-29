@@ -39,7 +39,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.GraphFilter;
@@ -53,7 +53,7 @@ public class TestGraphFilter {
 public static CompoundGraph g;
 	
 	/** The nodes. */
-	public static BioPhysicalEntity a,b,c,d,e,f,x,y,z;
+	public static BioMetabolite a,b,c,d,e,f,x,y,z;
 	
 	/** The edges. */
 	public static ReactionEdge az,zb,ab,xb,bc,cx,yx,ay,ea,ey,xd,ed,fe,df;
@@ -65,15 +65,15 @@ public static CompoundGraph g;
 	@BeforeClass
 	public static void init(){
 		g = new CompoundGraph();
-		a = new BioPhysicalEntity("a"); g.addVertex(a);
-		b = new BioPhysicalEntity("b"); g.addVertex(b);
-		c = new BioPhysicalEntity("c"); g.addVertex(c);
-		d = new BioPhysicalEntity("d"); g.addVertex(d);
-		e = new BioPhysicalEntity("e"); g.addVertex(e);
-		f = new BioPhysicalEntity("f"); g.addVertex(f);
-		x = new BioPhysicalEntity("x"); g.addVertex(x);
-		y = new BioPhysicalEntity("y"); g.addVertex(y);
-		z = new BioPhysicalEntity("z"); g.addVertex(z);
+		a = new BioMetabolite("a"); g.addVertex(a);
+		b = new BioMetabolite("b"); g.addVertex(b);
+		c = new BioMetabolite("c"); g.addVertex(c);
+		d = new BioMetabolite("d"); g.addVertex(d);
+		e = new BioMetabolite("e"); g.addVertex(e);
+		f = new BioMetabolite("f"); g.addVertex(f);
+		x = new BioMetabolite("x"); g.addVertex(x);
+		y = new BioMetabolite("y"); g.addVertex(y);
+		z = new BioMetabolite("z"); g.addVertex(z);
 		az = new ReactionEdge(a,z,new BioReaction("az"));g.addEdge(a, z, az);g.setEdgeWeight(az, 2);g.setEdgeScore(az, 4);
 		zb = new ReactionEdge(z,b,new BioReaction("zb"));g.addEdge(z, b, zb);g.setEdgeWeight(zb, 8);g.setEdgeScore(zb, 16);
 		ab = new ReactionEdge(a,b,new BioReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 9);g.setEdgeScore(ab, 18);

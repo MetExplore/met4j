@@ -52,7 +52,7 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
  
 /**
  * The Class BioGraph2XGMML.
@@ -165,7 +165,7 @@ public class BioGraph2XGMML{
 		graph.appendChild(createAttribute("backgroundColor","#ffffff"));
 		
 		for(BioEntity v : g.vertexSet()){
-			Element node = (v instanceof BioReaction) ? createReactionNode((BioReaction)v) : createCompoundNode((BioPhysicalEntity)v);
+			Element node = (v instanceof BioReaction) ? createReactionNode((BioReaction)v) : createCompoundNode((BioMetabolite)v);
 			graph.appendChild(node);
 		}
 		
@@ -181,7 +181,7 @@ public class BioGraph2XGMML{
 	 * @param v the vertex
 	 * @return the xml element
 	 */
-	private Element createCompoundNode(BioPhysicalEntity v){
+	private Element createCompoundNode(BioMetabolite v){
 		Element node = doc.createElement("node");
 //        node.setAttribute("label", v.getName());
 //        node.setAttribute("id", v.getId());
@@ -194,7 +194,7 @@ public class BioGraph2XGMML{
 		node.setAttribute("id", v.getId());
 		node.appendChild(createAttribute("canonicalName",v.getId()));
 		node.appendChild(createAttribute("compartment",v.getCompartment().getName()));
-        node.appendChild(createAttribute("chemicalFormula",v.getChemicalFormula()));
+        node.appendChild(createAttribute("chemicalFormula",v.get));
 		node.appendChild(createAttribute("dbIdentifier",v.getName()));
 		node.appendChild(createAttribute("sbml name",v.getName()));
 		node.appendChild(createAttribute("sbml type","species"));
@@ -250,7 +250,7 @@ public class BioGraph2XGMML{
 		Element edge = doc.createElement("edge");
 		BioEntity src = e.getV1();
 		BioEntity trg = e.getV2();
-//		String interaction = (src instanceof BioChemicalReaction) ? "product" : "substrate of";
+//		String interaction = (src instanceof BioReaction) ? "product" : "substrate of";
 		String interaction = (src instanceof BioReaction) ? "reaction-product" : "reaction-reactant";
 		String label = src.getId()+" ("+interaction+") "+trg.getId();
 		edge.setAttribute("label", label);
@@ -349,7 +349,7 @@ public class BioGraph2XGMML{
 	 * @param v the vertex
 	 * @return the element
 	 */
-	private Element createCompoundNodeGraphics(BioPhysicalEntity v){
+	private Element createCompoundNodeGraphics(BioMetabolite v){
 		Element graphics = doc.createElement("graphics");
 		String type="ELLIPSE";
 		graphics.setAttribute("type",type);
@@ -387,7 +387,7 @@ public class BioGraph2XGMML{
 	 * @param v the vertex
 	 * @return the element
 	 */
-	private Element createMappedCompoundNodeGraphics(BioPhysicalEntity v){
+	private Element createMappedCompoundNodeGraphics(BioMetabolite v){
 		Element graphics = doc.createElement("graphics");
 		String type="ELLIPSE";
 		graphics.setAttribute("type",type);

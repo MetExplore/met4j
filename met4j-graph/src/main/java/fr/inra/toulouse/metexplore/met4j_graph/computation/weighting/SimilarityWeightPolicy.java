@@ -38,22 +38,22 @@ import java.util.Set;
 import fr.inra.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
+import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 import fr.inra.toulouse.metexplore.met4j_mathUtils.similarity.SimilarityComputor;
 import fr.inra.toulouse.metexplore.met4j_chemUtils.fingerprints.FingerprintBuilder;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 
 /**
  * The Chemical Similarity weighting policy.
  * @author clement
  */
-public class SimilarityWeightPolicy extends WeightingPolicy<BioPhysicalEntity,ReactionEdge,CompoundGraph> {
+public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> {
 	
 	private int fingerprintType;
 	private boolean weightByMassContribution=false;
 	private boolean useDist=false;
-	private BioPhysicalEntity global;
+	private BioMetabolite global;
 	public static final int DEFAULT_FINGERPRINT = FingerprintBuilder.EXTENDED;
 	
 	/**
@@ -88,8 +88,8 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioPhysicalEntity,Re
 		for(ReactionEdge e:g.edgeSet()){
 			
 			//extract compound
-			BioPhysicalEntity cpd1 = e.getV1();
-			BioPhysicalEntity cpd2 = e.getV2();
+			BioMetabolite cpd1 = e.getV1();
+			BioMetabolite cpd2 = e.getV2();
 			
 			//computing finger-print
 			if (!fingerPrintMap.containsKey(cpd1.getId())){
@@ -178,7 +178,7 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioPhysicalEntity,Re
 			if(!StringUtils.isVoid(e.getV1().getMolecularWeight()) && !StringUtils.isVoid(e.getV2().getMolecularWeight())){
 				double massSum = Double.parseDouble(e.getV1().getMolecularWeight())+Double.parseDouble(e.getV2().getMolecularWeight());
 				double massReactionSum = 0.0;
-				for(BioParticipant p : e.getReaction().getParticipantList().values()){
+				for(BioReactant p : e.getReaction().getParticipantList().values()){
 					if(StringUtils.isVoid(p.getPhysicalEntity().getMolecularWeight())) return Double.NaN;
 					massReactionSum+=Double.parseDouble(p.getPhysicalEntity().getMolecularWeight());
 				}
@@ -206,7 +206,7 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioPhysicalEntity,Re
 		this.useDist = useDist;
 	}
 	
-	public void useGlobalSimilarity(BioPhysicalEntity start) {
+	public void useGlobalSimilarity(BioMetabolite start) {
 		this.global = start;
 	}
 

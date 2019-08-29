@@ -35,7 +35,7 @@ import java.util.HashSet;
 import org.jgrapht.EdgeFactory;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -51,6 +51,6 @@ public class PathwayGraphEdgeFactory implements EdgeFactory<BioPathway, PathwayG
 	 */
 	@Override
 	public PathwayGraphEdge createEdge(BioPathway arg0, BioPathway arg1) {
-		return new PathwayGraphEdge(arg0, arg1, new HashSet<BioPhysicalEntity>());
+		return new PathwayGraphEdge(arg0, arg1, new HashSet<BioMetabolite>());
 	}
 }

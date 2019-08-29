@@ -35,10 +35,10 @@ import java.util.Set;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
- * The edge Class linking two {@link BioPathway}, linked by {@link BioPhysicalEntity}
+ * The edge Class linking two {@link BioPathway}, linked by {@link BioMetabolite}
  * @author clement
  */
 public class PathwayGraphEdge extends Edge<BioPathway>{
@@ -47,7 +47,7 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
 	private static final long serialVersionUID = 1L;
     
     /** The reaction. */
-    private Set<BioPhysicalEntity> connectingCompounds;
+    private Set<BioMetabolite> connectingCompounds;
 
     /**
      * Instantiates a new reaction edge.
@@ -56,7 +56,7 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
      * @param v2 the target vertex
      * @param connectingCompounds the connecting compounds
      */
-    public PathwayGraphEdge(BioPathway v1,BioPathway v2, Set<BioPhysicalEntity> connectingCompounds) {
+    public PathwayGraphEdge(BioPathway v1,BioPathway v2, Set<BioMetabolite> connectingCompounds) {
         super(v1,v2);
         this.connectingCompounds=connectingCompounds;
     }
@@ -68,9 +68,9 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
      * @param v2 the target vertex
      * @param connectingCompound the connecting compound
      */
-    public PathwayGraphEdge(BioPathway v1,BioPathway v2, BioPhysicalEntity connectingCompound) {
+    public PathwayGraphEdge(BioPathway v1,BioPathway v2, BioMetabolite connectingCompound) {
         super(v1,v2);
-        this.connectingCompounds=new HashSet<BioPhysicalEntity>();
+        this.connectingCompounds=new HashSet<BioMetabolite>();
         addConnectingCompounds(connectingCompound);
     }
 
@@ -80,7 +80,7 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
      *
      * @return the reaction
      */
-    public Set<BioPhysicalEntity> getConnectingCompounds(){
+    public Set<BioMetabolite> getConnectingCompounds(){
     	return connectingCompounds;
     }
     
@@ -89,7 +89,7 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
      *
      * @return the reaction
      */
-    public void addConnectingCompounds(BioPhysicalEntity e){
+    public void addConnectingCompounds(BioMetabolite e){
     	connectingCompounds.add(e);
     }
     
@@ -98,7 +98,7 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
      *
      * @return the reaction
      */
-    public void removeConnectingCompounds(BioPhysicalEntity e){
+    public void removeConnectingCompounds(BioMetabolite e){
     	connectingCompounds.remove(e);
     }
 

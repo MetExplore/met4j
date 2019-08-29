@@ -32,14 +32,14 @@ package fr.inra.toulouse.metexplore.met4j_graph.core.compound;
 
 import org.jgrapht.EdgeFactory;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 
-public class ReactionEdgeFactory implements EdgeFactory<BioPhysicalEntity, ReactionEdge> {
+public class ReactionEdgeFactory implements EdgeFactory<BioMetabolite, ReactionEdge> {
 
 	@Override
-	public ReactionEdge createEdge(BioPhysicalEntity arg0,
-			BioPhysicalEntity arg1) {
+	public ReactionEdge createEdge(BioMetabolite arg0,
+			BioMetabolite arg1) {
 		return new ReactionEdge(arg0, arg1, new BioReaction());
 	}
 }

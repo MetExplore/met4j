@@ -8,11 +8,12 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEnzyme;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -24,7 +25,7 @@ public class TestMerger {
 	
 	public static CompoundGraph g;
 	public static BioNetwork bn;
-	public static BioPhysicalEntity a1,b1,a2,b2;
+	public static BioMetabolite a1,b1,a2,b2;
 	public static ReactionEdge ab1,ab2,ab3,ab4,ba1,ba2,aa1,aa2,bb1,bb2;
 	
 	@BeforeClass
@@ -34,58 +35,62 @@ public class TestMerger {
 		
 		BioCompartment comp1 = new BioCompartment("1", "1");
 		BioCompartment comp2 = new BioCompartment("2", "2");
-		bn.addCompartment(comp1);
-		bn.addCompartment(comp2);
+		bn.add(comp1);
+		bn.add(comp2);
 		
-		a1 = new BioPhysicalEntity("M_a_1"); 
-		a1.setCompartment(comp1); 
+		a1 = new BioMetabolite("M_a_1"); 
+		bn.affectToCompartment(a1, comp1); 
 		a1.setInchi("InChI=1S/C4H6O4/c1-2(3(5)6)4(7)8/h2H,1H3,(H,5,6)(H,7,8)");
-		g.addVertex(a1);bn.addPhysicalEntity(a1);
-		b1 = new BioPhysicalEntity("M_b_1");
-		b1.setCompartment(comp1);
+		g.addVertex(a1);bn.add(a1);
+		b1 = new BioMetabolite("M_b_1");
+		bn.affectToCompartment(b1,comp1);
 		b1.setInchi("InChI=1S/C4H10NO6P/c5-3(4(6)7)1-2-11-12(8,9)10/h3H,1-2,5H2,(H,6,7)(H2,8,9,10)/t3-/m0/s1");
-		g.addVertex(b1);bn.addPhysicalEntity(b1);
-		a2 = new BioPhysicalEntity("M_a_2");
-		a2.setCompartment(comp2);
+		g.addVertex(b1);bn.add(b1);
+		a2 = new BioMetabolite("M_a_2");
+		bn.affectToCompartment(a2,comp2);
 		a2.setInchi("InChI=1S/C4H6O4/c1-2(3(5)6)4(7)8/h2H,1H3,(H,5,6)(H,7,8)");
-		g.addVertex(a2);bn.addPhysicalEntity(a2);
-		b2 = new BioPhysicalEntity("M_b_2");
-		b2.setCompartment(comp2);
+		g.addVertex(a2);bn.add(a2);
+		b2 = new BioMetabolite("M_b_2");
+		bn.affectToCompartment(b2,comp2);
 		b2.setInchi("InChI=1S/C4H10NO6P/c5-3(4(6)7)1-2-11-12(8,9)10/h3H,1-2,5H2,(H,6,7)(H2,8,9,10)/t3-/m0/s1");
-		g.addVertex(b2);bn.addPhysicalEntity(b2);
+		g.addVertex(b2);bn.add(b2);
 		
 		BioProtein p1 = new BioProtein("p1");
-		bn.addProtein(p1);
+		bn.add(p1);
+		BioEnzyme enz1 = new BioEnzyme("p1");
+		bn.add(enz1);
+		bn.affectSubUnit(p1, 1.0, enz1);
+		
 				
-		BioReaction r1 = new BioReaction("ab1");r1.setReversibility(false);
-		bn.addBiochemicalReaction(r1);
-		r1.addLeftParticipant(new BioParticipant(a1));
-		r1.addRightParticipant(new BioParticipant(b1));
-		r1.addEnz(p1);
-		BioReaction r2 = new BioReaction("ab2");r2.setReversibility(false);
-		bn.addBiochemicalReaction(r2);
-		r2.addLeftParticipant(new BioParticipant(a1));
-		r2.addRightParticipant(new BioParticipant(b1));
-		BioReaction r3 = new BioReaction("ab3");r3.setReversibility(true);
-		bn.addBiochemicalReaction(r3);
-		r3.addLeftParticipant(new BioParticipant(a1));
-		r3.addRightParticipant(new BioParticipant(b1));
-		BioReaction r4 = new BioReaction("ab4");r4.setReversibility(false);
-		bn.addBiochemicalReaction(r4);
-		r4.addLeftParticipant(new BioParticipant(a2));
-		r4.addRightParticipant(new BioParticipant(b2));
-		BioReaction r5 = new BioReaction("ba2");r5.setReversibility(false);
-		bn.addBiochemicalReaction(r5);
-		r5.addLeftParticipant(new BioParticipant(b1));
-		r5.addRightParticipant(new BioParticipant(a2));
-		BioReaction r6 = new BioReaction("aa");r6.setReversibility(true);
-		bn.addBiochemicalReaction(r6);
-		r6.addLeftParticipant(new BioParticipant(a1));
-		r6.addRightParticipant(new BioParticipant(a2));
-		BioReaction r7 = new BioReaction("bb");r7.setReversibility(true);
-		bn.addBiochemicalReaction(r7);
-		r7.addLeftParticipant(new BioParticipant(b1));
-		r7.addRightParticipant(new BioParticipant(b2));
+		BioReaction r1 = new BioReaction("ab1");r1.setReversible(false);
+		bn.add(r1);
+		bn.affectLeft(a1, 1.0, comp1, r1);
+		bn.affectRight(b1, 1.0, comp1, r1);
+		bn.affectEnzyme(enz1,r1);
+		BioReaction r2 = new BioReaction("ab2");r2.setReversible(false);
+		bn.add(r2);
+		bn.affectLeft(a1, 1.0, comp1, r2);
+		bn.affectRight(b1, 1.0, comp1, r2);
+		BioReaction r3 = new BioReaction("ab3");r3.setReversible(true);
+		bn.add(r3);
+		bn.affectLeft(a1, 1.0, comp1, r3);
+		bn.affectRight(b1, 1.0, comp1, r3);
+		BioReaction r4 = new BioReaction("ab4");r4.setReversible(false);
+		bn.add(r4);
+		bn.affectLeft(a2, 1.0, comp2, r4);
+		bn.affectRight(b2, 1.0, comp2, r4);
+		BioReaction r5 = new BioReaction("ba2");r5.setReversible(false);
+		bn.add(r5);
+		bn.affectLeft(b1, 1.0, comp1, r5);
+		bn.affectRight(a2, 1.0, comp2, r5);
+		BioReaction r6 = new BioReaction("aa");r6.setReversible(true);
+		bn.add(r6);
+		bn.affectLeft(a1, 1.0, comp1, r6);
+		bn.affectRight(a2, 1.0, comp2, r6);
+		BioReaction r7 = new BioReaction("bb");r7.setReversible(true);
+		bn.add(r7);
+		bn.affectLeft(b1, 1.0, comp1, r7);
+		bn.affectRight(b2, 1.0, comp2, r7);
 		
 		ab1 = new ReactionEdge(a1,b1,r1);g.addEdge(a1, b1, ab1);
 		ab2 = new ReactionEdge(a1,b1,r2);g.addEdge(a1, b1, ab2);
@@ -106,8 +111,8 @@ public class TestMerger {
 		assertEquals("Error while creating the initial graph", 10, g.edgeSet().size());
 		assertEquals("Wrong final number of edges", 8, g2.edgeSet().size());
 		
-		MergedGraph<BioPhysicalEntity, ReactionEdge> g3 = Merger.mergeEdgesII(g);
-		MetaEdge<BioPhysicalEntity, ReactionEdge> m = g3.getEdge(a1, b1);
+		MergedGraph<BioMetabolite, ReactionEdge> g3 = Merger.mergeEdges(g);
+		MetaEdge<BioMetabolite, ReactionEdge> m = g3.getEdge(a1, b1);
 		assertEquals("wrong number of reaction in merged edge",3,m.getEdgeList().size());
 		assertTrue("wrong edge merged",m.getEdgeList().contains(ab1));
 		assertTrue("wrong edge merged",m.getEdgeList().contains(ab2));
@@ -122,7 +127,7 @@ public class TestMerger {
 		assertEquals("Error while creating the initial graph", 10, g.edgeSet().size());
 		assertEquals("Wrong final number of nodes", 2, g2.vertexSet().size());
 		assertEquals("Wrong final number of edges", 6, g2.edgeSet().size());
-		for(BioPhysicalEntity v : g2.vertexSet()){
+		for(BioMetabolite v : g2.vertexSet()){
 			assertEquals("Wrong compartment id", "metaComp", v.getCompartment().getId());
 		}
 	}
@@ -136,14 +141,14 @@ public class TestMerger {
 		assertEquals("Wrong final number of edges", 6, g2.edgeSet().size());
 		assertNotNull("Wrong vertex id in merged graph", g2.getVertex("M_a"));
 		assertNotNull("Wrong vertex id in merged graph", g2.getVertex("M_b"));
-		for(BioPhysicalEntity v : g2.vertexSet()){
+		for(BioMetabolite v : g2.vertexSet()){
 			assertEquals("Wrong compartment id", "metaComp", v.getCompartment().getId());
 		}
 	}
 	
 	@Test
 	public void testMergeDuplicatedReation() {
-		BioNetwork bn2 = new BioNetwork(bn, bn.getBiochemicalReactionList().keySet(), bn.getPhysicalEntityList().keySet());
+		BioNetwork bn2 = new BioNetwork(bn, bn.getReaction().keySet(), bn.getPhysicalEntityList().keySet());
 		int removed = Merger.mergeReactions(bn2);
 		assertEquals("wrong number of removed reaction after merging",1, removed); //ab3 is consider different from ab2 and ab1 as their reversibility are different
 		assertTrue("duplicated reaction not merged",!bn2.getBiochemicalReactionList().containsKey("ab1") || !bn2.getBiochemicalReactionList().containsKey("ab2"));

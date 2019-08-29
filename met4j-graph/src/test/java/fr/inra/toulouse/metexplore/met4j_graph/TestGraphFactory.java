@@ -8,9 +8,11 @@ import java.util.HashSet;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inra.toulouse.metexplore.met4j_graph.core.GraphFactory;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -19,31 +21,35 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 public class TestGraphFactory {
 	
 	public static CompoundGraph cg;
-	public static GraphFactory<BioPhysicalEntity, ReactionEdge, CompoundGraph> f;
-	public static BioPhysicalEntity v1,v2,v3;
+	public static GraphFactory<BioMetabolite, ReactionEdge, CompoundGraph> f;
+	public static BioMetabolite v1,v2,v3;
 	public static BioReaction r1,r2,r3;
 	public static ReactionEdge e1,e2;
+	public static BioNetwork bn;
+	public static BioCompartment comp;
 	
 	@BeforeClass
 	public static void init(){
 		
 		cg = new CompoundGraph();
-		v1 = new BioPhysicalEntity("v1");
-		v2 = new BioPhysicalEntity("v2");
-		v3 = new BioPhysicalEntity("v3");
+		bn = new BioNetwork();
+		comp = new BioCompartment("comp");
+		v1 = new BioMetabolite("v1");bn.add(v1);
+		v2 = new BioMetabolite("v2");bn.add(v2);
+		v3 = new BioMetabolite("v3");bn.add(v3);
 		
-		r1 = new BioReaction("r1");
-		r1.addLeftParticipant(new BioParticipant(v1));
-		r1.addRightParticipant(new BioParticipant(v2));
+		r1 = new BioReaction("r1");bn.add(r1);
+		bn.affectLeft(v1, 1.0, comp, r1);
+		bn.affectRight(v2, 1.0, comp, r1);
 
-		r2 = new BioReaction("r2");
-		r2.addLeftParticipant(new BioParticipant(v2));
-		r2.addRightParticipant(new BioParticipant(v3));
+		r2 = new BioReaction("r2");bn.add(r2);
+		bn.affectLeft(v2, 1.0, comp, r2);
+		bn.affectRight(v3, 1.0, comp, r2);
 
 		r3 = new BioReaction("r3");
-		r3.addLeftParticipant(new BioParticipant(v2));
-		r3.addRightParticipant(new BioParticipant(v3));
-		r3.setReversibility(true);
+		bn.affectLeft(v2, 1.0, comp, r3);bn.add(r3);
+		bn.affectRight(v3, 1.0, comp, r3);
+		r3.setReversible(true);
 		
 		e1 = new ReactionEdge(v1, v2, r1);
 		e2 = new ReactionEdge(v2, v3, r2);
@@ -62,11 +68,11 @@ public class TestGraphFactory {
 		HashSet<ReactionEdge> edges = new HashSet<ReactionEdge>();
 		edges.add(e1);
 		edges.add(e2);
-		HashSet<BioPhysicalEntity> vertexSet1 = new HashSet<BioPhysicalEntity>();
+		HashSet<BioMetabolite> vertexSet1 = new HashSet<BioMetabolite>();
 		vertexSet1.add(v1);
 		vertexSet1.add(v2);
 		vertexSet1.add(v3);
-		vertexSet1.add(new BioPhysicalEntity("v4"));
+		vertexSet1.add(new BioMetabolite("v4"));
 		
 		CompoundGraph g2 = f.createGraphFromElements(vertexSet1, edges);
 		
@@ -79,7 +85,7 @@ public class TestGraphFactory {
 		HashSet<ReactionEdge> edges = new HashSet<ReactionEdge>();
 		edges.add(e1);
 		edges.add(e2);
-		HashSet<BioPhysicalEntity> vertexSet1 = new HashSet<BioPhysicalEntity>();
+		HashSet<BioMetabolite> vertexSet1 = new HashSet<BioMetabolite>();
 		vertexSet1.add(v1);
 		vertexSet1.add(v2);
 		
@@ -104,9 +110,9 @@ public class TestGraphFactory {
 		ArrayList<ReactionEdge> edges = new ArrayList<ReactionEdge>();
 		edges.add(e1);
 		edges.add(e2);
-		BioPath<BioPhysicalEntity, ReactionEdge> path = 
-				new BioPath<BioPhysicalEntity, ReactionEdge>(cg, v1, v3, edges, 2.0);
-		HashSet<BioPath<BioPhysicalEntity, ReactionEdge>> paths = new HashSet<BioPath<BioPhysicalEntity,ReactionEdge>>();
+		BioPath<BioMetabolite, ReactionEdge> path = 
+				new BioPath<BioMetabolite, ReactionEdge>(cg, v1, v3, edges, 2.0);
+		HashSet<BioPath<BioMetabolite, ReactionEdge>> paths = new HashSet<BioPath<BioMetabolite,ReactionEdge>>();
 		paths.add(path);
 		CompoundGraph g2 = f.createGraphFromPathList(paths);
 		
@@ -132,7 +138,7 @@ public class TestGraphFactory {
 	
 	@Test
 	public void testCreateSubgraph(){
-		HashSet<BioPhysicalEntity> vertexSet1 = new HashSet<BioPhysicalEntity>();
+		HashSet<BioMetabolite> vertexSet1 = new HashSet<BioMetabolite>();
 		vertexSet1.add(v1);
 		vertexSet1.add(v2);
 		CompoundGraph g2 = f.createSubGraph(cg, vertexSet1);

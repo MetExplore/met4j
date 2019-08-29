@@ -4,9 +4,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 
 public class BioGraph2Sif<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V, E>> {
 	
@@ -26,16 +26,13 @@ public class BioGraph2Sif<V extends BioEntity, E extends Edge<V>, G extends BioG
 	 * @param sbmlEncode
 	 * @throws IOException
 	 */
-	public void writeSif(String filename, Boolean sbmlEncode) throws IOException {
+	public void writeSif(String filename) throws IOException {
 		
 		FileWriter fw = new FileWriter(filename);
 		
 		for(V node : graph.vertexSet()) {
 			
 			String nodeId = node.getId();
-			if(sbmlEncode) {
-				nodeId = StringUtils.sbmlEncode(nodeId);
-			}
 			
 			if(graph.neighborListOf(node).isEmpty()) {
 				// Orphan node
@@ -46,10 +43,6 @@ public class BioGraph2Sif<V extends BioEntity, E extends Edge<V>, G extends BioG
 					
 					V successor = outgoingEdge.getV2();
 					String successorId = successor.getId();
-					if(sbmlEncode) {
-						successorId = StringUtils.sbmlEncode(successorId);
-					}
-					
 					fw.write(nodeId+"\tlinkedWith\t"+successorId+"\n");
 				}
 				

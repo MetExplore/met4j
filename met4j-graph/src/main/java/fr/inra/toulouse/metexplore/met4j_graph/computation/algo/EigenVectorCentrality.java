@@ -44,7 +44,7 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inra.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 import fr.inra.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * Class to compute the eigen vector centrality of each vertex in a BioGraph.
@@ -280,7 +280,7 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 	 * @return 
 	 * @return the bio graph
 	 */
-	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> void extractEigenVectorCentralitySubNet(G g, double threshold, HashMap<BioPhysicalEntity,Double> seeds, double JumpProba, int maxIter, double tolerance){
+	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> void extractEigenVectorCentralitySubNet(G g, double threshold, HashMap<BioMetabolite,Double> seeds, double JumpProba, int maxIter, double tolerance){
 		
 		EigenVectorCentrality<V,E,G> evc = new EigenVectorCentrality<V,E,G>(g);
 		
@@ -319,7 +319,7 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 	 * @return 
 	 * @return the bio graph
 	 */
-	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> void extractEigenVectorCentralitySubNet(G g, double threshold, HashMap<BioPhysicalEntity,Double> seeds){
+	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> void extractEigenVectorCentralitySubNet(G g, double threshold, HashMap<BioMetabolite,Double> seeds){
 		extractEigenVectorCentralitySubNet(g,threshold,seeds,0.02,100,0.000001);
 	}
 	

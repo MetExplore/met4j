@@ -9,10 +9,12 @@ import java.util.HashSet;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioParticipant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -22,27 +24,31 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.compressed.PathEdge;
 public class TestCompressedGraph {
 
 	public static CompoundGraph cg;
-	public static CompressedGraph<BioPhysicalEntity, ReactionEdge, CompoundGraph> cg2;
-	public static BioPhysicalEntity v1,v2,v3;
+	public static CompressedGraph<BioMetabolite, ReactionEdge, CompoundGraph> cg2;
+	public static BioMetabolite v1,v2,v3;
 	public static BioReaction r1,r2;
 	public static ReactionEdge e1,e2;
-	public static PathEdge<BioPhysicalEntity, ReactionEdge> e;
-	public static BioPath<BioPhysicalEntity, ReactionEdge> path;
+	public static PathEdge<BioMetabolite, ReactionEdge> e;
+	public static BioPath<BioMetabolite, ReactionEdge> path;
+	public static BioNetwork bn;
+	public static BioCompartment comp;
 	
 	@BeforeClass
 	public static void init(){
 		
 		cg = new CompoundGraph();
-		v1 = new BioPhysicalEntity("v1");
-		v2 = new BioPhysicalEntity("v2");
-		v3 = new BioPhysicalEntity("v3");
+		bn = new BioNetwork();
+		comp = new BioCompartment("comp");
+		v1 = new BioMetabolite("v1");
+		v2 = new BioMetabolite("v2");
+		v3 = new BioMetabolite("v3");
 		
 		r1 = new BioReaction("r1");
-		r1.addLeftParticipant(new BioParticipant(v1));
-		r1.addRightParticipant(new BioParticipant(v2));
+		bn.affectLeft(v1, 1.0, comp, r1);
+		bn.affectRight(v2, 1.0, comp, r1);
 		r2 = new BioReaction("r2");
-		r2.addLeftParticipant(new BioParticipant(v2));
-		r2.addRightParticipant(new BioParticipant(v3));
+		bn.affectLeft(v2, 1.0, comp, r2);
+		bn.affectRight(v3, 1.0, comp, r2);
 		
 		e1 = new ReactionEdge(v1, v2, r1);
 		e2 = new ReactionEdge(v2, v3, r2);
@@ -56,13 +62,13 @@ public class TestCompressedGraph {
 		ArrayList<ReactionEdge> reactionList = new ArrayList<ReactionEdge>();
 		reactionList.add(e1);
 		reactionList.add(e2);
-		path = new BioPath<BioPhysicalEntity, ReactionEdge>(cg, v1, v3, reactionList, 2.0);
+		path = new BioPath<BioMetabolite, ReactionEdge>(cg, v1, v3, reactionList, 2.0);
 		
-		cg2 = new CompressedGraph<BioPhysicalEntity, ReactionEdge, CompoundGraph>(cg);
+		cg2 = new CompressedGraph<BioMetabolite, ReactionEdge, CompoundGraph>(cg);
 		cg2.addVertex(v1);
 		cg2.addVertex(v3);
 		
-		e = new PathEdge<BioPhysicalEntity, ReactionEdge>(v1, v3, path);
+		e = new PathEdge<BioMetabolite, ReactionEdge>(v1, v3, path);
 		cg2.addEdge(v1, v3, e);
 		
 		assertEquals(2, cg2.vertexSet().size());
@@ -71,7 +77,7 @@ public class TestCompressedGraph {
 	
 	@Test
 	public void testCopyEdge() {
-		PathEdge<BioPhysicalEntity, ReactionEdge> ec = cg2.copyEdge(e);
+		PathEdge<BioMetabolite, ReactionEdge> ec = cg2.copyEdge(e);
 		assertEquals(v1, ec.getV1());
 		assertEquals(v3, ec.getV2());
 		assertEquals(path, ec.getPath());
@@ -83,7 +89,7 @@ public class TestCompressedGraph {
 	
 	@Test
 	public void testReverseEdge() {
-		PathEdge<BioPhysicalEntity, ReactionEdge> er = cg2.reverseEdge(e);
+		PathEdge<BioMetabolite, ReactionEdge> er = cg2.reverseEdge(e);
 		assertEquals(v1, er.getV2());
 		assertEquals(v3, er.getV1());
 		assertEquals(path, er.getPath());
@@ -96,8 +102,8 @@ public class TestCompressedGraph {
 	
 	@Test
 	public void testAddEdge(){
-		CompressedGraph<BioPhysicalEntity, ReactionEdge, CompoundGraph> cg3 
-		= (CompressedGraph<BioPhysicalEntity, ReactionEdge, CompoundGraph>) cg2.clone();
+		CompressedGraph<BioMetabolite, ReactionEdge, CompoundGraph> cg3 
+		= (CompressedGraph<BioMetabolite, ReactionEdge, CompoundGraph>) cg2.clone();
 		cg3.addEdge(v3, v1);
 		assertEquals(2, cg3.edgeSet().size());
 	}

@@ -34,38 +34,38 @@ import java.util.BitSet;
 import java.util.HashMap;
 
 import fr.inra.toulouse.metexplore.met4j_chemUtils.fingerprints.FingerprintBuilder;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_mathUtils.similarity.SimilarityComputor;
 
 /**
  * The A* heuristic using chemical similarity
  * @author clement
  */
-public class ChemicalSimilarityHeuristic implements AStarHeuristic<BioPhysicalEntity> {
+public class ChemicalSimilarityHeuristic implements AStarHeuristic<BioMetabolite> {
 	
-	private HashMap<BioPhysicalEntity, BitSet> fingerpMap;
-	private HashMap<BioPhysicalEntity, HashMap<BioPhysicalEntity, Double>> distMap;
+	private HashMap<BioMetabolite, BitSet> fingerpMap;
+	private HashMap<BioMetabolite, HashMap<BioMetabolite, Double>> distMap;
 	
 	/**
 	 * Instantiates a new chemical similarity heuristic.
 	 */
 	public ChemicalSimilarityHeuristic() {
-		fingerpMap=new HashMap<BioPhysicalEntity, BitSet>();
-		distMap=new HashMap<BioPhysicalEntity, HashMap<BioPhysicalEntity,Double>>();
+		fingerpMap=new HashMap<BioMetabolite, BitSet>();
+		distMap=new HashMap<BioMetabolite, HashMap<BioMetabolite,Double>>();
 	}
 	
 	/* (non-Javadoc)
-	 * @see parsebionet.applications.graphe.algo.AStarHeuristic#getHeuristicCost(parsebionet.biodata.BioPhysicalEntity, parsebionet.biodata.BioPhysicalEntity)
+	 * @see parsebionet.applications.graphe.algo.AStarHeuristic#getHeuristicCost(parsebionet.biodata.BioMetabolite, parsebionet.biodata.BioMetabolite)
 	 */
 	@Override
-	public double getHeuristicCost(BioPhysicalEntity node, BioPhysicalEntity end) {
+	public double getHeuristicCost(BioMetabolite node, BioMetabolite end) {
 		
 		if(distMap.containsKey(node)){
 			if(distMap.get(node).containsKey(end)){
 				return distMap.get(node).get(end);
 			}
 		}else{
-			distMap.put(node, new HashMap<BioPhysicalEntity, Double>());
+			distMap.put(node, new HashMap<BioMetabolite, Double>());
 		}
 		
 		BitSet fingerprint1=getFingerprint(node);
@@ -84,7 +84,7 @@ public class ChemicalSimilarityHeuristic implements AStarHeuristic<BioPhysicalEn
 		}
 	}
 	
-	private BitSet getFingerprint(BioPhysicalEntity e){
+	private BitSet getFingerprint(BioMetabolite e){
 		if(fingerpMap.containsKey(e))return fingerpMap.get(e);
 		//BitSet fingerprint=FingerprintBuilder.getMACCSFingerprint(e);
 		//BitSet fingerprint=FingerprintBuilder.getKlekotaRothFingerprint(e);

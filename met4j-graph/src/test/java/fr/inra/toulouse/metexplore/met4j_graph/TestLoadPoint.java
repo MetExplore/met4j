@@ -7,7 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.analysis.LoadPoint;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -17,45 +17,45 @@ public class TestLoadPoint {
 	public static CompoundGraph toyGraph;
 	public static CompoundGraph linearGraph;
 	public static CompoundGraph starGraph;
-	public static BioPhysicalEntity a,b,c,d,e,f,h,g;
-	public static LoadPoint<BioPhysicalEntity, ReactionEdge, CompoundGraph> toyMeasure;
-	public static LoadPoint<BioPhysicalEntity, ReactionEdge, CompoundGraph> linearMeasure;
-	public static LoadPoint<BioPhysicalEntity, ReactionEdge, CompoundGraph> starMeasure;
+	public static BioMetabolite a,b,c,d,e,f,h,g;
+	public static LoadPoint<BioMetabolite, ReactionEdge, CompoundGraph> toyMeasure;
+	public static LoadPoint<BioMetabolite, ReactionEdge, CompoundGraph> linearMeasure;
+	public static LoadPoint<BioMetabolite, ReactionEdge, CompoundGraph> starMeasure;
 	
 	
 	@BeforeClass
 	public static void init(){
 		
-		a = new BioPhysicalEntity("a");
-		b = new BioPhysicalEntity("b");
-		c = new BioPhysicalEntity("c");
-		d = new BioPhysicalEntity("d");
-		e = new BioPhysicalEntity("e"); 
-		f = new BioPhysicalEntity("f"); 
-		h = new BioPhysicalEntity("h"); 
-		g = new BioPhysicalEntity("g"); 
-		ReactionEdge ab = new ReactionEdge(a, b, new BioReaction());
-		ReactionEdge bc = new ReactionEdge(b, c, new BioReaction());
-		ReactionEdge cd = new ReactionEdge(c, d, new BioReaction());
-		ReactionEdge de = new ReactionEdge(d, e, new BioReaction());
-		ReactionEdge ec = new ReactionEdge(e, c, new BioReaction());
-		ReactionEdge af = new ReactionEdge(a, f, new BioReaction());
-		ReactionEdge fg = new ReactionEdge(f, g, new BioReaction());
-		ReactionEdge ba = new ReactionEdge(b, a, new BioReaction());
-		ReactionEdge ca = new ReactionEdge(c, a, new BioReaction());
-		ReactionEdge da = new ReactionEdge(d, a, new BioReaction());
-		ReactionEdge ea = new ReactionEdge(e, a, new BioReaction());
-		ReactionEdge fa = new ReactionEdge(f, a, new BioReaction());
-		ReactionEdge ga = new ReactionEdge(g, a, new BioReaction());
-		ReactionEdge cb = new ReactionEdge(c, b, new BioReaction());
-		ReactionEdge dc = new ReactionEdge(d, c, new BioReaction());
-		ReactionEdge ed = new ReactionEdge(e, d, new BioReaction());
-		ReactionEdge ce = new ReactionEdge(c, e, new BioReaction());
-		ReactionEdge gf = new ReactionEdge(g, f, new BioReaction());
-		ReactionEdge ac = new ReactionEdge(a, c, new BioReaction());
-		ReactionEdge ad = new ReactionEdge(a, d, new BioReaction());
-		ReactionEdge ae = new ReactionEdge(a, e, new BioReaction());
-		ReactionEdge ag = new ReactionEdge(a, g, new BioReaction());
+		a = new BioMetabolite("a");
+		b = new BioMetabolite("b");
+		c = new BioMetabolite("c");
+		d = new BioMetabolite("d");
+		e = new BioMetabolite("e"); 
+		f = new BioMetabolite("f"); 
+		h = new BioMetabolite("h"); 
+		g = new BioMetabolite("g"); 
+		ReactionEdge ab = new ReactionEdge(a, b, new BioReaction("r1"));
+		ReactionEdge bc = new ReactionEdge(b, c, new BioReaction("r2"));
+		ReactionEdge cd = new ReactionEdge(c, d, new BioReaction("r3"));
+		ReactionEdge de = new ReactionEdge(d, e, new BioReaction("r4"));
+		ReactionEdge ec = new ReactionEdge(e, c, new BioReaction("r5"));
+		ReactionEdge af = new ReactionEdge(a, f, new BioReaction("r6"));
+		ReactionEdge fg = new ReactionEdge(f, g, new BioReaction("r7"));
+		ReactionEdge ba = new ReactionEdge(b, a, new BioReaction("r8"));
+		ReactionEdge ca = new ReactionEdge(c, a, new BioReaction("r9"));
+		ReactionEdge da = new ReactionEdge(d, a, new BioReaction("r10"));
+		ReactionEdge ea = new ReactionEdge(e, a, new BioReaction("r11"));
+		ReactionEdge fa = new ReactionEdge(f, a, new BioReaction("r12"));
+		ReactionEdge ga = new ReactionEdge(g, a, new BioReaction("r13"));
+		ReactionEdge cb = new ReactionEdge(c, b, new BioReaction("r14"));
+		ReactionEdge dc = new ReactionEdge(d, c, new BioReaction("r15"));
+		ReactionEdge ed = new ReactionEdge(e, d, new BioReaction("r16"));
+		ReactionEdge ce = new ReactionEdge(c, e, new BioReaction("r17"));
+		ReactionEdge gf = new ReactionEdge(g, f, new BioReaction("r18"));
+		ReactionEdge ac = new ReactionEdge(a, c, new BioReaction("r19"));
+		ReactionEdge ad = new ReactionEdge(a, d, new BioReaction("r20"));
+		ReactionEdge ae = new ReactionEdge(a, e, new BioReaction("r21"));
+		ReactionEdge ag = new ReactionEdge(a, g, new BioReaction("r22"));
 		
 		
 		toyGraph = new CompoundGraph();
@@ -117,17 +117,17 @@ public class TestLoadPoint {
 		linearGraph.addEdge(e, d, ed);
 		
 		
-		toyMeasure = new LoadPoint<BioPhysicalEntity, ReactionEdge, CompoundGraph>(toyGraph);
-		linearMeasure = new LoadPoint<BioPhysicalEntity, ReactionEdge, CompoundGraph>(linearGraph);
-		starMeasure = new LoadPoint<BioPhysicalEntity, ReactionEdge, CompoundGraph>(starGraph);
+		toyMeasure = new LoadPoint<BioMetabolite, ReactionEdge, CompoundGraph>(toyGraph);
+		linearMeasure = new LoadPoint<BioMetabolite, ReactionEdge, CompoundGraph>(linearGraph);
+		starMeasure = new LoadPoint<BioMetabolite, ReactionEdge, CompoundGraph>(starGraph);
 	}
 	
 	@Test
 	public void testGetLoadPoint() {
 		
-		Map<BioPhysicalEntity, Double> toyLoadPoint = toyMeasure.getLoads(1);
-		Map<BioPhysicalEntity, Double> linearLoadPoint = linearMeasure.getLoads(1);
-		Map<BioPhysicalEntity, Double> starLoadPoint = starMeasure.getLoads(1);
+		Map<BioMetabolite, Double> toyLoadPoint = toyMeasure.getLoads(1);
+		Map<BioMetabolite, Double> linearLoadPoint = linearMeasure.getLoads(1);
+		Map<BioMetabolite, Double> starLoadPoint = starMeasure.getLoads(1);
 		
 		assertEquals(Math.log((16.0/6)/(42.0/32.0)), toyLoadPoint.get(a), 0.00000001);
 		assertEquals(Math.log((18.0/4)/(42.0/32.0)), toyLoadPoint.get(b), 0.00000001);

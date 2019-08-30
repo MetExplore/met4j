@@ -561,7 +561,7 @@ public class BioNetwork extends BioEntity {
 	}
 
 	// relations compartiment - contenu
-	private void affectToCompartment(BioCompartment compartment, BioPhysicalEntity entity) {
+	private void affectToCompartment(BioCompartment compartment, BioEntity entity) {
 
 		if (!contains(compartment)) {
 			throw new IllegalArgumentException("Compartment " + compartment.getId() + " not in the network");
@@ -580,9 +580,9 @@ public class BioNetwork extends BioEntity {
 	 * @param compartment
 	 * @param entities
 	 */
-	public void affectToCompartment(BioCompartment compartment, BioPhysicalEntity... entities) {
+	public void affectToCompartment(BioCompartment compartment, BioEntity... entities) {
 
-		for(BioPhysicalEntity ent : entities) {
+		for(BioEntity ent : entities) {
 			this.affectToCompartment(compartment, ent);
 		}
 

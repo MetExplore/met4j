@@ -181,7 +181,7 @@ public class BioReaction extends BioEntity {
 
 		HashSet<BioCompartment> compartments = new HashSet<BioCompartment>();
 
-		for (BioReactant s : this.getReactants()) {
+		for (BioReactant s : this.getReactantsView()) {
 			compartments.add(s.getLocation());
 		}
 
@@ -258,7 +258,7 @@ public class BioReaction extends BioEntity {
 	 */
 	protected BioCollection<BioMetabolite> getEntities() {
 
-		BioCollection<BioReactant> reactants = this.getReactants();
+		BioCollection<BioReactant> reactants = this.getReactantsView();
 
 		BioCollection<BioMetabolite> entities = new BioCollection<BioMetabolite>();
 
@@ -276,7 +276,7 @@ public class BioReaction extends BioEntity {
 	/**
 	 * @return a {@link BioCollection} of {@link BioReactant}
 	 */
-	protected BioCollection<BioReactant> getReactants() {
+	public BioCollection<BioReactant> getReactantsView() {
 
 		BioCollection<BioReactant> reactants = new BioCollection<BioReactant>();
 		try {

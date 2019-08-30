@@ -262,7 +262,7 @@ public class BioNetwork extends BioEntity {
 
 		this.reactions.forEach(r -> {
 
-			BioCollection<BioReactant> reactants = r.getReactants();
+			BioCollection<BioReactant> reactants = r.getReactantsView();
 			for (BioReactant reactant : reactants) {
 				if (reactant.getLocation().equals(c)) {
 					this.removeReaction(r);

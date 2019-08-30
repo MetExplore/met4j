@@ -103,7 +103,7 @@ public class GroupPathwayParserTest {
 		testIds.add("r3");
 		testIds.add("r2");
 
-		BioPathway p1 = network.getPathwaysView().getEntityFromId("g1");
+		BioPathway p1 = network.getPathwaysView().get("g1");
 
 		assertNotNull(p1);
 
@@ -111,7 +111,7 @@ public class GroupPathwayParserTest {
 
 		testIds.remove("r1");
 
-		BioPathway p2 = network.getPathwaysView().getEntityFromId("g2");
+		BioPathway p2 = network.getPathwaysView().get("g2");
 
 		assertNotNull(p2);
 

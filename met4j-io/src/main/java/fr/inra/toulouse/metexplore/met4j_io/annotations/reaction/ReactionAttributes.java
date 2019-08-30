@@ -248,7 +248,7 @@ public class ReactionAttributes extends GenericAttributes {
 			return null;
 		}
 		
-		return getFluxParams(r).getEntityFromId(id);
+		return getFluxParams(r).get(id);
 		
 		
 	}

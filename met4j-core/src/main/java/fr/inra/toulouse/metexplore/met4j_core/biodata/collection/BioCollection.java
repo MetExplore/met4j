@@ -96,7 +96,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @param id
 	 * @return the entity or null
 	 */
-	public E getEntityFromId(String id) {
+	public E get(String id) {
 
 		E entity = entities.get(id);
 

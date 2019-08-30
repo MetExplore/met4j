@@ -156,7 +156,7 @@ public class JsbmlToBioNetwork {
 				compartName = compartId;
 			}
 
-			BioCompartment bionetCompart = this.getNetwork().getCompartmentsView().getEntityFromId(compartId);
+			BioCompartment bionetCompart = this.getNetwork().getCompartmentsView().get(compartId);
 			if (bionetCompart == null) {
 				bionetCompart = new BioCompartment(compartId, compartName);
 				this.getNetwork().add(bionetCompart);
@@ -182,7 +182,7 @@ public class JsbmlToBioNetwork {
 				Compartment outsideJSBMLComp = model.getCompartment(jSBMLCompart.getOutside());
 
 				BioCompartment outsideCompart = this.getNetwork().getCompartmentsView()
-						.getEntityFromId(outsideJSBMLComp.getId());
+						.get(outsideJSBMLComp.getId());
 
 				// if it's null, we create it and add it to the bionetwork
 				if (outsideCompart == null) {
@@ -291,7 +291,7 @@ public class JsbmlToBioNetwork {
 						// This means that <parameter id="REDUCED_COST" value="0.000000"/> won't be taken into account
 						if (jsbmlUnit != null) {
 
-							BioUnitDefinition UD = udList.getEntityFromId(jsbmlUnit.getId());
+							BioUnitDefinition UD = udList.get(jsbmlUnit.getId());
 
 							/**
 							 * This is to make sure that the unit definition associated with the fluxes is
@@ -338,7 +338,7 @@ public class JsbmlToBioNetwork {
 									+ " : the flux unit " + param.getUnits() + " does not exist in the model");
 						} else {
 
-							BioUnitDefinition UD = udList.getEntityFromId(jsbmlUnit.getId());
+							BioUnitDefinition UD = udList.get(jsbmlUnit.getId());
 
 							/**
 							 * This is to make sure that the unit definition associated with the fluxes is
@@ -465,7 +465,7 @@ public class JsbmlToBioNetwork {
 			this.getNetwork().add(bionetSpecies);
 
 			this.getNetwork().affectToCompartment(
-					this.getNetwork().getCompartmentsView().getEntityFromId(specie.getCompartment()), bionetSpecies);
+					this.getNetwork().getCompartmentsView().get(specie.getCompartment()), bionetSpecies);
 		}
 	}
 
@@ -492,10 +492,10 @@ public class JsbmlToBioNetwork {
 			stoDbl = 1.0;
 		}
 
-		BioMetabolite bionetSpecies = this.getNetwork().getMetabolitesView().getEntityFromId(specieId);
+		BioMetabolite bionetSpecies = this.getNetwork().getMetabolitesView().get(specieId);
 
 		BioReactant reactant = new BioReactant(bionetSpecies, stoDbl,
-				this.getNetwork().getCompartmentsView().getEntityFromId(specie.getCompartment()));
+				this.getNetwork().getCompartmentsView().get(specie.getCompartment()));
 
 		return reactant;
 	}

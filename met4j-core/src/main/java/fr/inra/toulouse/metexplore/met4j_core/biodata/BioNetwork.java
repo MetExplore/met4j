@@ -834,7 +834,7 @@ public class BioNetwork extends BioEntity {
 			if (!this.reactions.containsId(s)) {
 				throw new IllegalArgumentException("Reaction " + s + " not present in the network");
 			}
-			reactionsToTest.add(reactions.getEntityFromId(s));
+			reactionsToTest.add(reactions.get(s));
 		}
 
 		BioCollection<BioGene> genes = new BioCollection<BioGene>();
@@ -858,7 +858,7 @@ public class BioNetwork extends BioEntity {
 			if (!this.pathways.containsId(s)) {
 				throw new IllegalArgumentException("Reaction " + s + " not present in the network");
 			}
-			pathwaysToTest.add(pathways.getEntityFromId(s));
+			pathwaysToTest.add(pathways.get(s));
 		}
 
 		BioCollection<BioGene> genes = new BioCollection<BioGene>();
@@ -889,7 +889,7 @@ public class BioNetwork extends BioEntity {
 		BioCollection<BioGene> genes = new BioCollection<BioGene>();
 
 		for (String id : enzymeIds) {
-			BioEnzyme e = this.getEnzymesView().getEntityFromId(id);
+			BioEnzyme e = this.getEnzymesView().get(id);
 			if (e != null) {
 				genes.addAll(this.getGenesFromEnzyme(e));
 			}
@@ -1007,7 +1007,7 @@ public class BioNetwork extends BioEntity {
 			if (!this.pathways.containsId(s)) {
 				throw new IllegalArgumentException("Reaction " + s + " not present in the network");
 			}
-			pathwaysToTest.add(pathways.getEntityFromId(s));
+			pathwaysToTest.add(pathways.get(s));
 		}
 
 		BioCollection<BioReaction> reactions = new BioCollection<BioReaction>();

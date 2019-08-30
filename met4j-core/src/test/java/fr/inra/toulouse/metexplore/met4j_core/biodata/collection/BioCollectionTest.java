@@ -47,7 +47,7 @@ public class BioCollectionTest {
 	@Test
 	public void testGetEntityFromId() {
 
-		assertEquals(collec.getEntityFromId("m1"), m1);
+		assertEquals(collec.get("m1"), m1);
 
 	}
 

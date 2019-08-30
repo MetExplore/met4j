@@ -135,7 +135,7 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 			bioParam.setConstant(gParam.getConstant());
 			bioParam.value = gParam.getValue();
 
-			bioParam.unitDefinition = (BioUnitDefinition) (udList.getEntityFromId(gParam.getUnits()));
+			bioParam.unitDefinition = (BioUnitDefinition) (udList.get(gParam.getUnits()));
 
 			this.flxNet.addFluxBound(bioParam);
 		}
@@ -173,7 +173,7 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 
 		for (Reaction rxn : this.getFbcModel().getParent().getListOfReactions()) {
 
-			BioReaction reaction = this.flxNet.getUnderlyingBionet().getReactionsView().getEntityFromId(rxn.getId());
+			BioReaction reaction = this.flxNet.getUnderlyingBionet().getReactionsView().get(rxn.getId());
 
 			FBCReactionPlugin rxnPlugin = (FBCReactionPlugin) rxn.getPlugin("fbc");
 			FluxReaction flxReaction = new FluxReaction(reaction);
@@ -252,7 +252,7 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 
 				GA.setId(geneRef.getId());
 
-				BioGene g = this.flxNet.getUnderlyingBionet().getGenesView().getEntityFromId(geneRef.getGeneProduct());
+				BioGene g = this.flxNet.getUnderlyingBionet().getGenesView().get(geneRef.getGeneProduct());
 				GA.add(g);
 
 				geneAssociation.add(GA);
@@ -277,7 +277,7 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 
 			BioNetwork net = this.flxNet.getUnderlyingBionet();
 
-			BioMetabolite metabolite = net.getMetabolitesView().getEntityFromId(specie.getId());
+			BioMetabolite metabolite = net.getMetabolitesView().get(specie.getId());
 
 			if (speciePlugin.isSetCharge())
 				metabolite.setCharge(speciePlugin.getCharge());
@@ -310,7 +310,7 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 				String id, name;
 				
 				BioReaction r = this.flxNet.getUnderlyingBionet().getReactionsView()
-						.getEntityFromId(fbcFluxObj.getReaction());
+						.get(fbcFluxObj.getReaction());
 				
 				if(! StringUtils.isVoid(fbcFluxObj.getId()))
 				{

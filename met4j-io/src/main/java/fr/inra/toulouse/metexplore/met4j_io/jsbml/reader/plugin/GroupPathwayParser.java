@@ -71,7 +71,7 @@ public class GroupPathwayParser implements PackageParser, PrimaryDataTag, Reader
 						errorsAndWarnings.add("[Warning] Pathway " + group.getId() + ": the reaction " + rxnId
 								+ " does not exist in the network");
 					} else {
-						BioReaction reaction = this.network.getReactionsView().getEntityFromId(rxnId);
+						BioReaction reaction = this.network.getReactionsView().get(rxnId);
 
 						network.affectToPathway(reaction, pathway);
 					}

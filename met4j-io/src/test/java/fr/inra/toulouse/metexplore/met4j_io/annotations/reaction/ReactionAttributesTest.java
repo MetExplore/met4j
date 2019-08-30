@@ -397,9 +397,9 @@ public class ReactionAttributesTest {
 		ReactionAttributes.addFlux(r, f);
 		ReactionAttributes.addFlux(r, f2);
 
-		assertEquals(((FluxCollection) r.getAttribute(ReactionAttributes.FLUX_PARAMS)).getEntityFromId("f"), f);
+		assertEquals(((FluxCollection) r.getAttribute(ReactionAttributes.FLUX_PARAMS)).get("f"), f);
 
-		assertEquals(((FluxCollection) r.getAttribute(ReactionAttributes.FLUX_PARAMS)).getEntityFromId("f2"), f2);
+		assertEquals(((FluxCollection) r.getAttribute(ReactionAttributes.FLUX_PARAMS)).get("f2"), f2);
 
 	}
 

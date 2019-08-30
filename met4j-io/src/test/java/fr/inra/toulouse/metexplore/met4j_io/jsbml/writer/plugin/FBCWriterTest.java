@@ -237,7 +237,7 @@ public class FBCWriterTest {
 		assertEquals(refObjectives.stream().map(x -> x.getId()).collect(Collectors.toSet()),
 				testObjectives.stream().map(x -> x.getId()).collect(Collectors.toSet()));
 
-		BioObjective refObj1 = refObjectives.getEntityFromId("obj1");
+		BioObjective refObj1 = refObjectives.get("obj1");
 		Objective testObj1 = testObjectives.get("obj1");
 
 		assertEquals(

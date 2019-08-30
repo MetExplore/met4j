@@ -297,7 +297,7 @@ public class MetexploreXmlReader {
 
 			network.add(cpd);
 
-			BioCompartment bioCompartment = this.network.getCompartmentsView().getEntityFromId(compartmentId);
+			BioCompartment bioCompartment = this.network.getCompartmentsView().get(compartmentId);
 			network.affectToCompartment(bioCompartment, cpd);
 
 			NodeList listsFromMetabolite = compound.getChildNodes();
@@ -458,7 +458,7 @@ public class MetexploreXmlReader {
 				network.add(enzyme);
 			}
 
-			enzyme = network.getEnzymesView().getEntityFromId(enzymeId);
+			enzyme = network.getEnzymesView().get(enzymeId);
 
 			network.affectEnzyme(enzyme, rxn);
 
@@ -478,7 +478,7 @@ public class MetexploreXmlReader {
 					network.add(protein);
 				}
 
-				protein = network.getProteinsView().getEntityFromId(proteinId);
+				protein = network.getProteinsView().get(proteinId);
 
 				network.affectSubUnit(protein, 1.0, enzyme);
 
@@ -497,7 +497,7 @@ public class MetexploreXmlReader {
 						network.add(gene);
 					}
 
-					gene = network.getGenesView().getEntityFromId(geneId);
+					gene = network.getGenesView().get(geneId);
 
 					network.affectGeneProduct(protein, gene);
 
@@ -586,7 +586,7 @@ public class MetexploreXmlReader {
 
 			}
 
-			pathway = network.getPathwaysView().getEntityFromId(pathwayId);
+			pathway = network.getPathwaysView().get(pathwayId);
 
 			network.affectToPathway(rxn, pathway);
 		}
@@ -749,7 +749,7 @@ public class MetexploreXmlReader {
 	private void addReactant(Element reactant, BioReaction rxn, Boolean left) throws ParseException {
 		// Finds the compound
 		BioMetabolite c = network.getMetabolitesView()
-				.getEntityFromId(StringUtils.sbmlDecode(reactant.getAttribute("species")));
+				.get(StringUtils.sbmlDecode(reactant.getAttribute("species")));
 
 		if (c != null) {
 			String coeffAttr = reactant.getAttribute("stoichiometry");
@@ -767,7 +767,7 @@ public class MetexploreXmlReader {
 
 			String compartmentId = compartmentMetabolites.get(c.getId());
 
-			BioCompartment compartment = network.getCompartmentsView().getEntityFromId(compartmentId);
+			BioCompartment compartment = network.getCompartmentsView().get(compartmentId);
 
 			if (left) {
 				network.affectLeft(c, coeff, compartment, rxn);

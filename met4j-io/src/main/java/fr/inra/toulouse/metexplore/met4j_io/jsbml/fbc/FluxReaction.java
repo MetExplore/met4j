@@ -86,7 +86,7 @@ public class FluxReaction extends BioEntity {
 				BioProtein prot;
 
 				if (bn.getProteinsView().containsId(gene.getId())) {
-					prot = bn.getProteinsView().getEntityFromId(gene.getId());
+					prot = bn.getProteinsView().get(gene.getId());
 				} else {
 					prot = new BioProtein(gene.getId(), gene.getName());
 					bn.add(prot);

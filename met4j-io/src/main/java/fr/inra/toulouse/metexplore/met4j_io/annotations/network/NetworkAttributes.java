@@ -37,7 +37,7 @@ public class NetworkAttributes extends GenericAttributes {
 	 */
 	public static BioUnitDefinition getUnitDefinition(BioNetwork network, String unitId) {
 
-		return getUnitDefinitions(network).getEntityFromId(unitId);
+		return getUnitDefinitions(network).get(unitId);
 
 	}
 

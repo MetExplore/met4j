@@ -303,7 +303,7 @@ public class FBCParserTest {
 		assertEquals(testObjIds, parser.getFlxNet().getListOfObjectives().get("obj1").getListOfReactionObjectives().stream()
 				.map(x -> x.getId()).collect(Collectors.toSet()));
 		
-		assertEquals(testObjIds, NetworkAttributes.getObjectives(parser.getFlxNet().getUnderlyingBionet()).getEntityFromId("obj1").getListOfReactionObjectives().stream()
+		assertEquals(testObjIds, NetworkAttributes.getObjectives(parser.getFlxNet().getUnderlyingBionet()).get("obj1").getListOfReactionObjectives().stream()
 				.map(x -> x.getId()).collect(Collectors.toSet()));
 		
 		testObjIds.clear();

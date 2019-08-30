@@ -687,14 +687,14 @@ public class BioNetwork extends BioEntity {
 
 			if (!r.isReversible()) {
 
-				Set<String> refIds = areSubstrates ? r.getLefts().getIds() : r.getRights().getIds();
+				Set<String> refIds = areSubstrates ? r.getLeftsView().getIds() : r.getRightsView().getIds();
 
 				return exact ? refIds.equals(substrates) : refIds.containsAll(substrates);
 
 			} else {
-				return exact ? r.getRights().getIds().equals(substrates) || r.getLefts().getIds().equals(substrates)
-						: r.getRights().getIds().containsAll(substrates)
-								|| r.getLefts().getIds().containsAll(substrates);
+				return exact ? r.getRightsView().getIds().equals(substrates) || r.getLeftsView().getIds().equals(substrates)
+						: r.getRightsView().getIds().containsAll(substrates)
+								|| r.getLeftsView().getIds().containsAll(substrates);
 			}
 		}).collect(Collectors.toSet()));
 
@@ -718,8 +718,8 @@ public class BioNetwork extends BioEntity {
 		this.getReactionsView().stream().forEach(r -> {
 			Boolean flag = false;
 
-			BioCollection<BioMetabolite> lefts = r.getLefts();
-			BioCollection<BioMetabolite> rights = r.getRights();
+			BioCollection<BioMetabolite> lefts = r.getLeftsView();
+			BioCollection<BioMetabolite> rights = r.getRightsView();
 
 			if (!r.isReversible()) {
 				flag = isSubstrate ? lefts.contains(m) : rights.contains(m);

@@ -126,7 +126,7 @@ public class BioReactionTest {
 
 	/**
 	 * Test method for
-	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction#getLefts()}.
+	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction#getLeftsView()}.
 	 */
 	@Test
 	public void testGetLeft() {
@@ -134,13 +134,13 @@ public class BioReactionTest {
 		leftCpds.add(l1.getPhysicalEntity());
 		leftCpds.add(l2.getPhysicalEntity());
 
-		assertArrayEquals("getLeft does not function well", leftCpds.toArray(), reaction.getLefts().toArray());
+		assertArrayEquals("getLeft does not function well", leftCpds.toArray(), reaction.getLeftsView().toArray());
 
 	}
 
 	/**
 	 * Test method for
-	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction#getRights()}.
+	 * {@link fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction#getRightsView()}.
 	 */
 	@Test
 	public void testGetRight() {
@@ -148,7 +148,7 @@ public class BioReactionTest {
 		rightCpds.add(r1.getPhysicalEntity());
 		rightCpds.add(r2.getPhysicalEntity());
 
-		assertArrayEquals("getLeft does not function well", rightCpds.toArray(), reaction.getRights().toArray());
+		assertArrayEquals("getLeft does not function well", rightCpds.toArray(), reaction.getRightsView().toArray());
 	}
 
 	/**

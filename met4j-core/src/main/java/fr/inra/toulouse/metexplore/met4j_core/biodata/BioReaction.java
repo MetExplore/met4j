@@ -230,6 +230,28 @@ public class BioReaction extends BioEntity {
 
 		return getSideReactants(Side.RIGHT);
 	}
+	
+	
+	/**
+	 * 
+	 * @param side : {@link Side}
+	 * @return {@link BioCollection} of left {@link BioReactant}
+	 */
+	public BioCollection<BioReactant> getLeftReactantsView() {
+
+		return left.getView();
+	}
+
+	/**
+	 * 
+	 * @param side : {@link Side}
+	 * @return {@link BioCollection}of right {@link BioReactant}
+	 */
+	public BioCollection<BioReactant> getRightReactantsView() {
+
+		return right.getView();
+	}
+	
 
 	/**
 	 * 

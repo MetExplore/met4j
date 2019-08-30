@@ -298,7 +298,7 @@ public class MetexploreXmlReader {
 			network.add(cpd);
 
 			BioCompartment bioCompartment = this.network.getCompartmentsView().getEntityFromId(compartmentId);
-			network.affectToCompartment(cpd, bioCompartment);
+			network.affectToCompartment(bioCompartment, cpd);
 
 			NodeList listsFromMetabolite = compound.getChildNodes();
 

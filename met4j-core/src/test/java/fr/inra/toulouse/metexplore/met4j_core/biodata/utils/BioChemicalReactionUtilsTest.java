@@ -67,8 +67,7 @@ public class BioChemicalReactionUtilsTest {
 		network.add(m2);
 		c = new BioCompartment("c");
 		network.add(c);
-		network.affectToCompartment(m1, c);
-		network.affectToCompartment(m2, c);
+		network.affectToCompartment(c, m1, m2);
 		network.affectLeft(m1, 1.0, c, r1);
 		network.affectRight(m2, 1.0, c, r1);
 		r1.setReversible(false);

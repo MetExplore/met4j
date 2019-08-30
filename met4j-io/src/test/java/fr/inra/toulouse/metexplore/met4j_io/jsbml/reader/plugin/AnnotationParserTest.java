@@ -67,10 +67,7 @@ public class AnnotationParserTest {
 		network.add(p2);
 		network.add(cpt);
 
-		network.affectToCompartment(s1, cpt);
-		network.affectToCompartment(s2, cpt);
-		network.affectToCompartment(p1, cpt);
-		network.affectToCompartment(p2, cpt);
+		network.affectToCompartment(cpt, s1, s2, p1, p2);
 
 		network.affectLeft(s1, 2.0, cpt, r1);
 		network.affectLeft(s2, 2.0, cpt, r1);

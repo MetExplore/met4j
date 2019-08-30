@@ -40,10 +40,7 @@ public class BioNetworkTest {
 		network.add(p2);
 		network.add(cpt);
 		
-		network.affectToCompartment(s1, cpt);
-		network.affectToCompartment(s2, cpt);
-		network.affectToCompartment(p1, cpt);
-		network.affectToCompartment(p2, cpt);
+		network.affectToCompartment(cpt, s1, s2, p1, p2);
 
 		network.affectLeft(s1, 2.0, cpt, r);
 		network.affectLeft(s2, 2.0, cpt, r);
@@ -192,7 +189,7 @@ public class BioNetworkTest {
 		BioCompartment compartment = new BioCompartment("cpt");
 		network.add(compartment);
 		network.add(protein);
-		network.affectToCompartment(protein, compartment);
+		network.affectToCompartment(compartment, protein);
 		network.removeOnCascade(protein);
 		assertEquals("Protein not removed from compartment", 0, compartment.getComponents().size());
 
@@ -235,7 +232,7 @@ public class BioNetworkTest {
 		network.add(reaction);
 		network.add(metabolite);
 		network.add(cpt);
-		network.affectToCompartment(metabolite, cpt);
+		network.affectToCompartment(cpt, metabolite);
 		network.affectLeft(metabolite, 1.0, cpt, reaction);
 		network.affectRight(metabolite, 1.0, cpt, reaction);
 		network.add(enz);
@@ -304,7 +301,7 @@ public class BioNetworkTest {
 		network.add(met);
 		network.add(cpt);
 		network.add(reaction);
-		network.affectToCompartment(met, cpt);
+		network.affectToCompartment(cpt, met);
 		network.affectLeft(met, 1.0, cpt, reaction);
 		network.affectRight(met, 1.0, cpt, reaction);
 
@@ -327,8 +324,7 @@ public class BioNetworkTest {
 		BioCompartment cpt = new BioCompartment("cpt");
 		network.add(cpt);
 
-		network.affectToCompartment(s1, cpt);
-		network.affectToCompartment(s2, cpt);
+		network.affectToCompartment(cpt, s1, s2);
 
 		network.affectLeft(s1, 1.0, cpt, reaction);
 
@@ -351,8 +347,7 @@ public class BioNetworkTest {
 		BioCompartment cpt = new BioCompartment("cpt");
 		network.add(cpt);
 
-		network.affectToCompartment(s1, cpt);
-		network.affectToCompartment(s2, cpt);
+		network.affectToCompartment(cpt, s1, s2);
 
 		network.affectLeft(s1, 1.0, cpt, reaction);
 		network.affectLeft(s2, 1.0, cpt, reaction);
@@ -386,7 +381,7 @@ public class BioNetworkTest {
 		network.add(metabolite);
 		network.add(cpt);
 		network.add(reaction);
-		network.affectToCompartment(metabolite, cpt2);
+		network.affectToCompartment(cpt2, metabolite);
 		// The metabolite has been affected to an other compartment
 		network.affectLeft(metabolite, 1.0, cpt, reaction);
 	}
@@ -399,7 +394,7 @@ public class BioNetworkTest {
 
 		network.add(metabolite);
 		network.add(cpt);
-		network.affectToCompartment(metabolite, cpt);
+		network.affectToCompartment(cpt, metabolite);
 		network.affectLeft(metabolite, 1.0, cpt, reaction);
 	}
 
@@ -414,8 +409,7 @@ public class BioNetworkTest {
 		BioCompartment cpt = new BioCompartment("cpt");
 		network.add(cpt);
 
-		network.affectToCompartment(s1, cpt);
-		network.affectToCompartment(s2, cpt);
+		network.affectToCompartment(cpt, s1, s2);
 
 		network.affectRight(s1, 1.0, cpt, reaction);
 		BioReactant reactant = new BioReactant(s2, 1.0, cpt);
@@ -435,8 +429,7 @@ public class BioNetworkTest {
 		BioCompartment cpt = new BioCompartment("cpt");
 		network.add(cpt);
 
-		network.affectToCompartment(s1, cpt);
-		network.affectToCompartment(s2, cpt);
+		network.affectToCompartment(cpt, s1, s2);
 
 		network.affectRight(s1, 1.0, cpt, reaction);
 		network.affectRight(s2, 1.0, cpt, reaction);
@@ -467,7 +460,7 @@ public class BioNetworkTest {
 		network.add(metabolite);
 		network.add(cpt);
 		network.add(reaction);
-		network.affectToCompartment(metabolite, cpt2);
+		network.affectToCompartment(cpt2, metabolite);
 		network.affectRight(metabolite, 1.0, cpt, reaction);
 	}
 
@@ -479,7 +472,7 @@ public class BioNetworkTest {
 
 		network.add(metabolite);
 		network.add(cpt);
-		network.affectToCompartment(metabolite, cpt);
+		network.affectToCompartment(cpt, metabolite);
 		network.affectRight(metabolite, 1.0, cpt, reaction);
 	}
 
@@ -704,7 +697,7 @@ public class BioNetworkTest {
 		network.add(cpt);
 		network.add(ent);
 
-		network.affectToCompartment(ent, cpt);
+		network.affectToCompartment(cpt, ent);
 
 		assertEquals("Compound not added to compartment", 1, cpt.getComponents().size());
 		assertEquals("Compound badly added to the compartment", ent, cpt.getComponents().iterator().next());
@@ -719,7 +712,7 @@ public class BioNetworkTest {
 
 		network.add(ent);
 
-		network.affectToCompartment(ent, cpt);
+		network.affectToCompartment(cpt, ent);
 
 	}
 
@@ -731,7 +724,7 @@ public class BioNetworkTest {
 
 		network.add(cpt);
 
-		network.affectToCompartment(ent, cpt);
+		network.affectToCompartment(cpt, ent);
 
 	}
 
@@ -1385,8 +1378,8 @@ public class BioNetworkTest {
 		s1 = new BioMetabolite("s1");
 		network.add(s1);
 		
-		network.affectToCompartment(s1, c1);
-		network.affectToCompartment(s1, c2);
+		network.affectToCompartment(c1, s1);
+		network.affectToCompartment(c2, s1);
 		
 		BioCollection<BioCompartment> ref = new BioCollection<BioCompartment>();
 		ref.add(c1);

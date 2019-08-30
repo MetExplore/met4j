@@ -91,8 +91,8 @@ public class FBCWriterTest {
 		network.add(c1);
 		network.add(c2);
 
-		network.affectToCompartment(m1, c1);
-		network.affectToCompartment(m2, c2);
+		network.affectToCompartment(c1, m1);
+		network.affectToCompartment(c2, m2);
 
 		BioGene g1 = new BioGene("g1");
 		BioGene g2 = new BioGene("g2");

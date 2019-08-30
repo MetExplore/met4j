@@ -97,8 +97,8 @@ public class AnnotationWriterTest {
 		network.add(c1);
 		network.add(c2);
 
-		network.affectToCompartment(m1, c1);
-		network.affectToCompartment(m2, c2);
+		network.affectToCompartment(c1, m1);
+		network.affectToCompartment(c2, m2);
 
 		// Model annotation
 		String annotationStr = "<annotation>\n"

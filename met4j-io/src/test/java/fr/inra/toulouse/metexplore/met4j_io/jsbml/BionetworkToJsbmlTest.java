@@ -134,8 +134,8 @@ public class BionetworkToJsbmlTest {
 		network.add(c1);
 		network.add(c2);
 
-		network.affectToCompartment(m1, c1);
-		network.affectToCompartment(m2, c2);
+		network.affectToCompartment(c1, m1);
+		network.affectToCompartment(c2, m2);
 
 		network.affectLeft(m1, 2.0, c1, r1);
 		network.affectRight(m2, 3.0, c2, r1);

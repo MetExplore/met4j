@@ -464,8 +464,8 @@ public class JsbmlToBioNetwork {
 
 			this.getNetwork().add(bionetSpecies);
 
-			this.getNetwork().affectToCompartment(bionetSpecies,
-					this.getNetwork().getCompartmentsView().getEntityFromId(specie.getCompartment()));
+			this.getNetwork().affectToCompartment(
+					this.getNetwork().getCompartmentsView().getEntityFromId(specie.getCompartment()), bionetSpecies);
 		}
 	}
 

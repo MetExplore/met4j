@@ -191,9 +191,9 @@ public class ScopeCompounds{
         if(reactionQueue.isEmpty()) return false; //no remaining reaction 
         while(!reactionQueue.isEmpty()){ 
           BioReaction r = reactionQueue.peek(); 
-          if(this.visitedCompounds.containsAll(r.getLeftList().values())){ //check susbtrate availability 
+          if(this.visitedCompounds.containsAll(r.getLeftsView())){ //check susbtrate availability 
             return true; 
-          }else if(r.isReversible() && this.visitedCompounds.containsAll(r.getRightList().values())){ //check product availability if reversible 
+          }else if(r.isReversible() && this.visitedCompounds.containsAll(r.getRightsView())){ //check product availability if reversible 
             return true; 
           } 
           reactionQueue.remove(); //remove unavailable reaction from the queue 
@@ -237,10 +237,10 @@ public class ScopeCompounds{
         boolean reverse = false; 
          
         //check if all substrate have already been visited 
-        if(this.visitedCompounds.containsAll(nextReaction.getLeftList().values())){ 
+        if(this.visitedCompounds.containsAll(nextReaction.getLeftsView())){ 
           available=true; 
           reverse=false; 
-        }else if(nextReaction.isReversible() && this.visitedCompounds.containsAll(nextReaction.getRightList().values())){ //check product availability if reversible 
+        }else if(nextReaction.isReversible() && this.visitedCompounds.containsAll(nextReaction.getRightReactantsView())){ //check product availability if reversible 
           available=true; 
           reverse=true; 
         } 
@@ -248,10 +248,10 @@ public class ScopeCompounds{
         //iteratively remove reaction until one available one is found. If the method hasNext() has been called before, and an available reaction exist, head of queue should be available, so the loop is skipped 
         while(!available && !reactionQueue.isEmpty()){ 
           nextReaction = reactionQueue.remove(); 
-          if(this.visitedCompounds.containsAll(nextReaction.getLeftList().values())){ 
+          if(this.visitedCompounds.containsAll(nextReaction.getLeftsView())){ 
             available=true; 
             reverse=false; 
-          }else if(nextReaction.isReversible() && this.visitedCompounds.containsAll(nextReaction.getRightList().values())){ 
+          }else if(nextReaction.isReversible() && this.visitedCompounds.containsAll(nextReaction.getRightsView())){ 
             available=true; 
             reverse=true; 
           } 
@@ -262,13 +262,13 @@ public class ScopeCompounds{
          
         //mark products as visited and add products' consuming reactions to the queue 
         if(!reverse){ 
-          for(BioMetabolite neighbor : nextReaction.getRightList().values()){ 
+          for(BioMetabolite neighbor : nextReaction.getRightsView()){ 
             if(!visitedCompounds.contains(neighbor)){ 
               visit(neighbor); 
             } 
           } 
         }else{ 
-          for(BioMetabolite neighbor : nextReaction.getLeftList().values()){ 
+          for(BioMetabolite neighbor : nextReaction.getLeftsView()){ 
             this.visitedCompounds.add(neighbor); 
             visit(neighbor); 
           } 

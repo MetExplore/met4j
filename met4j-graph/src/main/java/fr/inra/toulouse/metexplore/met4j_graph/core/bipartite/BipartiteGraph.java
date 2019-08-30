@@ -30,7 +30,6 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_graph.core.bipartite;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,7 +41,6 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 
@@ -137,7 +135,6 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 				for(BioMetabolite s : bn.getLefts(r)){
 					//add compound if missing
 					if(!this.containsVertex(s) && !sideCompoundToAdd.contains(s)){
-						s.setIsSide(true);
 						sideCompoundToAdd.add(s);
 						BipartiteEdge edge = new BipartiteEdge(s,r);
 						edge.setSide(true);
@@ -157,7 +154,6 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 				for(BioMetabolite p : bn.getRights(r)){
 					//add compound if missing
 					if(!this.containsVertex(p) && !sideCompoundToAdd.contains(p)){
-						p.setIsSide(true);
 						sideCompoundToAdd.add(p);
 						BipartiteEdge edge = new BipartiteEdge(r,p);
 						edge.setSide(true);

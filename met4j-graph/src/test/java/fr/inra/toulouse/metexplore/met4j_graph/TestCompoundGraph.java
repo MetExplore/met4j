@@ -33,9 +33,9 @@ public class TestCompoundGraph {
 		cg = new CompoundGraph();
 		bn= new BioNetwork();
 		comp = new BioCompartment("comp"); bn.add(comp);
-		v1 = new BioMetabolite("v1");bn.add(v1);
-		v2 = new BioMetabolite("v2");bn.add(v2);
-		v3 = new BioMetabolite("v3");bn.add(v3);
+		v1 = new BioMetabolite("v1");bn.add(v1); bn.affectToCompartment(comp, v1);
+		v2 = new BioMetabolite("v2");bn.add(v2); bn.affectToCompartment(comp, v2);
+		v3 = new BioMetabolite("v3");bn.add(v3); bn.affectToCompartment(comp, v3);
 		
 		p = new BioPathway("p");bn.add(p);
 		
@@ -75,16 +75,16 @@ public class TestCompoundGraph {
 		 assertTrue(edgesFromR2.isEmpty());
 	}
 	
-	@Test
-	public void testGetEdgesFromPathway() {
-		HashSet<ReactionEdge> edgesFromP = cg.getEdgesFromPathway("p");
-		assertEquals(2, edgesFromP.size());
-		assertTrue(edgesFromP.contains(e1));
-		assertTrue(edgesFromP.contains(e2));
-		
-		edgesFromP = cg.getEdgesFromReaction("pX");
-		 assertTrue(edgesFromP.isEmpty());
-	}
+//	@Test
+//	public void testGetEdgesFromPathway() {
+//		HashSet<ReactionEdge> edgesFromP = cg.getEdgesFromPathway("p");
+//		assertEquals(2, edgesFromP.size());
+//		assertTrue(edgesFromP.contains(e1));
+//		assertTrue(edgesFromP.contains(e2));
+//		
+//		edgesFromP = cg.getEdgesFromReaction("pX");
+//		 assertTrue(edgesFromP.isEmpty());
+//	}
 	
 	@Test
 	public void testGetBiochemicalReactionList(){
@@ -114,7 +114,6 @@ public class TestCompoundGraph {
 		assertEquals(v1, e.getV1());
 		assertEquals(v2, e.getV2());
 		assertEquals(r1, e.getReaction());
-		assertEquals(p, e.getPathway().iterator().next());
 	}
 	
 	@Test
@@ -123,7 +122,6 @@ public class TestCompoundGraph {
 		assertEquals(v2, e.getV1());
 		assertEquals(v1, e.getV2());
 		assertEquals(r1, e.getReaction());
-		assertEquals(p, e.getPathway().iterator().next());
 	}
 	
 	@Test

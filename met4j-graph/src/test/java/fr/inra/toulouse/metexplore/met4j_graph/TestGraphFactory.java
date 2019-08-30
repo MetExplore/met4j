@@ -33,10 +33,10 @@ public class TestGraphFactory {
 		
 		cg = new CompoundGraph();
 		bn = new BioNetwork();
-		comp = new BioCompartment("comp");
-		v1 = new BioMetabolite("v1");bn.add(v1);
-		v2 = new BioMetabolite("v2");bn.add(v2);
-		v3 = new BioMetabolite("v3");bn.add(v3);
+		comp = new BioCompartment("comp");bn.add(comp);
+		v1 = new BioMetabolite("v1");bn.add(v1);bn.affectToCompartment(comp, v1);
+		v2 = new BioMetabolite("v2");bn.add(v2);bn.affectToCompartment(comp, v2);
+		v3 = new BioMetabolite("v3");bn.add(v3);bn.affectToCompartment(comp, v3);
 		
 		r1 = new BioReaction("r1");bn.add(r1);
 		bn.affectLeft(v1, 1.0, comp, r1);
@@ -46,7 +46,7 @@ public class TestGraphFactory {
 		bn.affectLeft(v2, 1.0, comp, r2);
 		bn.affectRight(v3, 1.0, comp, r2);
 
-		r3 = new BioReaction("r3");
+		r3 = new BioReaction("r3");bn.add(r3);
 		bn.affectLeft(v2, 1.0, comp, r3);bn.add(r3);
 		bn.affectRight(v3, 1.0, comp, r3);
 		r3.setReversible(true);

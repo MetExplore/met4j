@@ -39,10 +39,11 @@ public class TestPathwayGraph {
 	public static void init(){
 		
 		pg = new PathwayGraph();
-		comp = new BioCompartment("comp");
-		v1 = new BioMetabolite("v1"); bn.add(v1);
-		v2 = new BioMetabolite("v2"); bn.add(v2);
-		v3 = new BioMetabolite("v3"); bn.add(v3);
+		bn = new BioNetwork();
+		comp = new BioCompartment("comp"); bn.add(comp);
+		v1 = new BioMetabolite("v1"); bn.add(v1); bn.affectToCompartment(comp, v1);
+		v2 = new BioMetabolite("v2"); bn.add(v2); bn.affectToCompartment(comp, v2);
+		v3 = new BioMetabolite("v3"); bn.add(v3); bn.affectToCompartment(comp, v3);
 		
 		p1 = new BioPathway("p1");bn.add(p1);
 		p2 = new BioPathway("p2");bn.add(p2);

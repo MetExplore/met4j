@@ -43,6 +43,7 @@ import fr.inra.toulouse.metexplore.met4j_mathUtils.similarity.SimilarityComputor
 import fr.inra.toulouse.metexplore.met4j_chemUtils.fingerprints.FingerprintBuilder;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollections;
 
 /**
  * The Chemical Similarity weighting policy.
@@ -175,12 +176,12 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,Reacti
 	 */
 	private double getMassContribution(ReactionEdge e){
 		try{
-			if(!StringUtils.isVoid(e.getV1().getMolecularWeight()) && !StringUtils.isVoid(e.getV2().getMolecularWeight())){
-				double massSum = Double.parseDouble(e.getV1().getMolecularWeight())+Double.parseDouble(e.getV2().getMolecularWeight());
+			if(e.getV1().getMolecularWeight() != null && e.getV2().getMolecularWeight() != null){
+				double massSum = e.getV1().getMolecularWeight()+e.getV2().getMolecularWeight();
 				double massReactionSum = 0.0;
-				for(BioReactant p : e.getReaction().getParticipantList().values()){
-					if(StringUtils.isVoid(p.getPhysicalEntity().getMolecularWeight())) return Double.NaN;
-					massReactionSum+=Double.parseDouble(p.getPhysicalEntity().getMolecularWeight());
+				for(BioMetabolite p : BioCollections.union(e.getReaction().getLeftsView(),e.getReaction().getRightsView())){
+					if(p.getMolecularWeight()==null) return Double.NaN;
+					massReactionSum+=p.getMolecularWeight();
 				}
 				return (100*massSum)/massReactionSum;
 			}else{

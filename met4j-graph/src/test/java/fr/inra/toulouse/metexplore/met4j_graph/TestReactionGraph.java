@@ -13,9 +13,6 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
-import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
-import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.reaction.CompoundEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
 
@@ -36,9 +33,9 @@ public class TestReactionGraph {
 		bn = new BioNetwork();
 		comp = new BioCompartment("comp");bn.add(comp);
 		
-		v1 = new BioMetabolite("v1");bn.add(v1);
-		v2 = new BioMetabolite("v2");bn.add(v2);
-		v3 = new BioMetabolite("v3");bn.add(v3);
+		v1 = new BioMetabolite("v1");bn.add(v1);bn.affectToCompartment(comp, v1);
+		v2 = new BioMetabolite("v2");bn.add(v2);bn.affectToCompartment(comp, v2);
+		v3 = new BioMetabolite("v3");bn.add(v3);bn.affectToCompartment(comp, v3);
 		
 		p = new BioPathway("p");bn.add(p);
 		
@@ -92,14 +89,14 @@ public class TestReactionGraph {
 		 assertEquals(v3, cpds.get("v3"));
 	}
 	
-	@Test
-	public void testAddEdgesFromCompound() {
-		ReactionGraph rg2 = (ReactionGraph) rg.clone();
-		rg2.addEdgesFromCompound(v2);
-		assertEquals(4, rg2.vertexSet().size());
-		assertEquals(4, rg2.edgeSet().size());
-	}
-	
+//	@Test
+//	public void testAddEdgesFromCompound() {
+//		ReactionGraph rg2 = (ReactionGraph) rg.clone();
+//		rg2.addEdgesFromCompound(v2);
+//		assertEquals(4, rg2.vertexSet().size());
+//		assertEquals(4, rg2.edgeSet().size());
+//	}
+//	
 	@Test
 	public void testGetEdge() {
 		CompoundEdge e = rg.getEdge("r1", "r2", "v2");

@@ -45,6 +45,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 
 /**
@@ -98,11 +99,14 @@ public class Bionetwork2BioGraph {
 	}
 	
 	
+	public ReactionGraph getReactionGraph(){
+		return getReactionGraph(new BioCollection<BioMetabolite>());
+	}
 	
 	/**
 	 * Builds the graph.
 	 */
-	public ReactionGraph getReactionGraph(){
+	public ReactionGraph getReactionGraph(BioCollection<BioMetabolite> cofactors){
 		ReactionGraph g = new ReactionGraph();
 		
 		for(BioReaction r : bn.getReactionsView()){
@@ -112,7 +116,7 @@ public class Bionetwork2BioGraph {
 		}
 		
 		for(BioMetabolite c : bn.getMetabolitesView()){
-			if(!c.getIsSide()){
+			if(!cofactors.contains(c)){
 				Collection<BioReaction> left = bn.getReactionsFromSubstrate(c);
 				Collection<BioReaction> right = bn.getReactionsFromProduct(c);
 				

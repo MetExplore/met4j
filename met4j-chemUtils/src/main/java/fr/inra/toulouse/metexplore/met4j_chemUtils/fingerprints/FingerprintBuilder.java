@@ -49,8 +49,8 @@ import org.openscience.cdk.signature.MoleculeSignature;
 import org.openscience.cdk.silent.SilentChemObjectBuilder;
 import org.openscience.cdk.smiles.SmilesParser;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 
 /**
@@ -96,7 +96,7 @@ public class FingerprintBuilder {
 		}
 	}
 	
-	public BitSet getFingerprint(BioPhysicalEntity e){
+	public BitSet getFingerprint(BioMetabolite e){
 		String inchi = e.getInchi();
 		if(!StringUtils.isVoid(inchi)) return getFingerprintFromInChi(inchi);
 		String smiles = e.getSmiles();
@@ -138,7 +138,7 @@ public class FingerprintBuilder {
 	 * @param e the compound
 	 * @return the MACCS fingerprint
 	 */
-	public static BitSet getMACCSFingerprint(BioPhysicalEntity e){
+	public static BitSet getMACCSFingerprint(BioMetabolite e){
 		String inchi = e.getInchi();
 		String smiles = e.getSmiles();
 		BitSet fingerprint;
@@ -176,7 +176,7 @@ public class FingerprintBuilder {
 	 * @param e the compound
 	 * @return the extended fingerprint
 	 */
-	public static BitSet getExtendedFingerprint(BioPhysicalEntity e){
+	public static BitSet getExtendedFingerprint(BioMetabolite e){
 		String inchi = e.getInchi();
 		String smiles = e.getSmiles();
 		BitSet fingerprint;
@@ -212,7 +212,7 @@ public class FingerprintBuilder {
 	 * @param e the compound
 	 * @return the klekota roth fingerprint
 	 */
-	public static BitSet getKlekotaRothFingerprint(BioPhysicalEntity e){
+	public static BitSet getKlekotaRothFingerprint(BioMetabolite e){
 		String inchi = e.getInchi();
 		String smiles = e.getSmiles();
 		BitSet fingerprint;
@@ -248,7 +248,7 @@ public class FingerprintBuilder {
 	 * @param e the compound
 	 * @return the pubchem fingerprint
 	 */
-	public static BitSet getPubchemFingerprint(BioPhysicalEntity e){
+	public static BitSet getPubchemFingerprint(BioMetabolite e){
 		String inchi = e.getInchi();
 		String smiles = e.getSmiles();
 		BitSet fingerprint;
@@ -285,7 +285,7 @@ public class FingerprintBuilder {
 	 * @param e the compound
 	 * @return the E-state fingerprint
 	 */
-	public static BitSet getEStateFingerprint(BioPhysicalEntity e){
+	public static BitSet getEStateFingerprint(BioMetabolite e){
 		String inchi = e.getInchi();
 		String smiles = e.getSmiles();
 		BitSet fingerprint;
@@ -321,7 +321,7 @@ public class FingerprintBuilder {
 	 * @param e the compound
 	 * @return the substructure fingerprint
 	 */
-	public static BitSet getSubstructureFingerprint(BioPhysicalEntity e){
+	public static BitSet getSubstructureFingerprint(BioMetabolite e){
 		String inchi = e.getInchi();
 		String smiles = e.getSmiles();
 		BitSet fingerprint;
@@ -357,7 +357,7 @@ public class FingerprintBuilder {
 	 * @param e the compound
 	 * @return the signature
 	 */
-	public static MoleculeSignature getSignature(BioPhysicalEntity e){
+	public static MoleculeSignature getSignature(BioMetabolite e){
 		String inchi = e.getInchi();
 		String smiles = e.getSmiles();
 		MoleculeSignature sig;

@@ -1080,9 +1080,9 @@ public class BioNetworkTest {
 		BioGene g3 = new BioGene("g3");
 		network.add(g3);
 
-		Set<String> reactions = new HashSet<String>();
-		reactions.add("r1");
-		reactions.add("r2");
+		BioCollection<BioReaction> reactions = new BioCollection<BioReaction>();
+		reactions.add(r);
+		reactions.add(r2);
 
 		BioCollection<BioGene> genes = network.getGenesFromReactions(reactions);
 
@@ -1091,10 +1091,8 @@ public class BioNetworkTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testGetGenesFromReactionsabsent() {
-		Set<String> reactions = new HashSet<String>();
-		reactions.add("id3");
 		// Must return an exception
-		network.getGenesFromReactions(reactions);
+		network.getGenesFromReactions(new BioReaction("rnotinthenetwork"));
 
 	}
 

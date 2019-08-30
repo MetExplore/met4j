@@ -70,21 +70,22 @@ public class BioNetwork extends BioEntity {
 	public BioNetwork() {
 		super("NA");
 	}
-	
+
 	/**
 	 * Add several entities
+	 * 
 	 * @param bioEntities
 	 */
 	public void add(BioEntity... bioEntities) {
-		
-		for(BioEntity e : bioEntities)
-		{
+
+		for (BioEntity e : bioEntities) {
 			this.add(e);
 		}
 	}
 
 	/**
 	 * Add one entity
+	 * 
 	 * @param e
 	 */
 	public void add(BioEntity e) {
@@ -574,15 +575,16 @@ public class BioNetwork extends BioEntity {
 		compartment.addComponent(entity);
 
 	};
-	
+
 	/**
 	 * Affect several metabolites to a compartment
+	 * 
 	 * @param compartment
 	 * @param entities
 	 */
 	public void affectToCompartment(BioCompartment compartment, BioEntity... entities) {
 
-		for(BioEntity ent : entities) {
+		for (BioEntity ent : entities) {
 			this.affectToCompartment(compartment, ent);
 		}
 
@@ -692,7 +694,8 @@ public class BioNetwork extends BioEntity {
 				return exact ? refIds.equals(substrates) : refIds.containsAll(substrates);
 
 			} else {
-				return exact ? r.getRightsView().getIds().equals(substrates) || r.getLeftsView().getIds().equals(substrates)
+				return exact
+						? r.getRightsView().getIds().equals(substrates) || r.getLeftsView().getIds().equals(substrates)
 						: r.getRightsView().getIds().containsAll(substrates)
 								|| r.getLeftsView().getIds().containsAll(substrates);
 			}
@@ -827,26 +830,36 @@ public class BioNetwork extends BioEntity {
 	/**
 	 * Get genes involved in a set of reactions
 	 */
-	public BioCollection<BioGene> getGenesFromReactions(Collection<String> reactionIds) {
-
-		BioCollection<BioReaction> reactionsToTest = new BioCollection<BioReaction>();
-		for (String s : reactionIds) {
-			if (!this.reactions.containsId(s)) {
-				throw new IllegalArgumentException("Reaction " + s + " not present in the network");
-			}
-			reactionsToTest.add(reactions.get(s));
-		}
+	public BioCollection<BioGene> getGenesFromReactions(BioReaction... reactions) {
 
 		BioCollection<BioGene> genes = new BioCollection<BioGene>();
 
-		reactionsToTest.forEach(r -> {
-			try {
-				genes.addAll(r.getGenes());
-			} catch (IllegalArgumentException e) {
-			}
-		});
+		for (BioReaction r : reactions) {
+			genes.addAll(this.getGenesFromReaction(r));
+		}
 
 		return genes;
+	}
+	
+	/**
+	 * Get genes involved in a set of reactions
+	 */
+	public BioCollection<BioGene> getGenesFromReactions(BioCollection<BioReaction> reactions) {
+
+		return getGenesFromReactions(reactions.toArray(new BioReaction[reactions.size()]));
+	}
+
+	/**
+	 * 
+	 * @param reaction
+	 * @return
+	 */
+	private BioCollection<BioGene> getGenesFromReaction(BioReaction reaction) {
+		if (!this.contains(reaction)) {
+			throw new IllegalArgumentException("Reaction " + reaction.getId() + " not present in the network");
+		}
+
+		return reaction.getGenes();
 	}
 
 	/**
@@ -1181,31 +1194,28 @@ public class BioNetwork extends BioEntity {
 
 		return reactions;
 	}
-	
+
 	/**
 	 * 
 	 * @param e
 	 * @return
 	 */
 	public BioCollection<BioCompartment> getCompartmentsOf(BioEntity e) {
-		
+
 		BioCollection<BioCompartment> cpts = new BioCollection<BioCompartment>();
-		
+
 		if (!this.contains(e)) {
 			throw new IllegalArgumentException("Entity " + e + " not present in the network");
 		}
-		
-		for(BioCompartment c : this.getCompartmentsView()) 
-		{
-			if(c.getComponents().contains(e))
-			{
+
+		for (BioCompartment c : this.getCompartmentsView()) {
+			if (c.getComponents().contains(e)) {
 				cpts.add(c);
 			}
 		}
-		
+
 		return cpts;
-		
+
 	}
-	
 
 }

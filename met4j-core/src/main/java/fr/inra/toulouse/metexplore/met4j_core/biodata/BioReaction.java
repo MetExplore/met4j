@@ -390,7 +390,7 @@ public class BioReaction extends BioEntity {
 	/**
 	 * Get list of genes
 	 */
-	public BioCollection<BioGene> getGenes() {
+	protected BioCollection<BioGene> getGenes() {
 
 		HashSet<BioGene> genes = new HashSet<BioGene>();
 		this.getEnzymes().forEach(e -> {

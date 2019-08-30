@@ -56,7 +56,6 @@ public class BioMetabolite extends BioPhysicalEntity {
 		return inchi;
 	}
 
-
 	/**
 	 * @param inchi the inchi to set
 	 */

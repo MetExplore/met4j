@@ -38,8 +38,6 @@ package fr.inra.toulouse.metexplore.met4j_core.biodata;
  */
 public abstract class BioPhysicalEntity extends BioEntity {
 	
-	
-	
 	public BioPhysicalEntity(String id) {
 		super(id);
 	}
@@ -48,21 +46,4 @@ public abstract class BioPhysicalEntity extends BioEntity {
 		super(id, name);
 	}
 
-	/**
-	 * From BioCyc : for substrates whose names imply a broad specificity
-	 * for a given enzyme. These non specific substrates are often
-	 * involved in multiple reaction nodes
-	 */
-	private Boolean isGeneric;
-	
-
-	public Boolean getIsGeneric() {
-		return isGeneric;
-	}
-
-	public void setIsGeneric(Boolean isGeneric) {
-		this.isGeneric = isGeneric;
-	}
-	
-	
 }

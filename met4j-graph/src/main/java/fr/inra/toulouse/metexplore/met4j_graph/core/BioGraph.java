@@ -51,7 +51,7 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
 public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends DirectedWeightedMultigraph<V, E>{
 	
 	private static final long serialVersionUID = 1L;
-	private String name = "ParseBioNet-Graph";
+	private String name = "MetabolicGraph";
 	
 	public BioGraph(Class<? extends E> edgeClass){
 		super(edgeClass);

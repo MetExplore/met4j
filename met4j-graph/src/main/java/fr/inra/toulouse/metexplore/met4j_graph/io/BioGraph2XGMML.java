@@ -193,12 +193,10 @@ public class BioGraph2XGMML{
 		node.setAttribute("label", v.getName());
 		node.setAttribute("id", v.getId());
 		node.appendChild(createAttribute("canonicalName",v.getId()));
-		node.appendChild(createAttribute("compartment",v.getCompartment().getName()));
-        node.appendChild(createAttribute("chemicalFormula",v.get));
+        node.appendChild(createAttribute("chemicalFormula",v.getChemicalFormula()));
 		node.appendChild(createAttribute("dbIdentifier",v.getName()));
 		node.appendChild(createAttribute("sbml name",v.getName()));
 		node.appendChild(createAttribute("sbml type","species"));
-		node.appendChild(createAttribute("sideCompound",v.getIsSide()));
 		if(mapping!=null && mapping.containsKey(v.getId())){
 			node.appendChild(createAttribute("identified","identified"));
 			node.appendChild(createAttribute("value",mapping.get(v.getId()).toString()));
@@ -229,13 +227,10 @@ public class BioGraph2XGMML{
         node.appendChild(createAttribute("canonicalName",v.getId()));
         node.appendChild(createAttribute("dbIdentifier",v.getName()));
         node.appendChild(createAttribute("ec",v.getEcNumber()));
-        node.appendChild(createAttribute("lowerBound",v.getLowerBound().value));
         node.appendChild(createReactionNodeGraphics(v));
-        node.appendChild(createAttribute("pathways",v.getPathwayList().keySet()));
         node.appendChild(createAttribute("reversibility",v.isReversible()));
         node.appendChild(createAttribute("sbml name",v.getName()));
         node.appendChild(createAttribute("sbml type","reaction"));
-        node.appendChild(createAttribute("upperBound",v.getUpperBound().value));
         node.appendChild(createReactionNodeGraphics(v));
         return node;
 	}

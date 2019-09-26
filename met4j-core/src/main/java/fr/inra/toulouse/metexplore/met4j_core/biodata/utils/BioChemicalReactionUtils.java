@@ -85,13 +85,13 @@ public class BioChemicalReactionUtils {
 		
 		BioCollection<BioEnzyme> enzymes = r.getEnzymesView();
 		
-		TreeSet<String> geneIdSets  = new TreeSet<String>();
+		TreeSet<String> geneIdSets  = new TreeSet<>();
 		
 		for(BioEnzyme enz : enzymes)
 		{
 			BioCollection<BioEnzymeParticipant> participants = enz.getParticipantsView();
 			
-			TreeSet<String> geneIds = new TreeSet<String>();
+			TreeSet<String> geneIds = new TreeSet<>();
 			
 			for(BioEnzymeParticipant p : participants) {
 				BioPhysicalEntity ent = p.getPhysicalEntity();
@@ -110,7 +110,7 @@ public class BioChemicalReactionUtils {
 			
 			if(geneIds.size() > 0)
 			{
-				String geneIdString = StringUtils.join(geneIds.toArray(new String[geneIds.size()]), " AND ");
+				String geneIdString = StringUtils.join(geneIds.toArray(new String[0]), " AND ");
 				geneIdSets.add(geneIdString);
 			}
 			
@@ -120,7 +120,7 @@ public class BioChemicalReactionUtils {
 		
 		if(geneIdSets.size() > 1 ){
 			
-			finalSet = new TreeSet<String>(geneIdSets.stream().map(s -> "( "+s+" )").collect(Collectors.toSet()));
+			finalSet = geneIdSets.stream().map(s -> "( " + s + " )").collect(Collectors.toCollection(TreeSet::new));
 			
 		}
 		else {
@@ -128,7 +128,7 @@ public class BioChemicalReactionUtils {
 		}
 		
 		
-		String gpr = StringUtils.join(finalSet.toArray(new String[finalSet.size()]), " OR ");
+		String gpr = StringUtils.join(finalSet.toArray(new String[0]), " OR ");
 		
 		
 		return gpr;

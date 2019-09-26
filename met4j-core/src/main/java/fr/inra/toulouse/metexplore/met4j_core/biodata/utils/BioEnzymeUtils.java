@@ -1,7 +1,5 @@
 package fr.inra.toulouse.metexplore.met4j_core.biodata.utils;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.stream.Collectors;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;

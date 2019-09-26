@@ -40,7 +40,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 public class BioPathway extends BioEntity {
 
-	private BioCollection<BioReaction> reactions = new BioCollection<BioReaction>();
+	private BioCollection<BioReaction> reactions = new BioCollection<>();
 
 	public BioPathway(String id) {
 		super(id);
@@ -71,12 +71,9 @@ public class BioPathway extends BioEntity {
 	 * Get metabolites involved in pathways
 	 */
 	protected BioCollection<BioMetabolite> getMetabolites() {
-		BioCollection<BioMetabolite> metaboliteSet = new BioCollection<BioMetabolite>();
+		BioCollection<BioMetabolite> metaboliteSet = new BioCollection<>();
 
-		try {
-			this.getReactions().forEach(r -> metaboliteSet.addAll(r.getEntities()));
-		} catch (IllegalArgumentException e) {
-		}
+		this.getReactions().forEach(r -> metaboliteSet.addAll(r.getEntities()));
 
 		return metaboliteSet;
 	}
@@ -86,12 +83,9 @@ public class BioPathway extends BioEntity {
 	 */
 
 	protected BioCollection<BioGene> getGenes() {
-		BioCollection<BioGene> geneSet = new BioCollection<BioGene>();
+		BioCollection<BioGene> geneSet = new BioCollection<>();
 
-		try {
-			this.getReactions().forEach(r -> geneSet.addAll(r.getGenes()));
-		} catch (IllegalArgumentException e) {
-		}
+		this.getReactions().forEach(r -> geneSet.addAll(r.getGenes()));
 
 		return geneSet;
 	}

@@ -39,13 +39,13 @@ public class BioEnzyme extends BioPhysicalEntity {
 	public BioEnzyme(String id) {
 		super(id);
 
-		participants = new BioCollection<BioEnzymeParticipant>();
+		participants = new BioCollection<>();
 	}
 	
 	public BioEnzyme(String id, String name) {
 		super(id, name);
 
-		participants = new BioCollection<BioEnzymeParticipant>();
+		participants = new BioCollection<>();
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class BioEnzyme extends BioPhysicalEntity {
 	protected void removeParticipant(BioPhysicalEntity e) 
 	{
 
-		BioCollection<BioEnzymeParticipant> tmp = new BioCollection<BioEnzymeParticipant>(this.participants);
+		BioCollection<BioEnzymeParticipant> tmp = new BioCollection<>(this.participants);
 
 		for(BioEnzymeParticipant p : tmp)
 		{

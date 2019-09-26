@@ -68,10 +68,10 @@ public class BioReaction extends BioEntity {
 	private String ecNumber;
 	private boolean reversible=true;
 
-	private BioCollection<BioReactant> left = new BioCollection<BioReactant>();
-	private BioCollection<BioReactant> right = new BioCollection<BioReactant>();
+	private BioCollection<BioReactant> left = new BioCollection<>();
+	private BioCollection<BioReactant> right = new BioCollection<>();
 
-	private BioCollection<BioEnzyme> enzymes = new BioCollection<BioEnzyme>();
+	private BioCollection<BioEnzyme> enzymes = new BioCollection<>();
 
 	public enum Side {
 		LEFT, RIGHT
@@ -97,7 +97,7 @@ public class BioReaction extends BioEntity {
 
 		str = str.concat(this.getId() + ": ");
 
-		ArrayList<String> lefts = new ArrayList<String>();
+		ArrayList<String> lefts = new ArrayList<>();
 
 		for (BioReactant cpd : this.getLeftReactants()) {
 
@@ -113,7 +113,7 @@ public class BioReaction extends BioEntity {
 			direction = " <-> ";
 		}
 
-		ArrayList<String> rights = new ArrayList<String>();
+		ArrayList<String> rights = new ArrayList<>();
 
 		for (BioReactant cpd : this.getRightReactants()) {
 
@@ -179,17 +179,13 @@ public class BioReaction extends BioEntity {
 	 */
 	public Boolean isTransportReaction() {
 
-		HashSet<BioCompartment> compartments = new HashSet<BioCompartment>();
+		HashSet<BioCompartment> compartments = new HashSet<>();
 
 		for (BioReactant s : this.getReactantsView()) {
 			compartments.add(s.getLocation());
 		}
 
-		if (compartments.size() > 1) {
-			return true;
-		} else {
-			return false;
-		}
+		return compartments.size() > 1;
 
 	}
 
@@ -260,7 +256,7 @@ public class BioReaction extends BioEntity {
 
 		BioCollection<BioReactant> reactants = this.getReactantsView();
 
-		BioCollection<BioMetabolite> entities = new BioCollection<BioMetabolite>();
+		BioCollection<BioMetabolite> entities = new BioCollection<>();
 
 		for (BioReactant reactant : reactants) {
 			BioMetabolite entity = reactant.getMetabolite();
@@ -278,12 +274,10 @@ public class BioReaction extends BioEntity {
 	 */
 	public BioCollection<BioReactant> getReactantsView() {
 
-		BioCollection<BioReactant> reactants = new BioCollection<BioReactant>();
-		try {
-			reactants.addAll(this.getLeftReactants());
-			reactants.addAll(this.getRightReactants());
-		} catch (IllegalArgumentException e) {
-		}
+		BioCollection<BioReactant> reactants = new BioCollection<>();
+
+		reactants.addAll(this.getLeftReactants());
+		reactants.addAll(this.getRightReactants());
 
 		return reactants;
 	}
@@ -321,7 +315,7 @@ public class BioReaction extends BioEntity {
 			reactantCollection = this.right;
 		}
 
-		BioCollection<BioMetabolite> entityCollection = new BioCollection<BioMetabolite>();
+		BioCollection<BioMetabolite> entityCollection = new BioCollection<>();
 
 		for (BioReactant reactant : reactantCollection) {
 			entityCollection.add(reactant.getMetabolite());
@@ -370,9 +364,9 @@ public class BioReaction extends BioEntity {
 
 		BioCollection<BioReactant> reactants;
 		if (side.equals(Side.LEFT)) {
-			reactants = new BioCollection<BioReactant>(this.getLeftReactants());
+			reactants = new BioCollection<>(this.getLeftReactants());
 		} else {
-			reactants = new BioCollection<BioReactant>(this.getRightReactants());
+			reactants = new BioCollection<>(this.getRightReactants());
 		}
 
 		for (BioReactant p : reactants) {
@@ -391,7 +385,7 @@ public class BioReaction extends BioEntity {
 	 */
 	protected BioCollection<BioGene> getGenes() {
 
-		HashSet<BioGene> genes = new HashSet<BioGene>();
+		HashSet<BioGene> genes = new HashSet<>();
 		this.getEnzymes().forEach(e -> {
 
 			e.getParticipants().getView().forEach(p -> {
@@ -405,7 +399,7 @@ public class BioReaction extends BioEntity {
 			});
 		});
 
-		return new BioCollection<BioGene>(genes);
+		return new BioCollection<>(genes);
 	}
 
 }

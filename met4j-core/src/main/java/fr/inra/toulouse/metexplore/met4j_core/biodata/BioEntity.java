@@ -45,7 +45,7 @@ public abstract class BioEntity {
 
 	private final String id;
 	private String name;
-	private ArrayList<String> synonyms = new ArrayList<String>();
+	private ArrayList<String> synonyms = new ArrayList<>();
 	private String comment;
 
 	private HashMap<String, Set<BioRef>> refs;
@@ -61,9 +61,9 @@ public abstract class BioEntity {
 		this.id = id;
 
 		this.setName(name);
-		this.setRefs(new HashMap<String, Set<BioRef>>());
+		this.setRefs(new HashMap<>());
 
-		attributes = new HashMap<String, Object>();
+		attributes = new HashMap<>();
 	}
 
 	public BioEntity(String id) {
@@ -74,9 +74,9 @@ public abstract class BioEntity {
 
 		this.id = id;
 		this.setName(id);
-		this.setRefs(new HashMap<String, Set<BioRef>>());
+		this.setRefs(new HashMap<>());
 
-		attributes = new HashMap<String, Object>();
+		attributes = new HashMap<>();
 	}
 
 	@Override
@@ -191,7 +191,7 @@ public abstract class BioEntity {
 		if (this.refs.containsKey(dbName)) {
 			refs.get(dbName).add(ref);
 		} else {
-			Set<BioRef> refList = new HashSet<BioRef>();
+			Set<BioRef> refList = new HashSet<>();
 			refList.add(ref);
 			this.refs.put(dbName, refList);
 		}
@@ -203,7 +203,7 @@ public abstract class BioEntity {
 			if (this.refs.containsKey(dbName)) {
 				refs.get(dbName).add(ref);
 			} else {
-				Set<BioRef> refList = new HashSet<BioRef>();
+				Set<BioRef> refList = new HashSet<>();
 				refList.add(ref);
 				this.refs.put(dbName, refList);
 			}

@@ -61,10 +61,10 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	@Override
 	public String toString() {
-		String str = "BioCollection\n[\n";
+		StringBuilder str = new StringBuilder("BioCollection\n[\n");
 		for (E e : this.entities.values()) {
-			str += e.toString();
-			str += "\n";
+			str.append(e.toString());
+			str.append("\n");
 		}
 
 		return str + "]";
@@ -87,7 +87,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @return {@link Boolean}
 	 */
 	public Boolean containsName(String name) {
-		return entities.values().stream().filter(o -> o.getName().equals(name)).findFirst().isPresent();
+		return entities.values().stream().anyMatch(o -> o.getName().equals(name));
 	}
 
 	/**
@@ -118,8 +118,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 */
 	public BioCollection<E> getEntitiesFromName(String name) {
 
-		HashSet<E> e = new HashSet<E>(
-				entities.values().stream().filter(o -> o.getName().equals(name)).collect(Collectors.toSet()));
+		HashSet<E> e = entities.values().stream().filter(o -> o.getName().equals(name)).collect(Collectors.toCollection(HashSet::new));
 
 		return new BioCollection<E>(e);
 	}
@@ -166,7 +165,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	@Override
 	public boolean contains(Object o) {
-		return entities.values().contains(o);
+		return entities.containsValue(o);
 	}
 
 	@Override
@@ -227,17 +226,17 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	@Override
 	public int hashCode() {
 
-		String idsString = "";
+		StringBuilder idsString = new StringBuilder();
 
 		ArrayList<String> ids = new ArrayList<String>(this.getIds());
 
 		Collections.sort(ids);
 
 		for (String id : ids) {
-			idsString += id;
+			idsString.append(id);
 		}
 
-		return idsString.hashCode();
+		return idsString.toString().hashCode();
 
 	}
 

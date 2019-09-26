@@ -85,7 +85,7 @@ public class BioReactant extends BioParticipant {
 
 		}
 
-		StringBuffer buffer = new StringBuffer(quantityStr);
+		StringBuilder buffer = new StringBuilder(quantityStr);
 		buffer.append(" ");
 		buffer.append(this.getId());
 		if (this.getLocation() != null) {

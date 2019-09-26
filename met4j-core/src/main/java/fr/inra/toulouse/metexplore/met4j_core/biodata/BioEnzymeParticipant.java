@@ -76,7 +76,7 @@ public class BioEnzymeParticipant extends BioParticipant {
 
 		}
 
-		StringBuffer buffer = new StringBuffer(quantityStr);
+		StringBuilder buffer = new StringBuilder(quantityStr);
 		buffer.append(" ");
 		buffer.append(this.getId());
 

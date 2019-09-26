@@ -385,8 +385,8 @@ public class JsbmlToBioNetworkTest {
 		assertEquals(m2.getInitialAmount(), MetaboliteAttributes.getInitialAmount(metabolite2), 0.0);
 		assertNull(MetaboliteAttributes.getInitialAmount(metabolite3));
 
-		assertTrue(parser.getNetwork().getCompartmentsView().get("c1").getComponents().containsId("m1"));
-		assertTrue(parser.getNetwork().getCompartmentsView().get("c2").getComponents().containsId("m2"));
+		assertTrue(parser.getNetwork().getCompartmentsView().get("c1").getComponentsView().containsId("m1"));
+		assertTrue(parser.getNetwork().getCompartmentsView().get("c2").getComponentsView().containsId("m2"));
 
 		m1.setInitialConcentration(2.0);
 		m2.setInitialConcentration(3.0);

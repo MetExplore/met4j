@@ -63,18 +63,25 @@ public class BioCompartment extends BioPhysicalEntity{
 	/**
 	 * @return the components
 	 */
-	public BioCollection<BioEntity> getComponents() {
+	public BioCollection<BioEntity> getComponentsView() {
+		return components.getView();
+	}
+	
+	/**
+	 * @return the components
+	 */
+	protected BioCollection<BioEntity> getComponents() {
 		return components;
 	}
 
 	/**
 	 * @param components the components to set
 	 */
-	public void setComponents(BioCollection<BioEntity> components) {
+	protected void setComponents(BioCollection<BioEntity> components) {
 		this.components = components;
 	}
 	
-	public void addComponent(BioEntity e)
+	protected void addComponent(BioEntity e)
 	{
 		this.components.add(e);
 	}

@@ -289,10 +289,20 @@ public class BioNetwork extends BioEntity {
 	/**
 	 * add a relation reactant-reaction
 	 */
-	public void affectLeft(BioReactant reactant, BioReaction reaction) {
+	private void affectLeft(BioReaction reaction, BioReactant reactant) {
 
 		affectSideReaction(reactant, reaction, Side.LEFT);
 
+	}
+
+	public void affectLeft(BioReaction reaction, BioReactant... reactants) {
+		for (BioReactant reactant : reactants) {
+			this.affectLeft(reaction, reactant);
+		}
+	}
+	
+	public void affectLeft(BioReaction reaction, BioCollection<BioReactant> reactants) {
+		this.affectLeft(reaction, reactants.toArray(new BioReactant[reactants.size()]));
 	}
 
 	/**
@@ -315,9 +325,18 @@ public class BioNetwork extends BioEntity {
 	/**
 	 * Add a relation product-reaction
 	 */
-	public void affectRight(BioReactant reactant, BioReaction reaction) {
-
+	private void affectRight(BioReaction reaction, BioReactant reactant) {
 		affectSideReaction(reactant, reaction, Side.RIGHT);
+	}
+
+	public void affectRight(BioReaction reaction, BioReactant... reactants) {
+		for (BioReactant reactant : reactants) {
+			this.affectRight(reaction, reactant);
+		}
+	}
+
+	public void affectRight(BioReaction reaction, BioCollection<BioReactant> reactants) {
+		this.affectRight(reaction, reactants.toArray(new BioReactant[reactants.size()]));
 	}
 
 	/**
@@ -421,7 +440,7 @@ public class BioNetwork extends BioEntity {
 	/**
 	 * Affects an enzyme to a reaction
 	 */
-	public void affectEnzyme(BioEnzyme enzyme, BioReaction reaction) {
+	public void affectEnzyme( BioEnzyme enzyme, BioReaction reaction) {
 
 		if (!this.contains(enzyme)) {
 			throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
@@ -434,6 +453,7 @@ public class BioNetwork extends BioEntity {
 		reaction.addEnzyme(enzyme);
 
 	};
+	
 
 	/**
 	 * Remove the link between enzyme from a reaction
@@ -840,7 +860,7 @@ public class BioNetwork extends BioEntity {
 
 		return genes;
 	}
-	
+
 	/**
 	 * Get genes involved in a set of reactions
 	 */

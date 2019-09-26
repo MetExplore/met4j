@@ -191,7 +191,7 @@ public class BioNetworkTest {
 		network.add(protein);
 		network.affectToCompartment(compartment, protein);
 		network.removeOnCascade(protein);
-		assertEquals("Protein not removed from compartment", 0, compartment.getComponents().size());
+		assertEquals("Protein not removed from compartment", 0, compartment.getComponentsView().size());
 
 	}
 
@@ -329,7 +329,7 @@ public class BioNetworkTest {
 		network.affectLeft(s1, 1.0, cpt, reaction);
 
 		BioReactant reactant = new BioReactant(s2, 1.0, cpt);
-		network.affectLeft(reactant, reaction);
+		network.affectLeft(reaction, reactant);
 
 		assertEquals("Substrate not well added", 2, reaction.getLeftReactants().size());
 
@@ -413,7 +413,7 @@ public class BioNetworkTest {
 
 		network.affectRight(s1, 1.0, cpt, reaction);
 		BioReactant reactant = new BioReactant(s2, 1.0, cpt);
-		network.affectRight(reactant, reaction);
+		network.affectRight(reaction, reactant);
 
 		assertEquals("Product not well added", 2, reaction.getRightReactants().size());
 	}
@@ -699,8 +699,8 @@ public class BioNetworkTest {
 
 		network.affectToCompartment(cpt, ent);
 
-		assertEquals("Compound not added to compartment", 1, cpt.getComponents().size());
-		assertEquals("Compound badly added to the compartment", ent, cpt.getComponents().iterator().next());
+		assertEquals("Compound not added to compartment", 1, cpt.getComponentsView().size());
+		assertEquals("Compound badly added to the compartment", ent, cpt.getComponentsView().iterator().next());
 
 	}
 

@@ -203,7 +203,7 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
 			 * update modifiers to geneProduct references
 			 */
 
-			BioCollection<BioGene> genes = bioRxn.getGenesView();
+			BioCollection<BioGene> genes = this.flxNet.getUnderlyingBionet().getGenesFromReactions(bioRxn);
 			BioCollection<BioEnzyme> enzymes = bioRxn.getEnzymesView();
 
 			if (!genes.isEmpty()) {

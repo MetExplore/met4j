@@ -395,9 +395,9 @@ public class JsbmlToBioNetwork {
 			}
 
 			if (side.equals("left")) {
-				this.getNetwork().affectLeft(reactant, bionetReaction);
+				this.getNetwork().affectLeft(bionetReaction, reactant);
 			} else {
-				this.getNetwork().affectRight(reactant, bionetReaction);
+				this.getNetwork().affectRight(bionetReaction, reactant);
 			}
 
 		}

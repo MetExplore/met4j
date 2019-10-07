@@ -33,6 +33,7 @@ package fr.inra.toulouse.metexplore.met4j_graph.core.bipartite;
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import org.jgrapht.EdgeFactory;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
@@ -89,7 +90,7 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 	/**
 	 * Keep only unique edge for reversible reaction in the bipartite graph 
 	 *
-	 * @param bip the bipartite graph
+	 * @param bn the bionetwork
 	 */
 	public void mergeReversibleEdges(BioNetwork bn){
 
@@ -131,8 +132,10 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 			//take only reaction vertices
 			if(v instanceof BioReaction){
 				BioReaction r = (BioReaction) v;
+				BioCollection<BioMetabolite> substrates = bn.getLefts(r);
+				if(r.isReversible()) substrates.addAll(bn.getRights(r));
 				//check all substrates
-				for(BioMetabolite s : bn.getLefts(r)){
+				for(BioMetabolite s : substrates){
 					//add compound if missing
 					if(!this.containsVertex(s) && !sideCompoundToAdd.contains(s)){
 						sideCompoundToAdd.add(s);
@@ -151,7 +154,9 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 					}
 				}
 				//check all products
-				for(BioMetabolite p : bn.getRights(r)){
+				BioCollection<BioMetabolite> products = bn.getRights(r);
+				if(r.isReversible()) products.addAll(bn.getLefts(r));
+				for(BioMetabolite p : products){
 					//add compound if missing
 					if(!this.containsVertex(p) && !sideCompoundToAdd.contains(p)){
 						sideCompoundToAdd.add(p);

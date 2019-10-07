@@ -58,9 +58,11 @@ public class BipartiteEdge extends Edge<BioEntity>{
 	 */
 	public BipartiteEdge(BioMetabolite v1, BioReaction v2){
 		super(v1,v2);
+		this.reversible=v2.isReversible();
 	}
 	public BipartiteEdge(BioReaction v1, BioMetabolite v2){
 		super(v1,v2);
+		this.reversible=v1.isReversible();
 	}
 	public BipartiteEdge(BioMetabolite v1, BioReaction v2, boolean reversible){
 		super(v1,v2);

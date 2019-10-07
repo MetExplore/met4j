@@ -30,10 +30,8 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_graph.computation.transform;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.parallel.MergedGraph;
@@ -47,7 +45,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 public class Merger {
 	
 	/**
-	 * Merge edges sharing same source and target
+	 * Merge edges sharing same source and target, create new one with concatenated labels
 	 * @param <V>
 	 */
 	public static <V extends BioEntity,E extends Edge<V>, G extends BioGraph<V,E>> void mergeEdgesWithOverride(G g){
@@ -96,6 +94,43 @@ public class Merger {
 			}
 		}
 	}
+
+	/**
+	 * Merge edges sharing same source and target, keeping only one. Use comparator to select the one to keep  (first once sorted).
+	 */
+	public static <V extends BioEntity,E extends Edge<V>, G extends BioGraph<V,E>> void mergeEdgesWithOverride(G g, Comparator<E> comparator){
+
+		//init source target map
+		HashMap<V,HashMap<V,ArrayList<E>>> sourceTargetMap = new HashMap<V, HashMap<V,ArrayList<E>>>();
+		for(E edge : g.edgeSet()){
+			V source = edge.getV1();
+			V target = edge.getV2();
+			if(!sourceTargetMap.containsKey(source)){
+				sourceTargetMap.put(source, new HashMap<V, ArrayList<E>>());
+			}
+			if(!sourceTargetMap.get(source).containsKey(target)){
+				sourceTargetMap.get(source).put(target, new ArrayList<E>());
+			}
+			sourceTargetMap.get(source).get(target).add(edge);
+		}
+
+		//remove edges sharing same source and target, keeping only one (first according to comparator)
+		for(V source:sourceTargetMap.keySet()){
+			for(V target:sourceTargetMap.get(source).keySet()){
+				ArrayList<E> edgeList=sourceTargetMap.get(source).get(target);
+				if(edgeList.size()>1){
+
+					//get 'best' edge
+					edgeList.sort(comparator);
+
+					//remove other edges
+					edgeList.remove(0);
+					g.removeAllEdges(edgeList);
+				}
+			}
+		}
+	}
+
 	
 	/**
 	 * Merge edges sharing same source and target

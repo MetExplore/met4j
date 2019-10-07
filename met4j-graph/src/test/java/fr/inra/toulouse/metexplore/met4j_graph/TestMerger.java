@@ -20,6 +20,8 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.parallel.MergedGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.parallel.MetaEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.Merger;
 
+import java.util.Comparator;
+
 public class TestMerger {
 	
 	public static CompoundGraph g;
@@ -104,18 +106,35 @@ public class TestMerger {
 	}
 	
 	@Test
-	public void testMergeEdge() {
+	public void testMergeEdgeOverride() {
 		CompoundGraph g2 = new CompoundGraph(g);
 		Merger.mergeEdgesWithOverride(g2);
 		assertEquals("Error while creating the initial graph", 10, g.edgeSet().size());
 		assertEquals("Wrong final number of edges", 8, g2.edgeSet().size());
-		
+	}
+
+	@Test
+	public void testMergeEdge() {
 		MergedGraph<BioMetabolite, ReactionEdge> g3 = Merger.mergeEdges(g);
 		MetaEdge<BioMetabolite, ReactionEdge> m = g3.getEdge(a1, b1);
 //		assertEquals("wrong number of reaction in merged edge",3,m.getEdgeList().size());
 		assertTrue("wrong edge merged",m.getEdgeList().contains(ab1));
 		assertTrue("wrong edge merged",m.getEdgeList().contains(ab2));
 		assertTrue("wrong edge merged",m.getEdgeList().contains(ab3));
+
+	}
+
+	@Test
+	public void testMergeEdgeComparator() {
+		CompoundGraph g2 = new CompoundGraph(g);
+		Merger.mergeEdgesWithOverride(g2, new Comparator<ReactionEdge>() {
+			@Override
+			public int compare(ReactionEdge reactionEdge, ReactionEdge t1) {
+				return reactionEdge.toString().compareTo(t1.toString());
+			}
+		});
+		assertEquals("Error while creating the initial graph", 10, g.edgeSet().size());
+		assertEquals("Wrong final number of edges", 8, g2.edgeSet().size());
 
 	}
 	

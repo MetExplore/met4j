@@ -209,7 +209,6 @@ public class JsbmlReader {
 	 * @param userEnabledPackages
 	 *            the packages enabled by the user
 	 * @return the ordered list of packages
-	 * @see parsebionet.io.jsbml.dataTags
 	 */
 	private ArrayList<PackageParser> verifyPackages(
 			HashSet<PackageParser> userEnabledPackages) {

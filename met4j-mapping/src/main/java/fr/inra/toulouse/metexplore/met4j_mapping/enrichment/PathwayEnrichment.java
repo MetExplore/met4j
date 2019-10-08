@@ -1,4 +1,4 @@
-package fr.toulouse.inra.metexplore.met4j_mapping.enrichment;
+package fr.inra.toulouse.metexplore.met4j_mapping.enrichment;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;

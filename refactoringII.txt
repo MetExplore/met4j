@@ -71,3 +71,5 @@ gestion d'exceptions dans les collections (duplicats etc.) regarder si il ya des
 viréer les constructeurs par copie!
 
 Todo : stochio as number?
+
+Le mettre dans un attribut. Le lire si stochio == null.

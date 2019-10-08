@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -118,9 +117,8 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 */
 	public BioCollection<E> getEntitiesFromName(String name) {
 
-		HashSet<E> e = entities.values().stream().filter(o -> o.getName().equals(name)).collect(Collectors.toCollection(HashSet::new));
+		return entities.values().stream().filter(o -> o.getName().equals(name)).collect(Collectors.toCollection( BioCollection<E>::new));
 
-		return new BioCollection<E>(e);
 	}
 
 	@Override

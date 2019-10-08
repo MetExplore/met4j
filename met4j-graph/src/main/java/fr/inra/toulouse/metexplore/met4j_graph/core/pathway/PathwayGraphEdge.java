@@ -30,9 +30,6 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_graph.core.pathway;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;

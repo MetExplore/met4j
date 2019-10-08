@@ -74,7 +74,10 @@ public class TestPathwayGraph {
 		pg.addVertex(p2);
 		pg.addEdge(p1, p2, e);
 		
-		
+		pg.getEdge(p1,p2).removeConnectingCompounds(v3);
+		pg.getEdge(p1,p2).addConnectingCompounds(v3);
+
+
 		assertEquals(2, pg.vertexSet().size());
 		assertEquals(1, pg.edgeSet().size());
 	}

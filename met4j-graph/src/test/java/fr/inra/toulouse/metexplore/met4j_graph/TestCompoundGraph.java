@@ -26,16 +26,18 @@ public class TestCompoundGraph {
 	public static ReactionEdge e1,e2;
 	public static BioNetwork bn;
 	public static BioCompartment comp;
-	
+	public static BioCompartment comp2;
+
 	@BeforeClass
 	public static void init(){
 		
 		cg = new CompoundGraph();
 		bn= new BioNetwork();
 		comp = new BioCompartment("comp"); bn.add(comp);
+		comp2 = new BioCompartment("comp2"); bn.add(comp2);
 		v1 = new BioMetabolite("v1");bn.add(v1); bn.affectToCompartment(comp, v1);
 		v2 = new BioMetabolite("v2");bn.add(v2); bn.affectToCompartment(comp, v2);
-		v3 = new BioMetabolite("v3");bn.add(v3); bn.affectToCompartment(comp, v3);
+		v3 = new BioMetabolite("v3");bn.add(v3); bn.affectToCompartment(comp2, v3);
 		
 		p = new BioPathway("p");bn.add(p);
 		
@@ -45,11 +47,11 @@ public class TestCompoundGraph {
 		bn.affectToPathway(r1, p);
 		r2 = new BioReaction("r2");bn.add(r2);
 		bn.affectLeft(v2, 1.0, comp, r2);
-		bn.affectRight(v3, 1.0, comp, r2);
+		bn.affectRight(v3, 1.0, comp2, r2);
 		bn.affectToPathway(r2, p);
 		r3 = new BioReaction("r3");bn.add(r3);
 		bn.affectLeft(v2, 1.0, comp, r3);
-		bn.affectRight(v3, 1.0, comp, r3);
+		bn.affectRight(v3, 1.0, comp2, r3);
 		r3.setReversible(true);
 		
 		e1 = new ReactionEdge(v1, v2, r1);
@@ -141,5 +143,11 @@ public class TestCompoundGraph {
 		g2.addEdge(v3, v1);
 		assertEquals(3, g2.edgeSet().size());
 	}
-	
+
+	@Test
+	public void testGetEdgesFromCompartment(){
+		assertEquals(1,cg.getEdgesFromCompartment(bn, comp).size());
+		assertEquals(0,cg.getEdgesFromCompartment(bn, comp2).size());
+		assertTrue(cg.getEdgesFromCompartment(bn, comp).contains(e1));
+	}
 }

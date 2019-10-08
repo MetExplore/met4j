@@ -39,10 +39,10 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 
 /**
  * The Class PathwayGraph allow to build a directed graph representing connections between pathways in a bionetwork.
- * It first identify the sources and targets compounds of a pathways.
+ * It first identify the sources and inner compounds of a pathways.
  * A source is a compounds which are consumed by a reaction of the pathways and not produced by any reaction of the pathways
- * A target is a compounds which are produced by a reaction of the pathways and not consumed by any reaction of the pathways
- * Two pathways are connected by an edge if they share a compound respectively as source and target.
+ * An inner compounds is any compound that can be produced by a reaction of the pathways.
+ * Two pathways are connected by an edge if they as an inner compound that is a source of the other.
  * Side compounds have to be defined to avoid erroneous connections.
  * @author clement
  */

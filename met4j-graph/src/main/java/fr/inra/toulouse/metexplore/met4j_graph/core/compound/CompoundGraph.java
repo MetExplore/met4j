@@ -32,7 +32,10 @@ package fr.inra.toulouse.metexplore.met4j_graph.core.compound;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import org.jgrapht.EdgeFactory;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
@@ -136,10 +139,17 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 		}
 	}
 
+	public HashSet<ReactionEdge> getEdgesFromCompartment(BioNetwork bn, BioCompartment comp){
+		return this.edgeSet().stream()
+			.filter(e -> e.getReaction().getReactantsView()
+				.stream().allMatch(r -> r.getLocation().equals(comp))
+			).collect(Collectors.toCollection(HashSet<ReactionEdge>::new));
+	}
+
 	/**
 	 * Adds the edges from reaction. If a substrate or a product is not present in the network it will be ignored
 	 *
-	 * @param r the reaction
+	 * @param rCollection the reactions
 	 */
 	public void addEdgesFromReactions(BioNetwork model, BioCollection<BioReaction> rCollection){
 		for(BioReaction r : rCollection){

@@ -114,9 +114,10 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 	}
 	
 	/**
-	 * Adds the edges from reaction.
+	 * Adds the edges from compound. Reactions not in graph will be ignored
 	 *
-	 * @param r the reaction
+	 * @param model the bionetwork
+	 * @param c the connecting metabolite
 	 */
 	public void addEdgesFromCompound(BioNetwork model, BioMetabolite c){
 		for(BioReaction in : model.getReactionsFromProduct(c)){

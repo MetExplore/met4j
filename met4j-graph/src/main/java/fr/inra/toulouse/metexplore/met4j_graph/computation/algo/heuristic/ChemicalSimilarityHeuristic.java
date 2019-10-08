@@ -33,7 +33,7 @@ package fr.inra.toulouse.metexplore.met4j_graph.computation.algo.heuristic;
 import java.util.BitSet;
 import java.util.HashMap;
 
-import fr.inra.toulouse.metexplore.met4j_chemUtils.fingerprints.FingerprintBuilder;
+import fr.inra.toulouse.metexplore.met4j_chemUtils.chemicalSimilarity.FingerprintBuilder;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_mathUtils.similarity.SimilarityComputor;
 

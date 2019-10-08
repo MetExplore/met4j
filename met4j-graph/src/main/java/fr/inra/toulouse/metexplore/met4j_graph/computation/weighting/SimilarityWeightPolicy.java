@@ -38,11 +38,9 @@ import java.util.Set;
 import fr.inra.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
 import fr.inra.toulouse.metexplore.met4j_mathUtils.similarity.SimilarityComputor;
-import fr.inra.toulouse.metexplore.met4j_chemUtils.fingerprints.FingerprintBuilder;
+import fr.inra.toulouse.metexplore.met4j_chemUtils.chemicalSimilarity.FingerprintBuilder;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollections;
 
 /**

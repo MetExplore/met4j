@@ -1,4 +1,4 @@
-package fr.inra.toulouse.metexplore.met4j_chemUtils.fingerprints;
+package fr.inra.toulouse.metexplore.met4j_chemUtils.chemicalSimilarity;
 /*******************************************************************************
  * Copyright INRA
  * 
@@ -95,10 +95,20 @@ public class FingerprintBuilder {
 			break;
 		}
 	}
-	
+
+	/**
+	 * Returns the fingerprint from:
+	 * - the inchi of the metabolite if set
+	 * - the smiles if the inchi is not set
+	 *
+	 * @param e a {@link BioMetabolite}
+	 * @return
+	 */
 	public BitSet getFingerprint(BioMetabolite e){
 		String inchi = e.getInchi();
-		if(!StringUtils.isVoid(inchi)) return getFingerprintFromInChi(inchi);
+		if(!StringUtils.isVoid(inchi)) {
+			return getFingerprintFromInChi(inchi);
+		}
 		String smiles = e.getSmiles();
 		if(!StringUtils.isVoid(smiles)) return getFingerprintFromSmiles(smiles);
 		return null;
@@ -143,24 +153,26 @@ public class FingerprintBuilder {
 		String smiles = e.getSmiles();
 		BitSet fingerprint;
 		try {
-			if(!(inchi.equals("NA") || inchi.isEmpty())){
+			if (inchi.isEmpty() || inchi.equals("NA")) {
+				if (!smiles.equals("NA")){
+					MACCSFingerprinter maccs = new MACCSFingerprinter();
+					SmilesParser   sp  = new SmilesParser(SilentChemObjectBuilder.getInstance());
+					IAtomContainer m = sp.parseSmiles(smiles);
+					fingerprint = maccs.getBitFingerprint(m).asBitSet();
+					//return maccs.getFingerprint(m);
+				}else{
+					//System.err.println("Error: impossible to compute fingerprint from "+e.getId()+", no structural information available");
+					fingerprint = null;
+					//return null;
+				}
+			} else {
 				MACCSFingerprinter maccs = new MACCSFingerprinter();
 				InChIToStructure struct = InChIGeneratorFactory.getInstance().getInChIToStructure(inchi, DefaultChemObjectBuilder.getInstance());
 				IAtomContainer m = struct.getAtomContainer();
 				fingerprint = maccs.getBitFingerprint(m).asBitSet();
-				//return maccs.getFingerprint(m);							
-			}else if (!smiles.equals("NA")){
-				MACCSFingerprinter maccs = new MACCSFingerprinter();
-				SmilesParser   sp  = new SmilesParser(SilentChemObjectBuilder.getInstance());
-				IAtomContainer m = sp.parseSmiles(smiles);
-				fingerprint = maccs.getBitFingerprint(m).asBitSet();
 				//return maccs.getFingerprint(m);
-			}else{
-				//System.err.println("Error: impossible to compute fingerprint from "+e.getId()+", no structural information available");
-				fingerprint = null;
-				//return null;
 			}
-			
+
 		} catch (CDKException e1) {
 			System.err.println("Error: impossible to compute fingerprint from "+e.getId());
 			e1.printStackTrace();

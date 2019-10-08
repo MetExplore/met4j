@@ -32,6 +32,7 @@ package fr.inra.toulouse.metexplore.met4j_graph.core.pathway;
 
 import java.util.HashSet;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import org.jgrapht.EdgeFactory;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
@@ -51,6 +52,6 @@ public class PathwayGraphEdgeFactory implements EdgeFactory<BioPathway, PathwayG
 	 */
 	@Override
 	public PathwayGraphEdge createEdge(BioPathway arg0, BioPathway arg1) {
-		return new PathwayGraphEdge(arg0, arg1, new HashSet<BioMetabolite>());
+		return new PathwayGraphEdge(arg0, arg1, new BioCollection<BioMetabolite>());
 	}
 }

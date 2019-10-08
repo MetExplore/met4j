@@ -33,6 +33,7 @@ package fr.inra.toulouse.metexplore.met4j_graph.core.pathway;
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
@@ -47,7 +48,7 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
 	private static final long serialVersionUID = 1L;
     
     /** The reaction. */
-    private Set<BioMetabolite> connectingCompounds;
+    private BioCollection<BioMetabolite> connectingCompounds;
 
     /**
      * Instantiates a new reaction edge.
@@ -56,7 +57,7 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
      * @param v2 the target vertex
      * @param connectingCompounds the connecting compounds
      */
-    public PathwayGraphEdge(BioPathway v1,BioPathway v2, Set<BioMetabolite> connectingCompounds) {
+    public PathwayGraphEdge(BioPathway v1,BioPathway v2, BioCollection<BioMetabolite> connectingCompounds) {
         super(v1,v2);
         this.connectingCompounds=connectingCompounds;
     }
@@ -70,7 +71,7 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
      */
     public PathwayGraphEdge(BioPathway v1,BioPathway v2, BioMetabolite connectingCompound) {
         super(v1,v2);
-        this.connectingCompounds=new HashSet<BioMetabolite>();
+        this.connectingCompounds=new BioCollection<BioMetabolite>();
         addConnectingCompounds(connectingCompound);
     }
 
@@ -80,7 +81,7 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
      *
      * @return the reaction
      */
-    public Set<BioMetabolite> getConnectingCompounds(){
+    public BioCollection<BioMetabolite> getConnectingCompounds(){
     	return connectingCompounds;
     }
     
@@ -89,8 +90,12 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
      *
      * @return the reaction
      */
-    public void addConnectingCompounds(BioMetabolite e){
-    	connectingCompounds.add(e);
+    public void addConnectingCompounds(BioMetabolite compound){
+    	connectingCompounds.add(compound);
+    }
+
+    public void addConnectingCompounds(BioCollection<BioMetabolite> compounds){
+        connectingCompounds.addAll(compounds);
     }
     
     /**

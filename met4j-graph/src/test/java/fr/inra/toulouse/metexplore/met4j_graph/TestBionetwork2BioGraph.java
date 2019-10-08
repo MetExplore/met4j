@@ -2,14 +2,12 @@ package fr.inra.toulouse.metexplore.met4j_graph;
 
 import static org.junit.Assert.*;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.*;
+import fr.inra.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraph;
+import fr.inra.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraphEdge;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -28,7 +26,11 @@ public class TestBionetwork2BioGraph {
 	
 	/** The edges. */
 	public static BioReaction r1,r2,r3,r4,r5,r6,r7;	
-	
+
+
+	/** The pathways */
+	public static BioPathway p1,p2,p3,p4;
+
 	/** The compartment */
 	public static BioCompartment comp;
 	/**
@@ -46,38 +48,53 @@ public class TestBionetwork2BioGraph {
 		e = new BioMetabolite("e"); bn.add(e);bn.affectToCompartment(comp, e);
 		f = new BioMetabolite("f"); bn.add(f);bn.affectToCompartment(comp, f);
 		h = new BioMetabolite("h"); bn.add(h);bn.affectToCompartment(comp, h);
+
+		p1= new BioPathway("p1"); bn.add(p1);
+		p2= new BioPathway("p2"); bn.add(p2);
+		p3= new BioPathway("p3"); bn.add(p3);
+		p4= new BioPathway("p4"); bn.add(p4);
+
 		r1 = new BioReaction("r1"); bn.add(r1);
 		bn.affectLeft(a, 1.0, comp, r1);
 		bn.affectRight(b, 1.0, comp, r1);
 		bn.affectRight(h, 1.0, comp, r1);
 		r1.setReversible(false);
+		bn.affectToPathway(r1,p1);
 		r2 = new BioReaction("r2");  bn.add(r2);
 		bn.affectLeft(b, 1.0, comp, r2);
 		bn.affectLeft(d, 1.0, comp, r2);
 		bn.affectLeft(h, 1.0, comp, r2);
 		bn.affectRight(c, 1.0, comp, r2);
 		r2.setReversible(false);
+		bn.affectToPathway(r2,p4);
 		r3 = new BioReaction("r3");  bn.add(r3);
 		bn.affectLeft(e, 1.0, comp, r3);
 		bn.affectRight(b, 1.0, comp, r3);
 		r3.setReversible(true);
+		bn.affectToPathway(r3,p1);
+		bn.affectToPathway(r3,p3);
 		r4 = new BioReaction("r4");  bn.add(r4);
 		bn.affectLeft(e, 1.0, comp, r4);
 		bn.affectRight(c, 1.0, comp, r4);
 		bn.affectRight(f, 1.0, comp, r4);
 		r4.setReversible(false);
+		bn.affectToPathway(r4,p3);
 		r5 = new BioReaction("r5");  bn.add(r5);
 		bn.affectLeft(a, 1.0, comp, r5);
 		bn.affectRight(e, 1.0, comp, r5);
 		r5.setReversible(true);
+		bn.affectToPathway(r5,p3);
 		r6 = new BioReaction("r6");  bn.add(r6);
 		bn.affectLeft(d, 1.0, comp, r6);
 		bn.affectRight(f, 1.0, comp, r6);
 		r6.setReversible(false);
+		//not in any pathway
 		r7 = new BioReaction("r7");  bn.add(r7);
 		bn.affectLeft(d, 1.0, comp, r7);
 		bn.affectRight(f, 1.0, comp, r7);
 		r7.setReversible(false);
+		bn.affectToPathway(r7,p2);
+
 		bn.add(r1);
 		bn.add(r2);
 		bn.add(r3);
@@ -175,6 +192,37 @@ public class TestBionetwork2BioGraph {
 		assertEquals("wrong out-degree of reaction "+r6.getId(), 1, g.outDegreeOf(r6));
 		assertEquals("wrong in-degree of reaction "+r7.getId(), 1, g.inDegreeOf(r7));
 		assertEquals("wrong out-degree of reaction "+r7.getId(), 1, g.outDegreeOf(r7));
+	}
+
+	@Test
+	public void testGetPathwayGraph(){
+		PathwayGraph g = builder.getPathwayGraph();
+//		for(PathwayGraphEdge e : g.edgeSet()){
+//			System.out.println(e.getV1().getId()+" >"+e.getConnectingCompounds().toString()+"> "+e.getV2().getId());
+//		}
+		assertEquals("wrong number of vertices",4, g.vertexSet().size());
+		assertEquals("wrong number of edges",3, g.edgeSet().size());
+
+		assertEquals("wrong in-degree of compound "+p1.getId(), 1, g.inDegreeOf(p1));
+		assertEquals("wrong out-degree of compound "+p1.getId(), 1, g.outDegreeOf(p1));
+		assertEquals("wrong in-degree of compound "+p2.getId(), 0, g.inDegreeOf(p2));
+		assertEquals("wrong out-degree of compound "+p2.getId(), 0, g.outDegreeOf(p2));
+		assertEquals("wrong in-degree of compound "+p3.getId(), 0, g.inDegreeOf(p3));
+		assertEquals("wrong out-degree of compound "+p3.getId(), 2, g.outDegreeOf(p3));
+		assertEquals("wrong in-degree of compound "+p4.getId(), 2, g.inDegreeOf(p4));
+		assertEquals("wrong out-degree of compound "+p4.getId(), 0, g.outDegreeOf(p4));
+
+		assertTrue("wrong compound connecting pathway", g.getEdge(p3,p1).getConnectingCompounds().contains(a));
+		assertTrue("wrong compound connecting pathway", g.getEdge(p3,p4).getConnectingCompounds().contains(b));
+		assertTrue("wrong compound connecting pathway", g.getEdge(p1,p4).getConnectingCompounds().contains(b));
+		assertTrue("wrong compound connecting pathway", g.getEdge(p1,p4).getConnectingCompounds().contains(h));
+
+		assertEquals("wrong number of compounds connecting pathway", 2 ,g.getEdge(p1,p4).getConnectingCompounds().size());
+		assertEquals("wrong number of compounds connecting pathway", 1 ,g.getEdge(p3,p4).getConnectingCompounds().size());
+		assertEquals("wrong number of compounds connecting pathway", 1 ,g.getEdge(p3,p1).getConnectingCompounds().size());
+
+
+
 	}
 
 }

@@ -31,8 +31,11 @@
 package fr.inra.toulouse.metexplore.met4j_graph.io;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -170,75 +173,58 @@ public class Bionetwork2BioGraph {
 	}
 	
 	/**
-	 * Gets the pathways as source.
-	 *
-	 * @param e the biophysical entity
-	 * @return the pathways as source
-	 */
-	public static Collection<BioPathway> getPathwaysAsSource(BioNetwork bn, BioMetabolite e){
-		HashSet<BioPathway> pathwaysIn = new HashSet<BioPathway>();
-		HashSet<BioPathway> pathwaysAsSource = new HashSet<BioPathway>();
-		for(BioReaction r : bn.getReactionsFromProduct(e)){
-			if(!r.isReversible()) pathwaysIn.addAll(bn.getPathwaysFromReaction(r));
-		}
-		for(BioReaction r : bn.getReactionsFromSubstrate(e)){
-			for(BioPathway p : bn.getPathwaysFromReaction(r)){
-				if(!pathwaysIn.contains(p)) pathwaysAsSource.add(p);
-			}
-		}
-		return pathwaysAsSource;
-	}
-	
-	/**
-	 * Gets the pathways as target.
-	 *
-	 * @param e the biophysical entity
-	 * @return the pathways as target
-	 */
-	public static Collection<BioPathway> getPathwaysAsTarget(BioNetwork bn, BioMetabolite e){
-		HashSet<BioPathway> pathwaysIn = new HashSet<BioPathway>();
-		HashSet<BioPathway> pathwaysAsTarget = new HashSet<BioPathway>();
-		for(BioReaction r : bn.getReactionsFromSubstrate(e)){
-			if(!r.isReversible()) pathwaysIn.addAll(bn.getPathwaysFromReaction(r));
-		}
-		for(BioReaction r : bn.getReactionsFromProduct(e)){
-			for(BioPathway p : bn.getPathwaysFromReaction(r)){
-				if(!pathwaysIn.contains(p)) pathwaysAsTarget.add(p);
-			}
-		}
-		return pathwaysAsTarget;
-	}
-	
-	/**
 	 * Builds the graph.
 	 *
-	 * @param sbmlPath the sbml path
 	 * @return the pathway graph
 	 */
 	public PathwayGraph getPathwayGraph(){
-		
+
 		PathwayGraph g = new PathwayGraph();
-		
+		HashMap<BioPathway,BioCollection<BioMetabolite>> pathwaysSources = new HashMap<>();
+		HashMap<BioPathway,BioCollection<BioMetabolite>> pathwaysProducts = new HashMap<>();
+
+		//init
 		for(BioPathway v : bn.getPathwaysView()){
+			//add to graph
 			g.addVertex(v);
+
+			BioCollection<BioMetabolite> sources = new BioCollection<>();
+			BioCollection<BioMetabolite> products = new BioCollection<>();
+			//get reactions
+			for(BioReaction r : bn.getReactionsFromPathway(v)) {
+
+				//get sources and products
+				if(!r.isReversible()) {
+					sources.addAll(r.getLeftsView());
+					products.addAll(r.getRightsView());
+				}else {
+					products.addAll(r.getLeftsView());
+					products.addAll(r.getRightsView());
+				}
+
+			}
+			sources.removeAll(products);
+
+			pathwaysSources.put(v, sources);
+			pathwaysProducts.put(v, products);
 		}
-		
-		for(BioMetabolite e : bn.getMetabolitesView()){
-			for(BioPathway p1 : getPathwaysAsTarget(bn, e)){
-				for(BioPathway p2 : getPathwaysAsSource(bn, e)){
-					if(p1!=p2){
-						if(!g.containsEdge(p1, p2)){
-							PathwayGraphEdge edge = new PathwayGraphEdge(p1, p2, e);
-							g.addEdge(p1, p2, edge);
-						}else{
-							PathwayGraphEdge edge = g.getEdge(p1, p2);
-							edge.addConnectingCompounds(e);
-						}
+
+		//create connections
+		for(BioPathway p1 : bn.getPathwaysView()){
+			for(BioPathway p2 : bn.getPathwaysView()){
+				if(p1!=p2){
+					BioCollection<BioMetabolite> connectors =
+							pathwaysSources.get(p2).stream()
+							.filter(m -> pathwaysProducts.get(p1).contains(m))
+							.collect(Collectors.toCollection(BioCollection<BioMetabolite>::new));
+					if(!connectors.isEmpty()) {
+						PathwayGraphEdge edge = new PathwayGraphEdge(p1, p2, connectors);
+						g.addEdge(p1, p2, edge);
 					}
 				}
 			}
 		}
 		return g;
 	}
-	
+
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -63,7 +64,7 @@ public class TestPathwayGraph {
 		bn.affectToPathway(r3, p1);
 		bn.affectToPathway(r2, p2);
 		
-		HashSet<BioMetabolite> connectingCompounds = new HashSet<BioMetabolite>();
+		BioCollection<BioMetabolite> connectingCompounds = new BioCollection<>();
 		connectingCompounds.add(v1);
 		connectingCompounds.add(v3);
 		

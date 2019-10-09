@@ -70,7 +70,7 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 			throw new IllegalArgumentException("requested sample size greater than population size");
 		}
 		
-		ArrayList<V> vertices = new ArrayList<V>(g.vertexSet());
+		ArrayList<V> vertices = new ArrayList<>(g.vertexSet());
 		int rand = new Random().nextInt(vertices.size());
 		return vertices.get(rand);
 	}
@@ -107,8 +107,8 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 			throw new IllegalArgumentException("requested sample size greater than population size");
 		}
 		
-		ArrayList<V> vertices = new ArrayList<V>(g.vertexSet());
-		HashSet<V> randomList = new HashSet<V>();
+		ArrayList<V> vertices = new ArrayList<>(g.vertexSet());
+		HashSet<V> randomList = new HashSet<>();
 		Random random = new Random();
 		
 		for(int i=0;i<n;i++){
@@ -132,14 +132,14 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 		if(g.vertexSet().size()<n){
 			throw new IllegalArgumentException("requested sample size greater than population size");
 		}
-		return getRandomVertexListinScope(n,scope,g.vertexSet());
+		return getRandomVertexListinScope(n,scope, g.vertexSet());
 	}
 		
 		
 		
 	private HashSet<V> getRandomVertexListinScope(int n, int scope, Set<V> elements) throws IllegalArgumentException{
-		ArrayList<V> vertices = new ArrayList<V>(elements);
-		HashSet<V> randomList = new HashSet<V>();
+		ArrayList<V> vertices = new ArrayList<>(elements);
+		HashSet<V> randomList = new HashSet<>();
 		Random random = new Random();
 		
 		//get centroid
@@ -147,12 +147,12 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 		randomList.add(choosenOne);
 		
 		//get scope
-		ArrayList<V> verticesInScope = new ArrayList<V>();
-		ArrayList<V> toCompute = new ArrayList<V>();
+		ArrayList<V> verticesInScope = new ArrayList<>();
+		ArrayList<V> toCompute = new ArrayList<>();
 		toCompute.add(choosenOne);
 
 		for(int i=0;i<scope;i++){
-			ArrayList<V> newlyAdded =new ArrayList<V>();
+			ArrayList<V> newlyAdded = new ArrayList<>();
 			for(V vertex:toCompute){
 //				Set<E> edges = g.edgesOf(vertex);
 				Set<E> edges = g.outgoingEdgesOf(vertex);
@@ -174,7 +174,7 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 		}
 		
 		if(verticesInScope.size()<n){
-			Set<V> newElement = new HashSet<V>(elements);
+			Set<V> newElement = new HashSet<>(elements);
 			newElement.remove(choosenOne);
 			if(newElement.isEmpty()){
 				throw new IllegalArgumentException("sample size incompatible with given scope");
@@ -203,8 +203,8 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 			throw new IllegalArgumentException("requested sample size greater than population size");
 		}
 		
-		ArrayList<E> edges = new ArrayList<E>(g.edgeSet());
-		HashSet<E> randomList = new HashSet<E>();
+		ArrayList<E> edges = new ArrayList<>(g.edgeSet());
+		HashSet<E> randomList = new HashSet<>();
 		Random random = new Random();
 		
 		for(int i=0;i<n;i++){

@@ -53,7 +53,7 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 	 * Instantiates a new merged graph.
 	 */
 	public MergedGraph() {
-		super(new MetaEdgeFactory<V,E>());
+		super(new MetaEdgeFactory<>());
 	}
 	
 	
@@ -77,7 +77,7 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 	 */
 	@Override
 	public MetaEdgeFactory<V, E> getEdgeFactory() {
-		return new MetaEdgeFactory<V, E>();
+		return new MetaEdgeFactory<>();
 	}
 
 	/* (non-Javadoc)
@@ -85,14 +85,14 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 	 */
 	@Override
 	public MetaEdge<V, E> copyEdge(MetaEdge<V, E> edge) {
-		MetaEdge<V, E> newEdge = new MetaEdge<V, E>(edge.getV1(), edge.getV2(), edge.getEdgeList());
+		MetaEdge<V, E> newEdge = new MetaEdge<>(edge.getV1(), edge.getV2(), edge.getEdgeList());
 		return newEdge;
 	}
 
 
 	@Override
 	public MetaEdge<V, E> reverseEdge(MetaEdge<V, E> edge) {
-		MetaEdge<V, E> reversed = new MetaEdge<V, E>(edge.getV2(), edge.getV1(), edge.getEdgeList());
+		MetaEdge<V, E> reversed = new MetaEdge<>(edge.getV2(), edge.getV1(), edge.getEdgeList());
 		return reversed;
 	}
 

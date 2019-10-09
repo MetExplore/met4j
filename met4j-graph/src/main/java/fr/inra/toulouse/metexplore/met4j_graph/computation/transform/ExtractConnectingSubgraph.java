@@ -30,11 +30,7 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_graph.computation.transform;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import org.jgrapht.DirectedGraph;
@@ -62,7 +58,7 @@ public class ExtractConnectingSubgraph<V extends BioEntity, E extends Edge<V>> {
 
 //
 	/** The reach by matrix. */
-public Integer[][] reachby;
+	public Integer[][] reachby;
 	
 	/** The reach matrix. */
 	public Integer[][] reach;
@@ -82,7 +78,7 @@ public Integer[][] reachby;
 public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInterest) {
 		this.g=g;
 		this.nodesOfInterest=nodesOfInterest.getIds();
-		init();
+	init();
 	}
 		
 	
@@ -90,8 +86,8 @@ public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInter
 	 * Compute the links between nodes.
 	 */
 	public void init(){
-		colIndexMap = new HashMap<V,Integer>();
-		rowIndexMap = new HashMap<V,Integer>();
+		colIndexMap = new HashMap<>();
+		rowIndexMap = new HashMap<>();
 		
 		int colIndex = 0;
 		int rowIndex = 0;
@@ -106,7 +102,7 @@ public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInter
 			}
 		}
 		
-		EdgeReversedGraph<V, E> g2 = new EdgeReversedGraph<V, E>(g);
+		EdgeReversedGraph<V, E> g2 = new EdgeReversedGraph<>(g);
 		reachby = getReachMatrix(g, colIndexMap, rowIndexMap, false);
 		reach = getReachMatrix(g2, colIndexMap, rowIndexMap, true);
 		return;
@@ -124,16 +120,16 @@ public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInter
 	 * Removes nodes not "between" nodes of interest.
 	 */
 	public void removeNotInBetween(){
-		Set<V> noPathbetween = new HashSet<V>(rowIndexMap.keySet());
+		Set<V> noPathbetween = new HashSet<>(rowIndexMap.keySet());
 
-		for (V node : rowIndexMap.keySet()){
+		for (Map.Entry<V, Integer> entry : rowIndexMap.entrySet()){
 			boolean existingPath=false;
-			int i = rowIndexMap.get(node);
+			int i = entry.getValue();
 			int j = 0;
-			while(!existingPath && j<colIndexMap.size()){
+			while(!existingPath && j< colIndexMap.size()){
 				if (reach[i][j]==1){
 					int j2=0;
-					while(!existingPath && j2<colIndexMap.size()){
+					while(!existingPath && j2< colIndexMap.size()){
 						if(reachby[i][j2] == 1 && j!=j2){
 							existingPath=true;
 						}
@@ -143,12 +139,12 @@ public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInter
 				j++;
 			}
 			if(existingPath){
-				noPathbetween.remove(node);
+				noPathbetween.remove(entry.getKey());
 			}
 		}
 
 		System.err.println("Removing "+noPathbetween.size()+" nodes out of paths between nodes of interest...");
-		g.removeAllVertices(noPathbetween);	
+		g.removeAllVertices(noPathbetween);
 		return;
 	}
 	
@@ -157,10 +153,8 @@ public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInter
 	 */
 	public void removeLoops(){
 		int removed=0;
-		Stack<V> stack = new Stack<V>();
-		for(V e : g.vertexSet()){
-			stack.add(e);
-		}
+		Stack<V> stack = new Stack<>();
+		stack.addAll(g.vertexSet());
 		while (!stack.isEmpty()){
 			//get stack element
 			V e = stack.pop();
@@ -168,7 +162,7 @@ public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInter
 			if(!nodesOfInterest.contains(e.getId())){
 				//get predecessor list
 				Set<E> incomingEdges = g.incomingEdgesOf(e);
-				ArrayList<V> predecessor = new ArrayList<V>();
+				ArrayList<V> predecessor = new ArrayList<>();
 				for(E incomingEdge : incomingEdges){
 					if(!predecessor.contains(incomingEdge.getV1())){
 						predecessor.add(incomingEdge.getV1());
@@ -177,7 +171,7 @@ public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInter
 				
 				//get successor list
 				Set<E> outgoingEdges = g.outgoingEdgesOf(e);
-				ArrayList<V> successor = new ArrayList<V>();
+				ArrayList<V> successor = new ArrayList<>();
 				for(E outgoingEdge : outgoingEdges){
 					if(!successor.contains(outgoingEdge.getV2())){
 						successor.add(outgoingEdge.getV2());
@@ -209,7 +203,7 @@ public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInter
 	 * @param reversed if the graph has inverted edges
 	 * @return the reach matrix
 	 */
-	protected Integer[][] getReachMatrix(DirectedGraph<V, E> g, HashMap<V,Integer> colIndexMap,HashMap<V,Integer> rowIndexMap, boolean reversed){
+	protected Integer[][] getReachMatrix(DirectedGraph<V, E> g, HashMap<V,Integer> colIndexMap, HashMap<V,Integer> rowIndexMap, boolean reversed){
 		
 		Integer[][] reach = new Integer[rowIndexMap.size()][colIndexMap.size()];
 		for(int i =0; i< rowIndexMap.size();i++){
@@ -217,10 +211,11 @@ public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInter
 				reach[i][j]=0;
 			}
 		}
-		for (V start : colIndexMap.keySet()){
-			
+		for (Map.Entry<V, Integer> entry : colIndexMap.entrySet()){
+			V start = entry.getKey();
+
 			Set<E> edgesToRemove = new HashSet<E>();
-			edgesToRemove.addAll(g.incomingEdgesOf(start));	
+			edgesToRemove.addAll(g.incomingEdgesOf(start));
 			for (V end :colIndexMap.keySet()){
 				if(!end.equals(start)){
 					edgesToRemove.addAll(g.outgoingEdgesOf(end));
@@ -228,14 +223,14 @@ public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInter
 			}
 			g.removeAllEdges(edgesToRemove);
 			
-			DepthFirstIterator<V, E> dfs = new DepthFirstIterator<V, E>(g,start);
+			DepthFirstIterator<V, E> dfs = new DepthFirstIterator<>(g, start);
 			//System.out.println(start.getId());
 			while (dfs.hasNext()) {
 				V reached = dfs.next();
 				//System.out.println("\t"+reached.getId());
 				if(!colIndexMap.containsKey(reached)){
 					int i = rowIndexMap.get(reached);
-					int j = colIndexMap.get(start);
+					int j = entry.getValue();
 					reach[i][j]=1;
 				}
 			}

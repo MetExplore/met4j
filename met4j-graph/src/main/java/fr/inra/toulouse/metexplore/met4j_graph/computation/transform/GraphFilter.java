@@ -78,37 +78,37 @@ public class GraphFilter {
 	 * @return the number of filtered edge
 	 */
 	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> int weightFilter(G g, double value, String operator){
-		List<E> edgesToRemove = new ArrayList<E>();
+		List<E> edgesToRemove = new ArrayList<>();
 		switch(operator){
-		case EQUALITY :
+		case EQUALITY:
 			for(E e : g.edgeSet()){
 				if(g.getEdgeWeight(e)==value){
 					edgesToRemove.add(e);
 				}
 			}
 			break;
-		case INEQUALITY :
+		case INEQUALITY:
 			for(E e : g.edgeSet()){
 				if(g.getEdgeWeight(e)!=value){
 					edgesToRemove.add(e);
 				}
 			}
 			break;
-		case GREATER :
+		case GREATER:
 			for(E e : g.edgeSet()){
 				if(g.getEdgeWeight(e)>value){
 					edgesToRemove.add(e);
 				}
 			}
 			break;
-		case LESS :
+		case LESS:
 			for(E e : g.edgeSet()){
 				if(g.getEdgeWeight(e)<value){
 					edgesToRemove.add(e);
 				}
 			}
 			break;
-		case GREATEROREQUAL :
+		case GREATEROREQUAL:
 			for(E e : g.edgeSet()){
 				if(g.getEdgeWeight(e)>=value){
 					edgesToRemove.add(e);
@@ -139,37 +139,37 @@ public class GraphFilter {
 	 * @return the number of filtered edge
 	 */
 	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> int scoreFilter(G g, double value, String operator){
-		List<E> edgesToRemove = new ArrayList<E>();
+		List<E> edgesToRemove = new ArrayList<>();
 		switch(operator){
-		case EQUALITY :
+		case EQUALITY:
 			for(E e : g.edgeSet()){
 				if(g.getEdgeScore(e)==value){
 					edgesToRemove.add(e);
 				}
 			}
 			break;
-		case INEQUALITY :
+		case INEQUALITY:
 			for(E e : g.edgeSet()){
 				if(g.getEdgeScore(e)!=value){
 					edgesToRemove.add(e);
 				}
 			}
 			break;
-		case GREATER :
+		case GREATER:
 			for(E e : g.edgeSet()){
 				if(g.getEdgeScore(e)>value){
 					edgesToRemove.add(e);
 				}
 			}
 			break;
-		case LESS :
+		case LESS:
 			for(E e : g.edgeSet()){
 				if(g.getEdgeScore(e)<value){
 					edgesToRemove.add(e);
 				}
 			}
 			break;
-		case GREATEROREQUAL :
+		case GREATEROREQUAL:
 			for(E e : g.edgeSet()){
 				if(g.getEdgeScore(e)>=value){
 					edgesToRemove.add(e);
@@ -201,7 +201,7 @@ public class GraphFilter {
 	 */
 	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> int weightRankFilter(G g, int n, String operator){
 		if(n<1) throw new IllegalArgumentException();
-		List<Double> weights = new ArrayList<Double>(new HashSet<Double>(g.getEdgeWeightMap().values()));
+		List<Double> weights = new ArrayList<>(new HashSet<>(g.getEdgeWeightMap().values()));
 		Collections.sort(weights);
 		Collections.reverse(weights);
 		return weightFilter(g, weights.get(n-1), operator);
@@ -234,7 +234,7 @@ public class GraphFilter {
 	 * @return the number of filtered edge
 	 */
 	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> int scoreRankFilter(G g, int n, String operator){
-		List<Double> scores = new ArrayList<Double>(g.getEdgeScoreMap().values());
+		List<Double> scores = new ArrayList<>(g.getEdgeScoreMap().values());
 		Collections.sort(scores);
 		Collections.reverse(scores);
 		return scoreFilter(g, scores.get(n), operator);

@@ -55,7 +55,7 @@ public class ChokePoint {
 	 * @return set of choke points
 	 */
 	public static HashSet<BioReaction> getChokePoint(CompoundGraph g){
-		HashSet<BioReaction> chokePoints = new HashSet<BioReaction>();
+		HashSet<BioReaction> chokePoints = new HashSet<>();
 		for(BioMetabolite v : g.vertexSet()){
 			Set<ReactionEdge> in = g.incomingEdgesOf(v);
 			Set<ReactionEdge> out = g.outgoingEdgesOf(v);
@@ -77,7 +77,7 @@ public class ChokePoint {
 	 * @return set of choke points
 	 */
 	public static HashSet<BioReaction> getChokePoint(BipartiteGraph g){
-		HashSet<BioReaction> chokePoints = new HashSet<BioReaction>();
+		HashSet<BioReaction> chokePoints = new HashSet<>();
 		for(BioEntity v : g.vertexSet()){
 			if(v instanceof BioMetabolite){
 				Set<BioEntity> in = g.predecessorListOf(v);

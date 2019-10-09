@@ -49,19 +49,19 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 public class ScopeCompounds{ 
    
   /** The graph */ 
-  private BipartiteGraph g; 
+  private final BipartiteGraph g;
    
   /** The available compounds. */ 
-  private Set <BioMetabolite> inCpds; 
+  private final Set <BioMetabolite> inCpds;
    
   /** The bootstrap compounds, i.e. side compounds. */ 
-  private Set<BioMetabolite> bootstrapCpds; 
+  private final Set<BioMetabolite> bootstrapCpds;
    
   /** The compounds to reach (optional) */ 
-  private Set<BioMetabolite> cpdToReach; 
+  private final Set<BioMetabolite> cpdToReach;
    
   /** The reactions to avoid. */ 
-  private Set<BioReaction> reactionToAvoid; 
+  private final Set<BioReaction> reactionToAvoid;
    
   /** 
    * Instantiates a new scope class 
@@ -72,8 +72,8 @@ public class ScopeCompounds{
    * @param cpdToReach The compounds to reach (optional) 
    * @param reactionToAvoid the reactions to avoid 
    */ 
-  public ScopeCompounds(BipartiteGraph bipartiteGraph, Set <BioMetabolite> inCpds, Set<BioMetabolite> bootstrapCpds, Set<BioMetabolite> cpdToReach, Set<BioReaction> reactionToAvoid){ 
-    this.g=bipartiteGraph; 
+  public ScopeCompounds(BipartiteGraph bipartiteGraph, Set <BioMetabolite> inCpds, Set<BioMetabolite> bootstrapCpds, Set<BioMetabolite> cpdToReach, Set<BioReaction> reactionToAvoid){
+      this.g =bipartiteGraph;
     this.inCpds=inCpds; 
     this.bootstrapCpds=bootstrapCpds; 
     this.cpdToReach=cpdToReach; 
@@ -88,11 +88,11 @@ public class ScopeCompounds{
    * @param bootstrapCpds The bootstrap compounds, i.e. side compounds. 
    * @param reactionToAvoid the reactions to avoid 
    */ 
-  public ScopeCompounds(BipartiteGraph bipartiteGraph, Set <BioMetabolite> inCpds, Set<BioMetabolite> bootstrapCpds, Set<BioReaction> reactionToAvoid){ 
-    this.g=bipartiteGraph; 
+  public ScopeCompounds(BipartiteGraph bipartiteGraph, Set <BioMetabolite> inCpds, Set<BioMetabolite> bootstrapCpds, Set<BioReaction> reactionToAvoid){
+      this.g =bipartiteGraph;
     this.inCpds=inCpds; 
-    this.bootstrapCpds=bootstrapCpds; 
-    this.cpdToReach=new HashSet<BioMetabolite>(); 
+    this.bootstrapCpds=bootstrapCpds;
+      this.cpdToReach = new HashSet<>();
     this.reactionToAvoid=reactionToAvoid; 
   } 
    
@@ -103,17 +103,17 @@ public class ScopeCompounds{
    */ 
   public BipartiteGraph getScopeNetwork(){ 
      
-    BipartiteGraph scopeNetwork = new BipartiteGraph(); 
+    BipartiteGraph scopeNetwork = new BipartiteGraph();
     //Instantiate a custom iterator for the bipartite graph, similar to Breath first search, but a reaction can be visited only if all predecessors have already been visited 
-    Traversal traversal = new Traversal(); 
+    Traversal traversal = new Traversal();
      
     //Go until their is no reaction with all its substrate available. 
     while(traversal.hasNext()){   
-      BioReaction r = traversal.next(); 
+      BioReaction r = traversal.next();
        
       //if a reaction is visited, all its reactants are available, consequently we add to the scope network the reaction and its neighborhood from the original graph 
-      for(BipartiteEdge e : g.edgesOf(r)){ 
-        if(!bootstrapCpds.contains(e.getV1()) && !bootstrapCpds.contains(e.getV2())){ //bootstrap compounds are not added to the scope network 
+      for(BipartiteEdge e : g.edgesOf(r)){
+        if(!bootstrapCpds.contains(e.getV1()) && !bootstrapCpds.contains(e.getV2())){ //bootstrap compounds are not added to the scope network
           if(!scopeNetwork.containsVertex(e.getV1())){ 
             scopeNetwork.addVertex(e.getV1()); 
           } 
@@ -126,7 +126,7 @@ public class ScopeCompounds{
     } 
      
     //If there is some targets compounds, a pruning step is necessary to iteratively remove reactions available but that do not lead to any target compoudns 
-    if(!cpdToReach.isEmpty()) pruning(scopeNetwork); 
+    if(!cpdToReach.isEmpty()) pruning(scopeNetwork);
      
     return scopeNetwork; 
   } 
@@ -136,22 +136,22 @@ public class ScopeCompounds{
    * 
    * @param scopeNetwork the scope network 
    */ 
-  private void pruning(BipartiteGraph scopeNetwork){ 
-    HashSet<BioEntity> vertexToRemove = new HashSet<BioEntity>(); 
+  private void pruning(BipartiteGraph scopeNetwork){
+    HashSet<BioEntity> vertexToRemove = new HashSet<>();
      
     //retreive sinks that are not in the set of target 
-    for(BioEntity e : scopeNetwork.vertexSet()){ 
-      if(scopeNetwork.outDegreeOf(e)==0 && !cpdToReach.contains(e)) vertexToRemove.add(e); 
+    for(BioEntity e : scopeNetwork.vertexSet()){
+      if(scopeNetwork.outDegreeOf(e)==0 && !cpdToReach.contains(e)) vertexToRemove.add(e);
     } 
      
     //go until their is no sink that do not belong to the target set 
     while(!vertexToRemove.isEmpty()){ 
       scopeNetwork.removeAllVertices(vertexToRemove); //remove sinks, potentially creating new sinks. 
       //reset sink list 
-      vertexToRemove = new HashSet<BioEntity>(); 
+      vertexToRemove = new HashSet<>();
       //retreive sinks that are not in the set of target 
-      for(BioEntity e : scopeNetwork.vertexSet()){ 
-        if(scopeNetwork.outDegreeOf(e)==0 && !cpdToReach.contains(e)) vertexToRemove.add(e); 
+      for(BioEntity e : scopeNetwork.vertexSet()){
+        if(scopeNetwork.outDegreeOf(e)==0 && !cpdToReach.contains(e)) vertexToRemove.add(e);
       } 
     } 
  
@@ -164,22 +164,22 @@ public class ScopeCompounds{
   private class Traversal implements Iterator<BioReaction>{ 
      
     /** The visited compounds. */ 
-    private Set<BioMetabolite> visitedCompounds = new HashSet<BioMetabolite>(); 
+    private final Set<BioMetabolite> visitedCompounds = new HashSet<>();
      
     /** The visited reactions. */ 
-    private Set<BioReaction> visitedReactions = new HashSet<BioReaction>(); 
+    private final Set<BioReaction> visitedReactions = new HashSet<>();
        
       /** The reaction queue. */ 
-      private Queue<BioReaction> reactionQueue = new LinkedList<BioReaction>(); 
+      private final Queue<BioReaction> reactionQueue = new LinkedList<>();
        
       /** 
        * Instantiates a new traversal. 
        */ 
-      public Traversal() { 
-          this.visitedCompounds.addAll(inCpds); 
-          this.visitedCompounds.addAll(bootstrapCpds); 
-          for(BioMetabolite cpd : inCpds){ 
-            visit(cpd); 
+      public Traversal() {
+          this.visitedCompounds.addAll(inCpds);
+          this.visitedCompounds.addAll(bootstrapCpds);
+          for(BioMetabolite cpd : inCpds){
+              visit(cpd);
           } 
       } 
  
@@ -188,15 +188,15 @@ public class ScopeCompounds{
        */ 
       @Override 
       public boolean hasNext() { 
-        if(reactionQueue.isEmpty()) return false; //no remaining reaction 
-        while(!reactionQueue.isEmpty()){ 
-          BioReaction r = reactionQueue.peek(); 
-          if(this.visitedCompounds.containsAll(r.getLeftsView())){ //check susbtrate availability 
+        if(reactionQueue.isEmpty()) return false; //no remaining reaction
+        while(!reactionQueue.isEmpty()){
+          BioReaction r = reactionQueue.peek();
+          if(this.visitedCompounds.containsAll(r.getLeftsView())){ //check susbtrate availability
             return true; 
-          }else if(r.isReversible() && this.visitedCompounds.containsAll(r.getRightsView())){ //check product availability if reversible 
+          }else if(r.isReversible() && this.visitedCompounds.containsAll(r.getRightsView())){ //check product availability if reversible
             return true; 
-          } 
-          reactionQueue.remove(); //remove unavailable reaction from the queue 
+          }
+            reactionQueue.remove(); //remove unavailable reaction from the queue
         } 
         return false; //all reaction from the original queue are unavailable 
       } 
@@ -206,23 +206,23 @@ public class ScopeCompounds{
        * 
        * @param entity the entity 
        */ 
-      private void visit(BioMetabolite entity){ 
-        if(!bootstrapCpds.contains(entity)){ //skip bootstrap compounds 
-          Set<BioEntity> successor = g.successorListOf(entity); 
-          for (BioEntity neighbor : g.neighborListOf(entity)) { 
+      private void visit(BioMetabolite entity){
+        if(!bootstrapCpds.contains(entity)){ //skip bootstrap compounds
+          Set<BioEntity> successor = g.successorListOf(entity);
+          for (BioEntity neighbor : g.neighborListOf(entity)) {
               BioReaction r = null; 
               if(neighbor instanceof BioReaction){ 
                 r = (BioReaction)neighbor; 
               } 
               if(successor.contains(r) || r.isReversible()){ //if irreversible reaction, only consider reaction successor in the graph 
-                  if (!reactionToAvoid.contains(r) && !this.visitedReactions.contains(r) && !this.reactionQueue.contains(r)) { 
-                      this.reactionQueue.add(r); 
+                  if (!reactionToAvoid.contains(r) && !this.visitedReactions.contains(r) && !this.reactionQueue.contains(r)) {
+                      this.reactionQueue.add(r);
                   } 
               } 
             } 
-        } 
-         
-        this.visitedCompounds.add(entity); 
+        }
+
+          this.visitedCompounds.add(entity);
       } 
  
       /* (non-Javadoc) 
@@ -232,45 +232,45 @@ public class ScopeCompounds{
       public BioReaction next() { 
            
           //removes from front of queue 
-        BioReaction nextReaction = reactionQueue.remove(); 
+        BioReaction nextReaction = reactionQueue.remove();
         boolean available = false; 
         boolean reverse = false; 
          
         //check if all substrate have already been visited 
-        if(this.visitedCompounds.containsAll(nextReaction.getLeftsView())){ 
+        if(this.visitedCompounds.containsAll(nextReaction.getLeftsView())){
           available=true; 
           reverse=false; 
-        }else if(nextReaction.isReversible() && this.visitedCompounds.containsAll(nextReaction.getRightReactantsView())){ //check product availability if reversible 
+        }else if(nextReaction.isReversible() && this.visitedCompounds.containsAll(nextReaction.getRightReactantsView())){ //check product availability if reversible
           available=true; 
           reverse=true; 
         } 
          
         //iteratively remove reaction until one available one is found. If the method hasNext() has been called before, and an available reaction exist, head of queue should be available, so the loop is skipped 
-        while(!available && !reactionQueue.isEmpty()){ 
-          nextReaction = reactionQueue.remove(); 
-          if(this.visitedCompounds.containsAll(nextReaction.getLeftsView())){ 
+        while(!available && !reactionQueue.isEmpty()){
+          nextReaction = reactionQueue.remove();
+          if(this.visitedCompounds.containsAll(nextReaction.getLeftsView())){
             available=true; 
             reverse=false; 
-          }else if(nextReaction.isReversible() && this.visitedCompounds.containsAll(nextReaction.getRightsView())){ 
+          }else if(nextReaction.isReversible() && this.visitedCompounds.containsAll(nextReaction.getRightsView())){
             available=true; 
             reverse=true; 
           } 
         } 
-        if(!available && reactionQueue.isEmpty()) return null; //no available reaction 
-         
-        visitedReactions.add(nextReaction); //mark visited reaction 
+        if(!available && reactionQueue.isEmpty()) return null; //no available reaction
+
+          visitedReactions.add(nextReaction); //mark visited reaction
          
         //mark products as visited and add products' consuming reactions to the queue 
         if(!reverse){ 
-          for(BioMetabolite neighbor : nextReaction.getRightsView()){ 
-            if(!visitedCompounds.contains(neighbor)){ 
-              visit(neighbor); 
+          for(BioMetabolite neighbor : nextReaction.getRightsView()){
+            if(!visitedCompounds.contains(neighbor)){
+                visit(neighbor);
             } 
           } 
         }else{ 
-          for(BioMetabolite neighbor : nextReaction.getLeftsView()){ 
-            this.visitedCompounds.add(neighbor); 
-            visit(neighbor); 
+          for(BioMetabolite neighbor : nextReaction.getLeftsView()){
+              this.visitedCompounds.add(neighbor);
+              visit(neighbor);
           } 
         } 
          

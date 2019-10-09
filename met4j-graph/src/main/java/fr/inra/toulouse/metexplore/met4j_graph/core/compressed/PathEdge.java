@@ -43,7 +43,7 @@ public class PathEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V>{
 	
 	public PathEdge(V v1, V v2) {
 		super(v1,v2);
-		this.path=null;
+        this.path =null;
 	}
 	
 	public PathEdge(V v1, V v2, BioPath<V, E> path) {
@@ -57,7 +57,7 @@ public class PathEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V>{
 	 * @param l the new path edges
 	 */
 	public void setPath(BioPath<V, E> sp){
-		path=sp;
+        path =sp;
 	}
 	
 	/**
@@ -71,7 +71,7 @@ public class PathEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V>{
 	
 	@Override
 	public String toString(){
-		return this.getPath().toString();
+		return this.path.toString();
 	}
 	
 

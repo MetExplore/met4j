@@ -46,7 +46,7 @@ public class ReactionEdge extends Edge<BioMetabolite>{
 	private static final long serialVersionUID = 1L;
     
     /** The reaction. */
-    private BioReaction r;
+    private final BioReaction r;
     
     /** The pvalue. */
     private double pvalue;
@@ -58,7 +58,7 @@ public class ReactionEdge extends Edge<BioMetabolite>{
      * @param v2 the target vertex
      * @param r the reaction
      */
-    public ReactionEdge(BioMetabolite v1,BioMetabolite v2, BioReaction r) {
+    public ReactionEdge(BioMetabolite v1, BioMetabolite v2, BioReaction r) {
         super(v1,v2);
         this.r=r;
     }
@@ -111,14 +111,10 @@ public class ReactionEdge extends Edge<BioMetabolite>{
         if (obj instanceof ReactionEdge) {
             // Vérification des valeurs des attributs
             ReactionEdge e = ((ReactionEdge) obj);
-            if(e.getV1()==this.getV1() && e.getV2()==this.getV2() && e.getReaction()==this.getReaction()){
+            if(e.getV1()== this.getV1() && e.getV2()== this.getV2() && e.r == this.r){
             	return true;
-            }else if(e.getV1().getId().equals(this.getV1().getId()) && e.getV2().getId().equals(this.getV2().getId()) 
-            		&& e.toString().equals(this.toString())){
-				return true;
-			}else{
-				return false;
-			}
+            }else return e.getV1().getId().equals(this.getV1().getId()) && e.getV2().getId().equals(this.getV2().getId())
+                    && e.toString().equals(this.toString());
         }
         return false;
     }
@@ -128,7 +124,7 @@ public class ReactionEdge extends Edge<BioMetabolite>{
 	 */
 	@Override
     public int hashCode() {
-		return Objects.hash(this.getV1().getId(),this.getV2().getId(),this.getReaction().getId());
+		return Objects.hash(this.getV1().getId(), this.getV2().getId(), this.r.getId());
 	}
 
 }

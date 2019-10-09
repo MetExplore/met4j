@@ -51,23 +51,24 @@ public class Merger {
 	public static <V extends BioEntity,E extends Edge<V>, G extends BioGraph<V,E>> void mergeEdgesWithOverride(G g){
 		
 		//init source target map
-		HashMap<V,HashMap<V,ArrayList<E>>> sourceTargetMap = new HashMap<V, HashMap<V,ArrayList<E>>>();
+		HashMap<V,HashMap<V,ArrayList<E>>> sourceTargetMap = new HashMap<>();
 		for(E edge : g.edgeSet()){
 			V source = edge.getV1();
 			V target = edge.getV2();
 			if(!sourceTargetMap.containsKey(source)){
-				sourceTargetMap.put(source, new HashMap<V, ArrayList<E>>());
+				sourceTargetMap.put(source, new HashMap<>());
 			}
 			if(!sourceTargetMap.get(source).containsKey(target)){
-				sourceTargetMap.get(source).put(target, new ArrayList<E>());
+				sourceTargetMap.get(source).put(target, new ArrayList<>());
 			}
 			sourceTargetMap.get(source).get(target).add(edge);
 		}
 		
 		//create new edge as merging of all edges sharing same source and target
-		for(V source:sourceTargetMap.keySet()){
-			for(V target:sourceTargetMap.get(source).keySet()){
-				ArrayList<E> edgeList=sourceTargetMap.get(source).get(target);
+		for(Map.Entry<V, HashMap<V, ArrayList<E>>> entry : sourceTargetMap.entrySet()){
+			V source = entry.getKey();
+			for(V target: entry.getValue().keySet()){
+				ArrayList<E> edgeList= entry.getValue().get(target);
 				if(edgeList.size()>1){
 					
 					//compute new label and new weight
@@ -77,10 +78,10 @@ public class Merger {
 					for(E edge : edgeList){
 						mergedWeight+=g.getEdgeWeight(edge);
 						mergedScore+=g.getEdgeScore(edge);
-						if(label.equals("")){
+						if(label.isEmpty()){
 							label=edge.toString();
 						}else{
-							label=label+"_"+edge.toString();
+							label=label+"_"+ edge;
 						}
 					}
 							
@@ -101,23 +102,23 @@ public class Merger {
 	public static <V extends BioEntity,E extends Edge<V>, G extends BioGraph<V,E>> void mergeEdgesWithOverride(G g, Comparator<E> comparator){
 
 		//init source target map
-		HashMap<V,HashMap<V,ArrayList<E>>> sourceTargetMap = new HashMap<V, HashMap<V,ArrayList<E>>>();
+		HashMap<V,HashMap<V,ArrayList<E>>> sourceTargetMap = new HashMap<>();
 		for(E edge : g.edgeSet()){
 			V source = edge.getV1();
 			V target = edge.getV2();
 			if(!sourceTargetMap.containsKey(source)){
-				sourceTargetMap.put(source, new HashMap<V, ArrayList<E>>());
+				sourceTargetMap.put(source, new HashMap<>());
 			}
 			if(!sourceTargetMap.get(source).containsKey(target)){
-				sourceTargetMap.get(source).put(target, new ArrayList<E>());
+				sourceTargetMap.get(source).put(target, new ArrayList<>());
 			}
 			sourceTargetMap.get(source).get(target).add(edge);
 		}
 
 		//remove edges sharing same source and target, keeping only one (first according to comparator)
-		for(V source:sourceTargetMap.keySet()){
-			for(V target:sourceTargetMap.get(source).keySet()){
-				ArrayList<E> edgeList=sourceTargetMap.get(source).get(target);
+		for(HashMap<V, ArrayList<E>> vArrayListHashMap : sourceTargetMap.values()){
+			for(V target: vArrayListHashMap.keySet()){
+				ArrayList<E> edgeList= vArrayListHashMap.get(target);
 				if(edgeList.size()>1){
 
 					//get 'best' edge
@@ -138,30 +139,31 @@ public class Merger {
 	 */
 	public static <V extends BioEntity,E extends Edge<V>, G extends BioGraph<V,E>> MergedGraph<V,E> mergeEdges(G g){
 		
-		MergedGraph<V,E> mergedG = new MergedGraph<V,E>();
+		MergedGraph<V,E> mergedG = new MergedGraph<>();
 		
 		for(V v : g.vertexSet()){
 			mergedG.addVertex(v);
 		}
 		
 		//init source target map
-		HashMap<V, HashMap<V, HashSet<E>>> sourceTargetMap = new HashMap<V, HashMap<V,HashSet<E>>>();
+		HashMap<V, HashMap<V, HashSet<E>>> sourceTargetMap = new HashMap<>();
 		for(E edge : g.edgeSet()){
 			V source = edge.getV1();
 			V target = edge.getV2();
 			if(!sourceTargetMap.containsKey(source)){
-				sourceTargetMap.put(source, new HashMap<V, HashSet<E>>());
+				sourceTargetMap.put(source, new HashMap<>());
 			}
 			if(!sourceTargetMap.get(source).containsKey(target)){
-				sourceTargetMap.get(source).put(target, new HashSet<E>());
+				sourceTargetMap.get(source).put(target, new HashSet<>());
 			}
 			sourceTargetMap.get(source).get(target).add(edge);
 		}
 		
 		//create new edge as merging of all edges sharing same source and target
-		for(V source:sourceTargetMap.keySet()){
-			for(V target:sourceTargetMap.get(source).keySet()){
-				Set<E> edgeList=sourceTargetMap.get(source).get(target);
+		for(Map.Entry<V, HashMap<V, HashSet<E>>> entry : sourceTargetMap.entrySet()){
+			V source = entry.getKey();
+			for(V target: entry.getValue().keySet()){
+				Set<E> edgeList= entry.getValue().get(target);
 					
 				//compute new label and new weight
 				double mergedWeight=0.0;
@@ -170,15 +172,15 @@ public class Merger {
 				for(E edge : edgeList){
 					mergedWeight+=g.getEdgeWeight(edge);
 					mergedScore+=g.getEdgeScore(edge);
-					if(label.equals("")){
+					if(label.isEmpty()){
 						label=edge.toString();
 					}else{
-						label=label+"_"+edge.toString();
+						label=label+"_"+ edge;
 					}
 				}
 						
 				//create new edge
-				MetaEdge<V, E> newEdge = new MetaEdge<V, E>(source, target,edgeList);
+				MetaEdge<V, E> newEdge = new MetaEdge<>(source, target, edgeList);
 				mergedG.addEdge(source, target, newEdge);
 				mergedG.setEdgeWeight(newEdge, mergedWeight);
 				mergedG.setEdgeScore(newEdge, mergedScore);

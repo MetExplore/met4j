@@ -79,10 +79,10 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 			throw(new IllegalArgumentException("Error: end node "+end.getId()+" not found in graph"));
 		}
 		
-		HashMap<V,E> incoming = new HashMap<V, E>();
-		HashMap<V,Double> distMap = new HashMap<V, Double>();
-		Set<V> unseen = new HashSet<V>();
-		Set<V> seen = new HashSet<V>();
+		HashMap<V,E> incoming = new HashMap<>();
+		HashMap<V,Double> distMap = new HashMap<>();
+		Set<V> unseen = new HashSet<>();
+		Set<V> seen = new HashSet<>();
 		
 		//init dist from start
 		for(V v : g.vertexSet()){
@@ -135,11 +135,11 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 		
 		//backtracking
 		double weight = 0.0;
-		List<E> sp = new ArrayList<E>();
+		List<E> sp = new ArrayList<>();
 		V currentVertex = end;
 		while(currentVertex!=start){
 			E e = incoming.get(currentVertex);
-			weight+=g.getEdgeWeight(e);
+			weight+= g.getEdgeWeight(e);
 			sp.add(e);
 			incoming.remove(currentVertex);
 			currentVertex=e.getV1();
@@ -149,7 +149,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 //		
 //		System.out.println(new BioPath<V,E>(g, start, end, sp, weight));
 //		
-		return new BioPath<V,E>(g, start, end, sp, weight);
+		return new BioPath<>(g, start, end, sp, weight);
 	}
 	
 	
@@ -169,10 +169,10 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 			throw(new IllegalArgumentException("Error: end node "+end.getId()+" not found in graph"));
 		}
 		
-		HashMap<V,E> incoming = new HashMap<V, E>();
-		HashMap<V,Double> distMap = new HashMap<V, Double>();
-		Set<V> unseen = new HashSet<V>();
-		Set<V> seen = new HashSet<V>();
+		HashMap<V,E> incoming = new HashMap<>();
+		HashMap<V,Double> distMap = new HashMap<>();
+		Set<V> unseen = new HashSet<>();
+		Set<V> seen = new HashSet<>();
 		
 		//init dist from start
 		for(V v : g.vertexSet()){
@@ -223,11 +223,11 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 		
 		//backtracking
 		double weight = 0.0;
-		List<E> sp = new ArrayList<E>();
+		List<E> sp = new ArrayList<>();
 		V currentVertex = end;
 		while(currentVertex!=start){
 			E e = incoming.get(currentVertex);
-			weight+=g.getEdgeWeight(e);
+			weight+= g.getEdgeWeight(e);
 			sp.add(e);
 			incoming.remove(currentVertex);
 			if(currentVertex==e.getV1()){
@@ -238,7 +238,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 			if(incoming.isEmpty() && currentVertex!=start ) return null;
 		}
 		Collections.reverse(sp);
-		return new BioPath<V,E>(g, start, end, sp, weight);
+		return new BioPath<>(g, start, end, sp, weight);
 	}
 	
 	/**
@@ -291,7 +291,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @return the list of edges involved in the shortest path union
 	 */
 	public List<BioPath<V,E>> getShortestPathsUnionList(Set<V> startNodes, Set<V> targetNodes){
-		ArrayList<BioPath<V,E>> shortest = new ArrayList<BioPath<V,E>>();
+		ArrayList<BioPath<V,E>> shortest = new ArrayList<>();
 		for(V start : startNodes){
 			for(V end : targetNodes){
 				if(start!=end){
@@ -311,8 +311,8 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @param weighted if the graph is weighted
 	 * @return the metric closure graph
 	 */
-	public CompressedGraph<V, E, G> getMetricClosureGraph(Set<V> sources, Set<V> targets,boolean weighted){
-		CompressedGraph<V, E, G> cg = new CompressedGraph<V, E, G>(g);
+	public CompressedGraph<V, E, G> getMetricClosureGraph(Set<V> sources, Set<V> targets, boolean weighted){
+		CompressedGraph<V, E, G> cg = new CompressedGraph<>(g);
 		for(V v : sources){
 			cg.addVertex(v);
 		}
@@ -326,7 +326,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 				if(v1!=v2){
 					BioPath<V,E> sp = this.getShortest(v1, v2);
 					if(sp!=null){
-						PathEdge<V, E> e = new PathEdge<V, E>(v1, v2, sp);
+						PathEdge<V, E> e = new PathEdge<>(v1, v2, sp);
 						cg.addEdge(v1, v2, e);
 						if(weighted){
 //							double weightSum = 0;
@@ -358,9 +358,9 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @param weighted if the graph is weighted
 	 * @return the minimum shortest path distance
 	 */
-	public HashMap<V, Double> getMinSpDistance(Set<V> sources, Set<V> targets,boolean weighted){
+	public HashMap<V, Double> getMinSpDistance(Set<V> sources, Set<V> targets, boolean weighted){
 		CompressedGraph<V, E, G> closureGraph = getMetricClosureGraph(targets,sources,weighted);
-		HashMap<V, Double> minSpDist = new HashMap<V, Double>();
+		HashMap<V, Double> minSpDist = new HashMap<>();
 		for(V node : sources){
 			if(closureGraph.containsVertex(node)){
 				Set<PathEdge<V, E>> closureEdges = closureGraph.incomingEdgesOf(node);
@@ -388,9 +388,9 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @param weighted if the graph is weighted
 	 * @return the average shortest path distance
 	 */
-	public HashMap<V, Double> getAverageSpDistance(Set<V> sources, Set<V> targets,boolean weighted){
+	public HashMap<V, Double> getAverageSpDistance(Set<V> sources, Set<V> targets, boolean weighted){
 		CompressedGraph<V, E, G> closureGraph = getMetricClosureGraph(targets,sources,weighted);
-		HashMap<V, Double> avgSpDist = new HashMap<V, Double>();
+		HashMap<V, Double> avgSpDist = new HashMap<>();
 		for(V node : sources){
 			if(closureGraph.containsVertex(node)){
 				Set<PathEdge<V, E>> closureEdges = closureGraph.incomingEdgesOf(node);
@@ -401,7 +401,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 					for(PathEdge<V, E> e : closureEdges){
 						sum+=closureGraph.getEdgeWeight(e);
 					}
-					avgSpDist.put(node, sum/(new Integer(closureGraph.incomingEdgesOf(node).size())));
+					avgSpDist.put(node, sum/(closureGraph.incomingEdgesOf(node).size()));
 				}
 			}
 		}
@@ -414,7 +414,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @return
 	 */
 	public Set<BioPath<V,E>> getAllShortestPaths(){
-		HashSet<BioPath<V, E>> paths = new HashSet<BioPath<V, E>>();
+		HashSet<BioPath<V, E>> paths = new HashSet<>();
 		
 		for(V v1 : g.vertexSet()){
 			for(V v2 : g.vertexSet()){

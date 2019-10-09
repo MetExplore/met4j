@@ -49,7 +49,7 @@ public class CompoundEdgeFactory implements EdgeFactory<BioReaction, CompoundEdg
 	 */
 	@Override
 	public CompoundEdge createEdge(BioReaction arg0,
-			BioReaction arg1) {
+                                   BioReaction arg1) {
 		return new CompoundEdge(arg0, arg1, new BioMetabolite(""));
 	}
 }

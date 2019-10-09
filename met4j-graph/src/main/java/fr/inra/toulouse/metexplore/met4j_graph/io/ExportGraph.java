@@ -86,7 +86,7 @@ public class ExportGraph {
     		bw.write(attName+" (class=Double)");
     		bw.newLine();
     		for(ReactionEdge e:graph.edgeSet()){
-    			String edgeID = e.getV1().getId()+" ("+e.toString()+") "+e.getV2().getId();
+    			String edgeID = e.getV1().getId()+" ("+ e +") "+e.getV2().getId();
     			if(edgeID.contains("=")){
     				bw.close();
     				throw new IOException("input badly formated : equal sign in namespace");
@@ -115,7 +115,7 @@ public class ExportGraph {
     		bw.write(attName+" (class=Double)");
     		bw.newLine();
     		for(ReactionEdge e:graph.edgeSet()){
-    			String edgeID = e.getV1().getId()+" ("+e.toString()+") "+e.getV2().getId();
+    			String edgeID = e.getV1().getId()+" ("+ e +") "+e.getV2().getId();
     			if(edgeID.contains("=")){
     				bw.close();
     				throw new IOException("input badly formated : equal sign in namespace");
@@ -146,13 +146,13 @@ public class ExportGraph {
     		bw.write(attName);
     		bw.newLine();
     		for(ReactionEdge e:graph.edgeSet()){
-    			String edgeID = e.getV1().getId()+" ("+e.toString()+") "+e.getV2().getId();
+    			String edgeID = e.getV1().getId()+" ("+ e +") "+e.getV2().getId();
     			if(edgeID.contains("=")){
     				bw.close();
     				throw new IOException("input badly formated : equal sign in namespace");
     			}
     			
-				String entry=edgeID+" = "+e.getAttributes().get(attName).toString();
+				String entry=edgeID+" = "+ e.getAttributes().get(attName);
 				bw.write(entry);
 				bw.newLine();
 				
@@ -242,8 +242,8 @@ public class ExportGraph {
     			BioCollection<BioReactant> products = r.isReversible() ? BioCollections.union(r.getLeftReactantsView(), r.getRightReactantsView()) : r.getRightReactantsView();
     			BioMetabolite v1 = e.getV1();
     			BioMetabolite v2 = e.getV2();
-				String entry=v1.getId()+" ("+e.toString()+") "+v2.getId()+"\t"
-						+v1.getId()+"\t"+v1.getName()+"\t"+substrates.get(v1.getId()).getLocation().getId()+"\t"+e.toString()+"\t"+e.getReaction().getName()+"\t"+e.getV2().getId()+"\t"+e.getV2().getName()+"\t"+products.get(v2.getId()).getLocation().getId()+"\t"+graph.getEdgeWeight(e)+"\t"+graph.getEdgeScore(e);
+				String entry=v1.getId()+" ("+ e +") "+v2.getId()+"\t"
+						+v1.getId()+"\t"+v1.getName()+"\t"+substrates.get(v1.getId()).getLocation().getId()+"\t"+ e +"\t"+e.getReaction().getName()+"\t"+e.getV2().getId()+"\t"+e.getV2().getName()+"\t"+products.get(v2.getId()).getLocation().getId()+"\t"+graph.getEdgeWeight(e)+"\t"+graph.getEdgeScore(e);
 				bw.write(entry);
 	    		bw.newLine();
 	    	}
@@ -313,7 +313,7 @@ public class ExportGraph {
 				//return vertex.getName();
 			}
 		};
-		EdgeNameProvider<E> edgeLabelprovider = new EdgeNameProvider<E>() {	
+		EdgeNameProvider<E> edgeLabelprovider = new EdgeNameProvider<E>() {
 			@Override
 			public String getEdgeName(E edge) {
 				return edge.toString();
@@ -321,8 +321,8 @@ public class ExportGraph {
 		};
 		
 		try {
-			GmlExporter<V, E> gml 
-				= new GmlExporter<V, E>(new IntegerNameProvider<V>(), vertexLabelprovider, new IntegerEdgeNameProvider<E>(), edgeLabelprovider);
+			GmlExporter<V, E> gml
+				= new GmlExporter<>(new IntegerNameProvider<>(), vertexLabelprovider, new IntegerEdgeNameProvider<>(), edgeLabelprovider);
 			gml.setParameter(GmlExporter.Parameter.EXPORT_EDGE_LABELS, true);
 			gml.setParameter(GmlExporter.Parameter.EXPORT_VERTEX_LABELS, true);
 			FileWriter fw = new FileWriter(new File(outputPath).getAbsoluteFile());

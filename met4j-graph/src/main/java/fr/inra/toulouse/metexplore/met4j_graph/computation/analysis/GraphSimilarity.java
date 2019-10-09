@@ -43,9 +43,9 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
  */
 public class GraphSimilarity<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V, E>> {
 	
-	private G g1;
-	private G g2;
-	private Integer sharedLink = null;
+	private final G g1;
+	private final G g2;
+	private Integer sharedLink;
 	
 	/**
 	 * Instantiates a new graph similarity.
@@ -61,8 +61,8 @@ public class GraphSimilarity<V extends BioEntity, E extends Edge<V>, G extends B
 	 * @return the number of sharedLink
 	 */
 	public int getNumberOfSharedLinks(){
-		if(sharedLink!=null) return sharedLink;
-		sharedLink = 0;
+		if(sharedLink !=null) return sharedLink;
+        sharedLink = 0;
 		for(E e : g1.edgeSet()){
 			if(g2.areConnected(e.getV1(), e.getV2())) sharedLink++;
 		}
@@ -79,7 +79,7 @@ public class GraphSimilarity<V extends BioEntity, E extends Edge<V>, G extends B
 	 */
 	public double getTanimoto(){
 		G g1 = (G) this.g1.clone();
-		G g2 = (G) this.g2.clone();	
+		G g2 = (G) this.g2.clone();
 		Merger.mergeEdges(g1);
 		Merger.mergeEdges(g2);
 		double a = new Integer(g1.edgeSet().size()).doubleValue();

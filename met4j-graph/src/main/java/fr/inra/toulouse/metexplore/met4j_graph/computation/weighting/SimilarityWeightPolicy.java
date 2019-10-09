@@ -50,8 +50,8 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollections;
 public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> {
 	
 	private int fingerprintType;
-	private boolean weightByMassContribution=false;
-	private boolean useDist=false;
+	private boolean weightByMassContribution;
+	private boolean useDist;
 	private BioMetabolite global;
 	public static final int DEFAULT_FINGERPRINT = FingerprintBuilder.EXTENDED;
 	
@@ -59,7 +59,7 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,Reacti
 	 * Instantiates a new similarity weight policy using default fingerprint type
 	 */
 	public SimilarityWeightPolicy() {
-		this.fingerprintType=DEFAULT_FINGERPRINT;
+        this.fingerprintType = DEFAULT_FINGERPRINT;
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,Reacti
 	public void setWeight(CompoundGraph g) {
 //		noStructFilter(g);
 		FingerprintBuilder fingerprinter = new FingerprintBuilder(fingerprintType);
-		HashMap<String, BitSet> fingerPrintMap = new HashMap<String, BitSet>();
+		HashMap<String, BitSet> fingerPrintMap = new HashMap<>();
 		for(ReactionEdge e:g.edgeSet()){
 			
 			//extract compound
@@ -118,7 +118,7 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,Reacti
 						}
 					}
 //					
-					if(global!=null){
+					if(global !=null){
 						double sim2 = SimilarityComputor.getTanimoto(fingerPrintMap.get(global.getId()), fingerprint2);
 						sim=(sim+sim2)/2;
 					}
@@ -147,7 +147,7 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,Reacti
 	 * @param g the graph
 	 */
 	public void noStructFilter(CompoundGraph g){
-		Set<ReactionEdge> edgesToRemove = new HashSet<ReactionEdge>();
+		Set<ReactionEdge> edgesToRemove = new HashSet<>();
 		for (ReactionEdge e:g.edgeSet()){
 			if(g.getEdgeWeight(e)==0.0){
 				edgesToRemove.add(e);
@@ -206,7 +206,7 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,Reacti
 	}
 	
 	public void useGlobalSimilarity(BioMetabolite start) {
-		this.global = start;
+        this.global = start;
 	}
 
 	public void setFingerprintType(int fingerprintType) {

@@ -53,7 +53,7 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 	BioMatrix adjacencyMatrix;
 	
 	/**consider as undirected */
-	boolean undirected = false;
+	boolean undirected;
 	
 	/**
 	 * Instantiates a new adjacency matrix computor.
@@ -64,8 +64,8 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 	public ComputeAdjacencyMatrix(G g, boolean undirected) {
 		this.g=g;
 		this.undirected=undirected;
-		adjacencyMatrix = new EjmlMatrix(g.vertexSet().size(),g.vertexSet().size());
-		buildadjacencyMatrix();
+        adjacencyMatrix = new EjmlMatrix(g.vertexSet().size(),g.vertexSet().size());
+        buildadjacencyMatrix();
 	}
 	
 	
@@ -76,8 +76,8 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 	 */
 	public ComputeAdjacencyMatrix(G g) {
 		this.g=g;
-		adjacencyMatrix = new EjmlMatrix(g.vertexSet().size(),g.vertexSet().size());
-		buildadjacencyMatrix();
+        adjacencyMatrix = new EjmlMatrix(g.vertexSet().size(),g.vertexSet().size());
+        buildadjacencyMatrix();
 	}
 	
 	/**
@@ -93,9 +93,9 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 			throw new IllegalArgumentException("Matrix class argument must implements BioMatrix interface");
 		}
 
-		adjacencyMatrix = (BioMatrix) matrixClass.getDeclaredConstructor(int.class, int.class).newInstance(g.vertexSet().size(),g.vertexSet().size());
+        adjacencyMatrix = (BioMatrix) matrixClass.getDeclaredConstructor(int.class, int.class).newInstance(g.vertexSet().size(),g.vertexSet().size());
 
-		buildadjacencyMatrix();
+        buildadjacencyMatrix();
 	}
 	
 	/**
@@ -108,8 +108,8 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 		
 		//affect an index for all vertex
 		for (V node : vertexSet){
-			adjacencyMatrix.setRowLabel(index, node.getId());
-			adjacencyMatrix.setColumnLabel(index, node.getId());
+            adjacencyMatrix.setRowLabel(index, node.getId());
+            adjacencyMatrix.setColumnLabel(index, node.getId());
 			index++;
 		}
 		
@@ -120,17 +120,17 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 				int j = adjacencyMatrix.getColumnFromLabel(edge.getV2().getId());
 				if(adjacencyMatrix.get(i, j)!=0.0){
 					//sum weight from edges with same source/target
-					adjacencyMatrix.set(i, j,adjacencyMatrix.get(i, j)+g.getEdgeWeight(edge));
+                    adjacencyMatrix.set(i, j, adjacencyMatrix.get(i, j)+ g.getEdgeWeight(edge));
 				}else{
-					adjacencyMatrix.set(i, j,g.getEdgeWeight(edge));
+                    adjacencyMatrix.set(i, j, g.getEdgeWeight(edge));
 				}
 				
 				if(undirected){
 					if(adjacencyMatrix.get(j, i)!=0.0){
 						//sum weight from edges with same source/target
-						adjacencyMatrix.set(j, i,adjacencyMatrix.get(i, j)+g.getEdgeWeight(edge));
+                        adjacencyMatrix.set(j, i, adjacencyMatrix.get(i, j)+ g.getEdgeWeight(edge));
 					}else{
-						adjacencyMatrix.set(j, i,g.getEdgeWeight(edge));
+                        adjacencyMatrix.set(j, i, g.getEdgeWeight(edge));
 					}
 				}
 			}

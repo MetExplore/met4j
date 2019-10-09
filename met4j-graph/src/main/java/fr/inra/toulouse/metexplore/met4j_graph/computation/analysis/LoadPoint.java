@@ -79,10 +79,10 @@ public class LoadPoint<V extends BioEntity, E extends Edge<V>, G extends BioGrap
 	 * @return loads values map
 	 */
 	public HashMap<V, Double> getLoads(int k){
-		HashMap<V, Double> loadsMap = new HashMap<V, Double>();
+		HashMap<V, Double> loadsMap = new HashMap<>();
 		
-		Set<BioPath<V,E>> paths = (new KShortestPath<V,E,G>(g)).getAllShortestPaths(k);
-		Map<V, Integer> numberOfPathPassingThrough = (new GraphCentralityMeasure<V,E,G>(g)).getBetweenness(paths);
+		Set<BioPath<V,E>> paths = (new KShortestPath<>(g)).getAllShortestPaths(k);
+		Map<V, Integer> numberOfPathPassingThrough = (new GraphCentralityMeasure<>(g)).getBetweenness(paths);
 		double degreeSum = getDegreeSum();
 		double totalNbOfSp = paths.size();
 		
@@ -93,7 +93,7 @@ public class LoadPoint<V extends BioEntity, E extends Edge<V>, G extends BioGrap
 			double degree = g.degreeOf(vertex);
 			double load = nbOfPath/degree;
 			load = load/averageLoad;
-			load = Math.log(load);
+			load = StrictMath.log(load);
 			loadsMap.put(vertex, load);
 		}
 		
@@ -104,7 +104,7 @@ public class LoadPoint<V extends BioEntity, E extends Edge<V>, G extends BioGrap
 		int degreeSum=0;
 		
 		for(V vertex : g.vertexSet()){
-			degreeSum+=g.degreeOf(vertex);
+			degreeSum+= g.degreeOf(vertex);
 		}
 		
 		return degreeSum;

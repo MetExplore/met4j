@@ -61,19 +61,19 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 public class BioGraph2XGMML{
 	
 	/** The graph name. */
-	private String graphName;
+	private final String graphName;
 	
 	/** The XGMML doc. */
 	private Document doc;
 	
 	/** The bipartite graph. */
-	private BipartiteGraph g;
+	private final BipartiteGraph g;
 	
 	/** The optional mapping **/
-	private HashMap<String, Double> mapping = null;
+	private HashMap<String, Double> mapping;
 	
 	/** The coordinate map **/
-	private HashMap<String,Double[]> coord = null;
+	private HashMap<String,Double[]> coord;
 	
 	/**
 	 * Instantiates a new xgmml exporter.
@@ -83,7 +83,7 @@ public class BioGraph2XGMML{
 	public BioGraph2XGMML(BipartiteGraph g){
 		this.g=g;
 		DateFormat df = new SimpleDateFormat("dd/MM/yy_HH:mm:ss");
-		this.graphName="Parsebionet_Network_"+df.format(new Date());
+		this.graphName ="Parsebionet_Network_"+df.format(new Date());
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public class BioGraph2XGMML{
 		this.g=g;
 		this.coord=coord;
 		DateFormat df = new SimpleDateFormat("dd/MM/yy_HH:mm:ss");
-		this.graphName="Parsebionet_Network_"+df.format(new Date());
+		this.graphName ="Parsebionet_Network_"+df.format(new Date());
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public class BioGraph2XGMML{
 	 */
 	public BioGraph2XGMML(BipartiteGraph g, String Name){
 		this.g=g;
-		this.graphName=Name;
+		this.graphName =Name;
 	}
 	
 	/**
@@ -117,7 +117,7 @@ public class BioGraph2XGMML{
 	 * @throws Exception
 	 */
 	public void writeXGMML(String outputPath) throws Exception{
-		if(doc==null){
+		if(doc ==null){
 			createDoc();
 		}
 		
@@ -197,9 +197,9 @@ public class BioGraph2XGMML{
 		node.appendChild(createAttribute("dbIdentifier",v.getName()));
 		node.appendChild(createAttribute("sbml name",v.getName()));
 		node.appendChild(createAttribute("sbml type","species"));
-		if(mapping!=null && mapping.containsKey(v.getId())){
+		if(mapping !=null && mapping.containsKey(v.getId())){
 			node.appendChild(createAttribute("identified","identified"));
-			node.appendChild(createAttribute("value",mapping.get(v.getId()).toString()));
+			node.appendChild(createAttribute("value", mapping.get(v.getId()).toString()));
 			node.appendChild(createMappedCompoundNodeGraphics(v));
 		}else{
 			node.appendChild(createCompoundNodeGraphics(v));
@@ -366,7 +366,7 @@ public class BioGraph2XGMML{
 		graphics.setAttribute("cy:nodeLabel",nodeLabel);
 		String borderLineType="solid";
 		graphics.setAttribute("cy:borderLineType",borderLineType);
-		if(coord!=null && coord.containsKey(v.getId())){
+		if(coord !=null && coord.containsKey(v.getId())){
 			Double[] xy = coord.get(v.getId());
 			String x = xy[0].toString();
 			String y = xy[1].toString();
@@ -404,7 +404,7 @@ public class BioGraph2XGMML{
 		graphics.setAttribute("cy:nodeLabel",nodeLabel);
 		String borderLineType="solid";
 		graphics.setAttribute("cy:borderLineType",borderLineType);
-		if(coord!=null && coord.containsKey(v.getId())){
+		if(coord !=null && coord.containsKey(v.getId())){
 			Double[] xy = coord.get(v.getId());
 			String x = xy[0].toString();
 			String y = xy[1].toString();
@@ -442,7 +442,7 @@ public class BioGraph2XGMML{
 		graphics.setAttribute("cy:nodeLabel",nodeLabel);
 		String borderLineType="solid";
 		graphics.setAttribute("cy:borderLineType",borderLineType);
-		if(coord!=null && coord.containsKey(v.getId())){
+		if(coord !=null && coord.containsKey(v.getId())){
 			Double[] xy = coord.get(v.getId());
 			String x = xy[0].toString();
 			String y = xy[1].toString();

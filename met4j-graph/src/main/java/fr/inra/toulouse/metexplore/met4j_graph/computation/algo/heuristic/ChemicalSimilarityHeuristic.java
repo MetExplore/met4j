@@ -43,15 +43,15 @@ import fr.inra.toulouse.metexplore.met4j_mathUtils.similarity.SimilarityComputor
  */
 public class ChemicalSimilarityHeuristic implements AStarHeuristic<BioMetabolite> {
 	
-	private HashMap<BioMetabolite, BitSet> fingerpMap;
-	private HashMap<BioMetabolite, HashMap<BioMetabolite, Double>> distMap;
+	private final HashMap<BioMetabolite, BitSet> fingerpMap;
+	private final HashMap<BioMetabolite, HashMap<BioMetabolite, Double>> distMap;
 	
 	/**
 	 * Instantiates a new chemical similarity heuristic.
 	 */
 	public ChemicalSimilarityHeuristic() {
-		fingerpMap=new HashMap<BioMetabolite, BitSet>();
-		distMap=new HashMap<BioMetabolite, HashMap<BioMetabolite,Double>>();
+        fingerpMap = new HashMap<>();
+        distMap = new HashMap<>();
 	}
 	
 	/* (non-Javadoc)
@@ -65,18 +65,18 @@ public class ChemicalSimilarityHeuristic implements AStarHeuristic<BioMetabolite
 				return distMap.get(node).get(end);
 			}
 		}else{
-			distMap.put(node, new HashMap<BioMetabolite, Double>());
+            distMap.put(node, new HashMap<>());
 		}
 		
-		BitSet fingerprint1=getFingerprint(node);
-		BitSet fingerprint2=getFingerprint(end);
+		BitSet fingerprint1= getFingerprint(node);
+		BitSet fingerprint2= getFingerprint(end);
 		try {
 //			return 1-SimilarityComputor.getCosineCoeff(fingerprint1, fingerprint2);
 //			return 1-SimilarityComputor.getDiceCoeff(fingerprint1, fingerprint2);
 //			return SimilarityComputor.getEuclideanDist(fingerprint1, fingerprint2);
 //			return SimilarityComputor.getManhattanDist(fingerprint1, fingerprint2);
 			double dist = SimilarityComputor.getSoergelDist(fingerprint1, fingerprint2);
-			distMap.get(node).put(end, dist);
+            distMap.get(node).put(end, dist);
 			return dist;
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -92,7 +92,7 @@ public class ChemicalSimilarityHeuristic implements AStarHeuristic<BioMetabolite
 		//BitSet fingerprint=FingerprintBuilder.getEStateFingerprint(e);
 		//BitSet fingerprint=FingerprintBuilder.getSubstructureFingerprint(e);
 		BitSet fingerprint=FingerprintBuilder.getExtendedFingerprint(e);
-		fingerpMap.put(e, fingerprint);
+        fingerpMap.put(e, fingerprint);
 		return fingerprint;
 	}
 

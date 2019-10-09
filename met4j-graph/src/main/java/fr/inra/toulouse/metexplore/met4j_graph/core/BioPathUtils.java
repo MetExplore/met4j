@@ -78,7 +78,7 @@ public class BioPathUtils {
 	 * @return paths that contains all nodes given as parameter
 	 */
 	public static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> getPathsContainingAllNodes(Collection<BioPath<V,E>> paths, Collection<V> nodes){
-		List<BioPath<V,E>> filtered = new ArrayList<BioPath<V,E>>();
+		List<BioPath<V,E>> filtered = new ArrayList<>();
 		for(BioPath<V, E> path : paths){
 			if(path.getVertexList().containsAll(nodes)){
 				filtered.add(path);
@@ -94,7 +94,7 @@ public class BioPathUtils {
 	 * @return paths that contains at least one of the nodes given as parameter
 	 */
 	public static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> getPathsContainingNodes(Collection<BioPath<V,E>> paths, Collection<V> nodes){
-		List<BioPath<V,E>> filtered = new ArrayList<BioPath<V,E>>();
+		List<BioPath<V,E>> filtered = new ArrayList<>();
 		for(BioPath<V, E> path : paths){
 			Iterator<V> iterator = nodes.iterator();
 			while(!filtered.contains(path) && iterator.hasNext()){
@@ -112,7 +112,7 @@ public class BioPathUtils {
 	 * @return paths that contains all edges given as parameter
 	 */
 	public static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> getPathsContainingAllEdges(Collection<BioPath<V,E>> paths, Collection<E> edges){
-		List<BioPath<V,E>> filtered = new ArrayList<BioPath<V,E>>();
+		List<BioPath<V,E>> filtered = new ArrayList<>();
 		for(BioPath<V, E> path : paths){
 			if(path.getEdgeList().containsAll(edges)){
 				filtered.add(path);
@@ -128,7 +128,7 @@ public class BioPathUtils {
 	 * @return paths that contains at least one of the edge given as parameter
 	 */
 	public static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> getPathsContainingEdges(Collection<BioPath<V,E>> paths, Collection<E> edges){
-		List<BioPath<V,E>> filtered = new ArrayList<BioPath<V,E>>();
+		List<BioPath<V,E>> filtered = new ArrayList<>();
 		for(BioPath<V, E> path : paths){
 			Iterator<E> iterator = edges.iterator();
 			while(!filtered.contains(path) && iterator.hasNext()){
@@ -148,7 +148,7 @@ public class BioPathUtils {
 	 */
 	public static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> weightRankFilter(Collection<BioPath<V,E>> paths, int n, String operator){
 		if(n<1) throw new IllegalArgumentException();
-		List<Double> weights = new ArrayList<Double>(new HashSet<Double>(getWeightMap(paths).values()));
+		List<Double> weights = new ArrayList<>(new HashSet<>(getWeightMap(paths).values()));
 		Collections.sort(weights);
 		Collections.reverse(weights);
 		return weightFilter(paths, weights.get(n-1), operator);
@@ -181,7 +181,7 @@ public class BioPathUtils {
 	 * @return the filtered list of paths
 	 */	
 	public static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> lengthRankFilter(Collection<BioPath<V,E>> paths, int n, String operator){
-		List<Double> lengths = new ArrayList<Double>(new HashSet<Double>(getLengthMap(paths).values()));
+		List<Double> lengths = new ArrayList<>(new HashSet<>(getLengthMap(paths).values()));
 		Collections.sort(lengths);
 		Collections.reverse(lengths);
 		return lengthFilter(paths, lengths.get(n-1), operator);
@@ -209,7 +209,7 @@ public class BioPathUtils {
 	 * return a map with path as key and weight as value
 	 */
 	private static <V extends BioEntity, E extends Edge<V>> Map<BioPath<V, E>, Double> getWeightMap(Collection<BioPath<V, E>> paths){
-		Map<BioPath<V,E>,Double> weights = new HashMap<BioPath<V,E>,Double>();
+		Map<BioPath<V,E>,Double> weights = new HashMap<>();
 		for(BioPath<V, E> path : paths){
 			weights.put(path, path.getWeight());
 		}
@@ -220,7 +220,7 @@ public class BioPathUtils {
 	 * return a map with path as key and length as value
 	 */
 	private static <V extends BioEntity, E extends Edge<V>> Map<BioPath<V, E>, Double> getLengthMap(Collection<BioPath<V, E>> paths){
-		Map<BioPath<V,E>,Double> length = new HashMap<BioPath<V,E>,Double>();
+		Map<BioPath<V,E>,Double> length = new HashMap<>();
 		for(BioPath<V, E> path : paths){
 			Double l = new Integer(path.getLength()).doubleValue();
 			length.put(path, l);
@@ -236,37 +236,37 @@ public class BioPathUtils {
 	 * @return a collection of keys that fit the constraint given by the threshold and the operator
 	 */
 	public static <T> Collection<T> filter(Map<T,Double> map, double value, String operator){
-		List<T> filtered = new ArrayList<T>();
+		List<T> filtered = new ArrayList<>();
 		switch(operator){
-		case EQUALITY :
+		case EQUALITY:
 			for(Map.Entry<T, Double> entry : map.entrySet()){
 				if(entry.getValue()==value){
 					filtered.add(entry.getKey());
 				}
 			}
 			break;
-		case INEQUALITY :
+		case INEQUALITY:
 			for(Map.Entry<T, Double> entry : map.entrySet()){
 				if(entry.getValue()!=value){
 					filtered.add(entry.getKey());
 				}
 			}
 			break;
-		case GREATER :
+		case GREATER:
 			for(Map.Entry<T, Double> entry : map.entrySet()){
 				if(entry.getValue()>value){
 					filtered.add(entry.getKey());
 				}
 			}
 			break;
-		case LESS :
+		case LESS:
 			for(Map.Entry<T, Double> entry : map.entrySet()){
 				if(entry.getValue()<value){
 					filtered.add(entry.getKey());
 				}
 			}
 			break;
-		case GREATEROREQUAL :
+		case GREATEROREQUAL:
 			for(Map.Entry<T, Double> entry : map.entrySet()){
 				if(entry.getValue()>=value){
 					filtered.add(entry.getKey());
@@ -317,9 +317,9 @@ public class BioPathUtils {
 	 */
 	private static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> filter(Collection<BioPath<V,E>> paths, double value, String operator, boolean weighted){
 		
-		List<BioPath<V,E>> filtered = new ArrayList<BioPath<V,E>>();
+		List<BioPath<V,E>> filtered = new ArrayList<>();
 		switch(operator){
-		case EQUALITY :
+		case EQUALITY:
 			for(BioPath<V,E> entry : paths){
 				double pathValue = weighted ? entry.getWeight() : entry.getLength();
 				if(pathValue==value){
@@ -327,7 +327,7 @@ public class BioPathUtils {
 				}
 			}
 			break;
-		case INEQUALITY :
+		case INEQUALITY:
 			for(BioPath<V,E> entry : paths){
 				double pathValue = weighted ? entry.getWeight() : entry.getLength();
 				if(pathValue!=value){
@@ -335,7 +335,7 @@ public class BioPathUtils {
 				}
 			}
 			break;
-		case GREATER :
+		case GREATER:
 			for(BioPath<V,E> entry : paths){
 				double pathValue = weighted ? entry.getWeight() : entry.getLength();
 				if(pathValue>value){
@@ -343,7 +343,7 @@ public class BioPathUtils {
 				}
 			}
 			break;
-		case LESS :
+		case LESS:
 			for(BioPath<V,E> entry : paths){
 				double pathValue = weighted ? entry.getWeight() : entry.getLength();
 				if(pathValue<value){
@@ -351,7 +351,7 @@ public class BioPathUtils {
 				}
 			}
 			break;
-		case GREATEROREQUAL :
+		case GREATEROREQUAL:
 			for(BioPath<V,E> entry : paths){
 				double pathValue = weighted ? entry.getWeight() : entry.getLength();
 				if(pathValue>=value){

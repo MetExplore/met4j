@@ -54,7 +54,7 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 	
 	/** The file path. */
 	String filePath;
-	boolean removeEdgeNotInFile=false;
+	boolean removeEdgeNotInFile;
 	
 	/**
 	 * Instantiates a new weights from file.
@@ -71,7 +71,7 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 	 * @param filePath the file path
 	 * @param removeEdgeNotInFile
 	 */
-	public WeightsFromFile(String filePath,boolean removeEdgeNotInFile) {
+	public WeightsFromFile(String filePath, boolean removeEdgeNotInFile) {
 		this.filePath=filePath;
 		this.removeEdgeNotInFile=removeEdgeNotInFile;
 	}
@@ -81,7 +81,7 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 	 */
 	@Override
 	public void setWeight(G g) {
-		HashSet<E> seenEdges = new HashSet<E>();
+		HashSet<E> seenEdges = new HashSet<>();
 		int notInGraph = 0;
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(filePath));
@@ -126,7 +126,7 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 		System.err.println(seenEdges.size()+" weights set among "+g.edgeSet().size()+" edges in graph");
 		
 		if(removeEdgeNotInFile){
-			Set<E> edgesToRemove = new HashSet<E>(g.edgeSet());
+			Set<E> edgesToRemove = new HashSet<>(g.edgeSet());
 			edgesToRemove.removeAll(seenEdges);
 			g.removeAllEdges(edgesToRemove);
 		}

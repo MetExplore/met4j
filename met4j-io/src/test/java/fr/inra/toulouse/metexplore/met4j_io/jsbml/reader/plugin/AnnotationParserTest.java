@@ -29,7 +29,6 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioRef;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.AnnotationParser;
 
 public class AnnotationParserTest {
 

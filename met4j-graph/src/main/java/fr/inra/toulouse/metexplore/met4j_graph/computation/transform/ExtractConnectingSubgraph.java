@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.EdgeReversedGraph;
 import org.jgrapht.traverse.DepthFirstIterator;
@@ -45,12 +46,13 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
- * Class to remove all nodes unconnected with a particular set of nodes of interest.
+ * Class to remove all nodes not connecting a given set of nodes of interest.
+ * 'Loops' of nodes that only connects a node of interest to itself are also be removed.
  * @author clement
  * @param <V>
  * @param <E>
  */
-public class RemoveUnconnectedNodes<V extends BioEntity, E extends Edge<V>> {
+public class ExtractConnectingSubgraph<V extends BioEntity, E extends Edge<V>> {
 
 	/** The graph. */
 	public BioGraph<V, E> g;
@@ -77,9 +79,9 @@ public Integer[][] reachby;
  * @param g the graph
  * @param nodesOfInterest the nodes of interest
  */
-public RemoveUnconnectedNodes(BioGraph<V, E> g, Set<String> nodesOfInterest) {
+public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInterest) {
 		this.g=g;
-		this.nodesOfInterest=nodesOfInterest;
+		this.nodesOfInterest=nodesOfInterest.getIds();
 		init();
 	}
 		

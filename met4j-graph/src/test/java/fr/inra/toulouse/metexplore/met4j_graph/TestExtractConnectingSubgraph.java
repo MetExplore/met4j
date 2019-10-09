@@ -1,0 +1,88 @@
+package fr.inra.toulouse.metexplore.met4j_graph;
+
+import fr.inra.toulouse.metexplore.met4j_core.biodata.*;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ExtractConnectingSubgraph;
+import fr.inra.toulouse.metexplore.met4j_graph.core.reaction.CompoundEdge;
+import fr.inra.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+public class TestExtractConnectingSubgraph {
+
+    public static ReactionGraph rg;
+    public static BioMetabolite v1,v2,v3;
+    public static BioReaction r1,r2,r3,r4;
+    public static BioPathway p;
+    public static CompoundEdge e1,e2,e3,e4;
+    public static BioNetwork bn;
+    public static BioCompartment comp;
+
+    @BeforeClass
+    public static void init(){
+
+        rg = new ReactionGraph();
+        bn = new BioNetwork();
+        comp = new BioCompartment("comp");bn.add(comp);
+
+        v1 = new BioMetabolite("v1");bn.add(v1);bn.affectToCompartment(comp, v1);
+        v2 = new BioMetabolite("v2");bn.add(v2);bn.affectToCompartment(comp, v2);
+        v3 = new BioMetabolite("v3");bn.add(v3);bn.affectToCompartment(comp, v3);
+
+        p = new BioPathway("p");bn.add(p);
+
+        r1 = new BioReaction("r1");bn.add(r1);
+        bn.affectLeft(v1, 1.0, comp, r1);
+        bn.affectRight(v2, 1.0, comp, r1);
+        bn.affectToPathway(r1,p);
+        r2 = new BioReaction("r2");bn.add(r2);
+        bn.affectLeft(v2, 1.0, comp, r2);
+        bn.affectRight(v3, 1.0, comp, r2);
+        bn.affectToPathway(r2,p);
+        r3 = new BioReaction("r3");bn.add(r3);
+        bn.affectLeft(v2, 1.0, comp, r3);
+        bn.affectRight(v3, 1.0, comp, r3);
+        r3.setReversible(true);
+        r4 = new BioReaction("r4");bn.add(r4);
+        bn.affectLeft(v3, 1.0, comp, r4);
+        bn.affectRight(v1, 1.0, comp, r4);
+        r4.setReversible(true);
+
+        e1 = new CompoundEdge(r1, r2, v2);
+        e2 = new CompoundEdge(r2, r3, v3);
+        e3 = new CompoundEdge(r4, r3, v3);
+        e4 = new CompoundEdge(r3, r4, v3);
+
+        rg.addVertex(r1);
+        rg.addVertex(r2);
+        rg.addVertex(r3);
+        rg.addVertex(r4);
+        rg.addEdge(r1, r2, e1);
+        rg.addEdge(r2, r3, e2);
+        rg.addEdge(r4, r3, e3);
+        rg.addEdge(r3, r4, e4);
+
+        assertEquals(4, rg.vertexSet().size());
+        assertEquals(4, rg.edgeSet().size());
+
+    }
+
+    @Test
+    public void cleanGraph() {
+        BioCollection<BioReaction> noi = new BioCollection<BioReaction>();
+        noi.add(r1);
+        noi.add(r3);
+        ExtractConnectingSubgraph<BioReaction, CompoundEdge> extractor = new ExtractConnectingSubgraph<BioReaction, CompoundEdge>(rg, noi);
+        extractor.cleanGraph();
+
+        assertEquals(3, rg.vertexSet().size());
+        assertEquals(2, rg.edgeSet().size());
+        assertTrue(rg.containsVertex(r1));
+        assertTrue(rg.containsVertex(r2));
+        assertTrue(rg.containsVertex(r3));
+        assertTrue(rg.areConnected(r1,r2));
+        assertTrue(rg.areConnected(r2,r3));
+    }
+}

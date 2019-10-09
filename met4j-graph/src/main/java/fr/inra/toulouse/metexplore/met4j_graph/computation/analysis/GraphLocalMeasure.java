@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjancyMatrix;
+import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjacencyMatrix;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
@@ -161,8 +161,8 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 	 * @return the Katz index
 	 */
 	public Map<V,Double> getKatzIndex(double alpha){
-		ComputeAdjancyMatrix<V,E,G> adjComputor = new  ComputeAdjancyMatrix<V,E,G>(g);
-		BioMatrix adj = adjComputor.getAdjancyMatrix();
+		ComputeAdjacencyMatrix<V,E,G> adjComputor = new  ComputeAdjacencyMatrix<V,E,G>(g);
+		BioMatrix adj = adjComputor.getadjacencyMatrix();
 		BioMatrix i = adj.identity();
 		BioMatrix factor1 = (i.minus(adj.transpose().scale(alpha))).invert().minus(i);
 		BioMatrix identityVector = new EjmlMatrix(1,adj.numCols());

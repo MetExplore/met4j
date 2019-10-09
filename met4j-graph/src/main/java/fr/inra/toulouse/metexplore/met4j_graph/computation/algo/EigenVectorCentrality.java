@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjancyMatrix;
+import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjacencyMatrix;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inra.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
@@ -56,8 +56,8 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
  */
 public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V ,E>> {
 	
-	/** The adjancy matrix. */
-	public BioMatrix adjancyMatrix;
+	/** The adjacency matrix. */
+	public BioMatrix adjacencyMatrix;
 	
 	
 	/**
@@ -66,31 +66,31 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 	 * @param g the graph
 	 */
 	public EigenVectorCentrality(G g) {
-		ComputeAdjancyMatrix<V,E,G> adjC = new ComputeAdjancyMatrix<V,E,G>(g);
-		adjancyMatrix=adjC.getAdjancyMatrix();
+		ComputeAdjacencyMatrix<V,E,G> adjC = new ComputeAdjacencyMatrix<V,E,G>(g);
+		adjacencyMatrix=adjC.getadjacencyMatrix();
 	}
 	
 	
 	/**
 	 * Instantiates a new eigen vector centrality computor.
 	 *
-	 * @param adjancyMatrix the adjancy matrix
+	 * @param adjacencyMatrix the adjacency matrix
 	 * @param labelMap the label map
 	 * @param indexMap the index map
 	 * @throws Exception
 	 */
-	public EigenVectorCentrality(BioMatrix adjancyMatrix) throws Exception{
-		if(adjancyMatrix.numRows()!=adjancyMatrix.numCols()) throw new IllegalArgumentException("adjancy matrix must be square");
-		this.adjancyMatrix=adjancyMatrix;
+	public EigenVectorCentrality(BioMatrix adjacencyMatrix) throws Exception{
+		if(adjacencyMatrix.numRows()!=adjacencyMatrix.numCols()) throw new IllegalArgumentException("adjacency matrix must be square");
+		this.adjacencyMatrix=adjacencyMatrix;
 	}
 	
 	/**
-	 * Gets the principal eigen vector from adjancy matrix
+	 * Gets the principal eigen vector from adjacency matrix
 	 *
 	 * @return the principal eigen vector
 	 */
 	private double[] getPrincipalEigenVector(){
-		BioMatrix eigenVector = adjancyMatrix.getPrincipalEigenVector();
+		BioMatrix eigenVector = adjacencyMatrix.getPrincipalEigenVector();
 		return (eigenVector.transpose()).toDoubleArray()[0];
 	}
 	
@@ -123,7 +123,7 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 		HashMap<String, Double> result = new HashMap<String, Double>();
 		double[] pev = getPrincipalEigenVector();
 		pev = normalizeEigenVector(pev);
-		for(Entry<Integer,String> indexEntry : adjancyMatrix.getRowIndexMap().entrySet()){
+		for(Entry<Integer,String> indexEntry : adjacencyMatrix.getRowIndexMap().entrySet()){
 			result.put(indexEntry.getValue(), pev[indexEntry.getKey()]);
 		}
 		return result;
@@ -136,10 +136,10 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 	 * @return the map with node identifier and corresponding centrality
 	 */
 	public HashMap<String, Double> computePageRank(double d){
-		BioMatrix tmp = adjancyMatrix.copy();
-		addJumpProb(adjancyMatrix.getRowLabelMap().keySet(),d);
+		BioMatrix tmp = adjacencyMatrix.copy();
+		addJumpProb(adjacencyMatrix.getRowLabelMap().keySet(),d);
 		HashMap<String, Double> result = computeEigenVectorCentrality();
-		adjancyMatrix = tmp;
+		adjacencyMatrix = tmp;
 		return result;
 	}
 	
@@ -158,7 +158,7 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 		List<Integer> cols = new ArrayList<Integer>();
 		//get roots index
 		for (String node : roots) {
-			cols.add(adjancyMatrix.getColumnFromLabel(node));
+			cols.add(adjacencyMatrix.getColumnFromLabel(node));
 		}
 		
 		//update transition probability
@@ -169,14 +169,14 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 			if(!nzcols.isEmpty()){
 				//new transition probability = initial probability x (1 - probability to jump)
 				for(Integer j : nzcols){
-					double initialProba = adjancyMatrix.get(i,j);
-					adjancyMatrix.set(i, j, initialProba * (1-p));
+					double initialProba = adjacencyMatrix.get(i,j);
+					adjacencyMatrix.set(i, j, initialProba * (1-p));
 				}
 				
 				//for columns corresponding to seeds, add the probability of coming from a jump
 				for(Integer seed : cols){
-					double initialProba = adjancyMatrix.get(i,seed);
-					adjancyMatrix.set(i, seed, initialProba + dp);
+					double initialProba = adjacencyMatrix.get(i,seed);
+					adjacencyMatrix.set(i, seed, initialProba + dp);
 				}
 			}
 			//sink case
@@ -185,7 +185,7 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 				// jump to a node of interest is 1
 				double dp2 = 1 / (new Integer(roots.size()).doubleValue());
 				for(Integer seed : cols){
-					adjancyMatrix.set(i, seed, dp2);
+					adjacencyMatrix.set(i, seed, dp2);
 				}
 			}
 			
@@ -221,16 +221,16 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 			if(!nzcols.isEmpty()){
 				//new transition probability = initial probability x (1 - probability to jump)
 				for(Integer j : nzcols){
-					double initialProba = adjancyMatrix.get(i,j);
-					adjancyMatrix.set(i, j, initialProba * (1-p));
+					double initialProba = adjacencyMatrix.get(i,j);
+					adjacencyMatrix.set(i, j, initialProba * (1-p));
 				}
 				
 				//for columns corresponding to seeds, add the probability of coming from a jump
 				for(Entry<String,Double> seedEntry : roots.entrySet()){
-					Integer seedCol = adjancyMatrix.getColumnFromLabel(seedEntry.getKey());
+					Integer seedCol = adjacencyMatrix.getColumnFromLabel(seedEntry.getKey());
 					double dp = p * seedEntry.getValue();
-					double initialProba = adjancyMatrix.get(i,seedCol);
-					adjancyMatrix.set(i, seedCol, initialProba + dp);
+					double initialProba = adjacencyMatrix.get(i,seedCol);
+					adjacencyMatrix.set(i, seedCol, initialProba + dp);
 				}
 			}
 			//sink case
@@ -238,10 +238,10 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 				// by default, if a vertex has no outgoing edge, the probability to
 				// jump to a node of interest is 1
 				for(Entry<String,Double> seedEntry : roots.entrySet()){
-					Integer seedCol = adjancyMatrix.getColumnFromLabel(seedEntry.getKey());
+					Integer seedCol = adjacencyMatrix.getColumnFromLabel(seedEntry.getKey());
 					double dp = 1 * seedEntry.getValue();
-					double initialProba = adjancyMatrix.get(i,seedCol);
-					adjancyMatrix.set(i, seedCol, initialProba + dp);
+					double initialProba = adjacencyMatrix.get(i,seedCol);
+					adjacencyMatrix.set(i, seedCol, initialProba + dp);
 				}
 			}
 			
@@ -256,10 +256,10 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 	 */
 	private Map<Integer, List<Integer>> getNonZeroValues(){
 		Map<Integer, List<Integer>> nonZero = new HashMap<Integer, List<Integer>>();
-		for(int i=0; i<adjancyMatrix.numRows(); i++){
+		for(int i=0; i<adjacencyMatrix.numRows(); i++){
 			ArrayList<Integer> colsIndex = new ArrayList<Integer>();
-			for(int j=0; j<adjancyMatrix.numCols(); j++){
-				if(adjancyMatrix.get(i, j)!=0.0){
+			for(int j=0; j<adjacencyMatrix.numCols(); j++){
+				if(adjacencyMatrix.get(i, j)!=0.0){
 					colsIndex.add(j);
 				}
 			}
@@ -332,8 +332,8 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 	 * @return map with node id as key and eigen vector centrality as value
 	 */
 	public HashMap<String, Double> powerIteration(HashMap<String, Double> seeds, int maxIter, double tol){
-		BioMatrix rank = new EjmlMatrix(1,adjancyMatrix.numCols());
-		for(Entry<String,Integer> entry : adjancyMatrix.getRowLabelMap().entrySet()){
+		BioMatrix rank = new EjmlMatrix(1,adjacencyMatrix.numCols());
+		for(Entry<String,Integer> entry : adjacencyMatrix.getRowLabelMap().entrySet()){
 			String e = entry.getKey();
 			int index = entry.getValue();
 			if(seeds.containsKey(e)){
@@ -346,14 +346,14 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 		int i=0;
 		double maxDelta = Double.MAX_VALUE;
 		while(i<maxIter && maxDelta>tol){
-			BioMatrix newRank = rank.mult(adjancyMatrix);
+			BioMatrix newRank = rank.mult(adjacencyMatrix);
 			maxDelta=getMaxDelta(rank.getRow(0), newRank.getRow(0));
 			rank = newRank;
 			i++;
 		}
 		
 		HashMap<String, Double> finalRank = new HashMap<String, Double>();
-		for(Entry<String,Integer> entry : adjancyMatrix.getRowLabelMap().entrySet()){
+		for(Entry<String,Integer> entry : adjacencyMatrix.getRowLabelMap().entrySet()){
 			finalRank.put(entry.getKey(), rank.get(0, entry.getValue()));
 		}
 		return finalRank;

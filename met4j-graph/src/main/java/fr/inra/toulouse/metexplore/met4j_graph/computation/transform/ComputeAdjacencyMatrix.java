@@ -41,96 +41,96 @@ import fr.inra.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 import fr.inra.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
 
 /**
- * The Adjancy Matrix computor.
+ * The adjacency Matrix computor.
  * @author clement
  */
-public class ComputeAdjancyMatrix<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V, E>> {
+public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V, E>> {
 	
 	/** The graph. */
 	G g;
 	
-	/** The adjancy matrix. */
-	BioMatrix adjancyMatrix;
+	/** The adjacency matrix. */
+	BioMatrix adjacencyMatrix;
 	
 	/**consider as undirected */
 	boolean undirected = false;
 	
 	/**
-	 * Instantiates a new adjancy matrix computor.
-	 * The adjancy matrix can be constructed considering the graph as undirected, resulting in a symmetric matrix
+	 * Instantiates a new adjacency matrix computor.
+	 * The adjacency matrix can be constructed considering the graph as undirected, resulting in a symmetric matrix
 	 * @param g the graph
 	 * @param undirected if the graph should be consider as undirected
 	 */
-	public ComputeAdjancyMatrix(G g, boolean undirected) {
+	public ComputeAdjacencyMatrix(G g, boolean undirected) {
 		this.g=g;
 		this.undirected=undirected;
-		adjancyMatrix = new EjmlMatrix(g.vertexSet().size(),g.vertexSet().size());
-		buildAdjancyMatrix();
+		adjacencyMatrix = new EjmlMatrix(g.vertexSet().size(),g.vertexSet().size());
+		buildadjacencyMatrix();
 	}
 	
 	
 	/**
-	 * Instantiates a new adjancy matrix computor.
+	 * Instantiates a new adjacency matrix computor.
 	 *
 	 * @param g the graph
 	 */
-	public ComputeAdjancyMatrix(G g) {
+	public ComputeAdjacencyMatrix(G g) {
 		this.g=g;
-		adjancyMatrix = new EjmlMatrix(g.vertexSet().size(),g.vertexSet().size());
-		buildAdjancyMatrix();
+		adjacencyMatrix = new EjmlMatrix(g.vertexSet().size(),g.vertexSet().size());
+		buildadjacencyMatrix();
 	}
 	
 	/**
-	 * Instantiates a new adjancy matrix computor.
+	 * Instantiates a new adjacency matrix computor.
 	 *
 	 * @param g the graph
 	 * @param matrixClass the matrix class
 	 * @throws Exception
 	 */
-	public ComputeAdjancyMatrix(G g, Class<?> matrixClass) throws Exception{
+	public ComputeAdjacencyMatrix(G g, Class<?> matrixClass) throws Exception{
 		this.g=g;
 		if(!Arrays.asList(matrixClass.getInterfaces()).contains(BioMatrix.class)){
 			throw new IllegalArgumentException("Matrix class argument must implements BioMatrix interface");
 		}
 
-		adjancyMatrix = (BioMatrix) matrixClass.getDeclaredConstructor(int.class, int.class).newInstance(g.vertexSet().size(),g.vertexSet().size());
+		adjacencyMatrix = (BioMatrix) matrixClass.getDeclaredConstructor(int.class, int.class).newInstance(g.vertexSet().size(),g.vertexSet().size());
 
-		buildAdjancyMatrix();
+		buildadjacencyMatrix();
 	}
 	
 	/**
-	 * Builds the adjancy matrix.
+	 * Builds the adjacency matrix.
 	 */
-	private void buildAdjancyMatrix(){
+	private void buildadjacencyMatrix(){
 		
 		int index = 0;
 		Set<V> vertexSet = g.vertexSet();
 		
 		//affect an index for all vertex
 		for (V node : vertexSet){
-			adjancyMatrix.setRowLabel(index, node.getId());
-			adjancyMatrix.setColumnLabel(index, node.getId());
+			adjacencyMatrix.setRowLabel(index, node.getId());
+			adjacencyMatrix.setColumnLabel(index, node.getId());
 			index++;
 		}
 		
 		//import edge weight as initial transition probability
 		for (V node : vertexSet){
-			int i = adjancyMatrix.getRowFromLabel(node.getId());
+			int i = adjacencyMatrix.getRowFromLabel(node.getId());
 			for (E edge : g.outgoingEdgesOf(node)){
-				int j = adjancyMatrix.getColumnFromLabel(edge.getV2().getId());
-				if(adjancyMatrix.get(i, j)!=0.0){
+				int j = adjacencyMatrix.getColumnFromLabel(edge.getV2().getId());
+				if(adjacencyMatrix.get(i, j)!=0.0){
 					//sum weight from edges with same source/target
-					adjancyMatrix.set(i, j,adjancyMatrix.get(i, j)+g.getEdgeWeight(edge));
+					adjacencyMatrix.set(i, j,adjacencyMatrix.get(i, j)+g.getEdgeWeight(edge));
 				}else{
-					adjancyMatrix.set(i, j,g.getEdgeWeight(edge));
+					adjacencyMatrix.set(i, j,g.getEdgeWeight(edge));
 				}
 				
 				if(undirected){
-					if(adjancyMatrix.get(j, i)!=0.0){
+					if(adjacencyMatrix.get(j, i)!=0.0){
 						//sum weight from edges with same source/target
-						adjancyMatrix.set(j, i,adjancyMatrix.get(i, j)+g.getEdgeWeight(edge));
+						adjacencyMatrix.set(j, i,adjacencyMatrix.get(i, j)+g.getEdgeWeight(edge));
 					}else{
-						adjancyMatrix.set(j, i,g.getEdgeWeight(edge));
+						adjacencyMatrix.set(j, i,g.getEdgeWeight(edge));
 					}
 				}
 			}
@@ -140,12 +140,12 @@ public class ComputeAdjancyMatrix<V extends BioEntity, E extends Edge<V>, G exte
 	}
 	
 	/**
-	 * Gets the adjancy matrix.
+	 * Gets the adjacency matrix.
 	 *
-	 * @return the adjancy matrix
+	 * @return the adjacency matrix
 	 */
-	public BioMatrix getAdjancyMatrix(){
-		return adjancyMatrix;
+	public BioMatrix getadjacencyMatrix(){
+		return adjacencyMatrix;
 	}
 	
 	/**
@@ -154,7 +154,7 @@ public class ComputeAdjancyMatrix<V extends BioEntity, E extends Edge<V>, G exte
 	 * @return the label map
 	 */
 	public HashMap<String, Integer> getLabelMap(){
-		return adjancyMatrix.getRowLabelMap();
+		return adjacencyMatrix.getRowLabelMap();
 	}
 	
 	/**
@@ -163,7 +163,7 @@ public class ComputeAdjancyMatrix<V extends BioEntity, E extends Edge<V>, G exte
 	 * @return the index map
 	 */
 	public HashMap<Integer, String> getIndexMap(){
-		return adjancyMatrix.getRowIndexMap();
+		return adjacencyMatrix.getRowIndexMap();
 	}
 	
 

@@ -219,18 +219,18 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 	/**
 	 * Gets the random transition matrix.
 	 *
-	 * @param adjancyMatrix the adjancy matrix
+	 * @param adjacencyMatrix the adjacency matrix
 	 * @return the random transition matrix
 	 */
-	public BioMatrix getRandomTransitionMatrix(EjmlMatrix adjancyMatrix){
-		BioMatrix RandTransitionMatrix = new EjmlMatrix(adjancyMatrix.numRows(), adjancyMatrix.numCols());
+	public BioMatrix getRandomTransitionMatrix(EjmlMatrix adjacencyMatrix){
+		BioMatrix RandTransitionMatrix = new EjmlMatrix(adjacencyMatrix.numRows(), adjacencyMatrix.numCols());
 		Random random = new Random();
 		
-		for(int i=0;i<adjancyMatrix.numRows();i++){
+		for(int i=0;i<adjacencyMatrix.numRows();i++){
 			
 			double rowSum=0.0;
-			for(int j=0;j<adjancyMatrix.numCols();j++){
-				if(adjancyMatrix.get(i, j)==1.0){
+			for(int j=0;j<adjacencyMatrix.numCols();j++){
+				if(adjacencyMatrix.get(i, j)==1.0){
 					double rand = random.nextDouble();
 					RandTransitionMatrix.set(i, j, rand);
 					rowSum+=rand;

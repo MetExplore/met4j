@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjancyMatrix;
+import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjacencyMatrix;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioPath;
@@ -69,9 +69,9 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 	 * @return the distances
 	 */
 	public BioMatrix getDistances(){
-		ComputeAdjancyMatrix<V,E,G> computor = new ComputeAdjancyMatrix<V,E,G>(g);
+		ComputeAdjacencyMatrix<V,E,G> computor = new ComputeAdjacencyMatrix<V,E,G>(g);
 
-		BioMatrix matrix = computor.getAdjancyMatrix();
+		BioMatrix matrix = computor.getadjacencyMatrix();
 		for(int i=0; i<g.vertexSet().size(); i++){
 			for(int j=0; j<g.vertexSet().size(); j++){
 				if(i!=j && matrix.get(i, j)==0.0){
@@ -104,11 +104,11 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 	 * @return the paths
 	 */
 	public HashMap<String, HashMap<String, BioPath<V, E>>> getPaths(){
-		ComputeAdjancyMatrix<V,E,G> computor = new ComputeAdjancyMatrix<V,E,G>(g);
+		ComputeAdjacencyMatrix<V,E,G> computor = new ComputeAdjacencyMatrix<V,E,G>(g);
 		
 		HashMap<Integer,HashMap<Integer,Integer>> next = new HashMap<Integer,HashMap<Integer,Integer>>();
 		
-		BioMatrix matrix = computor.getAdjancyMatrix();
+		BioMatrix matrix = computor.getadjacencyMatrix();
 		for(int i=0; i<g.vertexSet().size(); i++){
 			next.put(i, new HashMap<Integer,Integer>());
 			for(int j=0; j<g.vertexSet().size(); j++){

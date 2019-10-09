@@ -540,7 +540,7 @@ public class BioNetwork extends BioEntity {
 	/**
 	 * Add a pathway affected to a reaction
 	 */
-	public void affectToPathway(BioReaction reaction, BioPathway pathway) {
+	public void affectToPathway(BioPathway pathway, BioReaction reaction) {
 
 		if (!this.contains(pathway)) {
 			throw new IllegalArgumentException("Pathway " + pathway.getId() + " not present in the network");
@@ -553,6 +553,15 @@ public class BioNetwork extends BioEntity {
 		pathway.addReaction(reaction);
 
 	};
+
+	public void affectToPathway(BioPathway pathway, BioReaction ...reactions) {
+
+		for(BioReaction reaction : reactions)
+		{
+			this.affectToPathway(pathway, reaction);
+		}
+	};
+
 
 	/**
 	 * Remove a reaction from a pathway

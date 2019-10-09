@@ -50,7 +50,7 @@ public class BioNetworkTest {
 		BioPathway p = new BioPathway("pathway1");
 		network.add(p);
 
-		network.affectToPathway(r, p);
+		network.affectToPathway(p, r);
 
 		e1 = new BioEnzyme("e");
 		network.add(e1);
@@ -204,7 +204,7 @@ public class BioNetworkTest {
 
 		BioReaction reaction = new BioReaction("reactionId");
 		network.add(reaction);
-		network.affectToPathway(reaction, pathway);
+		network.affectToPathway(pathway, reaction);
 
 		network.removeOnCascade(pathway);
 		assertEquals("Pathway not removed from the network", 0, network.getPathwaysView().size());
@@ -279,7 +279,7 @@ public class BioNetworkTest {
 		BioPathway pathway = new BioPathway("pathway");
 		network.add(pathway);
 		network.add(reaction);
-		network.affectToPathway(reaction, pathway);
+		network.affectToPathway(pathway, reaction);
 		network.removeOnCascade(reaction);
 		assertEquals("Reaction not removed from pathway", 0, pathway.getReactions().size());
 
@@ -642,7 +642,7 @@ public class BioNetworkTest {
 		network.add(reaction);
 		network.add(pathway);
 
-		network.affectToPathway(reaction, pathway);
+		network.affectToPathway(pathway, reaction);
 
 		assertEquals("Reaction not added to pathway", 1, pathway.getReactions().size());
 
@@ -658,7 +658,7 @@ public class BioNetworkTest {
 		network.add(reaction);
 		network.add(pathway);
 
-		network.affectToPathway(reaction, pathway);
+		network.affectToPathway(pathway, reaction);
 
 		network.removeReactionFromPathway(reaction, pathway);
 
@@ -673,7 +673,7 @@ public class BioNetworkTest {
 
 		network.add(reaction);
 
-		network.affectToPathway(reaction, pathway);
+		network.affectToPathway(pathway, reaction);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -684,7 +684,7 @@ public class BioNetworkTest {
 
 		network.add(pathway);
 
-		network.affectToPathway(reaction, pathway);
+		network.affectToPathway(pathway, reaction);
 
 	}
 
@@ -956,7 +956,7 @@ public class BioNetworkTest {
 
 		BioReaction r = addTestReactionToNetwork();
 
-		network.affectToPathway(r, p);
+		network.affectToPathway(p, r);
 
 		BioCollection<BioMetabolite> subs = network.getMetabolitesFromPathway(p);
 
@@ -972,7 +972,7 @@ public class BioNetworkTest {
 
 		BioReaction r = addTestReactionToNetwork();
 
-		network.affectToPathway(r, p);
+		network.affectToPathway(p, r);
 
 		network.removeOnCascade(p);
 		// Must return an exception
@@ -1227,7 +1227,7 @@ public class BioNetworkTest {
 
 		BioPathway pathway1 = network.getPathwaysView().get("pathway1");
 
-		network.affectToPathway(r2, pathway1);
+		network.affectToPathway(pathway1, r2);
 
 		BioPathway p2 = new BioPathway("pathway2");
 		network.add(p2);

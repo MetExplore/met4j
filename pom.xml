@@ -25,6 +25,7 @@
         <module>met4j-toolbox</module>
         <module>met4j-io</module>
         <module>met4j-mapping</module>
+        <module>met4j-flux</module>
     </modules>
 
     <description>A java library dedicated to metabolic network analysis</description>

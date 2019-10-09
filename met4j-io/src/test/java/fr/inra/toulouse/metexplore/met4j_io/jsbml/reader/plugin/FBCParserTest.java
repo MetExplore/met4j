@@ -34,7 +34,7 @@ import org.sbml.jsbml.ext.fbc.Or;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioReactionUtils;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.Flux;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
@@ -210,15 +210,15 @@ public class FBCParserTest {
 
 		parser.parseModel(model, network);
 
-		String ga1 = BioChemicalReactionUtils.getGPR(network, r1, false);
+		String ga1 = BioReactionUtils.getGPR(network, r1, false);
 
 		assertEquals("g1", ga1);
 
-		String ga2 = BioChemicalReactionUtils.getGPR(network, r2, false);
+		String ga2 = BioReactionUtils.getGPR(network, r2, false);
 
 		assertEquals("( g1 ) OR ( g2 AND g3 )", ga2);
 
-		String ga3 = BioChemicalReactionUtils.getGPR(network, r3, false);
+		String ga3 = BioReactionUtils.getGPR(network, r3, false);
 
 		assertEquals("", ga3);
 

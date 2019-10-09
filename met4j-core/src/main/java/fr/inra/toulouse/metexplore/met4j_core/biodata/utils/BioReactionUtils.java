@@ -16,7 +16,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
 
-public class BioChemicalReactionUtils {
+public class BioReactionUtils {
 	
 	/**
 	 * Comparison with another reaction : if the substrates and the products

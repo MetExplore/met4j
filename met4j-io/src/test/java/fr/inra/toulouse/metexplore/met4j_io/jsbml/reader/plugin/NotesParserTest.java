@@ -23,7 +23,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioRef;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioReactionUtils;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
@@ -159,7 +159,7 @@ public class NotesParserTest {
 
 		assertEquals("comment", ReactionAttributes.getComment(reaction1));
 
-		assertEquals("( G1 ) OR ( G1 AND G3 )", BioChemicalReactionUtils.getGPR(network, reaction1, false));
+		assertEquals("( G1 ) OR ( G1 AND G3 )", BioReactionUtils.getGPR(network, reaction1, false));
 
 		assertNotNull(reaction1.getRefs().get("Attribut1"));
 

@@ -11,7 +11,7 @@ import org.sbml.jsbml.Model;
 import org.sbml.jsbml.UniqueNamedSBase;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioReactionUtils;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
@@ -311,7 +311,7 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
 		}
 		
 		
-		String geneAssociation = BioChemicalReactionUtils.getGPR(this.getBionetwork(), bioRxn, true);
+		String geneAssociation = BioReactionUtils.getGPR(this.getBionetwork(), bioRxn, true);
 		if(!isVoid(geneAssociation))
 		{
 			n.addAttributeToNotes(ReactionAttributes.GENE_ASSOCIATION, geneAssociation, this.updateValue);

@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioChemicalReactionUtils;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioReactionUtils;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;

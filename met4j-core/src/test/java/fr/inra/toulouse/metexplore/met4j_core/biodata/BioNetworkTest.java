@@ -5,11 +5,11 @@ import static org.junit.Assert.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import org.junit.Before;
 import org.junit.Test;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.classesForTests.BioEntityFake;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 public class BioNetworkTest {
 
@@ -242,6 +242,8 @@ public class BioNetworkTest {
 		assertEquals(reaction.getLeftReactants().size(), 0);
 		assertEquals(reaction.getRightReactants().size(), 0);
 		assertEquals(enz.getParticipants().size(), 0);
+		assertEquals(network.getReactionsView().size(), 0);
+		assertEquals(network.getEnzymesView().size(), 0);
 
 
 	}

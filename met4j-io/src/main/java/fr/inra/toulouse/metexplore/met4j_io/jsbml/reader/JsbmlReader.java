@@ -107,7 +107,7 @@ public class JsbmlReader {
 		System.err.println(net.getGenesView().size() + " genes");
 		System.err.println(net.getEnzymesView().size() + " enzymes");
 		
-//		BioPathway p = this.getConverter().getNetwork().getPathwaysView().getEntityFromId("g1");
+//		BioPathway p = this.getConverter().getNetwork().getPathwaysView().get("g1");
 //		
 //		System.err.println(this.getConverter().getNetwork().getReactionsFromPathway(p).size());
 

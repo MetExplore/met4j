@@ -182,7 +182,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * {@link #getSBMLCompartNotes(HashMap)} on the following list of the
 	 * bionetwork:
 	 * <ul>
-	 * <li>{@link BioNetwork#getBiochemicalReactionList()}
+	 * <li>{@link BioNetwork#getReactionsView()}
 	 * <li>{@link BioNetwork#getPhysicalEntityList()}
 	 * <li>{@link BioNetwork#getCompartments()}
 	 * </ul>
@@ -281,7 +281,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * {@link #getGA(String, FluxReaction)} method
 	 * </ul>
 	 * 
-	 * @param reaction The {@link BioChemicalReaction}
+	 * @param reaction The {@link BioReaction}
 	 */
 	private void parseNotes(BioReaction reaction) {
 

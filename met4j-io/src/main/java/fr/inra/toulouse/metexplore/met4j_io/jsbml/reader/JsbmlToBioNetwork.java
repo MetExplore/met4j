@@ -378,7 +378,7 @@ public class JsbmlToBioNetwork {
 	/**
 	 * Abstract class to parse the list of SpeciesReferences of a given Reaction
 	 * 
-	 * @param bionetReaction the {@link BioChemicalReaction}
+	 * @param bionetReaction the {@link BioReaction}
 	 * @param listOf         the jsbml list of SpeciesReferences
 	 * @param side           The side of the SpeciesReferences
 	 *                       <ul>

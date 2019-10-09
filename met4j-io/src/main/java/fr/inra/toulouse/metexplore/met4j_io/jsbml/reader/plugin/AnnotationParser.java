@@ -23,7 +23,7 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3
 
 /**
  * This class is used to parse the annotation of every SBML element.
- * {@link BioChemicalReaction} are treated separately because they have specific
+ * {@link BioReaction} are treated separately because they have specific
  * of annotations linked to them. {@link BioCompartment} are also separated
  * because they do not extend the {@link BioPhysicalEntity} class
  * 

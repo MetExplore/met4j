@@ -13,7 +13,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioEnzymeUtils;
 
 /**
  * This Class represents a new type of reactions that handles the SBML fbc
- * package. It uses the classical {@link BioChemicalReaction} to handle reaction
+ * package. It uses the classical {@link BioReaction} to handle reaction
  * participants and the new {@link GeneAssociation} to handle complex gene
  * associations
  * 
@@ -35,7 +35,7 @@ public class FluxReaction extends BioEntity {
 	private GeneAssociation reactionGeneAssociation;
 
 	/**
-	 * Constructor using a {@link BioChemicalReaction}
+	 * Constructor using a {@link BioReaction}
 	 * 
 	 * @param reaction2
 	 *            the {@link #underlyingReaction}

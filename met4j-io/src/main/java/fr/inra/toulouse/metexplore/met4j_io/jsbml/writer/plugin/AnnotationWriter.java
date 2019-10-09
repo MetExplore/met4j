@@ -301,7 +301,7 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 
 	/**
 	 * Add additional annotation CV Terms from attributes of the input
-	 * {@link BioChemicalReaction}
+	 * {@link BioReaction}
 	 * 
 	 * @param rxn   the reaction
 	 * @param annot The SBMl annotation object

@@ -41,7 +41,7 @@ import org.junit.Test;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.algo.EigenVectorCentrality;
-import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjancyMatrix;
+import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjacencyMatrix;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inra.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
@@ -105,13 +105,13 @@ public class TestEigenVectorCentrality {
 	@Test
 	public void testGolbalEigenVectorCentrality() {
 		EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph> pg = new EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph>(graph);
-		for(int i=0; i<pg.adjancyMatrix.numRows(); i++){
-			pg.adjancyMatrix.set(i, i, 1.0);
+		for(int i=0; i<pg.adjacencyMatrix.numRows(); i++){
+			pg.adjacencyMatrix.set(i, i, 1.0);
 		}
 		HashMap<String, Double> res = pg.computeEigenVectorCentrality();
 		double[] centrality = new double[graph.vertexSet().size()];
 		for(int i2=0; i2<centrality.length; i2++){
-			centrality[i2] = res.get(pg.adjancyMatrix.getRowIndexMap().get(i2));
+			centrality[i2] = res.get(pg.adjacencyMatrix.getRowIndexMap().get(i2));
 		}
 		
 		double[] expectedEC = {0.12500000000000006, 0.12499999999999988, 0.12500000000000003, 0.12500000000000003, 0.25, 0.12500000000000003, 0.12500000000000003};
@@ -148,18 +148,18 @@ public class TestEigenVectorCentrality {
 			}
 //			seeds.put(entity.getId(), p);
 		}
-		System.out.println(pg.adjancyMatrix.getRowIndexMap());
-		pg.adjancyMatrix.print();
+		System.out.println(pg.adjacencyMatrix.getRowIndexMap());
+		pg.adjacencyMatrix.print();
 //		pg.addScalingFactor(0.9);
 		pg.addJumpProb(seeds.keySet(), 0.1);
-		pg.adjancyMatrix.print();
+		pg.adjacencyMatrix.print();
 		HashMap<String, Double> result = pg.powerIteration(seeds, 20, 0.001);
 		
 		double[] expectedEC = {0.27,0.26,0.15,0.25,0.07};
 		double[] observedEC = new double[result.keySet().size()];
 		
-		for(int i : pg.adjancyMatrix.getRowIndexMap().keySet()){
-			observedEC[i] = result.get(pg.adjancyMatrix.getRowIndexMap().get(i));
+		for(int i : pg.adjacencyMatrix.getRowIndexMap().keySet()){
+			observedEC[i] = result.get(pg.adjacencyMatrix.getRowIndexMap().get(i));
 		}
 		assertArrayEquals(expectedEC, observedEC, 0.01);
 	}
@@ -228,11 +228,11 @@ public class TestEigenVectorCentrality {
 //			}
 			seeds.put(entity.getId(), p);
 		}
-		System.out.println(pg.adjancyMatrix.getRowIndexMap());
-		pg.adjancyMatrix.print();
+		System.out.println(pg.adjacencyMatrix.getRowIndexMap());
+		pg.adjacencyMatrix.print();
 //		pg.addScalingFactor(0.9);
 		pg.addJumpProb(roots, 0.7);
-		pg.adjancyMatrix.print();
+		pg.adjacencyMatrix.print();
 		HashMap<String, Double> result = pg.powerIteration(seeds, 30, 0.001);
 		
 		double[] expectedEC = {0.36610862668654204,
@@ -248,9 +248,9 @@ public class TestEigenVectorCentrality {
 
 		double[] observedEC = new double[result.keySet().size()];
 		
-		for(int k : pg.adjancyMatrix.getRowIndexMap().keySet()){
-			observedEC[k] = result.get(pg.adjancyMatrix.getRowIndexMap().get(k));
-			System.out.println(pg.adjancyMatrix.getRowIndexMap().get(k)+" "+observedEC[k]+" "+expectedEC[k]);
+		for(int k : pg.adjacencyMatrix.getRowIndexMap().keySet()){
+			observedEC[k] = result.get(pg.adjacencyMatrix.getRowIndexMap().get(k));
+			System.out.println(pg.adjacencyMatrix.getRowIndexMap().get(k)+" "+observedEC[k]+" "+expectedEC[k]);
 		}
 		assertArrayEquals(expectedEC, observedEC, 0.001);
 	}
@@ -275,7 +275,7 @@ public class TestEigenVectorCentrality {
 		ReactionEdge eb = new ReactionEdge(e, b, new BioReaction("eb")); graph.addEdge(e, b, eb); graph.setEdgeWeight(eb, 0.4);
 		ReactionEdge ed = new ReactionEdge(e, d, new BioReaction("ed")); graph.addEdge(e, d, ed); graph.setEdgeWeight(ed, 0.4);
 		
-		BioMatrix adj = new ComputeAdjancyMatrix<BioMetabolite, ReactionEdge, CompoundGraph>(graph).getAdjancyMatrix();
+		BioMatrix adj = new ComputeAdjacencyMatrix<BioMetabolite, ReactionEdge, CompoundGraph>(graph).getadjacencyMatrix();
 		
 		EigenVectorCentrality<BioMetabolite, ReactionEdge, CompoundGraph> pg;
 		try {
@@ -292,18 +292,18 @@ public class TestEigenVectorCentrality {
 				weights.put(entity.getId(), 1.0/graph.vertexSet().size());
 //				seeds.put(entity.getId(), p);
 			}
-			System.out.println(pg.adjancyMatrix.getRowIndexMap());
-			pg.adjancyMatrix.print();
+			System.out.println(pg.adjacencyMatrix.getRowIndexMap());
+			pg.adjacencyMatrix.print();
 //			pg.addScalingFactor(0.9);
 			pg.addJumpProb(weights, 0.1);
-			pg.adjancyMatrix.print();
+			pg.adjacencyMatrix.print();
 			HashMap<String, Double> result = pg.powerIteration(seeds, 20, 0.001);
 			
 			double[] expectedEC = {0.27,0.26,0.15,0.25,0.07};
 			double[] observedEC = new double[result.keySet().size()];
 			
-			for(int i : pg.adjancyMatrix.getRowIndexMap().keySet()){
-				observedEC[i] = result.get(pg.adjancyMatrix.getRowIndexMap().get(i));
+			for(int i : pg.adjacencyMatrix.getRowIndexMap().keySet()){
+				observedEC[i] = result.get(pg.adjacencyMatrix.getRowIndexMap().get(i));
 			}
 			assertArrayEquals(expectedEC, observedEC, 0.01);
 		

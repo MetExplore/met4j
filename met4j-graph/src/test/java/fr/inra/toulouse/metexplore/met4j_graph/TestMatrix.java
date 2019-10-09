@@ -49,14 +49,14 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjancyMatrix;
+import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjacencyMatrix;
 import fr.inra.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 import fr.inra.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
 import fr.inra.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inra.toulouse.metexplore.met4j_mathUtils.matrix.MtjMatrix;
 
 /**
- * The Matrix related classes : {@link ExportMatrix}, {@link ComputeAdjancyMatrix}, {@link BioMatrix}
+ * The Matrix related classes : {@link ExportMatrix}, {@link ComputeAdjacencyMatrix}, {@link BioMatrix}
  * @author clement
  */
 public class TestMatrix {
@@ -111,10 +111,10 @@ public class TestMatrix {
 
 	
 	/**
-	 * Test the adjancy matrix.
+	 * Test the adjacency matrix.
 	 */
 	@Test
-	public void testAdjancyMatrix() {
+	public void testadjacencyMatrix() {
 		double[][] expectedMatrix = {{0,1,0,0,1,0,0},
 									{1,0,0,0,1,0,0},
 									{0,0,0,1,1,0,0},
@@ -122,18 +122,18 @@ public class TestMatrix {
 									{1,1,1,1,0,1,1},
 									{0,0,0,0,1,0,1},
 									{0,0,0,0,1,1,0},};
-		BioMatrix adjancy = null;
+		BioMatrix adjacency = null;
 		
 		for(Class<?> matrixClass : matrixClasses){
 			try {
-				adjancy = (new ComputeAdjancyMatrix<BioMetabolite,ReactionEdge,CompoundGraph>(graph, matrixClass)).getAdjancyMatrix();
+				adjacency = (new ComputeAdjacencyMatrix<BioMetabolite,ReactionEdge,CompoundGraph>(graph, matrixClass)).getadjacencyMatrix();
 				//check if matrix is square
-				assertEquals("error in "+ComputeAdjancyMatrix.class.getCanonicalName()+" using "+matrixClass.getCanonicalName()+": adjancy matrix not square.",adjancy.numCols(), adjancy.numRows());
+				assertEquals("error in "+ComputeAdjacencyMatrix.class.getCanonicalName()+" using "+matrixClass.getCanonicalName()+": adjacency matrix not square.",adjacency.numCols(), adjacency.numRows());
 				//check matrix size
-				assertEquals("error in "+ComputeAdjancyMatrix.class.getCanonicalName()+" using "+matrixClass.getCanonicalName()+": wrong adjancy matrix size.",adjancy.numCols(), 7);
+				assertEquals("error in "+ComputeAdjacencyMatrix.class.getCanonicalName()+" using "+matrixClass.getCanonicalName()+": wrong adjacency matrix size.",adjacency.numCols(), 7);
 				//check matrix element
 				for(int i=0; i<7; i++){
-					assertArrayEquals("error in "+ComputeAdjancyMatrix.class.getCanonicalName()+" using "+matrixClass.getCanonicalName()+": wrong element in adjancy matrix.",expectedMatrix[i], adjancy.toDoubleArray()[i], Double.MIN_VALUE);
+					assertArrayEquals("error in "+ComputeAdjacencyMatrix.class.getCanonicalName()+" using "+matrixClass.getCanonicalName()+": wrong element in adjacency matrix.",expectedMatrix[i], adjacency.toDoubleArray()[i], Double.MIN_VALUE);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -150,23 +150,23 @@ public class TestMatrix {
 		double[] expectedEigenvector = {0.3162277660168381, 0.3162277660168376, 0.316227766016838, 0.316227766016838, 0.6324555320336759, 0.316227766016838, 0.316227766016838};
 		
 		for(Class<?> matrixClass : matrixClasses){
-			//compute adjancy matrix
-			BioMatrix adjancy = null;
+			//compute adjacency matrix
+			BioMatrix adjacency = null;
 			try {
-				adjancy = (new ComputeAdjancyMatrix<BioMetabolite,ReactionEdge,CompoundGraph>(graph, matrixClass)).getAdjancyMatrix();
+				adjacency = (new ComputeAdjacencyMatrix<BioMetabolite,ReactionEdge,CompoundGraph>(graph, matrixClass)).getadjacencyMatrix();
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail();
 			}
 			
 			//add self loop for example purpose, usually not allowed by CompoundGraph
-			for(int i0=0; i0<adjancy.numRows();i0++){
-				adjancy.set(i0, i0, 1.0);
+			for(int i0=0; i0<adjacency.numRows();i0++){
+				adjacency.set(i0, i0, 1.0);
 			}
 			
 			//compute principal eigen vector
-			BioMatrix eigen = adjancy.getPrincipalEigenVector();
-			assertArrayEquals("error in "+adjancy.getClass().getCanonicalName()+" using "+matrixClass.getCanonicalName()+": element of eigen vector not as expected.",expectedEigenvector, (eigen.transpose()).toDoubleArray()[0], 0.000000000000001);
+			BioMatrix eigen = adjacency.getPrincipalEigenVector();
+			assertArrayEquals("error in "+adjacency.getClass().getCanonicalName()+" using "+matrixClass.getCanonicalName()+": element of eigen vector not as expected.",expectedEigenvector, (eigen.transpose()).toDoubleArray()[0], 0.000000000000001);
 		}
 	}
 	
@@ -276,7 +276,7 @@ public class TestMatrix {
 	 */
 	@Test
 	public void testMatrix2CSV() {
-		ComputeAdjancyMatrix<BioMetabolite,ReactionEdge,CompoundGraph> adj = new ComputeAdjancyMatrix<BioMetabolite,ReactionEdge,CompoundGraph>(graph);
+		ComputeAdjacencyMatrix<BioMetabolite,ReactionEdge,CompoundGraph> adj = new ComputeAdjacencyMatrix<BioMetabolite,ReactionEdge,CompoundGraph>(graph);
 		Path tmpPath = null;
 		try {
 			tmpPath = Files.createTempFile("test_Matrix2Csv", ".csv");
@@ -285,7 +285,7 @@ public class TestMatrix {
 			Assert.fail("Creation of the temporary directory");
 		}
 		File temp = tmpPath.toFile();
-		ExportMatrix.toCSV(temp.getAbsolutePath(), adj.getAdjancyMatrix());
+		ExportMatrix.toCSV(temp.getAbsolutePath(), adj.getadjacencyMatrix());
 		
 		BufferedReader br = null;
 		String line = "";

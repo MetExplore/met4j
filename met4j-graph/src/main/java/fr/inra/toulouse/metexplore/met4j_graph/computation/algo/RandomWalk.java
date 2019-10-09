@@ -30,17 +30,14 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_graph.computation.algo;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import org.jgrapht.traverse.BreadthFirstIterator;
 
 import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.Merger;
-import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.RemoveUnconnectedNodes;
+import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ExtractConnectingSubgraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
@@ -53,72 +50,72 @@ import fr.inra.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
  */
 public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>>{
 	
-	/** The adjancy matrix. */
-	public BioMatrix adjancyMatrix;
+	/** The adjacency matrix. */
+	private final BioMatrix adjacencyMatrix;
 	
 	/** The label map. */
-	public HashMap<String,Integer> labelMap;
+	private HashMap<V,Integer> labelMap;
 	
 	/** The index map. */
-	public HashMap<Integer,String> indexMap;
+	private HashMap<Integer,V> indexMap;
 	
 	/** The label map of the transient matrix. */
-	public HashMap<String, Integer> subQlabelMap;
+	private HashMap<V, Integer> subQlabelMap;
 	
 	/** The index map of the transient matrix. */
-	public HashMap<Integer,String> subQindexMap;
+	private HashMap<Integer,V> subQindexMap;
 	
 	/** The nodes of interest list. */
-	public Set<String> nodesOfInterest;
+	private final BioCollection<V> nodesOfInterest;
 	
 	/** The transient matrix. */
-	public BioMatrix subQ;
+	private BioMatrix subQ;
 	
 	/** The target matrix. */
-	public BioMatrix subR;
+	private BioMatrix subR;
 	
 	/** The label map of the target matrix. */
-	public HashMap<String, Integer> subRlabelMap;
+	private HashMap<V, Integer> subRlabelMap;
 	
 	/** The index map of the target matrix. */
-	public HashMap<Integer,String> subRindexMap;
+	private HashMap<Integer,V> subRindexMap;
 	
 	/** The walk list. */
-	public HashMap<String,double[]> walkList;
+	private HashMap<V,double[]> walkList;
 	
 	/** The start vertex probability map. */
-	public HashMap<String,Double> startProb;
+	private HashMap<V,Double> startProb;
 	
 	/** The node weights. */
-	public HashMap<String,Double> nodeWeight;
+	private HashMap<V,Double> nodeWeight;
 	
 	/** The target nodes of interest. */
-	public Set<String> targetNodesOfInterest;
+	private BioCollection<V> targetNodesOfInterest;
 	
 	/** The number of walks. */
-	public HashMap<String, Double> numberOfWalks;
+	private HashMap<V, Double> numberOfWalks;
 	
 	/** The edge number of walks. */
-	public BioMatrix edgeNumberOfWalks;
+	private BioMatrix edgeNumberOfWalks;
 	
-	/** The outgoing probabilty matrix. */
-	public BioMatrix outprob;
+	/** The outgoing probability matrix. */
+	private BioMatrix outprob;
 	
 	/**
 	 * Instantiates a new random walk.
 	 *
 	 * @param g the graph
-	 * @param blackNodesSet the noode of interest list
+	 * @param nodesOfInterest the node of interest list
 	 */
-	public RandomWalk(G g, Set<String> blackNodesSet) {
+	public RandomWalk(G g, BioCollection<V> nodesOfInterest) {
 		
-		this.nodesOfInterest=blackNodesSet;
-		labelMap = new HashMap<String, Integer>();
-		indexMap = new HashMap<Integer, String>();
+		this.nodesOfInterest=nodesOfInterest;
+		labelMap = new HashMap<>();
+		indexMap = new HashMap<>();
 		
 		//set node weight
-		nodeWeight = new HashMap<String, Double>();
-		for(String noi : nodesOfInterest){
+		nodeWeight = new HashMap<>();
+		for(V noi : this.nodesOfInterest){
 			nodeWeight.put(noi, 1.0);
 		}
 		
@@ -126,7 +123,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 		System.err.println("cleaning input graph... ");
 		System.err.println("input graph size: "+g.vertexSet().size());
 		
-		RemoveUnconnectedNodes<V,E> rm = new RemoveUnconnectedNodes<V,E>(g, nodesOfInterest);
+		ExtractConnectingSubgraph<V,E> rm = new ExtractConnectingSubgraph<>(g, nodesOfInterest);
 		rm.cleanGraph();
 //		rm.remove3();
 
@@ -137,66 +134,13 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 		cleanNodeOfInterestList(g, this.nodesOfInterest);
 		this.targetNodesOfInterest = getTargetNodesOfInterest(g, this.nodesOfInterest);
 		
-		//compute adjancy matrix
+		//compute adjacency matrix
 		int n = g.vertexSet().size();
-		adjancyMatrix = new EjmlMatrix(n, n);
-		setAdjancyMatrix(g);
+		adjacencyMatrix = new EjmlMatrix(n, n);
+		setAdjacencyMatrix(g);
 		
 		//compute transients states matrix (without starting state)
-		setConstantPartOfQ(adjancyMatrix);
-	}	
-	
-	/**
-	 * Instantiates a new random walk.
-	 *
-	 * @param g the graph
-	 * @param nodeweightFile the path to the file containing starting weight table
-	 */
-	public RandomWalk(G g, String nodeweightFile) {
-		//import node of interest weights from file
-		nodesOfInterest = new HashSet<String>();
-		try {
-			nodeWeight = new HashMap<String, Double>();
-			BufferedReader file = new BufferedReader(new FileReader(nodeweightFile));
-			String line;
-
-			while((line = file.readLine())!= null){
-				String[] splitLine = line.split("\t");
-				nodesOfInterest.add(splitLine[0]);
-				double weight = Double.parseDouble(splitLine[1]);
-				nodeWeight.put(splitLine[0], weight);
-			}
-			file.close();  
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		labelMap = new HashMap<String, Integer>();
-		indexMap = new HashMap<Integer, String>();
-		
-		//remove nodes that can't be in a path between 2 nodes of interest
-//		Bionetwork2similarityGraph.exportGraph("/home/clement/Documents/raw_graph.gml", g);
-		System.err.println("cleaning input graph... ");
-		System.err.println("input graph size: "+g.vertexSet().size());
-		
-		RemoveUnconnectedNodes<V,E> rm = new RemoveUnconnectedNodes<V,E>(g, nodesOfInterest);
-		rm.cleanGraph();
-
-		System.err.println("cleaned graph size: "+g.vertexSet().size()+"\n");
-		
-		//compute list of starting states to skip i.e paths from "target" nodes of interest
-		// and remove nodes of interest not found in graph
-		cleanNodeOfInterestList(g, this.nodesOfInterest);
-		this.targetNodesOfInterest = getTargetNodesOfInterest(g, this.nodesOfInterest);
-		
-		//compute adjancy matrix
-		int n = g.vertexSet().size();
-		adjancyMatrix = new EjmlMatrix(n, n);
-		setAdjancyMatrix(g);
-		
-		//compute transients states matrix (without starting state)
-		setConstantPartOfQ(adjancyMatrix);
+		setConstantPartOfQ(adjacencyMatrix);
 	}
 	
 	/**
@@ -205,19 +149,19 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	 * @param g the graph
 	 * @param nodeWeight the node weight map
 	 */
-	public RandomWalk(G g, HashMap<String, Double> nodeWeight) {
+	public RandomWalk(G g, HashMap<V, Double> nodeWeight) {
 		this.nodeWeight=nodeWeight;
-		this.nodesOfInterest=nodeWeight.keySet();
+		this.nodesOfInterest=new BioCollection<>(nodeWeight.keySet());
 		
-		labelMap = new HashMap<String, Integer>();
-		indexMap = new HashMap<Integer, String>();
+		labelMap = new HashMap<>();
+		indexMap = new HashMap<>();
 		
 //		//remove nodes that can't be in a path between 2 nodes of interest
 //		Bionetwork2similarityGraph.exportGraph("/home/clement/Documents/raw_graph.gml", g);
 		System.err.println("cleaning input graph... ");
 		System.err.println("input graph size: "+g.vertexSet().size());
 		
-		RemoveUnconnectedNodes<V,E> rm = new RemoveUnconnectedNodes<V,E>(g, nodesOfInterest);
+		ExtractConnectingSubgraph<V,E> rm = new ExtractConnectingSubgraph<>(g, nodesOfInterest);
 		rm.cleanGraph();
 
 		System.err.println("cleaned graph size: "+g.vertexSet().size()+"\n");
@@ -227,43 +171,43 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 		cleanNodeOfInterestList(g, this.nodesOfInterest);
 		this.targetNodesOfInterest = getTargetNodesOfInterest(g, this.nodesOfInterest);
 		
-		//compute adjancy matrix
+		//compute adjacency matrix
 		int n = g.vertexSet().size();
-		adjancyMatrix = new EjmlMatrix(n, n);
-		setAdjancyMatrix(g);
+		adjacencyMatrix = new EjmlMatrix(n, n);
+		setAdjacencyMatrix(g);
 		
 		//compute transients states matrix (without starting state)
-		setConstantPartOfQ(adjancyMatrix);
+		setConstantPartOfQ(adjacencyMatrix);
 	}
 	
 
 	/**
-	 * compute adjancy matrix from graph input
+	 * compute adjacency matrix from graph input
 	 *
-	 * @param g the new adjancy matrix
+	 * @param g the new adjacency matrix
 	 */
-	public void setAdjancyMatrix(G g){
-//		System.err.print("computing adjancy matrix...");
+	public void setAdjacencyMatrix(G g){
+//		System.err.print("computing adjacency matrix...");
 		int index = 0;
 		Set<V> vertexSet = g.vertexSet();
 		
 		//affect an index for all vertex
 		for (V node : vertexSet){
-			labelMap.put(node.getId(),index);
-			indexMap.put(index, node.getId());
+			labelMap.put(node,index);
+			indexMap.put(index, node);
 			index++;
 		}
 		
 		//import edge weight as initial transition probability
 		for (V node : vertexSet){
-			int i = labelMap.get(node.getId());
+			int i = labelMap.get(node);
 			for (E edge : g.outgoingEdgesOf(node)){
-				int j = labelMap.get(edge.getV2().getId());
-				if(adjancyMatrix.get(i, j)!=0.0){
+				int j = labelMap.get(edge.getV2());
+				if(adjacencyMatrix.get(i, j)!=0.0){
 					//sum weight from edges with same source/target
-					adjancyMatrix.set(i, j,adjancyMatrix.get(i, j)+g.getEdgeWeight(edge));
+					adjacencyMatrix.set(i, j,adjacencyMatrix.get(i, j)+g.getEdgeWeight(edge));
 				}else{
-					adjancyMatrix.set(i, j,g.getEdgeWeight(edge));
+					adjacencyMatrix.set(i, j,g.getEdgeWeight(edge));
 				}
 			}
 		}
@@ -280,10 +224,10 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	public void setConstantPartOfQ(BioMatrix p){
 //		System.err.print("extracting constant part of Q...");
 		
-		subQindexMap = new HashMap<Integer,String>();
-		subQlabelMap = new HashMap<String, Integer>();
-		subRindexMap = new HashMap<Integer,String>();
-		subRlabelMap = new HashMap<String, Integer>();
+		subQindexMap = new HashMap<>();
+		subQlabelMap = new HashMap<>();
+		subRindexMap = new HashMap<>();
+		subRlabelMap = new HashMap<>();
 		assert p.numCols()-nodesOfInterest.size()>0;
 		int[] rowNcol2keepQ = new int[p.numCols()-nodesOfInterest.size()];
 		int[] col2keepR = new int[nodesOfInterest.size()];
@@ -292,16 +236,16 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 		// and list transient row index from original matrix (row and column to keep)
 		int iteratorQ=0;
 		int iteratorR=0;
-		for (String id : labelMap.keySet()){
-			if (!nodesOfInterest.contains(id)){
-				rowNcol2keepQ[iteratorQ]=labelMap.get(id);
-				subQindexMap.put(iteratorQ,id);
-				subQlabelMap.put(id,iteratorQ);
+		for (V n : labelMap.keySet()){
+			if (!nodesOfInterest.contains(n)){
+				rowNcol2keepQ[iteratorQ]=labelMap.get(n);
+				subQindexMap.put(iteratorQ,n);
+				subQlabelMap.put(n,iteratorQ);
 				iteratorQ++;
 			}else{
-				col2keepR[iteratorR]=labelMap.get(id);
-				subRindexMap.put(iteratorR,id);
-				subRlabelMap.put(id,iteratorR);
+				col2keepR[iteratorR]=labelMap.get(n);
+				subRindexMap.put(iteratorR,n);
+				subRlabelMap.put(n,iteratorR);
 				iteratorR++;
 			}
 		}
@@ -319,7 +263,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	 * @param p transients states matrix
 	 * @return the absorbing matrix with x as starting node
 	 */
-	public BioMatrix getXabsorbingMatrix(String x, BioMatrix p){
+	public BioMatrix getXabsorbingMatrix(V x, BioMatrix p){
 //		System.err.print("Transform nodes of interest into absorbing nodes ...");
 		
 		//add 1 column and 1 row to the original transient matrix
@@ -337,8 +281,8 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 		//extract start transition probability from the original transition matrix
 		int xindex = labelMap.get(x);
 		for (int j=0;j<m;j++){
-			String label = subQindexMap.get(j);
-			int index = labelMap.get(label);
+			V node = subQindexMap.get(j);
+			int index = labelMap.get(node);
 			px.set(n, j, p.get(xindex,index));
 		}		
 		for (int i=0;i<n;i++){
@@ -381,10 +325,10 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 		if(merge){
 			Merger.mergeEdges(g);
 			for(E edge : g.edgeSet()){
-				String sourceId=edge.getV1().getId();
-				String targetId=edge.getV2().getId();
-				int sourceIndex=labelMap.get(sourceId);
-				int targetIndex=labelMap.get(targetId);
+				V source=edge.getV1();
+				V target=edge.getV2();
+				int sourceIndex=labelMap.get(source);
+				int targetIndex=labelMap.get(target);
 				g.setEdgeScore(edge, edgeNumberOfWalks.get(sourceIndex, targetIndex));
 			}
 		}else{
@@ -393,11 +337,11 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 //			wp.setWeight(g);
 //>>>>>>>>>>>>>>>>>>UNDER TEST
 			for(E edge : g.edgeSet()){
-				String sourceId=edge.getV1().getId();
-				String targetId=edge.getV2().getId();	
+				V source=edge.getV1();
+				V target=edge.getV2();
 
-				int sourceIndex=labelMap.get(sourceId);
-				int targetIndex=labelMap.get(targetId);
+				int sourceIndex=labelMap.get(source);
+				int targetIndex=labelMap.get(target);
 				//the transitions probability is split between the reactions using the initial probability
 				g.setEdgeScore(edge, g.getEdgeWeight(edge)*edgeNumberOfWalks.get(sourceIndex, targetIndex));
 			}
@@ -414,21 +358,21 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	 * @param outProbabilityVector the out-going probability vector
 	 * @return the bio matrix
 	 */
-	public BioMatrix computeEdgesPassageTime(String x, double[] nwalk, BioMatrix fundamentalMatrix, BioMatrix outProbabilityVector){
-		BioMatrix nwalkEdges = new EjmlMatrix(adjancyMatrix.numCols(),adjancyMatrix.numRows());
-		for(int i=0; i<adjancyMatrix.numRows();i++){
+	public BioMatrix computeEdgesPassageTime(V x, double[] nwalk, BioMatrix fundamentalMatrix, BioMatrix outProbabilityVector){
+		BioMatrix nwalkEdges = new EjmlMatrix(adjacencyMatrix.numCols(),adjacencyMatrix.numRows());
+		for(int i=0; i<adjacencyMatrix.numRows();i++){
 			
-			String sourceLabel = indexMap.get(i);
-			if(subQlabelMap.keySet().contains(sourceLabel) || sourceLabel.equals(x)){
+			V source = indexMap.get(i);
+			if(subQlabelMap.keySet().contains(source) || source.equals(x)){
 
-				for(int j=0; j<adjancyMatrix.numCols();j++){
+				for(int j=0; j<adjacencyMatrix.numCols();j++){
 					
-					String targetLabel = indexMap.get(j);
-					if(subQlabelMap.keySet().contains(targetLabel)){
+					V target = indexMap.get(j);
+					if(subQlabelMap.keySet().contains(target)){
 						int j2 = subQlabelMap.get(indexMap.get(j));
 						
 						//raw source-target transition probability
-						double score = adjancyMatrix.get(i, j);
+						double score = adjacencyMatrix.get(i, j);
 						//transition probability weight by probability to not go out after using the transition
 						score=score*(1-outProbabilityVector.get(j2, 0));
 						//transition probability weight by probability to not reach the source after using the transition
@@ -436,14 +380,14 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 						
 						nwalkEdges.set(i, j, score);
 						
-					}else if(nodesOfInterest.contains(targetLabel) && !targetLabel.equals(x)){
-						nwalkEdges.set(i, j,adjancyMatrix.get(i, j));
+					}else if(nodesOfInterest.contains(target) && !target.equals(x)){
+						nwalkEdges.set(i, j,adjacencyMatrix.get(i, j));
 					}else{
 						nwalkEdges.set(i, j,0.0);
 					}
 				}
 			}else{
-				for(int j=0; j<adjancyMatrix.numCols();j++){
+				for(int j=0; j<adjacencyMatrix.numCols();j++){
 					nwalkEdges.set(i, j,0.0);
 				}
 			}
@@ -452,9 +396,9 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 		//normalize outgoing probability and weight by expected nb of walk through the source 
 		for(int i=0; i<nwalkEdges.numRows();i++){
 			
-			String label = indexMap.get(i);
+			V node = indexMap.get(i);
 			int i2=0;
-			if(nodesOfInterest.contains(label)){
+			if(nodesOfInterest.contains(node)){
 				i2=nwalk.length-1;
 			}else{
 				i2 = subQlabelMap.get(indexMap.get(i));
@@ -481,34 +425,34 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	 */
 	public void computePassageTime(){
 		
-		//extract "out" transition probability (1- adjancy row sum) for each state
+		//extract "out" transition probability (1- adjacency row sum) for each state
 		BioMatrix outVector = new EjmlMatrix(subQ.numRows()+1,1) ;
 		for (int i=0;i<subQ.numRows();i++){
 			
 			//extract original transition matrix index
-			String label = subQindexMap.get(i);
-			int index = labelMap.get(label);
+			V node = subQindexMap.get(i);
+			int index = labelMap.get(node);
 			
 			//sum transition probability of each transient state from original transition matrix
 			//as the graph as been filtered to keep only vertex in path between nodes of interest,
 			//the probability of losses is the probability to reach a vertex not in any paths
 			double sum=0.0;
-			for(int jadj=0;jadj<adjancyMatrix.numCols();jadj++){
-				sum+=adjancyMatrix.get(index,jadj);
+			for(int jadj=0;jadj<adjacencyMatrix.numCols();jadj++){
+				sum+=adjacencyMatrix.get(index,jadj);
 			}
 			outVector.set(i, 0, (1.0-sum));	
 		}
 		
-		walkList = new HashMap<String,double[]>();
-		startProb = new HashMap<String,Double>();
+		walkList = new HashMap<>();
+		startProb = new HashMap<>();
 		
-		numberOfWalks = new HashMap<String, Double>();
-		edgeNumberOfWalks = new EjmlMatrix(adjancyMatrix.numRows(),adjancyMatrix.numCols());
+		numberOfWalks = new HashMap<>();
+		edgeNumberOfWalks = new EjmlMatrix(adjacencyMatrix.numRows(),adjacencyMatrix.numCols());
 		
 		//compute expected time passage through each node
 		//iterate over each starting states
 		int progress = 0;
-		for (String x : nodesOfInterest){
+		for (V x : nodesOfInterest){
 			if(!targetNodesOfInterest.contains(x)){
 				progress++;
 				long t0 = System.nanoTime();
@@ -516,7 +460,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 				System.err.println("COMPUTING WALKS FROM "+x+" ("+progress+"/"+(nodesOfInterest.size()-targetNodesOfInterest.size())+")");
 				
 				//compute fundamental matrix with x as starting state
-				BioMatrix n = getFundamentalMatrix(getXabsorbingMatrix(x, adjancyMatrix));
+				BioMatrix n = getFundamentalMatrix(getXabsorbingMatrix(x, adjacencyMatrix));
 //				System.err.println("\tdone.");
 
 				double[] nwalks = new double[n.numCols()];
@@ -526,8 +470,8 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 				//compute probability of reach a node not in path between node of interest, from the starting state
 				double sum = 0.0;
 				int index = labelMap.get(x);
-				for(int j=0; j < adjancyMatrix.numCols();j++){
-					sum+=adjancyMatrix.get(index, j);
+				for(int j=0; j < adjacencyMatrix.numCols();j++){
+					sum+=adjacencyMatrix.get(index, j);
 				}
 				outVector.set(row, 0, (1-sum));
 				
@@ -572,20 +516,20 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 			tot+=p;
 		}
 		
-		//compute betweenness centrality as the mean expected node passage time for "successfull" random walk
+		//compute betweenness centrality as the mean expected node passage time for "successful" random walk
 		//i.e walks which reach a node of interest
 //		System.out.println("\n=================\nfinal Centrality:\n=================");
 		for (int index : subQindexMap.keySet()){
 			double centrality = 0.0;
-			for (String x : walkList.keySet()){
+			for (V x : walkList.keySet()){
 				double[] nwalks = walkList.get(x);
 				centrality += nwalks[index]*(startProb.get(x)/tot);
 			}
-			numberOfWalks.put(subQindexMap.get(index), centrality);			
+			numberOfWalks.put(subQindexMap.get(index), centrality);
 			
 //			System.out.println(subQindexMap.get(index)+"\t"+centrality);
 		}
-		for(String x:startProb.keySet()){
+		for(V x:startProb.keySet()){
 			numberOfWalks.put(x, startProb.get(x)/tot);
 //			System.out.println(x+"\t"+startProb.get(x)/tot);
 		}
@@ -603,7 +547,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	public BioMatrix computeNodeOfInterestTable(){
 		assert (!walkList.isEmpty());
 		BioMatrix entry = new EjmlMatrix(nodesOfInterest.size(),subQindexMap.size());
-		for(String x:walkList.keySet()){
+		for(V x:walkList.keySet()){
 			int i = subRlabelMap.get(x);
 			double[] nwalks = walkList.get(x);
 			for(int j=0; j<nwalks.length-1;j++){
@@ -615,12 +559,12 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	}
 	
 	/**
-	 * Gets the adjancy matrix.
+	 * Gets the adjacency matrix.
 	 *
-	 * @return the adjancy matrix
+	 * @return the adjacency matrix
 	 */
-	public BioMatrix getAdjancyMatrix() {
-		return adjancyMatrix;
+	public BioMatrix getadjacencyMatrix() {
+		return adjacencyMatrix;
 	}
 	
 	/**
@@ -628,7 +572,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	 *
 	 * @return the index map
 	 */
-	public HashMap<String, Integer> getIndexMap() {
+	public HashMap<V, Integer> getIndexMap() {
 		return labelMap;
 	}
 	
@@ -646,7 +590,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	 *
 	 * @return the sub index map of the transient matrix
 	 */
-	public HashMap<Integer, String > getsubQindexMap() {
+	public HashMap<Integer, V > getsubQindexMap() {
 		return subQindexMap;
 	}	
 	
@@ -657,14 +601,15 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	 * @param nodesOfInterest the nodes of interest list
 	 * @return the number of removed vertex
 	 */
-	public int cleanNodeOfInterestList(G g, Set<String> nodesOfInterest){
-		Set<String> toRemove = new HashSet<String>();
-		for (String noi : nodesOfInterest){
+	public int cleanNodeOfInterestList(G g, BioCollection<V> nodesOfInterest){
+		BioCollection<V> toRemove = new BioCollection<>();
+		for (V noi : nodesOfInterest){
 			//assert that this nodes is in graph
 			boolean isInGraph=false;
 			for (V e : g.vertexSet()){
-				if (e.getId().equals(noi)){
-					isInGraph=true;
+				if (e.equals(noi)) {
+					isInGraph = true;
+					break;
 				}
 			}
 			//removing node of interest not in graph
@@ -675,7 +620,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 			}
 		}
 		if (!toRemove.isEmpty()){
-			for (String n2r : toRemove){
+			for (V n2r : toRemove){
 				nodesOfInterest.remove(n2r);
 			}
 		}
@@ -689,10 +634,10 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	 * @param nodesOfInterest the nodes of interest list
 	 * @return the target nodes of interest list
 	 */
-	public Set<String> getTargetNodesOfInterest(G g, Set<String> nodesOfInterest){
+	public BioCollection<V> getTargetNodesOfInterest(G g, BioCollection<V> nodesOfInterest){
 		
-		Set<String> targetNodesOfInterest = new HashSet<String>();
-		for (String noi : nodesOfInterest){
+		BioCollection<V> targetNodesOfInterest = new BioCollection<>();
+		for (V noi : nodesOfInterest){
 			if(nodeWeight.get(noi)==0.0){
 				System.err.println(noi+" weight set to 0.0");
 				targetNodesOfInterest.add(noi);
@@ -700,19 +645,19 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 				boolean connected = false;
 				V node = null;
 				for (V entity : g.vertexSet()){
-					if (entity.getId().equals(noi)){
+					if (entity.equals(noi)){
 						node = entity;
 					}
 				}
 				
 				if (!g.outgoingEdgesOf(node).isEmpty()){
 					//assert that at least one node of interest can be reached from this node
-					BreadthFirstIterator<V, E> bfs = new BreadthFirstIterator<V, E>(g,node);
+					BreadthFirstIterator<V, E> bfs = new BreadthFirstIterator<>(g, node);
 					bfs.next();
 					while (bfs.hasNext() && !connected){
 						V next = bfs.next();
 						//System.out.println("\t"+next.getId());
-						if (nodesOfInterest.contains(next.getId())){
+						if (nodesOfInterest.contains(next)){
 							connected = true;
 						}
 					}
@@ -736,7 +681,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	 *
 	 * @return the node weight
 	 */
-	public HashMap<String, Double> getNodeWeight() {
+	public HashMap<V, Double> getNodeWeight() {
 		return nodeWeight;
 	}
 
@@ -745,7 +690,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	 *
 	 * @param nodeWeight the node weight map
 	 */
-	public void setNodeWeight(HashMap<String, Double> nodeWeight) {
+	public void setNodeWeight(HashMap<V, Double> nodeWeight) {
 		this.nodeWeight = nodeWeight;
 	}
 

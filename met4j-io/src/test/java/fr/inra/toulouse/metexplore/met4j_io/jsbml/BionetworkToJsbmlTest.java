@@ -90,8 +90,8 @@ public class BionetworkToJsbmlTest {
 		network.add(pathway1);
 		network.add(pathway2);
 
-		network.affectToPathway(r1, pathway1);
-		network.affectToPathway(r1, pathway2);
+		network.affectToPathway(pathway1, r1);
+		network.affectToPathway(pathway2, r1);
 
 		m1 = new BioMetabolite("m1");
 		m2 = new BioMetabolite("m2");

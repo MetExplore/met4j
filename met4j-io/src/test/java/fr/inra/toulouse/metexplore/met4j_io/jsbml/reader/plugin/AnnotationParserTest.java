@@ -77,7 +77,7 @@ public class AnnotationParserTest {
 		BioPathway p = new BioPathway("pathway1");
 		network.add(p);
 
-		network.affectToPathway(r1, p);
+		network.affectToPathway(p, r1);
 
 		e1 = new BioEnzyme("e");
 		network.add(e1);

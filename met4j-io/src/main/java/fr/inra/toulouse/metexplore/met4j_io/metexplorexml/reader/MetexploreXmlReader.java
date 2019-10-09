@@ -588,7 +588,7 @@ public class MetexploreXmlReader {
 
 			pathway = network.getPathwaysView().get(pathwayId);
 
-			network.affectToPathway(rxn, pathway);
+			network.affectToPathway(pathway, rxn);
 		}
 
 		// Get comments

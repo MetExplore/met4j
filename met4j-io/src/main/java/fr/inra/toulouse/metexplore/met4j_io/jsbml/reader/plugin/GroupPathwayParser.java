@@ -73,7 +73,7 @@ public class GroupPathwayParser implements PackageParser, PrimaryDataTag, Reader
 					} else {
 						BioReaction reaction = this.network.getReactionsView().get(rxnId);
 
-						network.affectToPathway(reaction, pathway);
+						network.affectToPathway(pathway, reaction);
 					}
 				}
 			}

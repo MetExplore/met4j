@@ -299,12 +299,12 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 				if (!isVoid(value)) {
 
 					if (this.getBionetwork().getPathwaysView().containsId(value)) {
-						this.getBionetwork().affectToPathway(reaction,
-								this.getBionetwork().getPathwaysView().get(value));
+						this.getBionetwork().affectToPathway(this.getBionetwork().getPathwaysView().get(value), reaction
+								);
 					} else {
 						BioPathway bionetPath = new BioPathway(value, value);
 						this.getBionetwork().add(bionetPath);
-						this.getBionetwork().affectToPathway(reaction, bionetPath);
+						this.getBionetwork().affectToPathway(bionetPath, reaction);
 					}
 				}
 			}

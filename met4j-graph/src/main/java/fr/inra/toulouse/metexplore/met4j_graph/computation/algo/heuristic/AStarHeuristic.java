@@ -45,5 +45,5 @@ public interface AStarHeuristic<V extends BioEntity> {
 	 * @param end the target vertex
 	 * @return the heuristic cost
 	 */
-	public double getHeuristicCost(V node, V end);
+    double getHeuristicCost(V node, V end);
 }

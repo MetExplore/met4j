@@ -66,7 +66,7 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 	 * @param weight the weight
 	 */
 	public BioPath(Graph<V, E> graph, V startVertex, V endVertex,
-			List<E> edgeList, double weight) {
+				   List<E> edgeList, double weight) {
 		super(graph, startVertex, endVertex, edgeList, weight);
 	}
 	
@@ -78,7 +78,7 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 	 * @param endVertex the end vertex
 	 */
 	public BioPath(Graph<V, E> graph, V startVertex, V endVertex) {
-		super(graph, startVertex, endVertex, new ArrayList<E>(), 0.0);
+		super(graph, startVertex, endVertex, new ArrayList<>(), 0.0);
 	}
 	
 	/* (non-Javadoc)
@@ -104,22 +104,17 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
         if (obj instanceof BioPath<?,?>) {
             // attribute value checking
             BioPath<?,?> p = ((BioPath<?,?>) obj);
-            if(p.getGraph()==this.getGraph() && 
-            		p.getEdgeList()==this.getEdgeList() && 
-            		p.getStartVertex()==this.getStartVertex() && 
-            		p.getEndVertex()==this.getEndVertex()
+            if(p.getGraph()== this.getGraph() &&
+            		p.getEdgeList()== this.getEdgeList() &&
+            		p.getStartVertex()== this.getStartVertex() &&
+            		p.getEndVertex()== this.getEndVertex()
             		){
             	return true;
-            }else if(p.getGraph().equals(this.getGraph()) &&
-            		p.getEdgeList().equals(this.getEdgeList()) && 
-            		p.getStartVertex().equals(this.getStartVertex()) && 
-            		p.getEndVertex().equals(this.getEndVertex()) &&
-            		p.getWeight()==this.getWeight()
-            		){
-				return true;
-			}else{
-				return false;
-			}
+            }else return p.getGraph().equals(this.getGraph()) &&
+					p.getEdgeList().equals(this.getEdgeList()) &&
+					p.getStartVertex().equals(this.getStartVertex()) &&
+					p.getEndVertex().equals(this.getEndVertex()) &&
+					p.getWeight() == this.getWeight();
         }
         return false;
     }
@@ -130,7 +125,7 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 	@Override
     public int hashCode() {
 		//return Objects.hash(this.getEdgeList().toArray(),this.getGraph(),this.getStartVertex(),this.getEndVertex(),this.getWeight());
-		return Objects.hash(this.getGraph(),this.getStartVertex(),this.getEndVertex());
+		return Objects.hash(this.getGraph(), this.getStartVertex(), this.getEndVertex());
 	}
 	
 	
@@ -142,10 +137,10 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 	 * @return the sub-path
 	 */
 	public BioPath<V,E> getSubPath(V start, V end){
-		if(start.equals(end)) return new BioPath<V,E>(this.getGraph(), start, end, new ArrayList<E>(), 0.0);
+		if(start.equals(end)) return new BioPath<>(this.getGraph(), start, end, new ArrayList<>(), 0.0);
 		boolean keep=false;
 		double weight=0.0;
-		ArrayList<E> edgesToKepp = new ArrayList<E>();
+		ArrayList<E> edgesToKepp = new ArrayList<>();
 		for(E e : this){
 			if(!keep){
 				if(e.getV1().equals(start)) keep=true;
@@ -153,12 +148,12 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 			
 			if(keep){
 				edgesToKepp.add(e);
-				weight+=this.getGraph().getEdgeWeight(e);
+				weight+= this.getGraph().getEdgeWeight(e);
 			}
 			
 			if(e.getV2().equals(end)) break;
 		}
-		BioPath<V,E> path = new BioPath<V,E>(this.getGraph(), start, end, edgesToKepp, weight);
+		BioPath<V,E> path = new BioPath<>(this.getGraph(), start, end, edgesToKepp, weight);
 		return path;
 	}
 	
@@ -169,11 +164,11 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 	 * @return the two path
 	 */
 	public BioPath<V, E> appendPath(GraphPath<V, E> p2){
-		if(p2.getStartVertex()!=this.getEndVertex()) throw new IllegalArgumentException("the path to add have to start from the current path's end vertex");
+		if(p2.getStartVertex()!= this.getEndVertex()) throw new IllegalArgumentException("the path to add have to start from the current path's end vertex");
 		List<E> edgeList = this.getEdgeList();
 		edgeList.addAll(p2.getEdgeList());
 		double weight = this.getWeight()+p2.getWeight();
-		return new BioPath<V, E>(this.getGraph(),this.getStartVertex(),p2.getEndVertex(),edgeList,weight);
+		return new BioPath<>(this.getGraph(), this.getStartVertex(), p2.getEndVertex(), edgeList, weight);
 	}
 	
 	/**
@@ -182,7 +177,7 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 	 * @return the length
 	 */
 	public int getLength(){
-		return super.getEdgeList().size();
+		return this.getEdgeList().size();
 	}
 	
 	@Override
@@ -190,17 +185,17 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 		String currentNode = this.getStartVertex().getId();
 		String label = currentNode;
 		
-		for(E edge : super.getEdgeList()){
+		for(E edge : this.getEdgeList()){
 			
 			if(!edge.getV1().getId().equals(currentNode)){
 				//undirected case
 				String nextNode = edge.getV1().getId();
-				label+="<-["+edge.toString()+"]->"+nextNode;
+				label+="<-["+ edge +"]->"+nextNode;
 				currentNode=nextNode;
 			}else{
 				//directed case
 				String nextNode = edge.getV2().getId();
-				label+="-["+edge.toString()+"]->"+nextNode;
+				label+="-["+ edge +"]->"+nextNode;
 				currentNode=nextNode;
 			}
 			
@@ -212,13 +207,12 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 	public Iterator<E> iterator() {
 		Iterator<E> it = new Iterator<E>() {
 			
-			private ArrayList<E> edgeList = new ArrayList<E>(getEdgeList());
+			private final ArrayList<E> edgeList = new ArrayList<>(getEdgeList());
 			private V currentVertex = getStartVertex();
 			
 			@Override
 			public boolean hasNext() {
-				if(currentVertex.equals(getEndVertex())) return false;
-				return true;
+				return !currentVertex.equals(getEndVertex());
 			}
 
 			@Override
@@ -232,9 +226,9 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 				}
 				
 				if(nextEdge==null) throw new IllegalStateException("Discontinuous path");
-				
+
 				edgeList.remove(nextEdge);
-				currentVertex=nextEdge.getV2();
+				currentVertex =nextEdge.getV2();
 				return nextEdge;
 			}
 

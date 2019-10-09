@@ -57,7 +57,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
  */
 public class Bionetwork2BioGraph {
 
-	private BioNetwork bn;
+	private final BioNetwork bn;
 	
 	/**
 	 * Instantiates a new bionetwork 2 bio graph converter.
@@ -103,7 +103,7 @@ public class Bionetwork2BioGraph {
 	
 	
 	public ReactionGraph getReactionGraph(){
-		return getReactionGraph(new BioCollection<BioMetabolite>());
+		return getReactionGraph(new BioCollection<>());
 	}
 	
 	/**
@@ -142,7 +142,7 @@ public class Bionetwork2BioGraph {
 	
 	
 	public BipartiteGraph getBipartiteGraph(){
-		BipartiteGraph g = new BipartiteGraph(); 
+		BipartiteGraph g = new BipartiteGraph();
 		for(BioMetabolite v : bn.getMetabolitesView()){
 			g.addVertex(v);
 		}
@@ -161,7 +161,7 @@ public class Bionetwork2BioGraph {
 						g.addEdge(r, v1, new BipartiteEdge(r, v1, true));
 					}
 				}
-				for(BioMetabolite v2 : right){	
+				for(BioMetabolite v2 : right){
 					g.addEdge(r, v2, new BipartiteEdge(r, v2, false));	
 					if(reversible){
 						g.addEdge(v2, r, new BipartiteEdge(v2, r, true));
@@ -216,7 +216,7 @@ public class Bionetwork2BioGraph {
 					BioCollection<BioMetabolite> connectors =
 							pathwaysSources.get(p2).stream()
 							.filter(m -> pathwaysProducts.get(p1).contains(m))
-							.collect(Collectors.toCollection(BioCollection<BioMetabolite>::new));
+							.collect(Collectors.toCollection(BioCollection::new));
 					if(!connectors.isEmpty()) {
 						PathwayGraphEdge edge = new PathwayGraphEdge(p1, p2, connectors);
 						g.addEdge(p1, p2, edge);

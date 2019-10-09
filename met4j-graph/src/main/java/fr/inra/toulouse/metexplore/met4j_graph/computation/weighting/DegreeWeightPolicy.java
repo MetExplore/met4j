@@ -55,7 +55,7 @@ public class DegreeWeightPolicy extends WeightingPolicy<BioMetabolite,ReactionEd
 	 * @param n the exponent
 	 */
 	public DegreeWeightPolicy(double n) {
-		this.pow=n;
+        this.pow =n;
 	}
 
 	/* (non-Javadoc)
@@ -66,7 +66,7 @@ public class DegreeWeightPolicy extends WeightingPolicy<BioMetabolite,ReactionEd
 		for(ReactionEdge e : g.edgeSet()){
 			double weight = g.outDegreeOf(e.getV2());
 			weight += g.inDegreeOf(e.getV2());
-			g.setEdgeWeight(e, Math.pow(weight,this.pow));
+			g.setEdgeWeight(e, StrictMath.pow(weight, this.pow));
 		}
 	}
 

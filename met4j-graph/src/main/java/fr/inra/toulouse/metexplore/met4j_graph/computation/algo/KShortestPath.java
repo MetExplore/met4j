@@ -80,7 +80,7 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 	 * @return the list of edges involved in the k-shortest path union
 	 */
 	public List<BioPath<V,E>> getKShortestPathsUnionList(Set<V> startNodes, Set<V> targetNodes, int k){
-		ArrayList<BioPath<V,E>> shortest = new ArrayList<BioPath<V,E>>();
+		ArrayList<BioPath<V,E>> shortest = new ArrayList<>();
 		for(V start : startNodes){
 			for(V end : targetNodes){
 				if(start!=end){
@@ -101,10 +101,10 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 	 * @return the list of edges involved in the K-shortest path
 	 */
 	public List<BioPath<V,E>> getKShortest(V start, V end, int k){
-		List<BioPath<V,E>> kPaths = new ArrayList<BioPath<V,E>>();
-		ShortestPath<V, E, G> sp = new ShortestPath<V, E, G>(g);
+		List<BioPath<V,E>> kPaths = new ArrayList<>();
+		ShortestPath<V, E, G> sp = new ShortestPath<>(g);
 		BioPath<V,E> shortest = sp.getShortest(start, end);
-		if(shortest==null) return new ArrayList<BioPath<V,E>>();
+		if(shortest==null) return new ArrayList<>();
 		kPaths.add(shortest);
 //		List<ReactionEdge> sp = ShortestPath.getShortest(graph, start, end);
 //		if(sp==null || sp.isEmpty()) return new ArrayList<ReactionEdge>();
@@ -118,7 +118,7 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 //		if(dj.getPath()==null) return new ArrayList<ReactionEdge>();
 //		a.add(new BioPath(dj.getPath()));
 		
-		List<BioPath<V,E>> b = new ArrayList<BioPath<V,E>>();
+		List<BioPath<V,E>> b = new ArrayList<>();
 
 		for(int k2=1; k2<k; k2++){
 			//get shortest path from previous iteration
@@ -127,7 +127,7 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 			
 			//for each vertex in shortest path (except target)
 			for(int i=0; i<previousPathVertex.size()-1; i++){
-				ArrayList<E> removedEdges = new ArrayList<E>();
+				ArrayList<E> removedEdges = new ArrayList<>();
 				
 				V spur = previousPathVertex.get(i);
 				
@@ -142,7 +142,7 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 						for(E e : p.getEdgeList()){
 							if(e.getV1().equals(pVertexList.get(i)) && e.getV2().equals(pVertexList.get(i+1))){
 								removedEdges.add(e);
-								g.removeEdge(e);
+                                g.removeEdge(e);
 							}
 						}
 					}
@@ -167,7 +167,7 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 				
 				//restore graph
 				for(E e : removedEdges){
-					g.addEdge(e.getV1(), e.getV2(), e);
+                    g.addEdge(e.getV1(), e.getV2(), e);
 				}
 
 			}
@@ -188,9 +188,9 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 	 * @return
 	 */
 	public Set<BioPath<V,E>> getAllShortestPaths(int k){
-		HashSet<BioPath<V, E>> paths = new HashSet<BioPath<V, E>>();
+		HashSet<BioPath<V, E>> paths = new HashSet<>();
 		
-		KShortestPath<V, E, G> pathComputor = new KShortestPath<V, E, G>(g);
+		KShortestPath<V, E, G> pathComputor = new KShortestPath<>(g);
 		
 		for(V v1 : g.vertexSet()){
 			for(V v2 : g.vertexSet()){

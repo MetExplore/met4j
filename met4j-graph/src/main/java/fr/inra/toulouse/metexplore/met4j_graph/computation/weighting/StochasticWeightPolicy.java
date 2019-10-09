@@ -48,10 +48,10 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 	
 	/** The reactions to low. */
-	private HashSet<String> meanReaction = null;
+	private HashSet<String> meanReaction;
 	
 	/** The reaction weight file. */
-	private String reactionWeightFile = null;
+	private String reactionWeightFile;
 	
 	/**
 	 * Instantiates a new stochastic weight policy.
@@ -64,9 +64,9 @@ public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 	@Override
 	public void setWeight(CompoundGraph g){
 		super.setWeight(g);
-		if(reactionWeightFile!=null){
+		if(reactionWeightFile !=null){
 			normalizeWeight(reactionWeightFile, g);
-		}else if(meanReaction!=null){
+		}else if(meanReaction !=null){
 			normalizeWeight(meanReaction, g);
 		}else{
 			normalizeWeight(g);
@@ -79,11 +79,11 @@ public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 	 * @param g the graph
 	 */
 	public void normalizeWeight(CompoundGraph g){
-		super.noStructFilter(g);
+		this.noStructFilter(g);
 		for (BioMetabolite v : g.vertexSet()){
 			//double sum = 0;
 			Set<ReactionEdge> edgeSet = g.outgoingEdgesOf(v);
-			HashMap<String, Double> reactionMap = new HashMap<String, Double>();
+			HashMap<String, Double> reactionMap = new HashMap<>();
 			if (!edgeSet.isEmpty()){
 				//compute edge weight normalized by reaction
 				for (ReactionEdge e : edgeSet){
@@ -96,8 +96,8 @@ public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 					}
 				}
 				//update weight
-				for (ReactionEdge e : edgeSet){					
-					g.setEdgeWeight(e, (g.getEdgeWeight(e)/(double)reactionMap.get(e.toString()))/(double)reactionMap.keySet().size());
+				for (ReactionEdge e : edgeSet){
+					g.setEdgeWeight(e, (g.getEdgeWeight(e)/ reactionMap.get(e.toString()))/ reactionMap.keySet().size());
 				}
 			}
 		}
@@ -110,10 +110,10 @@ public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 	 * @param g the graph
 	 */
 	public void normalizeWeight(HashMap<String, Double> reactionWeight, CompoundGraph g){
-		super.noStructFilter(g);
+		this.noStructFilter(g);
 		for (BioMetabolite v : g.vertexSet()){
 			Set<ReactionEdge> edgeSet = g.outgoingEdgesOf(v);
-			HashMap<String, Double> reactionMap = new HashMap<String, Double>();
+			HashMap<String, Double> reactionMap = new HashMap<>();
 			if (!edgeSet.isEmpty()){
 				//compute edge weight normalized by reaction
 				for (ReactionEdge e : edgeSet){
@@ -128,7 +128,7 @@ public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 				//get consuming reaction's weight sum
 				double reactionWeightSum = 0.0;
 				for (String rId : reactionMap.keySet()){
-					if(!reactionWeight.keySet().contains(rId)){
+					if(!reactionWeight.containsKey(rId)){
 						reactionWeight.put(rId,1.0);
 					}
 					reactionWeightSum += reactionWeight.get(rId);				
@@ -137,7 +137,7 @@ public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 				//update weight
 				for (ReactionEdge e : edgeSet){
 					double pR = reactionWeight.get(e.toString())/reactionWeightSum;
-					g.setEdgeWeight(e, (g.getEdgeWeight(e)/(double)reactionMap.get(e.toString()))*pR);
+					g.setEdgeWeight(e, (g.getEdgeWeight(e)/ reactionMap.get(e.toString()))*pR);
 				}
 			}
 		}
@@ -150,10 +150,10 @@ public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 	 * @param g the graph
 	 */
 	public void normalizeWeight(String file, CompoundGraph g){
-		super.noStructFilter(g);
-		HashMap<String,Double> reactionWeight = new HashMap<String,Double>();
+		this.noStructFilter(g);
+		HashMap<String,Double> reactionWeight;
 		try {
-			reactionWeight = new HashMap<String, Double>();
+			reactionWeight = new HashMap<>();
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String line;
 
@@ -164,7 +164,7 @@ public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 				reactionWeight.put(splitLine[0], weight);
 			}
 			br.close();
-			
+
 			this.normalizeWeight(reactionWeight,g);
 			
 		} catch (IOException e) {
@@ -179,11 +179,11 @@ public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 	 * @param g the graph
 	 */
 	public void normalizeWeight(HashSet<String> meanReaction, CompoundGraph g){
-		super.noStructFilter(g);
+		this.noStructFilter(g);
 		int numberOfReactionSum = 0;
 		for (BioMetabolite v : g.vertexSet()){
 			Set<ReactionEdge> edgeSet = g.outgoingEdgesOf(v);
-			HashSet<String> reactionSet = new HashSet<String>();
+			HashSet<String> reactionSet = new HashSet<>();
 			if (!edgeSet.isEmpty()){
 				//compute edge weight normalized by reaction
 				for (ReactionEdge e : edgeSet){
@@ -193,9 +193,9 @@ public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 			}
 			numberOfReactionSum += reactionSet.size();
 		}
-		double meanNumberOfReaction = (double)numberOfReactionSum/(double)g.vertexSet().size();
+		double meanNumberOfReaction = (double)numberOfReactionSum/ g.vertexSet().size();
 		
-		HashMap<String, Double> map = new HashMap<String, Double>();
+		HashMap<String, Double> map = new HashMap<>();
 		for(String reaction:meanReaction){
 			assert g.getBiochemicalReactionList().containsKey(reaction);
 			map.put(reaction, 1.0/meanNumberOfReaction);

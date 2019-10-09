@@ -45,10 +45,10 @@ public class BipartiteEdge extends Edge<BioEntity>{
 	private static final long serialVersionUID = -2619530622614208364L;
 	
 	/**  is reversible. */
-	public boolean reversible=false;
+	public boolean reversible;
 	
 	/**  link side compound. */
-	public boolean side=false;
+	public boolean side;
 
 	/**
 	 * Instantiates a new bipartite edge.
@@ -58,11 +58,11 @@ public class BipartiteEdge extends Edge<BioEntity>{
 	 */
 	public BipartiteEdge(BioMetabolite v1, BioReaction v2){
 		super(v1,v2);
-		this.reversible=v2.isReversible();
+        this.reversible =v2.isReversible();
 	}
 	public BipartiteEdge(BioReaction v1, BioMetabolite v2){
 		super(v1,v2);
-		this.reversible=v1.isReversible();
+        this.reversible =v1.isReversible();
 	}
 	public BipartiteEdge(BioMetabolite v1, BioReaction v2, boolean reversible){
 		super(v1,v2);

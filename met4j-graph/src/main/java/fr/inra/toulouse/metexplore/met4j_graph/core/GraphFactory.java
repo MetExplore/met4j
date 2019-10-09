@@ -95,7 +95,7 @@ public abstract class GraphFactory<V extends BioEntity, E extends Edge<V>, G ext
 	 * @return
 	 */
 	public G createGraphFromPathList(List<BioPath<V,E>> kShort, Set<V> nodeOfInterest){
-		ArrayList<BioPath<V,E>> tmpKShort = new ArrayList<BioPath<V,E>>(kShort);
+		ArrayList<BioPath<V,E>> tmpKShort = new ArrayList<>(kShort);
 		Collections.sort(tmpKShort);
 		
 		G subGraph = createGraph();
@@ -167,7 +167,7 @@ public abstract class GraphFactory<V extends BioEntity, E extends Edge<V>, G ext
 	 * @return
 	 */
 	public G createSubGraph(G g, Collection<V> vertices){
-		Collection<E> edges = new HashSet<E>();
+		Collection<E> edges = new HashSet<>();
 		for(V vertex1 : vertices){
 			for(V vertex2 : vertices){
 				if(vertex1!=vertex2){

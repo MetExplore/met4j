@@ -48,8 +48,8 @@ public class PathEdgeFactory<V extends BioEntity,E extends Edge<V>> implements E
 	
 	@Override
 	public PathEdge<V, E> createEdge(V arg0, V arg1) {
-		BioPath<V, E> path = new BioPath<V, E>(g, arg0, arg1, new ArrayList<E>(), 0.0);
-		PathEdge<V, E> edge = new PathEdge<V, E>(arg0, arg1, path);
+		BioPath<V, E> path = new BioPath<>(g, arg0, arg1, new ArrayList<>(), 0.0);
+		PathEdge<V, E> edge = new PathEdge<>(arg0, arg1, path);
 		return edge;
 	}
 }

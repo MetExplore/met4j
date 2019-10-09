@@ -45,7 +45,7 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
 	private static final long serialVersionUID = 1L;
     
     /** The reaction. */
-    private BioCollection<BioMetabolite> connectingCompounds;
+    private final BioCollection<BioMetabolite> connectingCompounds;
 
     /**
      * Instantiates a new reaction edge.
@@ -54,7 +54,7 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
      * @param v2 the target vertex
      * @param connectingCompounds the connecting compounds
      */
-    public PathwayGraphEdge(BioPathway v1,BioPathway v2, BioCollection<BioMetabolite> connectingCompounds) {
+    public PathwayGraphEdge(BioPathway v1, BioPathway v2, BioCollection<BioMetabolite> connectingCompounds) {
         super(v1,v2);
         this.connectingCompounds=connectingCompounds;
     }
@@ -66,9 +66,9 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
      * @param v2 the target vertex
      * @param connectingCompound the connecting compound
      */
-    public PathwayGraphEdge(BioPathway v1,BioPathway v2, BioMetabolite connectingCompound) {
+    public PathwayGraphEdge(BioPathway v1, BioPathway v2, BioMetabolite connectingCompound) {
         super(v1,v2);
-        this.connectingCompounds=new BioCollection<BioMetabolite>();
+        this.connectingCompounds = new BioCollection<>();
         addConnectingCompounds(connectingCompound);
     }
 
@@ -88,7 +88,7 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
      * @return the reaction
      */
     public void addConnectingCompounds(BioMetabolite compound){
-    	connectingCompounds.add(compound);
+        connectingCompounds.add(compound);
     }
 
     public void addConnectingCompounds(BioCollection<BioMetabolite> compounds){
@@ -101,7 +101,7 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
      * @return the reaction
      */
     public void removeConnectingCompounds(BioMetabolite e){
-    	connectingCompounds.remove(e);
+        connectingCompounds.remove(e);
     }
 
 }

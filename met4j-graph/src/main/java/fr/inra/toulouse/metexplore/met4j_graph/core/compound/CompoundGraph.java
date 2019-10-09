@@ -93,7 +93,7 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 	 * @return the edges from reaction
 	 */
 	public HashSet<ReactionEdge> getEdgesFromReaction(String reactionId){
-		HashSet<ReactionEdge> edgeList = new HashSet<ReactionEdge>();
+		HashSet<ReactionEdge> edgeList = new HashSet<>();
 		for(ReactionEdge edge : this.edgeSet()){
 			if(edge.toString().equalsIgnoreCase(reactionId)){
 				edgeList.add(edge);
@@ -108,7 +108,7 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 	 * @return the biochemical reaction list
 	 */
 	public HashMap<String, BioReaction> getBiochemicalReactionList(){
-		HashMap<String, BioReaction> reactionMap = new HashMap<String, BioReaction>();
+		HashMap<String, BioReaction> reactionMap = new HashMap<>();
 		for(ReactionEdge e: this.edgeSet()){
 			if(!reactionMap.containsKey(e.toString())){
 				reactionMap.put(e.toString(), e.getReaction());
@@ -143,7 +143,7 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 		return this.edgeSet().stream()
 			.filter(e -> e.getReaction().getReactantsView()
 				.stream().allMatch(r -> r.getLocation().equals(comp))
-			).collect(Collectors.toCollection(HashSet<ReactionEdge>::new));
+			).collect(Collectors.toCollection(HashSet::new));
 	}
 
 	/**
@@ -184,7 +184,7 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 	 */
 	public ReactionEdge getEdge(BioMetabolite sourceVertex, BioMetabolite targetVertex, BioReaction reaction) {
 		for(ReactionEdge e : this.edgeSet()){
-			if(e.getV1().equals(sourceVertex) && e.getV2().equals(targetVertex) && e.equals(reaction)){
+			if(e.getV1().equals(sourceVertex) && e.getV2().equals(targetVertex) && e.getReaction().equals(reaction)){
 				return e;
 			}
 		}

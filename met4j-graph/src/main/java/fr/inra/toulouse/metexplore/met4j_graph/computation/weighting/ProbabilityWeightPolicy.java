@@ -49,7 +49,7 @@ public class ProbabilityWeightPolicy<V extends BioEntity, E extends Edge<V>,G ex
 	 * Instantiates a new probability weight policy.
 	 */
 	public ProbabilityWeightPolicy() {
-		this.wp=new DefaultWeightPolicy<V,E,G>();
+        this.wp = new DefaultWeightPolicy<>();
 	}
 	
 	/**
@@ -66,8 +66,8 @@ public class ProbabilityWeightPolicy<V extends BioEntity, E extends Edge<V>,G ex
 	 */
 	@Override
 	public void setWeight(G g) {
-		wp.setWeight(g);
-		computeProba(g);
+        wp.setWeight(g);
+        computeProba(g);
 
 	}
 	

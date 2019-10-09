@@ -76,9 +76,9 @@ public class AStar<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V 
 	 * @return the list of edges involved in the best path
 	 */
 	public List<E> findBestPath(V start, V end){
-		HashMap<V, Double> open= new HashMap<V, Double>();
-		HashMap<V, Double> closed= new HashMap<V, Double>();
-		HashSet<E> path = new HashSet<E>();
+		HashMap<V, Double> open= new HashMap<>();
+		HashMap<V, Double> closed= new HashMap<>();
+		HashSet<E> path = new HashSet<>();
 		open.put(start, 0.0);
 		while(!open.isEmpty() && !closed.containsKey(end)){
 //			String openS = "open : ";
@@ -104,12 +104,12 @@ public class AStar<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V 
 				for(E e : g.outgoingEdgesOf(bestN)){
 					V nei = e.getV2();
 					if(!open.containsKey(nei)){
-						open.put(nei, open.get(bestN)+g.getEdgeWeight(e));
+						open.put(nei, open.get(bestN)+ g.getEdgeWeight(e));
 						path.add(e);
 					
-					}else if(open.get(bestN)+g.getEdgeWeight(e)<open.get(nei)){
+					}else if(open.get(bestN)+ g.getEdgeWeight(e)<open.get(nei)){
 						//update the cost to reach successor
-						open.put(nei, open.get(bestN)+g.getEdgeWeight(e));
+						open.put(nei, open.get(bestN)+ g.getEdgeWeight(e));
 						//update edges in path
 						E old=null;
 						for(E edgePath : path){
@@ -127,7 +127,7 @@ public class AStar<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V 
 		}
 		if(closed.containsKey(end)){
 //			System.err.println("BACKTRACKING ");
-			return backtracking(path, new ArrayList<E>(), start, end);
+			return backtracking(path, new ArrayList<>(), start, end);
 		}
 		return null;
 	}
@@ -147,7 +147,10 @@ public class AStar<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V 
 			if(e.getV2()==end){
 				boolean checkLoop = true;
 				for(E e1 : path){
-					if(e1.getV2().equals(e.getV1())) checkLoop = false;
+					if (e1.getV2().equals(e.getV1())) {
+						checkLoop = false;
+						break;
+					}
 				}
 				if(checkLoop){
 					path.add(e);
@@ -177,7 +180,7 @@ public class AStar<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V 
 		double minCost = Double.MAX_VALUE;
 		V bestN = null;
 		for(V n : open.keySet()){
-			double cost = open.get(n)+h.getHeuristicCost(n,end);
+			double cost = open.get(n)+ h.getHeuristicCost(n,end);
 //			System.err.println("\t"+n.getName()+" = "+cost);
 			if(cost<minCost){
 				minCost=cost;
@@ -195,7 +198,7 @@ public class AStar<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V 
 	 * @return the best path union edge list
 	 */
 	public List<E> getBestPathUnionList(G graph, Set<V> nodeOfInterest){
-		ArrayList<E> best = new ArrayList<E>();
+		ArrayList<E> best = new ArrayList<>();
 		for(V start : nodeOfInterest){
 			for(V end : nodeOfInterest){
 				if(start!=end){
@@ -219,7 +222,7 @@ public class AStar<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V 
 	 * @return the best path union edge list
 	 */
 	public List<E> getBestPathUnionList(G graph, Set<V> startList, Set<V> endList){
-		ArrayList<E> best = new ArrayList<E>();
+		ArrayList<E> best = new ArrayList<>();
 		for(V start : startList){
 			for(V end : endList){
 				if(start!=end){

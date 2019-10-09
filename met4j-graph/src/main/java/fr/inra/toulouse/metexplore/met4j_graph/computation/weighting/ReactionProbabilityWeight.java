@@ -54,14 +54,12 @@ public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioMetabo
 	Map<BioReaction,Double> reactionWeights;
 	
 	public ReactionProbabilityWeight() {
-		super();
-	}
+    }
 	public ReactionProbabilityWeight(WeightingPolicy<BioMetabolite, ReactionEdge, CompoundGraph> wp) {
 		super(wp);
 	}
 	public ReactionProbabilityWeight(Map<BioReaction,Double> reactionWeights) {
-		super();
-		this.reactionWeights=reactionWeights;
+        this.reactionWeights=reactionWeights;
 	}
 	public ReactionProbabilityWeight(WeightingPolicy<BioMetabolite, ReactionEdge, CompoundGraph> wp, Map<BioReaction,Double> reactionWeights) {
 		super(wp);
@@ -78,7 +76,7 @@ public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioMetabo
 		for(BioMetabolite v : g.vertexSet()){
 			
 			//get edge weight sum for each bio-chemical reaction consuming the node
-			Map<BioReaction,Double> sumMap = new HashMap<BioReaction, Double>();
+			Map<BioReaction,Double> sumMap = new HashMap<>();
 			
 			for(ReactionEdge e : g.outgoingEdgesOf(v)){
 				BioReaction reaction = e.getReaction();
@@ -92,9 +90,9 @@ public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioMetabo
 			}
 			
 			//compute reactions probabilities
-			Map<BioReaction,Double> reactionsProbabilities = new HashMap<BioReaction, Double>();
+			Map<BioReaction,Double> reactionsProbabilities = new HashMap<>();
 			double nbOfConsumingReaction = sumMap.size();
-			if(reactionWeights==null){
+			if(reactionWeights ==null){
 				//if no reaction weights set, 
 				for(BioReaction r : sumMap.keySet()){
 					reactionsProbabilities.put(r, 1.0/nbOfConsumingReaction);
@@ -102,7 +100,7 @@ public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioMetabo
 			}else{
 				double reactionWeightSum = 0.0;
 				for(BioReaction r : sumMap.keySet()){
-					reactionWeightSum+=reactionWeights.get(r);
+					reactionWeightSum+= reactionWeights.get(r);
 				}
 				
 				for(BioReaction r : sumMap.keySet()){

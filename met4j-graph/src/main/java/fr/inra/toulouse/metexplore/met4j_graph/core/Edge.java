@@ -13,8 +13,8 @@ public abstract class Edge<T extends BioEntity> extends DefaultWeightedEdge{
 	
 	private static final long serialVersionUID = -8321862744429021818L;
     private double score;
-	private T v1;
-	private T v2;
+	private final T v1;
+	private final T v2;
 	private String label;
 	
     /** The attributes map. */
@@ -29,7 +29,7 @@ public abstract class Edge<T extends BioEntity> extends DefaultWeightedEdge{
 	public Edge(T v1, T v2) {
 	       this.v1 = v1;
 	       this.v2 = v2;
-	       this.attributes = new HashMap<String,Object>();
+        this.attributes = new HashMap<>();
 	}
 	
 	/**
@@ -42,8 +42,8 @@ public abstract class Edge<T extends BioEntity> extends DefaultWeightedEdge{
 	public Edge(T v1, T v2, String l) {
 	       this.v1 = v1;
 	       this.v2 = v2;
-	       this.label=l;
-	       this.attributes = new HashMap<String,Object>();
+        this.label =l;
+        this.attributes = new HashMap<>();
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public abstract class Edge<T extends BioEntity> extends DefaultWeightedEdge{
 	 * @param attributs the attributs to set
 	 */
 	public void setAttributes(HashMap<String,Object> attributs) {
-		this.attributes = attributs;
+        this.attributes = attributs;
 	}
 
 	/**

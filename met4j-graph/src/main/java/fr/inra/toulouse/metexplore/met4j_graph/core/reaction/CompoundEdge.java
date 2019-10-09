@@ -46,7 +46,7 @@ public class CompoundEdge extends Edge<BioReaction>{
 	private static final long serialVersionUID = 1L;
     
     /** The compound. */
-    private BioMetabolite c;
+    private final BioMetabolite c;
     
 
     /**
@@ -56,7 +56,7 @@ public class CompoundEdge extends Edge<BioReaction>{
      * @param v2 the target vertex
      * @param c the compound
      */
-    public CompoundEdge(BioReaction v1,BioReaction v2, BioMetabolite c) {
+    public CompoundEdge(BioReaction v1, BioReaction v2, BioMetabolite c) {
         super(v1,v2);
         this.c=c;
     }
@@ -91,14 +91,10 @@ public class CompoundEdge extends Edge<BioReaction>{
         if (obj instanceof CompoundEdge) {
             // Vérification des valeurs des attributs
             CompoundEdge e = ((CompoundEdge) obj);
-            if(e.getV1()==this.getV1() && e.getV2()==this.getV2() && e.getCompound()==this.getCompound()){
+            if(e.getV1()== this.getV1() && e.getV2()== this.getV2() && e.c == this.c){
             	return true;
-            }else if(e.getV1().getId().equals(this.getV1().getId()) && e.getV2().getId().equals(this.getV2().getId()) 
-            		&& e.toString().equals(this.toString())){
-				return true;
-			}else{
-				return false;
-			}
+            }else return e.getV1().getId().equals(this.getV1().getId()) && e.getV2().getId().equals(this.getV2().getId())
+                    && e.toString().equals(this.toString());
         }
         return false;
     }
@@ -108,7 +104,7 @@ public class CompoundEdge extends Edge<BioReaction>{
 	 */
 	@Override
     public int hashCode() {
-		return Objects.hash(this.getV1().getId(),this.getV2().getId(),this.getCompound().getId());
+		return Objects.hash(getV1().getId(), this.getV2().getId(), this.c.getId());
 	}
 
 }

@@ -41,8 +41,6 @@ import org.jgrapht.Graphs;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inra.toulouse.metexplore.met4j_graph.core.BioPath;
-import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
 
 /**
  * The Class BioGraph.
@@ -95,8 +93,8 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 * Removes all isolated nodes.
 	 */
 	public final void removeIsolatedNodes(){
-		ArrayList<V> vertToRemove = new ArrayList<V>();
-		for (V n:this.vertexSet()){
+		ArrayList<V> vertToRemove = new ArrayList<>();
+		for (V n: this.vertexSet()){
 			if(this.edgesOf(n).isEmpty()){
 				vertToRemove.add(n);
 			}
@@ -128,7 +126,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 * @return the neighbor list
 	 */
 	public final Set<V> neighborListOf(V vertex){
-		return new HashSet<V>(Graphs.neighborListOf(this, vertex));
+		return new HashSet<>(Graphs.neighborListOf(this, vertex));
 	}
 	
 	/**
@@ -138,7 +136,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 * @return the predecessor list
 	 */
 	public final Set<V> predecessorListOf(V vertex){
-		return new HashSet<V>(Graphs.predecessorListOf(this, vertex));
+		return new HashSet<>(Graphs.predecessorListOf(this, vertex));
 	}
 	
 	/**
@@ -148,14 +146,14 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 * @return the successor list
 	 */
 	public final Set<V> successorListOf(V vertex){
-		return new HashSet<V>(Graphs.successorListOf(this, vertex));
+		return new HashSet<>(Graphs.successorListOf(this, vertex));
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#addEdge(java.lang.Object, java.lang.Object)
 	 */
 	@Override
-	public E addEdge(V arg0,V arg1) {
+	public E addEdge(V arg0, V arg1) {
 		return super.addEdge(arg0, arg1);
 	}
 
@@ -163,7 +161,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 * @see org.jgrapht.graph.AbstractBaseGraph#addEdge(java.lang.Object, java.lang.Object, java.lang.Object)
 	 */
 	@Override
-	public boolean addEdge(V sourceVertex,V targetVertex, E e) {
+	public boolean addEdge(V sourceVertex, V targetVertex, E e) {
 		return super.addEdge(sourceVertex, targetVertex, e);
 	}
 
@@ -206,10 +204,9 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 * @param v2 the second vertex
 	 * @return if v1 and v2 are connected
 	 */
-	public final boolean areConnected(V v1,V v2) {
+	public final boolean areConnected(V v1, V v2) {
 		if(!this.containsVertex(v1) || !this.containsVertex(v2)) return false;
-		if(this.successorListOf(v1).contains(v2)) return true;
-		return false;
+		return this.successorListOf(v1).contains(v2);
 	}
 
 	/* (non-Javadoc)
@@ -323,7 +320,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 * @return the map
 	 */
 	public final HashMap<E, Double> getEdgeWeightMap() {
-		HashMap<E, Double> weightMap = new HashMap<E, Double>();
+		HashMap<E, Double> weightMap = new HashMap<>();
 		for(E e : this.edgeSet()){
 			weightMap.put(e, this.getEdgeWeight(e));
 		}
@@ -336,7 +333,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 * @return the map
 	 */
 	public final HashMap<E, Double> getEdgeScoreMap() {
-		HashMap<E, Double> scoreMap = new HashMap<E, Double>();
+		HashMap<E, Double> scoreMap = new HashMap<>();
 		for(E e : this.edgeSet()){
 			scoreMap.put(e, this.getEdgeScore(e));
 		}

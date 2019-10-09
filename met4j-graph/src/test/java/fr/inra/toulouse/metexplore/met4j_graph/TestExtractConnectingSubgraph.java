@@ -36,11 +36,11 @@ public class TestExtractConnectingSubgraph {
         r1 = new BioReaction("r1");bn.add(r1);
         bn.affectLeft(v1, 1.0, comp, r1);
         bn.affectRight(v2, 1.0, comp, r1);
-        bn.affectToPathway(r1,p);
+        bn.affectToPathway(p, r1);
         r2 = new BioReaction("r2");bn.add(r2);
         bn.affectLeft(v2, 1.0, comp, r2);
         bn.affectRight(v3, 1.0, comp, r2);
-        bn.affectToPathway(r2,p);
+        bn.affectToPathway(p, r2);
         r3 = new BioReaction("r3");bn.add(r3);
         bn.affectLeft(v2, 1.0, comp, r3);
         bn.affectRight(v3, 1.0, comp, r3);

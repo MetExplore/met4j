@@ -71,13 +71,13 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 	public ReactionGraph(ReactionGraph g) {
 		super(edgeFactory);
 		for(BioReaction vertex : g.vertexSet()){
-			this.addVertex(vertex);
+            this.addVertex(vertex);
 		}
 		for(CompoundEdge edge : g.edgeSet()){
 			CompoundEdge newEdge = new CompoundEdge(edge.getV1(), edge.getV2(), edge.getCompound());
-			this.addEdge(newEdge.getV1(), newEdge.getV2(), newEdge);
-			this.setEdgeWeight(newEdge, g.getEdgeWeight(edge));
-			this.setEdgeScore(newEdge, g.getEdgeScore(edge));
+            this.addEdge(newEdge.getV1(), newEdge.getV2(), newEdge);
+            this.setEdgeWeight(newEdge, g.getEdgeWeight(edge));
+            this.setEdgeScore(newEdge, g.getEdgeScore(edge));
 		}
 	}
 
@@ -89,7 +89,7 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 	 * @return the edges from reaction
 	 */
 	public HashSet<CompoundEdge> getEdgesFromCompound(String compoundId){
-		HashSet<CompoundEdge> edgeList = new HashSet<CompoundEdge>();
+		HashSet<CompoundEdge> edgeList = new HashSet<>();
 		for(CompoundEdge edge : this.edgeSet()){
 			if(edge.toString().equalsIgnoreCase(compoundId)){
 				edgeList.add(edge);
@@ -104,7 +104,7 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 	 * @return the biochemical reaction list
 	 */
 	public HashMap<String, BioMetabolite> getCompoundList(){
-		HashMap<String, BioMetabolite> compoundMap = new HashMap<String, BioMetabolite>();
+		HashMap<String, BioMetabolite> compoundMap = new HashMap<>();
 		for(CompoundEdge e: this.edgeSet()){
 			if(!compoundMap.containsKey(e.toString())){
 				compoundMap.put(e.toString(), e.getCompound());
@@ -126,7 +126,7 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 					if(this.hasVertex(out.getId())){
 						if(in!=out){
 							CompoundEdge edge = new CompoundEdge(in, out, c);
-							this.addEdge(in, out, edge);
+                            this.addEdge(in, out, edge);
 						}
 					}
 				}

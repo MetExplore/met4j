@@ -60,9 +60,9 @@ public class TestPathwayGraph {
 		bn.affectRight(v1, 1.0, comp, r3);
 		r3.setReversible(true);
 		
-		bn.affectToPathway(r1, p1);
-		bn.affectToPathway(r3, p1);
-		bn.affectToPathway(r2, p2);
+		bn.affectToPathway(p1, r1);
+		bn.affectToPathway(p1, r3);
+		bn.affectToPathway(p2, r2);
 		
 		BioCollection<BioMetabolite> connectingCompounds = new BioCollection<>();
 		connectingCompounds.add(v1);

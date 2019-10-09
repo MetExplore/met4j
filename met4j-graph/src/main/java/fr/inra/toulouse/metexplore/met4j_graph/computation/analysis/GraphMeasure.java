@@ -52,22 +52,22 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	
 	/** The graph. */
-	private BioGraph<V, E> g;
+	private final BioGraph<V, E> g;
 	
 	/** The number of edges. */
 	private double numberOfEdges;
 	
 	/** The number of vertex. */
-	private double numberOfVertex;
+	private final double numberOfVertex;
 	
 	/** The number of connected component. */
-	private Integer numberOfConnectedComp = null;
+	private Integer numberOfConnectedComp;
 	
 	/** The diameter. */
-	private Double diameter = null;
+	private Double diameter;
 	
 	/** The length. */
-	private Double length = null;
+	private Double length;
 	
 	/** if the graph is directed */
 	private boolean directed = true;
@@ -80,8 +80,8 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 */
 	public GraphMeasure(BioGraph<V, E> g) {
 		this.g=g;
-		this.numberOfEdges=new Integer(g.edgeSet().size()).doubleValue();
-		this.numberOfVertex=new Integer(g.vertexSet().size()).doubleValue();
+        this.numberOfEdges =new Integer(g.edgeSet().size()).doubleValue();
+        this.numberOfVertex =new Integer(g.vertexSet().size()).doubleValue();
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 * @return the connected component
 	 */
 	public static <V extends BioEntity, E extends Edge<V>> List<Set<V>> getConnectedCompenent(BioGraph<V,E> g){
-		return new ConnectivityInspector<V, E>(g).connectedSets();
+		return new ConnectivityInspector<>(g).connectedSets();
 	}
 	
 	/**
@@ -102,8 +102,8 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 * @return the number of connected component
 	 */
 	public int getNumberOfConnectedComponent(){
-		if(numberOfConnectedComp!=null) return numberOfConnectedComp;
-		numberOfConnectedComp = getConnectedCompenent(g).size();
+		if(numberOfConnectedComp !=null) return numberOfConnectedComp;
+        numberOfConnectedComp = getConnectedCompenent(g).size();
 		return numberOfConnectedComp;
 	}
 	
@@ -125,8 +125,8 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 * @return the diameter
 	 */
 	public double getDiameter(){
-		if(diameter!=null) return diameter;
-		diameter = (new FloydWarshallShortestPaths<V, E>(g)).getDiameter();
+		if(diameter !=null) return diameter;
+        diameter = (new FloydWarshallShortestPaths<>(g)).getDiameter();
 		return diameter;
 	}
 	
@@ -136,9 +136,9 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 * @return the gamma
 	 */
 	public double getGamma(){
-		double maxNumberOfEdges = numberOfVertex*(numberOfVertex-1);
+		double maxNumberOfEdges = numberOfVertex *(numberOfVertex -1);
 		if(!directed) maxNumberOfEdges = maxNumberOfEdges*0.5;
-		return numberOfEdges/maxNumberOfEdges;
+		return numberOfEdges /maxNumberOfEdges;
 	}
 	
 	/**
@@ -149,8 +149,8 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 */
 	public double getAlpha(){
 		if(directed) throw new IllegalArgumentException("unable to compute alpha index on directed graph"); //TODO  get the undirected number of edges, counting a->b and b->a as only one edge
-		double maxNumberOfCycle = (numberOfVertex*(numberOfVertex-1))*0.5 - (numberOfVertex-1);
-		return (numberOfEdges-(numberOfVertex-1))/maxNumberOfCycle;
+		double maxNumberOfCycle = (numberOfVertex *(numberOfVertex -1))*0.5 - (numberOfVertex -1);
+		return (numberOfEdges -(numberOfVertex -1))/maxNumberOfCycle;
 	}
 	
 	/**
@@ -159,7 +159,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 * @return the beta
 	 */
 	public double getBeta(){
-		return numberOfEdges/numberOfVertex;
+		return numberOfEdges / numberOfVertex;
 	}
 	
 	/**
@@ -168,10 +168,10 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 * @return the length
 	 */
 	public double getLength(){
-		if(this.length!=null) return this.length;
-		length=0.0;
+		if(this.length !=null) return this.length;
+        length =0.0;
 		for(E e : g.edgeSet()){
-			length+=g.getEdgeWeight(e);
+            length += g.getEdgeWeight(e);
 		}
 		return length;
 	}
@@ -182,7 +182,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 * @return the eta
 	 */
 	public double getEta(){
-		return getLength()/numberOfEdges;
+		return getLength()/ numberOfEdges;
 	}
 	
 	/**
@@ -191,7 +191,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 * @return the pi
 	 */
 	public double getPi(){
-		return getDiameter()/getLength();
+		return getDiameter()/ getLength();
 	}
 	
 	/**
@@ -203,7 +203,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 * @return the OCCI
 	 */
 	public double getOCCI(){
-		GraphCentralityMeasure<V, E, BioGraph<V, E>> centralityComputor = new GraphCentralityMeasure<V, E, BioGraph<V, E>>(g);
+		GraphCentralityMeasure<V, E, BioGraph<V, E>> centralityComputor = new GraphCentralityMeasure<>(g);
 		Set<BioPath<V, E>> paths = centralityComputor.getAllShortestPaths();
 		Map<V, Double> closenessIndex = centralityComputor.getInCloseness(paths);
 		
@@ -219,8 +219,8 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 		//normalize centrality
 		sum = sum*(g.vertexSet().size()-1);
 		
-		double occi = (2*numberOfVertex - 3) * sum;
-		occi = occi/((numberOfVertex-1)*(numberOfVertex-2));
+		double occi = (2* numberOfVertex - 3) * sum;
+		occi = occi/((numberOfVertex -1)*(numberOfVertex -2));
 		return occi;
 	}
 	
@@ -233,7 +233,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 * @return the OCCI
 	 */
 	public double getOCCI(Set<BioPath<V, E>> validPaths){
-		GraphCentralityMeasure<V, E, BioGraph<V, E>> centralityComputor = new GraphCentralityMeasure<V, E, BioGraph<V, E>>(g);
+		GraphCentralityMeasure<V, E, BioGraph<V, E>> centralityComputor = new GraphCentralityMeasure<>(g);
 		Map<V, Double> closenessIndex = centralityComputor.getCloseness(validPaths);
 		
 		double max = 0.0;
@@ -246,8 +246,8 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 			sum += (max - closeness);
 		}
 		
-		double occi = (2*numberOfVertex - 3) * sum;
-		occi = (occi / ((numberOfVertex-1)*(numberOfVertex-2)));
+		double occi = (2* numberOfVertex - 3) * sum;
+		occi = (occi / ((numberOfVertex -1)*(numberOfVertex -2)));
 		
 		return occi;
 	}
@@ -256,11 +256,11 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 * adjust the edge count for multigraph. Edges having the same source and target will be counted as one edge.
 	 */
 	public void adjustEdgeCountForMultiGraph(){
-		HashSet<String> links = new HashSet<String>();
+		HashSet<String> links = new HashSet<>();
 		for(E edge : g.edgeSet()){
 			links.add(edge.getV1().getId()+"_"+edge.getV2().getId());
 		}
-		this.numberOfEdges=links.size();
+        this.numberOfEdges =links.size();
 	}
 	
 	/**

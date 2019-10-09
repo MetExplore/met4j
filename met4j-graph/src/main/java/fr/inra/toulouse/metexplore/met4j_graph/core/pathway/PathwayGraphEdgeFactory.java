@@ -52,6 +52,6 @@ public class PathwayGraphEdgeFactory implements EdgeFactory<BioPathway, PathwayG
 	 */
 	@Override
 	public PathwayGraphEdge createEdge(BioPathway arg0, BioPathway arg1) {
-		return new PathwayGraphEdge(arg0, arg1, new BioCollection<BioMetabolite>());
+		return new PathwayGraphEdge(arg0, arg1, new BioCollection<>());
 	}
 }

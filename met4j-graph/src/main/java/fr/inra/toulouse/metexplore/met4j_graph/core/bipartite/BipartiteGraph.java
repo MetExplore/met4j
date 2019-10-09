@@ -62,7 +62,7 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 	}
 	
 	public Set<BioMetabolite> compoundVertexSet(){
-		HashSet<BioMetabolite> vertexSet = new HashSet<BioMetabolite>();
+		HashSet<BioMetabolite> vertexSet = new HashSet<>();
 		for(BioEntity v : this.vertexSet()){
 			if(v instanceof BioMetabolite) vertexSet.add((BioMetabolite) v);
 		}
@@ -70,7 +70,7 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 	}
 	
 	public Set<BioReaction> reactionVertexSet(){
-		HashSet<BioReaction> vertexSet = new HashSet<BioReaction>();
+		HashSet<BioReaction> vertexSet = new HashSet<>();
 		for(BioEntity v : this.vertexSet()){
 			if(v instanceof BioReaction) vertexSet.add((BioReaction) v);
 		}
@@ -94,7 +94,7 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 	 */
 	public void mergeReversibleEdges(BioNetwork bn){
 
-		HashSet<BipartiteEdge> toRemove = new HashSet<BipartiteEdge>();
+		HashSet<BipartiteEdge> toRemove = new HashSet<>();
 		for(BipartiteEdge e : this.edgeSet()){
 			BioEntity v1 = this.getEdgeSource(e);
 			BioEntity v2 = this.getEdgeTarget(e);
@@ -122,8 +122,8 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 	 *  Newly added elements will be flagged as "side" compounds.
 	 */
 	public void addMissingCompoundAsSide(BioNetwork bn){
-		HashSet<BioMetabolite> sideCompoundToAdd = new HashSet<BioMetabolite>();
-		HashSet<BipartiteEdge> edgesToAdd = new HashSet<BipartiteEdge>();
+		HashSet<BioMetabolite> sideCompoundToAdd = new HashSet<>();
+		HashSet<BipartiteEdge> edgesToAdd = new HashSet<>();
 		
 		
 		//add side compounds

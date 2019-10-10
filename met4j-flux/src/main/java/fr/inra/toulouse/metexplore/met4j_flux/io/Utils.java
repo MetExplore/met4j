@@ -39,7 +39,33 @@ public class Utils {
         return file.getAbsolutePath();
         
 	}
-	
-	
-	
+
+
+	public static String copyProjectResource(String path, File tempDirectory) throws IOException
+	{
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		InputStream stream = classLoader.getResourceAsStream(path);
+		if(stream == null){
+			System.err.println("file not found");
+			throw new IOException();
+		}
+
+		File file = new File(tempDirectory+File.pathSeparator+"test.tmp");
+
+		OutputStream outStream = new BufferedOutputStream(new FileOutputStream(file, true));
+		byte[] bucket = new byte[32*1024];
+        int bytesRead = 0;
+        while(bytesRead != -1){
+          bytesRead = stream.read(bucket); //-1, 0, or more
+          if(bytesRead > 0){
+            outStream.write(bucket, 0, bytesRead);
+          }
+        }
+
+        outStream.close();
+        stream.close();
+
+        return file.getAbsolutePath();
+
+	}
 }

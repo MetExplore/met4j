@@ -41,7 +41,7 @@ import fr.inra.toulouse.metexplore.met4j_flux.general.CplexBind;
 import fr.inra.toulouse.metexplore.met4j_flux.general.GLPKBind;
 import fr.inra.toulouse.metexplore.met4j_flux.general.Vars;
 import fr.inra.toulouse.metexplore.met4j_flux.interaction.InteractionNetwork;
-import fr.inra.toulouse.metexplore.met4j_flux.utils.TestUtils;
+import fr.inra.toulouse.metexplore.met4j_flux.io.Utils;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
@@ -61,7 +61,7 @@ import static org.junit.Assert.fail;
  * @author lmarmiesse 13 mars 2013
  * 
  */
-public class FVA_KO_DRTest {
+public class FVA_KO_DRIT {
 
 	static Bind bind;
 
@@ -81,25 +81,25 @@ public class FVA_KO_DRTest {
 		try {
 			file = java.nio.file.Files.createTempFile("coli", ".xml").toFile();
 
-			coliFileString = TestUtils.copyProjectResource("FVA_KO_DR/coli_core.xml", file);
+			coliFileString = Utils.copyProjectResource("FVA_KO_DR/coli_core.xml", file);
 
 			file = java.nio.file.Files.createTempFile("condFileString", ".txt").toFile();
 
-			condFileString = TestUtils.copyProjectResource("FVA_KO_DR/condColiTest", file);
+			condFileString = Utils.copyProjectResource("FVA_KO_DR/condColiTest", file);
 
 			file = java.nio.file.Files.createTempFile("metFVAformatedFileString", ".txt").toFile();
 
-			metFVAformatedFileString = TestUtils
+			metFVAformatedFileString = Utils
 					.copyProjectResource("FVA_KO_DR/metFVAformated", file);
 
 			file = java.nio.file.Files.createTempFile("metKOformatedFileString", ".txt").toFile();
 
-			metKOformatedFileString = TestUtils.copyProjectResource("FVA_KO_DR/metKOformated",
+			metKOformatedFileString = Utils.copyProjectResource("FVA_KO_DR/metKOformated",
 					file);
 
 			file = java.nio.file.Files.createTempFile("KOgenesFileString", ".txt").toFile();
 
-			KOgenesFileString = TestUtils.copyProjectResource("FVA_KO_DR/KOgenes", file);
+			KOgenesFileString = Utils.copyProjectResource("FVA_KO_DR/KOgenes", file);
 
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block

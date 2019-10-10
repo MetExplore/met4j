@@ -36,7 +36,7 @@ package fr.inra.toulouse.metexplore.met4j_flux.general;
 import fr.inra.toulouse.metexplore.met4j_flux.analyses.Analysis;
 import fr.inra.toulouse.metexplore.met4j_flux.analyses.FBAAnalysis;
 import fr.inra.toulouse.metexplore.met4j_flux.analyses.result.FBAResult;
-import fr.inra.toulouse.metexplore.met4j_flux.utils.TestUtils;
+import fr.inra.toulouse.metexplore.met4j_flux.io.Utils;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -50,7 +50,7 @@ import static org.junit.Assert.fail;
  * @author lmarmiesse 8 mars 2013
  * 
  */
-public class FluxSumTest {
+public class FluxSumIT {
 
 	static Bind bind = null;
 
@@ -73,10 +73,10 @@ public class FluxSumTest {
 			fail("Solver error");
 		}
 
-		String metabNetworkFile = TestUtils.copyProjectResource("fluxsum/toyModel.xml",
+		String metabNetworkFile = Utils.copyProjectResource("fluxsum/toyModel.xml",
 				java.nio.file.Files.createTempFile("test", "sbml").toFile());
 
-		String constraintsFile = TestUtils.copyProjectResource("fluxsum/constraints.txt",
+		String constraintsFile = Utils.copyProjectResource("fluxsum/constraints.txt",
 				java.nio.file.Files.createTempFile("test", "tab").toFile());
 
 		Vars.maxThread = 1;

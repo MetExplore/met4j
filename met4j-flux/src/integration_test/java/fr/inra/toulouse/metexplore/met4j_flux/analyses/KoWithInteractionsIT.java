@@ -4,7 +4,7 @@ import fr.inra.toulouse.metexplore.met4j_flux.analyses.result.KOResult;
 import fr.inra.toulouse.metexplore.met4j_flux.general.Bind;
 import fr.inra.toulouse.metexplore.met4j_flux.general.CplexBind;
 import fr.inra.toulouse.metexplore.met4j_flux.general.GLPKBind;
-import fr.inra.toulouse.metexplore.met4j_flux.utils.TestUtils;
+import fr.inra.toulouse.metexplore.met4j_flux.io.Utils;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import java.util.Set;
 
 import static org.junit.Assert.fail;
 
-public class KoWithInteractionsTest {
+public class KoWithInteractionsIT {
 
 	private static File tempSbmlFile = null;
 	private static File tempConditionFile = null;
@@ -53,15 +53,15 @@ public class KoWithInteractionsTest {
 		String regFile = "";
 
 		try {
-			sbmlFile = TestUtils
+			sbmlFile = Utils
 					.copyProjectResource(
 							"ko/test.xml",
 							tempSbmlFile);
-			conditionFile = TestUtils
+			conditionFile = Utils
 					.copyProjectResource(
 							"ko/constraintsWithVariables.txt",
 							tempConditionFile);
-			regFile = TestUtils
+			regFile = Utils
 					.copyProjectResource(
 							"ko/interactions.sbml",
 							tempRegulationFile);

@@ -2,7 +2,7 @@ package fr.inra.toulouse.metexplore.met4j_flux.condition;
 
 import fr.inra.toulouse.metexplore.met4j_flux.general.ConstraintType;
 import fr.inra.toulouse.metexplore.met4j_flux.general.SimplifiedConstraint;
-import fr.inra.toulouse.metexplore.met4j_flux.utils.TestUtils;
+import fr.inra.toulouse.metexplore.met4j_flux.io.Utils;
 import junit.framework.Assert;
 import junitx.framework.FileAssert;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import java.util.HashSet;
 
 import static org.junit.Assert.*;
 
-public class ListOfConditionsTest {
+public class ListOfConditionsIT {
 
 	@Test
 	public void testLoadConditionFile() {
@@ -22,7 +22,7 @@ public class ListOfConditionsTest {
 		String fileRef;
 
 		try {
-			fileRef = TestUtils
+			fileRef = Utils
 					.copyProjectResource(
 							"listOfConditions/conditions.tab",
 							java.nio.file.Files.createTempFile("test", ".txt")
@@ -184,7 +184,7 @@ public class ListOfConditionsTest {
 		String fileRef = "";
 
 		try {
-			fileRef = TestUtils
+			fileRef = Utils
 					.copyProjectResource(
 							"listOfConditions/conditions.tab",
 							java.nio.file.Files.createTempFile("test", ".txt")

@@ -5,7 +5,7 @@ import fr.inra.toulouse.metexplore.met4j_flux.general.CplexBind;
 import fr.inra.toulouse.metexplore.met4j_flux.general.GLPKBind;
 import fr.inra.toulouse.metexplore.met4j_flux.interaction.RelationFactory;
 import fr.inra.toulouse.metexplore.met4j_flux.interaction.Unique;
-import fr.inra.toulouse.metexplore.met4j_flux.utils.TestUtils;
+import fr.inra.toulouse.metexplore.met4j_flux.io.Utils;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import java.io.IOException;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class SBMLQualReaderTest {
+public class SBMLQualReaderIT {
 
 	static String coliFileString = "";
 	static String condFileString = "";
@@ -29,19 +29,19 @@ public class SBMLQualReaderTest {
 		try {
 			file = java.nio.file.Files.createTempFile("coli", ".xml").toFile();
 
-			coliFileString = TestUtils.copyProjectResource(
+			coliFileString = Utils.copyProjectResource(
 					"SBMLQual/coli_core.xml", file);
 
 			file = java.nio.file.Files.createTempFile("cond", ".txt").toFile();
 
-			condFileString = TestUtils
+			condFileString = Utils
 					.copyProjectResource(
 							"SBMLQual/conditionsFBA.txt",
 							file);
 
 			file = java.nio.file.Files.createTempFile("qual", ".xml").toFile();
 
-			qualString = TestUtils.copyProjectResource(
+			qualString = Utils.copyProjectResource(
 					"SBMLQual/test_myb30.xml", file);
 
 		} catch (IOException e1) {

@@ -34,7 +34,7 @@
 package fr.inra.toulouse.metexplore.met4j_flux.general;
 
 import fr.inra.toulouse.metexplore.met4j_flux.interaction.*;
-import fr.inra.toulouse.metexplore.met4j_flux.utils.TestUtils;
+import fr.inra.toulouse.metexplore.met4j_flux.io.Utils;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
@@ -57,7 +57,7 @@ import static org.junit.Assert.fail;
  * @author lmarmiesse 8 mars 2013
  * 
  */
-public class BindTest {
+public class BindIT {
 
 	static Bind bind;
 	static BioNetwork n;
@@ -76,25 +76,25 @@ public class BindTest {
 			file = java.nio.file.Files.createTempFile("coli", ".xml")
 					.toFile();
 
-			coliFileString = TestUtils.copyProjectResource(
+			coliFileString = Utils.copyProjectResource(
 					"bind/coli.xml", file);
 
 			file = java.nio.file.Files.createTempFile("test", ".xml")
 					.toFile();
 
-			testFileString = TestUtils.copyProjectResource(
+			testFileString = Utils.copyProjectResource(
 					"bind/test.xml", file);
 			
 			file = java.nio.file.Files.createTempFile("condTest", ".txt")
 					.toFile();
 
-			condTestString = TestUtils.copyProjectResource(
+			condTestString = Utils.copyProjectResource(
 					"bind/condTest", file);
 			
 			file = java.nio.file.Files.createTempFile("intTest", ".sbml")
 					.toFile();
 
-			intTestString = TestUtils.copyProjectResource(
+			intTestString = Utils.copyProjectResource(
 					"bind/intTest.sbml", file);
 
 		} catch (IOException e1) {

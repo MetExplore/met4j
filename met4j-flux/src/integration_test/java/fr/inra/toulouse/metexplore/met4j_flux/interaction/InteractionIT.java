@@ -35,8 +35,8 @@ package fr.inra.toulouse.metexplore.met4j_flux.interaction;
 
 import fr.inra.toulouse.metexplore.met4j_flux.analyses.result.FBAResult;
 import fr.inra.toulouse.metexplore.met4j_flux.general.*;
+import fr.inra.toulouse.metexplore.met4j_flux.io.Utils;
 import fr.inra.toulouse.metexplore.met4j_flux.operation.OperationLe;
-import fr.inra.toulouse.metexplore.met4j_flux.utils.TestUtils;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -54,7 +54,7 @@ import static org.junit.Assert.fail;
  * @author lmarmiesse 8 mars 2013
  * 
  */
-public class InteractionTest {
+public class InteractionIT {
 
 	static BioRegulator a;
 	static BioRegulator b;
@@ -78,32 +78,32 @@ public class InteractionTest {
 			file = java.nio.file.Files.createTempFile("test", ".xml")
 					.toFile();
 
-			sbmlString = TestUtils.copyProjectResource(
+			sbmlString = Utils.copyProjectResource(
 					"testInteraction/test.xml", file);
 
 			file = java.nio.file.Files.createTempFile("cond1", ".txt")
 					.toFile();
 
-			cond1String = TestUtils.copyProjectResource(
+			cond1String = Utils.copyProjectResource(
 					"testInteraction/condElseTest.txt", file);
 			
 			file = java.nio.file.Files.createTempFile("int1", ".txt")
 					.toFile();
 
-			int1String = TestUtils.copyProjectResource(
+			int1String = Utils.copyProjectResource(
 					"testInteraction/intElseTest.sbml", file);
 			
 			file = java.nio.file.Files.createTempFile("cond2", ".txt")
 					.toFile();
 
-			cond2String = TestUtils.copyProjectResource(
+			cond2String = Utils.copyProjectResource(
 					"testInteraction/condExtMetab.txt", file);
 			
 			
 			file = java.nio.file.Files.createTempFile("int2", ".txt")
 					.toFile();
 
-			int2String = TestUtils.copyProjectResource(
+			int2String = Utils.copyProjectResource(
 					"testInteraction/intExtMetab.sbml", file);
 
 		} catch (IOException e1) {

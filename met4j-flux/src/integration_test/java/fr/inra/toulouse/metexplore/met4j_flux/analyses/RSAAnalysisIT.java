@@ -6,7 +6,7 @@ import fr.inra.toulouse.metexplore.met4j_flux.input.ConstraintsFileReader;
 import fr.inra.toulouse.metexplore.met4j_flux.input.SBMLQualReader;
 import fr.inra.toulouse.metexplore.met4j_flux.interaction.InteractionNetwork;
 import fr.inra.toulouse.metexplore.met4j_flux.interaction.RelationFactory;
-import fr.inra.toulouse.metexplore.met4j_flux.utils.TestUtils;
+import fr.inra.toulouse.metexplore.met4j_flux.io.Utils;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RSAAnalysisTest {
+public class RSAAnalysisIT {
 
 	@Test
 	public void test() {
@@ -29,13 +29,13 @@ public class RSAAnalysisTest {
 			file = java.nio.file.Files.createTempFile("regFile", ".xml")
 					.toFile();
 
-			sbmlQualFile = TestUtils.copyProjectResource(
+			sbmlQualFile = Utils.copyProjectResource(
 					"rsa/lacOperon.sbml", file);
 
 			file = java.nio.file.Files.createTempFile("constraints", ".txt")
 					.toFile();
 
-			consFile = TestUtils.copyProjectResource(
+			consFile = Utils.copyProjectResource(
 					"rsa/ConstraintsRSA.txt", file);
 
 		} catch (IOException e1) {

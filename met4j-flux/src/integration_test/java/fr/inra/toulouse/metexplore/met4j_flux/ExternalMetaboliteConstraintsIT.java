@@ -1,7 +1,7 @@
 package fr.inra.toulouse.metexplore.met4j_flux;
 
 import fr.inra.toulouse.metexplore.met4j_flux.general.*;
-import fr.inra.toulouse.metexplore.met4j_flux.utils.TestUtils;
+import fr.inra.toulouse.metexplore.met4j_flux.io.Utils;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.fail;
 
-public class ExternalMetaboliteConstraintsTest {
+public class ExternalMetaboliteConstraintsIT {
 	
 	
 
@@ -56,21 +56,21 @@ public class ExternalMetaboliteConstraintsTest {
 		String regFile = "";
 
 		try {
-			sbmlFile = TestUtils
+			sbmlFile = Utils
 					.copyProjectResource(
 							"ko/test.xml",
 							tempSbmlFile);
-			conditionFile = TestUtils
+			conditionFile = Utils
 					.copyProjectResource(
 							"externalMetaboliteConstraints/constraintsWithVariables.txt",
 							tempConditionFile);
 			
-			conditionFile2 = TestUtils
+			conditionFile2 = Utils
 					.copyProjectResource(
 							"externalMetaboliteConstraints/constraintsWithVariables.txt",
 							tempConditionFile2);
 			
-			regFile = TestUtils
+			regFile = Utils
 					.copyProjectResource(
 							"externalMetaboliteConstraints/interactions.sbml",
 							tempInteractionFile);

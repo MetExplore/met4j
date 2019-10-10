@@ -71,7 +71,6 @@ public class JsbmlToBioNetwork {
 	 * Main method of the parser. It should call the different list parser defined
 	 * in the inheriting classes
 	 * 
-	 * @param model the jsbml model
 	 * @throws Met4jSbmlReaderException
 	 */
 	protected void parseModel() throws Met4jSbmlReaderException {

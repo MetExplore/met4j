@@ -415,28 +415,6 @@ public class ExportGraph {
 		}
 	}
 	
-//	/**
-//	 * Export to sbml.
-//	 *
-//	 * @param cmpdGraph the compound graph
-//	 * @param outputPath the output path
-//	 */
-//	public static void toSbml(BioGraph cmpdGraph, String outputPath){
-//		BioNetwork bn = ConvertGraph.toBioNetwork(cmpdGraph);
-//		bn.setId("ParseBioNet"+UUID.randomUUID());
-//		DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-//		bn.setName("Network generated using Parsebionet "+df.format(new Date()));
-//		
-//		
-//		try {
-//			BioNetworkToJSBML export = new BioNetworkToJSBML(bn,outputPath);
-//			export.write();
-//		} catch (SBMLException | XMLStreamException
-//				| ParseException | IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
 	/**
 	 * export graph in tabulated format : [source-label]\t[edge-label]\t[target_label]
 	 *

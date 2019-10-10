@@ -47,9 +47,6 @@ public class ReactionEdge extends Edge<BioMetabolite>{
     
     /** The reaction. */
     private final BioReaction r;
-    
-    /** The pvalue. */
-    private double pvalue;
 
     /**
      * Instantiates a new reaction edge.
@@ -79,24 +76,6 @@ public class ReactionEdge extends Edge<BioMetabolite>{
     	return r;
     }
 
-    
-	/**
-	 * Gets the pvalue.
-	 *
-	 * @return the pvalue
-	 */
-	public double getPvalue() {
-		return pvalue;
-	}
-
-	/**
-	 * Sets the pvalue.
-	 *
-	 * @param pvalue
-	 */
-	public void setPvalue(double pvalue) {
-		this.pvalue = pvalue;
-	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)

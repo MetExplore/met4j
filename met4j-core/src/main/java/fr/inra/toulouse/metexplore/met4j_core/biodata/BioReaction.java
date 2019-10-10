@@ -91,42 +91,7 @@ public class BioReaction extends BioEntity {
 	@Override
 	public String toString() {
 
-		String str = new String();
-
-		String direction = " -> ";
-
-		str = str.concat(this.getId() + ": ");
-
-		ArrayList<String> lefts = new ArrayList<>();
-
-		for (BioReactant cpd : this.getLeftReactants()) {
-
-			lefts.add(cpd.toString());
-		}
-
-		Collections.sort(lefts);
-
-		String leftStr = String.join(" + ", lefts);
-
-		if (this.isReversible()) {
-
-			direction = " <-> ";
-		}
-
-		ArrayList<String> rights = new ArrayList<>();
-
-		for (BioReactant cpd : this.getRightReactants()) {
-
-			rights.add(cpd.toString());
-		}
-
-		Collections.sort(rights);
-
-		String rightStr = String.join(" + ", rights);
-
-		str = str + leftStr + direction + rightStr;
-
-		return str;
+		return this.getId();
 
 	}
 

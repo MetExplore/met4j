@@ -170,5 +170,26 @@ public class TestBipartiteGraph {
 		bg2.addEdge(r1,v1);
 		assertEquals(8, bg2.edgeSet().size());
 	}
+
+
+	@Test
+	public void testIsConsistent(){
+		BipartiteGraph g1 = new BipartiteGraph();
+		g1.addVertex(v1);
+		g1.addVertex(v2);
+		g1.addVertex(v3);
+		g1.addVertex(r1);
+		g1.addVertex(side);
+		g1.addEdge(v1,r1, new BipartiteEdge(v1,r1));
+		g1.addEdge(r1,v2, new BipartiteEdge(r1,v2));
+
+		assertFalse(g1.isConsistent());
+
+		g1.addEdge(side,r1, new BipartiteEdge(side,r1));
+		assertTrue(g1.isConsistent());
+
+		g1.addEdge(r1,v3, new BipartiteEdge(r1,v3));
+		assertFalse(g1.isConsistent());
+	}
 	
 }

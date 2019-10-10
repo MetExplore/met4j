@@ -29,22 +29,26 @@
  * knowledge of the CeCILL license and that you accept its terms. 
  ******************************************************************************/ 
 package fr.inra.toulouse.metexplore.met4j_graph.computation.analysis; 
- 
-import java.util.HashSet; 
+
 import java.util.Iterator; 
 import java.util.LinkedList; 
-import java.util.Queue; 
-import java.util.Set; 
- 
+import java.util.Queue;
+import java.util.Set;
+
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction; 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity; 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite; 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge; 
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph; 
  
  
 /** 
- * The Class used to compound the scope network of a given set of compounds 
+ * The Class used to compute the scope network of a given set of compounds
+ * See DOI:10.1007/s00239-005-0027-1 for more information.
+ *
+ * The class use a bipartite graph traversal that use reaction informations to ensure reactions availability.
+ * Consequently, the bipartite graph structure should not conflict with reactions informations.
  */ 
 public class ScopeCompounds{ 
    
@@ -52,16 +56,16 @@ public class ScopeCompounds{
   private final BipartiteGraph g;
    
   /** The available compounds. */ 
-  private final Set <BioMetabolite> inCpds;
+  private final BioCollection <BioMetabolite> inCpds;
    
   /** The bootstrap compounds, i.e. side compounds. */ 
-  private final Set<BioMetabolite> bootstrapCpds;
+  private final BioCollection<BioMetabolite> bootstrapCpds;
    
   /** The compounds to reach (optional) */ 
-  private final Set<BioMetabolite> cpdToReach;
+  private final BioCollection<BioMetabolite> cpdToReach;
    
   /** The reactions to avoid. */ 
-  private final Set<BioReaction> reactionToAvoid;
+  private final BioCollection<BioReaction> reactionToAvoid;
    
   /** 
    * Instantiates a new scope class 
@@ -72,7 +76,7 @@ public class ScopeCompounds{
    * @param cpdToReach The compounds to reach (optional) 
    * @param reactionToAvoid the reactions to avoid 
    */ 
-  public ScopeCompounds(BipartiteGraph bipartiteGraph, Set <BioMetabolite> inCpds, Set<BioMetabolite> bootstrapCpds, Set<BioMetabolite> cpdToReach, Set<BioReaction> reactionToAvoid){
+  public ScopeCompounds(BipartiteGraph bipartiteGraph, BioCollection<BioMetabolite> inCpds, BioCollection<BioMetabolite> bootstrapCpds, BioCollection<BioMetabolite> cpdToReach, BioCollection<BioReaction> reactionToAvoid){
       this.g =bipartiteGraph;
     this.inCpds=inCpds; 
     this.bootstrapCpds=bootstrapCpds; 
@@ -88,11 +92,11 @@ public class ScopeCompounds{
    * @param bootstrapCpds The bootstrap compounds, i.e. side compounds. 
    * @param reactionToAvoid the reactions to avoid 
    */ 
-  public ScopeCompounds(BipartiteGraph bipartiteGraph, Set <BioMetabolite> inCpds, Set<BioMetabolite> bootstrapCpds, Set<BioReaction> reactionToAvoid){
+  public ScopeCompounds(BipartiteGraph bipartiteGraph, BioCollection <BioMetabolite> inCpds, BioCollection<BioMetabolite> bootstrapCpds, BioCollection<BioReaction> reactionToAvoid){
       this.g =bipartiteGraph;
     this.inCpds=inCpds; 
     this.bootstrapCpds=bootstrapCpds;
-      this.cpdToReach = new HashSet<>();
+      this.cpdToReach = new BioCollection<>();
     this.reactionToAvoid=reactionToAvoid; 
   } 
    
@@ -101,8 +105,11 @@ public class ScopeCompounds{
    * 
    * @return the scope network 
    */ 
-  public BipartiteGraph getScopeNetwork(){ 
-     
+  public BipartiteGraph getScopeNetwork() throws IllegalArgumentException{
+
+    //check network consistency
+    if(!this.g.isConsistent()) throw new IllegalArgumentException("The network structure must be consistent with reaction reactant lists") ;
+
     BipartiteGraph scopeNetwork = new BipartiteGraph();
     //Instantiate a custom iterator for the bipartite graph, similar to Breath first search, but a reaction can be visited only if all predecessors have already been visited 
     Traversal traversal = new Traversal();
@@ -137,18 +144,19 @@ public class ScopeCompounds{
    * @param scopeNetwork the scope network 
    */ 
   private void pruning(BipartiteGraph scopeNetwork){
-    HashSet<BioEntity> vertexToRemove = new HashSet<>();
+    BioCollection<BioEntity> vertexToRemove = new BioCollection<>();
      
     //retreive sinks that are not in the set of target 
     for(BioEntity e : scopeNetwork.vertexSet()){
       if(scopeNetwork.outDegreeOf(e)==0 && !cpdToReach.contains(e)) vertexToRemove.add(e);
+
     } 
      
     //go until their is no sink that do not belong to the target set 
-    while(!vertexToRemove.isEmpty()){ 
+    while(!vertexToRemove.isEmpty()){
       scopeNetwork.removeAllVertices(vertexToRemove); //remove sinks, potentially creating new sinks. 
       //reset sink list 
-      vertexToRemove = new HashSet<>();
+      vertexToRemove = new BioCollection<>();
       //retreive sinks that are not in the set of target 
       for(BioEntity e : scopeNetwork.vertexSet()){
         if(scopeNetwork.outDegreeOf(e)==0 && !cpdToReach.contains(e)) vertexToRemove.add(e);
@@ -164,18 +172,18 @@ public class ScopeCompounds{
   private class Traversal implements Iterator<BioReaction>{ 
      
     /** The visited compounds. */ 
-    private final Set<BioMetabolite> visitedCompounds = new HashSet<>();
+    private final BioCollection<BioMetabolite> visitedCompounds = new BioCollection<>();
      
     /** The visited reactions. */ 
-    private final Set<BioReaction> visitedReactions = new HashSet<>();
+    private final BioCollection<BioReaction> visitedReactions = new BioCollection<>();
        
       /** The reaction queue. */ 
       private final Queue<BioReaction> reactionQueue = new LinkedList<>();
        
       /** 
        * Instantiates a new traversal. 
-       */ 
-      public Traversal() {
+       */
+      Traversal() {
           this.visitedCompounds.addAll(inCpds);
           this.visitedCompounds.addAll(bootstrapCpds);
           for(BioMetabolite cpd : inCpds){
@@ -240,7 +248,7 @@ public class ScopeCompounds{
         if(this.visitedCompounds.containsAll(nextReaction.getLeftsView())){
           available=true; 
           reverse=false; 
-        }else if(nextReaction.isReversible() && this.visitedCompounds.containsAll(nextReaction.getRightReactantsView())){ //check product availability if reversible
+        }else if(nextReaction.isReversible() && this.visitedCompounds.containsAll(nextReaction.getRightsView())){ //check product availability if reversible
           available=true; 
           reverse=true; 
         } 
@@ -258,7 +266,7 @@ public class ScopeCompounds{
         } 
         if(!available && reactionQueue.isEmpty()) return null; //no available reaction
 
-          visitedReactions.add(nextReaction); //mark visited reaction
+        visitedReactions.add(nextReaction); //mark visited reaction
          
         //mark products as visited and add products' consuming reactions to the queue 
         if(!reverse){ 

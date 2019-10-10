@@ -190,4 +190,33 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 		BipartiteEdge reverse = new BipartiteEdge(edge.getV2(), edge.getV1(), edge.isReversible());
 		return reverse;
 	}
+
+	/**
+	 * check if the connections in the network are coherent with the reactants pairs referenced in the reactions nodes
+	 * @return true if all reaction's predecessor/successors match their substrats/products
+	 */
+	public boolean isConsistent(){
+
+		for(BioReaction r : this.reactionVertexSet()){
+			if(!r.isReversible()){
+				Set<BioEntity> substrates = new HashSet<>(r.getLeftsView());
+				Set<BioEntity> predecessors = this.predecessorListOf(r);
+				if(!substrates.equals(predecessors)) return false;
+
+				Set<BioEntity> products = new HashSet<>(r.getRightsView());
+				Set<BioEntity> successors = this.successorListOf(r);
+				if(!products.equals(successors)) return false;
+			}else{
+				Set<BioEntity> reactants = new HashSet<>(r.getLeftsView());
+				reactants.addAll(r.getRightsView());
+
+				Set<BioEntity> predecessors = this.predecessorListOf(r);
+				if(!reactants.equals(predecessors)) return false;
+				Set<BioEntity> successors = this.successorListOf(r);
+				if(!reactants.equals(successors)) return false;
+			}
+		}
+
+		return true;
+	}
 }

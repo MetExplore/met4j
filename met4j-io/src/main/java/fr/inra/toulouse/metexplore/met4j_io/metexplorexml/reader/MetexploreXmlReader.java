@@ -30,6 +30,8 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.UnitSbml;
 import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 import fr.inra.toulouse.metexplore.met4j_io.utils.XmlUtils;
 
+import static fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
+
 public class MetexploreXmlReader {
 
 	private BioNetwork network;
@@ -258,13 +260,16 @@ public class MetexploreXmlReader {
 			String formula = compound.getAttribute("formula");
 
 			String massAttr = compound.getAttribute("mass");
+
+			// Remove the unit
+			massAttr = massAttr.replaceAll("d0", "");
+
 			Double mass = null;
 			if (massAttr != null) {
 				try {
 					mass = Double.valueOf(massAttr);
 				} catch (NumberFormatException e) {
 					System.err.println("Mass of " + cpd.getId() + " badly formatted");
-					e.printStackTrace();
 				}
 			}
 
@@ -513,17 +518,21 @@ public class MetexploreXmlReader {
 		if (scoreNodes.getLength() == 1) {
 			Element scoreNode = (Element) scoreNodes.item(0);
 
+			String scoreTxt = scoreNode.getTextContent();
+
 			Double score = null;
 
-			try {
-				score = Double.valueOf(scoreNode.getTextContent());
-			} catch (NumberFormatException e) {
-				System.err.println("Score of the reaction " + rxn.getId() + " badly formatted, must be a double");
-				e.printStackTrace();
-			}
+			if(!isVoid(scoreTxt)) {
+				try {
+					score = Double.valueOf(scoreNode.getTextContent());
+				} catch (NumberFormatException e) {
+					System.err.println("Score of the reaction " + rxn.getId() + " badly formatted, must be a double");
+					e.printStackTrace();
+				}
 
-			if (score != null) {
-				ReactionAttributes.setScore(rxn, score);
+				if (score != null) {
+					ReactionAttributes.setScore(rxn, score);
+				}
 			}
 		}
 

@@ -34,766 +34,764 @@ import static fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
 
 public class MetexploreXmlReader {
 
-	private BioNetwork network;
-	private String xmlFile;
-	private Document document;
+    private BioNetwork network;
+    private String xmlFile;
+    private Document document;
 
-	private HashMap<String, String> compartmentMetabolites;
-
-	public MetexploreXmlReader(String xmlFile) {
-		this.xmlFile = xmlFile;
-		compartmentMetabolites = new HashMap<String, String>();
-	}
-
-	/**
-	 * Read the xml file and create the network
-	 * @throws ParseException 
-	 */
-	public void read() throws ParseException {
+    private HashMap<String, String> compartmentMetabolites;
+
+    public MetexploreXmlReader(String xmlFile) {
+        this.xmlFile = xmlFile;
+        compartmentMetabolites = new HashMap<String, String>();
+    }
+
+    /**
+     * Read the xml file and create the network
+     *
+     * @throws ParseException
+     */
+    public void read() throws ParseException {
+
+        try {
+            document = XmlUtils.open(xmlFile);
+
+            Element model = (Element) document.getElementsByTagName("model").item(0);
+
+            network = new BioNetwork(model.getAttribute("id"));
+            network.setName(model.getAttribute("name"));
+
+            this.readUnitDefinitions();
+            this.readCompartments();
+            this.readMetabolites();
+            this.readReactions();
+        } catch (IOException e) {
+            System.err.println("Error while reading Xml file");
+            e.printStackTrace();
+        } catch (SAXException e) {
+            System.err.println("Xml file badly formatted");
+            e.printStackTrace();
+        }
 
-		try {
-			document = XmlUtils.open(xmlFile);
-
-			Element model = (Element) document.getElementsByTagName("model").item(0);
-
-			network = new BioNetwork(model.getAttribute("id"));
-			network.setName(model.getAttribute("name"));
+    }
 
-			this.readUnitDefinitions();
-			this.readCompartments();
-			this.readMetabolites();
-			this.readReactions();
-		} catch (IOException e) {
-			System.err.println("Error while reading Xml file");
-			e.printStackTrace();
-		} catch (SAXException e) {
-			System.err.println("Xml file badly formatted");
-			e.printStackTrace();
-		}
+    /**
+     * Read unit definitions
+     *
+     * @throws ParseException
+     */
+    public void readUnitDefinitions() throws ParseException {
+        NodeList listOfUnitDefinitions = document.getElementsByTagName("listOfUnitDefinitions");
 
-	}
+        if (listOfUnitDefinitions != null) {
+
+            if (listOfUnitDefinitions.getLength() > 0) {
+                NodeList unitDefinitions = ((Element) (listOfUnitDefinitions.item(0)))
+                        .getElementsByTagName("unitDefinition");
 
-	/**
-	 * Read unit definitions
-	 * 
-	 * @throws ParseException
-	 */
-	public void readUnitDefinitions() throws ParseException {
-		NodeList listOfUnitDefinitions = document.getElementsByTagName("listOfUnitDefinitions");
+                int nbUnitDefinitions = unitDefinitions.getLength();
 
-		if (listOfUnitDefinitions != null) {
+                // IMPORTANT: The loop adds 2 at each iteration... I don't know
+                // why, but there are
 
-			if (listOfUnitDefinitions.getLength() > 0) {
-				NodeList unitDefinitions = ((Element) (listOfUnitDefinitions.item(0)))
-						.getElementsByTagName("unitDefinition");
+                for (int i = 0; i < nbUnitDefinitions; i++) {
+                    Element unitDefinitionElt = (Element) unitDefinitions.item(i);
+                    String unitDefinitionId = unitDefinitionElt.getAttribute("id");
+                    String unitDefinitionName = unitDefinitionElt.getAttribute("name");
 
-				int nbUnitDefinitions = unitDefinitions.getLength();
+                    if (unitDefinitionName == null) {
+                        unitDefinitionName = "";
+                    }
 
-				// IMPORTANT: The loop adds 2 at each iteration... I don't know
-				// why, but there are
+                    BioUnitDefinition unitDefinition = new BioUnitDefinition(unitDefinitionId, unitDefinitionName);
+
+                    NodeList listOfUnits = unitDefinitionElt.getElementsByTagName("listOfUnits");
+
+                    if (listOfUnits != null && listOfUnits.getLength() > 0) {
+
+                        NodeList units = listOfUnits.item(0).getChildNodes();
+                        int nbUnits = units.getLength();
 
-				for (int i = 0; i < nbUnitDefinitions; i++) {
-					Element unitDefinitionElt = (Element) unitDefinitions.item(i);
-					String unitDefinitionId = unitDefinitionElt.getAttribute("id");
-					String unitDefinitionName = unitDefinitionElt.getAttribute("name");
+                        for (int j = 1; j < nbUnits; j = j + 2) {
+                            Element unitElt = (Element) units.item(j);
 
-					if (unitDefinitionName == null) {
-						unitDefinitionName = "";
-					}
+                            String kind = unitElt.getAttribute("kind");
+                            if (kind == null) {
+                                throw new ParseException("Unit kind badly formatted");
+                            }
 
-					BioUnitDefinition unitDefinition = new BioUnitDefinition(unitDefinitionId, unitDefinitionName);
+                            Double multiplier = null;
+                            String attr = unitElt.getAttribute("multiplier");
 
-					NodeList listOfUnits = unitDefinitionElt.getElementsByTagName("listOfUnits");
-
-					if (listOfUnits != null && listOfUnits.getLength() > 0) {
+                            if (attr != null) {
+
+                                try {
+                                    multiplier = Double.valueOf(attr);
+                                } catch (NumberFormatException e) {
+                                    System.err.println("Multiplier badly formatted, must be a double");
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            Integer scale = null;
+                            attr = unitElt.getAttribute("scale");
+                            if (attr != null) {
+
+                                try {
+                                    scale = Integer.valueOf(attr);
+                                } catch (NumberFormatException e) {
+                                    System.err.println("scale badly formatted, must be an integer");
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            Double exponent = null;
+                            attr = unitElt.getAttribute("exponent");
 
-						NodeList units = listOfUnits.item(0).getChildNodes();
-						int nbUnits = units.getLength();
+                            if (attr != null) {
+
+                                try {
+                                    exponent = Double.valueOf(attr);
+                                } catch (NumberFormatException e) {
+                                    System.err.println("scale badly formatted, must be an integer");
+                                    e.printStackTrace();
+                                }
+                            }
 
-						for (int j = 1; j < nbUnits; j = j + 2) {
-							Element unitElt = (Element) units.item(j);
+                            UnitSbml unit = new UnitSbml(kind, exponent, scale, multiplier);
 
-							String kind = unitElt.getAttribute("kind");
-							if (kind == null) {
-								throw new ParseException("Unit kind badly formatted");
-							}
+                            unitDefinition.addUnit(unit);
 
-							Double multiplier = null;
-							String attr = unitElt.getAttribute("multiplier");
+                        }
 
-							if (attr != null) {
+                    }
 
-								try {
-									multiplier = Double.valueOf(attr);
-								} catch (NumberFormatException e) {
-									System.err.println("Multiplier badly formatted, must be a double");
-									e.printStackTrace();
-								}
-							}
+                    NetworkAttributes.addUnitDefinition(network, unitDefinition);
 
-							Integer scale = null;
-							attr = unitElt.getAttribute("scale");
-							if (attr != null) {
-
-								try {
-									scale = Integer.valueOf(attr);
-								} catch (NumberFormatException e) {
-									System.err.println("scale badly formatted, must be an integer");
-									e.printStackTrace();
-								}
-							}
+                }
+            }
+        } else {
+            throw new ParseException("Incorrect Format: Can't find node [listOfUnidefinitions]");
+        }
+    }
 
-							Double exponent = null;
-							attr = unitElt.getAttribute("exponent");
+    /**
+     * Read compartments
+     */
+    public void readCompartments() {
+        NodeList listOfCompartments = document.getElementsByTagName("listOfCompartments");
 
-							if (attr != null) {
-
-								try {
-									exponent = Double.valueOf(attr);
-								} catch (NumberFormatException e) {
-									System.err.println("scale badly formatted, must be an integer");
-									e.printStackTrace();
-								}
-							}
+        // Check if everything is OK.
+        if (listOfCompartments == null)
+            throw new RuntimeException("Incorrect Format: Can't find node [listOfCompartments]");
 
-							UnitSbml unit = new UnitSbml(kind, exponent, scale, multiplier);
+        if (listOfCompartments.getLength() > 1)
+            throw new RuntimeException("Incorrect Format: More than one node [listOfCompartments]");
 
-							unitDefinition.addUnit(unit);
+        NodeList compartments = listOfCompartments.item(0).getChildNodes();
 
-						}
+        int compartmentCount = compartments.getLength();
 
-					}
+        // IMPORTANT: The loop adds 2 at each iteration... I don't know why, but
+        // there are
+        // some
+        for (int i = 1; i < compartmentCount; i = i + 2) {
+            Element compartment = (Element) compartments.item(i);
+            String compartmentId = StringUtils.sbmlDecode(compartment.getAttribute("id"));
+            String compartmentName = StringUtils.sbmlDecode(compartment.getAttribute("name"));
 
-					NetworkAttributes.addUnitDefinition(network, unitDefinition);
+            if (compartmentId == null) {
+                compartmentId = "NA";
+            }
+            if (compartmentName == null) {
+                compartmentName = compartmentId;
+            }
 
-				}
-			}
-		} else {
-			throw new ParseException("Incorrect Format: Can't find node [listOfUnidefinitions]");
-		}
-	}
+            BioCompartment comp = new BioCompartment(compartmentId, compartmentName);
 
-	/**
-	 * Read compartments
-	 */
-	public void readCompartments() {
-		NodeList listOfCompartments = document.getElementsByTagName("listOfCompartments");
+            this.network.add(comp);
 
-		// Check if everything is OK.
-		if (listOfCompartments == null)
-			throw new RuntimeException("Incorrect Format: Can't find node [listOfCompartments]");
+        }
+    }
 
-		if (listOfCompartments.getLength() > 1)
-			throw new RuntimeException("Incorrect Format: More than one node [listOfCompartments]");
+    /**
+     * @throws ParseException
+     * @author LC from Paulo Milreu Read metabolites
+     */
+    public void readMetabolites() throws ParseException {
+        // get the element "listOfSpecies"
+        NodeList listOfSpecies = document.getElementsByTagName("listOfSpecies");
 
-		NodeList compartments = listOfCompartments.item(0).getChildNodes();
+        // Check if everything is OK.
+        if (listOfSpecies == null)
+            throw new RuntimeException("Incorrect Format: Can't find node [listOfSpecies]");
 
-		int compartmentCount = compartments.getLength();
+        if (listOfSpecies.getLength() > 1)
+            throw new RuntimeException("Incorrect Format: More than one node [listOfSpecies]");
 
-		// IMPORTANT: The loop adds 2 at each iteration... I don't know why, but
-		// there are
-		// some
-		for (int i = 1; i < compartmentCount; i = i + 2) {
-			Element compartment = (Element) compartments.item(i);
-			String compartmentId = StringUtils.sbmlDecode(compartment.getAttribute("id"));
-			String compartmentName = StringUtils.sbmlDecode(compartment.getAttribute("name"));
+        // print all child elements from listOfSpecies
+        NodeList listOfCompounds = listOfSpecies.item(0).getChildNodes();
+        int compoundCount = listOfCompounds.getLength();
+        // IMPORTANT: The loop adds 2 at each iteration... I don't know why, but
+        // there are
+        // some
+        for (int i = 1; i < compoundCount; i = i + 2) {
+            Element compound = (Element) listOfCompounds.item(i);
+            String cpdId = StringUtils.sbmlDecode(compound.getAttribute("id"));
+            String cpdName = StringUtils.sbmlDecode(compound.getAttribute("name"));
 
-			if (compartmentId == null) {
-				compartmentId = "NA";
-			}
-			if (compartmentName == null) {
-				compartmentName = compartmentId;
-			}
+            BioMetabolite cpd = new BioMetabolite(cpdId, cpdName);
 
-			BioCompartment comp = new BioCompartment(compartmentId, compartmentName);
+            String compartmentId = StringUtils.sbmlDecode(compound.getAttribute("compartment"));
 
-			this.network.add(comp);
+            compartmentMetabolites.put(cpdId, compartmentId);
 
-		}
-	}
+            Integer charge = null;
+            if (compound.hasAttribute("charge")) {
+                charge = Integer.valueOf(compound.getAttribute("charge"));
+            }
 
-	/**
-	 * @author LC from Paulo Milreu Read metabolites
-	 * @throws ParseException
-	 */
-	public void readMetabolites() throws ParseException {
-		// get the element "listOfSpecies"
-		NodeList listOfSpecies = document.getElementsByTagName("listOfSpecies");
+            String boundaryConditionStr = compound.getAttribute("boundaryCondition");
 
-		// Check if everything is OK.
-		if (listOfSpecies == null)
-			throw new RuntimeException("Incorrect Format: Can't find node [listOfSpecies]");
+            Boolean boundaryCondition = false;
 
-		if (listOfSpecies.getLength() > 1)
-			throw new RuntimeException("Incorrect Format: More than one node [listOfSpecies]");
+            if (boundaryConditionStr != null && boundaryConditionStr.compareToIgnoreCase("true") == 0) {
+                boundaryCondition = true;
+            }
 
-		// print all child elements from listOfSpecies
-		NodeList listOfCompounds = listOfSpecies.item(0).getChildNodes();
-		int compoundCount = listOfCompounds.getLength();
-		// IMPORTANT: The loop adds 2 at each iteration... I don't know why, but
-		// there are
-		// some
-		for (int i = 1; i < compoundCount; i = i + 2) {
-			Element compound = (Element) listOfCompounds.item(i);
-			String cpdId = StringUtils.sbmlDecode(compound.getAttribute("id"));
-			String cpdName = StringUtils.sbmlDecode(compound.getAttribute("name"));
+            String formula = compound.getAttribute("formula");
 
-			BioMetabolite cpd = new BioMetabolite(cpdId, cpdName);
+            String massAttr = compound.getAttribute("mass");
 
-			String compartmentId = StringUtils.sbmlDecode(compound.getAttribute("compartment"));
 
-			compartmentMetabolites.put(cpdId, compartmentId);
+            Double mass = null;
+            if (massAttr != null) {
+                // Remove the unit
+                massAttr = massAttr.replaceAll("d0", "");
+                try {
+                    mass = Double.valueOf(massAttr);
+                } catch (NumberFormatException e) {
+                    System.err.println("Mass of " + cpd.getId() + " badly formatted");
+                }
+            }
 
-			Integer charge = null;
-			if (compound.hasAttribute("charge")) {
-				charge = Integer.valueOf(compound.getAttribute("charge"));
-			}
+            Boolean generic = false;
 
-			String boundaryConditionStr = compound.getAttribute("boundaryCondition");
+            String genericStr = compound.getAttribute("generic");
 
-			Boolean boundaryCondition = false;
+            if (genericStr != null && genericStr.compareToIgnoreCase("true") == 0) {
+                generic = true;
+            }
 
-			if (boundaryConditionStr != null && boundaryConditionStr.compareToIgnoreCase("true") == 0) {
-				boundaryCondition = true;
-			}
+            if (!this.network.getCompartmentsView().containsId(compartmentId)) {
+                throw new ParseException("Compartment of " + cpd.getId() + " not declared");
+            }
 
-			String formula = compound.getAttribute("formula");
+            if (charge != null)
+                cpd.setCharge(charge);
 
-			String massAttr = compound.getAttribute("mass");
+            if (boundaryCondition != null)
+                MetaboliteAttributes.setBoundaryCondition(cpd, boundaryCondition);
 
-			// Remove the unit
-			massAttr = massAttr.replaceAll("d0", "");
+            if (formula != null)
+                cpd.setChemicalFormula(formula);
 
-			Double mass = null;
-			if (massAttr != null) {
-				try {
-					mass = Double.valueOf(massAttr);
-				} catch (NumberFormatException e) {
-					System.err.println("Mass of " + cpd.getId() + " badly formatted");
-				}
-			}
+            if (generic != null)
+                GenericAttributes.setGeneric(cpd, generic);
 
-			Boolean generic = false;
+            if (mass != null)
+                cpd.setMolecularWeight(mass);
 
-			String genericStr = compound.getAttribute("generic");
+            network.add(cpd);
 
-			if (genericStr != null && genericStr.compareToIgnoreCase("true") == 0) {
-				generic = true;
-			}
+            BioCompartment bioCompartment = this.network.getCompartmentsView().get(compartmentId);
+            network.affectToCompartment(bioCompartment, cpd);
 
-			if (!this.network.getCompartmentsView().containsId(compartmentId)) {
-				throw new ParseException("Compartment of " + cpd.getId() + " not declared");
-			}
+            NodeList listsFromMetabolite = compound.getChildNodes();
 
-			if (charge != null)
-				cpd.setCharge(charge);
+            int listsCount = listsFromMetabolite.getLength();
+            for (int j = 0; j < listsCount; j++) {
+                if ("notes".equals(listsFromMetabolite.item(j).getNodeName())) {
 
-			if (boundaryCondition != null)
-				MetaboliteAttributes.setBoundaryCondition(cpd, boundaryCondition);
+                    Node noteNode = listsFromMetabolite.item(j);
 
-			if (formula != null)
-				cpd.setChemicalFormula(formula);
+                    NodeList notesNodes = noteNode.getChildNodes();
 
-			if (generic != null)
-				GenericAttributes.setGeneric(cpd, generic);
+                    for (int k = 0; k < notesNodes.getLength(); k++) {
 
-			if (mass != null)
-				cpd.setMolecularWeight(mass);
+                        Node x = notesNodes.item(k);
 
-			network.add(cpd);
+                        if ("body".equals(x.getNodeName())) {
 
-			BioCompartment bioCompartment = this.network.getCompartmentsView().get(compartmentId);
-			network.affectToCompartment(bioCompartment, cpd);
+                            NodeList bodyNodes = x.getChildNodes();
 
-			NodeList listsFromMetabolite = compound.getChildNodes();
+                            for (int iterBody = 0; iterBody < bodyNodes.getLength(); iterBody++) {
 
-			int listsCount = listsFromMetabolite.getLength();
-			for (int j = 0; j < listsCount; j++) {
-				if ("notes".equals(listsFromMetabolite.item(j).getNodeName())) {
+                                Node y = bodyNodes.item(iterBody);
 
-					Node noteNode = listsFromMetabolite.item(j);
+                                String valInBody = y.getTextContent();
 
-					NodeList notesNodes = noteNode.getChildNodes();
+                                String REGEX_inchi = ".*INCHI:\\s(\\S+).*";
+                                String REGEX_smiles = ".*SMILES:\\s(\\S+).*";
 
-					for (int k = 0; k < notesNodes.getLength(); k++) {
+                                if (valInBody.matches(REGEX_inchi)) {
+                                    String value = valInBody.replaceAll(REGEX_inchi, "$1");
+                                    cpd.setInchi(value);
+                                } else if (valInBody.matches(REGEX_smiles)) {
+                                    String value = valInBody.replaceAll(REGEX_smiles, "$1");
+                                    cpd.setSmiles(value);
+                                }
+                            }
+                        }
 
-						Node x = notesNodes.item(k);
+                    }
+                }
+            }
+        }
+    }
 
-						if ("body".equals(x.getNodeName())) {
+    /**
+     * @throws ParseException
+     */
+    public void readReactions() throws ParseException {
+        // get the element "listOfReactions"
+        NodeList listOfReactions = document.getElementsByTagName("listOfReactions");
 
-							NodeList bodyNodes = x.getChildNodes();
+        // Check if everything is OK.
+        if (listOfReactions == null) {
+            throw new ParseException("Incorrect Format: Can't find node [listOfReactions]");
+        }
 
-							for (int iterBody = 0; iterBody < bodyNodes.getLength(); iterBody++) {
+        if (listOfReactions.getLength() > 1) {
+            throw new ParseException("Incorrect Format: More than one node [listOfReactions]");
+        }
 
-								Node y = bodyNodes.item(iterBody);
+        // print all child elements from listOfReactions
+        NodeList reactionsList = listOfReactions.item(0).getChildNodes();
+        int reactionCount = reactionsList.getLength();
 
-								String valInBody = y.getTextContent();
+        // IMPORTANT: The loop adds 2 at each iteration... I don't know why, but
+        // there are
+        // some
+        for (int i = 1; i < reactionCount; i = i + 2) {
+            Element reaction = (Element) reactionsList.item(i);
 
-								String REGEX_inchi = ".*INCHI:\\s(\\S+).*";
-								String REGEX_smiles = ".*SMILES:\\s(\\S+).*";
+            BioReaction rxn = new BioReaction(StringUtils.sbmlDecode(reaction.getAttribute("id")),
+                    StringUtils.sbmlDecode(reaction.getAttribute("name")));
 
-								if (valInBody.matches(REGEX_inchi)) {
-									String value = valInBody.replaceAll(REGEX_inchi, "$1");
-									cpd.setInchi(value);
-								} else if (valInBody.matches(REGEX_smiles)) {
-									String value = valInBody.replaceAll(REGEX_smiles, "$1");
-									cpd.setSmiles(value);
-								}
-							}
-						}
+            network.add(rxn);
 
-					}
-				}
-			}
-		}
-	}
+            Boolean rev = true;
 
-	/**
-	 * @throws ParseException
-	 * 
-	 */
-	public void readReactions() throws ParseException {
-		// get the element "listOfReactions"
-		NodeList listOfReactions = document.getElementsByTagName("listOfReactions");
+            String revAttr = reaction.getAttribute("reversible");
 
-		// Check if everything is OK.
-		if (listOfReactions == null) {
-			throw new ParseException("Incorrect Format: Can't find node [listOfReactions]");
-		}
+            if (revAttr != null && !revAttr.equalsIgnoreCase("false") && !revAttr.equalsIgnoreCase("true")) {
+                throw new ParseException("Reversibility of the reaction " + rxn.getId()
+                        + " badly formatted, must be equal to true or false");
+            }
 
-		if (listOfReactions.getLength() > 1) {
-			throw new ParseException("Incorrect Format: More than one node [listOfReactions]");
-		}
+            if (revAttr != null && revAttr.equalsIgnoreCase("false")) {
+                rev = false;
+            }
 
-		// print all child elements from listOfReactions
-		NodeList reactionsList = listOfReactions.item(0).getChildNodes();
-		int reactionCount = reactionsList.getLength();
+            rxn.setReversible(rev);
 
-		// IMPORTANT: The loop adds 2 at each iteration... I don't know why, but
-		// there are
-		// some
-		for (int i = 1; i < reactionCount; i = i + 2) {
-			Element reaction = (Element) reactionsList.item(i);
+            String ec = reaction.getAttribute("ec");
 
-			BioReaction rxn = new BioReaction(StringUtils.sbmlDecode(reaction.getAttribute("id")),
-					StringUtils.sbmlDecode(reaction.getAttribute("name")));
+            if (ec != null) {
+                rxn.setEcNumber(ec);
+            }
 
-			network.add(rxn);
+            String holeStr = reaction.getAttribute("hole");
 
-			Boolean rev = true;
+            Boolean hole = false;
 
-			String revAttr = reaction.getAttribute("reversible");
+            if (holeStr != null && !holeStr.equalsIgnoreCase("false") && !holeStr.equalsIgnoreCase("true")) {
+                throw new ParseException("Hole attribute of the reaction " + rxn.getId()
+                        + " badly formatted, must be equal to true or false");
+            }
 
-			if (revAttr != null && !revAttr.equalsIgnoreCase("false") && !revAttr.equalsIgnoreCase("true")) {
-				throw new ParseException("Reversibility of the reaction " + rxn.getId()
-						+ " badly formatted, must be equal to true or false");
-			}
+            if (holeStr != null && holeStr.compareToIgnoreCase("true") == 0) {
+                hole = true;
+            }
 
-			if (revAttr != null && revAttr.equalsIgnoreCase("false")) {
-				rev = false;
-			}
+            ReactionAttributes.setHole(rxn, hole);
 
-			rxn.setReversible(rev);
+            String genericStr = reaction.getAttribute("generic");
 
-			String ec = reaction.getAttribute("ec");
+            Boolean generic = false;
 
-			if (ec != null) {
-				rxn.setEcNumber(ec);
-			}
+            if (genericStr != null && genericStr.compareToIgnoreCase("true") == 0) {
+                generic = true;
+            }
 
-			String holeStr = reaction.getAttribute("hole");
+            GenericAttributes.setGeneric(rxn, generic);
 
-			Boolean hole = false;
+            String type = reaction.getAttribute("type");
 
-			if (holeStr != null && !holeStr.equalsIgnoreCase("false") && !holeStr.equalsIgnoreCase("true")) {
-				throw new ParseException("Hole attribute of the reaction " + rxn.getId()
-						+ " badly formatted, must be equal to true or false");
-			}
+            if (type != null) {
+                GenericAttributes.setType(rxn, type);
+            }
 
-			if (holeStr != null && holeStr.compareToIgnoreCase("true") == 0) {
-				hole = true;
-			}
+            this.readReaction(reaction, rxn);
 
-			ReactionAttributes.setHole(rxn, hole);
+        }
+    }
 
-			String genericStr = reaction.getAttribute("generic");
+    /**
+     * Parse a reaction
+     *
+     * @param reaction
+     * @param rxn
+     * @throws ParseException
+     */
+    public void readReaction(Element reaction, BioReaction rxn) throws ParseException {
+        NodeList enzymeNodes = reaction.getElementsByTagName("enzyme");
 
-			Boolean generic = false;
+        int nbEnzymes = enzymeNodes.getLength();
 
-			if (genericStr != null && genericStr.compareToIgnoreCase("true") == 0) {
-				generic = true;
-			}
+        for (int i = 0; i < nbEnzymes; i++) {
 
-			GenericAttributes.setGeneric(rxn, generic);
+            Element enzymeNode = (Element) enzymeNodes.item(i);
+            String enzymeId = StringUtils.sbmlDecode(enzymeNode.getAttribute("id"));
+            String enzymeName = StringUtils.sbmlDecode(enzymeNode.getAttribute("name"));
 
-			String type = reaction.getAttribute("type");
+            BioEnzyme enzyme;
 
-			if (type != null) {
-				GenericAttributes.setType(rxn, type);
-			}
+            if (!network.getEnzymesView().containsId(enzymeId)) {
+                enzyme = new BioEnzyme(enzymeId, enzymeName);
 
-			this.readReaction(reaction, rxn);
+                network.add(enzyme);
+            }
 
-		}
-	}
+            enzyme = network.getEnzymesView().get(enzymeId);
 
-	/**
-	 * Parse a reaction
-	 * 
-	 * @param reaction
-	 * @param rxn
-	 * @throws ParseException
-	 */
-	public void readReaction(Element reaction, BioReaction rxn) throws ParseException {
-		NodeList enzymeNodes = reaction.getElementsByTagName("enzyme");
+            network.affectEnzyme(enzyme, rxn);
 
-		int nbEnzymes = enzymeNodes.getLength();
+            NodeList proteinNodes = enzymeNode.getElementsByTagName("protein");
 
-		for (int i = 0; i < nbEnzymes; i++) {
+            for (int j = 0; j < proteinNodes.getLength(); j++) {
 
-			Element enzymeNode = (Element) enzymeNodes.item(i);
-			String enzymeId = StringUtils.sbmlDecode(enzymeNode.getAttribute("id"));
-			String enzymeName = StringUtils.sbmlDecode(enzymeNode.getAttribute("name"));
+                Element proteinNode = (Element) proteinNodes.item(j);
+                String proteinId = StringUtils.sbmlDecode(proteinNode.getAttribute("id"));
+                String proteinName = StringUtils.sbmlDecode(proteinNode.getAttribute("name"));
 
-			BioEnzyme enzyme;
+                BioProtein protein;
 
-			if (!network.getEnzymesView().containsId(enzymeId)) {
-				enzyme = new BioEnzyme(enzymeId, enzymeName);
+                if (!network.getProteinsView().containsId(proteinId)) {
+                    protein = new BioProtein(proteinId, proteinName);
 
-				network.add(enzyme);
-			}
+                    network.add(protein);
+                }
 
-			enzyme = network.getEnzymesView().get(enzymeId);
+                protein = network.getProteinsView().get(proteinId);
 
-			network.affectEnzyme(enzyme, rxn);
+                network.affectSubUnit(protein, 1.0, enzyme);
 
-			NodeList proteinNodes = enzymeNode.getElementsByTagName("protein");
+                NodeList listOfGenes = proteinNode.getElementsByTagName("gene");
 
-			for (int j = 0; j < proteinNodes.getLength(); j++) {
+                for (int k = 0; k < listOfGenes.getLength(); k++) {
 
-				Element proteinNode = (Element) proteinNodes.item(j);
-				String proteinId = StringUtils.sbmlDecode(proteinNode.getAttribute("id"));
-				String proteinName = StringUtils.sbmlDecode(proteinNode.getAttribute("name"));
+                    Element geneNode = (Element) listOfGenes.item(k);
+                    String geneId = StringUtils.sbmlDecode(geneNode.getAttribute("id"));
+                    String geneName = StringUtils.sbmlDecode(geneNode.getAttribute("name"));
 
-				BioProtein protein;
+                    BioGene gene;
+                    if (!network.getGenesView().containsId(geneId)) {
+                        gene = new BioGene(geneId, geneName);
 
-				if (!network.getProteinsView().containsId(proteinId)) {
-					protein = new BioProtein(proteinId, proteinName);
+                        network.add(gene);
+                    }
 
-					network.add(protein);
-				}
+                    gene = network.getGenesView().get(geneId);
 
-				protein = network.getProteinsView().get(proteinId);
+                    network.affectGeneProduct(protein, gene);
 
-				network.affectSubUnit(protein, 1.0, enzyme);
+                }
+            }
+        }
 
-				NodeList listOfGenes = proteinNode.getElementsByTagName("gene");
+        // Get score
+        NodeList scoreNodes = reaction.getElementsByTagName("score");
+        if (scoreNodes.getLength() > 1) {
+            throw new ParseException("More than one SCORE tag in the reaction " + rxn.getId());
+        }
+        if (scoreNodes.getLength() == 1) {
+            Element scoreNode = (Element) scoreNodes.item(0);
 
-				for (int k = 0; k < listOfGenes.getLength(); k++) {
+            String scoreTxt = scoreNode.getTextContent();
 
-					Element geneNode = (Element) listOfGenes.item(k);
-					String geneId = StringUtils.sbmlDecode(geneNode.getAttribute("id"));
-					String geneName = StringUtils.sbmlDecode(geneNode.getAttribute("name"));
+            Double score = null;
 
-					BioGene gene;
-					if (!network.getGenesView().containsId(geneId)) {
-						gene = new BioGene(geneId, geneName);
+            if (!isVoid(scoreTxt)) {
+                try {
+                    score = Double.valueOf(scoreNode.getTextContent());
+                } catch (NumberFormatException e) {
+                    System.err.println("Score of the reaction " + rxn.getId() + " badly formatted, must be a double");
+                    e.printStackTrace();
+                }
 
-						network.add(gene);
-					}
+                if (score != null) {
+                    ReactionAttributes.setScore(rxn, score);
+                }
+            }
+        }
 
-					gene = network.getGenesView().get(geneId);
+        // Get status
+        NodeList statusNodes = reaction.getElementsByTagName("status");
+        if (statusNodes.getLength() > 1) {
+            throw new ParseException("More than one STATUS tag in the reaction " + rxn.getId());
+        }
+        if (statusNodes.getLength() == 1) {
+            Element statusNode = (Element) statusNodes.item(0);
 
-					network.affectGeneProduct(protein, gene);
+            String status = statusNode.getTextContent();
 
-				}
-			}
-		}
+            if (status != null) {
+                ReactionAttributes.setStatus(rxn, status);
+            }
+        }
 
-		// Get score
-		NodeList scoreNodes = reaction.getElementsByTagName("score");
-		if (scoreNodes.getLength() > 1) {
-			throw new ParseException("More than one SCORE tag in the reaction " + rxn.getId());
-		}
-		if (scoreNodes.getLength() == 1) {
-			Element scoreNode = (Element) scoreNodes.item(0);
+        // Get pmid
+        NodeList pmidNodes = reaction.getElementsByTagName("pmid");
+        if (statusNodes.getLength() > 0) {
+            for (int i = 0; i < pmidNodes.getLength(); i++) {
+                Element pmidNode = (Element) pmidNodes.item(i);
 
-			String scoreTxt = scoreNode.getTextContent();
+                Integer pmid = null;
 
-			Double score = null;
+                try {
+                    pmid = Integer.valueOf(pmidNode.getTextContent());
+                } catch (NumberFormatException e) {
+                    System.err
+                            .println("PMID badly formatted for the reaction " + rxn.getId() + ",  must be an integer");
+                    e.printStackTrace();
+                } catch (DOMException e) {
+                    e.printStackTrace();
+                }
 
-			if(!isVoid(scoreTxt)) {
-				try {
-					score = Double.valueOf(scoreNode.getTextContent());
-				} catch (NumberFormatException e) {
-					System.err.println("Score of the reaction " + rxn.getId() + " badly formatted, must be a double");
-					e.printStackTrace();
-				}
+                if (pmid != null)
+                    ReactionAttributes.addPmid(rxn, pmid);
 
-				if (score != null) {
-					ReactionAttributes.setScore(rxn, score);
-				}
-			}
-		}
+            }
+        }
 
-		// Get status
-		NodeList statusNodes = reaction.getElementsByTagName("status");
-		if (statusNodes.getLength() > 1) {
-			throw new ParseException("More than one STATUS tag in the reaction " + rxn.getId());
-		}
-		if (statusNodes.getLength() == 1) {
-			Element statusNode = (Element) statusNodes.item(0);
+        // Get pathways
+        NodeList pathwayNodes = reaction.getElementsByTagName("pathway");
 
-			String status = statusNode.getTextContent();
+        for (int i = 0; i < pathwayNodes.getLength(); i++) {
 
-			if (status != null) {
-				ReactionAttributes.setStatus(rxn, status);
-			}
-		}
+            Element pathwayNode = (Element) pathwayNodes.item(i);
 
-		// Get pmid
-		NodeList pmidNodes = reaction.getElementsByTagName("pmid");
-		if (statusNodes.getLength() > 0) {
-			for (int i = 0; i < pmidNodes.getLength(); i++) {
-				Element pmidNode = (Element) pmidNodes.item(i);
+            String pathwayId = StringUtils.sbmlDecode(pathwayNode.getAttribute("id"));
+            String pathwayName = StringUtils.sbmlDecode(pathwayNode.getAttribute("name"));
 
-				Integer pmid = null;
+            BioPathway pathway;
 
-				try {
-					pmid = Integer.valueOf(pmidNode.getTextContent());
-				} catch (NumberFormatException e) {
-					System.err
-							.println("PMID badly formatted for the reaction " + rxn.getId() + ",  must be an integer");
-					e.printStackTrace();
-				} catch (DOMException e) {
-					e.printStackTrace();
-				}
+            if (!network.getPathwaysView().containsId(pathwayId)) {
 
-				if (pmid != null)
-					ReactionAttributes.addPmid(rxn, pmid);
+                pathway = new BioPathway(pathwayId, pathwayName);
 
-			}
-		}
+                network.add(pathway);
 
-		// Get pathways
-		NodeList pathwayNodes = reaction.getElementsByTagName("pathway");
+            }
 
-		for (int i = 0; i < pathwayNodes.getLength(); i++) {
+            pathway = network.getPathwaysView().get(pathwayId);
 
-			Element pathwayNode = (Element) pathwayNodes.item(i);
+            network.affectToPathway(pathway, rxn);
+        }
 
-			String pathwayId = StringUtils.sbmlDecode(pathwayNode.getAttribute("id"));
-			String pathwayName = StringUtils.sbmlDecode(pathwayNode.getAttribute("name"));
+        // Get comments
+        NodeList commentNodes = reaction.getElementsByTagName("comment");
 
-			BioPathway pathway;
+        for (int i = 0; i < commentNodes.getLength(); i++) {
 
-			if (!network.getPathwaysView().containsId(pathwayId)) {
+            Element commentNode = (Element) commentNodes.item(i);
 
-				pathway = new BioPathway(pathwayId, pathwayName);
+            String annotator = "NA";
 
-				network.add(pathway);
+            NodeList annotatorNodes = commentNode.getElementsByTagName("annotator");
 
-			}
+            if (annotatorNodes.getLength() > 1) {
+                throw new RuntimeException(
+                        "More than one annotator tag in the comment " + i + " in the reaction " + rxn.getId());
+            }
+            if (annotatorNodes.getLength() == 1) {
+                Element annotatorNode = (Element) annotatorNodes.item(0);
+                annotator = annotatorNode.getTextContent();
+            }
 
-			pathway = network.getPathwaysView().get(pathwayId);
+            NodeList textNodes = commentNode.getElementsByTagName("text");
 
-			network.affectToPathway(pathway, rxn);
-		}
+            if (textNodes.getLength() > 1) {
+                throw new RuntimeException(
+                        "More than one text tag in the comment " + i + " in the reaction " + rxn.getId());
+            }
+            if (textNodes.getLength() == 0) {
+                throw new RuntimeException("No text tag in the comment " + i + " in the reaction " + rxn.getId());
+            }
 
-		// Get comments
-		NodeList commentNodes = reaction.getElementsByTagName("comment");
+            Element textNode = (Element) textNodes.item(0);
+            String text = textNode.getTextContent();
 
-		for (int i = 0; i < commentNodes.getLength(); i++) {
+            text = text.replaceAll("\\s+", " ");
 
-			Element commentNode = (Element) commentNodes.item(i);
+            AnnotatorComment comment = new AnnotatorComment(text, annotator);
 
-			String annotator = "NA";
+            GenericAttributes.addAnnotatorComment(rxn, comment);
 
-			NodeList annotatorNodes = commentNode.getElementsByTagName("annotator");
+        }
 
-			if (annotatorNodes.getLength() > 1) {
-				throw new RuntimeException(
-						"More than one annotator tag in the comment " + i + " in the reaction " + rxn.getId());
-			}
-			if (annotatorNodes.getLength() == 1) {
-				Element annotatorNode = (Element) annotatorNodes.item(0);
-				annotator = annotatorNode.getTextContent();
-			}
+        // print all child elements from listOfReactions
+        NodeList listsFromReaction = reaction.getChildNodes();
 
-			NodeList textNodes = commentNode.getElementsByTagName("text");
+        int listsCount = listsFromReaction.getLength();
+        for (int j = 0; j < listsCount; j++) {
 
-			if (textNodes.getLength() > 1) {
-				throw new RuntimeException(
-						"More than one text tag in the comment " + i + " in the reaction " + rxn.getId());
-			}
-			if (textNodes.getLength() == 0) {
-				throw new RuntimeException("No text tag in the comment " + i + " in the reaction " + rxn.getId());
-			}
+            NodeList listOfReactants, listOfProducts;
 
-			Element textNode = (Element) textNodes.item(0);
-			String text = textNode.getTextContent();
+            if ("listOfReactants".equals(listsFromReaction.item(j).getNodeName())) {
+                listOfReactants = listsFromReaction.item(j).getChildNodes();
+                int reactantsCount = listOfReactants.getLength();
 
-			text = text.replaceAll("\\s+", " ");
+                for (int i = 1; i < reactantsCount; i = i + 2) {
+                    Element reactant = (Element) listOfReactants.item(i);
 
-			AnnotatorComment comment = new AnnotatorComment(text, annotator);
+                    this.addReactant(reactant, rxn, true);
+                }
+            }
 
-			GenericAttributes.addAnnotatorComment(rxn, comment);
+            if ("listOfProducts".equals(listsFromReaction.item(j).getNodeName())) {
+                listOfProducts = listsFromReaction.item(j).getChildNodes();
+                int productsCount = listOfProducts.getLength();
 
-		}
+                for (int i = 1; i < productsCount; i = i + 2) {
+                    Element product = (Element) listOfProducts.item(i);
 
-		// print all child elements from listOfReactions
-		NodeList listsFromReaction = reaction.getChildNodes();
+                    this.addReactant(product, rxn, false);
+                }
+            }
 
-		int listsCount = listsFromReaction.getLength();
-		for (int j = 0; j < listsCount; j++) {
+            if ("kineticLaw".equals(listsFromReaction.item(j).getNodeName())) {
 
-			NodeList listOfReactants, listOfProducts;
+                Node kineticLaw = listsFromReaction.item(j);
 
-			if ("listOfReactants".equals(listsFromReaction.item(j).getNodeName())) {
-				listOfReactants = listsFromReaction.item(j).getChildNodes();
-				int reactantsCount = listOfReactants.getLength();
+                NodeList kineticLawNodes = kineticLaw.getChildNodes();
 
-				for (int i = 1; i < reactantsCount; i = i + 2) {
-					Element reactant = (Element) listOfReactants.item(i);
+                for (int i = 0; i < kineticLawNodes.getLength(); i++) {
 
-					this.addReactant(reactant, rxn, true);
-				}
-			}
+                    Node x = kineticLawNodes.item(i);
 
-			if ("listOfProducts".equals(listsFromReaction.item(j).getNodeName())) {
-				listOfProducts = listsFromReaction.item(j).getChildNodes();
-				int productsCount = listOfProducts.getLength();
+                    if ("listOfParameters".equals(x.getNodeName())) {
 
-				for (int i = 1; i < productsCount; i = i + 2) {
-					Element product = (Element) listOfProducts.item(i);
+                        NodeList parameters = x.getChildNodes();
 
-					this.addReactant(product, rxn, false);
-				}
-			}
+                        for (int k = 1; k < parameters.getLength(); k = k + 2) {
 
-			if ("kineticLaw".equals(listsFromReaction.item(j).getNodeName())) {
+                            Element parameter = (Element) parameters.item(k);
 
-				Node kineticLaw = listsFromReaction.item(j);
+                            String parameterId = parameter.getAttribute("id");
 
-				NodeList kineticLawNodes = kineticLaw.getChildNodes();
+                            if (parameterId.compareToIgnoreCase("LOWER_BOUND") == 0
+                                    || parameterId.compareToIgnoreCase("UPPER_BOUND") == 0) {
+                                String valueAttr = parameter.getAttribute("value");
 
-				for (int i = 0; i < kineticLawNodes.getLength(); i++) {
+                                Double value = null;
+                                try {
+                                    value = Double.parseDouble(valueAttr);
+                                } catch (NumberFormatException e) {
+                                    System.err.println("Flux bound value badly formatted for reaction " + rxn.getId());
+                                    e.printStackTrace();
+                                }
 
-					Node x = kineticLawNodes.item(i);
+                                String units = parameter.getAttribute("units");
+                                if (units == null || units.equals("")) {
+                                    units = parameter.getAttribute("name");
+                                }
 
-					if ("listOfParameters".equals(x.getNodeName())) {
+                                BioUnitDefinition ud;
+                                if (units != null && !units.equals("")) {
 
-						NodeList parameters = x.getChildNodes();
+                                    ud = NetworkAttributes.getUnitDefinition(network, units);
 
-						for (int k = 1; k < parameters.getLength(); k = k + 2) {
+                                } else {
+                                    throw new ParseException("Invalid unit definition for reaction " + rxn.getId());
+                                }
 
-							Element parameter = (Element) parameters.item(k);
+                                Flux lb = new Flux(parameterId, value, ud);
 
-							String parameterId = parameter.getAttribute("id");
+                                if (parameterId.compareToIgnoreCase("LOWER_BOUND") == 0)
+                                    ReactionAttributes.setLowerBound(rxn, lb);
+                                else
+                                    ReactionAttributes.setUpperBound(rxn, lb);
+                            }
+                        }
 
-							if (parameterId.compareToIgnoreCase("LOWER_BOUND") == 0
-									|| parameterId.compareToIgnoreCase("UPPER_BOUND") == 0) {
-								String valueAttr = parameter.getAttribute("value");
+                    }
 
-								Double value = null;
-								try {
-									value = Double.parseDouble(valueAttr);
-								} catch (NumberFormatException e) {
-									System.err.println("Flux bound value badly formatted for reaction " + rxn.getId());
-									e.printStackTrace();
-								}
+                }
 
-								String units = parameter.getAttribute("units");
-								if (units == null || units.equals("")) {
-									units = parameter.getAttribute("name");
-								}
+            }
 
-								BioUnitDefinition ud;
-								if (units != null && !units.equals("")) {
+        }
 
-									ud = NetworkAttributes.getUnitDefinition(network, units);
+        // It's important to do it after indicating the left and right
+        // participants !
+        // Get side-compounds
+        NodeList sideCompoundNodes = reaction.getElementsByTagName("side-compounds");
 
-								} else {
-									throw new ParseException("Invalid unit definition for reaction " + rxn.getId());
-								}
+        for (int i = 0; i < sideCompoundNodes.getLength(); i++) {
 
-								Flux lb = new Flux(parameterId, value, ud);
+            Element sideCompoundNode = (Element) sideCompoundNodes.item(i);
 
-								if (parameterId.compareToIgnoreCase("LOWER_BOUND") == 0)
-									ReactionAttributes.setLowerBound(rxn, lb);
-								else
-									ReactionAttributes.setUpperBound(rxn, lb);
-							}
-						}
+            NodeList speciesReferences = sideCompoundNode.getElementsByTagName("speciesReference");
 
-					}
+            for (int j = 0; j < speciesReferences.getLength(); j++) {
+                Element speciesReference = (Element) speciesReferences.item(j);
 
-				}
+                String idSpecies = speciesReference.getAttribute("species");
+                ReactionAttributes.addSideCompound(rxn, StringUtils.sbmlDecode(idSpecies));
+            }
+        }
 
-			}
+    }
 
-		}
+    private void addReactant(Element reactant, BioReaction rxn, Boolean left) throws ParseException {
+        // Finds the compound
+        BioMetabolite c = network.getMetabolitesView()
+                .get(StringUtils.sbmlDecode(reactant.getAttribute("species")));
 
-		// It's important to do it after indicating the left and right
-		// participants !
-		// Get side-compounds
-		NodeList sideCompoundNodes = reaction.getElementsByTagName("side-compounds");
+        if (c != null) {
+            String coeffAttr = reactant.getAttribute("stoichiometry");
 
-		for (int i = 0; i < sideCompoundNodes.getLength(); i++) {
+            Double coeff = 1.0;
 
-			Element sideCompoundNode = (Element) sideCompoundNodes.item(i);
+            if (coeffAttr != null) {
+                try {
+                    coeff = Double.valueOf(coeffAttr);
+                } catch (NumberFormatException e) {
+                    System.err.println("Stoichiometric coeff badly formatted in the reaction " + rxn.getId());
+                    e.printStackTrace();
+                }
+            }
 
-			NodeList speciesReferences = sideCompoundNode.getElementsByTagName("speciesReference");
+            String compartmentId = compartmentMetabolites.get(c.getId());
 
-			for (int j = 0; j < speciesReferences.getLength(); j++) {
-				Element speciesReference = (Element) speciesReferences.item(j);
+            BioCompartment compartment = network.getCompartmentsView().get(compartmentId);
 
-				String idSpecies = speciesReference.getAttribute("species");
-				ReactionAttributes.addSideCompound(rxn, StringUtils.sbmlDecode(idSpecies));
-			}
-		}
+            if (left) {
+                network.affectLeft(c, coeff, compartment, rxn);
+            } else {
+                network.affectRight(c, coeff, compartment, rxn);
+            }
+        } else {
+            throw new ParseException(
+                    "Reactant " + reactant.getAttribute("species") + " not found in the reaction " + rxn.getId());
+        }
+    }
 
-	}
+    public BioNetwork getNetwork() {
+        return network;
+    }
 
-	private void addReactant(Element reactant, BioReaction rxn, Boolean left) throws ParseException {
-		// Finds the compound
-		BioMetabolite c = network.getMetabolitesView()
-				.get(StringUtils.sbmlDecode(reactant.getAttribute("species")));
 
-		if (c != null) {
-			String coeffAttr = reactant.getAttribute("stoichiometry");
-
-			Double coeff = 1.0;
-
-			if (coeffAttr != null) {
-				try {
-					coeff = Double.valueOf(coeffAttr);
-				} catch (NumberFormatException e) {
-					System.err.println("Stoichiometric coeff badly formatted in the reaction " + rxn.getId());
-					e.printStackTrace();
-				}
-			}
-
-			String compartmentId = compartmentMetabolites.get(c.getId());
-
-			BioCompartment compartment = network.getCompartmentsView().get(compartmentId);
-
-			if (left) {
-				network.affectLeft(c, coeff, compartment, rxn);
-			} else {
-				network.affectRight(c, coeff, compartment, rxn);
-			}
-		} else {
-			throw new ParseException(
-					"Reactant " + reactant.getAttribute("species") + " not found in the reaction " + rxn.getId());
-		}
-	}
-
-	public BioNetwork getNetwork() {
-		return network;
-	}
-	
-	
-	
-	
 }

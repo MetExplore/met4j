@@ -29,6 +29,8 @@
  * knowledge of the CeCILL license and that you accept its terms.
  * <p>
  * 5 avr. 2013
+ * <p>
+ * 5 avr. 2013
  */
 /**
  * 5 avr. 2013 
@@ -60,11 +62,7 @@ public class FBAAnalysis extends Analysis {
 
         FBAResult result = new FBAResult(b);
 
-        System.err.println(new java.util.Date());
-        System.err.println("Launch FBA");
         DoubleResult objValue = b.FBA(new ArrayList<Constraint>(), true, true);
-        System.err.println(new java.util.Date());
-        System.err.println("End FBA");
 
         if (objValue.flag != 0) {
 
@@ -80,10 +78,7 @@ public class FBAAnalysis extends Analysis {
             result.setObjValue(objValue.result);
 
         }
-        System.err.println("Format FBA");
         result.formatResult();
-        System.err.println(new java.util.Date());
-        System.err.println("End format FBA");
         return (FBAResult) result;
     }
 

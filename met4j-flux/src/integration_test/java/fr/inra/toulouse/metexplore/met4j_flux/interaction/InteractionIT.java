@@ -1,21 +1,21 @@
-/*******************************************************************************
+/**
  * Copyright INRA
- * 
- *  Contact: ludovic.cottret@toulouse.inra.fr
- * 
- * 
+ * <p>
+ * Contact: ludovic.cottret@toulouse.inra.fr
+ * <p>
+ * <p>
  * This software is governed by the CeCILL license under French law and
  * abiding by the rules of distribution of free software.  You can  use,
  * modify and/ or redistribute the software under the terms of the CeCILL
  * license as circulated by CEA, CNRS and INRIA at the following URL
  * "http://www.cecill.info".
- * 
+ * <p>
  * As a counterpart to the access to the source code and  rights to copy,
  * modify and redistribute granted by the license, users are provided only
  * with a limited warranty  and the software's author,  the holder of the
  * economic rights,  and the successive licensors  have only  limited
  * liability.
- *  In this respect, the user's attention is drawn to the risks associated
+ * In this respect, the user's attention is drawn to the risks associated
  * with loading,  using,  modifying and/or developing or reproducing the
  * software by the user in light of its specific status of free software,
  * that may mean  that it is complicated to manipulate,  and  that  also
@@ -25,9 +25,13 @@
  * requirements in conditions enabling the security of their systems and/or
  * data to be ensured and,  more generally, to use and operate it in the
  * same conditions as regards security.
- *  The fact that you are presently reading this means that you have had
+ * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL license and that you accept its terms.
- ******************************************************************************/
+ * <p>
+ * 8 mars 2013
+ * <p>
+ * 8 mars 2013
+ */
 /**
  * 8 mars 2013 
  */
@@ -52,230 +56,226 @@ import static org.junit.Assert.fail;
 
 /**
  * @author lmarmiesse 8 mars 2013
- * 
+ *
  */
 public class InteractionIT {
 
-	static BioRegulator a;
-	static BioRegulator b;
-	static BioRegulator c;
-	static BioRegulator d;
-	static BioRegulator e;
-	static BioRegulator f;
-	
-	static String sbmlString = "";
-	static String cond1String = "";
-	static String int1String = "";
-	static String cond2String = "";
-	static String int2String = "";
+    static BioRegulator a;
+    static BioRegulator b;
+    static BioRegulator c;
+    static BioRegulator d;
+    static BioRegulator e;
+    static BioRegulator f;
 
-	@BeforeClass
-	public static void init() {
-		
-		
-		File file;
-		try {
-			file = java.nio.file.Files.createTempFile("test", ".xml")
-					.toFile();
+    static String sbmlString = "";
+    static String cond1String = "";
+    static String int1String = "";
+    static String cond2String = "";
+    static String int2String = "";
 
-			sbmlString = Utils.copyProjectResource(
-					"testInteraction/test.xml", file);
-
-			file = java.nio.file.Files.createTempFile("cond1", ".txt")
-					.toFile();
-
-			cond1String = Utils.copyProjectResource(
-					"testInteraction/condElseTest.txt", file);
-			
-			file = java.nio.file.Files.createTempFile("int1", ".txt")
-					.toFile();
-
-			int1String = Utils.copyProjectResource(
-					"testInteraction/intElseTest.sbml", file);
-			
-			file = java.nio.file.Files.createTempFile("cond2", ".txt")
-					.toFile();
-
-			cond2String = Utils.copyProjectResource(
-					"testInteraction/condExtMetab.txt", file);
-			
-			
-			file = java.nio.file.Files.createTempFile("int2", ".txt")
-					.toFile();
-
-			int2String = Utils.copyProjectResource(
-					"testInteraction/intExtMetab.sbml", file);
-
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		
-		
-		
-		
-		
-		a = new BioRegulator("a");
-		b = new BioRegulator("b");
-		c = new BioRegulator("c");
-		d = new BioRegulator("d");
-		e = new BioRegulator("e");
-		f = new BioRegulator("f");
-	}
-
-	@Test
-	public void test() throws Met4jSbmlReaderException {
-
-		And rel1 = new And();
-		Or rel2 = new Or();
-		Unique rel3 = new Unique(c);
-
-		rel2.addRelation(new Unique(b));
-		rel2.addRelation(rel3);
-
-		rel1.addRelation(new Unique(a));
-		rel1.addRelation(rel2);
-
-		assertTrue(rel1.toString().equals(
-				"(a >= 0.0 AND (b >= 0.0 OR c >= 0.0))"));
-
-		Unique intUnique = new Unique(f, new OperationLe(), 5.0);
-
-		Interaction i1 = new IfThenInteraction(intUnique, rel1);
-		System.err.println(i1);
-
-		assertTrue(i1
-				.toString()
-				.equals("IF : (a >= 0.0 AND (b >= 0.0 OR c >= 0.0)) THEN : f <= 5.0 Begins after 0.0h, lasts 0.0h."));
-
-		Unique u1 = new Unique(b);
-		Unique u2 = new Unique(f);
-		// Interaction i2 = new EqInteraction(u1,u2);
-
-		// System.out.println(i2);
-
-		Bind bind = null;
-
-		String solver = "GLPK";
-		if (System.getProperties().containsKey("solver")) {
-			solver = System.getProperty("solver");
-		}
-
-		try {
-			if (solver.equals("CPLEX")) {
-				bind = new CplexBind();
-			} else {
-				bind = new GLPKBind();
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			fail("Solver error");
-		}
-
-		fbaTest(bind);
-
-		bind = null;
+    @BeforeClass
+    public static void init() {
 
 
-		try {
-			if (solver.equals("CPLEX")) {
-				bind = new CplexBind();
-			} else {
-				bind = new GLPKBind();
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			fail("Solver error");
-		}
+        File file;
+        try {
+            file = java.nio.file.Files.createTempFile("test", ".xml")
+                    .toFile();
 
-		extMetabTest(bind);
+            sbmlString = Utils.copyProjectResource(
+                    "testInteraction/test.xml", file);
 
-	}
+            file = java.nio.file.Files.createTempFile("cond1", ".txt")
+                    .toFile();
 
-	private void fbaTest(Bind bind) throws Met4jSbmlReaderException {
+            cond1String = Utils.copyProjectResource(
+                    "testInteraction/condElseTest.txt", file);
 
-		bind.loadSbmlNetwork(sbmlString);
+            file = java.nio.file.Files.createTempFile("int1", ".txt")
+                    .toFile();
 
-		bind.loadConstraintsFile(cond1String);
-		bind.loadRegulationFile(int1String);
+            int1String = Utils.copyProjectResource(
+                    "testInteraction/intElseTest.sbml", file);
 
-		bind.prepareSolver();
+            file = java.nio.file.Files.createTempFile("cond2", ".txt")
+                    .toFile();
 
-		// double res = bind.FBA(new ArrayList<Constraint>(), true,
-		// true).result;
+            cond2String = Utils.copyProjectResource(
+                    "testInteraction/condExtMetab.txt", file);
 
-		// bind.end();
 
-		FBAResult result = new FBAResult(bind);
+            file = java.nio.file.Files.createTempFile("int2", ".txt")
+                    .toFile();
 
-		DoubleResult objValue = bind.FBA(new ArrayList<Constraint>(), true,
-				true);
+            int2String = Utils.copyProjectResource(
+                    "testInteraction/intExtMetab.sbml", file);
 
-		if (objValue.flag != 0) {
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
 
-			System.err.println(objValue.result);
 
-			System.err.println("Unfeasible");
-			result.setObjValue(Double.NaN);
+        a = new BioRegulator("a");
+        b = new BioRegulator("b");
+        c = new BioRegulator("c");
+        d = new BioRegulator("d");
+        e = new BioRegulator("e");
+        f = new BioRegulator("f");
+    }
 
-		} else {
+    @Test
+    public void test() throws Met4jSbmlReaderException, IOException {
 
-			result.setObjValue(objValue.result);
+        And rel1 = new And();
+        Or rel2 = new Or();
+        Unique rel3 = new Unique(c);
 
-		}
-		result.formatResult();
+        rel2.addRelation(new Unique(b));
+        rel2.addRelation(rel3);
+
+        rel1.addRelation(new Unique(a));
+        rel1.addRelation(rel2);
+
+        assertTrue(rel1.toString().equals(
+                "(a >= 0.0 AND (b >= 0.0 OR c >= 0.0))"));
+
+        Unique intUnique = new Unique(f, new OperationLe(), 5.0);
+
+        Interaction i1 = new IfThenInteraction(intUnique, rel1);
+        System.err.println(i1);
+
+        assertTrue(i1
+                .toString()
+                .equals("IF : (a >= 0.0 AND (b >= 0.0 OR c >= 0.0)) THEN : f <= 5.0 Begins after 0.0h, lasts 0.0h."));
+
+        Unique u1 = new Unique(b);
+        Unique u2 = new Unique(f);
+        // Interaction i2 = new EqInteraction(u1,u2);
+
+        // System.out.println(i2);
+
+        Bind bind = null;
+
+        String solver = "GLPK";
+        if (System.getProperties().containsKey("solver")) {
+            solver = System.getProperty("solver");
+        }
+
+        try {
+            if (solver.equals("CPLEX")) {
+                bind = new CplexBind();
+            } else {
+                bind = new GLPKBind();
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            fail("Solver error");
+        }
+
+        fbaTest(bind);
+
+        bind = null;
+
+
+        try {
+            if (solver.equals("CPLEX")) {
+                bind = new CplexBind();
+            } else {
+                bind = new GLPKBind();
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            fail("Solver error");
+        }
+
+        extMetabTest(bind);
+
+    }
+
+    private void fbaTest(Bind bind) throws Met4jSbmlReaderException, IOException {
+
+        bind.loadSbmlNetwork(sbmlString);
+
+        bind.loadConstraintsFile(cond1String);
+        bind.loadRegulationFile(int1String);
+
+        bind.prepareSolver();
+
+        // double res = bind.FBA(new ArrayList<Constraint>(), true,
+        // true).result;
+
+        // bind.end();
+
+        FBAResult result = new FBAResult(bind);
+
+        DoubleResult objValue = bind.FBA(new ArrayList<Constraint>(), true,
+                true);
+
+        if (objValue.flag != 0) {
+
+            System.err.println(objValue.result);
+
+            System.err.println("Unfeasible");
+            result.setObjValue(Double.NaN);
+
+        } else {
+
+            result.setObjValue(objValue.result);
+
+        }
+        result.formatResult();
 
 //		result.plot();
 
-		Assert.assertTrue(result.getObjValue() == 9.0);
-		
+        Assert.assertTrue(result.getObjValue() == 9.0);
+
 //		System.out.println(bind.getSolvedValue(bind.getInteractionNetwork()
 //				.getEntity("c")));
-		
-		Assert.assertTrue(bind.getSolvedValue(bind.getInteractionNetwork()
-				.getEntity("c")) > 1.6);
-		Assert.assertTrue(bind.getSolvedValue(bind.getInteractionNetwork()
-				.getEntity("c")) < 1.7);
 
-	}
+        Assert.assertTrue(bind.getSolvedValue(bind.getInteractionNetwork()
+                .getEntity("c")) > 1.6);
+        Assert.assertTrue(bind.getSolvedValue(bind.getInteractionNetwork()
+                .getEntity("c")) < 1.7);
 
-	// / TEST THAT A EXTERNAL METAB AT 0 MAKES R_EX = 0
+    }
 
-	private void extMetabTest(Bind bind) throws Met4jSbmlReaderException {
+    // / TEST THAT A EXTERNAL METAB AT 0 MAKES R_EX = 0
 
-		bind.loadSbmlNetwork(sbmlString);
-		bind.loadConstraintsFile(cond2String);
+    private void extMetabTest(Bind bind) throws Met4jSbmlReaderException, IOException {
 
-		bind.loadRegulationFile(int2String);
+        bind.loadSbmlNetwork(sbmlString);
+        bind.loadConstraintsFile(cond2String);
 
-		bind.prepareSolver();
+        bind.loadRegulationFile(int2String);
 
-		FBAResult result = new FBAResult(bind);
+        bind.prepareSolver();
 
-		DoubleResult objValue = bind.FBA(new ArrayList<Constraint>(), true,
-				true);
+        FBAResult result = new FBAResult(bind);
 
-		if (objValue.flag != 0) {
+        DoubleResult objValue = bind.FBA(new ArrayList<Constraint>(), true,
+                true);
 
-			System.err.println(objValue.result);
+        if (objValue.flag != 0) {
 
-			System.err.println("Unfeasible");
-			result.setObjValue(Double.NaN);
+            System.err.println(objValue.result);
 
-		} else {
+            System.err.println("Unfeasible");
+            result.setObjValue(Double.NaN);
 
-			result.setObjValue(objValue.result);
+        } else {
 
-		}
-		result.formatResult();
+            result.setObjValue(objValue.result);
+
+        }
+        result.formatResult();
 
 //		result.plot();
 
-		System.out.println(result.getObjValue());
+        System.out.println(result.getObjValue());
 
-		Assert.assertTrue(result.getObjValue() == 6.0);
+        Assert.assertTrue(result.getObjValue() == 6.0);
 
-	}
+    }
 
 }

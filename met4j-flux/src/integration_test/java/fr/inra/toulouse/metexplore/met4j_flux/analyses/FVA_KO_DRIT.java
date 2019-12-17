@@ -1,21 +1,21 @@
-/*******************************************************************************
+/**
  * Copyright INRA
- * 
- *  Contact: ludovic.cottret@toulouse.inra.fr
- * 
- * 
+ * <p>
+ * Contact: ludovic.cottret@toulouse.inra.fr
+ * <p>
+ * <p>
  * This software is governed by the CeCILL license under French law and
  * abiding by the rules of distribution of free software.  You can  use,
  * modify and/ or redistribute the software under the terms of the CeCILL
  * license as circulated by CEA, CNRS and INRIA at the following URL
  * "http://www.cecill.info".
- * 
+ * <p>
  * As a counterpart to the access to the source code and  rights to copy,
  * modify and redistribute granted by the license, users are provided only
  * with a limited warranty  and the software's author,  the holder of the
  * economic rights,  and the successive licensors  have only  limited
  * liability.
- *  In this respect, the user's attention is drawn to the risks associated
+ * In this respect, the user's attention is drawn to the risks associated
  * with loading,  using,  modifying and/or developing or reproducing the
  * software by the user in light of its specific status of free software,
  * that may mean  that it is complicated to manipulate,  and  that  also
@@ -25,9 +25,11 @@
  * requirements in conditions enabling the security of their systems and/or
  * data to be ensured and,  more generally, to use and operate it in the
  * same conditions as regards security.
- *  The fact that you are presently reading this means that you have had
+ * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL license and that you accept its terms.
- ******************************************************************************/
+ * <p>
+ * 13 mars 2013
+ */
 /**
  * 13 mars 2013 
  */
@@ -59,216 +61,216 @@ import static org.junit.Assert.fail;
 
 /**
  * @author lmarmiesse 13 mars 2013
- * 
+ *
  */
 public class FVA_KO_DRIT {
 
-	static Bind bind;
+    static Bind bind;
 
-	static BioNetwork n;
-	static InteractionNetwork i;
+    static BioNetwork n;
+    static InteractionNetwork i;
 
-	static String coliFileString = "";
-	static String condFileString = "";
-	static String metFVAformatedFileString = "";
-	static String metKOformatedFileString = "";
-	static String KOgenesFileString = "";
+    static String coliFileString = "";
+    static String condFileString = "";
+    static String metFVAformatedFileString = "";
+    static String metKOformatedFileString = "";
+    static String KOgenesFileString = "";
 
-	@BeforeClass
-	public static void init() throws Met4jSbmlReaderException {
+    @BeforeClass
+    public static void init() throws Met4jSbmlReaderException, IOException {
 
-		File file;
-		try {
-			file = java.nio.file.Files.createTempFile("coli", ".xml").toFile();
+        File file;
+        try {
+            file = java.nio.file.Files.createTempFile("coli", ".xml").toFile();
 
-			coliFileString = Utils.copyProjectResource("FVA_KO_DR/coli_core.xml", file);
+            coliFileString = Utils.copyProjectResource("FVA_KO_DR/coli_core.xml", file);
 
-			file = java.nio.file.Files.createTempFile("condFileString", ".txt").toFile();
+            file = java.nio.file.Files.createTempFile("condFileString", ".txt").toFile();
 
-			condFileString = Utils.copyProjectResource("FVA_KO_DR/condColiTest", file);
+            condFileString = Utils.copyProjectResource("FVA_KO_DR/condColiTest", file);
 
-			file = java.nio.file.Files.createTempFile("metFVAformatedFileString", ".txt").toFile();
+            file = java.nio.file.Files.createTempFile("metFVAformatedFileString", ".txt").toFile();
 
-			metFVAformatedFileString = Utils
-					.copyProjectResource("FVA_KO_DR/metFVAformated", file);
+            metFVAformatedFileString = Utils
+                    .copyProjectResource("FVA_KO_DR/metFVAformated", file);
 
-			file = java.nio.file.Files.createTempFile("metKOformatedFileString", ".txt").toFile();
+            file = java.nio.file.Files.createTempFile("metKOformatedFileString", ".txt").toFile();
 
-			metKOformatedFileString = Utils.copyProjectResource("FVA_KO_DR/metKOformated",
-					file);
+            metKOformatedFileString = Utils.copyProjectResource("FVA_KO_DR/metKOformated",
+                    file);
 
-			file = java.nio.file.Files.createTempFile("KOgenesFileString", ".txt").toFile();
+            file = java.nio.file.Files.createTempFile("KOgenesFileString", ".txt").toFile();
 
-			KOgenesFileString = Utils.copyProjectResource("FVA_KO_DR/KOgenes", file);
+            KOgenesFileString = Utils.copyProjectResource("FVA_KO_DR/KOgenes", file);
 
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
 
-		String solver = "GLPK";
-		if (System.getProperties().containsKey("solver")) {
-			solver = System.getProperty("solver");
-		}
+        String solver = "GLPK";
+        if (System.getProperties().containsKey("solver")) {
+            solver = System.getProperty("solver");
+        }
 
-		System.out.println(solver);
+        System.out.println(solver);
 
-		try {
-			if (solver.equals("CPLEX")) {
-				bind = new CplexBind();
-			} else {
-				bind = new GLPKBind();
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			fail("Solver error");
-		}
+        try {
+            if (solver.equals("CPLEX")) {
+                bind = new CplexBind();
+            } else {
+                bind = new GLPKBind();
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            fail("Solver error");
+        }
 
-		Vars.maxThread = 10;
+        Vars.maxThread = 10;
 
-		bind.loadSbmlNetwork(coliFileString);
+        bind.loadSbmlNetwork(coliFileString);
 
-		n = bind.getBioNetwork();
+        n = bind.getBioNetwork();
 
-		i = bind.getInteractionNetwork();
+        i = bind.getInteractionNetwork();
 
-		bind.loadConstraintsFile(condFileString);
+        bind.loadConstraintsFile(condFileString);
 
-		bind.prepareSolver();
+        bind.prepareSolver();
 
-	}
+    }
 
-	@Test
-	public void testFva() {
+    @Test
+    public void testFva() {
 
-		FVAAnalysis fva = new FVAAnalysis(bind, null, null);
-		FVAResult result = fva.runAnalysis();
-		try {
-			BufferedReader in = new BufferedReader(new FileReader(metFVAformatedFileString));
+        FVAAnalysis fva = new FVAAnalysis(bind, null, null);
+        FVAResult result = fva.runAnalysis();
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(metFVAformatedFileString));
 
-			String line;
-			while ((line = in.readLine()) != null) {
+            String line;
+            while ((line = in.readLine()) != null) {
 
-				String[] splittedLine = line.split("\t");
+                String[] splittedLine = line.split("\t");
 
-				String name = splittedLine[0].replaceAll("\\s+", "");
+                String name = splittedLine[0].replaceAll("\\s+", "");
 
-				double min = Double.parseDouble(splittedLine[1]);
-				double max = Double.parseDouble(splittedLine[2]);
+                double min = Double.parseDouble(splittedLine[1]);
+                double max = Double.parseDouble(splittedLine[2]);
 
-				Assert.assertTrue(Math
-						.abs(result.getValuesForEntity(bind.getInteractionNetwork().getEntity(name))[0] - min) < 0.001);
+                Assert.assertTrue(Math
+                        .abs(result.getValuesForEntity(bind.getInteractionNetwork().getEntity(name))[0] - min) < 0.001);
 
-				Assert.assertTrue(Math
-						.abs(result.getValuesForEntity(bind.getInteractionNetwork().getEntity(name))[1] - max) < 0.001);
+                Assert.assertTrue(Math
+                        .abs(result.getValuesForEntity(bind.getInteractionNetwork().getEntity(name))[1] - max) < 0.001);
 
-			}
+            }
 
-			in.close();
+            in.close();
 
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-	}
+    }
 
-	@Test
-	public void testKo() {
-		// KO reactions
-		KOAnalysis ko = new KOAnalysis(bind, 0, null);
-		KOResult resultKo = ko.runAnalysis();
+    @Test
+    public void testKo() {
+        // KO reactions
+        KOAnalysis ko = new KOAnalysis(bind, 0, null);
+        KOResult resultKo = ko.runAnalysis();
 
-		try {
-			BufferedReader in = new BufferedReader(new FileReader(metKOformatedFileString));
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(metKOformatedFileString));
 
-			String line;
-			while ((line = in.readLine()) != null) {
+            String line;
+            while ((line = in.readLine()) != null) {
 
-				String[] splittedLine = line.split("\t");
+                String[] splittedLine = line.split("\t");
 
-				String name = splittedLine[0].replaceAll("\\s", "");
-				
-				double value = Double.parseDouble(splittedLine[1]);
+                String name = splittedLine[0].replaceAll("\\s", "");
 
-				Assert.assertTrue(Math
-						.abs(resultKo.getValueForEntity(bind.getInteractionNetwork().getEntity(name)) - value) < 0.001);
+                double value = Double.parseDouble(splittedLine[1]);
 
-			}
+                Assert.assertTrue(Math
+                        .abs(resultKo.getValueForEntity(bind.getInteractionNetwork().getEntity(name)) - value) < 0.001);
 
-			in.close();
+            }
 
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            in.close();
 
-		// KO genes
-		KOAnalysis koGenes = new KOAnalysis(bind, 1, null);
-		KOResult resultKoGenes = koGenes.runAnalysis();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-		try {
-			BufferedReader in = new BufferedReader(new FileReader(KOgenesFileString));
+        // KO genes
+        KOAnalysis koGenes = new KOAnalysis(bind, 1, null);
+        KOResult resultKoGenes = koGenes.runAnalysis();
 
-			String line;
-			while ((line = in.readLine()) != null) {
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(KOgenesFileString));
 
-				String[] splittedLine = line.split("\t");
+            String line;
+            while ((line = in.readLine()) != null) {
 
-				String name = splittedLine[0].replaceAll("\\s", "");
+                String[] splittedLine = line.split("\t");
 
-				double value = Double.parseDouble(splittedLine[1]);
+                String name = splittedLine[0].replaceAll("\\s", "");
 
-				double simuResult = Math
-						.abs(resultKoGenes.getValueForEntity(bind.getInteractionNetwork().getEntity(name)));
+                double value = Double.parseDouble(splittedLine[1]);
 
-				if (Double.isNaN(simuResult)) {
-					simuResult = 0.0;
-				}
+                double simuResult = Math
+                        .abs(resultKoGenes.getValueForEntity(bind.getInteractionNetwork().getEntity(name)));
 
-				Assert.assertEquals("Bad simulation value for KO gene " + name, value, simuResult, 0.001);
+                if (Double.isNaN(simuResult)) {
+                    simuResult = 0.0;
+                }
 
-			}
+                Assert.assertEquals("Bad simulation value for KO gene " + name, value, simuResult, 0.001);
 
-			in.close();
+            }
 
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	@Test
-	public void testDR () {
-		DRAnalysis dr = new DRAnalysis(bind, 0.000001);
-		DRResult resultDr = dr.runAnalysis();
+            in.close();
 
-		List<BioEntity> dead = resultDr.getDeadReactions();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
-		System.err.println(dead.size());
-		assertEquals("False number of dead reactions", 8, dead.size());
+    @Test
+    public void testDR() {
+        DRAnalysis dr = new DRAnalysis(bind, 0.000001);
+        DRResult resultDr = dr.runAnalysis();
 
-		List<BioEntity> testDead = new ArrayList<BioEntity>();
+        List<BioEntity> dead = resultDr.getDeadReactions();
 
-		testDead.add(bind.getInteractionNetwork().getEntity("R_EX_mal_L_e"));
-		testDead.add(bind.getInteractionNetwork().getEntity("R_EX_fru_e"));
-		testDead.add(bind.getInteractionNetwork().getEntity("R_EX_fru_e"));
-		testDead.add(bind.getInteractionNetwork().getEntity("R_EX_gln_L_e"));
-		testDead.add(bind.getInteractionNetwork().getEntity("R_GLNabc"));
-		testDead.add(bind.getInteractionNetwork().getEntity("R_MALt2_2"));
-		testDead.add(bind.getInteractionNetwork().getEntity("R_FUMt2_2"));
-		testDead.add(bind.getInteractionNetwork().getEntity("R_FRUpts2"));
+        System.err.println(dead.size());
+        assertEquals("False number of dead reactions", 8, dead.size());
 
-		Assert.assertTrue(dead.containsAll(testDead));
-	}
+        List<BioEntity> testDead = new ArrayList<BioEntity>();
+
+        testDead.add(bind.getInteractionNetwork().getEntity("R_EX_mal_L_e"));
+        testDead.add(bind.getInteractionNetwork().getEntity("R_EX_fru_e"));
+        testDead.add(bind.getInteractionNetwork().getEntity("R_EX_fru_e"));
+        testDead.add(bind.getInteractionNetwork().getEntity("R_EX_gln_L_e"));
+        testDead.add(bind.getInteractionNetwork().getEntity("R_GLNabc"));
+        testDead.add(bind.getInteractionNetwork().getEntity("R_MALt2_2"));
+        testDead.add(bind.getInteractionNetwork().getEntity("R_FUMt2_2"));
+        testDead.add(bind.getInteractionNetwork().getEntity("R_FRUpts2"));
+
+        Assert.assertTrue(dead.containsAll(testDead));
+    }
 
 }

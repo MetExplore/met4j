@@ -142,12 +142,15 @@ public class JsbmlWriter {
      * @param useValidator whether or not to use the validator
      */
     public JsbmlWriter(String outputFile, String dir, BioNetwork bionet,
-                       int lvl, boolean useValidator) {
+                       int lvl, int version, boolean useValidator) {
         this.filename = outputFile;
         this.setOutoutDir(dir);
         this.setNet(bionet);
         this.level = lvl;
         this.useValidator = useValidator;
+        this.model = new Model();
+        model.setLevel(lvl);
+        model.setVersion(version);
     }
 
     /**
@@ -169,6 +172,7 @@ public class JsbmlWriter {
         this.createConverter(verifiedPkgs);
 
         this.setModel(this.getConverter().parseBioNetwork(this.getNet()));
+
 
         try {
 

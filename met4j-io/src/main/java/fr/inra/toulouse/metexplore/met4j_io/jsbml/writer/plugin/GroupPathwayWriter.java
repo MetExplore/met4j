@@ -30,6 +30,7 @@ public class GroupPathwayWriter implements PackageWriter, PrimaryDataTag {
 
     @Override
     public void parseBionetwork(Model model, BioNetwork bionetwork) {
+        System.err.println("Generating Pathways...");
 
         GroupsModelPlugin plugin = (GroupsModelPlugin) model.getPlugin(PackageNamespace);
         BioCollection<BioPathway> pathways = bionetwork.getPathwaysView();

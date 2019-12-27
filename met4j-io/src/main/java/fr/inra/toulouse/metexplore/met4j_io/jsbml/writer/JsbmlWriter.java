@@ -1,6 +1,5 @@
 package fr.inra.toulouse.metexplore.met4j_io.jsbml.writer;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import nu.xom.ParsingException;
 import nu.xom.Serializer;
 import nu.xom.ValidityException;
 
-import org.apache.log4j.Level;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLError;
@@ -26,7 +24,6 @@ import org.sbml.jsbml.validator.SBMLValidator;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.utils.JSBMLUtils;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.writer.plugin.PackageWriter;
 
 
@@ -77,60 +74,6 @@ public class JsbmlWriter {
      */
     private boolean useValidator = false;
 
-
-    /**
-     * Constructor
-     *
-     * @param outputFile the output filename
-     * @param bionet     the bionetwork to convert
-     */
-    public JsbmlWriter(String outputFile, BioNetwork bionet) {
-        this.filename = outputFile;
-        this.setNet(bionet);
-        this.setLevel(3);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param outputFile the output filename
-     * @param dir        the output directory
-     * @param bionet     the bionetwork to convert
-     */
-    public JsbmlWriter(String outputFile, String dir, BioNetwork bionet) {
-        this.filename = outputFile;
-        this.setOutoutDir(dir);
-        this.setNet(bionet);
-        this.setLevel(3);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param outputFile the output filename
-     * @param bionet     the bionetwork to convert
-     * @param lvl        the level of the SBML
-     */
-    public JsbmlWriter(String outputFile, BioNetwork bionet, int lvl) {
-        this.filename = outputFile;
-        this.setNet(bionet);
-        this.level = lvl;
-    }
-
-    /**
-     * Constructor
-     *
-     * @param outputFile the output filename
-     * @param dir        the output directory
-     * @param bionet     the bionetwork to convert
-     * @param lvl        the level of the SBML
-     */
-    public JsbmlWriter(String outputFile, String dir, BioNetwork bionet, int lvl) {
-        this.filename = outputFile;
-        this.setOutoutDir(dir);
-        this.setNet(bionet);
-        this.level = lvl;
-    }
 
     /**
      * Constructor
@@ -201,48 +144,6 @@ public class JsbmlWriter {
     }
 
     /**
-     * One of the main methods. converts the {@link #net} to a jsbml object and
-     * write it as a file.</br> Use the user defined set of package to add
-     * additional data to output SBML
-     *
-     * @param pkgs        Set of writer package to use
-     * @param progName    Name of the program using this
-     * @param progVersion Version of the program
-     * @see #writeDocument(String, String)
-     * @see #writeDocument(String, String)
-     */
-    public void write(HashSet<PackageWriter> pkgs, String progName,
-                      String progVersion) {
-        // System.err.println("Verifying packages...");
-
-        ArrayList<PackageWriter> verifiedPkgs = this.verifyPackages(pkgs);
-
-        System.err.println("Parsing Bionetwork " + this.getNet().getId());
-
-        this.setDoc(new SBMLDocument());
-
-        BionetworkToJsbml converter = new BionetworkToJsbml(this.getModel().getLevel(), this.getModel().getVersion(), this.getDoc());
-
-        try {
-            converter.setPackages(verifiedPkgs);
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
-
-        this.setConverter(converter);
-
-        this.setModel(this.getConverter().parseBioNetwork(this.getNet()));
-
-        try {
-
-            this.writeDocument(progName, progVersion);
-        } catch (SBMLException | XMLStreamException | IOException
-                | ParsingException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Verifies the Set of user defined packages and orders them
      *
      * @param pkgs the packages enabled by the user
@@ -258,8 +159,8 @@ public class JsbmlWriter {
         }
 
         for (PackageWriter writer : pkgs) {
-            if (writer.isPackageUseableOnLvl(this.getLevel())) {
 
+            if (writer.isPackageUseableOnLvl(this.getLevel())) {
                 if (writer instanceof PrimaryDataTag) {
                     start.add(writer);
                 } else if (writer instanceof AdditionalDataTag) {
@@ -363,39 +264,6 @@ public class JsbmlWriter {
             System.err.println("Writing file...");
 
             this.prettifyXML(writer.writeSBMLToString(this.getDoc()));
-        }
-
-    }
-
-    /**
-     * Method that effectively writes the SBML document once the model was
-     * completed. Set some additional attribute in the SBML Document.
-     *
-     * @param progName The name of the program used to create this SBML
-     * @param version  The version of the program used to create this SBML
-     * @throws SBMLException      if any SBML problems prevent to write the SBMLDocument.
-     * @throws XMLStreamException if any problems prevent to write the SBMLDocument as XML.
-     * @throws IOException        if the file is not writable
-     * @throws ParsingException   if the error was found while parsing the XML string
-     * @throws ValidityException  if the xml is not valid
-     */
-    protected void writeDocument(String progName, String version)
-            throws SBMLException, XMLStreamException, IOException,
-            ValidityException, ParsingException {
-
-        if (this.useValidator && !validateSBML(this.getDoc())) {
-            System.err
-                    .println("Unable to write File. The sbml Documents has errors.");
-        } else {
-
-            SBMLWriter writer = new SBMLWriter(progName, version);
-            writer.setIndentationChar('\t');
-            writer.setIndentationCount((short) 1);
-
-            System.err.println("Writing file...");
-
-            this.prettifyXML(writer.writeSBMLToString(this.getDoc()));
-
         }
 
     }

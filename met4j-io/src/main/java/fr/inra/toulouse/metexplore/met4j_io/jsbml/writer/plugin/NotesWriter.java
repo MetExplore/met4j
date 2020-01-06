@@ -226,6 +226,10 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
             n.addAttributeToNotes("smiles", met.getSmiles(), this.updateValue);
         }
 
+        if (met.getMolecularWeight() != null) {
+            n.addAttributeToNotes("weight", met.getMolecularWeight().toString(), this.updateValue);
+        }
+
     }
 
     /**

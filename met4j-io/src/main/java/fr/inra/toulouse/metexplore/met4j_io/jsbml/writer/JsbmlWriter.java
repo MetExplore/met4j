@@ -110,13 +110,13 @@ public class JsbmlWriter {
 
         System.err.println("Parsing Bionetwork " + this.getNet().getId());
 
-        this.setDoc(new SBMLDocument());
-
         this.createConverter(verifiedPkgs);
+
+        this.setDoc(this.getConverter().getDoc());
 
         this.setModel(this.getConverter().parseBioNetwork(this.getNet()));
 
-
+        this.getDoc().setModel(this.getModel());
         try {
 
             this.writeDocument();
@@ -132,7 +132,7 @@ public class JsbmlWriter {
      * @param verifiedPkgs The list of plugins that will be applied to the converter
      */
     protected void createConverter(ArrayList<PackageWriter> verifiedPkgs) {
-        BionetworkToJsbml converter = new BionetworkToJsbml(this.getModel().getLevel(), this.getModel().getVersion(), this.getDoc());
+        BionetworkToJsbml converter = new BionetworkToJsbml(this.getModel().getLevel(), this.getModel().getVersion());
         try {
             converter.setPackages(verifiedPkgs);
         } catch (Exception e1) {
@@ -260,8 +260,6 @@ public class JsbmlWriter {
             SBMLWriter writer = new SBMLWriter();
             writer.setIndentationChar('\t');
             writer.setIndentationCount((short) 1);
-
-            System.err.println("Writing file...");
 
             this.prettifyXML(writer.writeSBMLToString(this.getDoc()));
         }

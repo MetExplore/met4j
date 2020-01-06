@@ -8,6 +8,8 @@ import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 
 import org.sbml.jsbml.Model;
+import org.sbml.jsbml.SBMLDocument;
+import org.sbml.jsbml.SBMLWriter;
 import org.sbml.jsbml.UniqueNamedSBase;
 
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
@@ -27,12 +29,12 @@ import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttribu
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
+import org.sbml.jsbml.xml.XMLNode;
 
 import static fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
 
 /**
  * Creates Notes for the SBML entities of the model created by
- * {@link parsebionet.io.jsbml.writer.BionetworkToJsbml}
  *
  * @author Benjamin
  * @since 3.0
@@ -86,11 +88,28 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
         this.createModelNotes();
 
         this.createNotesFromBioEntities(this.getBionetwork().getMetabolitesView());
-        this.createNotesFromBioEntities(this.getBionetwork().getReactionsView());
         this.createNotesFromBioEntities(this.getBionetwork().getGenesView());
         this.createNotesFromBioEntities(this.getBionetwork().getEnzymesView());
         this.createNotesFromBioEntities(this.getBionetwork().getProteinsView());
         this.createNotesFromBioEntities(this.getBionetwork().getCompartmentsView());
+        this.createNotesFromBioEntities(this.getBionetwork().getReactionsView());
+
+
+//        SBMLWriter writer = new SBMLWriter();
+//        writer.setIndentationChar('\t');
+//        writer.setIndentationCount((short) 1);
+//
+//        System.err.println("sbml string after notes...");
+//
+//        SBMLDocument doc = new SBMLDocument(3, 1);
+//        doc.setModel(this.getModel());
+//
+//        try {
+//            System.err.println(writer.writeSBMLToString(doc));
+//        } catch (XMLStreamException e) {
+//            e.printStackTrace();
+//        }
+
     }
 
     /**
@@ -162,13 +181,17 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
                 this.addAdditionnalNotes((BioReaction) ent, n);
             }
 
-            try {
-                if (n != null && !n.isEmpty()) {
-                    sbase.setNotes(n.getXHTMLasString());
+            if (n != null && !n.isEmpty()) {
+                String notesStr = n.getXHTMLasString();
+                notesStr = notesStr.replaceAll("<body>", "<body xmlns=\"http://www.w3.org/1999/xhtml\">");
+
+                try {
+                    sbase.setNotes(notesStr);
+                } catch (XMLStreamException e) {
+                    e.printStackTrace();
                 }
-            } catch (XMLStreamException e) {
-                e.printStackTrace();
             }
+
         }
     }
 
@@ -209,8 +232,7 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
      * Add or replace the values present in the notes with the compartment's
      * attribute
      *
-     * @param met the metabolite as a {@link BioPhysicalEntity}
-     * @param n   the Notes
+     * @param n the Notes
      * @see Notes#addAttributeToNotes(String, String, boolean)
      */
     private void addAdditionnalNotes(BioCompartment cpt, Notes n) {
@@ -250,7 +272,6 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
     private void addAdditionnalNotes(BioReaction bioRxn, Notes n) {
 
         BioCollection<BioPathway> pathways = this.getBionetwork().getPathwaysFromReaction(bioRxn);
-
 
         if (!pathways.isEmpty()) {
             String newPathwayNotes = "";

@@ -97,12 +97,7 @@ public class BioReactionTest {
 	@Test
 	public void testToString() {
 
-		assertEquals("Formula badly formatted", "testreaction: 1 l1[cpt1] + 1 l2[cpt1] <-> 1 r1[cpt2] + 1 r2[cpt2]",
-				reaction.toString());
-
-		reaction.setReversible(false);
-
-		assertEquals("Formula badly formatted", "testreaction: 1 l1[cpt1] + 1 l2[cpt1] -> 1 r1[cpt2] + 1 r2[cpt2]",
+		assertEquals("Formula badly formatted", "testreaction",
 				reaction.toString());
 
 	}

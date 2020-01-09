@@ -155,7 +155,6 @@ public class BioReaction extends BioEntity {
 	}
 
 	/**
-	 * @param side : {@link Side}
 	 * @return unmodifiable {@link BioCollection} of entities involved in left
 	 *         {@link BioReactant}
 	 */
@@ -164,7 +163,6 @@ public class BioReaction extends BioEntity {
 	}
 
 	/**
-	 * @param side : {@link Side}
 	 * @return unmodifiable {@link BioCollection} of entities involved in right
 	 *         {@link BioReactant}
 	 */
@@ -174,7 +172,6 @@ public class BioReaction extends BioEntity {
 
 	/**
 	 * 
-	 * @param side : {@link Side}
 	 * @return {@link BioCollection} of left {@link BioReactant}
 	 */
 	protected BioCollection<BioReactant> getLeftReactants() {
@@ -183,7 +180,6 @@ public class BioReaction extends BioEntity {
 
 	/**
 	 * 
-	 * @param side : {@link Side}
 	 * @return {@link BioCollection}of right {@link BioReactant}
 	 */
 	protected BioCollection<BioReactant> getRightReactants() {
@@ -194,7 +190,6 @@ public class BioReaction extends BioEntity {
 	
 	/**
 	 * 
-	 * @param side : {@link Side}
 	 * @return {@link BioCollection} of left {@link BioReactant}
 	 */
 	public BioCollection<BioReactant> getLeftReactantsView() {
@@ -204,7 +199,6 @@ public class BioReaction extends BioEntity {
 
 	/**
 	 * 
-	 * @param side : {@link Side}
 	 * @return {@link BioCollection}of right {@link BioReactant}
 	 */
 	public BioCollection<BioReactant> getRightReactantsView() {

@@ -104,18 +104,16 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
         for (BioMetabolite bioMetab : this.flxNet.getUnderlyingBionet().getMetabolitesView()) {
             Species specie = this.fbcModel.getParent().getSpecies(StringUtils.convertToSID(bioMetab.getId()));
 
-            if (specie != null && !fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils
-                    .isVoid(bioMetab.getChemicalFormula())) {
+            if (specie != null) {
 
                 FBCSpeciesPlugin speciePlugin = (FBCSpeciesPlugin) specie.getPlugin("fbc");
-                speciePlugin.setCharge(bioMetab.getCharge());
-
-                try {
-                    speciePlugin.setChemicalFormula(bioMetab.getChemicalFormula());
-                } catch (Exception e) {
-                    FBCWriter.errorsAndWarnings.add("The species " + specie.getId() + " has no formula.");
-
+                if (bioMetab.getCharge() != null) {
+                    speciePlugin.setCharge(bioMetab.getCharge());
                 }
+
+                if (!fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils
+                        .isVoid(bioMetab.getChemicalFormula()))
+                    speciePlugin.setChemicalFormula(bioMetab.getChemicalFormula());
             }
         }
 

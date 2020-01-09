@@ -5,6 +5,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
+import fr.inra.toulouse.metexplore.met4j_io.utils.StringUtils;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.ext.groups.Group;
 import org.sbml.jsbml.ext.groups.GroupsModelPlugin;
@@ -37,7 +38,7 @@ public class GroupPathwayWriter implements PackageWriter, PrimaryDataTag {
 
         for (BioPathway p : pathways) {
             Group group = new Group();
-            group.setId(p.getId());
+            group.setId(StringUtils.convertToSID(p.getId()));
             group.setName(p.getName());
             plugin.addGroup(group);
             BioCollection<BioReaction> reactions = bionetwork.getReactionsFromPathway(p);

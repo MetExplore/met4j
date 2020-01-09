@@ -1,3 +1,0 @@
-Refactoring parsebionet :
-
-Les classes *Attributes ne sont pas propres à Cytoscape et pourraient aller dans un package plus générique.

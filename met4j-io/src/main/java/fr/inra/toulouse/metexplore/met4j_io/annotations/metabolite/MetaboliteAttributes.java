@@ -17,13 +17,13 @@ public class MetaboliteAttributes extends GenericAttributes {
 	public static final String INITIAL_CONCENTRATION = "initial_quantity_concentration";
 	public static final String PUBCHEM = "pubchem.compound";
 	public static final String HAS_ONLY_SUBSTANCE_UNITS = "has_only_substance_units";
-	
-	
+
+
 	public static final String IS_COFACTOR = "is_cofactor";
 
 	/**
 	 * get Boundary condition of a metabolite
-	 * 
+	 *
 	 * @param m
 	 * @return
 	 */
@@ -40,7 +40,7 @@ public class MetaboliteAttributes extends GenericAttributes {
 
 	/**
 	 * Set boundary condition
-	 * 
+	 *
 	 * @param m
 	 */
 	public static void setBoundaryCondition(BioMetabolite m, Boolean flag) {
@@ -49,7 +49,7 @@ public class MetaboliteAttributes extends GenericAttributes {
 
 	/**
 	 * Get Metabolite units
-	 * 
+	 *
 	 * @param m
 	 * @return
 	 */
@@ -60,7 +60,7 @@ public class MetaboliteAttributes extends GenericAttributes {
 
 	/**
 	 * Set subtance units
-	 * 
+	 *
 	 * @param metabolite
 	 * @param u
 	 */
@@ -72,7 +72,7 @@ public class MetaboliteAttributes extends GenericAttributes {
 
 	/**
 	 * get Initial Amount
-	 * 
+	 *
 	 * @param metabolite
 	 * @return
 	 */
@@ -82,7 +82,7 @@ public class MetaboliteAttributes extends GenericAttributes {
 		{
 			return null;
 		}
-		
+
 		return (Double) metabolite.getAttribute(INITIAL_AMOUNT);
 
 	}
@@ -135,7 +135,7 @@ public class MetaboliteAttributes extends GenericAttributes {
 	public static void setPubchem(BioMetabolite metabolite, String val) {
 		metabolite.setAttribute(PUBCHEM, val);
 	}
-	
+
 	/**
 	 * Get hasOnlySubstanceUnit value
 	 * @param metabolite
@@ -153,7 +153,7 @@ public class MetaboliteAttributes extends GenericAttributes {
 	public static void setHasOnlySubstanceUnits(BioMetabolite metabolite, boolean b) {
 		metabolite.setAttribute(HAS_ONLY_SUBSTANCE_UNITS, b);
 	}
-	
+
 	/**
 	 * get is cofactor attribute
 	 * @param metabolite
@@ -166,7 +166,7 @@ public class MetaboliteAttributes extends GenericAttributes {
 		return (Boolean) metabolite.getAttribute(IS_COFACTOR);
 
 	}
-	
+
 	/**
 	 * Set IsCofactor value
 	 * @param metabolite
@@ -175,5 +175,5 @@ public class MetaboliteAttributes extends GenericAttributes {
 	public static void setIsCofactor(BioMetabolite metabolite, boolean b) {
 		metabolite.setAttribute(IS_COFACTOR, b);
 	}
-	
+
 }

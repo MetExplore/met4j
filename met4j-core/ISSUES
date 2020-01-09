@@ -1,0 +1,5 @@
+lcottret : JSBMLToBioNetwork ne prend en compte que la premiere pathway 
+			quand elle est indiquee dans les notes
+			
+lcottret : lower bound : quand la reaction est mise à reversible = false, mettre la lb
+ à 0 si elle est négative ? A discuter.

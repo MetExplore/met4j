@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.*;
 import org.sbml.jsbml.Annotation;
 import org.sbml.jsbml.CVTerm;
 import org.sbml.jsbml.CVTerm.Qualifier;
@@ -12,12 +13,6 @@ import org.sbml.jsbml.CVTerm.Type;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.UniqueNamedSBase;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioRef;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
@@ -114,6 +109,7 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 			this.createAnnotationFromBioEntities(this.getBionetwork().getCompartmentsView());
 			this.createAnnotationFromBioEntities(this.getBionetwork().getMetabolitesView());
 			this.createAnnotationFromBioEntities(this.getBionetwork().getReactionsView());
+			this.createAnnotationFromBioEntities(this.getBionetwork().getProteinsView());
 		} catch (XMLStreamException e) {
 			e.printStackTrace();
 		}

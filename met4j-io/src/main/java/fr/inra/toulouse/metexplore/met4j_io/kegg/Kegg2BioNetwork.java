@@ -421,14 +421,14 @@ public class Kegg2BioNetwork {
             metabolite.setMolecularWeight(Double.parseDouble(Data.get("MOL_WEIGHT").get(0)));
         }
 
-        metabolite.addRef(new BioRef("Import", "KEGG", metabolite.getId(), 1));
+        metabolite.addRef(new BioRef("Import", "kegg.compound", metabolite.getId(), 1));
 
-        if (Data.get("DBLINKS")!=null){
-            for (String links: Data.get("DBLINKS")){
-                String[] tab=links.split(": ");
-                metabolite.addRef(new BioRef("Import", tab[0], tab[1], 1));
-            }
-        }
+//        if (Data.get("DBLINKS")!=null){
+//            for (String links: Data.get("DBLINKS")){
+//                String[] tab=links.split(": ");
+//                metabolite.addRef(new BioRef("Import", tab[0], tab[1], 1));
+//            }
+//        }
     }
 
 

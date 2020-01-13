@@ -248,9 +248,6 @@ public class JsbmlReader {
             System.err.println("Validating Input SBML..");
             this.setValidSBML(this.validateSBML(doc));
             System.err.println("Validation of input SBML done : " + this.validSBML);
-
-        } else {
-            System.err.println("Validator disabled by user.");
         }
 
         this.setModel(doc.getModel());

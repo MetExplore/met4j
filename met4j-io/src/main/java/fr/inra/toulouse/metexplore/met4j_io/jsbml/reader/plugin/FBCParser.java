@@ -36,16 +36,11 @@ import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
 
 /**
- * This class is used to parse SBML level 3 FBC version 2 package. It extends
- * the {@link FBC1Parser} class because the SBML packages share some common
- * objects.</br>
- * </br>
- * To incorporate the additional data, this class uses objects from the
- * {@link parsebionet.biodata.fbc} package
+ * This class is used to parse SBML level 3 FBC version 2 package.
  * 
- * @author Benjamin
+ * @author lcottret from bmerlet
  * @since 3.0
- * 
+ *
  */
 public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Compatible {
 
@@ -152,7 +147,6 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 
 			BioGene gene = new BioGene(geneId, geneName);
 
-			// Note LC : before, it was "setLabel"...
 			gene.setName(geneProd.getLabel());
 
 			this.getFlxNet().getUnderlyingBionet().add(gene);

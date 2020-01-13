@@ -617,7 +617,13 @@ public class StringUtils {
 	 * @return
 	 */
 	public static Boolean isValidSboTerm(String sboTerm) {
-		return sboTerm.matches("(?)SBO\\s*:\\s*\\d{7}") ||  sboTerm.matches("\\d{7}");
+		Pattern p = Pattern.compile("^SBO\\s*:\\s*\\d{7}$", Pattern.CASE_INSENSITIVE);
+		Pattern p2 = Pattern.compile("^\\d{7}$");
+
+		Matcher matcher = p.matcher(sboTerm);
+		Matcher matcher2 = p2.matcher(sboTerm);
+
+		return matcher.find() || matcher2.find();
 	}
 	
 	

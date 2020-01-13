@@ -158,7 +158,7 @@ public class GenericAttributes {
     public static void setSboTerm(BioEntity e, String sboTerm) {
         if (!StringUtils.isValidSboTerm(sboTerm)) {
             System.err.println("[Warning] SBO term badly formatted for " + e.getId()
-                    + " (must be SBO:1234567). It has not been set.");
+                    + " ("+sboTerm+", must be in the format SBO:1234567). It has not been set.");
         } else {
             e.setAttribute(SBO_TERM, sboTerm);
         }

@@ -109,7 +109,6 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 
 	/**
 	 * 
-	 * @param list
 	 *            One of the different lists present in the {@link BioNetwork}
 	 *            class
 	 */
@@ -128,10 +127,8 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 	}
 
 	/**
-	 * Parse the compartment's annotation to extract external identifiers
+	 * Parse entity's annotation to extract external identifiers
 	 * 
-	 * @param comp
-	 *            the compartment
 	 * @param annot
 	 *            the SBML annotation element
 	 */

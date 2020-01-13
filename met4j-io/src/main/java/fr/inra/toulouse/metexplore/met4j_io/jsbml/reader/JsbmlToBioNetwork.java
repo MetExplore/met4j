@@ -203,7 +203,7 @@ public class JsbmlToBioNetwork {
 			}
 
 			if (jSBMLCompart.getSBOTerm() != -1) {
-				CompartmentAttributes.setSboTerm(bionetCompart, "SBO:" + jSBMLCompart.getSBOTerm());
+				CompartmentAttributes.setSboTerm(bionetCompart, jSBMLCompart.getSBOTermID());
 			}
 
 			CompartmentAttributes.setConstant(bionetCompart, jSBMLCompart.getConstant());
@@ -418,7 +418,7 @@ public class JsbmlToBioNetwork {
 
 			MetaboliteAttributes.setSubstanceUnits(bionetSpecies, specie.getSubstanceUnits());
 			if (specie.getSBOTerm() != -1) {
-				MetaboliteAttributes.setSboTerm(bionetSpecies, "SBO:" + specie.getSBOTermID());
+				MetaboliteAttributes.setSboTerm(bionetSpecies, specie.getSBOTermID());
 			}
 
 			if (specie.isSetInitialAmount()) {
@@ -432,10 +432,6 @@ public class JsbmlToBioNetwork {
 			}
 
 			MetaboliteAttributes.setSubstanceUnits(bionetSpecies, specie.getSubstanceUnits());
-
-			if (specie.getSBOTerm() != -1) {
-				MetaboliteAttributes.setSboTerm(bionetSpecies, "SBO:" + specie.getSBOTerm());
-			}
 
 			if (model.getLevel() == 2 && model.getVersion() >= 2 && model.getVersion() <= 4) {
 				if (specie.isSetSpeciesType()) {

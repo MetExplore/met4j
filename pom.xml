@@ -31,13 +31,13 @@
     <description>A java library dedicated to metabolic network analysis</description>
 
     <organization>
-        <url>www.inra.fr</url>
-        <name>Institut national de la recherche agronomique</name>
+        <url>www.inrae.fr</url>
+        <name>Institut national de recherche pour l’agriculture, l’alimentation et l’environnement</name>
     </organization>
 
     <issueManagement>
-        <url>http://vm-metexplore-dev.toulouse.inra.fr:3000/cfrainay/met4jTest/issues</url>
-        <system>GitHub</system>
+        <url>https://forgemia.inra.fr/metexplore/met4j/issues</url>
+        <system>GitLab</system>
     </issueManagement>
 
 

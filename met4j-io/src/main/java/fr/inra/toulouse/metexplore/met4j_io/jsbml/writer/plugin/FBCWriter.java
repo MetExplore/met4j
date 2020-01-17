@@ -108,12 +108,25 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
 
                 FBCSpeciesPlugin speciePlugin = (FBCSpeciesPlugin) specie.getPlugin("fbc");
                 if (bioMetab.getCharge() != null) {
-                    speciePlugin.setCharge(bioMetab.getCharge());
+                    try {
+                        speciePlugin.setCharge(bioMetab.getCharge());
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        System.err.println("Charge not in good format ("+bioMetab.getCharge()+") for "+bioMetab.getId());
+                    }
+
                 }
 
                 if (!fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils
                         .isVoid(bioMetab.getChemicalFormula()))
-                    speciePlugin.setChemicalFormula(bioMetab.getChemicalFormula());
+                    try {
+                        speciePlugin.setChemicalFormula(bioMetab.getChemicalFormula());
+                    }
+                    catch (IllegalArgumentException e)
+                    {
+                        System.err.println("Chemical formula not in good format ("+bioMetab.getChemicalFormula()+") for "+bioMetab.getId());
+                    }
             }
         }
 

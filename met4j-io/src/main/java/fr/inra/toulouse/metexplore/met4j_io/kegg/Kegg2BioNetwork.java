@@ -15,7 +15,6 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reactant.ReactantAttributes;
-import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.Flux;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import org.w3c.dom.Document;
@@ -48,7 +47,7 @@ public class Kegg2BioNetwork {
 
     private ClientConfig config;
     private Client client;
-    private WebResource Webservice;
+    private WebResource webResource;
 
 
     public Kegg2BioNetwork(String idOrg){
@@ -58,15 +57,18 @@ public class Kegg2BioNetwork {
 
         this.config = new DefaultClientConfig();
         this.client = Client.create(this.getConfig());
-        this.Webservice = this.getClient().resource(this.getBaseURI());
+        this.webResource = this.getClient().resource(this.getBaseURI());
     }
 
     public Kegg2BioNetwork(String idOrg, String ori) {
         this.keggOrgId = idOrg;
+
+        this.network = new BioNetwork(idOrg);
+
         this.origin = ori;
         this.config = new DefaultClientConfig();
         this.client = Client.create((ClientConfig)this.getConfig());
-        this.Webservice = this.getClient().resource(this.getBaseURI());
+        this.webResource = this.getClient().resource(this.getBaseURI());
     }
 
     /**
@@ -94,7 +96,7 @@ public class Kegg2BioNetwork {
             this.retrieveGPR();
 
             System.err.println("Retrieving Pathways topology...");
-            this.retievePathways();
+            this.getPathways();
 
             System.err.println("Retrieving Data on Reactions...");
             for (BioReaction rxn : this.network.getReactionsView()) {
@@ -120,8 +122,8 @@ public class Kegg2BioNetwork {
 
         this.getNetWorkName();
 
-        BioCompartment dfltcpt=new BioCompartment("Default", "x");
-        this.network.add(dfltcpt);
+        BioCompartment defaultCompartment = new BioCompartment("x", "default");
+        this.network.add(defaultCompartment );
 
         BioUnitDefinition unitDef= new BioUnitDefinition();
 
@@ -133,7 +135,7 @@ public class Kegg2BioNetwork {
     public void retrieveGPR() throws Exception {
         String[] genes= null;
 
-        String geneString=this.Webservice.path("link").path("genome").path(this.keggOrgId).get(String.class);
+        String geneString=this.webResource.path("link").path("genome").path(this.keggOrgId).get(String.class);
 
         genes=geneString.split("\\n");
 
@@ -156,10 +158,10 @@ public class Kegg2BioNetwork {
      * Retrieves all pathways associated to the organism using the Kegg API.
      * @throws Exception
      */
-    public void retievePathways() throws Exception{
+    public void getPathways() throws Exception{
         String[] pathList= null;
 
-        pathList=this.Webservice.path("list").path("pathway").path(this.keggOrgId).get(String.class).split("\\n");
+        pathList=this.webResource.path("list").path("pathway").path(this.keggOrgId).get(String.class).split("\\n");
         for (String line :pathList){
             String[] pathwayData=line.split("\\t");
             String dbid=this.simplifyId(pathwayData[0].substring(5));
@@ -167,16 +169,16 @@ public class Kegg2BioNetwork {
 
             this.network.add(path);
 
-            this.getPathwayEntities(path);
+            this.getPathwayComponents(path);
 
         }
     }
 
 
-    public void getPathwayEntities(BioPathway pathway) throws Exception {
+    public void getPathwayComponents(BioPathway pathway) throws Exception {
 
         String xml=null;
-        xml=this.Webservice.path("get").path(pathway.getId()).path("kgml").accept(MediaType.APPLICATION_XML).get(String.class);
+        xml=this.webResource.path("get").path(pathway.getId()).path("kgml").accept(MediaType.APPLICATION_XML).get(String.class);
 
         Document doc=Kegg2BioNetwork.loadXMLFromString(xml);
         doc.getDocumentElement().normalize();
@@ -207,7 +209,7 @@ public class Kegg2BioNetwork {
 
                 for(String longId:reactionIds){
 
-                    String id = this.simplifyId(longId);
+                    String id = this.simplifyId(longId).replace("rn_", "");
                     BioReaction reaction;
                     if(this.network.getReactionsView().containsId(id)){
                         reaction=this.network.getReactionsView().get(id);
@@ -284,16 +286,16 @@ public class Kegg2BioNetwork {
 
     private void getNetWorkName() {
         String[] data= null;
-        String Name;
+        String name;
         try {
-            data=this.Webservice.path("info").path(this.keggOrgId).get(String.class).split("\\n");
-            Name=data[0].split("\\s{2,}")[1];
+            data=this.webResource.path("info").path(this.keggOrgId).get(String.class).split("\\n");
+            name=data[0].split("\\s{2,}")[1];
         }catch(UniformInterfaceException e){
-            Name="undefinied";
+            name="undefined";
         }
 
 
-        this.network.setName(Name);
+        this.network.setName(name);
 
     }
 
@@ -383,7 +385,7 @@ public class Kegg2BioNetwork {
         if(Data.get("ENZYME")!=null){
             for(String ecNum:Data.get("ENZYME")){
                 if(this.linkECGene.containsKey(ecNum)){
-                    if (rxn.getEcNumber().isEmpty() || rxn.getEcNumber().equalsIgnoreCase(" ")){
+                    if (rxn.getEcNumber() == null || rxn.getEcNumber().isEmpty() || rxn.getEcNumber().equalsIgnoreCase(" ")){
                         rxn.setEcNumber(ecNum);
                     }
                     else{
@@ -423,12 +425,12 @@ public class Kegg2BioNetwork {
 
         metabolite.addRef(new BioRef("Import", "kegg.compound", metabolite.getId(), 1));
 
-//        if (Data.get("DBLINKS")!=null){
-//            for (String links: Data.get("DBLINKS")){
-//                String[] tab=links.split(": ");
-//                metabolite.addRef(new BioRef("Import", tab[0], tab[1], 1));
-//            }
-//        }
+        if (Data.get("DBLINKS")!=null){
+            for (String links: Data.get("DBLINKS")){
+                String[] tab=links.split(": ");
+                metabolite.addRef(new BioRef("Import", tab[0], tab[1], 1));
+            }
+        }
     }
 
 
@@ -472,7 +474,7 @@ public class Kegg2BioNetwork {
      */
     public HashMap<String, ArrayList<String>> getEntityDataHasHash(String id) {
 
-        String[] Data=this.Webservice.path("get").path(id).get(String.class).split("\\n");
+        String[] Data=this.webResource.path("get").path(id).get(String.class).split("\\n");
 
         String lastKey=null;
         HashMap<String, ArrayList<String>> output=new HashMap<String, ArrayList<String>>();
@@ -512,7 +514,7 @@ public class Kegg2BioNetwork {
 
     public boolean checkKeggOrgId(String keggId){
 
-        String[] Data=this.Webservice.path("list").path("genome").get(String.class).split("\\n");
+        String[] Data=this.webResource.path("list").path("genome").get(String.class).split("\\n");
 
         for(String genome: Data){
             String[] tab=genome.split("\\t");
@@ -551,8 +553,8 @@ public class Kegg2BioNetwork {
         return client;
     }
 
-    public WebResource getWebservice() {
-        return Webservice;
+    public WebResource getWebResource() {
+        return webResource;
     }
 
     public void setConfig(ClientConfig config) {
@@ -563,8 +565,8 @@ public class Kegg2BioNetwork {
         this.client = client;
     }
 
-    public void setWebservice(WebResource webservice) {
-        Webservice = webservice;
+    public void setWebResource(WebResource webResource) {
+        this.webResource = webResource;
     }
 
     public HashMap<String,String> getLinkECGene() {
@@ -572,7 +574,7 @@ public class Kegg2BioNetwork {
     }
 
     public void setLinkECGene(String id) {
-        String[] Data=this.Webservice.path("link").path("ec").path(id).get(String.class).split("\\n");
+        String[] Data=this.webResource.path("link").path("ec").path(id).get(String.class).split("\\n");
 
         for (String line: Data){
             String[] tmp=line.split("\t");

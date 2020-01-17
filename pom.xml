@@ -8,6 +8,10 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <scm>
+        <developerConnection>scm:git:https://forgemia.inra.fr/metexplore/met4j/blob/master/</developerConnection>
+    </scm>
+
     <name>met4j</name>
     <url>http://www.metexplore.fr</url>
 
@@ -16,6 +20,16 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.0-M1</version>
+            </plugin>
+        </plugins>
+    </build>
 
     <modules>
         <module>met4j-core</module>
@@ -31,13 +45,13 @@
     <description>A java library dedicated to metabolic network analysis</description>
 
     <organization>
-        <url>www.inra.fr</url>
-        <name>Institut national de la recherche agronomique</name>
+        <url>www.inrae.fr</url>
+        <name>Institut national de recherche pour l’agriculture, l’alimentation et l’environnement</name>
     </organization>
 
     <issueManagement>
-        <url>http://vm-metexplore-dev.toulouse.inra.fr:3000/cfrainay/met4jTest/issues</url>
-        <system>GitHub</system>
+        <url>https://forgemia.inra.fr/metexplore/met4j/issues</url>
+        <system>GitLab</system>
     </issueManagement>
 
 

@@ -7,6 +7,10 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
+  <scm>
+    <developerConnection>scm:git:https://forgemia.inra.fr/metexplore/met4j/blob/master/met4j-core/</developerConnection>
+  </scm>
+
   <artifactId>met4j-core</artifactId>
   <packaging>jar</packaging>
 

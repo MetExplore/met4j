@@ -1,11 +1,10 @@
 How to add a new module release in the central maven repository ?
 
-Example for met4j-core.
 - Commit everything, merge into master and push
-- Add these lines in the pom.xml file:
+- Add these lines in met4j the pom.xml file:
 
 <scm>
-    <developerConnection>scm:git:https://forgemia.inra.fr/metexplore/met4j/blob/master/met4j-core/</developerConnection>
+    <developerConnection>scm:git:https://forgemia.inra.fr/metexplore/met4j/blob/master/</developerConnection>
 </scm>
 ...
 
@@ -20,4 +19,5 @@ Example for met4j-core.
     ....
   </build>
 
--
+- Run this command line:
+mvn release:prepare -DdryRun=true

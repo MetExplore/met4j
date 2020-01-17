@@ -12,8 +12,9 @@ mvn test
 - If everything is ok: Commit everything, merge into master and push
 
 - Run this command line to test if everything is ok
-mvn release:prepare -DdryRun=true -Darguments=-DskipTests
+mvn --batch-mode release:prepare -DdryRun=true -Darguments=-DskipTests
 
 - If it's ok :
 mvn release:clean
+mvn --batch-mode release:prepare -DdryRun=true -Darguments=-DskipTests
 

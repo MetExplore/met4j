@@ -32,20 +32,17 @@ package fr.inra.toulouse.metexplore.met4j_graph.core.pathway;
 
 
 
-import java.util.HashSet;
-
 import org.jgrapht.EdgeFactory;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 
 /**
  * The Class PathwayGraph allow to build a directed graph representing connections between pathways in a bionetwork.
- * It first identify the sources and targets compounds of a pathways.
+ * It first identify the sources and inner compounds of a pathways.
  * A source is a compounds which are consumed by a reaction of the pathways and not produced by any reaction of the pathways
- * A target is a compounds which are produced by a reaction of the pathways and not consumed by any reaction of the pathways
- * Two pathways are connected by an edge if they share a compound respectively as source and target.
+ * An inner compounds is any compound that can be produced by a reaction of the pathways.
+ * Two pathways are connected by an edge if they as an inner compound that is a source of the other.
  * Side compounds have to be defined to avoid erroneous connections.
  * @author clement
  */
@@ -60,12 +57,7 @@ public class PathwayGraph extends BioGraph<BioPathway,PathwayGraphEdge>{
 	 * Instantiates a new pathway graph.
 	 */
 	public PathwayGraph() {
-		super(new EdgeFactory<BioPathway, PathwayGraphEdge>() {
-			@Override
-			public PathwayGraphEdge createEdge(BioPathway arg0, BioPathway arg1) {
-				return new PathwayGraphEdge(arg0, arg1, new HashSet<BioPhysicalEntity>());
-			}
-		});
+		super(new PathwayGraphEdgeFactory());
 	}
 	
 	
@@ -77,12 +69,7 @@ public class PathwayGraph extends BioGraph<BioPathway,PathwayGraphEdge>{
 	
 	@Override
 	public EdgeFactory<BioPathway, PathwayGraphEdge> getEdgeFactory() {
-		return new EdgeFactory<BioPathway, PathwayGraphEdge>() {
-			@Override
-			public PathwayGraphEdge createEdge(BioPathway arg0, BioPathway arg1) {
-				return new PathwayGraphEdge(arg0, arg1, new HashSet<BioPhysicalEntity>());
-			}
-		};
+		return new PathwayGraphEdgeFactory();
 	}
 
 

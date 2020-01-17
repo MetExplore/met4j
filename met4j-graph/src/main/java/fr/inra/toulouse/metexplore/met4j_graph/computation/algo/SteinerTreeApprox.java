@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.jgrapht.alg.KruskalMinimumSpanningTree;
 import org.jgrapht.alg.PrimMinimumSpanningTree;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
@@ -86,7 +87,7 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 	 * @return the steiner tree list
 	 */
 	public List<E> getSteinerTreeList(Set<V> terminal, boolean weighted){
-		Collection<V> unfound = new HashSet<V>();
+		Collection<V> unfound = new HashSet<>();
 		for(V v:terminal){
 			if(!g.containsVertex(v)) {
 				System.err.println(v.getId()+" not found in graph");
@@ -95,10 +96,10 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 		}
 		terminal.removeAll(unfound);
 		
-		ArrayList<E> list = new ArrayList<E>();
-		CompressedGraph<V, E> cg = (new ShortestPath<V,E,G>(g)).getMetricClosureGraph(terminal, terminal, weighted);
-		PrimMinimumSpanningTree<V, PathEdge<V,E>> prim = new PrimMinimumSpanningTree<V, PathEdge<V,E>>(cg);
-		Set<PathEdge<V,E>> mst = prim.getMinimumSpanningTreeEdgeSet();
+		ArrayList<E> list = new ArrayList<>();
+		CompressedGraph<V, E, G> cg = (new ShortestPath<>(g)).getMetricClosureGraph(terminal, terminal, weighted);
+		KruskalMinimumSpanningTree<V, PathEdge<V,E>> kruskal = new KruskalMinimumSpanningTree<>(cg);
+		Set<PathEdge<V,E>> mst = kruskal.getMinimumSpanningTreeEdgeSet();
 		for(PathEdge<V,E> edge : mst){
 			list.addAll(edge.getPath().getEdgeList());
 		}
@@ -115,7 +116,7 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 	 * @return the steiner tree list
 	 */
 	public List<E> getSteinerTreeList(Set<V> startNodes, Set<V> endNodes, boolean weighted){
-		Collection<V> unfound = new HashSet<V>();
+		Collection<V> unfound = new HashSet<>();
 		for(V v:startNodes){
 			if(!g.containsVertex(v)) {
 				System.err.println(v.getId()+" not found in graph");
@@ -131,41 +132,14 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 		}
 		endNodes.removeAll(unfound);
 		
-		ArrayList<E> list = new ArrayList<E>();
-		DirectedWeightedMultigraph<V, PathEdge<V,E>> cg = (new ShortestPath<V,E,G>(g)).getMetricClosureGraph(startNodes, endNodes, weighted);
-		PrimMinimumSpanningTree<V, PathEdge<V,E>> prim = new PrimMinimumSpanningTree<V, PathEdge<V,E>>(cg);
-		Set<PathEdge<V,E>> mst = prim.getMinimumSpanningTreeEdgeSet();
+		ArrayList<E> list = new ArrayList<>();
+		DirectedWeightedMultigraph<V, PathEdge<V,E>> cg = (new ShortestPath<>(g)).getMetricClosureGraph(startNodes, endNodes, weighted);
+		KruskalMinimumSpanningTree<V, PathEdge<V,E>> kruskal = new KruskalMinimumSpanningTree<>(cg);
+		Set<PathEdge<V,E>> mst = kruskal.getMinimumSpanningTreeEdgeSet();
 		for(PathEdge<V,E> edge : mst){
 			list.addAll(edge.getPath().getEdgeList());
 		}
 		return list;
 	}
-	
-//	/**
-//	 * Gets the steiner tree.
-//	 *
-//	 * @param g the graph
-//	 * @param nodeOfInterest the node of interest list
-//	 * @param weighted if the graph is weighted
-//	 * @return the steiner tree
-//	 */
-//	public G getSteinerTree(Set<V> nodeOfInterest, boolean weighted){
-//		return(g.extractSubGraphFromEdgeList(getSteinerTreeList(nodeOfInterest, weighted)));
-//	}
-//	
-//	/**
-//	 * Gets the steiner tree.
-//	 *
-//	 * @param g the graph
-//	 * @param startNodes the list of source nodes
-//	 * @param endNodes  the list of target nodes
-//	 * @param weighted if the graph is weighted
-//	 * @return the steiner tree
-//	 */
-//	public G getSteinerTree(Set<V> startNodes,Set<V> endNodes, boolean weighted){
-//		return(g.extractSubGraphFromEdgeList(getSteinerTreeList(startNodes, endNodes, weighted)));
-//	}
-
-
 
 }

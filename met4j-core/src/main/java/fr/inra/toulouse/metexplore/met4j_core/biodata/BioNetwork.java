@@ -1,15 +1,15 @@
 /*******************************************************************************
  * Copyright INRA
- * 
+ *
  *  Contact: ludovic.cottret@toulouse.inra.fr
- * 
- * 
+ *
+ *
  * This software is governed by the CeCILL license under French law and
  * abiding by the rules of distribution of free software.  You can  use,
  * modify and/ or redistribute the software under the terms of the CeCILL
  * license as circulated by CEA, CNRS and INRIA at the following URL
  * "http://www.cecill.info".
- * 
+ *
  * As a counterpart to the access to the source code and  rights to copy,
  * modify and redistribute granted by the license, users are provided only
  * with a limited warranty  and the software's author,  the holder of the
@@ -34,2898 +34,1209 @@
  */
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction.Side;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import fr.inra.toulouse.metexplore.met4j_core.utils.Counter;
-import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
+import java.util.stream.Collectors;
 
 /**
- * @author Ludovic COTTRET
- * 
+ *
  */
 
-public class BioNetwork {
-
-
-	private HashMap<String, BioPathway> pathwayList = new HashMap<String, BioPathway>();
-
-	private HashMap<String, BioPhysicalEntity> physicalEntityList = new HashMap<String, BioPhysicalEntity>();
-
-	private HashMap<String, BioEntity> modifiersList = new HashMap<String, BioEntity>();
-	
-	private HashMap<String, BioComplex> complexList = new HashMap<String, BioComplex>();
-
-	private HashMap<String, BioProtein> proteinList = new HashMap<String, BioProtein>();
-
-	private HashMap<String, BioGene> geneList = new HashMap<String, BioGene>();
-
-	private HashMap<String, BioChemicalReaction> biochemicalReactionList = new HashMap<String, BioChemicalReaction>();
-
-	private HashMap<String, BioCatalysis> catalysisList = new HashMap<String, BioCatalysis>();
-
-	private HashMap<String, BioTransport> transportList = new HashMap<String, BioTransport>();
-
-	private HashMap<String, BioTransportWithBiochemicalReaction> transportWithBiochemicalReactionList = new HashMap<String, BioTransportWithBiochemicalReaction>();
-
-	private HashMap<String, BioCompartment> compartments = new HashMap<String, BioCompartment>();
-
-	private HashMap<String, BioCompartmentType> listOfCompartmentType= new HashMap<String, BioCompartmentType>();
-
-	private HashMap<String, BioPhysicalEntity> enzymes = null;
-
-	private ArrayList<String> errorList;
-
-	private String id = "NA";
-
-	private String name = "NA";
-
-	private String type = "custom";
-
-	private String sboterm;
-
-	private BioAnnotation modelAnnot;
-
-	private Notes modelNotes;
-
-	private HashMap<String, BioUnitDefinition> unitDefinitions = new HashMap<String, BioUnitDefinition>();
-
-	private HashMap<String,String> unusedSBMLData=new HashMap<String,String>();
-
-	private QualitativeModel qualModel;
-
-	/**
-	 * Constructor from scratch
-	 */
-	public BioNetwork() {
-		super();
-	}
-
-	/**
-	 * Extract a subNetwork from the network with a list of compartments A
-	 * reaction will be added to the sub-network if at least one substrate or
-	 * product is in the reaction
-	 * 
-	 * @param compartments
-	 *            : the list of compartment ids
-	 * @param withTransports
-	 *            : true if we want to add the transports
-	 * 
-	 */
-	public BioNetwork getSubNetwork(Set<String> compartments,
-			boolean withTransports) {
-		// HashSet<String> reactions=new HashSet<String>();
-		// HashSet<String> compounds=new HashSet<String>();
-
-		HashMap<String, BioChemicalReaction> listOfReactions = new HashMap<String, BioChemicalReaction>();
-
-		// GET ALL THE REACTIONS
-		for (BioChemicalReaction reaction : this.getBiochemicalReactionList()
-				.values()) {
-			// System.out.println(reaction.getEnzList().keySet());
-			if (reaction.getCompartment() != null) {
-				if (compartments.contains(reaction.getCompartment().getId())) {
-					/*
-					 * reactions.add(reaction.getId());
-					 * for(BioPhysicalEntityParticipant cpdParticipant :
-					 * reaction.getLeftParticipantList().values()) {
-					 * compounds.add
-					 * (cpdParticipant.getPhysicalEntity().getId()); }
-					 * for(BioPhysicalEntityParticipant cpdParticipant :
-					 * reaction.getRightParticipantList().values()) {
-					 * compounds.add
-					 * (cpdParticipant.getPhysicalEntity().getId()); }
-					 */
-					listOfReactions.put(reaction.getId(), reaction);
-				}
-			} else {
-				if (withTransports) {
-					boolean transportInvolved = false;
-					for (BioPhysicalEntityParticipant cpdParticipant : reaction
-							.getLeftParticipantList().values()) {
-						if (compartments.contains(cpdParticipant
-								.getPhysicalEntity().getCompartment().getId()))
-							transportInvolved = true;
-					}
-					for (BioPhysicalEntityParticipant cpdParticipant : reaction
-							.getRightParticipantList().values()) {
-						if (compartments.contains(cpdParticipant
-								.getPhysicalEntity().getCompartment().getId()))
-							transportInvolved = true;
-					}
-
-					if (transportInvolved) {
-
-						/*
-						 * reactions.add(reaction.getId());
-						 * for(BioPhysicalEntityParticipant cpdParticipant :
-						 * reaction.getLeftParticipantList().values()) {
-						 * compounds
-						 * .add(cpdParticipant.getPhysicalEntity().getId()); }
-						 * for(BioPhysicalEntityParticipant cpdParticipant :
-						 * reaction.getRightParticipantList().values()) {
-						 * compounds
-						 * .add(cpdParticipant.getPhysicalEntity().getId()); }
-						 */
-						listOfReactions.put(reaction.getId(), reaction);
-					}
-
-				}
-			}
-		}
-		// CREATE THE NETWORK WITH THE REACTIONS
-		// BioNetwork subNet=new BioNetwork(this,reactions,compounds);
-
-		BioNetwork subNet = new BioNetwork(listOfReactions);
-		/*
-		 * for(BioChemicalReaction reaction:
-		 * subNet.getBiochemicalReactionList().values()) {
-		 * System.out.println(reaction.getEnzList().keySet()); }
-		 */
-		// ADD THE COMPARTMENTS TO THE NETWORK
-		/*
-		 * for(String compId : this.getCompartments().keySet()) {
-		 * if(compartments.contains(compId)) {
-		 * subNet.addCompartment(this.getCompartments().get(compId)); } }
-		 */
-
-		return subNet;
-	}
-
-	/**
-	 * Build a subNetwork from an original network, a list of reactions and a
-	 * list of compounds
-	 * 
-	 * @param originalNetwork
-	 * @param reactions
-	 * @param compounds
-	 * 
-	 *            Takes inot account only the reactions and not the informations
-	 *            associated
-	 * 
-	 */
-	public BioNetwork(BioNetwork originalNetwork, Set<String> reactions,
-			Set<String> compounds) {
-
-		for (String cpdId : compounds) {
-
-			String cpdName = originalNetwork.getPhysicalEntityList().get(cpdId)
-					.getName();
-
-			BioPhysicalEntity cpd = new BioPhysicalEntity(cpdId, cpdName);
-
-			// BioCompartment cpt = cpd.getCompartment();
-			BioCompartment cpt = originalNetwork.getPhysicalEntityList()
-					.get(cpdId).getCompartment();
-
-			cpd.setCompartment(cpt);
-
-			this.addCompartment(cpt);
-
-			this.addPhysicalEntity(cpd);
-		}
-
-		for (String reacId : reactions) {
-			BioChemicalReaction reaction = originalNetwork
-					.getBiochemicalReactionList().get(reacId);
-
-			BioChemicalReaction newReaction = new BioChemicalReaction(
-					reaction.getId(), reaction.getName());
-
-			newReaction.setReversibility(reaction.getReversiblity());
-			newReaction.setFlag(reaction.getFlag());
-
-			this.addBiochemicalReaction(newReaction);
-
-			for (BioPhysicalEntityParticipant cpdParticipant : reaction
-					.getLeftParticipantList().values()) {
-
-				String cpdId = cpdParticipant.getPhysicalEntity().getId();
-				String cpdName = cpdParticipant.getPhysicalEntity().getName();
-				BioPhysicalEntity newCpd;
-				if (!this.getPhysicalEntityList().containsKey(cpdId)) {
-					newCpd = new BioPhysicalEntity(cpdId, cpdName);
-					this.addPhysicalEntity(newCpd);
-				} else {
-					newCpd = this.getPhysicalEntityList().get(
-							cpdParticipant.getPhysicalEntity().getId());
-				}
-
-				BioPhysicalEntityParticipant newCpdParticipant = new BioPhysicalEntityParticipant(
-						cpdParticipant.getId(), newCpd,
-						cpdParticipant.getStoichiometricCoefficient(),
-						cpdParticipant.getLocation());
-
-				newReaction.addLeftParticipant(newCpdParticipant);
-
-				if (newReaction.getReversiblity().compareToIgnoreCase(
-						"irreversible-left-to-right") == 0) {
-					newCpd.addReactionAsSubstrate(newReaction);
-				} else if (newReaction.getReversiblity().compareToIgnoreCase(
-						"irreversible-right-to-left") == 0) {
-					newCpd.addReactionAsProduct(newReaction);
-				} else {
-					newCpd.addReactionAsSubstrate(newReaction);
-					newCpd.addReactionAsProduct(newReaction);
-				}
-			}
-
-			for (BioPhysicalEntityParticipant cpdParticipant : reaction
-					.getRightParticipantList().values()) {
-
-				String cpdId = cpdParticipant.getPhysicalEntity().getId();
-				String cpdName = cpdParticipant.getPhysicalEntity().getName();
-				BioPhysicalEntity newCpd;
-				if (!this.getPhysicalEntityList().containsKey(cpdId)) {
-					newCpd = new BioPhysicalEntity(cpdId, cpdName);
-					this.addPhysicalEntity(newCpd);
-				} else {
-					newCpd = this.getPhysicalEntityList().get(
-							cpdParticipant.getPhysicalEntity().getId());
-				}
-
-				BioPhysicalEntityParticipant newCpdParticipant = new BioPhysicalEntityParticipant(
-						cpdParticipant.getId(), newCpd,
-						cpdParticipant.getStoichiometricCoefficient(),
-						cpdParticipant.getLocation());
-
-				newReaction.addRightParticipant(newCpdParticipant);
-
-				if (newReaction.getReversiblity().compareToIgnoreCase(
-						"irreversible-left-to-right") == 0) {
-					newCpd.addReactionAsProduct(newReaction);
-				} else if (newReaction.getReversiblity().compareToIgnoreCase(
-						"irreversible-right-to-left") == 0) {
-					newCpd.addReactionAsSubstrate(newReaction);
-				} else {
-					newCpd.addReactionAsSubstrate(newReaction);
-					newCpd.addReactionAsProduct(newReaction);
-				}
-			}
-		}
-
-	}
-
-	/**
-	 * Constructor from a list of {@link BioChemicalReaction} Duplicate
-	 * reactions
-	 */
-	public BioNetwork(HashMap<String, BioChemicalReaction> listOfReactions) {
-
-		this.setId("BioNetwork" + (new Date()).getTime());
-
-		for (BioChemicalReaction rxn : listOfReactions.values()) {
-
-			BioChemicalReaction newRxn = new BioChemicalReaction(rxn);
-			this.addBiochemicalReaction(newRxn);
-
-			this.addUnitDefinition(newRxn.getLowerBound().unitDefinition);
-			this.addUnitDefinition(newRxn.getUpperBound().unitDefinition);
-
-		}
-
-	}
-
-
-
-	public void printBioNetworkSizeToErr(){
-
-		System.err.println("Size of "+this.getId()+" :");
-
-		System.err.println(this.getUnitDefinitions().size()+" unit def");
-		System.err.println(this.getCompartments().size()+" Comparts");
-		System.err.println(this.getGeneList().size()+" genes");
-		System.err.println(this.getProteinList().size()+" proteins");
-		System.err.println(this.getEnzList().size()+" enzymes");
-		System.err.println(this.getPathwayList().size()+" pathways");
-		System.err.println(this.getBiochemicalReactionList().size()+" reactions");
-		System.err.println(this.getPhysicalEntityList().size()+" metabolites");
-
-	}
-
-
-
-	public void printBioNetworkSizeToOut(){
-
-		System.out.println("Size of "+this.getId()+" :");
-
-		System.out.println(this.getUnitDefinitions().size()+" unit def");
-		System.out.println(this.getCompartments().size()+" Comparts");
-		System.out.println(this.getGeneList().size()+" genes");
-		System.out.println(this.getProteinList().size()+" proteins");
-		System.out.println(this.getEnzList().size()+" enzymes");
-		System.out.println(this.getPathwayList().size()+" pathways");
-		System.out.println(this.getBiochemicalReactionList().size()+" reactions");
-		System.out.println(this.getPhysicalEntityList().size()+" metabolites");
-
-	}
-
-
-
-
-
-	/**
-	 * Filter the holes, i.e. the reactions not spontaneous and not associated
-	 * with an enzyme
-	 * 
-	 */
-
-	public void removeInfeasibleReactions() {
-
-		HashMap<String, BioChemicalReaction> reactions = new HashMap<String, BioChemicalReaction>(
-				this.getBiochemicalReactionList());
-
-		for (BioChemicalReaction reaction : reactions.values()) {
-
-			if (reaction.isPossible() == false) {
-				this.removeBioChemicalReaction(reaction.getId());
-			}
-		}
-	}
-
-	/**
-	 * @return Returns the pathwayList
-	 */
-	public HashMap<String, BioPathway> getPathwayList() {
-		return pathwayList;
-	}
-
-	/**
-	 * Add a pathway in the list
-	 * 
-	 * @param o
-	 *            the object to add
-	 */
-	public void addPathway(BioPathway o) {
-		this.pathwayList.put(o.getId(), o);
-	}
-
-	/**
-	 * @return Returns the errorList.
-	 */
-	public ArrayList<String> getErrorList() {
-		return errorList;
-	}
-
-	/**
-	 * @param errorList
-	 *            The errorList to set.
-	 */
-	public void setErrorList(ArrayList<String> errorList) {
-		this.errorList = errorList;
-	}
-
-	/**
-	 * Add an error in the list
-	 * 
-	 * @param o
-	 *            the object to add
-	 */
-	public void addError(String message) {
-		this.errorList.add(message);
-	}
-
-	/**
-	 * @return Returns the complexList.
-	 */
-	public HashMap<String, BioComplex> getComplexList() {
-		return complexList;
-	}
-
-	/**
-	 * Add a complex
-	 * 
-	 * @param o
-	 *            the object to add
-	 */
-	public void addComplex(BioComplex o) {
-		this.complexList.put(o.getId(), o);
-	}
-
-	/**
-	 * @return Returns the physicalEntityList.
-	 */
-	public HashMap<String, BioPhysicalEntity> getPhysicalEntityList() {
-		return physicalEntityList;
-	}
-
-	/**
-	 * Add a physical entity in the list
-	 * 
-	 * @param o
-	 *            the object to add
-	 */
-	public void addPhysicalEntity(BioPhysicalEntity o) {
-
-		this.physicalEntityList.put(o.getId(), o);
-		this.compartments.put(o.getCompartment().getId(), o.getCompartment());
-
-	}
-	
-	/**
-	 * Add a physical entity in the list
-	 * 
-	 * @param o
-	 *            the object to add
-	 */
-	public void addPhysicalEntities(Collection<BioPhysicalEntity> compounds) {
-		for(BioPhysicalEntity e : compounds){
-			this.addPhysicalEntity(e);
-		}
-	}
-
-	/**
-	 * Removes a compound from a network.
-	 */
-	public void removeCompound(String id) {
-
-		if (this.getPhysicalEntityList().containsKey(id) == true) {
-
-			HashMap<String, BioChemicalReaction> RP = this
-					.getListOfReactionsAsProduct(id);
-			HashMap<String, BioChemicalReaction> RC = this
-					.getListOfReactionsAsSubstrate(id);
-
-			HashMap<String, BioChemicalReaction> reactions = new HashMap<String, BioChemicalReaction>();
-			reactions.putAll(RP);
-			reactions.putAll(RC);
-
-			this.getPhysicalEntityList().remove(id);
-
-			for (BioChemicalReaction rxn : reactions.values()) {
-
-				Set<String> left = rxn.getLeftList().keySet();
-				Set<String> right = rxn.getRightList().keySet();
-
-				if (left.contains(id) == true) {
-					rxn.removeLeftCpd(rxn.getLeftList().get(id));
-				}
-
-				if (right.contains(id) == true) {
-					rxn.removeRightCpd(rxn.getRightList().get(id));
-				}
-
-				if (rxn.getLeftList().size() == 0
-						|| rxn.getRightList().size() == 0) {
-					this.removeBioChemicalReaction(rxn.getId());
-				}
-			}
-		}
-	}
-
-	/**
-	 * Remove several compounds
-	 * 
-	 * @param compounds
-	 */
-	public void removeCompoundsFromIds(Set<String> compounds) {
-
-		for (String cpd : compounds) {
-			this.removeCompound(cpd);
-		}
-
-		return;
-
-	}
-	
-	/**
-	 * Remove several compounds
-	 * 
-	 * @param compounds
-	 */
-	public void removeCompounds(Set<BioPhysicalEntity> compounds) {
-
-		for (BioPhysicalEntity cpd : compounds) {
-			this.removeCompound(cpd.getId());
-		}
-
-		return;
-
-	}
-
-	/**
-	 * Removes a reaction from a network. Removes also the compounds which
-	 * become orphan
-	 */
-	public void removeBioChemicalReaction(String id) {
-
-		if (this.getBiochemicalReactionList().containsKey(id) == true) {
-			BioChemicalReaction rxn = this.getBiochemicalReactionList().get(id);
-
-			HashMap<String, BioPhysicalEntity> left = rxn.getLeftList();
-			HashMap<String, BioPhysicalEntity> right = rxn.getRightList();
-			HashMap<String, BioPhysicalEntityParticipant> leftP = rxn
-					.getLeftParticipantList();
-			HashMap<String, BioPhysicalEntityParticipant> rightP = rxn
-					.getRightParticipantList();
-
-			this.getBiochemicalReactionList().remove(id);
-
-			HashMap<String, BioPhysicalEntity> leftAndRight = new HashMap<String, BioPhysicalEntity>();
-			leftAndRight.putAll(left);
-			leftAndRight.putAll(right);
-
-			HashMap<String, BioPhysicalEntityParticipant> leftAndRightP = new HashMap<String, BioPhysicalEntityParticipant>();
-			leftAndRightP.putAll(leftP);
-			leftAndRightP.putAll(rightP);
-
-			for (String cpdId : leftAndRight.keySet()) {
-
-				if (this.getPhysicalEntityList().containsKey(cpdId)) {
-
-					this.getPhysicalEntityList().get(cpdId)
-					.removeReactionAsProduct(id);
-					this.getPhysicalEntityList().get(cpdId)
-					.removeReactionAsSubstrate(id);
-
-					if (this.getPhysicalEntityList().get(cpdId)
-							.getReactionsAsProduct().size() == 0
-							&& this.getPhysicalEntityList().get(cpdId)
-							.getReactionsAsSubstrate().size() == 0) {
-						// The compound does not occur in any reaction any more
-						this.getPhysicalEntityList().remove(cpdId);
-					}
-				}
-
-			}
-
-		}
-
-	}
-
-	/**
-	 * 
-	 * 
-	 * @return the distribution of the reactionNodes and the compounds in the
-	 *         distinct connected components of the network
-	 */
-	public HashMap<String, Integer> clusterDistribution() {
-
-		int n = -1;
-
-		HashMap<String, Integer> distrib = new HashMap<String, Integer>();
-
-		if (this.getPhysicalEntityList().size() == 0) {
-			return distrib;
-		}
-
-		Set<String> ids = new HashSet<String>();
-
-		ids.addAll(this.getPhysicalEntityList().keySet());
-		ids.addAll(this.getBiochemicalReactionList().keySet());
-
-		while (distrib.keySet().equals(ids) == false) {
-			for (String cpd : this.getPhysicalEntityList().keySet()) {
-				if (distrib.keySet().contains(cpd) == false) {
-					n++;
-					parcoursRecursif(cpd, distrib, n);
-				}
-			}
-		}
-
-		return distrib;
-
-	}
-
-	/**
-	 * 
-	 * @param cpdId
-	 * @param distrib
-	 * @param n
-	 */
-	private void parcoursRecursif(String cpdId,
-			HashMap<String, Integer> distrib, int n) {
-
-		if (distrib.keySet().contains(cpdId)) {
-			return;
-		}
-
-		distrib.put(cpdId, n);
-
-		HashMap<String, BioChemicalReaction> RP = this.getPhysicalEntityList()
-				.get(cpdId).getReactionsAsProduct();
-		HashMap<String, BioChemicalReaction> RS = this.getPhysicalEntityList()
-				.get(cpdId).getReactionsAsSubstrate();
-
-		for (BioChemicalReaction rxn : RP.values()) {
-
-			distrib.put(rxn.getId(), n);
-
-			Set<String> substrates = rxn.getListOfSubstrates().keySet();
-
-			for (String substrate : substrates) {
-				parcoursRecursif(substrate, distrib, n);
-			}
-
-		}
-
-		for (BioChemicalReaction rxn : RS.values()) {
-
-			distrib.put(rxn.getId(), n);
-
-			Set<String> products = rxn.getListOfProducts().keySet();
-
-			for (String product : products) {
-				parcoursRecursif(product, distrib, n);
-			}
-
-		}
-
-		return;
-
-	}
-
-	/**
-	 * @return Returns the proteinList.
-	 */
-	public HashMap<String, BioProtein> getProteinList() {
-		return proteinList;
-	}
-
-	/**
-	 * Add a protein in the list
-	 * 
-	 * @param o
-	 *            the object to add
-	 */
-	public void addProtein(BioProtein o) {
-		this.proteinList.put(o.getId(), o);
-
-		for (BioGene gene : o.getGeneList().values()) {
-			this.addGene(gene);
-		}
-
-	}
-
-	/**
-	 * @return Returns the biochemicalReactionList.
-	 */
-	public HashMap<String, BioChemicalReaction> getBiochemicalReactionList() {
-		return biochemicalReactionList;
-	}
-
-	/**
-	 * Add a biochemical reaction in the list
-	 * 
-	 * @param o
-	 *            the object to add
-	 */
-	public void addBiochemicalReaction(BioChemicalReaction o) {
-		
-		//add reaction's substrate to model if not already set
-		for (BioPhysicalEntity cpd : o.getLeftList().values()) {
-			if (!this.getPhysicalEntityList().containsKey(cpd.getId())) {
-				this.addPhysicalEntity(cpd);
-			}
-			
-			//add reaction to compound's consuming reactions list
-			this.getPhysicalEntityList().get(cpd.getId())
-			.addReactionAsSubstrate(o);
-			if (o.isReversible()) {
-				//if reversible, add reaction to compound's producing reactions list
-				this.getPhysicalEntityList().get(cpd.getId())
-				.addReactionAsProduct(o);
-			}
-
-		}
-		
-		//add reaction's product to model if not already set
-		for (BioPhysicalEntity cpd : o.getRightList().values()) {
-			if (!this.getPhysicalEntityList().containsKey(cpd.getId())) {
-				this.addPhysicalEntity(cpd);
-			}
-			
-			//add reaction to compound's producing reactions list
-			this.getPhysicalEntityList().get(cpd.getId())
-			.addReactionAsProduct(o);
-			if (o.isReversible()) {
-				//if reversible, add reaction to compound's consuming reactions list
-				this.getPhysicalEntityList().get(cpd.getId())
-				.addReactionAsSubstrate(o);
-			}
-		}
-		
-		//add reaction flux units (lower and upper bound) to model if not already set.
-		BioUnitDefinition lowUnit = o.getLowerBound().getUnitDefinition();
-		if(!this.getUnitDefinitions().containsKey(lowUnit.getId())){
-			this.addUnitDefinition(lowUnit);
-		}
-		BioUnitDefinition upUnit = o.getLowerBound().getUnitDefinition();
-		if(!upUnit.equals(lowUnit) && !this.getUnitDefinitions().containsKey(upUnit.getId())){
-			this.addUnitDefinition(upUnit);
-		}
-
-		//add biochemical reaction to model.
-		this.biochemicalReactionList.put(o.getId(), o);
-
-	}
-
-	/**
-	 * @return Returns the catalysisList.
-	 */
-	public HashMap<String, BioCatalysis> getCatalysisList() {
-		return catalysisList;
-	}
-
-	/**
-	 * Add a catalysis in the list
-	 * 
-	 * @param o
-	 *            the object to add
-	 */
-	public void addCatalysis(BioCatalysis o) {
-		this.catalysisList.put(o.getId(), o);
-	}
-
-	/**
-	 * @return Returns the transportList.
-	 */
-	public HashMap<String, BioTransport> getTransportList() {
-		return transportList;
-	}
-
-	/**
-	 * Add a transport in the list
-	 * 
-	 * @param o
-	 *            the object to add
-	 */
-	public void addTransport(BioTransport o) {
-		this.transportList.put(o.getId(), o);
-	}
-
-	/**
-	 * @return Returns the transportWithBiochemicalReactionList.
-	 */
-	public HashMap<String, BioTransportWithBiochemicalReaction> getTransportWithBiochemicalReactionList() {
-		return transportWithBiochemicalReactionList;
-	}
-
-	/**
-	 * Add a transport with bioche mical reactionin the list
-	 * 
-	 * @param o
-	 *            the object to add
-	 */
-	public void addTransportWithBiochemicalReaction(
-			BioTransportWithBiochemicalReaction o) {
-		this.transportWithBiochemicalReactionList.put(o.getId(), o);
-		this.biochemicalReactionList.put(o.getId(), o);
-	}
-
-	/**
-	 * @return Returns the geneList.
-	 */
-	public HashMap<String, BioGene> getGeneList() {
-		return geneList;
-	}
-
-	/**
-	 * @param a
-	 *            gene to add
-	 */
-	public void addGene(BioGene gene) {
-		geneList.put(gene.getId(), gene);
-	}
-
-
-
-	/**
-	 * @return Returns the id.
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * @param id
-	 *            The id to set.
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return Returns the name.
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param id
-	 *            in the encoded mode
-	 * @return physical entity with the same id
-	 */
-	public BioPhysicalEntity getBioPhysicalEntityById(String id) {
-		BioPhysicalEntity entity = null;
-		for (BioPhysicalEntity metabolite : getPhysicalEntityList().values()) {
-			// System.err.println("ID "+metabolite.getId()+" -- "+metabolite.getName());
-			if (StringUtils.sbmlEncode(metabolite.getId()).equals(id)) {
-				entity = metabolite;
-				break;
-			}
-		}
-		return entity;
-	}
-
-	/**
-	 * @param name
-	 *            The name to set.
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @param cpd
-	 * @return the list of reactionNodes which involves the compound cpd as
-	 *         substrate
-	 */
-	public HashMap<String, BioChemicalReaction> getListOfReactionsAsSubstrate(
-			String cpd) {
-
-		HashMap<String, BioChemicalReaction> reactionsAsSubstrate = new HashMap<String, BioChemicalReaction>();
-
-		if (this.getPhysicalEntityList().containsKey(cpd) == false) {
-			return reactionsAsSubstrate;
-		}
-
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
-				.values()) {
-
-			HashMap<String, BioPhysicalEntity> listOfSubstrates = rxn
-					.getListOfSubstrates();
-
-			if (listOfSubstrates.containsKey(cpd)) {
-				reactionsAsSubstrate.put(rxn.getId(), rxn);
-			}
-		}
-
-		return reactionsAsSubstrate;
-
-	}
-
-	public String getNewReactionId(String prefix) {
-
-		String id;
-
-		int n = 1;
-
-		id = prefix + n;
-
-		while (this.getBiochemicalReactionList().containsKey(id)) {
-			n++;
-			id = prefix + n;
-		}
-
-		return id;
-
-	}
-
-	public String getNewMetaboliteId(String prefix, String suffix) {
-
-		String id;
-
-		int n = 1;
-
-		id = prefix + n + suffix;
-
-		while (this.getPhysicalEntityList().containsKey(id)) {
-			n++;
-			id = prefix + n + suffix;
-		}
-
-		return id;
-
-	}
-
-	/**
-	 * @param cpd
-	 * @return the list of reactionNodes which involves the compound cpd as
-	 *         substrate
-	 */
-
-	public HashMap<String, BioChemicalReaction> getListOfReactionsAsPrimarySubstrate(
-			String cpd) {
-
-		HashMap<String, BioChemicalReaction> reactionsAsSubstrate = new HashMap<String, BioChemicalReaction>();
-
-		if (this.getPhysicalEntityList().containsKey(cpd) == false) {
-			return reactionsAsSubstrate;
-		}
-
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
-				.values()) {
-
-			HashMap<String, BioPhysicalEntity> listOfSubstrates = rxn
-					.getListOfPrimarySubstrates();
-
-			if (listOfSubstrates.containsKey(cpd)) {
-				reactionsAsSubstrate.put(rxn.getId(), rxn);
-			}
-		}
-
-		return reactionsAsSubstrate;
-
-	}
-
-	/**
-	 * @param cpd
-	 * @return the list of reactionNodes which involves the compound cpd as
-	 *         product
-	 */
-
-	public HashMap<String, BioChemicalReaction> getListOfReactionsAsProduct(
-			String cpd) {
-
-		HashMap<String, BioChemicalReaction> reactionsAsProduct = new HashMap<String, BioChemicalReaction>();
-
-		if (this.getPhysicalEntityList().containsKey(cpd) == false) {
-			return reactionsAsProduct;
-		}
-
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
-				.values()) {
-
-			HashMap<String, BioPhysicalEntity> listOfProducts = rxn
-					.getListOfProducts();
-
-			if (listOfProducts.containsKey(cpd)) {
-				reactionsAsProduct.put(rxn.getId(), rxn);
-			}
-		}
-
-		return reactionsAsProduct;
-
-	}
-
-	/**
-	 * @param cpd
-	 * @return the list of reactionNodes which involves the compound cpd as
-	 *         primary product
-	 */
-
-	public HashMap<String, BioChemicalReaction> getListOfReactionsAsPrimaryProduct(
-			String cpd) {
-
-		HashMap<String, BioChemicalReaction> reactionsAsProduct = new HashMap<String, BioChemicalReaction>();
-
-		if (this.getPhysicalEntityList().containsKey(cpd) == false) {
-			return reactionsAsProduct;
-		}
-
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
-				.values()) {
-
-			HashMap<String, BioPhysicalEntity> listOfProducts = rxn
-					.getListOfPrimaryProducts();
-
-			if (listOfProducts.containsKey(cpd)) {
-				reactionsAsProduct.put(rxn.getId(), rxn);
-			}
-		}
-
-		return reactionsAsProduct;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @param type
-	 *            the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	/**
-	 * Compare the network with another network by comparing the ids of their
-	 * reactionNodes and of their compounds
-	 * 
-	 * @param otherNetwork
-	 * @return
-	 */
-	public Boolean haveTheSameReactions(BioNetwork otherNetwork) {
-
-		Set<String> rxnIds = this.getBiochemicalReactionList().keySet();
-		Set<String> otherRxnIds = otherNetwork.getBiochemicalReactionList()
-				.keySet();
-
-		Set<String> cpdIds = this.getPhysicalEntityList().keySet();
-		Set<String> otherCpdIds = otherNetwork.getPhysicalEntityList().keySet();
-
-		if (rxnIds.equals(otherRxnIds) && cpdIds.equals(otherCpdIds)) {
-			return true;
-		}
-
-		return false;
-
-	}
-
-	/**
-	 * @param left
-	 * @param right
-	 * @return the list of the reactionNodes which have these left and right
-	 *         compounds
-	 */
-	public HashMap<String, BioChemicalReaction> reactionsWith(Set<String> left,
-			Set<String> right) {
-
-		HashMap<String, BioChemicalReaction> listOfReactions = new HashMap<String, BioChemicalReaction>();
-
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
-				.values()) {
-
-			Set<String> l = rxn.getLeftList().keySet();
-			Set<String> r = rxn.getRightList().keySet();
-
-			if (rxn.getReversiblity().compareToIgnoreCase(
-					"irreversible-left-to-right") == 0) {
-				if (l.equals(left) && r.equals(right))
-					listOfReactions.put(rxn.getId(), rxn);
-			} else if (rxn.getReversiblity().compareToIgnoreCase(
-					"irreversible-right-to-left") == 0) {
-				if (l.equals(right) && r.equals(left))
-					listOfReactions.put(rxn.getId(), rxn);
-			} else {
-				if ((l.equals(right) && r.equals(left))
-						|| (l.equals(left) && r.equals(right)))
-					listOfReactions.put(rxn.getId(), rxn);
-			}
-		}
-
-		return listOfReactions;
-
-	}
-
-	/**
-	 * Returns the reactions that contains the metabolites in the set1 and the
-	 * metabolites in the set2 in each side. For instance : if set1 = A and set2
-	 * = B Returns : R1 : A +C -> B + D R2 : B + E -> A +F
-	 * 
-	 */
-	public HashMap<String, BioChemicalReaction> reactionsThatInvolvesAtLeast(
-			Set<String> set1, Set<String> set2) {
-
-		HashMap<String, BioChemicalReaction> listOfReactions = new HashMap<String, BioChemicalReaction>();
-
-		for (BioChemicalReaction reaction : this.getBiochemicalReactionList()
-				.values()) {
-
-			Set<String> lefts = reaction.getLeftList().keySet();
-			Set<String> rights = reaction.getRightList().keySet();
-
-			if ((lefts.containsAll(set1) && rights.containsAll(set2))
-					|| (lefts.containsAll(set2) && rights.containsAll(set1))) {
-				listOfReactions.put(reaction.getId(), reaction);
-			}
-		}
-
-		return listOfReactions;
-
-	}
-
-	/**
-	 * @param left
-	 * @return the list of the reactionNodes which have these substrates
-	 */
-	public HashMap<String, BioChemicalReaction> reactionsWithTheseSubstrates(
-			Set<String> left) {
-
-		HashMap<String, BioChemicalReaction> listOfReactions = new HashMap<String, BioChemicalReaction>();
-
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
-				.values()) {
-
-			Set<String> substrates = rxn.getListOfSubstrates().keySet();
-
-			if (substrates.equals(left))
-				listOfReactions.put(rxn.getId(), rxn);
-
-		}
-
-		return listOfReactions;
-
-	}
-
-	/**
-	 * Write the network as a list of reactions If a compound doesn't occur in
-	 * any reaction, it will be indicated at the end.
-	 */
-	public String networkAsString(Boolean encodeSbml) {
-
-		String out = "";
-
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
-				.values()) {
-
-			String id = rxn.getId();
-			if(encodeSbml)
+public class BioNetwork extends BioEntity {
+
+    private BioCollection<BioPathway> pathways = new BioCollection<>();
+
+    private BioCollection<BioMetabolite> metabolites = new BioCollection<>();
+
+    private BioCollection<BioProtein> proteins = new BioCollection<>();
+
+    private BioCollection<BioGene> genes = new BioCollection<>();
+
+    private BioCollection<BioReaction> reactions = new BioCollection<>();
+
+    private BioCollection<BioCompartment> compartments = new BioCollection<>();
+
+    private BioCollection<BioEnzyme> enzymes = new BioCollection<>();
+
+    public BioNetwork(String id) {
+        super(id);
+    }
+
+    public BioNetwork() {
+        super("NA");
+    }
+
+    /**
+     * Add several entities
+     *
+     * @param bioEntities
+     */
+    public void add(BioEntity... bioEntities) {
+
+        for (BioEntity e : bioEntities) {
+            this.add(e);
+        }
+    }
+
+    /**
+     * Add one entity
+     *
+     * @param e
+     */
+    public void add(BioEntity e) {
+        if (e instanceof BioPathway) {
+            this.pathways.add((BioPathway) e);
+        } else if (e instanceof BioMetabolite) {
+            this.metabolites.add((BioMetabolite) e);
+        } else if (e instanceof BioProtein) {
+            this.proteins.add((BioProtein) e);
+        } else if (e instanceof BioGene) {
+            this.genes.add((BioGene) e);
+        } else if (e instanceof BioReaction) {
+            this.reactions.add((BioReaction) e);
+        } else if (e instanceof BioCompartment) {
+            this.compartments.add((BioCompartment) e);
+        } else if (e instanceof BioEnzyme) {
+            this.enzymes.add((BioEnzyme) e);
+        } else {
+            throw new IllegalArgumentException(
+                    "BioEntity \"" + e.getClass().getSimpleName() + "\" not supported by BioNetwork");
+        }
+    }
+
+    public void removeOnCascade(BioEntity e) throws IllegalArgumentException {
+
+        if (e instanceof BioPathway) {
+            this.pathways.remove(e);
+        } else if (e instanceof BioMetabolite) {
+            this.removeMetabolite((BioMetabolite) e);
+        } else if (e instanceof BioProtein) {
+            this.removeProtein((BioProtein) e);
+        } else if (e instanceof BioGene) {
+            this.removeGene((BioGene) e);
+        } else if (e instanceof BioReaction) {
+            this.removeReaction((BioReaction) e);
+        } else if (e instanceof BioCompartment) {
+            this.removeCompartment((BioCompartment) e);
+        } else if (e instanceof BioEnzyme) {
+            this.enzymes.remove(e);
+        } else {
+
+            throw new IllegalArgumentException(
+                    "BioEntity \"" + e.getClass().getSimpleName() + "\" not supported by BioNetwork");
+        }
+
+        e = null;
+
+    }
+
+    /**
+     * Remove protein from the network and from the enzymes and the compartments
+     * where it is involved
+     */
+    private void removeProtein(BioProtein protein) {
+
+        this.proteins.remove(protein);
+
+        this.enzymes.forEach(e -> {
+            BioCollection<BioEnzymeParticipant> participants = new BioCollection<>(
+                    e.getParticipants());
+
+            Boolean remove = false;
+            for (BioEnzymeParticipant p : participants) {
+                if (p.getPhysicalEntity().equals(protein)) {
+                    remove = true;
+                    break;
+                }
+            }
+
+            if (remove) {
+                this.removeOnCascade(e);
+            }
+        });
+
+        this.compartments.forEach(c -> {
+            BioCollection<BioEntity> components = new BioCollection<>(c.getComponents());
+
+            components.forEach(p -> {
+                if (p.equals(protein)) {
+                    c.getComponents().remove(p);
+                }
+            });
+        });
+
+    }
+
+    /**
+     * Remove a metabolite from the network and from the reactions and compartments
+     * where it is involved and from the c
+     */
+    private void removeMetabolite(BioMetabolite m) {
+
+        BioCollection<BioReaction> reactions = this.getReactionsFromMetabolite(m);
+
+        reactions.forEach(r -> {
+            BioCollection<BioReactant> lefts = new BioCollection<>(r.getLeftReactants());
+
+            for (BioReactant participant : lefts) {
+                if (participant.getPhysicalEntity().equals(m)) {
+                    r.getLeftReactants().remove(participant);
+                }
+            }
+
+            BioCollection<BioReactant> rights = new BioCollection<>(r.getRightReactants());
+            for (BioReactant participant : rights) {
+                if (participant.getPhysicalEntity().equals(m)) {
+                    r.getRightReactants().remove(participant);
+                }
+            }
+
+            if (r.getLeftReactantsView().size() == 0 && r.getRightReactantsView().size() == 0) {
+                this.removeReaction(r);
+            }
+
+        });
+
+        BioCollection<BioCompartment> cpts = this.getCompartmentsOf(m);
+
+        cpts.forEach(c -> {
+            c.getComponents().remove(m);
+        });
+
+        BioCollection<BioEnzyme> enzymesCopy = this.getEnzymesView();
+
+        enzymesCopy.forEach(e -> {
+            BioCollection<BioEnzymeParticipant> participants = new BioCollection<>(
+                    e.getParticipants());
+
+            for (BioEnzymeParticipant p : participants) {
+                if (p.getPhysicalEntity().equals(m)) {
+                    e.getParticipants().remove(p);
+                }
+            }
+
+            if(e.getParticipantsView().size() == 0)
 			{
-				id = StringUtils.sbmlEncode(id);
+				this.removeOnCascade(e);
 			}
+        });
 
-			out = out.concat(id+" = "+rxn.getEquation(encodeSbml) + "\n");
-		}
-
-		for (BioPhysicalEntity cpd : this.getPhysicalEntityList().values()) {
-			if (cpd.getReactionsAsSubstrate().size() == 0
-					&& cpd.getReactionsAsProduct().size() == 0) {
-
-				if (encodeSbml) {
-					out = out
-							.concat(StringUtils.sbmlEncode(cpd.getId()) + "\n");
-				} else {
-					out = out.concat(cpd.getId() + "\n");
-				}
-			}
-		}
-
-		return out;
-	}
-
-	public String networkAsString() {
-		return this.networkAsString(false);
-	}
-
-	public String printNetworkForHuman(Boolean encodeSbml) {
-
-		String out = "";
-
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
-				.values()) {
-			out = out.concat(rxn.getEquationForHuman(encodeSbml) + "\n");
-		}
-
-		for (BioPhysicalEntity cpd : this.getPhysicalEntityList().values()) {
-			if (cpd.getReactionsAsSubstrate().size() == 0
-					&& cpd.getReactionsAsProduct().size() == 0) {
-
-				out = out.concat(StringUtils.htmlEncode(cpd.getName()) + "\n");
-			}
-		}
-
-		return out;
-	}
-
-	/**
-	 * @param type
-	 *            in : in-degree out : out-degree all : in-degree + out-degree
-	 * @return a TreeBidiMap where the keys are the compound ids and the values
-	 *         the number of links with reactions. If type equals "in", the
-	 *         degree is the number of reactions where the compound occurs as a
-	 *         product. If type equals "out", the degree is the number of
-	 *         reactions where the compound occurs as a substrate. If type
-	 *         equals "all", the degree is the number of reactions where the
-	 *         compound occurs as a substrate or as product.
-	 */
-	public Counter degreeCompounds(String type) {
-
-		Counter res = new Counter();
-
-		if (type.compareToIgnoreCase("all") != 0
-				&& type.compareToIgnoreCase("in") != 0
-				&& type.compareToIgnoreCase("out") != 0) {
-			System.err
-			.println("Error in degreeCompounds in the type of degree");
-			System.exit(1);
-		}
-
-		for (String cpd : this.getPhysicalEntityList().keySet()) {
-			int deg = 0;
-			if (type.compareToIgnoreCase("all") == 0) {
-				HashMap<String, BioChemicalReaction> reactions = new HashMap<String, BioChemicalReaction>();
-				reactions.putAll(this.getPhysicalEntityList().get(cpd)
-						.getReactionsAsSubstrate());
-
-				reactions.putAll(this.getPhysicalEntityList().get(cpd)
-						.getReactionsAsProduct());
-				deg = reactions.size();
-			} else if (type.compareToIgnoreCase("in") == 0) {
-				deg = this.getPhysicalEntityList().get(cpd)
-						.getReactionsAsProduct().size();
-			} else if (type.compareToIgnoreCase("out") == 0) {
-				deg = this.getPhysicalEntityList().get(cpd)
-						.getReactionsAsSubstrate().size();
-			}
-
-			res.put(cpd, deg);
-		}
-
-		return res;
-
-	}
-
-	/**
-	 * @param cofactorFile
-	 *            : file where there is a list of cofactor transformation to
-	 *            mark Mark in each reaction the compounds corresponding to
-	 *            cofactors. If a compound appears always as a cofactor, mark it
-	 *            as a cofactor.
-	 * @throws IOException
-	 */
-	public void markCofactors(String cofactorFile) throws IOException {
+        this.metabolites.remove(m);
 
-		FileInputStream in = new FileInputStream(cofactorFile);
-		InputStreamReader ipsr = new InputStreamReader(in);
-		BufferedReader br = new BufferedReader(ipsr);
-		String ligne;
+    }
 
-		Set<String> compartmentIds = new HashSet<String>();
+    /**
+     * Remove a gene from the network and remove the link between the gene and
+     * proteins
+     */
+    private void removeGene(BioGene g) {
 
-		if (this.getCompartments().size() > 0) {
-			// In the biocyc networks built by MetExplore, the metabolites are
-			// duplicated in each compartment
-			// The information about the compartment is added as suffix in each
-			// metabolite label
-			// ex : ATP_IN_cytoplasm
-			compartmentIds = this.getCompartments().keySet();
-		}
+        this.genes.remove(g);
 
-		Set<ArrayList<ArrayList<String>>> cofactorPairs = new HashSet<ArrayList<ArrayList<String>>>();
+        BioCollection<BioProtein> proteinsCopy = new BioCollection<>(proteins);
+        proteinsCopy.forEach(p -> {
+            if (p.getGene().equals(g)) {
+                this.removeOnCascade(p);
+            }
+        });
 
-		while ((ligne = br.readLine()) != null) {
-			if (!ligne.matches("^#.*")) {
-				String[] tab = ligne.split("\\t");
+    }
 
-				String cof1 = tab[0];
-				String[] str = cof1.split("\\+");
+    /**
+     * Remove a reaction from the network and from the pathways where it is involved
+     */
+    private void removeReaction(BioReaction r) {
 
-				ArrayList<String> cofs1 = new ArrayList<String>();
-				for (int i = 0; i < str.length; i++) {
-					cofs1.add(str[i]);
-				}
+        this.reactions.remove(r);
 
-				String cof2 = tab[1];
-				str = cof2.split("\\+");
+        this.pathways.forEach(p -> {
+            p.removeReaction(r);
+            ;
+        });
 
-				ArrayList<String> cofs2 = new ArrayList<String>();
-				for (int i = 0; i < str.length; i++) {
-					cofs2.add(str[i]);
-				}
+    }
 
-				ArrayList<ArrayList<String>> pair = new ArrayList<ArrayList<String>>();
-				pair.add(cofs1);
-				pair.add(cofs2);
+    /**
+     * Remove a compartment and all the reactions that involve reactants in this
+     * compartment
+     */
+    private void removeCompartment(BioCompartment c) {
 
-				cofactorPairs.add(pair);
+        this.reactions.forEach(r -> {
 
-				for (String compartmentId : compartmentIds) {
-					// We duplicate the pairs for each compartment
-					ArrayList<String> cofs1Compt = new ArrayList<String>();
+            BioCollection<BioReactant> reactants = r.getReactantsView();
+            for (BioReactant reactant : reactants) {
+                if (reactant.getLocation().equals(c)) {
+                    this.removeReaction(r);
+                    break;
+                }
+            }
+        });
+
+        this.compartments.remove(c);
+
+    }
+
+    /**
+     * add a relation reactant-reaction
+     */
+    public void affectLeft(BioMetabolite substrate, Double stoichiometry, BioCompartment localisation,
+                           BioReaction reaction) {
 
-					for (String x : cofs1) {
-						cofs1Compt.add(x + "_IN_" + compartmentId);
-					}
+        affectSideReaction(substrate, stoichiometry, localisation, reaction, Side.LEFT);
+
+    }
+
+    /**
+     * add a relation reactant-reaction
+     */
+    private void affectLeft(BioReaction reaction, BioReactant reactant) {
+
+        affectSideReaction(reactant, reaction, Side.LEFT);
+
+    }
+
+    public void affectLeft(BioReaction reaction, BioReactant... reactants) {
+        for (BioReactant reactant : reactants) {
+            this.affectLeft(reaction, reactant);
+        }
+    }
+
+    public void affectLeft(BioReaction reaction, BioCollection<BioReactant> reactants) {
+        this.affectLeft(reaction, reactants.toArray(new BioReactant[0]));
+    }
+
+    /**
+     * Remove a left reactant
+     */
+    public void removeLeft(BioPhysicalEntity e, BioCompartment localisation, BioReaction reaction) {
+
+        removeSideReaction(e, localisation, reaction, Side.LEFT);
+    }
+
+    /**
+     * Add a relation product-reaction
+     */
+    public void affectRight(BioMetabolite product, Double stoichiometry, BioCompartment localisation,
+                            BioReaction reaction) {
+
+        affectSideReaction(product, stoichiometry, localisation, reaction, Side.RIGHT);
+    }
+
+    /**
+     * Add a relation product-reaction
+     */
+    private void affectRight(BioReaction reaction, BioReactant reactant) {
+        affectSideReaction(reactant, reaction, Side.RIGHT);
+    }
+
+    public void affectRight(BioReaction reaction, BioReactant... reactants) {
+        for (BioReactant reactant : reactants) {
+            this.affectRight(reaction, reactant);
+        }
+    }
+
+    public void affectRight(BioReaction reaction, BioCollection<BioReactant> reactants) {
+        this.affectRight(reaction, reactants.toArray(new BioReactant[0]));
+    }
+
+    /**
+     * Remove a right reactant
+     */
+    public void removeRight(BioPhysicalEntity e, BioCompartment localisation, BioReaction reaction) {
+
+        removeSideReaction(e, localisation, reaction, Side.RIGHT);
+    }
+
+    private void affectSideReaction(BioMetabolite e, Double stoichiometry, BioCompartment localisation,
+                                    BioReaction reaction, Side side) {
+        BioReactant reactant = new BioReactant(e, stoichiometry, localisation);
+
+        // The network must contain the compartment
+        if (!this.compartments.contains(localisation)) {
+            throw new IllegalArgumentException("Compartment " + localisation.getId() + " not in the network");
+        }
+
+        if (!this.metabolites.contains(e)) {
+            throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the network");
+        }
+
+        // The metabolite must be connected to the compartment
+        if (!localisation.getComponents().contains(e)) {
+            throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the compartment");
+        }
+
+        // The network must contain the reaction
+        if (!this.reactions.contains(reaction)) {
+            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not in the network");
+        }
+
+        if (side.equals(Side.LEFT)) {
+            reaction.getLeftReactants().add(reactant);
+        } else {
+            reaction.getRightReactants().add(reactant);
+        }
+    }
 
-					for (String compartmentId2 : compartmentIds) {
+    private void affectSideReaction(BioReactant reactant, BioReaction reaction, Side side) {
 
-						ArrayList<String> cofs2Compt = new ArrayList<String>();
+        BioCompartment localisation = reactant.getLocation();
 
-						for (String x : cofs2) {
-							cofs2Compt.add(x + "_IN_" + compartmentId2);
-						}
+        // The network must contain the compartment
+        if (!this.compartments.contains(localisation)) {
+            throw new IllegalArgumentException("Compartment " + localisation.getId() + " not in the network");
+        }
 
-						ArrayList<ArrayList<String>> pairCpt = new ArrayList<ArrayList<String>>();
+        if (!this.metabolites.contains(reactant.getPhysicalEntity())) {
+            throw new IllegalArgumentException(
+                    "Metabolite " + reactant.getPhysicalEntity().getId() + " not in the network");
+        }
 
-						pairCpt.add(cofs1Compt);
-						pairCpt.add(cofs2Compt);
+        // The metabolite must be connected to the compartment
+        if (!localisation.getComponents().contains(reactant.getPhysicalEntity())) {
+            throw new IllegalArgumentException(
+                    "Metabolite " + reactant.getPhysicalEntity().getId() + " not in the compartment");
+        }
 
-						cofactorPairs.add(pairCpt);
-					}
-				}
-			}
-		}
+        // The network must contain the reaction
+        if (!this.reactions.contains(reaction)) {
+            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not in the network");
+        }
 
-		in.close();
+        if (side.equals(Side.LEFT)) {
+            reaction.getLeftReactants().add(reactant);
+        } else {
+            reaction.getRightReactants().add(reactant);
+        }
+    }
 
-		for (ArrayList<ArrayList<String>> pairs : cofactorPairs) {
+    /**
+     * Remove an entity from a side of reaction
+     */
+    private void removeSideReaction(BioPhysicalEntity e, BioCompartment localisation, BioReaction reaction, Side side) {
 
-			ArrayList<String> cofs1 = pairs.get(0);
-			ArrayList<String> cofs2 = pairs.get(1);
+        // The network must contain the compartment
+        if (!this.compartments.contains(localisation)) {
+            throw new IllegalArgumentException("Compartment " + localisation.getId() + " not in the network");
+        }
 
-			if (this.getPhysicalEntityList().containsKey(cofs1.get(0))
-					&& this.getPhysicalEntityList().containsKey(cofs2.get(0))) {
+        if (!this.metabolites.contains(e)) {
+            throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the network");
+        }
 
-				HashMap<String, BioChemicalReaction> listOfReactions = new HashMap<String, BioChemicalReaction>(
-						this.getBiochemicalReactionList());
+        // The metabolite must be connected to the compartment
+        if (!localisation.getComponents().contains(e)) {
+            throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the compartment");
+        }
 
-				for (BioChemicalReaction reaction : listOfReactions.values()) {
+        // The network must contain the reaction
+        if (!this.reactions.contains(reaction)) {
+            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not in the network");
+        }
 
-					HashMap<String, BioPhysicalEntityParticipant> leftP = reaction
-							.getLeftParticipantList();
-					HashMap<String, BioPhysicalEntityParticipant> rightP = reaction
-							.getRightParticipantList();
+        reaction.removeSide(e, localisation, side);
 
-					HashMap<String, BioPhysicalEntity> left = reaction
-							.getLeftList();
-					HashMap<String, BioPhysicalEntity> right = reaction
-							.getRightList();
+    }
 
-					if (left.containsKey(cofs1.get(0))
-							&& right.containsKey(cofs2.get(0))) {
+    /**
+     * Affects an enzyme to a reaction
+     */
+    public void affectEnzyme(BioEnzyme enzyme, BioReaction reaction) {
 
-						for (BioPhysicalEntityParticipant bp : leftP.values()) {
+        if (!this.contains(enzyme)) {
+            throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
+        }
 
-							if (cofs1.contains(bp.getPhysicalEntity().getId())) {
-								reaction.addCofactor(bp.getPhysicalEntity()
-										.getId());
-							}
+        if (!this.contains(reaction)) {
+            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not present in the network");
+        }
 
-						}
+        reaction.addEnzyme(enzyme);
 
-						for (BioPhysicalEntityParticipant bp : rightP.values()) {
+    }
 
-							if (cofs2.contains(bp.getPhysicalEntity().getId())) {
-								reaction.addCofactor(bp.getPhysicalEntity()
-										.getId());
-							}
+    ;
 
-						}
 
-					} else if (left.containsKey(cofs2.get(0))
-							&& right.containsKey(cofs1.get(0))) {
+    /**
+     * Remove the link between enzyme from a reaction
+     */
+    public void removeEnzymeFromReaction(BioEnzyme enzyme, BioReaction reaction) {
 
-						for (BioPhysicalEntityParticipant bp : leftP.values()) {
+        if (!this.contains(enzyme)) {
+            throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
+        }
 
-							if (cofs2.contains(bp.getPhysicalEntity().getId())) {
-								reaction.addCofactor(bp.getPhysicalEntity()
-										.getId());
-							}
+        if (!this.contains(reaction)) {
+            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not present in the network");
+        }
 
-						}
+        reaction.removeEnzyme(enzyme);
 
-						for (BioPhysicalEntityParticipant bp : rightP.values()) {
+    }
 
-							if (cofs1.contains(bp.getPhysicalEntity().getId())) {
-								reaction.addCofactor(bp.getPhysicalEntity()
-										.getId());
-							}
+    ;
 
-						}
+    // relation enzyme -constituant
+    public void affectSubUnit(BioPhysicalEntity unit, Double quantity, BioEnzyme enzyme) {
 
-					}
-				}
-			}
-		}
+        BioEnzymeParticipant p = new BioEnzymeParticipant(unit, quantity);
 
-		// If a compound is a cofactor in each reaction it occurs, mark it as a
-		// cofactor
-		for (BioPhysicalEntity cpd : this.getPhysicalEntityList().values()) {
+        if (!this.contains(enzyme)) {
+            throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
+        }
 
-			ArrayList<BioChemicalReaction> reactions = new ArrayList<BioChemicalReaction>();
+        if (!this.contains(unit)) {
+            throw new IllegalArgumentException("Physical entity " + unit.getId() + " not present in the network");
+        }
 
-			reactions.addAll(cpd.getReactionsAsSubstrate().values());
-			reactions.addAll(cpd.getReactionsAsProduct().values());
+        enzyme.addParticipant(p);
 
-			Boolean isCof = true;
+    }
 
-			int nb = reactions.size();
-			int i = nb;
+    ;
 
-			while (i > 0 && isCof == true) {
+    public void removeSubUnit(BioPhysicalEntity unit, BioEnzyme enzyme) {
 
-				i--;
+        if (!this.contains(enzyme)) {
+            throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
+        }
 
-				BioChemicalReaction rxn = reactions.get(i);
+        if (!this.contains(unit)) {
+            throw new IllegalArgumentException("Physical entity " + unit.getId() + " not present in the network");
+        }
 
-				HashMap<String, BioPhysicalEntityParticipant> participants = new HashMap<String, BioPhysicalEntityParticipant>();
+        enzyme.removeParticipant(unit);
 
-				participants.putAll(rxn.getLeftParticipantList());
-				participants.putAll(rxn.getRightParticipantList());
+    }
 
-				for (BioPhysicalEntityParticipant bp : participants.values()) {
-					if (bp.getId().compareTo(cpd.getId()) == 0) {
-						isCof = bp.getIsCofactor();
-					}
-				}
-			}
-		}
-	}
+    ;
 
-	/**
-	 * Mark the compounds as side if they occur as side compound in each
-	 * reaction of the network
-	 */
-	public void markSides() {
+    /**
+     * Add a relation protein gene
+     */
+    public void affectGeneProduct(BioProtein protein, BioGene gene) {
 
-		// If a compound is a cofactor in each reaction it occurs, mark it as a
-		// cofactor
-		for (BioPhysicalEntity cpd : this.getPhysicalEntityList().values()) {
+        if (!this.contains(protein)) {
+            throw new IllegalArgumentException("Protein " + protein.getId() + " not present in the network");
+        }
 
-			ArrayList<BioChemicalReaction> reactions = new ArrayList<BioChemicalReaction>();
+        if (!this.contains(gene)) {
+            throw new IllegalArgumentException("Gene " + gene.getId() + " not present in the network");
+        }
 
-			reactions.addAll(cpd.getReactionsAsSubstrate().values());
-			reactions.addAll(cpd.getReactionsAsProduct().values());
+        protein.setGene(gene);
 
-			Boolean isSide = true;
+    }
 
-			int nb = reactions.size();
-			int i = nb;
+    ;
 
-			while (i > 0 && isSide == true) {
+    /**
+     * Remove a relation between gene and product
+     */
+    public void removeGeneProduct(BioProtein protein, BioGene gene) {
 
-				i--;
+        if (!this.contains(protein)) {
+            throw new IllegalArgumentException("Protein " + protein.getId() + " not present in the network");
+        }
 
-				BioChemicalReaction rxn = reactions.get(i);
+        if (!this.contains(gene)) {
+            throw new IllegalArgumentException("Gene " + gene.getId() + " not present in the network");
+        }
 
-				HashMap<String, BioPhysicalEntity> primaries = new HashMap<String, BioPhysicalEntity>();
+        protein.removeGene();
 
-				primaries.putAll(rxn.getPrimaryLeftList());
-				primaries.putAll(rxn.getPrimaryRightList());
+    }
 
-				if (primaries.containsKey(cpd.getId())) {
-					isSide = false;
-				}
+    ;
 
-			}
+    /**
+     * Add a pathway affected to a reaction
+     */
+    public void affectToPathway(BioPathway pathway, BioReaction reaction) {
 
-			cpd.setIsSide(isSide);
+        if (!this.contains(pathway)) {
+            throw new IllegalArgumentException("Pathway " + pathway.getId() + " not present in the network");
+        }
 
-		}
+        if (!this.contains(reaction)) {
+            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not present in the network");
+        }
 
-	}
+        pathway.addReaction(reaction);
 
-	/**
-	 * Double the reversible reactions
-	 */
-	public BioNetwork doubleReversibleReactions() {
+    }
 
-		BioNetwork newNetwork = new BioNetwork(this, this
-				.getBiochemicalReactionList().keySet(), this
-				.getPhysicalEntityList().keySet());
+    ;
 
-		Set<BioChemicalReaction> reactions = new HashSet<BioChemicalReaction>(
-				this.getBiochemicalReactionList().values());
+    public void affectToPathway(BioPathway pathway, BioReaction... reactions) {
 
-		for (BioChemicalReaction rxn : reactions) {
+        for (BioReaction reaction : reactions) {
+            this.affectToPathway(pathway, reaction);
+        }
+    }
 
-			if (rxn.getReversiblity().compareToIgnoreCase("reversible") == 0) {
+    ;
 
-				String originalId = rxn.getId();
-				String originalName = rxn.getName();
 
-				rxn.setId(originalId + "__F");
-				rxn.setName(originalName + "__F");
+    /**
+     * Remove a reaction from a pathway
+     */
+    public void removeReactionFromPathway(BioReaction r, BioPathway p) {
+        if (!this.contains(p)) {
+            throw new IllegalArgumentException("Pathway " + p.getId() + " not present in the network");
+        }
 
-				rxn.setReversibility("irreversible-left-to-right");
+        if (!this.contains(r)) {
+            throw new IllegalArgumentException("Reaction " + r.getId() + " not present in the network");
+        }
 
-				BioChemicalReaction rxn2 = new BioChemicalReaction();
+        p.removeReaction(r);
+    }
 
-				rxn2.setId(originalId + "__B");
-				rxn2.setName(originalName + "__B");
-				rxn2.setLeftParticipantList(rxn.getRightParticipantList());
-				rxn2.setRightParticipantList(rxn.getLeftParticipantList());
+    /**
+     * Get metabolites involved in a pathway
+     */
+    public BioCollection<BioMetabolite> getMetabolitesFromPathway(BioPathway p) {
 
-				rxn2.setReversibility("irreversible-left-to-right");
+        if (!this.contains(p)) {
+            throw new IllegalArgumentException("Pathway " + p.getId() + " not present in the network");
+        }
+        return p.getMetabolites();
 
-				newNetwork.addBiochemicalReaction(rxn2);
-				newNetwork.getBiochemicalReactionList().remove(originalId);
-				newNetwork.addBiochemicalReaction(rxn);
+    }
 
-				for (BioPhysicalEntity cpd : rxn.getLeftList().values()) {
-					cpd.removeReactionAsSubstrate(originalId);
-					cpd.removeReactionAsProduct(originalId);
-				}
+    // relations compartiment - contenu
+    private void affectToCompartment(BioCompartment compartment, BioEntity entity) {
 
-				for (BioPhysicalEntity cpd : rxn.getRightList().values()) {
-					cpd.removeReactionAsSubstrate(originalId);
-					cpd.removeReactionAsProduct(originalId);
-				}
+        if (!contains(compartment)) {
+            throw new IllegalArgumentException("Compartment " + compartment.getId() + " not in the network");
+        }
 
-				for (BioPhysicalEntity cpd : rxn.getLeftList().values()) {
-					cpd.addReactionAsProduct(rxn2);
-					cpd.addReactionAsSubstrate(rxn);
-				}
+        if (!contains(entity)) {
+            throw new IllegalArgumentException("Physical entity " + entity.getId() + " not in the network");
+        }
 
-				for (BioPhysicalEntity cpd : rxn.getRightList().values()) {
-					cpd.addReactionAsProduct(rxn);
-					cpd.addReactionAsSubstrate(rxn2);
-				}
+        compartment.addComponent(entity);
 
-			}
+    }
 
-		}
+    ;
 
-		return newNetwork;
+    /**
+     * Affect several metabolites to a compartment
+     *
+     * @param compartment
+     * @param entities
+     */
+    public void affectToCompartment(BioCompartment compartment, BioEntity... entities) {
 
-	}
+        for (BioEntity ent : entities) {
+            this.affectToCompartment(compartment, ent);
+        }
 
-	
+    }
 
-	/**
-	 * 
-	 */
-	public void compressIdenticalReactions() {
+    ;
 
-		ArrayList<BioChemicalReaction> reactions = new ArrayList<BioChemicalReaction>(
-				this.getBiochemicalReactionList().values());
+    /**
+     * Return true if the entity is in the list of metabolites, reactions, genes,
+     * pathways, proteins, etc...
+     */
+    public Boolean contains(BioEntity e) {
 
-		int l = reactions.size();
+        if (e == null) {
+            throw new NullPointerException();
+        }
 
-		for (int i = 0; i < l; i++) {
+        if (e instanceof BioProtein) {
+            return this.proteins.contains(e);
+        } else if (e instanceof BioMetabolite) {
+            return this.metabolites.contains(e);
+        } else if (e instanceof BioGene) {
+            return this.genes.contains(e);
+        } else if (e instanceof BioEnzyme) {
+            return this.enzymes.contains(e);
+        } else if (e instanceof BioReaction) {
+            return this.reactions.contains(e);
+        } else if (e instanceof BioPathway) {
+            return this.pathways.contains(e);
+        } else if (e instanceof BioCompartment) {
+            return this.compartments.contains(e);
+        }
 
-			BioChemicalReaction rxn1 = reactions.get(i);
+        throw new IllegalArgumentException("BioEntity " + e + " not handled by BioNetwork");
+    }
 
-			Boolean identical = false;
+    /**
+     * returns the list of reactions that can use as substrates a list of
+     * metabolites
+     *
+     * @param exact if true, the match must be exact, if false, the reactions
+     *              returned can have a superset of the specified substrates
+     */
+    public BioCollection<BioReaction> getReactionsFromSubstrates(Collection<String> substrates, Boolean exact) {
 
-			String id = rxn1.getId();
-			String name = rxn1.getName();
+        return this.getReactionsFromSubstratesOrProducts(substrates, exact, true);
 
-			if (this.getBiochemicalReactionList().containsKey(rxn1.getId())) {
+    }
 
-				for (int j = i + 1; j < l; j++) {
-					BioChemicalReaction rxn2 = reactions.get(j);
-					if (this.getBiochemicalReactionList().containsKey(
-							rxn2.getId())) {
-						if (rxn2.isRedundantWith(rxn1)) {
-							identical = true;
-							this.removeBioChemicalReaction(rxn2.getId());
-							id = id + "__or__" + rxn2.getId();
-							name = name + "__or__" + rxn2.getName();
-						}
-					}
+    /**
+     * returns the list of reactions that can prodice a list of metabolites
+     *
+     * @param exact if true, the match must be exact, if false, the reactions
+     *              returned can have a superset of the specified products
+     */
+    public BioCollection<BioReaction> getReactionsFromProducts(Collection<String> substrates, Boolean exact) {
 
-				}
+        return this.getReactionsFromSubstratesOrProducts(substrates, exact, false);
 
-				if (identical) {
-					this.getBiochemicalReactionList().remove(rxn1.getId());
-					rxn1.setId(id);
-					rxn1.setName(name);
-					this.addBiochemicalReaction(rxn1);
-				}
-			}
-		}
-	}
+    }
 
-	public void setBiochemicalReactionList(
-			HashMap<String, BioChemicalReaction> biochemicalReactionList) {
-		this.biochemicalReactionList = biochemicalReactionList;
-	}
+    /**
+     * Get reactions from a list of ids of substrates (or products)
+     */
+    private BioCollection<BioReaction> getReactionsFromSubstratesOrProducts(Collection<String> substrates,
+                                                                            Boolean exact, Boolean areSubstrates) {
 
-	public void setCatalysisList(HashMap<String, BioCatalysis> catalysisList) {
-		this.catalysisList = catalysisList;
-	}
+        for (String s : substrates) {
+            if (!this.metabolites.containsId(s)) {
+                throw new IllegalArgumentException("Metabolite " + s + " not present in the network");
+            }
+        }
 
-	public void setComplexList(HashMap<String, BioComplex> complexList) {
-		this.complexList = complexList;
-	}
+        HashSet<BioReaction> reactionSet = new HashSet<>(this.getReactionsView().stream().filter(o -> {
+            BioReaction r = o;
 
-	public void setGeneList(HashMap<String, BioGene> geneList) {
-		this.geneList = geneList;
-	}
+            if (!r.isReversible()) {
 
-	public void setPathwayList(HashMap<String, BioPathway> pathwayList) {
-		this.pathwayList = pathwayList;
-	}
+                Set<String> refIds = areSubstrates ? r.getLeftsView().getIds() : r.getRightsView().getIds();
 
-	public void setPhysicalEntityList(
-			HashMap<String, BioPhysicalEntity> physicalEntityList) {
-		this.physicalEntityList = physicalEntityList;
-	}
+                return exact ? refIds.equals(substrates) : refIds.containsAll(substrates);
 
-	public void setProteinList(HashMap<String, BioProtein> proteinList) {
-		this.proteinList = proteinList;
-	}
+            } else {
+                return exact
+                        ? r.getRightsView().getIds().equals(substrates) || r.getLeftsView().getIds().equals(substrates)
+                        : r.getRightsView().getIds().containsAll(substrates)
+                        || r.getLeftsView().getIds().containsAll(substrates);
+            }
+        }).collect(Collectors.toSet()));
 
-	public void setTransportList(HashMap<String, BioTransport> transportList) {
-		this.transportList = transportList;
-	}
+        return new BioCollection<>(reactionSet);
+    }
 
-	public void setTransportWithBiochemicalReactionList(
-			HashMap<String, BioTransportWithBiochemicalReaction> transportWithBiochemicalReactionList) {
-		this.transportWithBiochemicalReactionList = transportWithBiochemicalReactionList;
-	}
+    /**
+     * @param m
+     * @param isSubstrate
+     * @return
+     */
+    private BioCollection<BioReaction> getReactionsFromSubstrateOrProduct(BioMetabolite m, Boolean isSubstrate) {
 
-	public Boolean isEmpty() {
+        if (m == null || !this.contains(m)) {
+            throw new IllegalArgumentException("Metabolite not present in the network");
+        }
 
-		Boolean flag = false;
+        BioCollection<BioReaction> reactions = new BioCollection<>();
 
-		if (this.getPhysicalEntityList().size() == 0)
-			flag = true;
+        this.getReactionsView().forEach(r -> {
+            Boolean flag = false;
 
-		return flag;
-	}
+            BioCollection<BioMetabolite> lefts = r.getLeftsView();
+            BioCollection<BioMetabolite> rights = r.getRightsView();
 
-	public void addCompartment(BioCompartment compartment) {
-		this.compartments.put(compartment.getId(), compartment);
-	}
+            if (!r.isReversible()) {
+                flag = isSubstrate ? lefts.contains(m) : rights.contains(m);
+            } else {
+                flag = lefts.contains(m) || rights.contains(m);
+            }
 
-	public void addCompartmentType(BioCompartmentType compartmenttype) {
-		this.listOfCompartmentType.put(compartmenttype.getId(), compartmenttype);
-	}
+            if (flag) {
+                reactions.add(r);
+            }
 
-	public HashMap<String, BioCompartment> getCompartments() {
-		return compartments;
-	}
+        });
 
-	public void setCompartments(HashMap<String, BioCompartment> compartments) {
-		this.compartments = compartments;
-	}
+        return reactions;
 
-	public HashMap<String, BioUnitDefinition> getUnitDefinitions() {
-		return unitDefinitions;
-	}
+    }
 
-	public void setUnitDefinitions(
-			HashMap<String, BioUnitDefinition> unitsDefinition) {
-		this.unitDefinitions = unitsDefinition;
-	}
+    /**
+     * Return the reactions involving m as substrate
+     *
+     * @param m
+     * @return
+     */
+    public BioCollection<BioReaction> getReactionsFromSubstrate(BioMetabolite m) {
+        return this.getReactionsFromSubstrateOrProduct(m, true);
+    }
 
-	public void addUnitDefinition(BioUnitDefinition ud) {
-		this.unitDefinitions.put(ud.getId(), ud);
-	}
+    /**
+     * Return the reactions involving m as product
+     *
+     * @param m
+     * @return
+     */
+    public BioCollection<BioReaction> getReactionsFromProduct(BioMetabolite m) {
+        return this.getReactionsFromSubstrateOrProduct(m, false);
+    }
 
-	/**
-	 * Remove all the reactions whose the 'hole' flag is set to true
-	 */
-	public void removeHoles() {
+    /**
+     * Get pathways where a metabolite is involved
+     */
+    public BioCollection<BioPathway> getPathwaysFromMetabolites(Collection<String> metaboliteIds, Boolean all) {
 
-		Set<String> reactionIds = new HashSet<String>(this
-				.getBiochemicalReactionList().keySet());
+        for (String s : metaboliteIds) {
+            if (!this.metabolites.containsId(s)) {
+                throw new IllegalArgumentException("Metabolite " + s + " not present in the network");
+            }
+        }
 
-		for (String reactionId : reactionIds) {
+        HashSet<BioPathway> pathwaySet = new HashSet<>(this.getPathwaysView().stream().filter(o -> {
 
-			BioChemicalReaction reaction = this.getBiochemicalReactionList()
-					.get(reactionId);
+            BioPathway p = o;
 
-			if (reaction.getHole()) {
-				this.removeBioChemicalReaction(reactionId);
-			}
-		}
-	}
+            Set<String> metaboliteIdRefs = p.getMetabolites().getIds();
 
-	/**
-	 * Remove all the reactions that contain generic metabolites
-	 */
-	public void removeGeneric() {
+            return all ? metaboliteIdRefs.containsAll(metaboliteIds)
+                    : !Collections.disjoint(metaboliteIds, metaboliteIdRefs);
 
-		Set<String> reactionIds = new HashSet<String>(this
-				.getBiochemicalReactionList().keySet());
+        }).collect(Collectors.toSet()));
 
-		for (String reactionId : reactionIds) {
+        return new BioCollection<>(pathwaySet);
 
-			BioChemicalReaction reaction = this.getBiochemicalReactionList()
-					.get(reactionId);
+    }
 
-			Boolean flag = false;
+    /**
+     * Get reactions from genes
+     */
+    public BioCollection<BioReaction> getReactionsFromGenes(Collection<String> geneIds, Boolean all) {
 
-			for (BioPhysicalEntityParticipant leftP : reaction
-					.getLeftParticipantList().values()) {
-				if (leftP.getPhysicalEntity().getIsHolderClass()) {
-					flag = true;
-					break;
-				}
-			}
+        for (String s : geneIds) {
+            if (!this.genes.containsId(s)) {
+                throw new IllegalArgumentException("Gene " + s + " not present in the network");
+            }
+        }
 
-			if (!flag) {
-				for (BioPhysicalEntityParticipant rightP : reaction
-						.getRightParticipantList().values()) {
-					if (rightP.getPhysicalEntity().getIsHolderClass()) {
-						flag = true;
-						break;
-					}
-				}
-			}
+        HashSet<BioReaction> reactionSet = new HashSet<>(this.getReactionsView().stream().filter(o -> {
+            BioReaction r = o;
+            Set<String> geneRefIds = r.getGenes().getIds();
 
-			if (flag) {
-				this.removeBioChemicalReaction(reactionId);
-			}
-		}
-	}
+            return all ? geneRefIds.containsAll(geneIds) : !Collections.disjoint(geneRefIds, geneIds);
 
-	/**
-	 * Remove in each reaction the metabolites flagged as side compounds
-	 */
-	public void removeSide() {
+        }).collect(Collectors.toSet()));
 
-		Set<String> reactionIds = new HashSet<String>(this
-				.getBiochemicalReactionList().keySet());
+        return new BioCollection<>(reactionSet);
 
-		for (String reactionId : reactionIds) {
+    }
 
-			BioChemicalReaction reaction = this.getBiochemicalReactionList()
-					.get(reactionId);
+    public BioCollection<BioReaction> getReactionsFromGene(String geneId) {
 
-			HashMap<String, BioPhysicalEntityParticipant> leftParticipants = new HashMap<String, BioPhysicalEntityParticipant>(
-					reaction.getLeftParticipantList());
+        if (!this.genes.containsId(geneId)) {
+            throw new IllegalArgumentException("Gene " + geneId + " not present in the network");
+        }
 
-			for (BioPhysicalEntityParticipant bpe : leftParticipants.values()) {
+        HashSet<BioReaction> reactionSet = new HashSet<>(this.getReactionsView().stream().filter(o -> {
+            BioReaction r = o;
+            Set<String> geneRefIds = r.getGenes().getIds();
 
-				if (bpe.getIsPrimaryCompound() == false) {
-					reaction.removeLeft(bpe.getPhysicalEntity().getId());
-				}
+            return geneRefIds.contains(geneId);
 
-			}
+        }).collect(Collectors.toSet()));
 
-			HashMap<String, BioPhysicalEntityParticipant> rightParticipants = new HashMap<String, BioPhysicalEntityParticipant>(
-					reaction.getRightParticipantList());
+        return new BioCollection<>(reactionSet);
 
-			for (BioPhysicalEntityParticipant bpe : rightParticipants.values()) {
+    }
 
-				if (bpe.getIsPrimaryCompound() == false) {
-					reaction.removeRight(bpe.getPhysicalEntity().getId());
-				}
+    /**
+     * Get genes involved in a set of reactions
+     */
+    public BioCollection<BioGene> getGenesFromReactions(BioReaction... reactions) {
 
-			}
+        BioCollection<BioGene> genes = new BioCollection<>();
 
-			if (reaction.getLeftList().size() == 0
-					|| reaction.getRightList().size() == 0) {
-				this.removeBioChemicalReaction(reactionId);
-			}
+        for (BioReaction r : reactions) {
+            genes.addAll(this.getGenesFromReaction(r));
+        }
 
-		}
-	}
+        return genes;
+    }
 
-	/**
-	 * In each reaction, remove the metabolite considered as cofactor
-	 */
-	public void removeCofactors() {
+    /**
+     * Get genes involved in a set of reactions
+     */
+    public BioCollection<BioGene> getGenesFromReactions(BioCollection<BioReaction> reactions) {
 
-		Set<String> reactionIds = new HashSet<String>(this
-				.getBiochemicalReactionList().keySet());
+        return getGenesFromReactions(reactions.toArray(new BioReaction[0]));
+    }
 
-		for (String reactionId : reactionIds) {
+    /**
+     * @param reaction
+     * @return
+     */
+    private BioCollection<BioGene> getGenesFromReaction(BioReaction reaction) {
+        if (!this.contains(reaction)) {
+            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not present in the network");
+        }
 
-			BioChemicalReaction reaction = this.getBiochemicalReactionList()
-					.get(reactionId);
+        return reaction.getGenes();
+    }
 
-			HashMap<String, BioPhysicalEntityParticipant> leftParticipants = new HashMap<String, BioPhysicalEntityParticipant>(
-					reaction.getLeftParticipantList());
+    /**
+     * Get genes from pathways
+     */
+    public BioCollection<BioGene> getGenesFromPathways(Collection<String> pathwayIds) {
+        BioCollection<BioPathway> pathwaysToTest = new BioCollection<>();
+        for (String s : pathwayIds) {
+            if (!this.pathways.containsId(s)) {
+                throw new IllegalArgumentException("Reaction " + s + " not present in the network");
+            }
+            pathwaysToTest.add(pathways.get(s));
+        }
 
-			for (BioPhysicalEntityParticipant bpe : leftParticipants.values()) {
+        BioCollection<BioGene> genes = new BioCollection<>();
 
-				if (bpe.getIsCofactor() == true) {
-					reaction.removeLeft(bpe.getPhysicalEntity().getId());
-				}
+        pathwaysToTest.forEach(p -> {
 
-			}
+            p.getReactions().forEach(r -> {
+                genes.addAll(r.getGenes());
+            });
 
-			HashMap<String, BioPhysicalEntityParticipant> rightParticipants = new HashMap<String, BioPhysicalEntityParticipant>(
-					reaction.getRightParticipantList());
+        });
 
-			for (BioPhysicalEntityParticipant bpe : rightParticipants.values()) {
+        return genes;
 
-				if (bpe.getIsCofactor() == true) {
-					reaction.removeRight(bpe.getPhysicalEntity().getId());
-				}
-			}
+    }
 
-			if (reaction.getLeftList().size() == 0
-					|| reaction.getRightList().size() == 0) {
-				this.removeBioChemicalReaction(reactionId);
-			}
+    /**
+     * Return genes involved in enzymes
+     *
+     * @param enzymeIds
+     * @return
+     */
+    public BioCollection<BioGene> getGenesFromEnzymes(Collection<String> enzymeIds) {
 
-		}
-	}
+        BioCollection<BioGene> genes = new BioCollection<>();
 
-	/**
-	 * Remove the reactions that are not involved in the pathways that are in
-	 * the input set Do not remove the reactions that are not involved in any
-	 * pathway
-	 * 
-	 * @param pathwayIds
-	 */
-	public void filterByPathways(Set<String> pathwayIds) {
+        for (String id : enzymeIds) {
+            BioEnzyme e = this.getEnzymesView().get(id);
+            if (e != null) {
+                genes.addAll(this.getGenesFromEnzyme(e));
+            }
+        }
 
-		Set<String> reactionIds = new HashSet<String>(this
-				.getBiochemicalReactionList().keySet());
+        return genes;
 
-		for (String reactionId : reactionIds) {
+    }
 
-			BioChemicalReaction reaction = this.getBiochemicalReactionList()
-					.get(reactionId);
+    /**
+     * Return the collection of genes coding for an enzyme
+     *
+     * @param e
+     * @return
+     */
+    public BioCollection<BioGene> getGenesFromEnzyme(BioEnzyme e) {
 
-			Set<String> pathwayReactionIds = reaction.getPathwayList().keySet();
+        if (!this.getEnzymesView().contains(e)) {
+            throw new IllegalArgumentException("Enzyme " + e.getId() + " not present in the network");
+        }
 
-			if (pathwayReactionIds.size() > 0) {
+        BioCollection<BioGene> genes = new BioCollection<>();
 
-				Boolean flag = true;
+        BioCollection<BioEnzymeParticipant> participants = e.getParticipantsView();
 
-				for (String pathwayId : pathwayReactionIds) {
-					if (pathwayIds.contains(pathwayId)) {
-						flag = false;
-						break;
-					}
-				}
+        for (BioEnzymeParticipant ep : participants) {
 
-				if (flag) {
-					this.removeBioChemicalReaction(reactionId);
-				}
+            BioPhysicalEntity p = ep.getPhysicalEntity();
 
-			}
-		}
-	}
+            if (p.getClass().equals(BioProtein.class)) {
+                BioProtein prot = (BioProtein) p;
 
-	/**
-	 * 
-	 * Remove the compounds that are not in the input set
-	 */
-	public void filterByMetabolites(Set<String> metaboliteIds) {
+                BioGene g = prot.getGene();
 
-		Set<String> reactionIds = new HashSet<String>(this
-				.getBiochemicalReactionList().keySet());
+                if (g != null) {
+                    genes.add(g);
+                }
+            }
+        }
 
-		for (String reactionId : reactionIds) {
+        return genes;
 
-			if (this.getBiochemicalReactionList().containsKey(reactionId)) {
-				BioChemicalReaction reaction = this
-						.getBiochemicalReactionList().get(reactionId);
+    }
 
-				HashMap<String, BioPhysicalEntityParticipant> leftParticipants = new HashMap<String, BioPhysicalEntityParticipant>(
-						reaction.getLeftParticipantList());
+    /**
+     * Get pathways from genes
+     */
+    public BioCollection<BioPathway> getPathwaysFromGenes(Collection<String> geneIds, Boolean all) {
+        for (String s : geneIds) {
+            if (!this.genes.containsId(s)) {
+                throw new IllegalArgumentException("Gene " + s + " not present in the network");
+            }
+        }
 
-				for (BioPhysicalEntityParticipant bpe : leftParticipants
-						.values()) {
+        HashSet<BioPathway> pathwaySet = new HashSet<>(this.getPathwaysView().stream().filter(p -> {
 
-					if (!metaboliteIds
-							.contains(bpe.getPhysicalEntity().getId())) {
-						reaction.removeLeft(bpe.getPhysicalEntity().getId());
-						this.removeCompound(bpe.getPhysicalEntity().getId());
-					}
+            Set<String> geneRefIds = p.getGenes().getIds();
 
-				}
+            return all ? geneRefIds.containsAll(geneIds) : !Collections.disjoint(geneRefIds, geneIds);
 
-				HashMap<String, BioPhysicalEntityParticipant> rightParticipants = new HashMap<String, BioPhysicalEntityParticipant>(
-						reaction.getRightParticipantList());
+        }).collect(Collectors.toSet()));
 
-				for (BioPhysicalEntityParticipant bpe : rightParticipants
-						.values()) {
+        return new BioCollection<>(pathwaySet);
 
-					if (!metaboliteIds
-							.contains(bpe.getPhysicalEntity().getId())) {
-						reaction.removeRight(bpe.getPhysicalEntity().getId());
-						this.removeCompound(bpe.getPhysicalEntity().getId());
-					}
-				}
+    }
 
-				if (reaction.getLeftList().size() == 0
-						&& reaction.getRightList().size() == 0) {
-					this.removeBioChemicalReaction(reactionId);
-				}
-			}
-		}
-	}
+    /**
+     * get pathways from reactions
+     */
+    public BioCollection<BioPathway> getPathwaysFromReactions(Collection<String> reactionIds, Boolean all) {
+        for (String s : reactionIds) {
+            if (!this.reactions.containsId(s)) {
+                throw new IllegalArgumentException("Reaction " + s + " not present in the network");
+            }
+        }
 
-	/**
-	 * Filter the network by a list of reactions
-	 * 
-	 * @param reactionIds
-	 */
-	public void filterByReactions(Set<String> reactionsToKeep) {
+        HashSet<BioPathway> pathwaySet = new HashSet<>(this.getPathwaysView().stream().filter(p -> {
 
-		HashSet<String> reactions = new HashSet<String>(this
-				.getBiochemicalReactionList().keySet());
+            Set<String> reactionRefIds = p.getReactions().getIds();
 
-		for (String reactionId : reactions) {
-			if (!reactionsToKeep.contains(reactionId)) {
-				this.removeBioChemicalReaction(reactionId);
-			}
-		}
+            return all ? reactionRefIds.containsAll(reactionIds) : !Collections.disjoint(reactionRefIds, reactionIds);
 
-		return;
-	}
+        }).collect(Collectors.toSet()));
 
-	/**
-	 * Remove all the reactions that are not in a pathway
-	 */
-	public void getOnlyPathwayReactions() {
+        return new BioCollection<>(pathwaySet);
 
-		Set<String> reactionIds = new HashSet<String>(this
-				.getBiochemicalReactionList().keySet());
+    }
 
-		for (String reactionId : reactionIds) {
+    /**
+     * get pathways from reaction
+     */
+    public BioCollection<BioPathway> getPathwaysFromReaction(BioReaction r) {
+        if (!this.reactions.contains(r)) {
+            throw new IllegalArgumentException("Reaction " + r + " not present in the network");
+        }
 
-			BioChemicalReaction reaction = this.getBiochemicalReactionList()
-					.get(reactionId);
+        HashSet<BioPathway> pathwaySet = new HashSet<>(this.getPathwaysView().stream().filter(p -> {
 
-			if (reaction.getPathwayList().size() == 0) {
-				this.removeBioChemicalReaction(reactionId);
-			}
-		}
-	}
+            Set<String> reactionRefIds = p.getReactions().getIds();
 
-	/**
-	 * Returns the set of reactions catalysed by a gene
-	 * 
-	 * @param geneId
-	 *            : String
-	 * @return a Set of Strings TODO : test it
-	 */
-	public Set<String> getReactionsFromGene(String geneId) {
+            return reactionRefIds.contains(r.getId());
 
-		Set<String> reactions = new HashSet<String>();
+        }).collect(Collectors.toSet()));
 
-		for (BioChemicalReaction reaction : this.getBiochemicalReactionList()
-				.values()) {
+        return new BioCollection<>(pathwaySet);
 
-			HashMap<String, BioGene> genes = reaction.getListOfGenes();
+    }
 
-			if (genes.containsKey(geneId)) {
-				reactions.add(reaction.getId());
-			}
-		}
+    /**
+     * Get reactions involved in pathways
+     */
+    public BioCollection<BioReaction> getReactionsFromPathways(Collection<String> pathwayIds) {
+        BioCollection<BioPathway> pathwaysToTest = new BioCollection<>();
+        for (String s : pathwayIds) {
+            if (!this.pathways.containsId(s)) {
+                throw new IllegalArgumentException("Reaction " + s + " not present in the network");
+            }
+            pathwaysToTest.add(pathways.get(s));
+        }
 
-		return reactions;
+        BioCollection<BioReaction> reactions = new BioCollection<>();
 
-	}
+        pathwaysToTest.forEach(p -> {
 
-	/**
-	 * Reads a gene association written in a Palsson way. Creates genes if they
-	 * don't exist. Create proteins and enzymes from genes.
-	 * 
-	 * @param reactionId
-	 * @param gpr
-	 * @return true if no error, false otherwise TODO : test the gpr
-	 */
-	public Boolean setGeneAssociationFromString(String reactionId, String gpr) {
+            reactions.addAll(p.getReactions());
 
-		Boolean flag = true;
+        });
 
-		BioChemicalReaction rxn = this.getBiochemicalReactionList().get(
-				reactionId);
+        return reactions;
 
-		rxn.getEnzList().clear();
-		rxn.getEnzrxnsList().clear();
+    }
 
-		String[] tab;
+    ;
 
-		ArrayList<String[]> genesAssociated = new ArrayList<String[]>();
+    /**
+     * Get reactions involved in a pathway
+     *
+     * @param p
+     * @return
+     */
+    public BioCollection<BioReaction> getReactionsFromPathway(BioPathway p) {
 
-		if (!gpr.equals("") && !gpr.equals("NA")) {
+        return p.getReactions().getView();
+    }
 
-			if (gpr.contains(" or ")) {
-				tab = gpr.split(" or ");
-			} else {
-				tab = new String[1];
-				tab[0] = gpr;
-			}
+    /**
+     * @param cpd
+     * @return the list of reactionNodes which involves the compound cpd as
+     *         substrate
+     */
 
-			for (String genesAssociatedStr : tab) {
+    /**
+     * @return the pathways
+     */
+    public BioCollection<BioPathway> getPathwaysView() {
+        return pathways.getView();
+    }
 
-				genesAssociatedStr = genesAssociatedStr.replaceAll("[\\(\\)]",
-						"");
+    /**
+     * @return the metabolites
+     */
+    public BioCollection<BioMetabolite> getMetabolitesView() {
+        return metabolites.getView();
+    }
 
-				String[] tab2;
+    /**
+     * @return the proteins
+     */
+    public BioCollection<BioProtein> getProteinsView() {
+        return proteins.getView();
+    }
 
-				if (genesAssociatedStr.contains(" and ")) {
-					tab2 = genesAssociatedStr.split(" and ");
-				} else {
-					tab2 = new String[1];
-					tab2[0] = genesAssociatedStr;
-				}
+    /**
+     * @return the genes
+     */
+    public BioCollection<BioGene> getGenesView() {
+        return genes.getView();
+    }
 
-				int n = tab2.length;
+    /**
+     * @return the reactions
+     */
+    public BioCollection<BioReaction> getReactionsView() {
+        return reactions.getView();
+    }
 
-				for (int k = 0; k < n; k++) {
-					tab2[k] = tab2[k].replaceAll(" ", "");
-				}
+    /**
+     * @return the compartments
+     */
+    public BioCollection<BioCompartment> getCompartmentsView() {
+        return compartments.getView();
+    }
 
-				genesAssociated.add(tab2);
+    /**
+     * @return the enzymes
+     */
+    public BioCollection<BioEnzyme> getEnzymesView() {
+        return enzymes.getView();
+    }
 
-			}
-		}
+    public BioCollection<BioReactant> getLeftReactants(BioReaction r) {
 
-		for (int k = 0; k < genesAssociated.size(); k++) {
-			String[] tabGenes = genesAssociated.get(k);
-			String enzymeId = StringUtils.implode(tabGenes, "_and_");
+        return r.getLeftReactants().getView();
 
-			BioComplex enzyme;
+    }
 
-			if (!this.getComplexList().containsKey(enzymeId)) {
-				enzyme = new BioComplex(enzymeId, enzymeId);
+    public BioCollection<BioReactant> getRightReactants(BioReaction r) {
 
-				this.addComplex(enzyme);
-			}
+        return r.getRightReactants().getView();
 
-			enzyme = this.getComplexList().get(enzymeId);
+    }
 
-			rxn.addEnz(enzyme);
+    /**
+     * @param r
+     * @param left
+     * @return
+     */
+    private BioCollection<BioMetabolite> getLeftsOrRights(BioReaction r, Boolean left) {
 
-			BioProtein protein;
+        if (!this.contains(r)) {
+            throw new IllegalArgumentException("Reaction " + r.getId() + " not present in the network");
+        }
 
-			if (!this.getProteinList().containsKey(enzymeId)) {
-				protein = new BioProtein(enzymeId, enzymeId);
-				this.addProtein(protein);
-			}
-			protein = this.getProteinList().get(enzymeId);
-			enzyme.addComponent(new BioPhysicalEntityParticipant(protein));
+        BioCollection<BioReactant> reactants = left ? r.getLeftReactants() : r.getRightReactants();
 
-			for (int u = 0; u < tabGenes.length; u++) {
-				String geneId = tabGenes[u];
-				BioGene gene;
-				if (!this.getGeneList().containsKey(geneId)) {
-					gene = new BioGene(geneId, geneId);
-					this.addGene(gene);
-				}
+        BioCollection<BioMetabolite> metabolites = new BioCollection<>();
 
-				gene = this.getGeneList().get(geneId);
+        reactants.forEach(m -> {
 
-				protein.addGene(gene);
-			}
-		}
+            metabolites.add(m.getMetabolite());
 
-		return flag;
+        });
 
-	}
+        return metabolites;
 
-	/**
-	 * 
-	 * Iteratively removes the dead reactions
-	 * 
-	 * @return
-	 */
-	public Collection<BioChemicalReaction> trim() {
-		HashSet<BioChemicalReaction> allRemovedReactions = new HashSet<BioChemicalReaction>();
-		Collection<BioChemicalReaction> removed = removeOrphanReactions();
-		while (!removed.isEmpty()) {
-			allRemovedReactions.addAll(removed);
-			removed = removeOrphanReactions();
-		}
-		return allRemovedReactions;
-	}
+    }
 
-	/**
-	 * 
-	 * @return
-	 */
-	private Collection<BioChemicalReaction> removeOrphanReactions() {
-		HashSet<BioChemicalReaction> removedReactions = new HashSet<BioChemicalReaction>();
+    /**
+     * Return the left metabolites of a reaction
+     *
+     * @param r
+     * @return
+     */
+    public BioCollection<BioMetabolite> getLefts(BioReaction r) {
+        return this.getLeftsOrRights(r, true);
+    }
 
-		HashMap<String, BioPhysicalEntity> orphans = this
-				.getOrphanMetabolites();
+    /**
+     * Return the right metabolites of a reaction
+     *
+     * @param r
+     * @return
+     */
+    public BioCollection<BioMetabolite> getRights(BioReaction r) {
+        return this.getLeftsOrRights(r, false);
+    }
 
-		for (BioPhysicalEntity metabolite : orphans.values()) {
+    /**
+     * Return all the metabolites involved in a set of reactions
+     *
+     * @param reactions
+     * @return
+     */
+    public BioCollection<BioMetabolite> getMetabolitesFromReactions(BioCollection<BioReaction> reactions) {
 
-			HashMap<String, BioChemicalReaction> reactionsP = new HashMap<String, BioChemicalReaction>(
-					metabolite.getReactionsAsProduct());
-			for (BioChemicalReaction reaction : reactionsP.values()) {
-				if (this.getBiochemicalReactionList().containsKey(
-						reaction.getId())) {
-					removedReactions.add(reaction);
-					this.removeBioChemicalReaction(reaction.getId());
-				}
-			}
+        BioCollection<BioMetabolite> allMetabolites = new BioCollection<>();
 
-			HashMap<String, BioChemicalReaction> reactionsS = new HashMap<String, BioChemicalReaction>(
-					metabolite.getReactionsAsSubstrate());
+        for (BioReaction reaction : reactions) {
+            if (this.contains(reaction)) {
+                allMetabolites.addAll(this.getLefts(reaction));
+                allMetabolites.addAll(this.getRights(reaction));
+            }
+        }
+        return allMetabolites;
 
-			for (BioChemicalReaction reaction : reactionsS.values()) {
-				if (this.getBiochemicalReactionList().containsKey(
-						reaction.getId())) {
-					removedReactions.add(reaction);
-					this.removeBioChemicalReaction(reaction.getId());
-				}
-			}
-		}
+    }
 
-		return removedReactions;
-	}
+    /**
+     * Get all the reactions where the metabolite m is involved
+     *
+     * @param m
+     * @return
+     */
+    public BioCollection<BioReaction> getReactionsFromMetabolite(BioMetabolite m) {
 
-	/**
-	 * Methods inspired from Surrey FBA, the aim is to get the orphan
-	 * metabolites. An orphan is an internal metabolite
-	 * (boundaryCondition==false) and not produced or not consumed
-	 * 
-	 * @return
-	 */
-	public HashMap<String, BioPhysicalEntity> getOrphanMetabolites() {
-		HashMap<String, BioPhysicalEntity> orphanMetabolites = new HashMap<String, BioPhysicalEntity>();
+        BioCollection<BioReaction> reactions = new BioCollection<>();
 
-		for (BioPhysicalEntity cpd : this.getPhysicalEntityList().values()) {
-			if (!cpd.getBoundaryCondition()) {
-				HashMap<String, BioChemicalReaction> reactions = new HashMap<String, BioChemicalReaction>();
+        reactions.addAll(this.getReactionsFromSubstrate(m));
+        reactions.addAll(this.getReactionsFromProduct(m));
 
-				// HashMap<String, BioChemicalReaction> reactionsP =
-				// this.getListOfReactionsAsProduct(cpd.getId());
-				HashMap<String, BioChemicalReaction> reactionsP = cpd
-						.getReactionsAsProduct();
-				// HashMap<String, BioChemicalReaction> reactionsS =
-				// this.getListOfReactionsAsSubstrate(cpd.getId());
-				HashMap<String, BioChemicalReaction> reactionsS = cpd
-						.getReactionsAsSubstrate();
+        return reactions;
+    }
 
-				reactions.putAll(reactionsP);
-				reactions.putAll(reactionsS);
+    /**
+     * @param e
+     * @return
+     */
+    public BioCollection<BioCompartment> getCompartmentsOf(BioEntity e) {
 
-				Set<String> rp = reactionsP.keySet();
-				rp.retainAll(this.getBiochemicalReactionList().keySet());
-				Set<String> rs = reactionsS.keySet();
-				rs.retainAll(this.getBiochemicalReactionList().keySet());
+        BioCollection<BioCompartment> cpts = new BioCollection<>();
 
-				Set<String> rxns = reactions.keySet();
+        if (!this.contains(e)) {
+            throw new IllegalArgumentException("Entity " + e + " not present in the network");
+        }
 
-				rxns.retainAll(this.getBiochemicalReactionList().keySet());
+        for (BioCompartment c : this.getCompartmentsView()) {
+            if (c.getComponents().contains(e)) {
+                cpts.add(c);
+            }
+        }
 
-				if (rxns.size() < 2) {
-					orphanMetabolites.put(cpd.getId(), cpd);
-				} else {
-					if (rp.size() == 0 || rs.size() == 0) {
-						orphanMetabolites.put(cpd.getId(), cpd);
-					}
-				}
-			}
-		}
+        return cpts;
 
-		return orphanMetabolites;
-	}
-
-	/**
-	 * Create exchange reactions for each orphan metabolite
-	 * 
-	 * @param withExternal
-	 *            . Boolean. if true, create an external metabolite
-	 * @param suffix
-	 *            to add at the end of the external metabolite
-	 * @compartmentId : the id of the compartment in which the external
-	 *                metabolites will be added
-	 */
-	public void addExchangeReactionsToOrphans(Boolean withExternal,
-			String suffix, String compartmentId) {
-
-		HashMap<String, BioPhysicalEntity> orphans = this
-				.getOrphanMetabolites();
-
-		for (BioPhysicalEntity orphan : orphans.values()) {
-
-			this.addExchangeReactionToMetabolite(orphan.getId(), withExternal,
-					suffix, compartmentId);
-
-		}
-	}
-
-	/**
-	 * Adds an exchange reaction to a metabolite
-	 * 
-	 * @param cpdId
-	 * @param withExternal
-	 * @param suffix
-	 * @param compartmentId
-	 */
-	public String addExchangeReactionToMetabolite(String cpdId,
-			Boolean withExternal, String suffix, String compartmentId) {
-
-		if (!this.getPhysicalEntityList().containsKey(cpdId)) {
-			return null;
-		}
-
-		BioChemicalReaction rxn = new BioChemicalReaction(
-				this.getNewReactionId("R_EX_"));
-
-		if (withExternal) {
-			BioPhysicalEntity cpd = new BioPhysicalEntity(
-					this.getNewMetaboliteId("M_", suffix));
-
-			BioCompartment compartment;
-
-			if (this.getCompartments().containsKey(compartmentId)) {
-				compartment = this.getCompartments().get(compartmentId);
-			} else {
-				if (compartmentId == null || compartmentId.equals("")) {
-					compartmentId = "NA";
-				}
-				compartment = new BioCompartment(compartmentId, compartmentId);
-
-				this.addCompartment(compartment);
-
-			}
-
-			cpd.setBoundaryCondition(true);
-			cpd.setCompartment(compartment);
-
-			rxn.addLeftParticipant(new BioPhysicalEntityParticipant(cpd));
-		}
-		rxn.addRightParticipant(new BioPhysicalEntityParticipant(this
-				.getPhysicalEntityList().get(cpdId)));
-		rxn.setReversibility(true);
-
-		this.addBiochemicalReaction(rxn);
-
-		return rxn.getId();
-
-	}
-
-	/**
-	 * Compute the choke point reactions A "chokepoint reaction" is defined as a
-	 * reaction that either uniquely consumes a specific metabolite or uniquely
-	 * produces a specific metabolite
-	 * 
-	 * @return the set of choke point reaction identifiers
-	 */
-	public Set<String> getChokeReactions() {
-
-		Set<String> chokes = new HashSet<String>();
-
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
-				.values()) {
-
-			HashMap<String, BioPhysicalEntity> substrates = rxn
-					.getListOfSubstrates();
-
-			Boolean isChoke = false;
-
-			for (BioPhysicalEntity substrate : substrates.values()) {
-
-				HashMap<String, BioChemicalReaction> rs = this
-						.getListOfReactionsAsSubstrate(substrate.getId());
-
-				rs.remove(rxn.getId());
-
-				if (rs.size() == 0) {
-					HashMap<String, BioChemicalReaction> rp = this
-							.getListOfReactionsAsProduct(substrate.getId());
-
-					rp.remove(rxn.getId());
-
-					if (rp.size() > 0) {
-						isChoke = true;
-						break;
-					}
-				}
-			}
-
-			if (!isChoke) {
-				HashMap<String, BioPhysicalEntity> products = rxn
-						.getListOfProducts();
-
-				for (BioPhysicalEntity product : products.values()) {
-
-					HashMap<String, BioChemicalReaction> rp = this
-							.getListOfReactionsAsProduct(product.getId());
-
-					rp.remove(rxn.getId());
-
-					if (rp.size() == 0) {
-						HashMap<String, BioChemicalReaction> rs = this
-								.getListOfReactionsAsSubstrate(product.getId());
-
-						rs.remove(rxn.getId());
-
-						if (rs.size() > 0) {
-							isChoke = true;
-							break;
-						}
-					}
-				}
-			}
-
-			if (isChoke) {
-				chokes.add(rxn.getId());
-			}
-		}
-
-		return chokes;
-
-	}
-
-	/**
-	 * Compute the choke point metabolites A "chokepoint metabolite" is defined
-	 * as a metabolite that is either uniquely consumed by a specific reaction
-	 * or uniquely produced by a specific reaction.
-	 * 
-	 * @return the set of choke point metabolite identifiers
-	 */
-	public Set<String> getChokeMetabolites() {
-
-		Set<String> chokes = new HashSet<String>();
-
-		for (BioPhysicalEntity cpd : this.getPhysicalEntityList().values()) {
-
-			Boolean flag = false;
-
-			HashMap<String, BioChemicalReaction> rs = this
-					.getListOfReactionsAsSubstrate(cpd.getId());
-
-			if (rs.size() == 1) {
-				flag = true;
-			} else {
-				HashMap<String, BioChemicalReaction> rp = this
-						.getListOfReactionsAsProduct(cpd.getId());
-				if (rp.size() == 1) {
-					flag = true;
-				}
-			}
-
-			if (flag) {
-				chokes.add(cpd.getId());
-			}
-		}
-
-		return chokes;
-
-	}
-
-	/**
-	 * Returns an array with two codes corresponding to the local topology of a
-	 * metabolite in the network
-	 * 
-	 * @param cpdId
-	 * @return an array with the first element corresponding to : -1 : not in
-	 *         the network 0 : not a choke point 1 : choke point not consumed 2
-	 *         : choke point not produced 3 : choke point consumed by one
-	 *         reaction and produced by one reaction
-	 * 
-	 *         The second element corresponds to -1 : not in the network 0 : in
-	 *         a path 1 : source 2 : dead-end 3 : source or dead-end 4 :
-	 *         isolated metabolite
-	 */
-	public ArrayList<Integer> getLocalTopology(String cpdId) {
-
-		ArrayList<Integer> res = new ArrayList<Integer>();
-
-		res.add(0);
-		res.add(0);
-
-		if (!this.getPhysicalEntityList().containsKey(cpdId)) {
-			res.set(0, -1);
-			res.set(1, -1);
-			return res;
-		}
-
-		HashMap<String, BioChemicalReaction> rs = this
-				.getListOfReactionsAsSubstrate(cpdId);
-		HashMap<String, BioChemicalReaction> rp = this
-				.getListOfReactionsAsProduct(cpdId);
-
-		if (rp.size() == 1 && rs.size() != 1) {
-			res.set(0, 1);
-		} else if (rp.size() != 1 && rs.size() == 1) {
-			res.set(0, 2);
-		} else if (rp.size() == 1 && rs.size() == 1) {
-			res.set(0, 3);
-		} else {
-			res.set(0, 0);
-		}
-
-		if (rs.size() == 0 && rp.size() == 0) {
-			res.set(1, 4);
-		} else if (rs.size() > 0 && rp.size() > 0) {
-			if (rs.size() == 1 && rp.size() == 1 && rs.equals(rp)) {
-				res.set(1, 3);
-			} else {
-				res.set(1, 0);
-			}
-		} else if (rs.size() > 0 && rp.size() == 0) {
-			res.set(1, 1);
-		} else if (rp.size() > 0 && rs.size() == 0) {
-			res.set(1, 2);
-		}
-
-		return res;
-	}
-
-	/**
-	 * Returns the list of pathways where a compound is involved
-	 * 
-	 * @param cpdId
-	 * @return a HashMap<String, BioPathway>
-	 */
-	public HashMap<String, BioPathway> getPathwaysOfCompound(String cpdId) {
-
-		HashMap<String, BioPathway> pathways = new HashMap<String, BioPathway>();
-
-		if (this.getPhysicalEntityList().containsKey(cpdId)) {
-
-			HashMap<String, BioChemicalReaction> rs = this
-					.getListOfReactionsAsSubstrate(cpdId);
-			HashMap<String, BioChemicalReaction> rp = this
-					.getListOfReactionsAsProduct(cpdId);
-
-			HashMap<String, BioChemicalReaction> reactions = new HashMap<String, BioChemicalReaction>(
-					rs);
-			reactions.putAll(rp);
-
-			for (BioChemicalReaction r : reactions.values()) {
-				pathways.putAll(r.getPathwayList());
-			}
-		}
-
-		return pathways;
-	}
-
-	/**
-	 * Replace all the compartments by one compartment "NA" If the suffix is
-	 * "_IN_*", it is removed
-	 * 
-	 */
-	public void removeCompartments() {
-
-		// We replace all the compartments by one not specified
-		BioCompartment cptNA = new BioCompartment("NA", "NA");
-		this.setCompartments(new HashMap<String, BioCompartment>());
-		this.addCompartment(cptNA);
-
-		HashMap<String, BioPhysicalEntity> cpds = new HashMap<String, BioPhysicalEntity>(
-				this.getPhysicalEntityList());
-
-		for (BioPhysicalEntity cpd : cpds.values()) {
-
-			this.getPhysicalEntityList().remove(cpd.getId());
-
-			String newId = cpd.getId().replaceAll("_IN_.*", "");
-
-			cpd.setId(newId);
-
-			cpd.setCompartment(cptNA);
-
-			this.addPhysicalEntity(cpd);
-
-		}
-
-	}
-
-	/**
-	 * Tests an objective function
-	 * 
-	 * @param obj
-	 * @return
-	 */
-	public Boolean testObjectiveFunction(String obj) {
-
-		Boolean flag = true;
-
-		// The objective function has the following format : 1 R1 + 2.5 R3
-
-		String tab[] = obj.split(" \\+ ");
-
-		for (String member : tab) {
-
-			String tab2[] = member.split(" ");
-
-			String reactionId;
-
-			if (tab2.length == 1) {
-				reactionId = tab2[0];
-			} else if (tab2.length == 2) {
-				reactionId = tab2[1];
-				String coeff = tab2[0];
-
-				try {
-					Double.parseDouble(coeff);
-				} catch (NumberFormatException e) {
-					System.err.println(coeff + " is not a double");
-					return false;
-				}
-
-			} else {
-				System.err.println("Objective function badly formatted");
-				return false;
-			}
-
-			if (!this.getBiochemicalReactionList().containsKey(reactionId)) {
-				System.err.println("The reaction " + reactionId
-						+ " is not in the network");
-				return false;
-			}
-
-		}
-
-		return flag;
-
-	}
-
-	/**
-	 * Returns the list of exchange reactions for a metabolite
-	 * 
-	 * @param cpdId
-	 * @return
-	 */
-	public HashMap<String, BioChemicalReaction> getExchangeReactionsOfMetabolite(
-			String cpdId) {
-
-		HashMap<String, BioChemicalReaction> reactions = new HashMap<String, BioChemicalReaction>();
-		HashMap<String, BioChemicalReaction> ex_reactions = new HashMap<String, BioChemicalReaction>();
-
-		if (!this.getPhysicalEntityList().containsKey(cpdId)) {
-			System.err.println("[Warning] getExchangeReactionsOfMetabolite : "
-					+ cpdId + " is not in the network !");
-			return ex_reactions;
-		}
-
-		reactions.putAll(this.getListOfReactionsAsProduct(cpdId));
-		reactions.putAll(this.getListOfReactionsAsSubstrate(cpdId));
-
-		for (BioChemicalReaction reaction : reactions.values()) {
-
-			if (reaction.isExchangeReaction()) {
-				ex_reactions.put(reaction.getId(), reaction);
-			}
-
-		}
-
-		return ex_reactions;
-
-	}
-
-	/**
-	 * Compute the atom balances for all the reactions
-	 * 
-	 * @return
-	 */
-	public HashMap<String, HashMap<String, Double>> computeBalanceAllReactions() {
-
-		HashMap<String, HashMap<String, Double>> balances = new HashMap<String, HashMap<String, Double>>();
-
-		for (BioChemicalReaction rxn : this.getBiochemicalReactionList()
-				.values()) {
-
-			String id = rxn.getId();
-
-			HashMap<String, Double> balance = rxn.computeAtomBalances();
-
-			balances.put(id, balance);
-		}
-
-		return balances;
-
-	}
-
-	/**
-	 * Find all possible compartment-unannotated reactions in the subnetwork of
-	 * the compound in question.
-	 * 
-	 * ATTENTION: COMPARTMENT MATCHING ONLY POSSIBLE IF PALSON OR BIOCYC FORMAT
-	 * OF COMPARTMENT TAGGING IN ID IS FOLLOWED.
-	 * 
-	 * @param HashMap
-	 *            <String,BioPhysicalEntity> ... list of compounds for which
-	 *            reactions need to be looked up.
-	 * @param String
-	 *            ... chose PALSSON or BIOCYC
-	 * @return HashMap<String,HashMap<String,BioChemicalReaction>> ...
-	 *         String:Compund_name &
-	 *         HashMap<String,BioChemicalReaction>:Reaction_name
-	 *         :BioChemicalReaction created: 18-07-13
-	 */
-	public HashMap<String, HashMap<String, BioChemicalReaction>> getListOfPossibleReactionsinSubnetwork(
-			HashMap<String, BioPhysicalEntity> list, String IDtype) {
-
-		HashMap<String, HashMap<String, BioChemicalReaction>> out = new HashMap<String, HashMap<String, BioChemicalReaction>>(); // declare
-		// output
-		// variable
-
-		for (String s : list.keySet()) {
-			HashMap<String, BioPhysicalEntity> cpds = new HashMap<String, BioPhysicalEntity>();
-			HashMap<String, BioChemicalReaction> rxns = new HashMap<String, BioChemicalReaction>();
-			HashMap<String, BioChemicalReaction> okrxns = new HashMap<String, BioChemicalReaction>();
-
-			rxns = list.get(s).getReactionsAsProduct(); // get list of reactions
-			// in which the compound
-			// of interest is
-			// product
-			BioCompartment compart = list.get(s).getCompartment();
-
-			for (String n : rxns.keySet()) {
-
-				cpds = rxns.get(n).getListOfProducts(); // get all products from
-				// reaction
-				Boolean flag = true;
-
-				for (String m : cpds.keySet()) { // check if all products are in
-					// the same compartment
-
-					BioCompartment c1 = cpds.get(m).getCompartment();
-
-					if (IDtype.equals("BIOCYC")) { // if BIOCYC ID
-						if (c1.getName().equalsIgnoreCase("CCO-CYTOSOL")) { // IN
-							// BIOCYC,
-							// compounds
-							// in
-							// cytosol
-							// dont
-							// have
-							// their
-							// IDs
-							// tagged
-
-							m = m + "_CCO-GLYCO-LUM"; // * ---> *_CCO-GLYCO-LUM
-
-						} else if (!compart.equals(c1)) { // *_CCO-***-*** --->
-							// *_CCO-GLYCO-LUM
-
-							m = m.subSequence(0, m.indexOf("CCO"))
-									+ "CCO-GLYCO-LUM";
-
-						} else {
-							m = m;
-						}
-					} else if (IDtype.equals("PALSSON")) { // if PALSSON ID
-
-						if (!compart.equals(c1)) { // M_***_* ----> M_***_x
-
-							m = m.subSequence(0, m.indexOf("_.$")) + "_x";
-
-						} else {
-							m = m;
-						}
-					} else { // if ID type is not PALSSON or BIOCYC, terminate
-						System.err
-						.println(IDtype
-								+ " FORMAT OF COMPARTMENT TAGGING IN ID IS NOT SUPPORTED");
-						System.err
-						.println(IDtype
-								+ " FORMAT OF COMPARTMENT TAGGING IN ID IS NOT SUPPORTED");
-						System.exit(0);
-					}
-
-					if (this.physicalEntityList.containsKey(m)) { // check if
-						// the
-						// modified
-						// exits....if
-						// not
-						// switch of
-						// the
-						// trigger
-						// flag
-						flag = false;
-					}
-				}
-
-				if (flag) { // Add reaction to 'okrxns' if all products are in
-					// the sam compartment
-					okrxns.put(n, rxns.get(n));
-				}
-			}
-
-			rxns.putAll(list.get(s).getReactionsAsSubstrate()); // get list of
-			// reactions in
-			// which the
-			// compound of
-			// interest is
-			// product
-
-			for (String n : rxns.keySet()) {
-
-				cpds = rxns.get(n).getListOfSubstrates(); // get all reactants
-				// from reaction
-
-				Boolean flag = true;
-
-				for (String m : cpds.keySet()) { // check if all products are in
-					// the same compartment
-
-					BioCompartment c1 = cpds.get(m).getCompartment();
-
-					if (IDtype.equals("BIOCYC")) {
-						if (c1.getName().equalsIgnoreCase("CCO-CYTOSOL")) {
-
-							m = m + "_CCO-GLYCO-LUM";
-
-						} else if (!compart.equals(c1)) {
-
-							m = m.subSequence(0, m.indexOf("CCO"))
-									+ "CCO-GLYCO-LUM";
-
-						} else {
-
-						}
-					} else if (IDtype.equals("PALSSON")) {
-
-						if (!compart.equals(c1)) {
-
-							m = m.subSequence(0, m.indexOf("_.$")) + "_x";
-
-						} else {
-
-						}
-					} else {
-						System.err
-						.println(IDtype
-								+ " FORMAT OF COMPARTMENT TAGGING IN ID IS NOT SUPPORTED");
-						System.err
-						.println(IDtype
-								+ " FORMAT OF COMPARTMENT TAGGING IN ID IS NOT SUPPORTED");
-						System.exit(0);
-					}
-				}
-
-				if (flag) {
-					System.err.println(n);
-					okrxns.put(n, rxns.get(n)); // Add reaction to 'okrxns' if
-					// all substrates are in the sam
-					// compartment
-				}
-			}
-
-			out.put(s, okrxns);
-
-		}
-
-		return out;
-	}
-
-
-
-	/**
-	 * Return all existing enzymes, without retrieving them from the reaction.
-	 * @return a {@link HashMap} of {@link BioPhysicalEntity}
-	 */
-	public HashMap<String, BioPhysicalEntity> getEnzList() {
-
-		if (this.enzymes == null) {
-			this.enzymes = new HashMap<String, BioPhysicalEntity>();
-		}
-		return this.enzymes;
-
-	}
-
-
-
-
-	/**
-	 * computes the list of the enzymes from the existing reactions in the network
-	 * @return a {@link HashMap} of {@link BioPhysicalEntity}
-	 */
-	public HashMap<String, BioPhysicalEntity> getEnzymeList() {
-
-		if (this.enzymes == null) {
-			this.enzymes = new HashMap<String, BioPhysicalEntity>();
-
-			for (BioChemicalReaction reaction : this
-					.getBiochemicalReactionList().values()) {
-				HashMap<String, BioPhysicalEntity> enzymes = reaction
-						.getEnzList();
-				for (BioPhysicalEntity enzyme : enzymes.values()) {
-					this.enzymes.put(enzyme.getId(), enzyme);
-				}
-			}
-		}
-
-		return this.enzymes;
-
-	}
-
-
-	public void resetEnzyme(){
-		this.enzymes = null;
-	}
-
-	/**
-	 * Finds a commpartement by its ID in the compartements lists
-	 * @param Sid : String, Identifier of the compartment
-	 * @return cmp : BioCompartment
-	 */
-	public BioCompartment findbioCompartmentInList(String Sid){
-
-		if( this.compartments == null){
-			return null;
-		}
-		else{
-			for (BioCompartment cmp: this.getCompartments().values()){
-				if(cmp.getId().equals(Sid)){
-					return cmp;
-				}
-			}
-			return null;
-		}
-	}
-
-	public BioCompartmentType findbioCompartmentTypeInList(String Sid){
-
-		if( this.listOfCompartmentType == null){
-			return null;
-		}
-		else{
-			for (BioCompartmentType compartType: this.getListOfCompartmentType().values()){
-				if(compartType.getId().equals(Sid)){
-					return compartType;
-				}
-			}
-			return null;
-		}
-	}
-
-	public BioUnitDefinition findUnitInUnitDefinituin(String UnitSid){
-		if( this.unitDefinitions == null){
-			return null;
-		}
-		else{
-			for (BioUnitDefinition unitdef: this.getUnitDefinitions().values()){
-				if(unitdef.getId().equals(UnitSid)){
-					return unitdef;
-				}
-			}
-			return null;
-		}
-	}
-
-	public HashMap<String, BioCompartmentType> getListOfCompartmentType() {
-		return listOfCompartmentType;
-	}
-
-	public void setListOfCompartmentType(
-			HashMap<String, BioCompartmentType> listOfCompartmentType) {
-		this.listOfCompartmentType = listOfCompartmentType;
-	}
-
-	public String getSboterm() {
-		return sboterm;
-	}
-
-	public void setSboterm(String sboterm) {
-		this.sboterm = sboterm;
-	}
-
-	public BioAnnotation getModelAnnot() {
-		return modelAnnot;
-	}
-
-	public void setModelAnnot(BioAnnotation modelAnnot) {
-		this.modelAnnot = modelAnnot;
-	}
-
-	public Notes getModelNotes() {
-		return modelNotes;
-	}
-
-	public void setModelNotes(Notes modelNotes) {
-		this.modelNotes = modelNotes;
-	}
-
-	public HashMap<String, String> getUnusedSBMLData() {
-		return unusedSBMLData;
-	}
-
-	public void setUnusedSBMLData(HashMap<String, String> unusedSBMLData) {
-		this.unusedSBMLData = unusedSBMLData;
-	}
-
-	public void addUnusedSBMLdata(String id,String data){
-		this.unusedSBMLData.put(id, data);
-	}
-
-	public QualitativeModel getQualModel() {
-		return qualModel;
-	}
-
-	public void setQualModel(QualitativeModel qualModel) {
-		this.qualModel = qualModel;
-	}
-
-	public HashMap<String, BioEntity> getModifiersList() {
-		return modifiersList;
-	}
-	public void addModifier(BioEntity modifier) {
-		this.modifiersList.put(modifier.getId(), modifier);
-	}
-	public void setModifiersList(HashMap<String, BioEntity> modifiersList) {
-		this.modifiersList = modifiersList;
-	}
-
-
+    }
 
 }

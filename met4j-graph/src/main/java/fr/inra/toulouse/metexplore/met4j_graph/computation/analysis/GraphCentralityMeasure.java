@@ -32,7 +32,6 @@ package fr.inra.toulouse.metexplore.met4j_graph.computation.analysis;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import fr.inra.toulouse.metexplore.met4j_graph.computation.algo.ShortestPath;
@@ -75,7 +74,7 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 	 * @return the betweenness
 	 */
 	public Map<V, Integer> getBetweenness(Set<BioPath<V,E>> allPaths){
-		Map<V, Integer>  passingThrough = new HashMap<V, Integer>();
+		Map<V, Integer>  passingThrough = new HashMap<>();
 		//Instantiate the map;
 		for(V vertex : g.vertexSet()){
 			passingThrough.put(vertex, 0);
@@ -100,9 +99,9 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 	 * @return the geodesic betweenness
 	 */
 	public Map<V, Integer> getGeodesicBetweenness(){
-		if(this.allShortestPaths==null){
-			ShortestPath<V, E, G> pathComputor = new ShortestPath<V, E, G>(g);
-			allShortestPaths=pathComputor.getAllShortestPaths();
+		if(this.allShortestPaths ==null){
+			ShortestPath<V, E, G> pathComputor = new ShortestPath<>(g);
+            allShortestPaths =pathComputor.getAllShortestPaths();
 		}
 		return getBetweenness(allShortestPaths);
 	}
@@ -114,7 +113,7 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 	 * @return the neighborhood centrality
 	 */
 	public Map<V, Integer> getNeighborhoodCentrality(Set<BioPath<V,E>> allPaths){
-		Map<V, Integer>  centrality = new HashMap<V, Integer>();
+		Map<V, Integer>  centrality = new HashMap<>();
 		//Instantiate the map;
 		for(V vertex : g.vertexSet()){
 			centrality.put(vertex, 0);
@@ -135,9 +134,9 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 	 * @return the geodesic neighborhood centrality
 	 */
 	public Map<V, Integer> getGeodesicNeighborhoodCentrality(){
-		if(this.allShortestPaths==null){
-			ShortestPath<V, E, G> pathComputor = new ShortestPath<V, E, G>(g);
-			allShortestPaths=pathComputor.getAllShortestPaths();
+		if(this.allShortestPaths ==null){
+			ShortestPath<V, E, G> pathComputor = new ShortestPath<>(g);
+            allShortestPaths =pathComputor.getAllShortestPaths();
 		}
 		return getNeighborhoodCentrality(allShortestPaths);
 	}
@@ -150,7 +149,7 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 	 * @return the farness
 	 */
 	public Map<V, Double> getFarness(Set<BioPath<V,E>> allPaths){
-		Map<V, Double>  farness = new HashMap<V, Double>();
+		Map<V, Double>  farness = new HashMap<>();
 		//Instantiate the map;
 		for(V vertex : g.vertexSet()){
 			farness.put(vertex, Double.POSITIVE_INFINITY);
@@ -174,7 +173,7 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 	 * @return the closeness
 	 */
 	public Map<V, Double> getCloseness(Set<BioPath<V,E>> allPaths){
-		Map<V, Double>  closeness = new HashMap<V, Double>();
+		Map<V, Double>  closeness = new HashMap<>();
 		//Instantiate the map;
 		for(V vertex : g.vertexSet()){
 			closeness.put(vertex, 0.0);
@@ -189,11 +188,9 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 			double dist2 = closeness.get(vertex2);
 			closeness.put(vertex2, dist2+path.getWeight());
 		}
-		
-		
-		for(Entry<V,Double> entry : closeness.entrySet()){
-			closeness.put(entry.getKey(), (1.0/entry.getValue()));
-		}
+
+
+		closeness.replaceAll((k, v) -> (1.0 / v));
 		
 //		//STRONGLY CONNECTED GRAPHS CASE
 //		Map<V, Double>  farness = getFarness(allPaths);
@@ -204,7 +201,7 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 	}
 	
 	public Map<V, Double> getInCloseness(Set<BioPath<V,E>> allPaths){
-		Map<V, Double>  closeness = new HashMap<V, Double>();
+		Map<V, Double>  closeness = new HashMap<>();
 		//Instantiate the map;
 		for(V vertex : g.vertexSet()){
 			closeness.put(vertex, 0.0);
@@ -215,16 +212,14 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 			double dist = closeness.get(vertex);
 			closeness.put(vertex, dist+path.getWeight());
 		}
-		
-		for(Entry<V,Double> entry : closeness.entrySet()){
-			closeness.put(entry.getKey(), (1.0/entry.getValue()));
-		}
+
+		closeness.replaceAll((k, v) -> (1.0 / v));
 		
 		return closeness;
 	}
 	
 	public Map<V, Double> getOutCloseness(Set<BioPath<V,E>> allPaths){
-		Map<V, Double>  closeness = new HashMap<V, Double>();
+		Map<V, Double>  closeness = new HashMap<>();
 		//Instantiate the map;
 		for(V vertex : g.vertexSet()){
 			closeness.put(vertex, 0.0);
@@ -236,9 +231,7 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 			closeness.put(vertex, dist+path.getWeight());
 		}
 
-		for(Entry<V,Double> entry : closeness.entrySet()){
-			closeness.put(entry.getKey(), (1.0/entry.getValue()));
-		}
+		closeness.replaceAll((k, v) -> (1.0 / v));
 		
 		return closeness;
 	}
@@ -246,9 +239,9 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 	
 	
 	public Map<V, Double> getGeodesicCloseness(){
-		if(this.allShortestPaths==null){
-			ShortestPath<V, E, G> pathComputor = new ShortestPath<V, E, G>(g);
-			allShortestPaths=pathComputor.getAllShortestPaths();
+		if(this.allShortestPaths ==null){
+			ShortestPath<V, E, G> pathComputor = new ShortestPath<>(g);
+            allShortestPaths =pathComputor.getAllShortestPaths();
 		}
 		return getCloseness(allShortestPaths);
 	}
@@ -261,7 +254,7 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 	 * @return the eccentricity
 	 */
 	public Map<V, Double> getEccentricity(Set<BioPath<V,E>> allPaths){
-		Map<V, Double>  eccentricity = new HashMap<V, Double>();
+		Map<V, Double>  eccentricity = new HashMap<>();
 		//Instantiate the map;
 		for(V vertex : g.vertexSet()){
 			eccentricity.put(vertex, Double.NEGATIVE_INFINITY);
@@ -275,9 +268,9 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 			}
 		}
 		
-		for(V vertex : eccentricity.keySet()){
-			if(eccentricity.get(vertex)==Double.NEGATIVE_INFINITY){
-				eccentricity.put(vertex, Double.POSITIVE_INFINITY);
+		for(Map.Entry<V, Double> entry : eccentricity.entrySet()){
+			if(entry.getValue() ==Double.NEGATIVE_INFINITY){
+				eccentricity.put(entry.getKey(), Double.POSITIVE_INFINITY);
 			}
 		}
 		return eccentricity;
@@ -287,9 +280,9 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 	 * @return the allShortestPaths
 	 */
 	public Set<BioPath<V, E>> getAllShortestPaths() {
-		if(this.allShortestPaths==null){
-			ShortestPath<V, E, G> pathComputor = new ShortestPath<V, E, G>(g);
-			allShortestPaths=pathComputor.getAllShortestPaths();
+		if(this.allShortestPaths ==null){
+			ShortestPath<V, E, G> pathComputor = new ShortestPath<>(g);
+            allShortestPaths =pathComputor.getAllShortestPaths();
 		}
 		return allShortestPaths;
 	}

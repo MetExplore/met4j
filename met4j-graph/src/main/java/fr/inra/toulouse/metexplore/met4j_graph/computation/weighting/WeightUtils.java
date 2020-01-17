@@ -87,7 +87,7 @@ public class WeightUtils {
 	public static <E extends Edge<?>, G extends BioGraph<?,E>> void pow(G g, int pow){
 		for(E e : g.edgeSet()){
 			double w = g.getEdgeWeight(e);
-			g.setEdgeWeight(e, Math.pow(w, pow));
+			g.setEdgeWeight(e, StrictMath.pow(w, pow));
 		}
 		return;
 	}
@@ -101,7 +101,7 @@ public class WeightUtils {
 	public static <E extends Edge<?>, G extends BioGraph<?,E>> void invert(G g) throws IllegalArgumentException{
 		for(E e : g.edgeSet()){
 			double w = g.getEdgeWeight(e);
-			if(w>1 || w<0) throw (new IllegalArgumentException("weights have to be between 0 and 1 : "+e.getV1().getId()+" -> "+e.getV2().getId()+" ("+e.toString()+") "+g.getEdgeWeight(e)));
+			if(w>1 || w<0) throw (new IllegalArgumentException("weights have to be between 0 and 1 : "+e.getV1().getId()+" -> "+e.getV2().getId()+" ("+ e +") "+g.getEdgeWeight(e)));
 			g.setEdgeWeight(e, 1.0-w);
 		}
 		return;
@@ -130,7 +130,7 @@ public class WeightUtils {
 	 * @return the number of removed edge
 	 */
 	public static <E extends Edge<?>, G extends BioGraph<?,E>> int removeEdgeWithNaNWeight(G g){
-		List<E> edgesToRemove = new ArrayList<E>();
+		List<E> edgesToRemove = new ArrayList<>();
 		for(E e : g.edgeSet()){
 			if(Double.isNaN(g.getEdgeWeight(e))){
 				edgesToRemove.add(e);
@@ -152,9 +152,9 @@ public class WeightUtils {
 	public static <E extends Edge<?>, G extends BioGraph<?,E>> void export(G g, String outputPath) throws IOException {
 		BufferedWriter out = new BufferedWriter(new FileWriter(outputPath));
 		for(E e : g.edgeSet()){
-			StringBuffer entry = new StringBuffer(e.getV1().getId());
+			StringBuilder entry = new StringBuilder(e.getV1().getId());
 			entry.append("\t").append(e.getV2().getId());
-			entry.append("\t").append(e.toString());
+			entry.append("\t").append(e);
 			entry.append("\t").append(g.getEdgeWeight(e));
 			out.write(entry.toString());
 			out.newLine();

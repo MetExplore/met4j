@@ -37,8 +37,8 @@ import java.util.Arrays;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.analysis.GraphOperation;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -53,7 +53,7 @@ public class TestGraphOperation {
 	
 	public static CompoundGraph g2;
 	
-	public static BioPhysicalEntity a,b,c,d,e;
+	public static BioMetabolite a,b,c,d,e;
 	
 	public static ReactionEdge ab,bc,ac,cd,ce;
 	 
@@ -61,17 +61,17 @@ public class TestGraphOperation {
 	public static void init(){
 		g1 = new CompoundGraph();
 		g2 = new CompoundGraph();
-		a = new BioPhysicalEntity("a"); g1.addVertex(a);g2.addVertex(a);
-		b = new BioPhysicalEntity("b"); g1.addVertex(b);g2.addVertex(b);
-		c = new BioPhysicalEntity("c"); g1.addVertex(c);g2.addVertex(c);
-		d = new BioPhysicalEntity("d"); g1.addVertex(d);
-		e = new BioPhysicalEntity("e"); g2.addVertex(e);
+		a = new BioMetabolite("a"); g1.addVertex(a);g2.addVertex(a);
+		b = new BioMetabolite("b"); g1.addVertex(b);g2.addVertex(b);
+		c = new BioMetabolite("c"); g1.addVertex(c);g2.addVertex(c);
+		d = new BioMetabolite("d"); g1.addVertex(d);
+		e = new BioMetabolite("e"); g2.addVertex(e);
 		
-		ab = new ReactionEdge(a,b,new BioChemicalReaction("ab"));g1.addEdge(a, b, ab);g2.addEdge(a, b, ab);
-		bc = new ReactionEdge(b,c,new BioChemicalReaction("bc"));g1.addEdge(b, c, bc);g2.addEdge(a, b, ab);
-		ac = new ReactionEdge(a,c,new BioChemicalReaction("ac"));g1.addEdge(a, c, ac);
-		cd = new ReactionEdge(c,d,new BioChemicalReaction("cd"));g1.addEdge(c, d, cd);
-		ce = new ReactionEdge(c,e,new BioChemicalReaction("ce"));g2.addEdge(c, e, ce);
+		ab = new ReactionEdge(a,b,new BioReaction("ab"));g1.addEdge(a, b, ab);g2.addEdge(a, b, ab);
+		bc = new ReactionEdge(b,c,new BioReaction("bc"));g1.addEdge(b, c, bc);g2.addEdge(a, b, ab);
+		ac = new ReactionEdge(a,c,new BioReaction("ac"));g1.addEdge(a, c, ac);
+		cd = new ReactionEdge(c,d,new BioReaction("cd"));g1.addEdge(c, d, cd);
+		ce = new ReactionEdge(c,e,new BioReaction("ce"));g2.addEdge(c, e, ce);
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public class TestGraphOperation {
 	public void testIntersect() {
 		CompoundGraph i = new CompoundGraph();
 		i=GraphOperation.intersect(g1, g2,CompoundGraph.getFactory());
-		BioPhysicalEntity[] expectedVertex = {a,b,c};
+		BioMetabolite[] expectedVertex = {a,b,c};
 		ReactionEdge[] expectedEdges = {ab,bc};
 		assertTrue("missing edge in intersection", Arrays.asList(expectedEdges).containsAll(i.edgeSet()));
 		assertTrue("missing vertex in intersection", Arrays.asList(expectedVertex).containsAll(i.vertexSet()));
@@ -96,7 +96,7 @@ public class TestGraphOperation {
 	public void testUnion() {
 		CompoundGraph u = new CompoundGraph();
 		u=GraphOperation.union(g1, g2, CompoundGraph.getFactory());
-		BioPhysicalEntity[] expectedVertex = {a,b,c,d,e};
+		BioMetabolite[] expectedVertex = {a,b,c,d,e};
 		ReactionEdge[] expectedEdges = {ab,bc,ac,cd,ce};
 		assertTrue("missing edge in intersection", Arrays.asList(expectedEdges).containsAll(u.edgeSet()));
 		assertTrue("missing vertex in intersection", Arrays.asList(expectedVertex).containsAll(u.vertexSet()));

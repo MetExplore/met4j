@@ -37,14 +37,15 @@ import org.jgrapht.EdgeFactory;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.GraphFactory;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * The Class CompoundGraph.
  * @author clement
  */
-public class ReactionGraph extends BioGraph<BioChemicalReaction, CompoundEdge> {
+public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 
 
 	private static final long serialVersionUID = -929423100467552635L;
@@ -59,7 +60,7 @@ public class ReactionGraph extends BioGraph<BioChemicalReaction, CompoundEdge> {
 	 * Instantiates a new bio graph.
 	 */
 	public ReactionGraph() {
-		super(edgeFactory);
+		super(new CompoundEdgeFactory());
 	}
 	
 	/**
@@ -69,14 +70,14 @@ public class ReactionGraph extends BioGraph<BioChemicalReaction, CompoundEdge> {
 	 */
 	public ReactionGraph(ReactionGraph g) {
 		super(edgeFactory);
-		for(BioChemicalReaction vertex : g.vertexSet()){
-			this.addVertex(vertex);
+		for(BioReaction vertex : g.vertexSet()){
+            this.addVertex(vertex);
 		}
 		for(CompoundEdge edge : g.edgeSet()){
 			CompoundEdge newEdge = new CompoundEdge(edge.getV1(), edge.getV2(), edge.getCompound());
-			this.addEdge(newEdge.getV1(), newEdge.getV2(), newEdge);
-			this.setEdgeWeight(newEdge, g.getEdgeWeight(edge));
-			this.setEdgeScore(newEdge, g.getEdgeScore(edge));
+            this.addEdge(newEdge.getV1(), newEdge.getV2(), newEdge);
+            this.setEdgeWeight(newEdge, g.getEdgeWeight(edge));
+            this.setEdgeScore(newEdge, g.getEdgeScore(edge));
 		}
 	}
 
@@ -88,7 +89,7 @@ public class ReactionGraph extends BioGraph<BioChemicalReaction, CompoundEdge> {
 	 * @return the edges from reaction
 	 */
 	public HashSet<CompoundEdge> getEdgesFromCompound(String compoundId){
-		HashSet<CompoundEdge> edgeList = new HashSet<CompoundEdge>();
+		HashSet<CompoundEdge> edgeList = new HashSet<>();
 		for(CompoundEdge edge : this.edgeSet()){
 			if(edge.toString().equalsIgnoreCase(compoundId)){
 				edgeList.add(edge);
@@ -102,8 +103,8 @@ public class ReactionGraph extends BioGraph<BioChemicalReaction, CompoundEdge> {
 	 *
 	 * @return the biochemical reaction list
 	 */
-	public HashMap<String, BioPhysicalEntity> getCompoundList(){
-		HashMap<String, BioPhysicalEntity> compoundMap = new HashMap<String, BioPhysicalEntity>();
+	public HashMap<String, BioMetabolite> getCompoundList(){
+		HashMap<String, BioMetabolite> compoundMap = new HashMap<>();
 		for(CompoundEdge e: this.edgeSet()){
 			if(!compoundMap.containsKey(e.toString())){
 				compoundMap.put(e.toString(), e.getCompound());
@@ -113,18 +114,19 @@ public class ReactionGraph extends BioGraph<BioChemicalReaction, CompoundEdge> {
 	}
 	
 	/**
-	 * Adds the edges from reaction.
+	 * Adds the edges from compound. Reactions not in graph will be ignored
 	 *
-	 * @param r the reaction
+	 * @param model the bionetwork
+	 * @param c the connecting metabolite
 	 */
-	public void addEdgesFromCompound(BioPhysicalEntity c){
-		for(BioChemicalReaction sub : c.getReactionsAsSubstrate().values()){
-			if(this.hasVertex(sub.getId())){
-				for(BioChemicalReaction prd : c.getReactionsAsProduct().values()){
-					if(this.hasVertex(prd.getId())){
-						if(sub!=prd){
-							CompoundEdge edge = new CompoundEdge(sub, prd, c);
-							this.addEdge(sub, prd, edge);
+	public void addEdgesFromCompound(BioNetwork model, BioMetabolite c){
+		for(BioReaction in : model.getReactionsFromProduct(c)){
+			if(this.hasVertex(in.getId())){
+				for(BioReaction out : model.getReactionsFromSubstrate(c)){
+					if(this.hasVertex(out.getId())){
+						if(in!=out){
+							CompoundEdge edge = new CompoundEdge(in, out, c);
+                            this.addEdge(in, out, edge);
 						}
 					}
 				}
@@ -151,16 +153,8 @@ public class ReactionGraph extends BioGraph<BioChemicalReaction, CompoundEdge> {
 	}
 
 	@Override
-	public EdgeFactory<BioChemicalReaction, CompoundEdge> getEdgeFactory() {
-		return new EdgeFactory<BioChemicalReaction, CompoundEdge>() {
-
-			@Override
-			public CompoundEdge createEdge(BioChemicalReaction arg0,
-					BioChemicalReaction arg1) {
-				return new CompoundEdge(arg0, arg1, new BioPhysicalEntity(""));
-			}
-			
-		};
+	public EdgeFactory<BioReaction, CompoundEdge> getEdgeFactory() {
+		return new CompoundEdgeFactory();
 	}
 
 	@Override
@@ -168,8 +162,8 @@ public class ReactionGraph extends BioGraph<BioChemicalReaction, CompoundEdge> {
 		return new CompoundEdge(edge.getV1(), edge.getV2(), edge.getCompound());
 	}
 	
-	public static GraphFactory<BioChemicalReaction, CompoundEdge, ReactionGraph> getFactory(){
-		return new GraphFactory<BioChemicalReaction, CompoundEdge, ReactionGraph>(){
+	public static GraphFactory<BioReaction, CompoundEdge, ReactionGraph> getFactory(){
+		return new GraphFactory<BioReaction, CompoundEdge, ReactionGraph>(){
 			@Override
 			public ReactionGraph createGraph() {
 				return new ReactionGraph();

@@ -31,8 +31,11 @@
 package fr.inra.toulouse.metexplore.met4j_graph.io;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioReactionUtils;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -41,10 +44,11 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraphEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.reaction.CompoundEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 
 /**
@@ -53,7 +57,7 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
  */
 public class Bionetwork2BioGraph {
 
-	private BioNetwork bn;
+	private final BioNetwork bn;
 	
 	/**
 	 * Instantiates a new bionetwork 2 bio graph converter.
@@ -70,17 +74,17 @@ public class Bionetwork2BioGraph {
 	public CompoundGraph getCompoundGraph(){
 		CompoundGraph g = new CompoundGraph();
 		
-		for(BioPhysicalEntity v : bn.getPhysicalEntityList().values()){
+		for(BioMetabolite v : bn.getMetabolitesView()){
 			g.addVertex(v);
 		}
 		
-		for(BioChemicalReaction r : bn.getBiochemicalReactionList().values()){
+		for(BioReaction r : bn.getReactionsView()){
 			boolean reversible = r.isReversible();
-			Collection<BioPhysicalEntity> left = r.getLeftList().values();
-			Collection<BioPhysicalEntity> right = r.getRightList().values();
+			Collection<BioMetabolite> left = bn.getLefts(r);
+			Collection<BioMetabolite> right = bn.getRights(r);
 			if(!left.isEmpty() && !right.isEmpty()){
-				for(BioPhysicalEntity v1 : left){
-					for(BioPhysicalEntity v2 : right){
+				for(BioMetabolite v1 : left){
+					for(BioMetabolite v2 : right){
 						if(v1!=v2){
 							g.addEdge(v1, v2, new ReactionEdge(v1,v2,r));
 							if(reversible){
@@ -98,33 +102,35 @@ public class Bionetwork2BioGraph {
 	}
 	
 	
+	public ReactionGraph getReactionGraph(){
+		return getReactionGraph(new BioCollection<>());
+	}
 	
 	/**
 	 * Builds the graph.
 	 */
-	public ReactionGraph getReactionGraph(){
+	public ReactionGraph getReactionGraph(BioCollection<BioMetabolite> cofactors){
 		ReactionGraph g = new ReactionGraph();
-		HashSet<BioChemicalReaction> exchange = new HashSet<BioChemicalReaction>();
-		for(BioChemicalReaction r : bn.getBiochemicalReactionList().values()){
-			if(!r.isExchangeReaction()){
+		
+		for(BioReaction r : bn.getReactionsView()){
+			if(!bn.getLefts(r).isEmpty() && !bn.getRights(r).isEmpty()){
 				g.addVertex(r);
-			}else{
-				exchange.add(r);
 			}
 		}
 		
-		for(BioPhysicalEntity c : bn.getPhysicalEntityList().values()){
-			
-			Collection<BioChemicalReaction> left = c.getReactionsAsSubstrate().values();
-			Collection<BioChemicalReaction> right = c.getReactionsAsProduct().values();
-			left.removeAll(exchange);
-			right.removeAll(exchange);
-			
-			if(!left.isEmpty() && !right.isEmpty()){
-				for(BioChemicalReaction v1 : left){
-					for(BioChemicalReaction v2 : right){
-						if(v1!=v2){
-							g.addEdge(v1, v2, new CompoundEdge(v1,v2,c));
+		for(BioMetabolite c : bn.getMetabolitesView()){
+			if(!cofactors.contains(c)){
+				Collection<BioReaction> left = bn.getReactionsFromSubstrate(c);
+				Collection<BioReaction> right = bn.getReactionsFromProduct(c);
+				
+				if(!left.isEmpty() && !right.isEmpty()){
+					for(BioReaction v1 : left){
+						if(!bn.getLefts(v1).isEmpty() && !bn.getRights(v1).isEmpty()){
+							for(BioReaction v2 : right){
+								if(v1 != v2 && !bn.getLefts(v2).isEmpty() && !bn.getRights(v2).isEmpty()){
+									g.addEdge(v2, v1, new CompoundEdge(v2,v1,c));
+								}
+							}
 						}
 					}
 				}
@@ -136,111 +142,89 @@ public class Bionetwork2BioGraph {
 	
 	
 	public BipartiteGraph getBipartiteGraph(){
-		BipartiteGraph g = new BipartiteGraph(); 
-		for(BioPhysicalEntity v : bn.getPhysicalEntityList().values()){
+		BipartiteGraph g = new BipartiteGraph();
+		for(BioMetabolite v : bn.getMetabolitesView()){
 			g.addVertex(v);
 		}
-		for(BioChemicalReaction r : bn.getBiochemicalReactionList().values()){
+		for(BioReaction r : bn.getReactionsView()){
 			
-			Collection<BioPhysicalEntity> left = r.getLeftList().values();
-			Collection<BioPhysicalEntity> right = r.getRightList().values();
+			Collection<BioMetabolite> left = bn.getLefts(r);
+			Collection<BioMetabolite> right = bn.getRights(r);
 			if(!left.isEmpty() && !right.isEmpty()){
 				
 				g.addVertex(r);
 				boolean reversible = r.isReversible();
 				
-				for(BioPhysicalEntity v1 : left){
-					for(BioPhysicalEntity v2 : right){
-						if(v1!=v2){
-							
-							g.addEdge(v1, r, new BipartiteEdge(v1, r, false));
-							g.addEdge(r, v2, new BipartiteEdge(r, v2, false));
-							
-							if(reversible){
-								g.addEdge(v2, r, new BipartiteEdge(v2, r, true));
-								g.addEdge(r, v1, new BipartiteEdge(r, v1, true));
-							}
-							
-						}else{
-							System.err.println("skip loop on "+v1.getId()+" -> "+v2.getId()+" ("+r.getId()+")");
-						}
+				for(BioMetabolite v1 : left){
+					g.addEdge(v1, r, new BipartiteEdge(v1, r, false));
+					if(reversible){
+						g.addEdge(r, v1, new BipartiteEdge(r, v1, true));
+					}
+				}
+				for(BioMetabolite v2 : right){
+					g.addEdge(r, v2, new BipartiteEdge(r, v2, false));	
+					if(reversible){
+						g.addEdge(v2, r, new BipartiteEdge(v2, r, true));
 					}
 				}
 			}
 		}
 		return g;
-	}
-	
-	/**
-	 * Gets the pathways as source.
-	 *
-	 * @param e the biophysical entity
-	 * @return the pathways as source
-	 */
-	public static Collection<BioPathway> getPathwaysAsSource(BioPhysicalEntity e){
-		HashSet<BioPathway> pathwaysIn = new HashSet<BioPathway>();
-		HashSet<BioPathway> pathwaysAsSource = new HashSet<BioPathway>();
-		for(BioChemicalReaction r : e.getReactionsAsProduct().values()){
-			if(!r.isReversible()) pathwaysIn.addAll(r.getPathwayList().values());
-		}
-		for(BioChemicalReaction r : e.getReactionsAsSubstrate().values()){
-			for(BioPathway p : r.getPathwayList().values()){
-				if(!pathwaysIn.contains(p)) pathwaysAsSource.add(p);
-			}
-		}
-		return pathwaysAsSource;
-	}
-	
-	/**
-	 * Gets the pathways as target.
-	 *
-	 * @param e the biophysical entity
-	 * @return the pathways as target
-	 */
-	public static Collection<BioPathway> getPathwaysAsTarget(BioPhysicalEntity e){
-		HashSet<BioPathway> pathwaysIn = new HashSet<BioPathway>();
-		HashSet<BioPathway> pathwaysAsTarget = new HashSet<BioPathway>();
-		for(BioChemicalReaction r : e.getReactionsAsSubstrate().values()){
-			if(!r.isReversible()) pathwaysIn.addAll(r.getPathwayList().values());
-		}
-		for(BioChemicalReaction r : e.getReactionsAsProduct().values()){
-			for(BioPathway p : r.getPathwayList().values()){
-				if(!pathwaysIn.contains(p)) pathwaysAsTarget.add(p);
-			}
-		}
-		return pathwaysAsTarget;
 	}
 	
 	/**
 	 * Builds the graph.
 	 *
-	 * @param sbmlPath the sbml path
 	 * @return the pathway graph
 	 */
 	public PathwayGraph getPathwayGraph(){
-		
+
 		PathwayGraph g = new PathwayGraph();
-		
-		for(BioPathway v : bn.getPathwayList().values()){
+		HashMap<BioPathway,BioCollection<BioMetabolite>> pathwaysSources = new HashMap<>();
+		HashMap<BioPathway,BioCollection<BioMetabolite>> pathwaysProducts = new HashMap<>();
+
+		//init
+		for(BioPathway v : bn.getPathwaysView()){
+			//add to graph
 			g.addVertex(v);
+
+			BioCollection<BioMetabolite> sources = new BioCollection<>();
+			BioCollection<BioMetabolite> products = new BioCollection<>();
+			//get reactions
+			for(BioReaction r : bn.getReactionsFromPathway(v)) {
+
+				//get sources and products
+				if(!r.isReversible()) {
+					sources.addAll(r.getLeftsView());
+					products.addAll(r.getRightsView());
+				}else {
+					products.addAll(r.getLeftsView());
+					products.addAll(r.getRightsView());
+				}
+
+			}
+			sources.removeAll(products);
+
+			pathwaysSources.put(v, sources);
+			pathwaysProducts.put(v, products);
 		}
-		
-		for(BioPhysicalEntity e : bn.getPhysicalEntityList().values()){
-			for(BioPathway p1 : getPathwaysAsTarget(e)){
-				for(BioPathway p2 : getPathwaysAsSource(e)){
-					if(p1!=p2){
-						if(!g.containsEdge(p1, p2)){
-							PathwayGraphEdge edge = new PathwayGraphEdge(p1, p2, e);
-							g.addEdge(p1, p2, edge);
-						}else{
-							PathwayGraphEdge edge = g.getEdge(p1, p2);
-							edge.addConnectingCompounds(e);
-						}
+
+		//create connections
+		for(BioPathway p1 : bn.getPathwaysView()){
+			for(BioPathway p2 : bn.getPathwaysView()){
+				if(p1!=p2){
+					BioCollection<BioMetabolite> connectors =
+							pathwaysSources.get(p2).stream()
+							.filter(m -> pathwaysProducts.get(p1).contains(m))
+							.collect(Collectors.toCollection(BioCollection::new));
+					if(!connectors.isEmpty()) {
+						PathwayGraphEdge edge = new PathwayGraphEdge(p1, p2, connectors);
+						g.addEdge(p1, p2, edge);
 					}
 				}
 			}
 		}
 		return g;
 	}
-	
+
 }

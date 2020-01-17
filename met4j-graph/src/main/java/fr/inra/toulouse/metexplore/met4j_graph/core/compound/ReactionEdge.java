@@ -30,29 +30,23 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_graph.core.compound;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Objects;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPathway;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 
 /**
- * The edge Class linking two {@link BioPhysicalEntity}, associated with a {@link BioChemicalReaction}
+ * The edge Class linking two {@link BioMetabolite}, associated with a {@link BioReaction}
  * @author clement
  */
-public class ReactionEdge extends Edge<BioPhysicalEntity>{
+public class ReactionEdge extends Edge<BioMetabolite>{
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
     
     /** The reaction. */
-    private BioChemicalReaction r;
-    
-    /** The pvalue. */
-    private double pvalue;
+    private final BioReaction r;
 
     /**
      * Instantiates a new reaction edge.
@@ -61,7 +55,7 @@ public class ReactionEdge extends Edge<BioPhysicalEntity>{
      * @param v2 the target vertex
      * @param r the reaction
      */
-    public ReactionEdge(BioPhysicalEntity v1,BioPhysicalEntity v2, BioChemicalReaction r) {
+    public ReactionEdge(BioMetabolite v1, BioMetabolite v2, BioReaction r) {
         super(v1,v2);
         this.r=r;
     }
@@ -78,36 +72,10 @@ public class ReactionEdge extends Edge<BioPhysicalEntity>{
      *
      * @return the reaction
      */
-    public BioChemicalReaction getReaction(){
+    public BioReaction getReaction(){
     	return r;
     }
-    
-    /**
-     * Gets the pathway.
-     *
-     * @return the pathway
-     */
-    public Collection<BioPathway> getPathway(){
-    	return r.getPathwayList().values();
-    }
-    
-	/**
-	 * Gets the pvalue.
-	 *
-	 * @return the pvalue
-	 */
-	public double getPvalue() {
-		return pvalue;
-	}
 
-	/**
-	 * Sets the pvalue.
-	 *
-	 * @param pvalue
-	 */
-	public void setPvalue(double pvalue) {
-		this.pvalue = pvalue;
-	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -122,14 +90,10 @@ public class ReactionEdge extends Edge<BioPhysicalEntity>{
         if (obj instanceof ReactionEdge) {
             // Vérification des valeurs des attributs
             ReactionEdge e = ((ReactionEdge) obj);
-            if(e.getV1()==this.getV1() && e.getV2()==this.getV2() && e.getReaction()==this.getReaction()){
+            if(e.getV1()== this.getV1() && e.getV2()== this.getV2() && e.r == this.r){
             	return true;
-            }else if(e.getV1().getId().equals(this.getV1().getId()) && e.getV2().getId().equals(this.getV2().getId()) 
-            		&& e.toString().equals(this.toString())){
-				return true;
-			}else{
-				return false;
-			}
+            }else return e.getV1().getId().equals(this.getV1().getId()) && e.getV2().getId().equals(this.getV2().getId())
+                    && e.toString().equals(this.toString());
         }
         return false;
     }
@@ -139,7 +103,7 @@ public class ReactionEdge extends Edge<BioPhysicalEntity>{
 	 */
 	@Override
     public int hashCode() {
-		return Objects.hash(this.getV1().getId(),this.getV2().getId(),this.getReaction().getId());
+		return Objects.hash(this.getV1().getId(), this.getV2().getId(), this.r.getId());
 	}
 
 }

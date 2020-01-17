@@ -33,228 +33,65 @@
  */
 package fr.inra.toulouse.metexplore.met4j_core.biodata;
 
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+
+
 /**
- * @author ludo & Fabien
  *
  *	Biological cellular compartment, e.g. mitochondria, cytoplasm
  *	SBML v2 Version 4 release 1
  *	"A compartment in SBML represents a bounded space in which species are located.
  *	Compartments do not necessarily have to correspond to actual structures inside or outside of a biological cell, although models are often designed that way."
  */
-public class BioCompartment {
-	/**
-	 * id is the identifier for this compartment, default is NA
-	 */
-	private String id="NA";
-	/**
-	 * Name is a user specified name, default is NA (optional)
-	 */
-	private String name="NA";
-	/**
-	 * Compartment containing the current compartment type
-	 */
-	private BioCompartmentType compartmentType=null;
-	/**
-	 * SBML v2 Version 4 release 1:
-	 * "A Compartment object has an optional attribute spatialDimensions, whose value must be a positive integer indicating the number of spatial dimensions possessed by the compartment.
-	 * The maximum value is �3�, meaning a three-dimensional structure (a volume). 
-	 * Other permissible values are �2� (for a two-dimensional area), �1� (for a one-dimensional curve), and �0� (for a point).
-	 * The default value is �3�.
-	 * Note that the number of spatial dimensions possessed by a compartment affects certain aspects of the compartment�s size and units-of-size."
-	 */
-	private int spatialDimensions=3;
-	/**
-	 * SBML v2 Version 4 release 1:
-	 * "Each compartment has an optional floating-point attribute named size, representing the initial total size of the compartment.
-	 * The size may be a volume (if the compartment is a three-dimensional one), or it may be 4 an area (if the compartment is two-dimensional), or a length (if the compartment is one-dimensional)."
-	 */
-	private double size=1;
-	/**
-	 * SBML v2 Version 4 release 1:
-	 * "The units associated with the compartment�s size value may be set using the optional attribute units.
-	 * The default units, and the kinds of units allowed as values of the attribute units, interact with the number of spatial dimensions of the compartment."
-	 */
-	private BioUnitDefinition unit;
-	/**
-	 * SBML v2 Version 4 release 1:
-	 * "The optional attribute outside of type SId can be used to express one type of positioning relationship between compartments.
-	 * If present, the value of outside for a given compartment must be the id attribute value of another compartment defined in the model.
-	 * Doing so means that the other compartment surrounds it or is �outside� of it.
-	 * This enables the representation of simple topological relationships between compartments, for those simulation systems that can make use of the information (e.g., for drawing simple diagrams of compartments)."
-	 */
-	private BioCompartment outsideCompartment=null;
-	/**
-	 * SBML v2 Version 4 release 1:
-	 * "A Compartment also has an optional boolean attribute called constant that indicates whether the compartment�s size stays constant or can vary during a simulation.
-	 * A value of �false� indicates the compartment�s size can be changed by other constructs in SBML.
-	 * A value of �true� indicates the compartment�s size cannot be changed by any other construct except InitialAssignment.
-	 * In the special case of spatialDimensions=�0�, the value cannot be changed by InitialAssignment either.
-	 * The default value for the constant attribute is �true� because in the most common modeling scenarios at the time of this writing, compartment sizes remain constant.
-	 * The constant attribute must default to or be set to �true� if the value of the spatialDimensions attribute is �0�, because a zero-dimensional compartment cannot ever have a size."
-	 */
-	private boolean constant=true;
-	
-	private String sboterm;
-	
-	private BioAnnotation compartAnnot;	
-	private Notes compartNotes;
-	
-	private Boolean flagedAsUpdate=false;
-	private Boolean flagedAsInsert=false;
-	private Boolean flagedAsConflict=false;
-	
-	private String fake_id = "fake_compartment";
-	private String fake_name = "fake compartment";
-	
-	
-	public BioCompartment() {
+public class BioCompartment extends BioPhysicalEntity{
 
+	
+	private BioCollection<BioEntity> components;
+	
+	public BioCompartment(String id) {
+		super(id);
+
+		components  = new BioCollection<>();
+	}
+	
+	public BioCompartment(String id, String name) {
+		super(id, name);
+
+		components  = new BioCollection<>();
+	}
+
+	/**
+	 * @return the components
+	 */
+	public BioCollection<BioEntity> getComponentsView() {
+		return components.getView();
 	}
 	
 	/**
-	 * Constructor by copy
-	 * @param c compartment to copy
+	 * @return the components
 	 */
-	public BioCompartment(BioCompartment bioCompartment) {
-		if(bioCompartment != null) 
-		{
-			this.name = bioCompartment.getName();
-			this.id = bioCompartment.getId();
-		}
-	}
-	
-	/**
-	 * BioCompartment constructor
-	 * @param name Common name of the compartment
-	 * @param id Identifier of the compartment
-	 */
-	public BioCompartment(String name, String id) {
-		this.name = name;
-		this.id = id;
-	}
-	/**
-	 * 
-	 * @return the BioCompartment containing the current one
-	 */
-	public BioCompartment getOutsideCompartment() {
-		return outsideCompartment;
-	}
-	/**
-	 * Set the compartment containing the current one
-	 * @param outsideCompartment
-	 */
-	public void setOutsideCompartment(BioCompartment outsideCompartment) {
-		this.outsideCompartment = outsideCompartment;
-	}
-	
-	/**
-	 * get the sbo term of the entity
-	 * @return sboterm : String
-	 */
-	public String getSboterm() {
-		return sboterm;
+	protected BioCollection<BioEntity> getComponents() {
+		return components;
 	}
 
 	/**
-	 * Set the sbo term of the entity
-	 * @param sboterm : String
+	 * @param components the components to set
 	 */
-	public void setSboterm(String sboterm) {
-		this.sboterm = sboterm;
+	protected void setComponents(BioCollection<BioEntity> components) {
+		this.components = components;
 	}
 	
-	/**
-	 * Useful to indicate each time the same compartment for proteins, enzymes, etc...
-	 */
-	public void setAsFakeCompartment () {
-		this.setName(fake_name);
-		this.setId(fake_id);
+	protected void addComponent(BioEntity e)
+	{
+		this.components.add(e);
 	}
 	
 	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public BioCompartmentType getCompartmentType() {
-		return compartmentType;
-	}
-	public void setCompartmentType(BioCompartmentType compartmentType) {
-		this.compartmentType = compartmentType;
-	}
-	public int getSpatialDimensions() {
-		return spatialDimensions;
-	}
-	public void setSpatialDimensions(int spatialDimensions) {
-		this.spatialDimensions = spatialDimensions;
-	}
-	public double getSize() {
-		return size;
-	}
-	public void setSize(double size) {
-		this.size = size;
-	}
-	public BioUnitDefinition getUnit() {
-		return unit;
-	}
-	public void setUnit(BioUnitDefinition unit) {
-		this.unit = unit;
-	}
+	
+	
+	
 
-	public boolean isConstant() {
-		return constant;
-	}
-
-	public void setConstant(boolean constant) {
-		this.constant = constant;
-	}
-
-	public BioAnnotation getCompartAnnot() {
-		return compartAnnot;
-	}
-
-	public Notes getCompartNotes() {
-		return compartNotes;
-	}
-
-	public void setCompartAnnot(BioAnnotation compartAnnot) {
-		this.compartAnnot = compartAnnot;
-	}
-
-	public void setCompartNotes(Notes compartNotes) {
-		this.compartNotes = compartNotes;
-	}
-
-	public Boolean getFlagedAsUpdate() {
-		return flagedAsUpdate;
-	}
-
-	public void setFlagedAsUpdate(Boolean flagedAsUpdate) {
-		this.flagedAsUpdate = flagedAsUpdate;
-	}
-
-	public Boolean getFlagedAsInsert() {
-		return flagedAsInsert;
-	}
-
-	public void setFlagedAsInsert(Boolean flagedAsInsert) {
-		this.flagedAsInsert = flagedAsInsert;
-	}
-
-	public Boolean getFlagedAsConflict() {
-		return flagedAsConflict;
-	}
-
-	public void setFlagedAsConflict(Boolean flagedAsConflict) {
-		this.flagedAsConflict = flagedAsConflict;
-	}
+	
+	
 	
 }

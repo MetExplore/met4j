@@ -33,13 +33,13 @@ package fr.inra.toulouse.metexplore.met4j_graph.computation.weighting;
 import fr.inra.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * The Class DegreeWeightPolicy which set as edge weight the target node's degree to the power of n.
  * @author clement
  */
-public class DegreeWeightPolicy extends WeightingPolicy<BioPhysicalEntity,ReactionEdge,CompoundGraph> {
+public class DegreeWeightPolicy extends WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> {
 	
 	/** The exponent. */
 	double pow = 2;
@@ -55,7 +55,7 @@ public class DegreeWeightPolicy extends WeightingPolicy<BioPhysicalEntity,Reacti
 	 * @param n the exponent
 	 */
 	public DegreeWeightPolicy(double n) {
-		this.pow=n;
+        this.pow =n;
 	}
 
 	/* (non-Javadoc)
@@ -66,7 +66,7 @@ public class DegreeWeightPolicy extends WeightingPolicy<BioPhysicalEntity,Reacti
 		for(ReactionEdge e : g.edgeSet()){
 			double weight = g.outDegreeOf(e.getV2());
 			weight += g.inDegreeOf(e.getV2());
-			g.setEdgeWeight(e, Math.pow(weight,this.pow));
+			g.setEdgeWeight(e, StrictMath.pow(weight, this.pow));
 		}
 	}
 

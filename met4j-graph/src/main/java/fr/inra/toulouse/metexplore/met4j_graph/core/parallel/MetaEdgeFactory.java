@@ -49,7 +49,7 @@ public class MetaEdgeFactory<V extends BioEntity,E extends Edge<V>> implements E
 	 */
 	@Override
 	public MetaEdge<V, E> createEdge(V arg0, V arg1) {
-		MetaEdge<V, E> edge = new MetaEdge<V, E>(arg0, arg1);
+		MetaEdge<V, E> edge = new MetaEdge<>(arg0, arg1);
 		return edge;
 	}
 }

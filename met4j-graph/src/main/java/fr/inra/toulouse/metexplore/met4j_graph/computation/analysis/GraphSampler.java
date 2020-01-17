@@ -65,9 +65,12 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 	 *
 	 * @return the random vertex
 	 */
-	public V getRandomVertex(){
-		ArrayList<V> vertices = new ArrayList<V>(g.vertexSet());
-		assert(!vertices.isEmpty());
+	public V getRandomVertex() throws IllegalArgumentException{
+		if(g.vertexSet().size()<1){
+			throw new IllegalArgumentException("requested sample size greater than population size");
+		}
+		
+		ArrayList<V> vertices = new ArrayList<>(g.vertexSet());
 		int rand = new Random().nextInt(vertices.size());
 		return vertices.get(rand);
 	}
@@ -94,43 +97,18 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 //	}	
 	
 	/**
- * Gets a random vertex list.
- *
- * @param n the size of the sample
- * @return the random vertex list
- */
-public HashSet<V> getRandomVertexList(int n){
-		ArrayList<V> vertices = new ArrayList<V>(g.vertexSet());
-		assert(vertices.size()>=n);
-		HashSet<V> randomList = new HashSet<V>();
-		Random random = new Random();
-		
-		for(int i=0;i<n;i++){
-			int rand = random.nextInt(vertices.size());
-			randomList.add(vertices.get(rand));
-			vertices.remove(rand);
-		}
-		
-		return randomList;
-	}
-	
-	//TODO test
-	/**
-	 * Gets a random vertex list in given compartment.
+	 * Gets a random vertex list.
 	 *
 	 * @param n the size of the sample
-	 * @param comp the compartment
-	 * @return the random vertex list in given compartment
+	 * @return the random vertex list
 	 */
-	public HashSet<V> getRandomVertexListinComp(int n, String comp){
-		ArrayList<V> vertices = new ArrayList<V>();
-		for(V entity : g.vertexSet()){
-			if(entity.getCompartment().getId().equals(comp)){
-				vertices.add(entity);
-			}
+	public HashSet<V> getRandomVertexList(int n) throws IllegalArgumentException{
+		if(g.vertexSet().size()<n){
+			throw new IllegalArgumentException("requested sample size greater than population size");
 		}
-		assert(vertices.size()>=n);
-		HashSet<V> randomList = new HashSet<V>();
+		
+		ArrayList<V> vertices = new ArrayList<>(g.vertexSet());
+		HashSet<V> randomList = new HashSet<>();
 		Random random = new Random();
 		
 		for(int i=0;i<n;i++){
@@ -141,6 +119,7 @@ public HashSet<V> getRandomVertexList(int n){
 		
 		return randomList;
 	}
+
 	
 	/**
 	 * Gets the random vertex list in scope.
@@ -149,9 +128,18 @@ public HashSet<V> getRandomVertexList(int n){
 	 * @param scope the scope
 	 * @return the random vertex list in scope
 	 */
-	public HashSet<V> getRandomVertexListinScope(int n, int scope){
-		ArrayList<V> vertices = new ArrayList<V>(g.vertexSet());
-		HashSet<V> randomList = new HashSet<V>();
+	public HashSet<V> getRandomVertexListinScope(int n, int scope) throws IllegalArgumentException{
+		if(g.vertexSet().size()<n){
+			throw new IllegalArgumentException("requested sample size greater than population size");
+		}
+		return getRandomVertexListinScope(n,scope, g.vertexSet());
+	}
+		
+		
+		
+	private HashSet<V> getRandomVertexListinScope(int n, int scope, Set<V> elements) throws IllegalArgumentException{
+		ArrayList<V> vertices = new ArrayList<>(elements);
+		HashSet<V> randomList = new HashSet<>();
 		Random random = new Random();
 		
 		//get centroid
@@ -159,12 +147,12 @@ public HashSet<V> getRandomVertexList(int n){
 		randomList.add(choosenOne);
 		
 		//get scope
-		ArrayList<V> verticesInScope = new ArrayList<V>();
-		ArrayList<V> toCompute = new ArrayList<V>();
+		ArrayList<V> verticesInScope = new ArrayList<>();
+		ArrayList<V> toCompute = new ArrayList<>();
 		toCompute.add(choosenOne);
 
 		for(int i=0;i<scope;i++){
-			ArrayList<V> newlyAdded =new ArrayList<V>();
+			ArrayList<V> newlyAdded = new ArrayList<>();
 			for(V vertex:toCompute){
 //				Set<E> edges = g.edgesOf(vertex);
 				Set<E> edges = g.outgoingEdgesOf(vertex);
@@ -186,7 +174,12 @@ public HashSet<V> getRandomVertexList(int n){
 		}
 		
 		if(verticesInScope.size()<n){
-			return getRandomVertexListinScope(n, scope);
+			Set<V> newElement = new HashSet<>(elements);
+			newElement.remove(choosenOne);
+			if(newElement.isEmpty()){
+				throw new IllegalArgumentException("sample size incompatible with given scope");
+			}
+			return getRandomVertexListinScope(n, scope, newElement);
 		}
 		
 		//get random in scope
@@ -205,9 +198,13 @@ public HashSet<V> getRandomVertexList(int n){
 	 * @param n the size of the sample
 	 * @return the random edge list
 	 */
-	public HashSet<E> getRandomEdgeList(int n){
-		ArrayList<E> edges = new ArrayList<E>(g.edgeSet());
-		HashSet<E> randomList = new HashSet<E>();
+	public HashSet<E> getRandomEdgeList(int n) throws IllegalArgumentException{
+		if(g.edgeSet().size()<n){
+			throw new IllegalArgumentException("requested sample size greater than population size");
+		}
+		
+		ArrayList<E> edges = new ArrayList<>(g.edgeSet());
+		HashSet<E> randomList = new HashSet<>();
 		Random random = new Random();
 		
 		for(int i=0;i<n;i++){
@@ -222,26 +219,28 @@ public HashSet<V> getRandomVertexList(int n){
 	/**
 	 * Gets the random transition matrix.
 	 *
-	 * @param adjancyMatrix the adjancy matrix
+	 * @param adjacencyMatrix the adjacency matrix
 	 * @return the random transition matrix
 	 */
-	public BioMatrix getRandomTransitionMatrix(EjmlMatrix adjancyMatrix){
-		BioMatrix RandTransitionMatrix = new EjmlMatrix(adjancyMatrix.numRows(), adjancyMatrix.numCols());
+	public BioMatrix getRandomTransitionMatrix(EjmlMatrix adjacencyMatrix){
+		BioMatrix RandTransitionMatrix = new EjmlMatrix(adjacencyMatrix.numRows(), adjacencyMatrix.numCols());
 		Random random = new Random();
 		
-		for(int i=0;i<adjancyMatrix.numRows();i++){
+		for(int i=0;i<adjacencyMatrix.numRows();i++){
 			
 			double rowSum=0.0;
-			for(int j=0;j<adjancyMatrix.numCols();j++){
-				if(adjancyMatrix.get(i, j)==1.0){
+			for(int j=0;j<adjacencyMatrix.numCols();j++){
+				if(adjacencyMatrix.get(i, j)==1.0){
 					double rand = random.nextDouble();
 					RandTransitionMatrix.set(i, j, rand);
 					rowSum+=rand;
 				}
 			}
-
-			for(int j=0;j<RandTransitionMatrix.numCols();j++){
-				RandTransitionMatrix.set(i, j, RandTransitionMatrix.get(i, j)/rowSum);
+			
+			if(rowSum>0.0){
+				for(int j=0;j<RandTransitionMatrix.numCols();j++){
+					RandTransitionMatrix.set(i, j, RandTransitionMatrix.get(i, j)/rowSum);
+				}
 			}
 		}
 		

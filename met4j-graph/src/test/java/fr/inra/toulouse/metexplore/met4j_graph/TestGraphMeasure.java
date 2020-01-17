@@ -35,8 +35,8 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.analysis.GraphMeasure;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -49,9 +49,9 @@ public class TestGraphMeasure {
 	
 	public static CompoundGraph g;
 	
-	public static GraphMeasure<BioPhysicalEntity,ReactionEdge> m;
+	public static GraphMeasure<BioMetabolite,ReactionEdge> m;
 	
-	public static BioPhysicalEntity a,b,c,d,e,f,x,y,z,l; //v=10
+	public static BioMetabolite a,b,c,d,e,f,x,y,z,l; //v=10
 	
 	public static ReactionEdge az,zb,ab,xb,bc,cx,yx,ay,ea,ey,xd,ed,fe,df,ax;	//e=15
 	
@@ -86,36 +86,36 @@ public class TestGraphMeasure {
 	@BeforeClass
 	public static void init(){
 		g = new CompoundGraph();
-		a = new BioPhysicalEntity("a"); g.addVertex(a);
-		b = new BioPhysicalEntity("b"); g.addVertex(b);
-		c = new BioPhysicalEntity("c"); g.addVertex(c);
-		d = new BioPhysicalEntity("d"); g.addVertex(d);
-		e = new BioPhysicalEntity("e"); g.addVertex(e);
-		f = new BioPhysicalEntity("f"); g.addVertex(f);
-		x = new BioPhysicalEntity("x"); g.addVertex(x);
-		y = new BioPhysicalEntity("y"); g.addVertex(y);
-		z = new BioPhysicalEntity("z"); g.addVertex(z);
-		l = new BioPhysicalEntity("lonelyBoy"); g.addVertex(l);
-		az = new ReactionEdge(a,z,new BioChemicalReaction("az"));g.addEdge(a, z, az);g.setEdgeWeight(az, 2);
-		zb = new ReactionEdge(z,b,new BioChemicalReaction("zb"));g.addEdge(z, b, zb);g.setEdgeWeight(zb, 8);
-		ab = new ReactionEdge(a,b,new BioChemicalReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 9);
-		xb = new ReactionEdge(x,b,new BioChemicalReaction("xb"));g.addEdge(x, b, xb);g.setEdgeWeight(xb, 4);
-		bc = new ReactionEdge(b,c,new BioChemicalReaction("bc"));g.addEdge(b, c, bc);g.setEdgeWeight(bc, 8);
-		cx = new ReactionEdge(c,x,new BioChemicalReaction("cx"));g.addEdge(c, x, cx);g.setEdgeWeight(cx, 3);
-		yx = new ReactionEdge(y,x,new BioChemicalReaction("yx"));g.addEdge(y, x, yx);g.setEdgeWeight(yx, 1);
-		ay = new ReactionEdge(a,y,new BioChemicalReaction("ay"));g.addEdge(a, y, ay);g.setEdgeWeight(ay, 2);
-		ea = new ReactionEdge(e,a,new BioChemicalReaction("ea"));g.addEdge(e, a, ea);g.setEdgeWeight(ea, 8);
-		ey = new ReactionEdge(e,y,new BioChemicalReaction("ey"));g.addEdge(e, y, ey);g.setEdgeWeight(ey, 2);
-		xd = new ReactionEdge(x,d,new BioChemicalReaction("xd"));g.addEdge(x, d, xd);g.setEdgeWeight(xd, 6);
-		ed = new ReactionEdge(e,d,new BioChemicalReaction("ed"));g.addEdge(e, d, ed);g.setEdgeWeight(ed, 5);
-		fe = new ReactionEdge(f,e,new BioChemicalReaction("fe"));g.addEdge(f, e, fe);g.setEdgeWeight(fe, 8);
-		df = new ReactionEdge(d,f,new BioChemicalReaction("df"));g.addEdge(d, f, df);g.setEdgeWeight(df, 8);
-		ax = new ReactionEdge(a,x,new BioChemicalReaction("ax"));g.addEdge(a, x, ax);g.setEdgeWeight(ax, 7);
-		m = new GraphMeasure<BioPhysicalEntity,ReactionEdge>(g);
+		a = new BioMetabolite("a"); g.addVertex(a);
+		b = new BioMetabolite("b"); g.addVertex(b);
+		c = new BioMetabolite("c"); g.addVertex(c);
+		d = new BioMetabolite("d"); g.addVertex(d);
+		e = new BioMetabolite("e"); g.addVertex(e);
+		f = new BioMetabolite("f"); g.addVertex(f);
+		x = new BioMetabolite("x"); g.addVertex(x);
+		y = new BioMetabolite("y"); g.addVertex(y);
+		z = new BioMetabolite("z"); g.addVertex(z);
+		l = new BioMetabolite("lonelyBoy"); g.addVertex(l);
+		az = new ReactionEdge(a,z,new BioReaction("az"));g.addEdge(a, z, az);g.setEdgeWeight(az, 2);
+		zb = new ReactionEdge(z,b,new BioReaction("zb"));g.addEdge(z, b, zb);g.setEdgeWeight(zb, 8);
+		ab = new ReactionEdge(a,b,new BioReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 9);
+		xb = new ReactionEdge(x,b,new BioReaction("xb"));g.addEdge(x, b, xb);g.setEdgeWeight(xb, 4);
+		bc = new ReactionEdge(b,c,new BioReaction("bc"));g.addEdge(b, c, bc);g.setEdgeWeight(bc, 8);
+		cx = new ReactionEdge(c,x,new BioReaction("cx"));g.addEdge(c, x, cx);g.setEdgeWeight(cx, 3);
+		yx = new ReactionEdge(y,x,new BioReaction("yx"));g.addEdge(y, x, yx);g.setEdgeWeight(yx, 1);
+		ay = new ReactionEdge(a,y,new BioReaction("ay"));g.addEdge(a, y, ay);g.setEdgeWeight(ay, 2);
+		ea = new ReactionEdge(e,a,new BioReaction("ea"));g.addEdge(e, a, ea);g.setEdgeWeight(ea, 8);
+		ey = new ReactionEdge(e,y,new BioReaction("ey"));g.addEdge(e, y, ey);g.setEdgeWeight(ey, 2);
+		xd = new ReactionEdge(x,d,new BioReaction("xd"));g.addEdge(x, d, xd);g.setEdgeWeight(xd, 6);
+		ed = new ReactionEdge(e,d,new BioReaction("ed"));g.addEdge(e, d, ed);g.setEdgeWeight(ed, 5);
+		fe = new ReactionEdge(f,e,new BioReaction("fe"));g.addEdge(f, e, fe);g.setEdgeWeight(fe, 8);
+		df = new ReactionEdge(d,f,new BioReaction("df"));g.addEdge(d, f, df);g.setEdgeWeight(df, 8);
+		ax = new ReactionEdge(a,x,new BioReaction("ax"));g.addEdge(a, x, ax);g.setEdgeWeight(ax, 7);
+		m = new GraphMeasure<BioMetabolite,ReactionEdge>(g);
 		m.setDirected(false);
 		
 //		ShortestPaths sp = new ShortestPaths(g); 
-//		DirectedWeightedMultigraph<BioPhysicalEntity, ClosureEdge> mc = sp.getMetricClosureGraph(g.vertexSet(), true);
+//		DirectedWeightedMultigraph<BioMetabolite, ClosureEdge> mc = sp.getMetricClosureGraph(g.vertexSet(), true);
 //		for(ClosureEdge e : mc.edgeSet()){
 //			System.out.println(e.getV1().getId()+e.getV2().getId()+":"+mc.getEdgeWeight(e)+";");
 //		}
@@ -128,9 +128,9 @@ public class TestGraphMeasure {
 	public void testEdgeCountAdjustement(){
 		CompoundGraph g2 = new CompoundGraph(g);
 		assertEquals("error while creating copy of graph", 15, g2.edgeSet().size());
-		ReactionEdge az2 = new ReactionEdge(a,z,new BioChemicalReaction("az2"));
+		ReactionEdge az2 = new ReactionEdge(a,z,new BioReaction("az2"));
 		g2.addEdge(a, z, az2);
-		GraphMeasure<BioPhysicalEntity, ReactionEdge> m = new GraphMeasure<BioPhysicalEntity, ReactionEdge>(g2);
+		GraphMeasure<BioMetabolite, ReactionEdge> m = new GraphMeasure<BioMetabolite, ReactionEdge>(g2);
 		m.adjustEdgeCountForMultiGraph();
 		assertEquals("error while creating multi-edge", 16, g2.edgeSet().size());
 		assertEquals("error while creating multi-edge", 15, m.getNumberOfEdges(), Double.MIN_VALUE);

@@ -30,8 +30,6 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_graph.core;
 
-import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
-import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 

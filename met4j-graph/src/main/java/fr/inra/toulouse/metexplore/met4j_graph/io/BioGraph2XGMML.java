@@ -50,9 +50,9 @@ import org.w3c.dom.Element;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
  
 /**
  * The Class BioGraph2XGMML.
@@ -61,19 +61,19 @@ import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 public class BioGraph2XGMML{
 	
 	/** The graph name. */
-	private String graphName;
+	private final String graphName;
 	
 	/** The XGMML doc. */
 	private Document doc;
 	
 	/** The bipartite graph. */
-	private BipartiteGraph g;
+	private final BipartiteGraph g;
 	
 	/** The optional mapping **/
-	private HashMap<String, Double> mapping = null;
+	private HashMap<String, Double> mapping;
 	
 	/** The coordinate map **/
-	private HashMap<String,Double[]> coord = null;
+	private HashMap<String,Double[]> coord;
 	
 	/**
 	 * Instantiates a new xgmml exporter.
@@ -83,7 +83,7 @@ public class BioGraph2XGMML{
 	public BioGraph2XGMML(BipartiteGraph g){
 		this.g=g;
 		DateFormat df = new SimpleDateFormat("dd/MM/yy_HH:mm:ss");
-		this.graphName="Parsebionet_Network_"+df.format(new Date());
+		this.graphName ="Parsebionet_Network_"+df.format(new Date());
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public class BioGraph2XGMML{
 		this.g=g;
 		this.coord=coord;
 		DateFormat df = new SimpleDateFormat("dd/MM/yy_HH:mm:ss");
-		this.graphName="Parsebionet_Network_"+df.format(new Date());
+		this.graphName ="Parsebionet_Network_"+df.format(new Date());
 	}
 	
 	/**
@@ -107,7 +107,7 @@ public class BioGraph2XGMML{
 	 */
 	public BioGraph2XGMML(BipartiteGraph g, String Name){
 		this.g=g;
-		this.graphName=Name;
+		this.graphName =Name;
 	}
 	
 	/**
@@ -117,7 +117,7 @@ public class BioGraph2XGMML{
 	 * @throws Exception
 	 */
 	public void writeXGMML(String outputPath) throws Exception{
-		if(doc==null){
+		if(doc ==null){
 			createDoc();
 		}
 		
@@ -165,7 +165,7 @@ public class BioGraph2XGMML{
 		graph.appendChild(createAttribute("backgroundColor","#ffffff"));
 		
 		for(BioEntity v : g.vertexSet()){
-			Element node = (v instanceof BioChemicalReaction) ? createReactionNode((BioChemicalReaction)v) : createCompoundNode((BioPhysicalEntity)v);
+			Element node = (v instanceof BioReaction) ? createReactionNode((BioReaction)v) : createCompoundNode((BioMetabolite)v);
 			graph.appendChild(node);
 		}
 		
@@ -181,7 +181,7 @@ public class BioGraph2XGMML{
 	 * @param v the vertex
 	 * @return the xml element
 	 */
-	private Element createCompoundNode(BioPhysicalEntity v){
+	private Element createCompoundNode(BioMetabolite v){
 		Element node = doc.createElement("node");
 //        node.setAttribute("label", v.getName());
 //        node.setAttribute("id", v.getId());
@@ -193,15 +193,13 @@ public class BioGraph2XGMML{
 		node.setAttribute("label", v.getName());
 		node.setAttribute("id", v.getId());
 		node.appendChild(createAttribute("canonicalName",v.getId()));
-		node.appendChild(createAttribute("compartment",v.getCompartment().getName()));
         node.appendChild(createAttribute("chemicalFormula",v.getChemicalFormula()));
 		node.appendChild(createAttribute("dbIdentifier",v.getName()));
 		node.appendChild(createAttribute("sbml name",v.getName()));
 		node.appendChild(createAttribute("sbml type","species"));
-		node.appendChild(createAttribute("sideCompound",v.getIsSide()));
-		if(mapping!=null && mapping.containsKey(v.getId())){
+		if(mapping !=null && mapping.containsKey(v.getId())){
 			node.appendChild(createAttribute("identified","identified"));
-			node.appendChild(createAttribute("value",mapping.get(v.getId()).toString()));
+			node.appendChild(createAttribute("value", mapping.get(v.getId()).toString()));
 			node.appendChild(createMappedCompoundNodeGraphics(v));
 		}else{
 			node.appendChild(createCompoundNodeGraphics(v));
@@ -215,7 +213,7 @@ public class BioGraph2XGMML{
 	 * @param v the vertex
 	 * @return the xml element
 	 */
-	private Element createReactionNode(BioChemicalReaction v){
+	private Element createReactionNode(BioReaction v){
 		Element node = doc.createElement("node");
 //        node.setAttribute("label", v.getName());
 //        node.setAttribute("id", v.getId());
@@ -229,13 +227,10 @@ public class BioGraph2XGMML{
         node.appendChild(createAttribute("canonicalName",v.getId()));
         node.appendChild(createAttribute("dbIdentifier",v.getName()));
         node.appendChild(createAttribute("ec",v.getEcNumber()));
-        node.appendChild(createAttribute("lowerBound",v.getLowerBound().value));
         node.appendChild(createReactionNodeGraphics(v));
-        node.appendChild(createAttribute("pathways",v.getPathwayList().keySet()));
         node.appendChild(createAttribute("reversibility",v.isReversible()));
         node.appendChild(createAttribute("sbml name",v.getName()));
         node.appendChild(createAttribute("sbml type","reaction"));
-        node.appendChild(createAttribute("upperBound",v.getUpperBound().value));
         node.appendChild(createReactionNodeGraphics(v));
         return node;
 	}
@@ -250,8 +245,8 @@ public class BioGraph2XGMML{
 		Element edge = doc.createElement("edge");
 		BioEntity src = e.getV1();
 		BioEntity trg = e.getV2();
-//		String interaction = (src instanceof BioChemicalReaction) ? "product" : "substrate of";
-		String interaction = (src instanceof BioChemicalReaction) ? "reaction-product" : "reaction-reactant";
+//		String interaction = (src instanceof BioReaction) ? "product" : "substrate of";
+		String interaction = (src instanceof BioReaction) ? "reaction-product" : "reaction-reactant";
 		String label = src.getId()+" ("+interaction+") "+trg.getId();
 		edge.setAttribute("label", label);
 		edge.setAttribute("source", src.getId());
@@ -320,7 +315,7 @@ public class BioGraph2XGMML{
 		Element graphics = doc.createElement("graphics");
 		String width = "8";
 		graphics.setAttribute("width",width);
-		String fill = (e.getV1() instanceof BioChemicalReaction) ? "#339900" : "#cc3300";
+		String fill = (e.getV1() instanceof BioReaction) ? "#339900" : "#cc3300";
 		graphics.setAttribute("fill",fill);
 		String sourceArrow = e.isReversible() ?  "6" : "0";
 		graphics.setAttribute("cy:sourceArrow",sourceArrow);
@@ -349,7 +344,7 @@ public class BioGraph2XGMML{
 	 * @param v the vertex
 	 * @return the element
 	 */
-	private Element createCompoundNodeGraphics(BioPhysicalEntity v){
+	private Element createCompoundNodeGraphics(BioMetabolite v){
 		Element graphics = doc.createElement("graphics");
 		String type="ELLIPSE";
 		graphics.setAttribute("type",type);
@@ -371,7 +366,7 @@ public class BioGraph2XGMML{
 		graphics.setAttribute("cy:nodeLabel",nodeLabel);
 		String borderLineType="solid";
 		graphics.setAttribute("cy:borderLineType",borderLineType);
-		if(coord!=null && coord.containsKey(v.getId())){
+		if(coord !=null && coord.containsKey(v.getId())){
 			Double[] xy = coord.get(v.getId());
 			String x = xy[0].toString();
 			String y = xy[1].toString();
@@ -387,7 +382,7 @@ public class BioGraph2XGMML{
 	 * @param v the vertex
 	 * @return the element
 	 */
-	private Element createMappedCompoundNodeGraphics(BioPhysicalEntity v){
+	private Element createMappedCompoundNodeGraphics(BioMetabolite v){
 		Element graphics = doc.createElement("graphics");
 		String type="ELLIPSE";
 		graphics.setAttribute("type",type);
@@ -409,7 +404,7 @@ public class BioGraph2XGMML{
 		graphics.setAttribute("cy:nodeLabel",nodeLabel);
 		String borderLineType="solid";
 		graphics.setAttribute("cy:borderLineType",borderLineType);
-		if(coord!=null && coord.containsKey(v.getId())){
+		if(coord !=null && coord.containsKey(v.getId())){
 			Double[] xy = coord.get(v.getId());
 			String x = xy[0].toString();
 			String y = xy[1].toString();
@@ -425,7 +420,7 @@ public class BioGraph2XGMML{
 	 * @param v the vertex
 	 * @return the element
 	 */
-	private Element createReactionNodeGraphics(BioChemicalReaction v){
+	private Element createReactionNodeGraphics(BioReaction v){
 		Element graphics = doc.createElement("graphics");
 		String type="ROUNDED_RECTANGLE";
 		graphics.setAttribute("type",type);
@@ -447,7 +442,7 @@ public class BioGraph2XGMML{
 		graphics.setAttribute("cy:nodeLabel",nodeLabel);
 		String borderLineType="solid";
 		graphics.setAttribute("cy:borderLineType",borderLineType);
-		if(coord!=null && coord.containsKey(v.getId())){
+		if(coord !=null && coord.containsKey(v.getId())){
 			Double[] xy = coord.get(v.getId());
 			String x = xy[0].toString();
 			String y = xy[1].toString();

@@ -30,11 +30,8 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_graph.computation.analysis;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import java.io.Serializable;
+import java.util.*;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -75,7 +72,7 @@ public class RankUtils {
 		
 		// normalize the kendall coeff by the total number of unordered pairs, i.e. the maximal number of discordant pairs
 		// k=0 : same ranking, k=1 : inverted ranking
-		kendall = (kendall/new Integer((r1.length*(r1.length-1))/2));
+		kendall = (kendall/ ((r1.length * (r1.length - 1)) / 2));
 		return kendall;
 	}
 		
@@ -94,11 +91,11 @@ public class RankUtils {
 		
 		double distSum = 0;
 		for(int i=0; i<r1.length; i++){
-			distSum+=Math.pow(r1[i]-r2[i], 2);
+			distSum+= StrictMath.pow(r1[i]-r2[i], 2);
 		}
 		
 		// p = 1 - 6*Sum(d²)/n(n²-1)
-		double spearCoeff = 1 - ((6*distSum) / (r1.length*(Math.pow(r1.length, 2)-1)));
+		double spearCoeff = 1 - ((6*distSum) / (r1.length*(StrictMath.pow(r1.length, 2)-1)));
 		return spearCoeff;
 	}
 	
@@ -110,7 +107,7 @@ public class RankUtils {
 	 * @return the hash map
 	 */
 	public static HashMap<String, Integer> computeRank(CompoundGraph g){
-		HashMap<String, Double> reactionScoreMap = new HashMap<String, Double>();
+		HashMap<String, Double> reactionScoreMap = new HashMap<>();
 		for(ReactionEdge e : g.edgeSet()){
 			String reactionId = e.getReaction().getId();
 			if(reactionScoreMap.containsKey(reactionId)){
@@ -132,10 +129,10 @@ public class RankUtils {
 	 * @return the rank map
 	 */
 	public static <T> HashMap<T, Integer> computeRank(HashMap<T, Double> map){
-		HashMap<T, Integer> reactionRankMap = new HashMap<T, Integer>();
+		HashMap<T, Integer> reactionRankMap = new HashMap<>();
 		
 		List<T> reactions = getOrderedList(map);
-		Collections.sort(reactions, new ScoreComparator<T>(map));
+		reactions.sort(new ScoreComparator<>(map));
 		for(T rId : reactions){
 			reactionRankMap.put(rId, reactions.indexOf(rId));
 		}
@@ -150,8 +147,8 @@ public class RankUtils {
 	 * @return the ordered list of keys
 	 */
 	public static <T> List<T> getOrderedList(HashMap<T, Double> map){
-		ArrayList<T> keys = new ArrayList<T>(map.keySet());
-		Collections.sort(keys, new ScoreComparator<T>(map));
+		ArrayList<T> keys = new ArrayList<>(map.keySet());
+		keys.sort(new ScoreComparator<>(map));
 		return keys;
 	}
 	
@@ -172,9 +169,9 @@ public class RankUtils {
 		int i=0;
 		int[] r1array = new int[r1.size()];
 		int[] r2array = new int[r1.size()];
-		for(String id : r1.keySet()){
-			r1array[i]=r1.get(id);
-			r2array[i]=r2.get(id);
+		for(Map.Entry<String, Integer> entry : r1.entrySet()){
+			r1array[i]= entry.getValue();
+			r2array[i]=r2.get(entry.getKey());
 			i++;
 		}
 		return kendallTau(r1array,r2array);
@@ -195,9 +192,9 @@ public class RankUtils {
 		int i=0;
 		int[] r1array = new int[r1.size()];
 		int[] r2array = new int[r1.size()];
-		for(String id : r1.keySet()){
-			r1array[i]=r1.get(id);
-			r2array[i]=r2.get(id);
+		for(Map.Entry<String, Integer> entry : r1.entrySet()){
+			r1array[i]= entry.getValue();
+			r2array[i]=r2.get(entry.getKey());
 			i++;
 		}
 		return SpearmanRankCoeff(r1array,r2array);
@@ -207,7 +204,7 @@ public class RankUtils {
 	 * The Class ScoreComparator.
 	 * @param <T>
 	 */
-	static class ScoreComparator<T> implements Comparator<T>{
+	static class ScoreComparator<T> implements Comparator<T>, Serializable {
 		
 		/** The reaction score map. */
 		HashMap<T, Double> reactionScoreMap;
@@ -226,7 +223,7 @@ public class RankUtils {
 		 */
 		@Override
 		public int compare(T o1, T o2) {
-			return -Double.compare(reactionScoreMap.get(o1),reactionScoreMap.get(o2));
+			return -Double.compare(reactionScoreMap.get(o1), reactionScoreMap.get(o2));
 		}
 		
 	}

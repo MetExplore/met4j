@@ -38,8 +38,8 @@ import java.util.Set;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.GraphFilter;
@@ -53,7 +53,7 @@ public class TestGraphFilter {
 public static CompoundGraph g;
 	
 	/** The nodes. */
-	public static BioPhysicalEntity a,b,c,d,e,f,x,y,z;
+	public static BioMetabolite a,b,c,d,e,f,x,y,z;
 	
 	/** The edges. */
 	public static ReactionEdge az,zb,ab,xb,bc,cx,yx,ay,ea,ey,xd,ed,fe,df;
@@ -65,29 +65,29 @@ public static CompoundGraph g;
 	@BeforeClass
 	public static void init(){
 		g = new CompoundGraph();
-		a = new BioPhysicalEntity("a"); g.addVertex(a);
-		b = new BioPhysicalEntity("b"); g.addVertex(b);
-		c = new BioPhysicalEntity("c"); g.addVertex(c);
-		d = new BioPhysicalEntity("d"); g.addVertex(d);
-		e = new BioPhysicalEntity("e"); g.addVertex(e);
-		f = new BioPhysicalEntity("f"); g.addVertex(f);
-		x = new BioPhysicalEntity("x"); g.addVertex(x);
-		y = new BioPhysicalEntity("y"); g.addVertex(y);
-		z = new BioPhysicalEntity("z"); g.addVertex(z);
-		az = new ReactionEdge(a,z,new BioChemicalReaction("az"));g.addEdge(a, z, az);g.setEdgeWeight(az, 2);g.setEdgeScore(az, 4);
-		zb = new ReactionEdge(z,b,new BioChemicalReaction("zb"));g.addEdge(z, b, zb);g.setEdgeWeight(zb, 8);g.setEdgeScore(zb, 16);
-		ab = new ReactionEdge(a,b,new BioChemicalReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 9);g.setEdgeScore(ab, 18);
-		xb = new ReactionEdge(x,b,new BioChemicalReaction("xb"));g.addEdge(x, b, xb);g.setEdgeWeight(xb, 4);g.setEdgeScore(xb, 8);
-		bc = new ReactionEdge(b,c,new BioChemicalReaction("bc"));g.addEdge(b, c, bc);g.setEdgeWeight(bc, 8);g.setEdgeScore(bc, 16);
-		cx = new ReactionEdge(c,x,new BioChemicalReaction("cx"));g.addEdge(c, x, cx);g.setEdgeWeight(cx, 3);g.setEdgeScore(cx, 6);
-		yx = new ReactionEdge(y,x,new BioChemicalReaction("yx"));g.addEdge(y, x, yx);g.setEdgeWeight(yx, 1);g.setEdgeScore(yx, 2);
-		ay = new ReactionEdge(a,y,new BioChemicalReaction("ay"));g.addEdge(a, y, ay);g.setEdgeWeight(ay, 2);g.setEdgeScore(ay, 4);
-		ea = new ReactionEdge(e,a,new BioChemicalReaction("ea"));g.addEdge(e, a, ea);g.setEdgeWeight(ea, 8);g.setEdgeScore(ea, 16);
-		ey = new ReactionEdge(e,y,new BioChemicalReaction("ey"));g.addEdge(e, y, ey);g.setEdgeWeight(ey, 2);g.setEdgeScore(ey, 4);
-		xd = new ReactionEdge(x,d,new BioChemicalReaction("xd"));g.addEdge(x, d, xd);g.setEdgeWeight(xd, 6);g.setEdgeScore(xd, 12);
-		ed = new ReactionEdge(e,d,new BioChemicalReaction("ed"));g.addEdge(e, d, ed);g.setEdgeWeight(ed, 5);g.setEdgeScore(ed, 10);
-		fe = new ReactionEdge(f,e,new BioChemicalReaction("fe"));g.addEdge(f, e, fe);g.setEdgeWeight(fe, 8);g.setEdgeScore(fe, 16);
-		df = new ReactionEdge(d,f,new BioChemicalReaction("df"));g.addEdge(d, f, df);g.setEdgeWeight(df, 8);g.setEdgeScore(df, 16);
+		a = new BioMetabolite("a"); g.addVertex(a);
+		b = new BioMetabolite("b"); g.addVertex(b);
+		c = new BioMetabolite("c"); g.addVertex(c);
+		d = new BioMetabolite("d"); g.addVertex(d);
+		e = new BioMetabolite("e"); g.addVertex(e);
+		f = new BioMetabolite("f"); g.addVertex(f);
+		x = new BioMetabolite("x"); g.addVertex(x);
+		y = new BioMetabolite("y"); g.addVertex(y);
+		z = new BioMetabolite("z"); g.addVertex(z);
+		az = new ReactionEdge(a,z,new BioReaction("az"));g.addEdge(a, z, az);g.setEdgeWeight(az, 2);g.setEdgeScore(az, 4);
+		zb = new ReactionEdge(z,b,new BioReaction("zb"));g.addEdge(z, b, zb);g.setEdgeWeight(zb, 8);g.setEdgeScore(zb, 16);
+		ab = new ReactionEdge(a,b,new BioReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 9);g.setEdgeScore(ab, 18);
+		xb = new ReactionEdge(x,b,new BioReaction("xb"));g.addEdge(x, b, xb);g.setEdgeWeight(xb, 4);g.setEdgeScore(xb, 8);
+		bc = new ReactionEdge(b,c,new BioReaction("bc"));g.addEdge(b, c, bc);g.setEdgeWeight(bc, 8);g.setEdgeScore(bc, 16);
+		cx = new ReactionEdge(c,x,new BioReaction("cx"));g.addEdge(c, x, cx);g.setEdgeWeight(cx, 3);g.setEdgeScore(cx, 6);
+		yx = new ReactionEdge(y,x,new BioReaction("yx"));g.addEdge(y, x, yx);g.setEdgeWeight(yx, 1);g.setEdgeScore(yx, 2);
+		ay = new ReactionEdge(a,y,new BioReaction("ay"));g.addEdge(a, y, ay);g.setEdgeWeight(ay, 2);g.setEdgeScore(ay, 4);
+		ea = new ReactionEdge(e,a,new BioReaction("ea"));g.addEdge(e, a, ea);g.setEdgeWeight(ea, 8);g.setEdgeScore(ea, 16);
+		ey = new ReactionEdge(e,y,new BioReaction("ey"));g.addEdge(e, y, ey);g.setEdgeWeight(ey, 2);g.setEdgeScore(ey, 4);
+		xd = new ReactionEdge(x,d,new BioReaction("xd"));g.addEdge(x, d, xd);g.setEdgeWeight(xd, 6);g.setEdgeScore(xd, 12);
+		ed = new ReactionEdge(e,d,new BioReaction("ed"));g.addEdge(e, d, ed);g.setEdgeWeight(ed, 5);g.setEdgeScore(ed, 10);
+		fe = new ReactionEdge(f,e,new BioReaction("fe"));g.addEdge(f, e, fe);g.setEdgeWeight(fe, 8);g.setEdgeScore(fe, 16);
+		df = new ReactionEdge(d,f,new BioReaction("df"));g.addEdge(d, f, df);g.setEdgeWeight(df, 8);g.setEdgeScore(df, 16);
 	}
 	
 	/**

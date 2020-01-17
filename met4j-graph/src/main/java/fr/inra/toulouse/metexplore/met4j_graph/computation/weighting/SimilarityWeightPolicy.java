@@ -39,28 +39,27 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inra.toulouse.metexplore.met4j_mathUtils.similarity.SimilarityComputor;
-import fr.inra.toulouse.metexplore.met4j_chemUtils.fingerprints.FingerprintBuilder;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntityParticipant;
-import fr.inra.toulouse.metexplore.met4j_core.utils.StringUtils;
+import fr.inra.toulouse.metexplore.met4j_chemUtils.chemicalSimilarity.FingerprintBuilder;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollections;
 
 /**
  * The Chemical Similarity weighting policy.
  * @author clement
  */
-public class SimilarityWeightPolicy extends WeightingPolicy<BioPhysicalEntity,ReactionEdge,CompoundGraph> {
+public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> {
 	
 	private int fingerprintType;
-	private boolean weightByMassContribution=false;
-	private boolean useDist=false;
-	private BioPhysicalEntity global;
+	private boolean weightByMassContribution;
+	private boolean useDist;
+	private BioMetabolite global;
 	public static final int DEFAULT_FINGERPRINT = FingerprintBuilder.EXTENDED;
 	
 	/**
 	 * Instantiates a new similarity weight policy using default fingerprint type
 	 */
 	public SimilarityWeightPolicy() {
-		this.fingerprintType=DEFAULT_FINGERPRINT;
+        this.fingerprintType = DEFAULT_FINGERPRINT;
 	}
 	
 	/**
@@ -84,12 +83,12 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioPhysicalEntity,Re
 	public void setWeight(CompoundGraph g) {
 //		noStructFilter(g);
 		FingerprintBuilder fingerprinter = new FingerprintBuilder(fingerprintType);
-		HashMap<String, BitSet> fingerPrintMap = new HashMap<String, BitSet>();
+		HashMap<String, BitSet> fingerPrintMap = new HashMap<>();
 		for(ReactionEdge e:g.edgeSet()){
 			
 			//extract compound
-			BioPhysicalEntity cpd1 = e.getV1();
-			BioPhysicalEntity cpd2 = e.getV2();
+			BioMetabolite cpd1 = e.getV1();
+			BioMetabolite cpd2 = e.getV2();
 			
 			//computing finger-print
 			if (!fingerPrintMap.containsKey(cpd1.getId())){
@@ -119,7 +118,7 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioPhysicalEntity,Re
 						}
 					}
 //					
-					if(global!=null){
+					if(global !=null){
 						double sim2 = SimilarityComputor.getTanimoto(fingerPrintMap.get(global.getId()), fingerprint2);
 						sim=(sim+sim2)/2;
 					}
@@ -148,7 +147,7 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioPhysicalEntity,Re
 	 * @param g the graph
 	 */
 	public void noStructFilter(CompoundGraph g){
-		Set<ReactionEdge> edgesToRemove = new HashSet<ReactionEdge>();
+		Set<ReactionEdge> edgesToRemove = new HashSet<>();
 		for (ReactionEdge e:g.edgeSet()){
 			if(g.getEdgeWeight(e)==0.0){
 				edgesToRemove.add(e);
@@ -175,12 +174,12 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioPhysicalEntity,Re
 	 */
 	private double getMassContribution(ReactionEdge e){
 		try{
-			if(!StringUtils.isVoid(e.getV1().getMolecularWeight()) && !StringUtils.isVoid(e.getV2().getMolecularWeight())){
-				double massSum = Double.parseDouble(e.getV1().getMolecularWeight())+Double.parseDouble(e.getV2().getMolecularWeight());
+			if(e.getV1().getMolecularWeight() != null && e.getV2().getMolecularWeight() != null){
+				double massSum = e.getV1().getMolecularWeight()+e.getV2().getMolecularWeight();
 				double massReactionSum = 0.0;
-				for(BioPhysicalEntityParticipant p : e.getReaction().getParticipantList().values()){
-					if(StringUtils.isVoid(p.getPhysicalEntity().getMolecularWeight())) return Double.NaN;
-					massReactionSum+=Double.parseDouble(p.getPhysicalEntity().getMolecularWeight());
+				for(BioMetabolite p : BioCollections.union(e.getReaction().getLeftsView(),e.getReaction().getRightsView())){
+					if(p.getMolecularWeight()==null) return Double.NaN;
+					massReactionSum+=p.getMolecularWeight();
 				}
 				return (100*massSum)/massReactionSum;
 			}else{
@@ -206,8 +205,8 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioPhysicalEntity,Re
 		this.useDist = useDist;
 	}
 	
-	public void useGlobalSimilarity(BioPhysicalEntity start) {
-		this.global = start;
+	public void useGlobalSimilarity(BioMetabolite start) {
+        this.global = start;
 	}
 
 	public void setFingerprintType(int fingerprintType) {

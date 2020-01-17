@@ -31,9 +31,9 @@
 package fr.inra.toulouse.metexplore.met4j_graph.core.bipartite;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * The Class BipartiteEdge.
@@ -45,10 +45,10 @@ public class BipartiteEdge extends Edge<BioEntity>{
 	private static final long serialVersionUID = -2619530622614208364L;
 	
 	/**  is reversible. */
-	public boolean reversible=false;
+	public boolean reversible;
 	
 	/**  link side compound. */
-	public boolean side=false;
+	public boolean side;
 
 	/**
 	 * Instantiates a new bipartite edge.
@@ -56,25 +56,27 @@ public class BipartiteEdge extends Edge<BioEntity>{
 	 * @param v1 the source vertex
 	 * @param v2 the target vertex
 	 */
-	public BipartiteEdge(BioPhysicalEntity v1, BioChemicalReaction v2){
+	public BipartiteEdge(BioMetabolite v1, BioReaction v2){
 		super(v1,v2);
+        this.reversible =v2.isReversible();
 	}
-	public BipartiteEdge(BioChemicalReaction v1, BioPhysicalEntity v2){
+	public BipartiteEdge(BioReaction v1, BioMetabolite v2){
 		super(v1,v2);
+        this.reversible =v1.isReversible();
 	}
-	public BipartiteEdge(BioPhysicalEntity v1, BioChemicalReaction v2, boolean reversible){
+	public BipartiteEdge(BioMetabolite v1, BioReaction v2, boolean reversible){
 		super(v1,v2);
 		this.reversible=reversible;
 		
 	}
-	public BipartiteEdge(BioChemicalReaction v1, BioPhysicalEntity v2, boolean reversible){
+	public BipartiteEdge(BioReaction v1, BioMetabolite v2, boolean reversible){
 		super(v1,v2);
 		this.reversible=reversible;
 	}
 	public BipartiteEdge(BioEntity v1, BioEntity v2, boolean reversible){
 		super(v1,v2);
-		if(!(v1 instanceof BioPhysicalEntity && v2 instanceof BioChemicalReaction)
-		 && !(v1 instanceof BioChemicalReaction && v2 instanceof BioPhysicalEntity)){
+		if(!(v1 instanceof BioMetabolite && v2 instanceof BioReaction)
+		 && !(v1 instanceof BioReaction && v2 instanceof BioMetabolite)){
 			throw new IllegalArgumentException("Edges in bipartite graph can only connect a compound to a reaction");
 		}
 		this.reversible=reversible;

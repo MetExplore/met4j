@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.apache.commons.lang3.StringUtils;
@@ -50,10 +51,13 @@ import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inra.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioChemicalReaction;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReactant;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inra.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inra.toulouse.metexplore.met4j_core.biodata.collection.BioCollections;
 
 /**
  * Export informations from graphs generated from {@link Bionetwork2Graph} into Cytoscape-readable files
@@ -82,7 +86,7 @@ public class ExportGraph {
     		bw.write(attName+" (class=Double)");
     		bw.newLine();
     		for(ReactionEdge e:graph.edgeSet()){
-    			String edgeID = e.getV1().getId()+" ("+e.toString()+") "+e.getV2().getId();
+    			String edgeID = e.getV1().getId()+" ("+ e +") "+e.getV2().getId();
     			if(edgeID.contains("=")){
     				bw.close();
     				throw new IOException("input badly formated : equal sign in namespace");
@@ -111,7 +115,7 @@ public class ExportGraph {
     		bw.write(attName+" (class=Double)");
     		bw.newLine();
     		for(ReactionEdge e:graph.edgeSet()){
-    			String edgeID = e.getV1().getId()+" ("+e.toString()+") "+e.getV2().getId();
+    			String edgeID = e.getV1().getId()+" ("+ e +") "+e.getV2().getId();
     			if(edgeID.contains("=")){
     				bw.close();
     				throw new IOException("input badly formated : equal sign in namespace");
@@ -142,13 +146,13 @@ public class ExportGraph {
     		bw.write(attName);
     		bw.newLine();
     		for(ReactionEdge e:graph.edgeSet()){
-    			String edgeID = e.getV1().getId()+" ("+e.toString()+") "+e.getV2().getId();
+    			String edgeID = e.getV1().getId()+" ("+ e +") "+e.getV2().getId();
     			if(edgeID.contains("=")){
     				bw.close();
     				throw new IOException("input badly formated : equal sign in namespace");
     			}
     			
-				String entry=edgeID+" = "+e.getAttributes().get(attName).toString();
+				String entry=edgeID+" = "+ e.getAttributes().get(attName);
 				bw.write(entry);
 				bw.newLine();
 				
@@ -172,7 +176,7 @@ public class ExportGraph {
     		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
     		bw.write("Name (class=String)");
     		bw.newLine();
-    		for(BioPhysicalEntity e:graph.vertexSet()){
+    		for(BioMetabolite e:graph.vertexSet()){
     			String nodeID = e.getId();
     			String nodeName = e.getName();
     			if(nodeID.contains("=") || nodeName.contains("=")){
@@ -200,7 +204,7 @@ public class ExportGraph {
     		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
     		bw.write("Name (class=String)");
     		bw.newLine();
-    		for(BioPhysicalEntity e:bn.getPhysicalEntityList().values()){
+    		for(BioMetabolite e:bn.getMetabolitesView()){
     			String nodeID = e.getId();
     			String nodeName = e.getName();
     			if(nodeID.contains("=") || nodeName.contains("=")){
@@ -230,10 +234,16 @@ public class ExportGraph {
 	public static void exportEdgeTabular(CompoundGraph graph, String outputPath){
 		try {	    	
     		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
-    		bw.write("CanonicalName\tSubstrateId\tSubstrateName\tSubstrateComp\tReactionId\tReactionName\tPathway\tProductId\tProductName\tProductComp\tWeight\tScore\tPvalue");
+    		bw.write("CanonicalName\tSubstrateId\tSubstrateName\tSubstrateComp\tReactionId\tReactionName\tProductId\tProductName\tProductComp\tWeight\tScore");
     		bw.newLine();
     		for(ReactionEdge e:graph.edgeSet()){
-				String entry=e.getV1().getId()+" ("+e.toString()+") "+e.getV2().getId()+"\t"+e.getV1().getId()+"\t"+e.getV1().getName()+"\t"+e.getV1().getCompartment().getId()+"\t"+e.toString()+"\t"+e.getReaction().getName()+"\t"+StringUtils.join(e.getReaction().getPathwayList().keySet(),", ")+"\t"+e.getV2().getId()+"\t"+e.getV2().getName()+"\t"+e.getV2().getCompartment().getId()+"\t"+graph.getEdgeWeight(e)+"\t"+graph.getEdgeScore(e)+"\t"+e.getPvalue();
+    			BioReaction r = e.getReaction();
+    			BioCollection<BioReactant> substrates = r.isReversible() ? BioCollections.union(r.getLeftReactantsView(), r.getRightReactantsView()) : r.getLeftReactantsView();
+    			BioCollection<BioReactant> products = r.isReversible() ? BioCollections.union(r.getLeftReactantsView(), r.getRightReactantsView()) : r.getRightReactantsView();
+    			BioMetabolite v1 = e.getV1();
+    			BioMetabolite v2 = e.getV2();
+				String entry=v1.getId()+" ("+ e +") "+v2.getId()+"\t"
+						+v1.getId()+"\t"+v1.getName()+"\t"+substrates.get(v1.getId()).getLocation().getId()+"\t"+ e +"\t"+e.getReaction().getName()+"\t"+e.getV2().getId()+"\t"+e.getV2().getName()+"\t"+products.get(v2.getId()).getLocation().getId()+"\t"+graph.getEdgeWeight(e)+"\t"+graph.getEdgeScore(e);
 				bw.write(entry);
 	    		bw.newLine();
 	    	}
@@ -252,10 +262,10 @@ public class ExportGraph {
 	public static void exportNodeTabular(CompoundGraph graph, String outputPath){
 		try {	    	
     		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
-    		bw.write("CanonicalName\tName\tCompartment");
+    		bw.write("CanonicalName\tName");
     		bw.newLine();
-    		for(BioPhysicalEntity v : graph.vertexSet()){
-				String entry = v.getId()+"\t"+v.getName()+"\t"+v.getCompartment().getName();
+    		for(BioMetabolite v : graph.vertexSet()){
+				String entry = v.getId()+"\t"+v.getName();
 				bw.write(entry);
 	    		bw.newLine();
 	    	}
@@ -275,11 +285,11 @@ public class ExportGraph {
 	public static void exportNodeTabular(CompoundGraph graph, String outputPath, HashMap<String, Double> weights){
 		try {	    	
     		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
-    		bw.write("CanonicalName\tName\tCompartment\tWeight");
+    		bw.write("CanonicalName\tName\tWeight");
     		bw.newLine();
-    		for(BioPhysicalEntity v : graph.vertexSet()){
+    		for(BioMetabolite v : graph.vertexSet()){
     			double weight = (weights.get(v.getId())==null) ? 0 : weights.get(v.getId());
-				String entry = v.getId()+"\t"+v.getName()+"\t"+v.getCompartment().getName()+"\t"+weight;
+				String entry = v.getId()+"\t"+v.getName()+"\t"+weight;
 				bw.write(entry);
 	    		bw.newLine();
 	    	}
@@ -303,7 +313,7 @@ public class ExportGraph {
 				//return vertex.getName();
 			}
 		};
-		EdgeNameProvider<E> edgeLabelprovider = new EdgeNameProvider<E>() {	
+		EdgeNameProvider<E> edgeLabelprovider = new EdgeNameProvider<E>() {
 			@Override
 			public String getEdgeName(E edge) {
 				return edge.toString();
@@ -311,8 +321,8 @@ public class ExportGraph {
 		};
 		
 		try {
-			GmlExporter<V, E> gml 
-				= new GmlExporter<V, E>(new IntegerNameProvider<V>(), vertexLabelprovider, new IntegerEdgeNameProvider<E>(), edgeLabelprovider);
+			GmlExporter<V, E> gml
+				= new GmlExporter<>(new IntegerNameProvider<>(), vertexLabelprovider, new IntegerEdgeNameProvider<>(), edgeLabelprovider);
 			gml.setParameter(GmlExporter.Parameter.EXPORT_EDGE_LABELS, true);
 			gml.setParameter(GmlExporter.Parameter.EXPORT_VERTEX_LABELS, true);
 			FileWriter fw = new FileWriter(new File(outputPath).getAbsoluteFile());
@@ -342,7 +352,7 @@ public class ExportGraph {
     			BioEntity src = e.getV1();
     			BioEntity trg = e.getV2();
     			if(!(src==null || trg== null)){
-	    			String interaction = (src instanceof BioChemicalReaction) ? "product" : "substrate of";
+	    			String interaction = (src instanceof BioReaction) ? "product" : "substrate of";
 	    			String edgeID = src.getId()+" ("+interaction+") "+trg.getId();
 	    			if(edgeID.contains("=")){
 	    				bw.close();
@@ -373,18 +383,18 @@ public class ExportGraph {
 		BufferedWriter bw = null;
 		try {	    	
     		bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
-    		bw.write("CanonicalName\tName\tClass\tCompartment\tSide\tPathway");
+    		bw.write("CanonicalName\tName\tClass");
     		bw.newLine();
     		for(BioEntity v : bip.vertexSet()){
     			String entry=null;
-    			if(v instanceof BioPhysicalEntity){
-    				BioPhysicalEntity e = (BioPhysicalEntity) v;
+    			if(v instanceof BioMetabolite){
+    				BioMetabolite e = (BioMetabolite) v;
 //    				boolean side = (graph.hasVertex(v.getId())) ? false : true ;
-    				entry=e.getId()+"\t"+e.getName()+"\tcompound\t"+e.getCompartment().getName()+"\t"+e.getIsSide()+"\tnull\tnull";
+    				entry=e.getId()+"\t"+e.getName()+"\tcompound";
     			}
-    			else if(v instanceof BioChemicalReaction){
-    				BioChemicalReaction r = (BioChemicalReaction) v;
-    				entry=r.getId()+"\t"+r.getName()+"\treaction\tnull\tnull\t"+StringUtils.join(r.getPathwayList().keySet(),", ");
+    			else if(v instanceof BioReaction){
+    				BioReaction r = (BioReaction) v;
+    				entry=r.getId()+"\t"+r.getName()+"\treaction";
     			}
     			if(entry!=null){
 	    			bw.write(entry);
@@ -404,28 +414,6 @@ public class ExportGraph {
 			}
 		}
 	}
-	
-//	/**
-//	 * Export to sbml.
-//	 *
-//	 * @param cmpdGraph the compound graph
-//	 * @param outputPath the output path
-//	 */
-//	public static void toSbml(BioGraph cmpdGraph, String outputPath){
-//		BioNetwork bn = ConvertGraph.toBioNetwork(cmpdGraph);
-//		bn.setId("ParseBioNet"+UUID.randomUUID());
-//		DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-//		bn.setName("Network generated using Parsebionet "+df.format(new Date()));
-//		
-//		
-//		try {
-//			BioNetworkToJSBML export = new BioNetworkToJSBML(bn,outputPath);
-//			export.write();
-//		} catch (SBMLException | XMLStreamException
-//				| ParseException | IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
 	
 	/**
 	 * export graph in tabulated format : [source-label]\t[edge-label]\t[target_label]
@@ -464,7 +452,7 @@ public class ExportGraph {
     			BioEntity src = e.getV1();
     			BioEntity trg = e.getV2();
     			if(!(src==null || trg== null)){
-	    			String interaction = (src instanceof BioChemicalReaction) ? "product" : "substrate of";
+	    			String interaction = (src instanceof BioReaction) ? "product" : "substrate of";
 					String entry=src.getId()+"\t"+interaction+"\t"+trg.getId();
 					bw.write(entry);
 					bw.newLine();

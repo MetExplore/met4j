@@ -70,7 +70,7 @@ public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 	 */
 	public MetaEdge(V v1, V v2) {
 		super(v1, v2);
-		this.mergedEdges = new HashSet<E>();
+        this.mergedEdges = new HashSet<>();
 	}
 	
 	/**
@@ -87,7 +87,7 @@ public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 	 */
 	public void addEdges(Collection<E> edges){
 		for(E e : edges){
-			this.addEdge(e);
+            this.addEdge(e);
 		}
 	}
 	
@@ -96,7 +96,7 @@ public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 	 * @param e the edges
 	 */
 	public void addEdge(E e){
-		mergedEdges.add(e);
+        mergedEdges.add(e);
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 	 */
 	public void removeEdges(Collection<E> edges){
 		for(E e : edges){
-			this.removeEdge(e);
+            this.removeEdge(e);
 		}
 	}
 	
@@ -114,7 +114,7 @@ public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 	 * @param e the edge
 	 */
 	public void removeEdge(E e){
-		mergedEdges.remove(e);
+        mergedEdges.remove(e);
 	}
 
 }

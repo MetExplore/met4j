@@ -30,12 +30,12 @@
  ******************************************************************************/
 package fr.inra.toulouse.metexplore.met4j_graph.computation.analysis;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjancyMatrix;
-
+import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjacencyMatrix;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inra.toulouse.metexplore.met4j_core.biodata.BioEntity;
@@ -49,7 +49,7 @@ import fr.inra.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
 public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> {
 	
 	/** The graph. */
-	private G g;
+	private final G g;
 	
 	/**
 	 * Instantiates a new graph local measure.
@@ -89,7 +89,7 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 		Set<V> neighbors2 = g.neighborListOf(v2);
 		for(V n : neighbors1){
 			if(neighbors2.contains(n)){
-				aaIndex+=(1/Math.log(g.degreeOf(n)));
+				aaIndex+=(1/ StrictMath.log10(g.degreeOf(n)));
 			}
 		}
 		return aaIndex;
@@ -103,7 +103,8 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 	 */
 	public double getSaltonIndex(V v1, V v2){
 		double commonNeighbor = this.getCommonNeighbor(v1, v2);
-		double salton = commonNeighbor/Math.sqrt(g.degreeOf(v1)*g.degreeOf(v2));
+		double salton = commonNeighbor/Math.sqrt(g.neighborListOf(v1).size()* g.neighborListOf(v2).size());
+		//note that using degree here can cause false results if graph is directed, and one neighbor is connected through both incoming and outgoing edges
 		return salton;
 	}
 	
@@ -114,7 +115,7 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 	 * @return
 	 */
 	public double getLocalClusteringCoeff(V v1){
-		Set<V> neighbors = g.neighborListOf(v1);
+		ArrayList<V> neighbors = new ArrayList<>(g.neighborListOf(v1));
 		double numberOfNeighbors = neighbors.size();
 		if(numberOfNeighbors==1 || numberOfNeighbors==0) return 0;
 		double connectedNeighbors = 0;
@@ -129,14 +130,39 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 	}
 	
 	/**
+	 * Compute the local clustering coefficient, which is for a vertex the number of edges between vertices of its neighborhood
+	 * divided by the expected maximum number of edges that could exist between them (if the neighborhood was a clique)
+	 * @param v1 the vertex
+	 * @return
+	 */
+	public double getUndirectedLocalClusteringCoeff(V v1){
+		ArrayList<V> neighbors = new ArrayList<>(g.neighborListOf(v1));
+		double numberOfNeighbors = neighbors.size();
+		if(numberOfNeighbors==1 || numberOfNeighbors==0) return 0;
+		double connectedNeighbors = 0;
+		for(int i=0; i<neighbors.size(); i++){
+			V n1 = neighbors.get(i);
+			for(int j=i; j<neighbors.size(); j++){
+				V n2 = neighbors.get(j);
+				if(n1!=n2 && (g.areConnected(n1, n2) || g.areConnected(n2, n1))) connectedNeighbors++;
+			}
+		}
+		
+		
+		double clusteringCoeff = (2*connectedNeighbors)/(numberOfNeighbors*(numberOfNeighbors-1));
+		return clusteringCoeff;
+	}	
+
+	
+	/**
 	 * Compute the Katz index
 	 * C = ((I_alphaA^T)^-1 - I)
 	 * @param alpha
 	 * @return the Katz index
 	 */
 	public Map<V,Double> getKatzIndex(double alpha){
-		ComputeAdjancyMatrix<V,E,G> adjComputor = new  ComputeAdjancyMatrix<V,E,G>(g);
-		BioMatrix adj = adjComputor.getAdjancyMatrix();
+		ComputeAdjacencyMatrix<V,E,G> adjComputor = new ComputeAdjacencyMatrix<>(g);
+		BioMatrix adj = adjComputor.getadjacencyMatrix();
 		BioMatrix i = adj.identity();
 		BioMatrix factor1 = (i.minus(adj.transpose().scale(alpha))).invert().minus(i);
 		BioMatrix identityVector = new EjmlMatrix(1,adj.numCols());
@@ -146,7 +172,7 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 		BioMatrix katzVector = factor1.minus(identityVector);
 		
 		
-		HashMap<V, Double> res = new HashMap<V, Double>();
+		HashMap<V, Double> res = new HashMap<>();
 		HashMap<Integer, String> index = adjComputor.getIndexMap();
 		
 		for( int j=0;j<katzVector.numCols();j++){

@@ -33,8 +33,9 @@ package fr.inra.toulouse.metexplore.met4j_graph.computation.algo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjancyMatrix;
+import fr.inra.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjacencyMatrix;
 
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inra.toulouse.metexplore.met4j_graph.core.BioPath;
@@ -69,20 +70,20 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 	 * @return the distances
 	 */
 	public BioMatrix getDistances(){
-		ComputeAdjancyMatrix<V,E,G> computor = new ComputeAdjancyMatrix<V,E,G>(g);
+		ComputeAdjacencyMatrix<V,E,G> computor = new ComputeAdjacencyMatrix<>(g);
 
-		BioMatrix matrix = computor.getAdjancyMatrix();
-		for(int i=0; i<g.vertexSet().size(); i++){
-			for(int j=0; j<g.vertexSet().size(); j++){
+		BioMatrix matrix = computor.getadjacencyMatrix();
+		for(int i = 0; i< g.vertexSet().size(); i++){
+			for(int j = 0; j< g.vertexSet().size(); j++){
 				if(i!=j && matrix.get(i, j)==0.0){
 					matrix.set(i, j, Double.POSITIVE_INFINITY);
 				}
 			}
 		}
 		
-		for(int k=0; k<g.vertexSet().size(); k++){
-			for(int i=0; i<g.vertexSet().size(); i++){
-				for(int j=0; j<g.vertexSet().size(); j++){
+		for(int k = 0; k< g.vertexSet().size(); k++){
+			for(int i = 0; i< g.vertexSet().size(); i++){
+				for(int j = 0; j< g.vertexSet().size(); j++){
 					
 					double ab = matrix.get(i, j);
 					double ac = matrix.get(i, k);
@@ -104,14 +105,14 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 	 * @return the paths
 	 */
 	public HashMap<String, HashMap<String, BioPath<V, E>>> getPaths(){
-		ComputeAdjancyMatrix<V,E,G> computor = new ComputeAdjancyMatrix<V,E,G>(g);
+		ComputeAdjacencyMatrix<V,E,G> computor = new ComputeAdjacencyMatrix<>(g);
 		
-		HashMap<Integer,HashMap<Integer,Integer>> next = new HashMap<Integer,HashMap<Integer,Integer>>();
+		HashMap<Integer,HashMap<Integer,Integer>> next = new HashMap<>();
 		
-		BioMatrix matrix = computor.getAdjancyMatrix();
-		for(int i=0; i<g.vertexSet().size(); i++){
-			next.put(i, new HashMap<Integer,Integer>());
-			for(int j=0; j<g.vertexSet().size(); j++){
+		BioMatrix matrix = computor.getadjacencyMatrix();
+		for(int i = 0; i< g.vertexSet().size(); i++){
+			next.put(i, new HashMap<>());
+			for(int j = 0; j< g.vertexSet().size(); j++){
 				if(i!=j){
 					if(matrix.get(i, j)==0.0){
 						matrix.set(i, j, Double.POSITIVE_INFINITY);
@@ -123,9 +124,9 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 			}
 		}
 		
-		for(int k=0; k<g.vertexSet().size(); k++){
-			for(int i=0; i<g.vertexSet().size(); i++){
-				for(int j=0; j<g.vertexSet().size(); j++){
+		for(int k = 0; k< g.vertexSet().size(); k++){
+			for(int i = 0; i< g.vertexSet().size(); i++){
+				for(int j = 0; j< g.vertexSet().size(); j++){
 					
 					double ab = matrix.get(i, j);
 					double ac = matrix.get(i, k);
@@ -140,15 +141,16 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 		}
 		
 		
-		HashMap<String,HashMap<String,BioPath<V,E>>> res = new HashMap<String,HashMap<String,BioPath<V,E>>>();
-		for(int i : next.keySet()){
+		HashMap<String,HashMap<String,BioPath<V,E>>> res = new HashMap<>();
+		for(Map.Entry<Integer, HashMap<Integer, Integer>> entry : next.entrySet()){
+			int i = entry.getKey();
 			String iLabel = computor.getIndexMap().get(i);
-			HashMap<String,BioPath<V,E>> map = new HashMap<String, BioPath<V,E>>();
+			HashMap<String,BioPath<V,E>> map = new HashMap<>();
 			
-			for(int j : next.get(i).keySet()){
+			for(int j : entry.getValue().keySet()){
 				
 				String jLabel = computor.getIndexMap().get(j);
-				List<E> path = new ArrayList<E>();
+				List<E> path = new ArrayList<>();
 				double w = 0.0;
 				
 				int k = i;
@@ -162,10 +164,10 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 					
 					E edge = g.getEdge(v1, v2);
 					path.add(edge);
-					w+=g.getEdgeWeight(edge);
+					w+= g.getEdgeWeight(edge);
 				}
 				
-				map.put(jLabel,new BioPath<V,E>(g, g.getVertex(iLabel), g.getVertex(jLabel), path, w));
+				map.put(jLabel, new BioPath<>(g, g.getVertex(iLabel), g.getVertex(jLabel), path, w));
 			}
 			res.put(iLabel, map);
 		}

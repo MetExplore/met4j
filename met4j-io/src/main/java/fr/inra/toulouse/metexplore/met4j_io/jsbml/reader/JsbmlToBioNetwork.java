@@ -281,6 +281,9 @@ public class JsbmlToBioNetwork {
 	 * @throws Met4jSbmlReaderException
 	 */
 	private void parseListOfReactions() throws Met4jSbmlReaderException {
+
+		Boolean hasModifiers = false;
+
 		for (Reaction jSBMLReaction : model.getListOfReactions()) {
 			String reactionId = jSBMLReaction.getId();
 
@@ -407,6 +410,17 @@ public class JsbmlToBioNetwork {
 
 				}
 			}
+
+			if(jSBMLReaction.getModifierCount() > 0)
+			{
+				hasModifiers = true;
+			}
+
+		}
+
+		if(hasModifiers)
+		{
+			System.err.println("[warning] Some reactions have list of modifiers. Be careful, Met4j-io does not import list of modifiers");
 		}
 	}
 

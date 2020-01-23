@@ -345,7 +345,15 @@ public class JsbmlToBioNetwork {
 
 								Flux newflux = new Flux(kine.getParameter(n).getId(), kine.getParameter(n).getValue(),
 										UD);
-								ReactionAttributes.setUpperBound(bionetReaction, newflux);
+
+								try {
+									ReactionAttributes.setUpperBound(bionetReaction, newflux);
+								} catch (IllegalArgumentException e) {
+									System.err.println("[Warning] Upper bound of reaction "+bionetReaction.getId()+ " badly formatted : put to 0");
+									e.printStackTrace();
+									newflux.value = 0.0;
+									ReactionAttributes.setUpperBound(bionetReaction, newflux);
+								}
 
 							} else if (kine.getParameter(n).getId().equalsIgnoreCase("LOWER_BOUND")
 									|| kine.getParameter(n).getName().equalsIgnoreCase("LOWER_BOUND")) {
@@ -353,7 +361,15 @@ public class JsbmlToBioNetwork {
 								Flux newflux = new Flux(kine.getParameter(n).getId(), kine.getParameter(n).getValue(),
 										UD);
 
-								ReactionAttributes.setLowerBound(bionetReaction, newflux);
+
+								try {
+									ReactionAttributes.setLowerBound(bionetReaction, newflux);
+								} catch (IllegalArgumentException e) {
+									System.err.println("[Warning] Lower bound of reaction "+bionetReaction.getId()+ " badly formatted : put to 0");
+									e.printStackTrace();
+									newflux.value = 0.0;
+									ReactionAttributes.setLowerBound(bionetReaction, newflux);
+								}
 
 							} else {
 								Flux newflux = new Flux(kine.getParameter(n).getId(), kine.getParameter(n).getValue(),
@@ -540,10 +556,7 @@ public class JsbmlToBioNetwork {
 
 	/**
 	 * parse the jsbml species participating in a reaction and create the
-	 * corresponding metabolite as {@link BioPhysicalEntity} object
-	 * 
-	 * @param specie the Jsbml Species object
-	 * @return BioPhysicalEntity
+	 * corresponding metabolite
 	 */
 	private BioReactant parseParticipantSpecies(SpeciesReference specieRef) {
 		Species specie = this.getModel().getSpecies(specieRef.getSpecies());

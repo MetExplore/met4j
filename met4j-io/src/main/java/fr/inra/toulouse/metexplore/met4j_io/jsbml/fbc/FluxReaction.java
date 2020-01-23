@@ -83,11 +83,11 @@ public class FluxReaction extends BioEntity {
 
 	/**
 	 * Convert the reaction's {@link GeneAssociation} to a set of
-	 * {@link BioComplex} and add them to the {@link BioNetwork} given in
+	 * enzymes and add them to the {@link BioNetwork} given in
 	 * parameter.</br>It also add them to the reaction as enzymes
 	 * 
 	 * @param bn
-	 *            The {@link BioNetwork} where the {@link BioComplex} will be
+	 *            The {@link BioNetwork} where the enzymes will be
 	 *            added
 	 */
 	public void convertGeneAssociationstoComplexes(BioNetwork bn) {

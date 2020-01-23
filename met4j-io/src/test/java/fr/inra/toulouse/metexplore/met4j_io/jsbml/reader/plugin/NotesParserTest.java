@@ -127,11 +127,11 @@ public class NotesParserTest {
 
 		assertEquals(2, comp1.getRefs().size());
 
-		Set<BioRef> refs = comp1.getRefs().get("Attribut1");
+		Set<BioRef> refs = comp1.getRefs().get("attribut1");
 		assertNotNull(refs);
 		assertEquals(1, refs.size());
 		BioRef ref = refs.iterator().next();
-		assertEquals(ref.dbName, "Attribut1");
+		assertEquals(ref.dbName, "attribut1");
 		assertEquals(ref.id, "value1");
 
 	}
@@ -144,7 +144,7 @@ public class NotesParserTest {
 		String notesStr = "<body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
 				+ "    <p>Attribut1 : value1</p><p>EC-NUMBER: 1.1.1.1</p>" + "<p>PMID: 10000,12323,PMID: 12</p>"
 				+ "<p>SUBSYSTEM: Pathway1 || Pathway2</p>" + "<p>SCORE: 1</p>" + "<p>STATUS: Not defined</p>"
-				+ "<p>COMMENTS: comment</p>" + "<p>GENE ASSOCIATION: ( G1 ) OR ( G1 AND G3 )</p>\n" + "  </body>";
+				+ "<p>COMMENTS: comment</p>" + "<p>GENE ASSOCIATION: (G1 and G2 or G2 and G3) and (G4 AND G5 or (G6) or (G4 AND G7))</p>\n" + "  </body>";
 
 		r1.setNotes(notesStr);
 
@@ -195,10 +195,57 @@ public class NotesParserTest {
 
 		assertEquals("comment", ReactionAttributes.getComment(reaction1));
 
-		assertEquals("( G1 ) OR ( G1 AND G3 )", BioReactionUtils.getGPR(network, reaction1, false));
+		assertEquals("( G1 AND G2 AND G4 AND G5 ) OR ( G1 AND G2 AND G4 AND G7 ) OR ( G1 AND G2 AND G6 ) OR " +
+				"( G2 AND G3 AND G4 AND G5 ) OR ( G2 AND G3 AND G4 AND G7 ) OR ( G2 AND G3 AND G6 )",
+				BioReactionUtils.getGPR(network, reaction1, false));
 
-		assertNotNull(reaction1.getRefs().get("Attribut1"));
+		assertNotNull(reaction1.getRefs().get("attribut1"));
 
+	}
+
+	@Test
+	public void testComputeGeneAssociation() throws XMLStreamException {
+
+		Reaction r1 = model.createReaction("r1");
+
+		String notesStr = "<body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+				+ "<p>GENE ASSOCIATION: (G1 and G2) OR G4 AND G5</p>\n" + "  </body>";
+
+		r1.setNotes(notesStr);
+
+		BioReaction reaction1 = new BioReaction("r1");
+		network.add(reaction1);
+
+		parser = new NotesParser(true);
+
+		parser.othersAsRefs = true;
+
+		parser.parseModel(model, network);
+
+		assertEquals("( G1 AND G2 ) OR ( G4 AND G5 )",
+				BioReactionUtils.getGPR(network, reaction1, false));
+
+	}
+
+	@Test
+	public void testComputeGeneAssociation2() throws XMLStreamException {
+		Reaction r1 = model.createReaction("r1");
+		String notesStr = "<body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
+				+ "<p>GENE ASSOCIATION: G4 AND G5 OR (G6) OR ( G4 AND G7)</p>\n" + "  </body>";
+
+		r1.setNotes(notesStr);
+
+		BioReaction reaction1 = new BioReaction("r1");
+		network.add(reaction1);
+
+		parser = new NotesParser(true);
+
+		parser.othersAsRefs = true;
+
+		parser.parseModel(model, network);
+
+		assertEquals("( G4 AND G5 ) OR ( G4 AND G7 ) OR ( G6 )",
+				BioReactionUtils.getGPR(network, reaction1, false));
 	}
 
 	@Test
@@ -208,7 +255,7 @@ public class NotesParserTest {
 
 		String notesStr = "<body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
 				+ "    <p>Attribut1 : value1</p><p>Formula: C5H403</p>" + "<p>CHARGE: 3</p>"
-				+ "<p>INCHI: inchiCode</p>" + "<p>SMILES: smilesCode</p>\n" + "  </body>";
+				+ "<p>INCHI: InChI=inchiCode</p>" + "<p>SMILES: smilesCode</p>\n" + "  </body>";
 		
 		m1.setNotes(notesStr);
 		
@@ -245,8 +292,7 @@ public class NotesParserTest {
 		
 		assertEquals("smilesCode", metabolite1.getSmiles());
 
-		assertNotNull(metabolite1.getRefs().get("Attribut1"));
-		
+		assertNotNull(metabolite1.getRefs().get("attribut1"));
 
 	}
 

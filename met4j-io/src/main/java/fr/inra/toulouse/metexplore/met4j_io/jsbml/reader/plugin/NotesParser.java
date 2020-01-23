@@ -44,6 +44,7 @@ import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLStreamException;
 
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociations;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.UniqueNamedSBase;
 
@@ -96,27 +97,27 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	/**
 	 * The default pattern used to retrieve reaction's pathway data
 	 */
-	public static final String defaultPathwayPattern = "[> ]+SUBSYSTEM:\\s*([^<]+)<";
+	public static final String defaultPathwayPattern = ">\\s*SUBSYSTEM:\\s*([^<]+)<";
 	/**
 	 * The default pattern used to retrieve reaction's ec number
 	 */
-	public static final String defaultECPattern = "[> ]+EC.NUMBER:\\s*([^<]+)<";
+	public static final String defaultECPattern = ">\\s*EC.NUMBER:\\s*([^<]+)<";
 	/**
 	 * The default pattern used to retrieve reaction's GPR data
 	 */
-	public static final String defaultGPRPattern = "[> ]+GENE.{0,1}ASSOCIATION:\\s*([^<]+)<";
+	public static final String defaultGPRPattern = ">\\s*GENE.{0,1}ASSOCIATION:\\s*([^<]+)<";
 	/**
 	 * The default pattern used to retrieve reaction's score
 	 */
-	public static final String defaultscorePattern = "[> ]+SCORE:\\s*([^<]+)<";
+	public static final String defaultscorePattern = ">\\s*SCORE:\\s*([^<]+)<";
 	/**
 	 * The default pattern used to retrieve reaction's status
 	 */
-	public static final String defaultstatusPattern = "[> ]+STATUS:\\s*([^<]+)<";
+	public static final String defaultstatusPattern = ">\\s*STATUS:\\s*([^<]+)<";
 	/**
 	 * The default pattern used to retrieve reaction's comment
 	 */
-	public static final String defaultcommentPattern = "[> ]+COMMENTS:\\s*([^<]+)<";
+	public static final String defaultcommentPattern = ">\\s*COMMENTS:\\s*([^<]+)<";
 	/**
 	 * The default pattern used to retrieve reaction's PubMeb references
 	 */
@@ -124,19 +125,19 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	/**
 	 * The default pattern used to retrieve metabolite's charge
 	 */
-	public static final String defaultchargePattern = "[> ]+CHARGE:\\s*([^<]+)<";
+	public static final String defaultchargePattern = ">\\s*CHARGE:\\s*([^<]+)<";
 	/**
 	 * The default pattern used to retrieve metabolite's chemical formula
 	 */
-	public static final String defaultformulaPattern = "(?i)[> ]+FORMULA:\\s*([^<]+)<";
+	public static final String defaultformulaPattern = "(?i)>\\s*FORMULA:\\s*([^<]+)<";
 	/**
 	 * The default pattern used to retrieve element external identifiers
 	 */
 	public static final String defaultextDBidsPAttern = "[>]+([a-zA-Z\\._0-9 ]+):\\s*([^<]+)<";
 
-	public static final String defaultInchiPattern = "[> ]+INCHI:\\s*([^<]+)<";
+	public static final String defaultInchiPattern = ">\\s*INCHI:\\s*([^<]+)<";
 
-	public static final String defaultSmilesPattern = "[> ]+SMILES:\\s*([^<]+)<";
+	public static final String defaultSmilesPattern = ">\\s*SMILES:\\s*([^<]+)<";
 
 	/**
 	 * The default separator in Notes values.
@@ -210,7 +211,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 */
 	public NotesParser(boolean useDefault) {
 		if (useDefault)
-			this.setDefaultPaterns();
+			this.setDefaultPatterns();
 	}
 
 	/**
@@ -451,7 +452,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * {@link #othersAsRefs} is true
 	 * </ul>
 	 * 
-	 * @param metabolite the metabolite as a {@link BioPhysicalEntity}
+	 * @param metabolite
 	 */
 	private void parseNotes(BioMetabolite metabolite) {
 
@@ -489,8 +490,9 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 			String value = m.group(1).trim();
 
 			if (!isVoid(value)) {
-
-				metabolite.setInchi(value);
+				String inchi = value;
+				inchi = inchi.replaceAll("(?i)InChI\\=", "");
+				metabolite.setInchi(inchi);
 
 				metaboNotes = metaboNotes.replaceAll(this.getInchiPattern(), "");
 			}
@@ -531,28 +533,36 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
 			while (m.find()) {
 
-				dbName = m.group(1).trim();
+				dbName = m.group(1).trim().toLowerCase();
 				values = m.group(2).trim();
 
-				if (isVoid(values)) {
-					notes = notes.replace(m.group(0), "");
-					m = Pattern.compile(NotesParser.defaultextDBidsPAttern).matcher(notes);
-					continue;
 
-				} else {
-					String[] ids = values.split(this.getSeparator());
-					for (String value : ids) {
-						if (!e.hasRef(dbName, value)) {
-							e.addRef(new BioRef("SBML File", dbName, value, 1));
+					if (isVoid(values)) {
+						notes = notes.replace(m.group(0), "");
+						m = Pattern.compile(NotesParser.defaultextDBidsPAttern).matcher(notes);
+						continue;
+
+					} else {
+						if (dbName.compareToIgnoreCase(MetaboliteAttributes.INCHI) != 0) {
+							String[] ids = values.split(this.getSeparator());
+							for (String value : ids) {
+								if (!e.hasRef(dbName, value)) {
+									e.addRef(new BioRef("SBML", dbName, value, 1));
+								}
+							}
+						}
+						else {
+							String inchi = values;
+							inchi = inchi.replaceAll("(?i)InChI\\=", "");
+							e.addRef(new BioRef("SBML", dbName, inchi, 1));
 						}
 					}
+
+					notes = notes.replace(m.group(0), "");
+					m = Pattern.compile(NotesParser.defaultextDBidsPAttern).matcher(notes);
+
 				}
-
-				notes = notes.replace(m.group(0), "");
-				m = Pattern.compile(NotesParser.defaultextDBidsPAttern).matcher(notes);
-
 			}
-		}
 
 	}
 
@@ -595,6 +605,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
 		String tmpAssos = assosString;
 
+		ArrayList<String> typeAssos = new ArrayList<String>();
+
 		/**
 		 * This Allows to separate parenthesis block.
 		 */
@@ -602,15 +614,36 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 			for (int i = 0, n = tmpAssos.length(); i < n; i++) {
 				char c = tmpAssos.charAt(i);
 
+				String sep = tmpAssos.substring(i, i+2).toLowerCase();
+				if(sep.compareTo("and")==0)
+				{
+					typeAssos.add("and");
+				}
+				else if(sep.compareTo("and")==0)
+				{
+					typeAssos.add("or");
+				}
+				else {
+					sep = "none";
+				}
+
 				if (c == '(') {
 					try {
 						int end = StringUtils.findClosingParen(tmpAssos.toCharArray(), i);
-						subAssos.add(tmpAssos.substring(i + 1, end));
+
+						String subAsso = tmpAssos.substring(i + 1, end);
+
+						subAssos.add(subAsso);
 
 						tmpAssos = tmpAssos.substring(0, i) + tmpAssos.substring(end + 1, tmpAssos.length());
 
+						if(sep == "none")
+						{
+							typeAssos.add("or");
+						}
+
 					} catch (ArrayIndexOutOfBoundsException e) {
-						throw new MalformedGeneAssociationStringException("Malformed Gene Association in reaction "
+						throw new MalformedGeneAssociationStringException("Malformed Gene Association in reaction  (non closing parenthesis)"
 								+ flxRxn.getId() + ". This Gene Association will be ignored "
 								+ "and the genes it contains will not be added to the model if they are not present in another reaction.");
 					}
@@ -620,19 +653,24 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 			}
 		}
 
-		if (tmpAssos.contains(" or ") || tmpAssos.contains(" Or ") || tmpAssos.contains(" OR ")) {
+		if (tmpAssos.toLowerCase().contains(" or ")) {
 			StringUtils.addAllNonEmpty(subAssos, Arrays.asList(tmpAssos.split("(?i) or ")));
 
 			for (String s : subAssos) {
 				geneAssociation.addAll(this.computeGeneAssociation(s, flxRxn));
 			}
 
-		} else if (tmpAssos.contains(" and ") || tmpAssos.contains(" And ") || tmpAssos.contains(" AND ")) {
+		} else if (tmpAssos.toLowerCase().contains(" and ")) {
 			StringUtils.addAllNonEmpty(subAssos, Arrays.asList(tmpAssos.split("(?i) and ")));
 			// foreach items in "and" block
+
+			ArrayList<GeneAssociation> geneAssociations = new ArrayList<GeneAssociation>();
+
 			for (String s : subAssos) {
 
-				for (GeneSet x : this.computeGeneAssociation(s, flxRxn)) {
+				geneAssociations.add(this.computeGeneAssociation(s, flxRxn));
+
+				/*for (GeneSet x : this.computeGeneAssociation(s, flxRxn)) {
 					if (geneAssociation.isEmpty()) {
 						geneAssociation.add(x);
 					} else {
@@ -640,9 +678,13 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 							y.addAll(x);
 						}
 					}
-				}
-
+				}*/
 			}
+
+
+			// Cross the geneAssociations
+			geneAssociation = GeneAssociations.merge(geneAssociations.stream().toArray(GeneAssociation[]::new));
+
 		} else {
 			tmpAssos = tmpAssos.replaceAll(" ", "");
 			if (!tmpAssos.isEmpty()) {
@@ -668,7 +710,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	/**
 	 * Set all patterns to their default values using the defined static fields
 	 */
-	public void setDefaultPaterns() {
+	public void setDefaultPatterns() {
 		this.setPathwayPattern(defaultPathwayPattern);
 		this.setECPattern(defaultECPattern);
 		this.setGPRPattern(defaultGPRPattern);

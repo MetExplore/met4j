@@ -204,4 +204,16 @@ public class GeneAssociation implements Set<GeneSet> {
 		geneSets.clear();
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		GeneAssociation geneSets1 = (GeneAssociation) o;
+		return Objects.equals(geneSets, geneSets1.geneSets);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(geneSets);
+	}
 }

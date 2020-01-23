@@ -281,6 +281,9 @@ public class JsbmlToBioNetwork {
 	 * @throws Met4jSbmlReaderException
 	 */
 	private void parseListOfReactions() throws Met4jSbmlReaderException {
+
+		Boolean hasModifiers = false;
+
 		for (Reaction jSBMLReaction : model.getListOfReactions()) {
 			String reactionId = jSBMLReaction.getId();
 
@@ -342,7 +345,15 @@ public class JsbmlToBioNetwork {
 
 								Flux newflux = new Flux(kine.getParameter(n).getId(), kine.getParameter(n).getValue(),
 										UD);
-								ReactionAttributes.setUpperBound(bionetReaction, newflux);
+
+								try {
+									ReactionAttributes.setUpperBound(bionetReaction, newflux);
+								} catch (IllegalArgumentException e) {
+									System.err.println("[Warning] Upper bound of reaction "+bionetReaction.getId()+ " badly formatted : put to 0");
+									e.printStackTrace();
+									newflux.value = 0.0;
+									ReactionAttributes.setUpperBound(bionetReaction, newflux);
+								}
 
 							} else if (kine.getParameter(n).getId().equalsIgnoreCase("LOWER_BOUND")
 									|| kine.getParameter(n).getName().equalsIgnoreCase("LOWER_BOUND")) {
@@ -350,7 +361,15 @@ public class JsbmlToBioNetwork {
 								Flux newflux = new Flux(kine.getParameter(n).getId(), kine.getParameter(n).getValue(),
 										UD);
 
-								ReactionAttributes.setLowerBound(bionetReaction, newflux);
+
+								try {
+									ReactionAttributes.setLowerBound(bionetReaction, newflux);
+								} catch (IllegalArgumentException e) {
+									System.err.println("[Warning] Lower bound of reaction "+bionetReaction.getId()+ " badly formatted : put to 0");
+									e.printStackTrace();
+									newflux.value = 0.0;
+									ReactionAttributes.setLowerBound(bionetReaction, newflux);
+								}
 
 							} else {
 								Flux newflux = new Flux(kine.getParameter(n).getId(), kine.getParameter(n).getValue(),
@@ -407,6 +426,17 @@ public class JsbmlToBioNetwork {
 
 				}
 			}
+
+			if(jSBMLReaction.getModifierCount() > 0)
+			{
+				hasModifiers = true;
+			}
+
+		}
+
+		if(hasModifiers)
+		{
+			System.err.println("[warning] Some reactions have list of modifiers. Be careful, Met4j-io does not import list of modifiers");
 		}
 	}
 
@@ -439,6 +469,9 @@ public class JsbmlToBioNetwork {
 	}
 
 	private void parseListOfSpecies() {
+
+		Boolean hasInvalidSboTerms = false;
+
 		for (Species specie : this.getModel().getListOfSpecies()) {
 			String specieId = specie.getId();
 
@@ -447,65 +480,83 @@ public class JsbmlToBioNetwork {
 				specieName = specieId;
 			}
 
-			BioMetabolite bionetSpecies = new BioMetabolite(specieId, specieName);
+			// Check if the sbo term is valid for a metabolite
+			Boolean validSboTerm = true;
+			String sboTerm =  specie.getSBOTermID();
 
-			MetaboliteAttributes.setBoundaryCondition(bionetSpecies, specie.getBoundaryCondition());
-			MetaboliteAttributes.setConstant(bionetSpecies, specie.getConstant());
-
-			MetaboliteAttributes.setSubstanceUnits(bionetSpecies, specie.getSubstanceUnits());
-			if (specie.getSBOTerm() != -1) {
-				MetaboliteAttributes.setSboTerm(bionetSpecies, specie.getSBOTermID());
-			}
-
-			if (specie.isSetInitialAmount()) {
-				MetaboliteAttributes.setInitialAmount(bionetSpecies, specie.getInitialAmount());
-			} else if (specie.isSetInitialConcentration()) {
-				MetaboliteAttributes.setInitialConcentration(bionetSpecies, specie.getInitialConcentration());
-			}
-
-			if (specie.isSetCharge()) {
-				bionetSpecies.setCharge(specie.getCharge());
-			}
-
-			MetaboliteAttributes.setSubstanceUnits(bionetSpecies, specie.getSubstanceUnits());
-
-			if (model.getLevel() == 2 && model.getVersion() >= 2 && model.getVersion() <= 4) {
-				if (specie.isSetSpeciesType()) {
-
-					SpeciesType stype = specie.getSpeciesTypeInstance();
-					if (stype.isSetSBOTerm()) {
-
-						MetaboliteAttributes.setSboTerm(bionetSpecies, stype.getSBOTermID());
-
-					}
-					try {
-						if (stype.isSetAnnotation()) {
-
-							MetaboliteAttributes.setAnnotation(bionetSpecies,
-									new SbmlAnnotation(stype.getMetaId(), stype.getAnnotationString()));
-						}
-						if (stype.isSetNotes()) {
-							MetaboliteAttributes.setNotes(bionetSpecies, new Notes(stype.getNotesString()));
-						}
-					} catch (XMLStreamException e) {
-						e.printStackTrace();
-					}
+			if(sboTerm != null)
+			{
+				if(sboTerm.compareToIgnoreCase("SBO:0000252")==0 || sboTerm.compareToIgnoreCase("SBO:0000297")==0)
+				{
+					validSboTerm = false;
+					hasInvalidSboTerms = true;
 				}
 			}
 
-			this.getNetwork().add(bionetSpecies);
+			if(validSboTerm) {
 
-			this.getNetwork().affectToCompartment(
-					this.getNetwork().getCompartmentsView().get(specie.getCompartment()), bionetSpecies);
+				BioMetabolite bionetSpecies = new BioMetabolite(specieId, specieName);
+
+				MetaboliteAttributes.setBoundaryCondition(bionetSpecies, specie.getBoundaryCondition());
+				MetaboliteAttributes.setConstant(bionetSpecies, specie.getConstant());
+
+				MetaboliteAttributes.setSubstanceUnits(bionetSpecies, specie.getSubstanceUnits());
+				if (specie.getSBOTerm() != -1) {
+					MetaboliteAttributes.setSboTerm(bionetSpecies, specie.getSBOTermID());
+				}
+
+				if (specie.isSetInitialAmount()) {
+					MetaboliteAttributes.setInitialAmount(bionetSpecies, specie.getInitialAmount());
+				} else if (specie.isSetInitialConcentration()) {
+					MetaboliteAttributes.setInitialConcentration(bionetSpecies, specie.getInitialConcentration());
+				}
+
+				if (specie.isSetCharge()) {
+					bionetSpecies.setCharge(specie.getCharge());
+				}
+
+				MetaboliteAttributes.setSubstanceUnits(bionetSpecies, specie.getSubstanceUnits());
+
+				if (model.getLevel() == 2 && model.getVersion() >= 2 && model.getVersion() <= 4) {
+					if (specie.isSetSpeciesType()) {
+
+						SpeciesType stype = specie.getSpeciesTypeInstance();
+						if (stype.isSetSBOTerm()) {
+
+							MetaboliteAttributes.setSboTerm(bionetSpecies, stype.getSBOTermID());
+
+						}
+						try {
+							if (stype.isSetAnnotation()) {
+
+								MetaboliteAttributes.setAnnotation(bionetSpecies,
+										new SbmlAnnotation(stype.getMetaId(), stype.getAnnotationString()));
+							}
+							if (stype.isSetNotes()) {
+								MetaboliteAttributes.setNotes(bionetSpecies, new Notes(stype.getNotesString()));
+							}
+						} catch (XMLStreamException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+
+				this.getNetwork().add(bionetSpecies);
+
+				this.getNetwork().affectToCompartment(
+						this.getNetwork().getCompartmentsView().get(specie.getCompartment()), bionetSpecies);
+			}
+		}
+
+		if(hasInvalidSboTerms)
+		{
+			System.err.println("[warning] Sbo term for some species are not metabolite sbo terms, they haven't been imported.");
 		}
 	}
 
 	/**
 	 * parse the jsbml species participating in a reaction and create the
-	 * corresponding metabolite as {@link BioPhysicalEntity} object
-	 * 
-	 * @param specie the Jsbml Species object
-	 * @return BioPhysicalEntity
+	 * corresponding metabolite
 	 */
 	private BioReactant parseParticipantSpecies(SpeciesReference specieRef) {
 		Species specie = this.getModel().getSpecies(specieRef.getSpecies());

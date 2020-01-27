@@ -215,14 +215,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	}
 
 	/**
-	 * Launch the parsing of Notes. Launches {@link #addNotes(HashMap)} or
-	 * {@link #getSBMLCompartNotes(HashMap)} on the following list of the
-	 * bionetwork:
-	 * <ul>
-	 * <li>{@link BioNetwork#getReactionsView()}
-	 * <li>{@link BioNetwork#getPhysicalEntityList()}
-	 * <li>{@link BioNetwork#getCompartments()}
-	 * </ul>
+	 * Launch the parsing of Notes.
 	 * {@link BioCompartment} has a different method because it does not extends the
 	 * {@link BioEntity} class
 	 */
@@ -314,8 +307,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	 * <li>The Status, uses {@link #statusPattern}
 	 * <li>The Pubmed references, uses {@link #pmidPattern}
 	 * <li>The comment, uses {@link #commentPattern}
-	 * <li>The GPR, uses {@link #GPRPattern}. This internally uses the
-	 * {@link #getGA(String, FluxReaction)} method
+	 * <li>The GPR, uses {@link #GPRPattern}.
 	 * </ul>
 	 * 
 	 * @param reaction The {@link BioReaction}
@@ -579,10 +571,6 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 	/**
 	 * Recursive function that parse gene association logical expression strings.
 	 * </br>
-	 * This is an adaptation of
-	 * {@link FBCParser#computeGeneAssocations(org.sbml.jsbml.ext.fbc.Association)}
-	 * on Strings. </br>
-	 * </br>
 	 * Internally this uses {@link StringUtils#findClosingParen(char[], int)} to
 	 * split the GPR according to the outer most parenthesis
 	 * 
@@ -605,27 +593,12 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
 		String tmpAssos = assosString;
 
-		ArrayList<String> typeAssos = new ArrayList<String>();
-
 		/**
 		 * This Allows to separate parenthesis block.
 		 */
 		while (tmpAssos.contains("(")) {
 			for (int i = 0, n = tmpAssos.length(); i < n; i++) {
 				char c = tmpAssos.charAt(i);
-
-				String sep = tmpAssos.substring(i, i+2).toLowerCase();
-				if(sep.compareTo("and")==0)
-				{
-					typeAssos.add("and");
-				}
-				else if(sep.compareTo("and")==0)
-				{
-					typeAssos.add("or");
-				}
-				else {
-					sep = "none";
-				}
 
 				if (c == '(') {
 					try {
@@ -636,11 +609,6 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 						subAssos.add(subAsso);
 
 						tmpAssos = tmpAssos.substring(0, i) + tmpAssos.substring(end + 1, tmpAssos.length());
-
-						if(sep == "none")
-						{
-							typeAssos.add("or");
-						}
 
 					} catch (ArrayIndexOutOfBoundsException e) {
 						throw new MalformedGeneAssociationStringException("Malformed Gene Association in reaction  (non closing parenthesis)"
@@ -667,22 +635,10 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 			ArrayList<GeneAssociation> geneAssociations = new ArrayList<GeneAssociation>();
 
 			for (String s : subAssos) {
-
 				geneAssociations.add(this.computeGeneAssociation(s, flxRxn));
-
-				/*for (GeneSet x : this.computeGeneAssociation(s, flxRxn)) {
-					if (geneAssociation.isEmpty()) {
-						geneAssociation.add(x);
-					} else {
-						for (GeneSet y : geneAssociation) {
-							y.addAll(x);
-						}
-					}
-				}*/
 			}
 
-
-			// Cross the geneAssociations
+			// Merge the geneAssociations
 			geneAssociation = GeneAssociations.merge(geneAssociations.stream().toArray(GeneAssociation[]::new));
 
 		} else {

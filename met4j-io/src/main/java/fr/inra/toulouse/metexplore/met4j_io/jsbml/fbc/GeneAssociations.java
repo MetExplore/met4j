@@ -51,12 +51,10 @@ public class GeneAssociations {
         {
             for(GeneSet gs2 : ga2)
             {
-                if(! gs1.equals(gs2)) {
                     GeneSet newGs = new GeneSet();
                     newGs.addAll(gs1);
                     newGs.addAll(gs2);
                     newGa.add(newGs);
-                }
             }
         }
 
@@ -72,19 +70,15 @@ public class GeneAssociations {
     {
         GeneAssociation newGa = new GeneAssociation();
 
-        if(geneAssociations == null || geneAssociations.length == 0)
-       {
-           throw new IllegalArgumentException("GeneAssociation must have at least one parameter");
-       }
-       else if(geneAssociations.length == 1)
-       {
-           newGa.addAll(geneAssociations[0]);
-       }
-       else {
-            GeneAssociation ga1 = geneAssociations[0];
-            newGa = merge(ga1);
-            for (int i = 1; i < geneAssociations.length; i++) {
-                newGa = merge(newGa, geneAssociations[i]);
+        if(geneAssociations != null && geneAssociations.length != 0) {
+            if (geneAssociations.length == 1) {
+                newGa.addAll(geneAssociations[0]);
+            } else {
+                GeneAssociation ga1 = geneAssociations[0];
+                newGa = merge(ga1);
+                for (int i = 1; i < geneAssociations.length; i++) {
+                    newGa = merge(newGa, geneAssociations[i]);
+                }
             }
         }
         return newGa;

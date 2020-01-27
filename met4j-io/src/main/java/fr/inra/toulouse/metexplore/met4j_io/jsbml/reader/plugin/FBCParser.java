@@ -36,6 +36,7 @@
 
 package fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin;
 
+import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.*;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.Parameter;
 import org.sbml.jsbml.Reaction;
@@ -60,16 +61,11 @@ import fr.inra.toulouse.metexplore.met4j_io.annotations.network.NetworkAttribute
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.Flux;
 import fr.inra.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxNetwork;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.FluxReaction;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.GeneSet;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjective;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjectiveCollection;
-import fr.inra.toulouse.metexplore.met4j_io.jsbml.fbc.ReactionObjective;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inra.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
+
+import java.util.ArrayList;
 
 /**
  * This class is used to parse SBML level 3 FBC version 2 package.
@@ -250,21 +246,29 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 			if (block.getClass().getSimpleName().equals("And")) {
 				And andBlock = (And) block;
 
+				ArrayList<GeneAssociation> geneAssociations = new ArrayList<GeneAssociation>();
+
 				for (Association andEl : andBlock.getListOfAssociations()) {
-					for (GeneSet x : this.computeGeneAssocations(andEl)) {
 
-						if (geneAssociation.isEmpty()) {
-							geneAssociation.add(x);
-						} else {
+					geneAssociations.add(this.computeGeneAssocations(andEl));
 
-							for (GeneSet y : geneAssociation) {
-								y.addAll(x);
-							}
-						}
-
-					}
+//					for (GeneSet x : this.computeGeneAssocations(andEl)) {
+//
+//						if (geneAssociation.isEmpty()) {
+//							geneAssociation.add(x);
+//						} else {
+//
+//							for (GeneSet y : geneAssociation) {
+//								y.addAll(x);
+//							}
+//						}
+//
+//					}
 
 				}
+
+				// Cross the geneAssociations
+				geneAssociation = GeneAssociations.merge(geneAssociations.stream().toArray(GeneAssociation[]::new));
 
 			} else if (block.getClass().getSimpleName().equals("Or")) {
 				Or orBlock = (Or) block;

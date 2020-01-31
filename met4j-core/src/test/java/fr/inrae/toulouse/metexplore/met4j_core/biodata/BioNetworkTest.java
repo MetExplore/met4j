@@ -279,6 +279,7 @@ public class BioNetworkTest {
 		assertEquals(enz.getParticipants().size(), 0);
 		assertEquals(network.getReactionsView().size(), 0);
 		assertEquals(network.getEnzymesView().size(), 0);
+		assertEquals(network.getCompartmentsView().size(), 0);
 
 
 	}

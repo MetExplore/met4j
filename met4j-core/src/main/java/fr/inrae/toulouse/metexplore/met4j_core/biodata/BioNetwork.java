@@ -110,7 +110,11 @@ public class BioNetwork extends BioEntity {
         }
     }
 
-    public void removeOnCascade(BioEntity e) throws IllegalArgumentException {
+    /**
+     * Remove on cascade a BioEntity
+     * @param e
+     */
+    private void removeOnCascade(BioEntity e)  {
 
         if (e instanceof BioPathway) {
             this.pathways.remove(e);
@@ -137,6 +141,31 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
+     * Remove on cascade several entities
+     * @param entities
+     */
+    public void removeOnCascade(BioEntity... entities)
+    {
+        for(BioEntity e : entities)
+        {
+            removeOnCascade(e);
+        }
+    }
+
+    /**
+     * Remove on cascade several entities stored in a BioCollection
+     * @param entities
+     */
+    public void removeOnCascade(BioCollection<BioEntity> entities)
+    {
+        for(BioEntity e : entities)
+        {
+            removeOnCascade(e);
+        }
+    }
+
+
+    /**
      * Remove protein from the network and from the enzymes and the compartments
      * where it is involved
      */
@@ -144,7 +173,7 @@ public class BioNetwork extends BioEntity {
 
         this.proteins.remove(protein);
 
-        this.enzymes.forEach(e -> {
+        this.getEnzymesView().forEach(e -> {
             BioCollection<BioEnzymeParticipant> participants = new BioCollection<>(
                     e.getParticipants());
 
@@ -167,6 +196,10 @@ public class BioNetwork extends BioEntity {
             components.forEach(p -> {
                 if (p.equals(protein)) {
                     c.getComponents().remove(p);
+                    if(c.getComponents().size() == 0)
+                    {
+                        this.removeOnCascade(c);
+                    }
                 }
             });
         });
@@ -207,6 +240,10 @@ public class BioNetwork extends BioEntity {
 
         cpts.forEach(c -> {
             c.getComponents().remove(m);
+            if(c.getComponents().size() == 0)
+            {
+                this.removeOnCascade(c);
+            }
         });
 
         BioCollection<BioEnzyme> enzymesCopy = this.getEnzymesView();
@@ -254,9 +291,13 @@ public class BioNetwork extends BioEntity {
 
         this.reactions.remove(r);
 
-        this.pathways.forEach(p -> {
+        this.getPathwaysView().forEach(p -> {
             p.removeReaction(r);
-            ;
+            if(p.getReactions().size() == 0)
+            {
+                this.removeOnCascade(p);
+            }
+
         });
 
     }
@@ -644,7 +685,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Add a pathway affected to a reaction
      */
-    public void affectToPathway(BioPathway pathway, BioReaction reaction) {
+    private void affectToPathway(BioPathway pathway, BioReaction reaction) {
 
         if (!this.contains(pathway)) {
             throw new IllegalArgumentException("Pathway " + pathway.getId() + " not present in the network");
@@ -658,7 +699,6 @@ public class BioNetwork extends BioEntity {
 
     }
 
-    ;
 
     public void affectToPathway(BioPathway pathway, BioReaction... reactions) {
 
@@ -667,7 +707,13 @@ public class BioNetwork extends BioEntity {
         }
     }
 
-    ;
+    public void affectToPathway(BioPathway pathway, BioCollection<BioReaction> reactions) {
+
+        for (BioReaction reaction : reactions) {
+            this.affectToPathway(pathway, reaction);
+        }
+    }
+
 
 
     /**

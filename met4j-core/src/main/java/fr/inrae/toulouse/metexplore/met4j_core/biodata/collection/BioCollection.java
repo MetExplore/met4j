@@ -117,7 +117,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	/**
 	 * Get entities with a specific name
 	 * 
-	 * @param id
+	 * @param name
 	 * @return
 	 */
 	public BioCollection<E> getEntitiesFromName(String name) {

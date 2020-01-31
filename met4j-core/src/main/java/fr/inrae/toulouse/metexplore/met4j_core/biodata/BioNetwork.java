@@ -657,6 +657,20 @@ public class BioNetwork extends BioEntity {
 
     }
 
+    /**
+     *
+     * Affect several metabolites from a collection to a compartment
+     *
+     * @param compartment
+     * @param entities
+     */
+    public void affectToCompartment(BioCompartment compartment, BioCollection<?> entities) {
+        for(BioEntity e : entities)
+        {
+            this.affectToCompartment(compartment, e);
+        }
+    }
+
     ;
 
     /**

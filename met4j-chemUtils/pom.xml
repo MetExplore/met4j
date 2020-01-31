@@ -15,7 +15,7 @@
   </build>
 
   <parent>
-    <groupId>fr.inra.toulouse.metexplore</groupId>
+    <groupId>fr.inrae.toulouse.metexplore</groupId>
     <artifactId>met4j</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
@@ -45,7 +45,7 @@
     	<version>1.5.14</version>
     </dependency>
     <dependency>
-    	<groupId>fr.inra.toulouse.metexplore</groupId>
+    	<groupId>fr.inrae.toulouse.metexplore</groupId>
     	<artifactId>met4j-core</artifactId>
     	<version>0.0.1-SNAPSHOT</version>
     </dependency>

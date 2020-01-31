@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>fr.inra.toulouse.metexplore</groupId>
+    <groupId>fr.inrae.toulouse.metexplore</groupId>
     <artifactId>met4j</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
@@ -26,27 +26,27 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-    	<groupId>fr.inra.toulouse.metexplore</groupId>
+    	<groupId>fr.inrae.toulouse.metexplore</groupId>
     	<artifactId>met4j-chemUtils</artifactId>
     	<version>0.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
-    	<groupId>fr.inra.toulouse.metexplore</groupId>
+    	<groupId>fr.inrae.toulouse.metexplore</groupId>
     	<artifactId>met4j-core</artifactId>
     	<version>0.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
-    	<groupId>fr.inra.toulouse.metexplore</groupId>
+    	<groupId>fr.inrae.toulouse.metexplore</groupId>
     	<artifactId>met4j-mathUtils</artifactId>
     	<version>0.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
-    	<groupId>fr.inra.toulouse.metexplore</groupId>
+    	<groupId>fr.inrae.toulouse.metexplore</groupId>
     	<artifactId>met4j-graph</artifactId>
     	<version>0.0.1-SNAPSHOT</version>
     </dependency>
 	  <dependency>
-		  <groupId>fr.inra.toulouse.metexplore</groupId>
+		  <groupId>fr.inrae.toulouse.metexplore</groupId>
 		  <artifactId>met4j-mapping</artifactId>
 		  <version>0.0.1-SNAPSHOT</version>
 	  </dependency>
@@ -67,7 +67,7 @@
 		      </descriptorRefs>
 		      <archive>
 		        <manifest>
-		          <mainClass>fr.inra.toulouse.metexplore.met4j_toolbox.Main</mainClass>
+		          <mainClass>fr.inrae.toulouse.metexplore.met4j_toolbox.Main</mainClass>
 		        </manifest>
 		      </archive>
 		    </configuration>

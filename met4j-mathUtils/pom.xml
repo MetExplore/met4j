@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>fr.inra.toulouse.metexplore</groupId>
+    <groupId>fr.inrae.toulouse.metexplore</groupId>
     <artifactId>met4j</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>

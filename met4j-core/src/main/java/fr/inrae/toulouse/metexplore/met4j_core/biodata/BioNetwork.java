@@ -473,7 +473,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Affects an enzyme to a reaction
      */
-    public void affectEnzyme(BioReaction reaction, BioEnzyme enzyme) {
+    private void affectEnzyme(BioReaction reaction, BioEnzyme enzyme) {
 
         if (!this.contains(enzyme)) {
             throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
@@ -487,7 +487,33 @@ public class BioNetwork extends BioEntity {
 
     }
 
-    ;
+    /**
+     * Affect several enzymes to a reaction
+     * @param reaction
+     * @param enzymes
+     */
+    public void affectEnzyme(BioReaction reaction, BioEnzyme... enzymes) {
+
+        for(BioEnzyme e : enzymes)
+        {
+            affectEnzyme(reaction, e);
+        }
+
+    }
+
+    /**
+     * Affect several enzymes stored in a BioCollection to a reaction
+     * @param reaction
+     * @param enzymes
+     */
+    public void affectEnzyme(BioReaction reaction, BioCollection<BioEnzyme> enzymes) {
+
+        for(BioEnzyme e : enzymes)
+        {
+            affectEnzyme(reaction, e);
+        }
+
+    }
 
 
     /**

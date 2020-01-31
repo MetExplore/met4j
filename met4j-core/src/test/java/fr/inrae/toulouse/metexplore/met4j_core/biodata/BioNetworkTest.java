@@ -77,10 +77,10 @@ public class BioNetworkTest {
 		
 		network.affectToCompartment(cpt, s1, s2, p1, p2);
 
-		network.affectLeft(s1, 2.0, cpt, r);
-		network.affectLeft(s2, 2.0, cpt, r);
-		network.affectRight(p1, 3.0, cpt, r);
-		network.affectRight(p2, 3.0, cpt, r);
+		network.affectLeft(r, 2.0, cpt, s1);
+		network.affectLeft(r, 2.0, cpt, s2);
+		network.affectRight(r, 3.0, cpt, p1);
+		network.affectRight(r, 3.0, cpt, p2);
 
 		BioPathway p = new BioPathway("pathway1");
 		network.add(p);
@@ -268,8 +268,8 @@ public class BioNetworkTest {
 		network.add(metabolite);
 		network.add(cpt);
 		network.affectToCompartment(cpt, metabolite);
-		network.affectLeft(metabolite, 1.0, cpt, reaction);
-		network.affectRight(metabolite, 1.0, cpt, reaction);
+		network.affectLeft(reaction, 1.0, cpt, metabolite);
+		network.affectRight(reaction, 1.0, cpt, metabolite);
 		network.add(enz);
 		network.affectSubUnit(metabolite, 1.0, enz);
 		network.removeOnCascade(metabolite);
@@ -339,8 +339,8 @@ public class BioNetworkTest {
 		network.add(cpt);
 		network.add(reaction);
 		network.affectToCompartment(cpt, met);
-		network.affectLeft(met, 1.0, cpt, reaction);
-		network.affectRight(met, 1.0, cpt, reaction);
+		network.affectLeft(reaction, 1.0, cpt, met);
+		network.affectRight(reaction, 1.0, cpt, met);
 
 		network.removeOnCascade(cpt);
 
@@ -363,7 +363,7 @@ public class BioNetworkTest {
 
 		network.affectToCompartment(cpt, s1, s2);
 
-		network.affectLeft(s1, 1.0, cpt, reaction);
+		network.affectLeft(reaction, 1.0, cpt, s1);
 
 		BioReactant reactant = new BioReactant(s2, 1.0, cpt);
 		network.affectLeft(reaction, reactant);
@@ -386,8 +386,8 @@ public class BioNetworkTest {
 
 		network.affectToCompartment(cpt, s1, s2);
 
-		network.affectLeft(s1, 1.0, cpt, reaction);
-		network.affectLeft(s2, 1.0, cpt, reaction);
+		network.affectLeft(reaction, 1.0, cpt, s1);
+		network.affectLeft(reaction, 1.0, cpt, s2);
 
 		network.removeLeft(s2, cpt, reaction);
 
@@ -405,7 +405,7 @@ public class BioNetworkTest {
 
 		network.add(reaction);
 		// The compartment has not been added to the network
-		network.affectLeft(metabolite, 1.0, cpt, reaction);
+		network.affectLeft(reaction, 1.0, cpt, metabolite);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -420,7 +420,7 @@ public class BioNetworkTest {
 		network.add(reaction);
 		network.affectToCompartment(cpt2, metabolite);
 		// The metabolite has been affected to an other compartment
-		network.affectLeft(metabolite, 1.0, cpt, reaction);
+		network.affectLeft(reaction, 1.0, cpt, metabolite);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -432,7 +432,7 @@ public class BioNetworkTest {
 		network.add(metabolite);
 		network.add(cpt);
 		network.affectToCompartment(cpt, metabolite);
-		network.affectLeft(metabolite, 1.0, cpt, reaction);
+		network.affectLeft(reaction, 1.0, cpt, metabolite);
 	}
 
 	@Test
@@ -448,7 +448,7 @@ public class BioNetworkTest {
 
 		network.affectToCompartment(cpt, s1, s2);
 
-		network.affectRight(s1, 1.0, cpt, reaction);
+		network.affectRight(reaction, 1.0, cpt, s1);
 		BioReactant reactant = new BioReactant(s2, 1.0, cpt);
 		network.affectRight(reaction, reactant);
 
@@ -468,8 +468,8 @@ public class BioNetworkTest {
 
 		network.affectToCompartment(cpt, s1, s2);
 
-		network.affectRight(s1, 1.0, cpt, reaction);
-		network.affectRight(s2, 1.0, cpt, reaction);
+		network.affectRight(reaction, 1.0, cpt, s1);
+		network.affectRight(reaction, 1.0, cpt, s2);
 
 		network.removeRight(s1, cpt, reaction);
 
@@ -484,7 +484,7 @@ public class BioNetworkTest {
 
 		network.add(metabolite);
 		network.add(reaction);
-		network.affectRight(metabolite, 1.0, cpt, reaction);
+		network.affectRight(reaction, 1.0, cpt, metabolite);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -498,7 +498,7 @@ public class BioNetworkTest {
 		network.add(cpt);
 		network.add(reaction);
 		network.affectToCompartment(cpt2, metabolite);
-		network.affectRight(metabolite, 1.0, cpt, reaction);
+		network.affectRight(reaction, 1.0, cpt, metabolite);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -510,7 +510,7 @@ public class BioNetworkTest {
 		network.add(metabolite);
 		network.add(cpt);
 		network.affectToCompartment(cpt, metabolite);
-		network.affectRight(metabolite, 1.0, cpt, reaction);
+		network.affectRight(reaction, 1.0, cpt, metabolite);
 	}
 
 	@Test

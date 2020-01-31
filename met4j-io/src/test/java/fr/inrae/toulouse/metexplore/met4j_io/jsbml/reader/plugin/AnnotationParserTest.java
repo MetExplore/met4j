@@ -104,10 +104,10 @@ public class AnnotationParserTest {
 
 		network.affectToCompartment(cpt, s1, s2, p1, p2);
 
-		network.affectLeft(s1, 2.0, cpt, r1);
-		network.affectLeft(s2, 2.0, cpt, r1);
-		network.affectRight(p1, 3.0, cpt, r1);
-		network.affectRight(p2, 3.0, cpt, r1);
+		network.affectLeft(r1, 2.0, cpt, s1);
+		network.affectLeft(r1, 2.0, cpt, s2);
+		network.affectRight(r1, 3.0, cpt, p1);
+		network.affectRight(r1, 3.0, cpt, p2);
 
 		BioPathway p = new BioPathway("pathway1");
 		network.add(p);

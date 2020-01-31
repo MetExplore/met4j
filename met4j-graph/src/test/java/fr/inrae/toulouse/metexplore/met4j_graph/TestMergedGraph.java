@@ -73,11 +73,11 @@ public class TestMergedGraph {
 		v2 = new BioMetabolite("v2"); bn.add(v2); bn.affectToCompartment(comp, v2);
 		
 		r1 = new BioReaction("r1"); bn.add(r1);
-		bn.affectLeft(v1, 1.0, comp, r1);
-		bn.affectRight(v2, 1.0, comp, r1);
+		bn.affectLeft(r1, 1.0, comp, v1);
+		bn.affectRight(r1, 1.0, comp, v2);
 		r2 = new BioReaction("r2"); bn.add(r2);
-		bn.affectLeft(v1, 1.0, comp, r2);
-		bn.affectRight(v2, 1.0, comp, r2);
+		bn.affectLeft(r2, 1.0, comp, v1);
+		bn.affectRight(r2, 1.0, comp, v2);
 		
 		e1 = new ReactionEdge(v1, v2, r1);
 		e2 = new ReactionEdge(v1, v2, r2);

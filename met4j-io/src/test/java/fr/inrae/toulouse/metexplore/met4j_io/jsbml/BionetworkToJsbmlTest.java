@@ -170,8 +170,8 @@ public class BionetworkToJsbmlTest {
         network.affectToCompartment(c1, m1);
         network.affectToCompartment(c2, m2);
 
-        network.affectLeft(m1, 2.0, c1, r1);
-        network.affectRight(m2, 3.0, c2, r1);
+        network.affectLeft(r1, 2.0, c1, m1);
+        network.affectRight(r1, 3.0, c2, m2);
 
         BioGene g1 = new BioGene("g1");
         BioGene g2 = new BioGene("g2");

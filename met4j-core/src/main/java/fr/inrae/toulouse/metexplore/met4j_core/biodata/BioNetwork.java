@@ -286,8 +286,7 @@ public class BioNetwork extends BioEntity {
     /**
      * add a relation reactant-reaction
      */
-    public void affectLeft(BioMetabolite substrate, Double stoichiometry, BioCompartment localisation,
-                           BioReaction reaction) {
+    public void affectLeft(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite substrate) {
 
         affectSideReaction(substrate, stoichiometry, localisation, reaction, BioReaction.Side.LEFT);
 
@@ -323,8 +322,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Add a relation product-reaction
      */
-    public void affectRight(BioMetabolite product, Double stoichiometry, BioCompartment localisation,
-                            BioReaction reaction) {
+    public void affectRight(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite product) {
 
         affectSideReaction(product, stoichiometry, localisation, reaction, BioReaction.Side.RIGHT);
     }

@@ -78,16 +78,16 @@ public class TestCompoundGraph {
 		p = new BioPathway("p");bn.add(p);
 		
 		r1 = new BioReaction("r1");bn.add(r1);
-		bn.affectLeft(v1, 1.0, comp, r1);
-		bn.affectRight(v2, 1.0, comp, r1);
+		bn.affectLeft(r1, 1.0, comp, v1);
+		bn.affectRight(r1, 1.0, comp, v2);
 		bn.affectToPathway(p, r1);
 		r2 = new BioReaction("r2");bn.add(r2);
-		bn.affectLeft(v2, 1.0, comp, r2);
-		bn.affectRight(v3, 1.0, comp2, r2);
+		bn.affectLeft(r2, 1.0, comp, v2);
+		bn.affectRight(r2, 1.0, comp2, v3);
 		bn.affectToPathway(p, r2);
 		r3 = new BioReaction("r3");bn.add(r3);
-		bn.affectLeft(v2, 1.0, comp, r3);
-		bn.affectRight(v3, 1.0, comp2, r3);
+		bn.affectLeft(r3, 1.0, comp, v2);
+		bn.affectRight(r3, 1.0, comp2, v3);
 		r3.setReversible(true);
 		
 		e1 = new ReactionEdge(v1, v2, r1);

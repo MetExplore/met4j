@@ -74,14 +74,14 @@ public class TestBipartiteGraph {
 		
 		
 		r1 = new BioReaction("r1"); bn.add(r1);
-		bn.affectLeft(v1, 1.0, comp, r1);
-		bn.affectLeft(side, 1.0, comp, r1);
-		bn.affectRight(v2, 1.0, comp, r1);
+		bn.affectLeft(r1, 1.0, comp, v1);
+		bn.affectLeft(r1, 1.0, comp, side);
+		bn.affectRight(r1, 1.0, comp, v2);
 		r1.setReversible(false);
 		r2 = new BioReaction("r2"); bn.add(r2);
-		bn.affectLeft(v2, 1.0, comp, r2);
-		bn.affectRight(v3, 1.0, comp, r2);
-		bn.affectRight(side, 1.0, comp, r2);
+		bn.affectLeft(r2, 1.0, comp, v2);
+		bn.affectRight(r2, 1.0, comp, v3);
+		bn.affectRight(r2, 1.0, comp, side);
 		r2.setReversible(true);
 		
 		bg.addVertex(v1);

@@ -815,9 +815,9 @@ public class MetexploreXmlReader {
             BioCompartment compartment = network.getCompartmentsView().get(compartmentId);
 
             if (left) {
-                network.affectLeft(c, coeff, compartment, rxn);
+                network.affectLeft(rxn, coeff, compartment, c);
             } else {
-                network.affectRight(c, coeff, compartment, rxn);
+                network.affectRight(rxn, coeff, compartment, c);
             }
         } else {
             throw new ParseException(

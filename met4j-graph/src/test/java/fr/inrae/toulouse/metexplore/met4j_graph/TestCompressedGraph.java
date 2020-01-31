@@ -76,11 +76,11 @@ public class TestCompressedGraph {
 		v3 = new BioMetabolite("v3"); bn.add(v3); bn.affectToCompartment(comp, v3);
 		
 		r1 = new BioReaction("r1"); bn.add(r1);
-		bn.affectLeft(v1, 1.0, comp, r1);
-		bn.affectRight(v2, 1.0, comp, r1);
+		bn.affectLeft(r1, 1.0, comp, v1);
+		bn.affectRight(r1, 1.0, comp, v2);
 		r2 = new BioReaction("r2"); bn.add(r2);
-		bn.affectLeft(v2, 1.0, comp, r2);
-		bn.affectRight(v3, 1.0, comp, r2);
+		bn.affectLeft(r2, 1.0, comp, v2);
+		bn.affectRight(r2, 1.0, comp, v3);
 		
 		e1 = new ReactionEdge(v1, v2, r1);
 		e2 = new ReactionEdge(v2, v3, r2);

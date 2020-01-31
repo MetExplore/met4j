@@ -92,39 +92,39 @@ public class TestScopeCompounds {
 		bn.add(r0,r1,r2,r3,r4,r5,r6);
 
 
-		bn.affectLeft(v0,1.0,comp,r0);
-		bn.affectRight(v1,1.0,comp,r0);
+		bn.affectLeft(r0, 1.0, comp, v0);
+		bn.affectRight(r0, 1.0, comp, v1);
 		r0.setReversible(false);
 
-		bn.affectLeft(v1,1.0,comp,r1);
-		bn.affectRight(v3,1.0,comp,r1);
-		bn.affectRight(v4,1.0,comp,r1);
+		bn.affectLeft(r1, 1.0, comp, v1);
+		bn.affectRight(r1, 1.0, comp, v3);
+		bn.affectRight(r1, 1.0, comp, v4);
 		r1.setReversible(true);
 		
 
-		bn.affectLeft(v1,1.0,comp,r2);
-		bn.affectLeft(v2,1.0,comp,r2);
-		bn.affectRight(v3,1.0,comp,r2);
-		bn.affectRight(v4,1.0,comp,r2);
+		bn.affectLeft(r2, 1.0, comp, v1);
+		bn.affectLeft(r2, 1.0, comp, v2);
+		bn.affectRight(r2, 1.0, comp, v3);
+		bn.affectRight(r2, 1.0, comp, v4);
 		r2.setReversible(false);
 
-		bn.affectRight(v3,1.0,comp,r3);
-		bn.affectRight(v4,1.0,comp,r3);
-		bn.affectRight(side,1.0,comp,r3);
-		bn.affectLeft(v5,1.0,comp,r3);
+		bn.affectRight(r3, 1.0, comp, v3);
+		bn.affectRight(r3, 1.0, comp, v4);
+		bn.affectRight(r3, 1.0, comp, side);
+		bn.affectLeft(r3, 1.0, comp, v5);
 		r3.setReversible(true);
 		
 
-		bn.affectLeft(side,1.0,comp,r4);
-		bn.affectRight(side2,1.0,comp,r4);
+		bn.affectLeft(r4, 1.0, comp, side);
+		bn.affectRight(r4, 1.0, comp, side2);
 		r4.setReversible(false);
 
-		bn.affectLeft(v3,1.0,comp,r5);
-		bn.affectRight(v6,1.0,comp,r5);
+		bn.affectLeft(r5, 1.0, comp, v3);
+		bn.affectRight(r5, 1.0, comp, v6);
 		r5.setReversible(false);
 
-		bn.affectLeft(v5,1.0,comp,r6);
-		bn.affectRight(v7,1.0,comp,r6);
+		bn.affectLeft(r6, 1.0, comp, v5);
+		bn.affectRight(r6, 1.0, comp, v7);
 		r6.setReversible(false);
 
 		g = new Bionetwork2BioGraph(bn).getBipartiteGraph();

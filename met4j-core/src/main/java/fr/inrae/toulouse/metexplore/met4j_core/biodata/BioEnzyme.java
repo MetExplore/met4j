@@ -37,6 +37,8 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
+import java.util.Objects;
+
 public class BioEnzyme extends BioPhysicalEntity {
 
 	private BioCollection<BioEnzymeParticipant> participants;
@@ -93,13 +95,18 @@ public class BioEnzyme extends BioPhysicalEntity {
 			}
 		}
 	}
-	
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		BioEnzyme bioEnzyme = (BioEnzyme) o;
+		return Objects.equals(participants, bioEnzyme.participants);
+	}
 
-
-
-	
-	
-	
-
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), participants);
+	}
 }

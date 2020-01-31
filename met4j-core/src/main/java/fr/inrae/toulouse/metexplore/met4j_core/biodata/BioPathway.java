@@ -37,6 +37,8 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
+import java.util.Objects;
+
 /**
  * A set or series of interactions, often forming a network, which biologists
  * have found useful to group together for organizational, historic, biophysical
@@ -95,4 +97,17 @@ public class BioPathway extends BioEntity {
 		return geneSet;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		BioPathway that = (BioPathway) o;
+		return Objects.equals(reactions, that.reactions);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), reactions);
+	}
 }

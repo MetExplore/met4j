@@ -38,6 +38,8 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import fr.inrae.toulouse.metexplore.met4j_core.utils.ErrorUtils;
 
+import java.util.Objects;
+
 public abstract class BioParticipant extends BioEntity {
 
 	private BioPhysicalEntity physicalEntity;
@@ -91,4 +93,18 @@ public abstract class BioParticipant extends BioEntity {
 		this.quantity = quantity;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		BioParticipant that = (BioParticipant) o;
+		return Objects.equals(physicalEntity, that.physicalEntity) &&
+				Objects.equals(quantity, that.quantity);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), physicalEntity, quantity);
+	}
 }

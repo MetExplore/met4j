@@ -39,6 +39,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  *
@@ -49,7 +50,7 @@ public class BioReactant extends BioParticipant {
 
 	/**
 	 * @param metabolite
-	 * @param stoichiometricCoefficient
+	 * @param stoichiometry
 	 * @param location
 	 */
 	public BioReactant(BioMetabolite metabolite, Double stoichiometry, BioCompartment location) {
@@ -104,26 +105,16 @@ public class BioReactant extends BioParticipant {
 	}
 
 	@Override
-    public boolean equals(Object o) {
- 
-        // If the object is compared with itself then return true  
-        if (o == this) {
-            return true;
-        }
- 
-        /* Check if o is an instance of Complex or not
-          "null instanceof [type]" also returns false */
-        if (!(o instanceof BioReactant)) {
-            return false;
-        }
-         
-        // typecast o to BioReactant so that we can compare data members 
-        BioReactant c = (BioReactant) o;
-         
-		// Compare the data members and return accordingly 
-		
-		return c.getMetabolite().equals(this.getMetabolite())
-		&& c.getLocation().equals(this.getLocation())
-		&& c.getQuantity().equals(this.getQuantity());
-    }
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		BioReactant that = (BioReactant) o;
+		return location.equals(that.location);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), location);
+	}
 }

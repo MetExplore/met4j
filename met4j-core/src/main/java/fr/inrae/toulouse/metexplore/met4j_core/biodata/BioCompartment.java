@@ -40,6 +40,8 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
+import java.util.Objects;
+
 
 /**
  *
@@ -90,13 +92,19 @@ public class BioCompartment extends BioPhysicalEntity{
 	{
 		this.components.add(e);
 	}
-	
-	
-	
-	
-	
 
-	
-	
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		BioCompartment that = (BioCompartment) o;
+		return Objects.equals(components, that.components);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), components);
+	}
 }

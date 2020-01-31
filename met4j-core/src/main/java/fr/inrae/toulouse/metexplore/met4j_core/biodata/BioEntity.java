@@ -35,10 +35,7 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
 
@@ -86,33 +83,22 @@ public abstract class BioEntity {
 
 	@Override
 	public boolean equals(Object o) {
-
-		// If the object is compared with itself then return true
-		if (o == this) {
-			return true;
-		}
-
-		/*
-		 * Check if o is an instance of BioEntity or not
-		 * "null instanceof [type]" also returns false
-		 */
-		if (!(o instanceof BioEntity)) {
-			return false;
-		}
-
-		// typecast o to BioReactant so that we can compare data members
-		BioEntity c = (BioEntity) o;
-
-		// Compare the data members and return accordingly
-
-		return c.getId().equals(this.getId());
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		BioEntity bioEntity = (BioEntity) o;
+		return id.equals(bioEntity.id) &&
+				Objects.equals(name, bioEntity.name) &&
+				Objects.equals(synonyms, bioEntity.synonyms) &&
+				Objects.equals(comment, bioEntity.comment) &&
+				Objects.equals(refs, bioEntity.refs) &&
+				Objects.equals(attributes, bioEntity.attributes);
 	}
 
 	@Override
 	public int hashCode() {
-		return this.getId().hashCode();
+		return Objects.hash(id, name, synonyms, comment, refs, attributes);
 	}
-	
+
 	/**
 	 * Set the name of the entity
 	 * 

@@ -41,10 +41,7 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -1243,4 +1240,23 @@ public class BioNetwork extends BioEntity {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        BioNetwork that = (BioNetwork) o;
+        return Objects.equals(pathways, that.pathways) &&
+                Objects.equals(metabolites, that.metabolites) &&
+                Objects.equals(proteins, that.proteins) &&
+                Objects.equals(genes, that.genes) &&
+                Objects.equals(reactions, that.reactions) &&
+                Objects.equals(compartments, that.compartments) &&
+                Objects.equals(enzymes, that.enzymes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), pathways, metabolites, proteins, genes, reactions, compartments, enzymes);
+    }
 }

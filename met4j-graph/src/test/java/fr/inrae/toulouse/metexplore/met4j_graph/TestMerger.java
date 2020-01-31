@@ -97,7 +97,7 @@ public class TestMerger {
 		bn.add(p1);
 		BioEnzyme enz1 = new BioEnzyme("p1");
 		bn.add(enz1);
-		bn.affectSubUnit(p1, 1.0, enz1);
+		bn.affectSubUnit(enz1, 1.0, p1);
 		
 				
 		BioReaction r1 = new BioReaction("ab1");r1.setReversible(false);

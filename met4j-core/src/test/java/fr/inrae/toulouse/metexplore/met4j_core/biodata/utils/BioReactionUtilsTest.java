@@ -208,9 +208,9 @@ public class BioReactionUtilsTest {
 		network.affectGeneProduct(p2, g1);
 		network.affectGeneProduct(p3, g1);
 
-		network.affectSubUnit(p1, 1.0, e1);
-		network.affectSubUnit(p2, 1.0, e1);
-		network.affectSubUnit(p3, 1.0, e2);
+		network.affectSubUnit(e1, 1.0, p1);
+		network.affectSubUnit(e1, 1.0, p2);
+		network.affectSubUnit(e2, 1.0, p3);
 
 		network.affectEnzyme(e1, r1);
 		network.affectEnzyme(e2, r1);
@@ -230,9 +230,9 @@ public class BioReactionUtilsTest {
 		network.affectGeneProduct(p2, g2);
 		network.affectGeneProduct(p3, g3);
 
-		network.affectSubUnit(p1, 1.0, e1);
-		network.affectSubUnit(p2, 1.0, e1);
-		network.affectSubUnit(p3, 1.0, e2);
+		network.affectSubUnit(e1, 1.0, p1);
+		network.affectSubUnit(e1, 1.0, p2);
+		network.affectSubUnit(e2, 1.0, p3);
 
 		network.affectEnzyme(e1, r1);
 		network.affectEnzyme(e2, r1);

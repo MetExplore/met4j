@@ -521,7 +521,7 @@ public class MetexploreXmlReader {
 
                 protein = network.getProteinsView().get(proteinId);
 
-                network.affectSubUnit(protein, 1.0, enzyme);
+                network.affectSubUnit(enzyme, 1.0, protein);
 
                 NodeList listOfGenes = proteinNode.getElementsByTagName("gene");
 

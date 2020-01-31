@@ -510,7 +510,7 @@ public class BioNetwork extends BioEntity {
     ;
 
     // relation enzyme -constituant
-    public void affectSubUnit(BioPhysicalEntity unit, Double quantity, BioEnzyme enzyme) {
+    private void affectSubUnit(BioEnzyme enzyme, Double quantity, BioPhysicalEntity unit) {
 
         BioEnzymeParticipant p = new BioEnzymeParticipant(unit, quantity);
 

@@ -143,7 +143,7 @@ public class FluxReaction extends BioEntity {
 				if(! bn.contains(enz)) {
 					bn.add(enz);
 				}
-				bn.affectSubUnit(prot, 1.0, enz);
+				bn.affectSubUnit(enz, 1.0, prot);
 				
 				bn.affectEnzyme(enz, rxn);
 
@@ -159,7 +159,7 @@ public class FluxReaction extends BioEntity {
 				
 				for(BioProtein prot : protlist)
 				{
-					bn.affectSubUnit(prot, 1.0, enz);
+					bn.affectSubUnit(enz, 1.0, prot);
 				}
 				
 				bn.affectEnzyme(enz, rxn);

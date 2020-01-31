@@ -131,10 +131,10 @@ public class AnnotationParserTest {
 		network.affectGeneProduct(prot1, g1);
 		network.affectGeneProduct(prot2, g2);
 
-		network.affectSubUnit(prot1, 1.0, e1);
-		network.affectSubUnit(prot2, 1.0, e1);
+		network.affectSubUnit(e1, 1.0, prot1);
+		network.affectSubUnit(e1, 1.0, prot2);
 
-		network.affectSubUnit(prot1, 1.0, e2);
+		network.affectSubUnit(e2, 1.0, prot1);
 
 		network.affectEnzyme(e1, r1);
 		network.affectEnzyme(e2, r1);

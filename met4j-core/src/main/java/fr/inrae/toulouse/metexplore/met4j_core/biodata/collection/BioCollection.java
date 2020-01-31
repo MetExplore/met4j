@@ -177,6 +177,13 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 		return true;
 	}
 
+	public boolean add(E... newEntities) {
+		for(E e : newEntities) {
+			entities.put(e.getId(), e);
+		}
+		return true;
+	}
+
 	@Override
 	public boolean remove(Object o) {
 		Boolean flag = entities.values().remove(o);

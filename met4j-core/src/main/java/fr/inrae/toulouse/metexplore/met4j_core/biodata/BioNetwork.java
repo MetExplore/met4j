@@ -526,7 +526,40 @@ public class BioNetwork extends BioEntity {
 
     }
 
-    ;
+    /**
+     * Adds several subunits to an enzyme with the same stoichiometric coefficient
+     * @param enzyme
+     * @param quantity
+     * @param units
+     */
+    public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioPhysicalEntity... units) {
+
+        for(BioPhysicalEntity unit : units)
+        {
+            affectSubUnit(enzyme, quantity, unit);
+        }
+    }
+
+    /**
+     * Adds several subunits stored in a BioCollection to an enzyme with the same stoichiometric coefficient
+     * @param enzyme
+     * @param quantity
+     * @param units
+     */
+    public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioCollection<?> units) {
+
+        for(BioEntity unit : units)
+        {
+            if(BioPhysicalEntity.class.isInstance(unit)) {
+                affectSubUnit(enzyme, quantity, (BioPhysicalEntity)unit);
+            }
+            else {
+                throw new IllegalArgumentException("Units of an enzyme must be BioPhysicalEntity instances");
+            }
+        }
+    }
+
+
 
     public void removeSubUnit(BioPhysicalEntity unit, BioEnzyme enzyme) {
 

@@ -108,6 +108,91 @@ Does network contains m2 ?
 false
 ```
 
-###### Build a reaction
+###### Add metabolites in a compartment
+
+To participate to a reaction, a metabolite must be localised in a compartment.
+
+```
+BioCompartment c1 = new BioCompartment("c1", "compartment1");
+network.add(c1);
+network.affectToCompartment(c1, m1);
+```
+
+We can add several metabolites in the same compartment at once:
+```
+network.add(m2);
+network.affectToCompartment(c1, m1, m2);
+```
+
+Be careful, either the metabolites and the compartment  must be added before in the network
+
+It's possible to add metabolites stored in a BioCollection
+```java
+BioCollection<BioMetabolite> c = new BioCollection<>();
+c.add(m1);
+c.add(m2);
+network.affectToCompartment(c1,c);
+```
+
+###### Affect metabolites to a reaction
+
+Let's say that we want to build this reaction:
+R1 : 2 m1 + 3 m2 -> m3 + m4
+
+```
+BioMetabolite m3 = new BioMetabolite("m3");
+BioMetabolite m4 = new BioMetabolite("m4");
+network.add(m3, m4);
+network.affectToCompartment(c1, m3, m4);
+network.affectLeft(r1, 2.0, c1, m1);
+network.affectLeft(r1, 3.0, c1, m2);
+network.affectRight(r1, 1.0, c1, m3);
+network.affectRight(r1, 1.0, c1, m4);
+```
+
+Since the stoichiometric coefficients are the same for m3 and m4,
+it's also possible to do:
+```java
+network.affectRight(r1, 1.0, m3, m4);
+```
+or
+```java
+BioCollection<BioMetabolite> rights = new BioCollection<>();
+rights.add(m3, m4);
+network.affectRight(r1, 1.0, rights);
+```
+
+We can also build BioReactants, that joins together a metabolite, a compartment
+and a stoichiometric coefficient
+
+```java
+BioReactant reactant1 = new BioReactant(m1, 1.0, c1);
+BioReactant reactant2 = new BioReactant(m2, 1.0, c1);
+BioReactant reactant3 = new BioReactant(m3, 2.0, c1);
+
+BioReaction r2 = new BioReaction("r2");
+network.add(r2);
+network.affectLeft(r2, reactant1);
+network.affectRight(r2, reactant2, reactant3);
+```
+
+###### Affect a gene to a protein
+
+In met4j, the relation between a gene and a protein is 1 gene : several proteins, what means
+that one protein is coded by only one gene but that one gene can code for several proteins.
+
+```
+BioGene g1 = new BioGene("g1");
+BioProtein p1 = new BioProtein("p1");
+network.add(g1, p1);
+network.affectGeneProduct(p1, g1);
+```
+
+###### Build an enzyme
+
+In met4j, an enzyme is considered as a complex containing several proteins.
+
+
+
 
 

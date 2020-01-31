@@ -79,6 +79,33 @@ This will print:
 Name of the metabolite m1 : M1Bis
 ```
 
+###### Remove elements from a BioNetwork
+
+The method "removeOnCascade" allows to remove several elements from a network.
+The OnCascade suffix means that related elements could be removed when some elements are removed.
+
+_Remove on cascade a metabolite_
+
+- The metabolite is removed from each of the reactions where it occurs
+- If the reaction does not contain metabolites anymore, it is also removed
+- It is removed from each compartment where it occurs. If the compartment does not contain
+any component anymore, it is removed.
+- It is removed from each enzyme where it occurs. If the enzyme does not contain any enzyme,
+it is removed
+
+_Remove on cascade a protein_
+- It is removed from each enzyme where it occurs. If the enzyme does not contain any enzyme,
+it is removed
+- It is removed from each compartment where it occurs. If the compartment does not contain
+any component anymore, it is removed
+
+_Remove on cascade a gene_
+- Remove proteins coded by this gene
+
+_Remove on cascade a reaction_
+- Is removed from each pathway where it occurs. If the pathway is empty after that, the pathway
+is also removed
+
 ###### Check if an entity is in a BioNetwork
 
 The method "contains" of the BioNetwork class allows to check the presence of any entity cited
@@ -191,6 +218,35 @@ network.affectGeneProduct(p1, g1);
 ###### Build an enzyme
 
 In met4j, an enzyme is considered as a complex containing several proteins.
+
+```
+BioEnzyme e1 = new BioEnzyme("e1");
+BioProtein p2 = new BioProtein("p2");
+network.add(e1, p2);
+BioCollection<BioProtein> components = new BioCollection<>();
+components.add(p1, p2);
+network.affectSubUnit(e1, 1.0, components);
+```
+
+###### Assign enzymes to a reaction
+
+```
+BioEnzyme e2 = new BioEnzyme("e2");
+BioProtein p3 = new BioProtein("p3");
+network.add(e2, p3);
+network.affectSubUnit(e2, 1.0, p3);
+network.affectEnzyme(r1, e2, e1);
+```
+
+###### Add reactions to a pathway
+
+```java
+BioPathway pathway1 = new BioPathway("p1");
+network.add(pathway1);
+network.affectToPathway(pathway1, r1, r2);
+```
+
+
 
 
 

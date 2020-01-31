@@ -104,10 +104,10 @@ public class AnnotationParserTest {
 
 		network.affectToCompartment(cpt, s1, s2, p1, p2);
 
-		network.affectLeft(s1, 2.0, cpt, r1);
-		network.affectLeft(s2, 2.0, cpt, r1);
-		network.affectRight(p1, 3.0, cpt, r1);
-		network.affectRight(p2, 3.0, cpt, r1);
+		network.affectLeft(r1, 2.0, cpt, s1);
+		network.affectLeft(r1, 2.0, cpt, s2);
+		network.affectRight(r1, 3.0, cpt, p1);
+		network.affectRight(r1, 3.0, cpt, p2);
 
 		BioPathway p = new BioPathway("pathway1");
 		network.add(p);
@@ -131,13 +131,13 @@ public class AnnotationParserTest {
 		network.affectGeneProduct(prot1, g1);
 		network.affectGeneProduct(prot2, g2);
 
-		network.affectSubUnit(prot1, 1.0, e1);
-		network.affectSubUnit(prot2, 1.0, e1);
+		network.affectSubUnit(e1, 1.0, prot1);
+		network.affectSubUnit(e1, 1.0, prot2);
 
-		network.affectSubUnit(prot1, 1.0, e2);
+		network.affectSubUnit(e2, 1.0, prot1);
 
-		network.affectEnzyme(e1, r1);
-		network.affectEnzyme(e2, r1);
+		network.affectEnzyme(r1, e1);
+		network.affectEnzyme(r1, e2);
 
 		model = new Model();
 		model.addReaction(new Reaction("r1"));

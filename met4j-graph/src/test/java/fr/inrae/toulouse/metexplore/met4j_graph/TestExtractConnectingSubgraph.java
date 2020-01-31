@@ -70,20 +70,20 @@ public class TestExtractConnectingSubgraph {
         p = new BioPathway("p");bn.add(p);
 
         r1 = new BioReaction("r1");bn.add(r1);
-        bn.affectLeft(v1, 1.0, comp, r1);
-        bn.affectRight(v2, 1.0, comp, r1);
+        bn.affectLeft(r1, 1.0, comp, v1);
+        bn.affectRight(r1, 1.0, comp, v2);
         bn.affectToPathway(p, r1);
         r2 = new BioReaction("r2");bn.add(r2);
-        bn.affectLeft(v2, 1.0, comp, r2);
-        bn.affectRight(v3, 1.0, comp, r2);
+        bn.affectLeft(r2, 1.0, comp, v2);
+        bn.affectRight(r2, 1.0, comp, v3);
         bn.affectToPathway(p, r2);
         r3 = new BioReaction("r3");bn.add(r3);
-        bn.affectLeft(v2, 1.0, comp, r3);
-        bn.affectRight(v3, 1.0, comp, r3);
+        bn.affectLeft(r3, 1.0, comp, v2);
+        bn.affectRight(r3, 1.0, comp, v3);
         r3.setReversible(true);
         r4 = new BioReaction("r4");bn.add(r4);
-        bn.affectLeft(v3, 1.0, comp, r4);
-        bn.affectRight(v1, 1.0, comp, r4);
+        bn.affectLeft(r4, 1.0, comp, v3);
+        bn.affectRight(r4, 1.0, comp, v1);
         r4.setReversible(true);
 
         e1 = new CompoundEdge(r1, r2, v2);

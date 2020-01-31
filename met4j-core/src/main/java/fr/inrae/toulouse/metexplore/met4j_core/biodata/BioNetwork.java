@@ -41,10 +41,7 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -113,7 +110,11 @@ public class BioNetwork extends BioEntity {
         }
     }
 
-    public void removeOnCascade(BioEntity e) throws IllegalArgumentException {
+    /**
+     * Remove on cascade a BioEntity
+     * @param e
+     */
+    private void removeOnCascade(BioEntity e)  {
 
         if (e instanceof BioPathway) {
             this.pathways.remove(e);
@@ -140,6 +141,31 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
+     * Remove on cascade several entities
+     * @param entities
+     */
+    public void removeOnCascade(BioEntity... entities)
+    {
+        for(BioEntity e : entities)
+        {
+            removeOnCascade(e);
+        }
+    }
+
+    /**
+     * Remove on cascade several entities stored in a BioCollection
+     * @param entities
+     */
+    public void removeOnCascade(BioCollection<BioEntity> entities)
+    {
+        for(BioEntity e : entities)
+        {
+            removeOnCascade(e);
+        }
+    }
+
+
+    /**
      * Remove protein from the network and from the enzymes and the compartments
      * where it is involved
      */
@@ -147,7 +173,7 @@ public class BioNetwork extends BioEntity {
 
         this.proteins.remove(protein);
 
-        this.enzymes.forEach(e -> {
+        this.getEnzymesView().forEach(e -> {
             BioCollection<BioEnzymeParticipant> participants = new BioCollection<>(
                     e.getParticipants());
 
@@ -170,6 +196,10 @@ public class BioNetwork extends BioEntity {
             components.forEach(p -> {
                 if (p.equals(protein)) {
                     c.getComponents().remove(p);
+                    if(c.getComponents().size() == 0)
+                    {
+                        this.removeOnCascade(c);
+                    }
                 }
             });
         });
@@ -210,6 +240,10 @@ public class BioNetwork extends BioEntity {
 
         cpts.forEach(c -> {
             c.getComponents().remove(m);
+            if(c.getComponents().size() == 0)
+            {
+                this.removeOnCascade(c);
+            }
         });
 
         BioCollection<BioEnzyme> enzymesCopy = this.getEnzymesView();
@@ -224,10 +258,9 @@ public class BioNetwork extends BioEntity {
                 }
             }
 
-            if(e.getParticipantsView().size() == 0)
-			{
-				this.removeOnCascade(e);
-			}
+            if (e.getParticipantsView().size() == 0) {
+                this.removeOnCascade(e);
+            }
         });
 
         this.metabolites.remove(m);
@@ -258,9 +291,13 @@ public class BioNetwork extends BioEntity {
 
         this.reactions.remove(r);
 
-        this.pathways.forEach(p -> {
+        this.getPathwaysView().forEach(p -> {
             p.removeReaction(r);
-            ;
+            if(p.getReactions().size() == 0)
+            {
+                this.removeOnCascade(p);
+            }
+
         });
 
     }
@@ -289,10 +326,23 @@ public class BioNetwork extends BioEntity {
     /**
      * add a relation reactant-reaction
      */
-    public void affectLeft(BioMetabolite substrate, Double stoichiometry, BioCompartment localisation,
-                           BioReaction reaction) {
+    private void affectLeft(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite substrate) {
 
-        affectSideReaction(substrate, stoichiometry, localisation, reaction, BioReaction.Side.LEFT);
+        affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.LEFT, substrate);
+
+    }
+
+    public void affectLeft(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite... substrates) {
+
+        for (BioMetabolite s : substrates)
+            affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.LEFT, s);
+
+    }
+
+    public void affectLeft(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioCollection<BioMetabolite> substrates) {
+
+        for (BioMetabolite s : substrates)
+            affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.LEFT, s);
 
     }
 
@@ -326,10 +376,19 @@ public class BioNetwork extends BioEntity {
     /**
      * Add a relation product-reaction
      */
-    public void affectRight(BioMetabolite product, Double stoichiometry, BioCompartment localisation,
-                            BioReaction reaction) {
+    public void affectRight(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite product) {
 
-        affectSideReaction(product, stoichiometry, localisation, reaction, BioReaction.Side.RIGHT);
+        affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.RIGHT, product);
+    }
+
+    public void affectRight(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite... products) {
+        for (BioMetabolite product : products)
+            affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.RIGHT, product);
+    }
+
+    public void affectRight(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioCollection<BioMetabolite> products) {
+        for (BioMetabolite product : products)
+            affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.RIGHT, product);
     }
 
     /**
@@ -357,8 +416,7 @@ public class BioNetwork extends BioEntity {
         removeSideReaction(e, localisation, reaction, BioReaction.Side.RIGHT);
     }
 
-    private void affectSideReaction(BioMetabolite e, Double stoichiometry, BioCompartment localisation,
-                                    BioReaction reaction, BioReaction.Side side) {
+    private void affectSideReaction(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioReaction.Side side, BioMetabolite e) {
         BioReactant reactant = new BioReactant(e, stoichiometry, localisation);
 
         // The network must contain the compartment
@@ -384,6 +442,12 @@ public class BioNetwork extends BioEntity {
             reaction.getLeftReactants().add(reactant);
         } else {
             reaction.getRightReactants().add(reactant);
+        }
+    }
+
+    private void affectSideReaction(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioReaction.Side side, BioMetabolite... metabolites) {
+        for (BioMetabolite m : metabolites) {
+            this.affectSideReaction(reaction, stoichiometry, localisation, side, m);
         }
     }
 
@@ -450,7 +514,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Affects an enzyme to a reaction
      */
-    public void affectEnzyme(BioEnzyme enzyme, BioReaction reaction) {
+    private void affectEnzyme(BioReaction reaction, BioEnzyme enzyme) {
 
         if (!this.contains(enzyme)) {
             throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
@@ -464,7 +528,33 @@ public class BioNetwork extends BioEntity {
 
     }
 
-    ;
+    /**
+     * Affect several enzymes to a reaction
+     * @param reaction
+     * @param enzymes
+     */
+    public void affectEnzyme(BioReaction reaction, BioEnzyme... enzymes) {
+
+        for(BioEnzyme e : enzymes)
+        {
+            affectEnzyme(reaction, e);
+        }
+
+    }
+
+    /**
+     * Affect several enzymes stored in a BioCollection to a reaction
+     * @param reaction
+     * @param enzymes
+     */
+    public void affectEnzyme(BioReaction reaction, BioCollection<BioEnzyme> enzymes) {
+
+        for(BioEnzyme e : enzymes)
+        {
+            affectEnzyme(reaction, e);
+        }
+
+    }
 
 
     /**
@@ -487,7 +577,7 @@ public class BioNetwork extends BioEntity {
     ;
 
     // relation enzyme -constituant
-    public void affectSubUnit(BioPhysicalEntity unit, Double quantity, BioEnzyme enzyme) {
+    private void affectSubUnit(BioEnzyme enzyme, Double quantity, BioPhysicalEntity unit) {
 
         BioEnzymeParticipant p = new BioEnzymeParticipant(unit, quantity);
 
@@ -503,7 +593,40 @@ public class BioNetwork extends BioEntity {
 
     }
 
-    ;
+    /**
+     * Adds several subunits to an enzyme with the same stoichiometric coefficient
+     * @param enzyme
+     * @param quantity
+     * @param units
+     */
+    public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioPhysicalEntity... units) {
+
+        for(BioPhysicalEntity unit : units)
+        {
+            affectSubUnit(enzyme, quantity, unit);
+        }
+    }
+
+    /**
+     * Adds several subunits stored in a BioCollection to an enzyme with the same stoichiometric coefficient
+     * @param enzyme
+     * @param quantity
+     * @param units
+     */
+    public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioCollection<?> units) {
+
+        for(BioEntity unit : units)
+        {
+            if(BioPhysicalEntity.class.isInstance(unit)) {
+                affectSubUnit(enzyme, quantity, (BioPhysicalEntity)unit);
+            }
+            else {
+                throw new IllegalArgumentException("Units of an enzyme must be BioPhysicalEntity instances");
+            }
+        }
+    }
+
+
 
     public void removeSubUnit(BioPhysicalEntity unit, BioEnzyme enzyme) {
 
@@ -562,7 +685,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Add a pathway affected to a reaction
      */
-    public void affectToPathway(BioPathway pathway, BioReaction reaction) {
+    private void affectToPathway(BioPathway pathway, BioReaction reaction) {
 
         if (!this.contains(pathway)) {
             throw new IllegalArgumentException("Pathway " + pathway.getId() + " not present in the network");
@@ -576,7 +699,6 @@ public class BioNetwork extends BioEntity {
 
     }
 
-    ;
 
     public void affectToPathway(BioPathway pathway, BioReaction... reactions) {
 
@@ -585,7 +707,13 @@ public class BioNetwork extends BioEntity {
         }
     }
 
-    ;
+    public void affectToPathway(BioPathway pathway, BioCollection<BioReaction> reactions) {
+
+        for (BioReaction reaction : reactions) {
+            this.affectToPathway(pathway, reaction);
+        }
+    }
+
 
 
     /**
@@ -644,6 +772,20 @@ public class BioNetwork extends BioEntity {
             this.affectToCompartment(compartment, ent);
         }
 
+    }
+
+    /**
+     *
+     * Affect several metabolites from a collection to a compartment
+     *
+     * @param compartment
+     * @param entities
+     */
+    public void affectToCompartment(BioCompartment compartment, BioCollection<?> entities) {
+        for(BioEntity e : entities)
+        {
+            this.affectToCompartment(compartment, e);
+        }
     }
 
     ;
@@ -1243,4 +1385,23 @@ public class BioNetwork extends BioEntity {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        BioNetwork that = (BioNetwork) o;
+        return Objects.equals(pathways, that.pathways) &&
+                Objects.equals(metabolites, that.metabolites) &&
+                Objects.equals(proteins, that.proteins) &&
+                Objects.equals(genes, that.genes) &&
+                Objects.equals(reactions, that.reactions) &&
+                Objects.equals(compartments, that.compartments) &&
+                Objects.equals(enzymes, that.enzymes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), pathways, metabolites, proteins, genes, reactions, compartments, enzymes);
+    }
 }

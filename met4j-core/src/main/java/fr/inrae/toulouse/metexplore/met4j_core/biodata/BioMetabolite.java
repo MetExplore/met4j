@@ -35,6 +35,8 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
+import java.util.Objects;
+
 /**
  *
  */
@@ -127,4 +129,21 @@ public class BioMetabolite extends BioPhysicalEntity {
 		this.charge = charge;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		BioMetabolite that = (BioMetabolite) o;
+		return Objects.equals(molecularWeight, that.molecularWeight) &&
+				Objects.equals(chemicalFormula, that.chemicalFormula) &&
+				Objects.equals(inchi, that.inchi) &&
+				Objects.equals(smiles, that.smiles) &&
+				Objects.equals(charge, that.charge);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), molecularWeight, chemicalFormula, inchi, smiles, charge);
+	}
 }

@@ -66,14 +66,14 @@ public class BioNetworkUtilsTest {
 		
 		network.affectToCompartment(c, m1, m2, m3);
 
-		network.affectLeft(m1, 1.0, c, r1);
-		network.affectLeft(m2, 1.0, c, r1);
+		network.affectLeft(r1, 1.0, c, m1);
+		network.affectLeft(r1, 1.0, c, m2);
 
-		network.affectLeft(m1, 1.0, c, r2);
+		network.affectLeft(r2, 1.0, c, m1);
 
-		network.affectRight(m3, 1.0, c, r1);
+		network.affectRight(r1, 1.0, c, m3);
 
-		network.affectRight(m3, 1.0, c, r2);
+		network.affectRight(r2, 1.0, c, m3);
 
 		BioCollection<BioReaction> chokeReactions = BioNetworkUtils.getChokeReactions(network);
 		
@@ -101,8 +101,8 @@ public class BioNetworkUtilsTest {
 
 		network.affectToCompartment(c, m1, m2, m3);
 
-		network.affectLeft(m1, 1.0, c, r1);
-		network.affectLeft(m2, 1.0, c, r1);
+		network.affectLeft(r1, 1.0, c, m1);
+		network.affectLeft(r1, 1.0, c, m2);
 
 		BioNetworkUtils.removeNotConnectedMetabolites(network);
 

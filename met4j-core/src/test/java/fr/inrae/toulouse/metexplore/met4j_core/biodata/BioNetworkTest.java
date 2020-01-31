@@ -77,10 +77,10 @@ public class BioNetworkTest {
 		
 		network.affectToCompartment(cpt, s1, s2, p1, p2);
 
-		network.affectLeft(s1, 2.0, cpt, r);
-		network.affectLeft(s2, 2.0, cpt, r);
-		network.affectRight(p1, 3.0, cpt, r);
-		network.affectRight(p2, 3.0, cpt, r);
+		network.affectLeft(r, 2.0, cpt, s1);
+		network.affectLeft(r, 2.0, cpt, s2);
+		network.affectRight(r, 3.0, cpt, p1);
+		network.affectRight(r, 3.0, cpt, p2);
 
 		BioPathway p = new BioPathway("pathway1");
 		network.add(p);
@@ -104,13 +104,13 @@ public class BioNetworkTest {
 		network.affectGeneProduct(prot1, g1);
 		network.affectGeneProduct(prot2, g2);
 
-		network.affectSubUnit(prot1, 1.0, e1);
-		network.affectSubUnit(prot2, 1.0, e1);
+		network.affectSubUnit(e1, 1.0, prot1);
+		network.affectSubUnit(e1, 1.0, prot2);
 		
-		network.affectSubUnit(prot1, 1.0, e2);
+		network.affectSubUnit(e2, 1.0, prot1);
 
-		network.affectEnzyme(e1, r);
-		network.affectEnzyme(e2, r);
+		network.affectEnzyme(r, e1);
+		network.affectEnzyme(r, e2);
 
 		return r;
 
@@ -216,7 +216,7 @@ public class BioNetworkTest {
 		BioEnzyme enzyme = new BioEnzyme("enzyme");
 		network.add(enzyme);
 		network.add(protein);
-		network.affectSubUnit(protein, 1.0, enzyme);
+		network.affectSubUnit(enzyme, 1.0, protein);
 		network.removeOnCascade(protein);
 		assertEquals("Enzyme not removed", 0, network.getEnzymesView().size());
 
@@ -268,10 +268,10 @@ public class BioNetworkTest {
 		network.add(metabolite);
 		network.add(cpt);
 		network.affectToCompartment(cpt, metabolite);
-		network.affectLeft(metabolite, 1.0, cpt, reaction);
-		network.affectRight(metabolite, 1.0, cpt, reaction);
+		network.affectLeft(reaction, 1.0, cpt, metabolite);
+		network.affectRight(reaction, 1.0, cpt, metabolite);
 		network.add(enz);
-		network.affectSubUnit(metabolite, 1.0, enz);
+		network.affectSubUnit(enz, 1.0, metabolite);
 		network.removeOnCascade(metabolite);
 		
 		assertEquals(reaction.getLeftReactants().size(), 0);
@@ -279,6 +279,7 @@ public class BioNetworkTest {
 		assertEquals(enz.getParticipants().size(), 0);
 		assertEquals(network.getReactionsView().size(), 0);
 		assertEquals(network.getEnzymesView().size(), 0);
+		assertEquals(network.getCompartmentsView().size(), 0);
 
 
 	}
@@ -339,8 +340,8 @@ public class BioNetworkTest {
 		network.add(cpt);
 		network.add(reaction);
 		network.affectToCompartment(cpt, met);
-		network.affectLeft(met, 1.0, cpt, reaction);
-		network.affectRight(met, 1.0, cpt, reaction);
+		network.affectLeft(reaction, 1.0, cpt, met);
+		network.affectRight(reaction, 1.0, cpt, met);
 
 		network.removeOnCascade(cpt);
 
@@ -363,7 +364,7 @@ public class BioNetworkTest {
 
 		network.affectToCompartment(cpt, s1, s2);
 
-		network.affectLeft(s1, 1.0, cpt, reaction);
+		network.affectLeft(reaction, 1.0, cpt, s1);
 
 		BioReactant reactant = new BioReactant(s2, 1.0, cpt);
 		network.affectLeft(reaction, reactant);
@@ -386,8 +387,8 @@ public class BioNetworkTest {
 
 		network.affectToCompartment(cpt, s1, s2);
 
-		network.affectLeft(s1, 1.0, cpt, reaction);
-		network.affectLeft(s2, 1.0, cpt, reaction);
+		network.affectLeft(reaction, 1.0, cpt, s1);
+		network.affectLeft(reaction, 1.0, cpt, s2);
 
 		network.removeLeft(s2, cpt, reaction);
 
@@ -405,7 +406,7 @@ public class BioNetworkTest {
 
 		network.add(reaction);
 		// The compartment has not been added to the network
-		network.affectLeft(metabolite, 1.0, cpt, reaction);
+		network.affectLeft(reaction, 1.0, cpt, metabolite);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -420,7 +421,7 @@ public class BioNetworkTest {
 		network.add(reaction);
 		network.affectToCompartment(cpt2, metabolite);
 		// The metabolite has been affected to an other compartment
-		network.affectLeft(metabolite, 1.0, cpt, reaction);
+		network.affectLeft(reaction, 1.0, cpt, metabolite);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -432,7 +433,7 @@ public class BioNetworkTest {
 		network.add(metabolite);
 		network.add(cpt);
 		network.affectToCompartment(cpt, metabolite);
-		network.affectLeft(metabolite, 1.0, cpt, reaction);
+		network.affectLeft(reaction, 1.0, cpt, metabolite);
 	}
 
 	@Test
@@ -448,7 +449,7 @@ public class BioNetworkTest {
 
 		network.affectToCompartment(cpt, s1, s2);
 
-		network.affectRight(s1, 1.0, cpt, reaction);
+		network.affectRight(reaction, 1.0, cpt, s1);
 		BioReactant reactant = new BioReactant(s2, 1.0, cpt);
 		network.affectRight(reaction, reactant);
 
@@ -468,8 +469,8 @@ public class BioNetworkTest {
 
 		network.affectToCompartment(cpt, s1, s2);
 
-		network.affectRight(s1, 1.0, cpt, reaction);
-		network.affectRight(s2, 1.0, cpt, reaction);
+		network.affectRight(reaction, 1.0, cpt, s1);
+		network.affectRight(reaction, 1.0, cpt, s2);
 
 		network.removeRight(s1, cpt, reaction);
 
@@ -484,7 +485,7 @@ public class BioNetworkTest {
 
 		network.add(metabolite);
 		network.add(reaction);
-		network.affectRight(metabolite, 1.0, cpt, reaction);
+		network.affectRight(reaction, 1.0, cpt, metabolite);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -498,7 +499,7 @@ public class BioNetworkTest {
 		network.add(cpt);
 		network.add(reaction);
 		network.affectToCompartment(cpt2, metabolite);
-		network.affectRight(metabolite, 1.0, cpt, reaction);
+		network.affectRight(reaction, 1.0, cpt, metabolite);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -510,7 +511,7 @@ public class BioNetworkTest {
 		network.add(metabolite);
 		network.add(cpt);
 		network.affectToCompartment(cpt, metabolite);
-		network.affectRight(metabolite, 1.0, cpt, reaction);
+		network.affectRight(reaction, 1.0, cpt, metabolite);
 	}
 
 	@Test
@@ -520,7 +521,7 @@ public class BioNetworkTest {
 		BioEnzyme enzyme = new BioEnzyme("enzymeId");
 		network.add(reaction);
 		network.add(enzyme);
-		network.affectEnzyme(enzyme, reaction);
+		network.affectEnzyme(reaction, enzyme);
 
 		assertEquals("Enzyme not affected to reaction", 1, reaction.getEnzymes().size());
 	}
@@ -532,7 +533,7 @@ public class BioNetworkTest {
 		BioEnzyme enzyme = new BioEnzyme("enzymeId");
 		network.add(reaction);
 		network.add(enzyme);
-		network.affectEnzyme(enzyme, reaction);
+		network.affectEnzyme(reaction, enzyme);
 
 		network.removeEnzymeFromReaction(enzyme, reaction);
 
@@ -544,7 +545,7 @@ public class BioNetworkTest {
 		BioReaction reaction = new BioReaction("reactionId");
 		BioEnzyme enzyme = new BioEnzyme("enzymeId");
 		network.add(enzyme);
-		network.affectEnzyme(enzyme, reaction);
+		network.affectEnzyme(reaction, enzyme);
 
 	}
 
@@ -553,7 +554,7 @@ public class BioNetworkTest {
 		BioReaction reaction = new BioReaction("reactionId");
 		BioEnzyme enzyme = new BioEnzyme("enzymeId");
 		network.add(reaction);
-		network.affectEnzyme(enzyme, reaction);
+		network.affectEnzyme(reaction, enzyme);
 
 	}
 
@@ -568,7 +569,7 @@ public class BioNetworkTest {
 		network.add(unitProtein);
 		network.add(enz);
 
-		network.affectSubUnit(unitMetabolite, 1.0, enz);
+		network.affectSubUnit(enz, 1.0, unitMetabolite);
 
 		assertEquals("subunit not added to enzyme", 1, enz.getParticipants().size());
 	}
@@ -584,7 +585,7 @@ public class BioNetworkTest {
 		network.add(unitProtein);
 		network.add(enz);
 
-		network.affectSubUnit(unitMetabolite, 1.0, enz);
+		network.affectSubUnit(enz, 1.0, unitMetabolite);
 		;
 		network.removeSubUnit(unitMetabolite, enz);
 
@@ -599,7 +600,7 @@ public class BioNetworkTest {
 
 		network.add(unit);
 
-		network.affectSubUnit(unit, 1.0, enz);
+		network.affectSubUnit(enz, 1.0, unit);
 
 	}
 
@@ -611,7 +612,7 @@ public class BioNetworkTest {
 
 		network.add(enz);
 
-		network.affectSubUnit(unit, 1.0, enz);
+		network.affectSubUnit(enz, 1.0, unit);
 
 	}
 

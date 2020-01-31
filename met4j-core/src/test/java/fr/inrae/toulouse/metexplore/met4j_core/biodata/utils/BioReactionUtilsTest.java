@@ -73,8 +73,8 @@ public class BioReactionUtilsTest {
 		c = new BioCompartment("c");
 		network.add(c);
 		network.affectToCompartment(c, m1, m2);
-		network.affectLeft(m1, 1.0, c, r1);
-		network.affectRight(m2, 1.0, c, r1);
+		network.affectLeft(r1, 1.0, c, m1);
+		network.affectRight(r1, 1.0, c, m2);
 		r1.setReversible(false);
 
 		e1 = new BioEnzyme("e1");
@@ -113,12 +113,12 @@ public class BioReactionUtilsTest {
 		r2.setReversible(false);
 		network.add(r2);
 
-		network.affectLeft(m1, 1.0, c, r2);
+		network.affectLeft(r2, 1.0, c, m1);
 
 		assertFalse("r1 and r2 must be identified as not redundant",
 				BioReactionUtils.areRedundant(network, r1, r2));
 
-		network.affectRight(m2, 1.0, c, r2);
+		network.affectRight(r2, 1.0, c, m2);
 
 		assertTrue("r1 and r2 must be identified as redundant", BioReactionUtils.areRedundant(network, r1, r2));
 
@@ -133,18 +133,18 @@ public class BioReactionUtilsTest {
 
 		network.add(r2);
 
-		network.affectLeft(m1, 1.0, c, r2);
+		network.affectLeft(r2, 1.0, c, m1);
 
-		network.affectRight(m2, 1.0, c, r2);
+		network.affectRight(r2, 1.0, c, m2);
 
 		assertTrue("r1 and r2 must be identified as redundant", BioReactionUtils.areRedundant(network, r1, r2));
 
 		network.removeLeft(m1, c, r2);
 		network.removeRight(m2, c, r2);
 
-		network.affectLeft(m2, 1.0, c, r2);
+		network.affectLeft(r2, 1.0, c, m2);
 
-		network.affectRight(m1, 1.0, c, r2);
+		network.affectRight(r2, 1.0, c, m1);
 
 		assertTrue("r1 and r2 must be identified as redundant", BioReactionUtils.areRedundant(network, r1, r2));
 
@@ -190,9 +190,9 @@ public class BioReactionUtilsTest {
 		BioReaction r2 = new BioReaction("r2");
 		network.add(r2);
 
-		network.affectLeft(m1, 1.0, c, r2);
+		network.affectLeft(r2, 1.0, c, m1);
 
-		network.affectRight(m2, 1.0, c, r2);
+		network.affectRight(r2, 1.0, c, m2);
 
 		r2.setReversible(true);
 
@@ -208,12 +208,12 @@ public class BioReactionUtilsTest {
 		network.affectGeneProduct(p2, g1);
 		network.affectGeneProduct(p3, g1);
 
-		network.affectSubUnit(p1, 1.0, e1);
-		network.affectSubUnit(p2, 1.0, e1);
-		network.affectSubUnit(p3, 1.0, e2);
+		network.affectSubUnit(e1, 1.0, p1);
+		network.affectSubUnit(e1, 1.0, p2);
+		network.affectSubUnit(e2, 1.0, p3);
 
-		network.affectEnzyme(e1, r1);
-		network.affectEnzyme(e2, r1);
+		network.affectEnzyme(r1, e1);
+		network.affectEnzyme(r1, e2);
 
 		String gprRef = "g1";
 
@@ -230,12 +230,12 @@ public class BioReactionUtilsTest {
 		network.affectGeneProduct(p2, g2);
 		network.affectGeneProduct(p3, g3);
 
-		network.affectSubUnit(p1, 1.0, e1);
-		network.affectSubUnit(p2, 1.0, e1);
-		network.affectSubUnit(p3, 1.0, e2);
+		network.affectSubUnit(e1, 1.0, p1);
+		network.affectSubUnit(e1, 1.0, p2);
+		network.affectSubUnit(e2, 1.0, p3);
 
-		network.affectEnzyme(e1, r1);
-		network.affectEnzyme(e2, r1);
+		network.affectEnzyme(r1, e1);
+		network.affectEnzyme(r1, e2);
 
 		String gprRef = "( g1 AND g2 ) OR ( g3 )";
 

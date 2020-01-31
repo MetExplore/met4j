@@ -170,8 +170,8 @@ public class BionetworkToJsbmlTest {
         network.affectToCompartment(c1, m1);
         network.affectToCompartment(c2, m2);
 
-        network.affectLeft(m1, 2.0, c1, r1);
-        network.affectRight(m2, 3.0, c2, r1);
+        network.affectLeft(r1, 2.0, c1, m1);
+        network.affectRight(r1, 3.0, c2, m2);
 
         BioGene g1 = new BioGene("g1");
         BioGene g2 = new BioGene("g2");
@@ -199,13 +199,13 @@ public class BionetworkToJsbmlTest {
         network.add(e1);
         network.add(e2);
 
-        network.affectSubUnit(p1, 1.0, e1);
-        network.affectSubUnit(p2, 1.0, e1);
-        network.affectSubUnit(p3, 1.0, e2);
+        network.affectSubUnit(e1, 1.0, p1);
+        network.affectSubUnit(e1, 1.0, p2);
+        network.affectSubUnit(e2, 1.0, p3);
 
-        network.affectEnzyme(e1, r1);
-        network.affectEnzyme(e2, r1);
-        network.affectEnzyme(e2, r2);
+        network.affectEnzyme(r1, e1);
+        network.affectEnzyme(r1, e2);
+        network.affectEnzyme(r2, e2);
 
         BionetworkToJsbml converter = new BionetworkToJsbml();
 

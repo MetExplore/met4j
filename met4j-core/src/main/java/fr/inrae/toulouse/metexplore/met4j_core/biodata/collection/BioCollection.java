@@ -117,7 +117,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	/**
 	 * Get entities with a specific name
 	 * 
-	 * @param id
+	 * @param name
 	 * @return
 	 */
 	public BioCollection<E> getEntitiesFromName(String name) {
@@ -174,6 +174,13 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	@Override
 	public boolean add(E e) {
 		entities.put(e.getId(), e);
+		return true;
+	}
+
+	public boolean add(E... newEntities) {
+		for(E e : newEntities) {
+			entities.put(e.getId(), e);
+		}
 		return true;
 	}
 

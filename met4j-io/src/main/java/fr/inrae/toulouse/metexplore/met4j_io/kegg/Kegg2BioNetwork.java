@@ -274,8 +274,8 @@ public class Kegg2BioNetwork {
                                 BioEnzyme enz = new BioEnzyme(geneId);
                                 network.add(gene, prot, enz);
                                 network.affectGeneProduct(prot, gene);
-                                network.affectSubUnit(prot, 1.0, enz);
-                                network.affectEnzyme(enz, reaction);
+                                network.affectSubUnit(enz, 1.0, prot);
+                                network.affectEnzyme(reaction, enz);
                         }
                         if (this.origin.equals("map")) {
                             NodeList childs = rxn.getChildNodes();

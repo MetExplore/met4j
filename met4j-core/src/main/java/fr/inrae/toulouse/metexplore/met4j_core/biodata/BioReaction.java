@@ -36,6 +36,7 @@
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
@@ -364,4 +365,22 @@ public class BioReaction extends BioEntity {
 		return new BioCollection<>(genes);
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		BioReaction that = (BioReaction) o;
+		return spontaneous == that.spontaneous &&
+				reversible == that.reversible &&
+				Objects.equals(ecNumber, that.ecNumber) &&
+				Objects.equals(left, that.left) &&
+				Objects.equals(right, that.right) &&
+				Objects.equals(enzymes, that.enzymes);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), spontaneous, ecNumber, reversible, left, right, enzymes);
+	}
 }

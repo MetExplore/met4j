@@ -36,6 +36,8 @@
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 
+import java.util.Objects;
+
 public class BioProtein extends BioPhysicalEntity {
 
 	private BioGene gene;
@@ -61,4 +63,17 @@ public class BioProtein extends BioPhysicalEntity {
 		this.gene = null;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+		BioProtein that = (BioProtein) o;
+		return Objects.equals(gene, that.gene);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), gene);
+	}
 }

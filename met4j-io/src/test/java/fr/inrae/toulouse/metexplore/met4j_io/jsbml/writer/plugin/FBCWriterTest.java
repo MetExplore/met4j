@@ -156,13 +156,13 @@ public class FBCWriterTest {
 		network.add(e1);
 		network.add(e2);
 
-		network.affectSubUnit(p1, 1.0, e1);
-		network.affectSubUnit(p2, 1.0, e1);
-		network.affectSubUnit(p3, 1.0, e2);
+		network.affectSubUnit(e1, 1.0, p1);
+		network.affectSubUnit(e1, 1.0, p2);
+		network.affectSubUnit(e2, 1.0, p3);
 
-		network.affectEnzyme(e1, r1);
-		network.affectEnzyme(e2, r1);
-		network.affectEnzyme(e2, r2);
+		network.affectEnzyme(r1, e1);
+		network.affectEnzyme(r1, e2);
+		network.affectEnzyme(r2, e2);
 
 		BioObjectiveCollection objectives = new BioObjectiveCollection();
 

@@ -288,7 +288,7 @@ public class BioNetwork extends BioEntity {
      */
     public void affectLeft(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite substrate) {
 
-        affectSideReaction(substrate, stoichiometry, localisation, reaction, BioReaction.Side.LEFT);
+        affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.LEFT, substrate);
 
     }
 
@@ -324,7 +324,7 @@ public class BioNetwork extends BioEntity {
      */
     public void affectRight(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite product) {
 
-        affectSideReaction(product, stoichiometry, localisation, reaction, BioReaction.Side.RIGHT);
+        affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.RIGHT, product);
     }
 
     /**
@@ -352,8 +352,7 @@ public class BioNetwork extends BioEntity {
         removeSideReaction(e, localisation, reaction, BioReaction.Side.RIGHT);
     }
 
-    private void affectSideReaction(BioMetabolite e, Double stoichiometry, BioCompartment localisation,
-                                    BioReaction reaction, BioReaction.Side side) {
+    private void affectSideReaction(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioReaction.Side side, BioMetabolite e) {
         BioReactant reactant = new BioReactant(e, stoichiometry, localisation);
 
         // The network must contain the compartment

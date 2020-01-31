@@ -221,10 +221,9 @@ public class BioNetwork extends BioEntity {
                 }
             }
 
-            if(e.getParticipantsView().size() == 0)
-			{
-				this.removeOnCascade(e);
-			}
+            if (e.getParticipantsView().size() == 0) {
+                this.removeOnCascade(e);
+            }
         });
 
         this.metabolites.remove(m);
@@ -286,9 +285,16 @@ public class BioNetwork extends BioEntity {
     /**
      * add a relation reactant-reaction
      */
-    public void affectLeft(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite substrate) {
+    private void affectLeft(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite substrate) {
 
         affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.LEFT, substrate);
+
+    }
+
+    public void affectLeft(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite... substrates) {
+
+        for (BioMetabolite s : substrates)
+            affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.LEFT, s);
 
     }
 
@@ -325,6 +331,11 @@ public class BioNetwork extends BioEntity {
     public void affectRight(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite product) {
 
         affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.RIGHT, product);
+    }
+
+    public void affectRight(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite... products) {
+        for (BioMetabolite product : products)
+            affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.RIGHT, product);
     }
 
     /**
@@ -378,6 +389,12 @@ public class BioNetwork extends BioEntity {
             reaction.getLeftReactants().add(reactant);
         } else {
             reaction.getRightReactants().add(reactant);
+        }
+    }
+
+    private void affectSideReaction(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioReaction.Side side, BioMetabolite... metabolites) {
+        for (BioMetabolite m : metabolites) {
+            this.affectSideReaction(reaction, stoichiometry, localisation, side, m);
         }
     }
 

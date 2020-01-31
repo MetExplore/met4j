@@ -104,7 +104,7 @@ public class TestMerger {
 		bn.add(r1);
 		bn.affectLeft(r1, 1.0, comp1, a1);
 		bn.affectRight(r1, 1.0, comp1, b1);
-		bn.affectEnzyme(enz1,r1);
+		bn.affectEnzyme(r1, enz1);
 		BioReaction r2 = new BioReaction("ab2");r2.setReversible(false);
 		bn.add(r2);
 		bn.affectLeft(r2, 1.0, comp1, a1);

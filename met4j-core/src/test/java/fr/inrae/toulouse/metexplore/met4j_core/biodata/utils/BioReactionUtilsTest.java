@@ -212,8 +212,8 @@ public class BioReactionUtilsTest {
 		network.affectSubUnit(e1, 1.0, p2);
 		network.affectSubUnit(e2, 1.0, p3);
 
-		network.affectEnzyme(e1, r1);
-		network.affectEnzyme(e2, r1);
+		network.affectEnzyme(r1, e1);
+		network.affectEnzyme(r1, e2);
 
 		String gprRef = "g1";
 
@@ -234,8 +234,8 @@ public class BioReactionUtilsTest {
 		network.affectSubUnit(e1, 1.0, p2);
 		network.affectSubUnit(e2, 1.0, p3);
 
-		network.affectEnzyme(e1, r1);
-		network.affectEnzyme(e2, r1);
+		network.affectEnzyme(r1, e1);
+		network.affectEnzyme(r1, e2);
 
 		String gprRef = "( g1 AND g2 ) OR ( g3 )";
 

@@ -136,8 +136,8 @@ public class AnnotationParserTest {
 
 		network.affectSubUnit(e2, 1.0, prot1);
 
-		network.affectEnzyme(e1, r1);
-		network.affectEnzyme(e2, r1);
+		network.affectEnzyme(r1, e1);
+		network.affectEnzyme(r1, e2);
 
 		model = new Model();
 		model.addReaction(new Reaction("r1"));

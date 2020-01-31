@@ -109,8 +109,8 @@ public class BioNetworkTest {
 		
 		network.affectSubUnit(e2, 1.0, prot1);
 
-		network.affectEnzyme(e1, r);
-		network.affectEnzyme(e2, r);
+		network.affectEnzyme(r, e1);
+		network.affectEnzyme(r, e2);
 
 		return r;
 
@@ -520,7 +520,7 @@ public class BioNetworkTest {
 		BioEnzyme enzyme = new BioEnzyme("enzymeId");
 		network.add(reaction);
 		network.add(enzyme);
-		network.affectEnzyme(enzyme, reaction);
+		network.affectEnzyme(reaction, enzyme);
 
 		assertEquals("Enzyme not affected to reaction", 1, reaction.getEnzymes().size());
 	}
@@ -532,7 +532,7 @@ public class BioNetworkTest {
 		BioEnzyme enzyme = new BioEnzyme("enzymeId");
 		network.add(reaction);
 		network.add(enzyme);
-		network.affectEnzyme(enzyme, reaction);
+		network.affectEnzyme(reaction, enzyme);
 
 		network.removeEnzymeFromReaction(enzyme, reaction);
 
@@ -544,7 +544,7 @@ public class BioNetworkTest {
 		BioReaction reaction = new BioReaction("reactionId");
 		BioEnzyme enzyme = new BioEnzyme("enzymeId");
 		network.add(enzyme);
-		network.affectEnzyme(enzyme, reaction);
+		network.affectEnzyme(reaction, enzyme);
 
 	}
 
@@ -553,7 +553,7 @@ public class BioNetworkTest {
 		BioReaction reaction = new BioReaction("reactionId");
 		BioEnzyme enzyme = new BioEnzyme("enzymeId");
 		network.add(reaction);
-		network.affectEnzyme(enzyme, reaction);
+		network.affectEnzyme(reaction, enzyme);
 
 	}
 

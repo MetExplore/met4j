@@ -145,7 +145,7 @@ public class FluxReaction extends BioEntity {
 				}
 				bn.affectSubUnit(enz, 1.0, prot);
 				
-				bn.affectEnzyme(enz, rxn);
+				bn.affectEnzyme(rxn, enz);
 
 			} else {
 				
@@ -162,7 +162,7 @@ public class FluxReaction extends BioEntity {
 					bn.affectSubUnit(enz, 1.0, prot);
 				}
 				
-				bn.affectEnzyme(enz, rxn);
+				bn.affectEnzyme(rxn, enz);
 
 			}
 

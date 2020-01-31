@@ -473,7 +473,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Affects an enzyme to a reaction
      */
-    public void affectEnzyme(BioEnzyme enzyme, BioReaction reaction) {
+    public void affectEnzyme(BioReaction reaction, BioEnzyme enzyme) {
 
         if (!this.contains(enzyme)) {
             throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");

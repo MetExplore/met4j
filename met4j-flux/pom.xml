@@ -81,8 +81,13 @@
             <id>XypronRelease</id>
             <name>Xypron Release</name>
             <url>https://www.xypron.de/repository</url>
-            <layout>default</layout>
         </repository>
+        <repository>
+            <id>TU-Darmstadt</id>
+            <name>TU-Darmstadt Repository</name>
+            <url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases/</url>
+        </repository>
+
     </repositories>
 
     <dependencies>
@@ -154,7 +159,7 @@
         <dependency>
             <groupId>cplex</groupId>
             <artifactId>cplex</artifactId>
-            <version>10.4.1</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>

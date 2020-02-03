@@ -76,7 +76,7 @@ public class BioReactantTest {
 		BioReactant r4 = new BioReactant(c2, 1.0, cpt1);
 		BioReactant r5 = new BioReactant(c1, 1.0, cpt1);
 		
-		assertFalse("r1 and r2 must not be equal", r1.equals(r2));
+		assertFalse("r1 and r2 must not  be equal", r1.equals(r2));
 		assertFalse("r1 and r3 must not be equal", r1.equals(r3));
 		assertFalse("r1 and r4 must not be equal", r1.equals(r4));
 		assertTrue("r1 and r5 must be equal", r1.equals(r5));

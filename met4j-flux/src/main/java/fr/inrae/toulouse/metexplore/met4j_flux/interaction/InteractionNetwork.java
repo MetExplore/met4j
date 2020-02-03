@@ -545,6 +545,7 @@ public class InteractionNetwork {
 			// to : if G1=0 OR G2=0 then R=0
 			// so we invert AND and OR
 
+
 			BioCollection<BioEnzyme> enzymes = r.getEnzymesView();
 
 			if (enzymes.size() != 0) {
@@ -567,6 +568,7 @@ public class InteractionNetwork {
 					Relation rel2 = null;
 
 					Relation rel2Active = null;
+
 					if (listOfGenes.size() > 1) {
 						rel2 = (Or) relationFactory.makeOr();
 						rel2Active = (And) relationFactory.makeAnd();

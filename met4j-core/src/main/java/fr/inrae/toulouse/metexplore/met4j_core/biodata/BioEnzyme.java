@@ -96,17 +96,4 @@ public class BioEnzyme extends BioPhysicalEntity {
 		}
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
-		BioEnzyme bioEnzyme = (BioEnzyme) o;
-		return Objects.equals(participants, bioEnzyme.participants);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(super.hashCode(), participants);
-	}
 }

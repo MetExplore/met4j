@@ -139,14 +139,14 @@ false
 
 To participate to a reaction, a metabolite must be localised in a compartment.
 
-```
+```java
 BioCompartment c1 = new BioCompartment("c1", "compartment1");
 network.add(c1);
 network.affectToCompartment(c1, m1);
 ```
 
 We can add several metabolites in the same compartment at once:
-```
+```java
 network.add(m2);
 network.affectToCompartment(c1, m1, m2);
 ```
@@ -208,7 +208,7 @@ network.affectRight(r2, reactant2, reactant3);
 In met4j, the relation between a gene and a protein is 1 gene : several proteins, what means
 that one protein is coded by only one gene but that one gene can code for several proteins.
 
-```
+```java
 BioGene g1 = new BioGene("g1");
 BioProtein p1 = new BioProtein("p1");
 network.add(g1, p1);
@@ -219,7 +219,7 @@ network.affectGeneProduct(p1, g1);
 
 In met4j, an enzyme is considered as a complex containing several proteins.
 
-```
+```java
 BioEnzyme e1 = new BioEnzyme("e1");
 BioProtein p2 = new BioProtein("p2");
 network.add(e1, p2);
@@ -230,7 +230,7 @@ network.affectSubUnit(e1, 1.0, components);
 
 ###### Assign enzymes to a reaction
 
-```
+```java
 BioEnzyme e2 = new BioEnzyme("e2");
 BioProtein p3 = new BioProtein("p3");
 network.add(e2, p3);

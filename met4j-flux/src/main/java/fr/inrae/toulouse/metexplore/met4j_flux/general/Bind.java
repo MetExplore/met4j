@@ -473,9 +473,9 @@ public abstract class Bind {
                             // concerned
                             // and change one of its bound
 
-                            ArrayList<String> ids = new ArrayList<String>();
+                            BioCollection<BioMetabolite> collec = new BioCollection<>();
 
-                            BioCollection<BioReaction> reactionsAsSubstrate = bioNet.getReactionsFromSubstrates(ids,
+                            BioCollection<BioReaction> reactionsAsSubstrate = bioNet.getReactionsFromSubstrates(collec,
                                     false);
 
                             for (BioReaction reac : reactionsAsSubstrate) {

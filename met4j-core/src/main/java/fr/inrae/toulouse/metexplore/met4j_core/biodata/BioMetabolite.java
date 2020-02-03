@@ -128,22 +128,4 @@ public class BioMetabolite extends BioPhysicalEntity {
 	public void setCharge(Integer charge) {
 		this.charge = charge;
 	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
-		BioMetabolite that = (BioMetabolite) o;
-		return Objects.equals(molecularWeight, that.molecularWeight) &&
-				Objects.equals(chemicalFormula, that.chemicalFormula) &&
-				Objects.equals(inchi, that.inchi) &&
-				Objects.equals(smiles, that.smiles) &&
-				Objects.equals(charge, that.charge);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(super.hashCode(), molecularWeight, chemicalFormula, inchi, smiles, charge);
-	}
 }

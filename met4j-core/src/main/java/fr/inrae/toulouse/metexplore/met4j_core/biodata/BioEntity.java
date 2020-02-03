@@ -86,17 +86,12 @@ public abstract class BioEntity {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		BioEntity bioEntity = (BioEntity) o;
-		return id.equals(bioEntity.id) &&
-				Objects.equals(name, bioEntity.name) &&
-				Objects.equals(synonyms, bioEntity.synonyms) &&
-				Objects.equals(comment, bioEntity.comment) &&
-				Objects.equals(refs, bioEntity.refs) &&
-				Objects.equals(attributes, bioEntity.attributes);
+		return id.equals(bioEntity.id);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, name, synonyms, comment, refs, attributes);
+		return Objects.hashCode(id);
 	}
 
 	/**

@@ -48,8 +48,6 @@ public class BioEnzymeParticipant extends BioParticipant {
 
 	/**
 	 * @param physicalEntity
-	 * @param stoichiometricCoefficient
-	 * @param location
 	 */
 	public BioEnzymeParticipant(BioPhysicalEntity physicalEntity, Double stoichiometry) {
 		super(physicalEntity, stoichiometry);

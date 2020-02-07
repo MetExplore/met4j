@@ -54,6 +54,11 @@ public abstract class BioEntity {
 
 	private HashMap<String, Object> attributes;
 
+	/**
+	 * Constructor from an id and a name
+	 * @param id String not null
+	 * @param name String
+	 */
 	public BioEntity(String id, String name) {
 
 		if (StringUtils.isVoid(id)) {
@@ -68,6 +73,10 @@ public abstract class BioEntity {
 		attributes = new HashMap<>();
 	}
 
+	/**
+	 * Constructor from an id
+	 * @param id String not null
+	 */
 	public BioEntity(String id) {
 
 		if (id == null) {
@@ -97,8 +106,8 @@ public abstract class BioEntity {
 	/**
 	 * Set the name of the entity
 	 * 
-	 * @param n
-	 *            : String
+	 * @param n String
+	 *
 	 */
 	public void setName(String n) {
 		this.name = n;
@@ -123,10 +132,9 @@ public abstract class BioEntity {
 	}
 
 	/**
-	 * add a synonym in the list
+	 * Add a synonym in the list
 	 * 
-	 * @param a
-	 *            String to add
+	 * @param s synonym to add
 	 */
 	public void addSynonym(String s) {
 		this.synonyms.add(s);
@@ -135,7 +143,7 @@ public abstract class BioEntity {
 	/**
 	 * Set the comment on the entity
 	 * 
-	 * @param c
+	 * @param c String
 	 */
 	public void setComment(String c) {
 		this.comment = c;

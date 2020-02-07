@@ -34,77 +34,19 @@
  *
  */
 
-package fr.inrae.toulouse.metexplore.met4j_core.biodata;
+package fr.inrae.toulouse.metexplore.met4j_toolbox.generic;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+public abstract class Met4jApplication {
 
-/**
- *
- *	Biological cellular compartment, e.g. mitochondria, cytoplasm
- *
- */
-public class BioCompartment extends BioPhysicalEntity{
+    /**
+     * @return the label
+     */
+    public abstract String getLabel();
 
-	
-	private BioCollection<BioEntity> components;
+    /**
+     * @return the description
+     */
+    public abstract String getDescription();
 
-	/**
-	 * Constructor from an id
-	 *
-	 * @param id : must be not null
-	 */
-	public BioCompartment(String id) {
-		super(id);
-
-		components  = new BioCollection<>();
-	}
-
-	/**
-	 *
-	 * Constructor from an id and a name
-	 *
-	 * @param id must be not null
-	 * @param name the name of the compartment
-	 */
-	public BioCompartment(String id, String name) {
-		super(id, name);
-
-		components  = new BioCollection<>();
-	}
-
-	/**
-	 * @return an unmodifiable BioCollection of the components
-	 */
-	public BioCollection<BioEntity> getComponentsView() {
-		return components.getView();
-	}
-	
-	/**
-	 * @return the components
-	 */
-	protected BioCollection<BioEntity> getComponents() {
-		return components;
-	}
-
-	/**
-	 *
-	 * set the components
-	 *
-	 * @param components a {@link BioCollection} of {@link BioEntity} to set
-	 */
-	protected void setComponents(BioCollection<BioEntity> components) {
-		this.components = components;
-	}
-
-	/**
-	 *
-	 * Add a component
-	 *
-	 * @param e : the {@link BioEntity} to add
-	 */
-	protected void addComponent(BioEntity e)
-	{
-		this.components.add(e);
-	}
 
 }

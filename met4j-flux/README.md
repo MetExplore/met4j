@@ -13,8 +13,17 @@ It will be necessary to indicate the installation path
  of the GLPK and /or CPLEX for Java shared library (.so or .dll)
  when you will run your applications using met4j-flux.
  
-Example:
+Example for cplex:
 
 ```
-java .... .... -Djava.library.path=/usr/local/lib/jni:/usr/lib/jni
+java .... -Djava.library.path=/usr/local/cplex/cplex/bin/x86-64_sles10_4.1/
 ```
+Example for glpk:
+
+```
+java .... -Djava.library.path=/usr/lib/x86_64-linux-gnu/jni
+```
+
+Examples can be found in
+https://forgemia.inra.fr/metexplore/tutorialmet4j
+in the package fr.inrae.toulouse.metexplore.tutorialmet4j.met4j_flux.

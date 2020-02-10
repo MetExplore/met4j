@@ -76,19 +76,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-    <repositories>
-        <repository>
-            <id>XypronRelease</id>
-            <name>Xypron Release</name>
-            <url>https://www.xypron.de/repository</url>
-        </repository>
-        <repository>
-            <id>TU-Darmstadt</id>
-            <name>TU-Darmstadt Repository</name>
-            <url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases/</url>
-        </repository>
-
-    </repositories>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/junit-addons/junit-addons -->
@@ -122,9 +109,9 @@
             <version>3.0</version>
         </dependency>
         <dependency>
-            <groupId>org.gnu.glpk</groupId>
-            <artifactId>glpk-java</artifactId>
-            <version>1.12.0</version>
+            <groupId>glpk</groupId>
+            <artifactId>glpk</artifactId>
+            <version>1.11</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
@@ -157,9 +144,9 @@
         </dependency>
         <!-- https://mvnrepository.com/artifact/cplex/cplex -->
         <dependency>
-            <groupId>cplex</groupId>
+            <groupId>ibm.ilog</groupId>
             <artifactId>cplex</artifactId>
-            <version>1.0.0</version>
+            <version>10.4.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>

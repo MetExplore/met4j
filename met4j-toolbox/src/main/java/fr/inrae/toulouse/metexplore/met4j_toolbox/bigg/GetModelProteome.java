@@ -296,7 +296,8 @@ public class GetModelProteome extends Met4jApplication {
         FileWriter writer = new FileWriter(new File(this.outputFile));
 
         for (Sequence seq : sequences) {
-            writer.write(seq.toFasta());
+            if(! seq.sequence.isEmpty())
+                writer.write(seq.toFasta());
         }
 
         writer.close();

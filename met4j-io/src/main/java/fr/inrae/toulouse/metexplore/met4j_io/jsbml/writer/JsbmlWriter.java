@@ -45,7 +45,6 @@ import java.util.HashSet;
 
 import javax.xml.stream.XMLStreamException;
 
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.utils.JSBMLUtils;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.*;
 import nu.xom.Builder;
 import nu.xom.ParsingException;

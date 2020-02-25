@@ -603,39 +603,66 @@ public class BioNetwork extends BioEntity {
 
     }
 
+    // relation enzyme -constituant
+    private void affectSubUnit(BioEnzyme enzyme, BioEnzymeParticipant unit) {
+
+
+        if (!this.contains(enzyme)) {
+            throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
+        }
+
+        if (!this.contains(unit.getPhysicalEntity())) {
+            throw new IllegalArgumentException("Physical entity " + unit.getPhysicalEntity().getId() + " not present in the network");
+        }
+
+        enzyme.addParticipant(unit);
+
+    }
+
     /**
      * Adds several subunits to an enzyme with the same stoichiometric coefficient
+     *
      * @param enzyme
      * @param quantity
      * @param units
      */
     public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioPhysicalEntity... units) {
 
-        for(BioPhysicalEntity unit : units)
-        {
+        for (BioPhysicalEntity unit : units) {
             affectSubUnit(enzyme, quantity, unit);
         }
     }
 
     /**
      * Adds several subunits stored in a BioCollection to an enzyme with the same stoichiometric coefficient
+     *
      * @param enzyme
      * @param quantity
      * @param units
      */
     public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioCollection<?> units) {
 
-        for(BioEntity unit : units)
-        {
-            if(BioPhysicalEntity.class.isInstance(unit)) {
-                affectSubUnit(enzyme, quantity, (BioPhysicalEntity)unit);
-            }
-            else {
+        for (BioEntity unit : units) {
+            if (BioPhysicalEntity.class.isInstance(unit)) {
+                affectSubUnit(enzyme, quantity, (BioPhysicalEntity) unit);
+            } else {
                 throw new IllegalArgumentException("Units of an enzyme must be BioPhysicalEntity instances");
             }
         }
     }
 
+    /**
+     * Adds several subunits stored in a BioCollection to an enzyme with the same stoichiometric coefficient
+     *
+     * @param enzyme
+     * @param units
+     */
+    public void affectSubUnit(BioEnzyme enzyme, BioCollection<BioEnzymeParticipant> units) {
+
+        for (BioEnzymeParticipant unit : units) {
+            affectSubUnit(enzyme, unit);
+        }
+    }
 
 
     public void removeSubUnit(BioPhysicalEntity unit, BioEnzyme enzyme) {

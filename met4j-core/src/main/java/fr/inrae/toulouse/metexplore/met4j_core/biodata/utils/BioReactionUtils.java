@@ -170,6 +170,10 @@ public class BioReactionUtils {
 		return gpr;
 		
 	}
+
+	public static String getGPR(BioNetwork network, BioReaction r) {
+		return getGPR(network, r, false);
+	}
 	
 	
 //	/**

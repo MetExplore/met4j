@@ -142,24 +142,22 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Remove on cascade several entities
+     *
      * @param entities
      */
-    public void removeOnCascade(BioEntity... entities)
-    {
-        for(BioEntity e : entities)
-        {
+    public void removeOnCascade(BioEntity... entities) {
+        for (BioEntity e : entities) {
             removeOnCascade(e);
         }
     }
 
     /**
      * Remove on cascade several entities stored in a BioCollection
+     *
      * @param entities
      */
-    public void removeOnCascade(BioCollection<BioEntity> entities)
-    {
-        for(BioEntity e : entities)
-        {
+    public void removeOnCascade(BioCollection<?> entities) {
+        for (BioEntity e : entities) {
             removeOnCascade(e);
         }
     }
@@ -196,8 +194,7 @@ public class BioNetwork extends BioEntity {
             components.forEach(p -> {
                 if (p.equals(protein)) {
                     c.getComponents().remove(p);
-                    if(c.getComponents().size() == 0)
-                    {
+                    if (c.getComponents().size() == 0) {
                         this.removeOnCascade(c);
                     }
                 }
@@ -240,8 +237,7 @@ public class BioNetwork extends BioEntity {
 
         cpts.forEach(c -> {
             c.getComponents().remove(m);
-            if(c.getComponents().size() == 0)
-            {
+            if (c.getComponents().size() == 0) {
                 this.removeOnCascade(c);
             }
         });
@@ -293,8 +289,7 @@ public class BioNetwork extends BioEntity {
 
         this.getPathwaysView().forEach(p -> {
             p.removeReaction(r);
-            if(p.getReactions().size() == 0)
-            {
+            if (p.getReactions().size() == 0) {
                 this.removeOnCascade(p);
             }
 
@@ -530,13 +525,13 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Affect several enzymes to a reaction
+     *
      * @param reaction
      * @param enzymes
      */
     public void affectEnzyme(BioReaction reaction, BioEnzyme... enzymes) {
 
-        for(BioEnzyme e : enzymes)
-        {
+        for (BioEnzyme e : enzymes) {
             affectEnzyme(reaction, e);
         }
 
@@ -544,13 +539,13 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Affect several enzymes stored in a BioCollection to a reaction
+     *
      * @param reaction
      * @param enzymes
      */
     public void affectEnzyme(BioReaction reaction, BioCollection<BioEnzyme> enzymes) {
 
-        for(BioEnzyme e : enzymes)
-        {
+        for (BioEnzyme e : enzymes) {
             affectEnzyme(reaction, e);
         }
 
@@ -713,7 +708,6 @@ public class BioNetwork extends BioEntity {
             this.affectToPathway(pathway, reaction);
         }
     }
-
 
 
     /**
@@ -944,7 +938,7 @@ public class BioNetwork extends BioEntity {
 
         HashSet<BioPathway> pathwaySet = new HashSet<>(this.getPathwaysView().stream().
                 filter(p -> all ? p.getMetabolites().containsAll(metabolites)
-                : !Collections.disjoint(metabolites,  p.getMetabolites())).
+                        : !Collections.disjoint(metabolites, p.getMetabolites())).
                 collect(Collectors.toSet()));
 
         return new BioCollection<>(pathwaySet);
@@ -1090,6 +1084,7 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Get pathways from gene ids
+     *
      * @param all if true, the pathway must contain all the genes
      */
     public BioCollection<BioPathway> getPathwaysFromGenes(BioCollection<BioGene> genes, Boolean all) {

@@ -34,62 +34,68 @@
  *
  */
 
-package fr.inrae.toulouse.metexplore.met4j_toolbox.generic;
+package fr.inrae.toulouse.metexplore.met4j_core.analysis.stats.count;
 
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 
-public abstract class Met4jApplication {
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.TreeMap;
 
-    /**
-     * @return the label
-     */
-    public abstract String getLabel();
 
-    /**
-     * @return the description
-     */
-    public abstract String getDescription();
+public abstract class ObjectsPerObject {
 
-    @Option(name = "-h", usage = "prints the help", required = false)
-    private Boolean h = false;
+    public BioNetwork network;
 
-    private void printHeader()
-    {
-        System.err.println(this.getLabel());
-        System.err.println(this.getDescription());
+    public TreeMap<Integer, Integer> distribution = new TreeMap<Integer, Integer>();
+
+    public HashMap<String, Integer> nbs = new HashMap<String, Integer>();
+
+    public Double mean;
+
+    public ObjectsPerObject(BioNetwork network) {
+        this.network = network;
     }
 
+    public abstract void compute();
 
-    protected void parseArguments(String[] args) {
-        CmdLineParser parser = new CmdLineParser(this);
 
-        try {
-            parser.parseArgument(args);
-        } catch (CmdLineException e) {
-            if(this.h == false) {
-                this.printHeader();
-                System.err.println("Error in arguments");
-                parser.printUsage(System.err);
-                System.exit(0);
-            }
-            else {
-                this.printHeader();
-                parser.printUsage(System.err);
-                System.exit(1);
-            }
-        }
+    /**
+     * Write distribution in file
+     * @param fileName
+     * @throws IOException
+     */
+    public void writeDistributions(String fileName) throws IOException {
 
-        if(this.h == true)
+        FileWriter fw = new FileWriter(fileName);
+
+
+        for(Integer nb : distribution.keySet())
         {
-            this.printHeader();
-            parser.printUsage(System.err);
-            System.exit(1);
+            fw.write(nb+"\t"+distribution.get(nb)+"\n");
         }
 
+        fw.close();
+    }
+
+    /**
+     * Write the number of objects per object in a file
+     * @param fileName
+     * @throws IOException
+     */
+    public void writeNumberOfObjectsPerObject(String fileName) throws IOException {
+
+        FileWriter fw = new FileWriter(fileName);
 
 
+        for(String id : nbs.keySet()) {
+
+            fw.write(id+"\t"+nbs.get(id)+"\n");
+
+        }
+
+        fw.close();
     }
 
 

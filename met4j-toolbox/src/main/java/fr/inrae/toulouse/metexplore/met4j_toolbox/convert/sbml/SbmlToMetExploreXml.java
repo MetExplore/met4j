@@ -34,63 +34,56 @@
  *
  */
 
-package fr.inrae.toulouse.metexplore.met4j_toolbox.generic;
+package fr.inrae.toulouse.metexplore.met4j_toolbox.convert.sbml;
 
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
+import fr.inrae.toulouse.metexplore.met4j_io.metexplorexml.writer.BioNetworkToMetexploreXml;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.Met4jApplication;
 import org.kohsuke.args4j.Option;
 
-public abstract class Met4jApplication {
+import java.io.IOException;
 
-    /**
-     * @return the label
-     */
-    public abstract String getLabel();
-
-    /**
-     * @return the description
-     */
-    public abstract String getDescription();
-
-    @Option(name = "-h", usage = "prints the help", required = false)
-    private Boolean h = false;
-
-    private void printHeader()
-    {
-        System.err.println(this.getLabel());
-        System.err.println(this.getDescription());
-    }
+public class SbmlToMetExploreXml extends Met4jApplication {
 
 
-    protected void parseArguments(String[] args) {
-        CmdLineParser parser = new CmdLineParser(this);
+    @Option(name = "-i", usage = "input file", required = true)
+    public String inputPath = null;
 
-        try {
-            parser.parseArgument(args);
-        } catch (CmdLineException e) {
-            if(this.h == false) {
-                this.printHeader();
-                System.err.println("Error in arguments");
-                parser.printUsage(System.err);
-                System.exit(0);
-            }
-            else {
-                this.printHeader();
-                parser.printUsage(System.err);
-                System.exit(1);
-            }
-        }
-
-        if(this.h == true)
-        {
-            this.printHeader();
-            parser.printUsage(System.err);
-            System.exit(1);
-        }
+    @Option(name = "-o", usage = "output file", required = true)
+    public String outputPath = null;
 
 
+    public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
+
+        SbmlToMetExploreXml app = new SbmlToMetExploreXml();
+
+        app.parseArguments(args);
+
+        app.run();
 
     }
 
 
+    public void run() throws IOException, Met4jSbmlReaderException {
+        JsbmlReader reader = new JsbmlReader(this.inputPath);
+
+        BioNetwork network = reader.read();
+
+        BioNetworkToMetexploreXml writer = new BioNetworkToMetexploreXml(network, this.outputPath);
+
+        writer.write();
+
+    }
+
+    @Override
+    public String getLabel() {
+        return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public String getDescription() {
+        return "Converts a SBML file to a MetExploreXml file";
+    }
 }

@@ -205,7 +205,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	}
 
 	public BioCollection<E> getView() {
-		return new BioCollection<E>(Collections.unmodifiableMap(this.entities));
+		return new BioCollection<E>(Collections.unmodifiableMap(new HashMap<>(this.entities)));
 	}
 
 	@Override

@@ -41,7 +41,10 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -84,6 +87,13 @@ public class BioNetwork extends BioEntity {
         }
     }
 
+    public void add(BioCollection<?> bioEntities) {
+
+        for (BioEntity e : bioEntities) {
+            this.add(e);
+        }
+    }
+
     /**
      * Add one entity
      *
@@ -112,10 +122,15 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Remove on cascade a BioEntity
+     *
      * @param e
      */
-    private void removeOnCascade(BioEntity e)  {
+    private void removeOnCascade(BioEntity e) {
 
+        if(e == null)
+        {
+            throw new NullPointerException();
+        }
         if (e instanceof BioPathway) {
             this.pathways.remove(e);
         } else if (e instanceof BioMetabolite) {
@@ -142,24 +157,22 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Remove on cascade several entities
+     *
      * @param entities
      */
-    public void removeOnCascade(BioEntity... entities)
-    {
-        for(BioEntity e : entities)
-        {
+    public void removeOnCascade(BioEntity... entities) {
+        for (BioEntity e : entities) {
             removeOnCascade(e);
         }
     }
 
     /**
      * Remove on cascade several entities stored in a BioCollection
+     *
      * @param entities
      */
-    public void removeOnCascade(BioCollection<BioEntity> entities)
-    {
-        for(BioEntity e : entities)
-        {
+    public void removeOnCascade(BioCollection<?> entities) {
+        for (BioEntity e : entities) {
             removeOnCascade(e);
         }
     }
@@ -196,8 +209,7 @@ public class BioNetwork extends BioEntity {
             components.forEach(p -> {
                 if (p.equals(protein)) {
                     c.getComponents().remove(p);
-                    if(c.getComponents().size() == 0)
-                    {
+                    if (c.getComponents().size() == 0) {
                         this.removeOnCascade(c);
                     }
                 }
@@ -240,8 +252,7 @@ public class BioNetwork extends BioEntity {
 
         cpts.forEach(c -> {
             c.getComponents().remove(m);
-            if(c.getComponents().size() == 0)
-            {
+            if (c.getComponents().size() == 0) {
                 this.removeOnCascade(c);
             }
         });
@@ -293,8 +304,7 @@ public class BioNetwork extends BioEntity {
 
         this.getPathwaysView().forEach(p -> {
             p.removeReaction(r);
-            if(p.getReactions().size() == 0)
-            {
+            if (p.getReactions().size() == 0) {
                 this.removeOnCascade(p);
             }
 
@@ -530,13 +540,13 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Affect several enzymes to a reaction
+     *
      * @param reaction
      * @param enzymes
      */
     public void affectEnzyme(BioReaction reaction, BioEnzyme... enzymes) {
 
-        for(BioEnzyme e : enzymes)
-        {
+        for (BioEnzyme e : enzymes) {
             affectEnzyme(reaction, e);
         }
 
@@ -544,13 +554,13 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Affect several enzymes stored in a BioCollection to a reaction
+     *
      * @param reaction
      * @param enzymes
      */
     public void affectEnzyme(BioReaction reaction, BioCollection<BioEnzyme> enzymes) {
 
-        for(BioEnzyme e : enzymes)
-        {
+        for (BioEnzyme e : enzymes) {
             affectEnzyme(reaction, e);
         }
 
@@ -593,39 +603,66 @@ public class BioNetwork extends BioEntity {
 
     }
 
+    // relation enzyme -constituant
+    private void affectSubUnit(BioEnzyme enzyme, BioEnzymeParticipant unit) {
+
+
+        if (!this.contains(enzyme)) {
+            throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
+        }
+
+        if (!this.contains(unit.getPhysicalEntity())) {
+            throw new IllegalArgumentException("Physical entity " + unit.getPhysicalEntity().getId() + " not present in the network");
+        }
+
+        enzyme.addParticipant(unit);
+
+    }
+
     /**
      * Adds several subunits to an enzyme with the same stoichiometric coefficient
+     *
      * @param enzyme
      * @param quantity
      * @param units
      */
     public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioPhysicalEntity... units) {
 
-        for(BioPhysicalEntity unit : units)
-        {
+        for (BioPhysicalEntity unit : units) {
             affectSubUnit(enzyme, quantity, unit);
         }
     }
 
     /**
      * Adds several subunits stored in a BioCollection to an enzyme with the same stoichiometric coefficient
+     *
      * @param enzyme
      * @param quantity
      * @param units
      */
     public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioCollection<?> units) {
 
-        for(BioEntity unit : units)
-        {
-            if(BioPhysicalEntity.class.isInstance(unit)) {
-                affectSubUnit(enzyme, quantity, (BioPhysicalEntity)unit);
-            }
-            else {
+        for (BioEntity unit : units) {
+            if (BioPhysicalEntity.class.isInstance(unit)) {
+                affectSubUnit(enzyme, quantity, (BioPhysicalEntity) unit);
+            } else {
                 throw new IllegalArgumentException("Units of an enzyme must be BioPhysicalEntity instances");
             }
         }
     }
 
+    /**
+     * Adds several subunits stored in a BioCollection to an enzyme with the same stoichiometric coefficient
+     *
+     * @param enzyme
+     * @param units
+     */
+    public void affectSubUnit(BioEnzyme enzyme, BioCollection<BioEnzymeParticipant> units) {
+
+        for (BioEnzymeParticipant unit : units) {
+            affectSubUnit(enzyme, unit);
+        }
+    }
 
 
     public void removeSubUnit(BioPhysicalEntity unit, BioEnzyme enzyme) {
@@ -715,7 +752,6 @@ public class BioNetwork extends BioEntity {
     }
 
 
-
     /**
      * Remove a reaction from a pathway
      */
@@ -775,15 +811,13 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     *
      * Affect several metabolites from a collection to a compartment
      *
      * @param compartment
      * @param entities
      */
     public void affectToCompartment(BioCompartment compartment, BioCollection<?> entities) {
-        for(BioEntity e : entities)
-        {
+        for (BioEntity e : entities) {
             this.affectToCompartment(compartment, e);
         }
     }
@@ -944,7 +978,7 @@ public class BioNetwork extends BioEntity {
 
         HashSet<BioPathway> pathwaySet = new HashSet<>(this.getPathwaysView().stream().
                 filter(p -> all ? p.getMetabolites().containsAll(metabolites)
-                : !Collections.disjoint(metabolites,  p.getMetabolites())).
+                        : !Collections.disjoint(metabolites, p.getMetabolites())).
                 collect(Collectors.toSet()));
 
         return new BioCollection<>(pathwaySet);
@@ -1027,7 +1061,23 @@ public class BioNetwork extends BioEntity {
             }
             p.getReactions().forEach(r -> {
                 genes.addAll(r.getGenes());
-            });        }
+            });
+        }
+
+        return genes;
+
+    }
+
+    public BioCollection<BioGene> getGenesFromPathways(BioPathway... pathways) {
+        BioCollection<BioGene> genes = new BioCollection<>();
+        for (BioPathway p : pathways) {
+            if (!this.pathways.contains(p)) {
+                throw new IllegalArgumentException("Pathway " + p + " not present in the network");
+            }
+            p.getReactions().forEach(r -> {
+                genes.addAll(r.getGenes());
+            });
+        }
 
         return genes;
 
@@ -1090,6 +1140,7 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Get pathways from gene ids
+     *
      * @param all if true, the pathway must contain all the genes
      */
     public BioCollection<BioPathway> getPathwaysFromGenes(BioCollection<BioGene> genes, Boolean all) {

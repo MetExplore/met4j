@@ -309,7 +309,7 @@ public abstract class Bind {
      * @return An object containing the objective value and a flag that says if the
      *         problem was feasible or not.
      */
-    protected abstract DoubleResult go(boolean saveResults);
+    public abstract DoubleResult go(boolean saveResults);
 
     /**
      *

@@ -45,9 +45,8 @@ import java.util.stream.Collectors;
  * files. </br>
  * </br>
  * This class consists of a list of {@link GeneSet}s. Each of them being one
- * possible "AND" gene association that can activate a given
- * {@link BioReaction}.
- * 
+ * possible "AND" gene association that can activate a given reaction
+ *
  * 
  * @author Benjamin mainly modified by LC
  * @since 3.0

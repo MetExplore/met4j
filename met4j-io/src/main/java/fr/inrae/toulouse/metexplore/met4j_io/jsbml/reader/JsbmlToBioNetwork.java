@@ -568,7 +568,7 @@ public class JsbmlToBioNetwork {
 
 		Double stoDbl = specieRef.getStoichiometry();
 
-		if (Double.isNaN(stoDbl)) {
+		if(Double.isNaN(stoDbl) || Double.isInfinite(stoDbl) || stoDbl <= 0) {
 			System.err.println("Warning : invalid coefficient : " + stoDbl + " for " + specieId);
 			stoDbl = 1.0;
 		}

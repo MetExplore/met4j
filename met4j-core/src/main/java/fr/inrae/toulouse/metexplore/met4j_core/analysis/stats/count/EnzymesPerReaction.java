@@ -34,63 +34,58 @@
  *
  */
 
-package fr.inrae.toulouse.metexplore.met4j_toolbox.generic;
-
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
-
-public abstract class Met4jApplication {
-
-    /**
-     * @return the label
-     */
-    public abstract String getLabel();
-
-    /**
-     * @return the description
-     */
-    public abstract String getDescription();
-
-    @Option(name = "-h", usage = "prints the help", required = false)
-    private Boolean h = false;
-
-    private void printHeader()
-    {
-        System.err.println(this.getLabel());
-        System.err.println(this.getDescription());
-    }
+package fr.inrae.toulouse.metexplore.met4j_core.analysis.stats.count;
 
 
-    protected void parseArguments(String[] args) {
-        CmdLineParser parser = new CmdLineParser(this);
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
-        try {
-            parser.parseArgument(args);
-        } catch (CmdLineException e) {
-            if(this.h == false) {
-                this.printHeader();
-                System.err.println("Error in arguments");
-                parser.printUsage(System.err);
-                System.exit(0);
-            }
-            else {
-                this.printHeader();
-                parser.printUsage(System.err);
-                System.exit(1);
-            }
-        }
+public class EnzymesPerReaction extends ObjectsPerObject {
 
-        if(this.h == true)
-        {
-            this.printHeader();
-            parser.printUsage(System.err);
-            System.exit(1);
-        }
+    public EnzymesPerReaction(BioNetwork network) {
 
-
+        super(network);
 
     }
 
+    /**
+     * Computes the number of genes per reaction, the distribution and the mean
+     */
+    public void compute() {
 
+        BioCollection<BioReaction> reactions = network.getReactionsView();
+
+        Integer sum = 0;
+
+        Integer nbReactionWithEnzymes = 0;
+
+        for (BioReaction reaction : reactions) {
+
+            BioCollection<BioEnzyme> enzymes = reaction.getEnzymesView();
+
+            int nbEnzymes = enzymes.size();
+
+            if (nbEnzymes > 0) {
+
+                nbReactionWithEnzymes ++;
+                sum += nbEnzymes;
+
+                nbs.put(reaction.getId(), nbEnzymes);
+
+                if (!distribution.containsKey(nbEnzymes)) {
+                    distribution.put(nbEnzymes, 1);
+                } else {
+                    int nbReactions = distribution.get(nbEnzymes) + 1;
+                    distribution.put(nbEnzymes, nbReactions);
+                }
+            }
+
+        }
+
+
+        mean = sum.doubleValue() / nbReactionWithEnzymes.doubleValue();
+
+    }
 }

@@ -36,23 +36,7 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.metexplorexml.writer;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.HashMap;
-import java.util.Set;
-
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.AnnotatorComment;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
@@ -64,6 +48,12 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.UnitSbml;
 import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.HashMap;
+import java.util.Set;
 
 public class BioNetworkToMetexploreXml {
 
@@ -107,49 +97,59 @@ public class BioNetworkToMetexploreXml {
 
         BioUnitDefinitionCollection unitDefinitions = NetworkAttributes.getUnitDefinitions(network);
 
-        if (unitDefinitions.size() > 0) {
-            writer.write("  <listOfUnitDefinitions>\n");
+        NetworkAttributes.addUnitDefinitions(network, new BioUnitDefinitionCollection());
 
-            for (BioUnitDefinition ud : unitDefinitions) {
+        if (unitDefinitions == null || unitDefinitions.size() == 0) {
+            System.err.println("No unit definition, set defaults");
+            BioUnitDefinition u = new BioUnitDefinition();
+            BioUnitDefinitionCollection c = new BioUnitDefinitionCollection();
+            c.add(u);
+            NetworkAttributes.addUnitDefinitions(network, c);
+        }
 
-                String udId = ud.getId();
-                String udName = ud.getName();
+        writer.write("  <listOfUnitDefinitions>\n");
 
-                writer.write("    <unitDefinition id=\"" + udId + "\"");
-                if (udName != "") {
-                    writer.write(" name=\"" + udName + "\"");
-                }
+        unitDefinitions = NetworkAttributes.getUnitDefinitions(network);
 
-                writer.write(">\n");
+        for (BioUnitDefinition ud : unitDefinitions) {
 
-                HashMap<String, UnitSbml> units = ud.getUnits();
+            String udId = ud.getId();
+            String udName = ud.getName();
 
-                if (units.size() > 0) {
-
-                    writer.write("      <listOfUnits>\n");
-
-                    for (UnitSbml unit : units.values()) {
-
-                        String kind = unit.getKind();
-                        Integer scale = unit.getScale();
-                        Double exponent = unit.getExponent();
-                        Double multiplier = unit.getMultiplier();
-
-                        writer.write("        <unit kind=\"" + kind + "\"");
-                        writer.write(" scale=\"" + scale + "\"");
-                        writer.write(" exponent=\"" + exponent + "\"");
-                        writer.write(" multiplier=\"" + multiplier + "\"");
-                        writer.write("/>\n");
-                    }
-                    writer.write("      </listOfUnits>\n");
-                }
-                writer.write("    </unitDefinition>\n");
-
+            writer.write("    <unitDefinition id=\"" + udId + "\"");
+            if (udName != "") {
+                writer.write(" name=\"" + udName + "\"");
             }
 
-            writer.write("  </listOfUnitDefinitions>\n");
+            writer.write(">\n");
+
+            HashMap<String, UnitSbml> units = ud.getUnits();
+
+            if (units.size() > 0) {
+
+                writer.write("      <listOfUnits>\n");
+
+                for (UnitSbml unit : units.values()) {
+
+                    String kind = unit.getKind();
+                    Integer scale = unit.getScale();
+                    Double exponent = unit.getExponent();
+                    Double multiplier = unit.getMultiplier();
+
+                    writer.write("        <unit kind=\"" + kind + "\"");
+                    writer.write(" scale=\"" + scale + "\"");
+                    writer.write(" exponent=\"" + exponent + "\"");
+                    writer.write(" multiplier=\"" + multiplier + "\"");
+                    writer.write("/>\n");
+                }
+                writer.write("      </listOfUnits>\n");
+            }
+            writer.write("    </unitDefinition>\n");
 
         }
+
+        writer.write("  </listOfUnitDefinitions>\n");
+
 
     }
 
@@ -258,7 +258,7 @@ public class BioNetworkToMetexploreXml {
 
             // Write the EC number
 
-            String ec = reaction.getEcNumber() != null ? " ec=\"" + reaction.getEcNumber() + "\"" : "\"";
+            String ec = reaction.getEcNumber() != null ? " ec=\"" + reaction.getEcNumber() + "\"" : "";
 
             String holder = "";
 

@@ -36,6 +36,10 @@
 
 package fr.inrae.toulouse.metexplore.met4j_toolbox.generic;
 
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
+
 public abstract class Met4jApplication {
 
     /**
@@ -47,6 +51,46 @@ public abstract class Met4jApplication {
      * @return the description
      */
     public abstract String getDescription();
+
+    @Option(name = "-h", usage = "prints the help", required = false)
+    private Boolean h = false;
+
+    private void printHeader()
+    {
+        System.err.println(this.getLabel());
+        System.err.println(this.getDescription());
+    }
+
+
+    protected void parseArguments(String[] args) {
+        CmdLineParser parser = new CmdLineParser(this);
+
+        try {
+            parser.parseArgument(args);
+        } catch (CmdLineException e) {
+            if(this.h == false) {
+                this.printHeader();
+                System.err.println("Error in arguments");
+                parser.printUsage(System.err);
+                System.exit(0);
+            }
+            else {
+                this.printHeader();
+                parser.printUsage(System.err);
+                System.exit(1);
+            }
+        }
+
+        if(this.h == true)
+        {
+            this.printHeader();
+            parser.printUsage(System.err);
+            System.exit(1);
+        }
+
+
+
+    }
 
 
 }

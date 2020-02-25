@@ -36,6 +36,7 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,11 +45,15 @@ import java.util.HashSet;
 
 import javax.xml.stream.XMLStreamException;
 
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.utils.JSBMLUtils;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.*;
 import nu.xom.Builder;
 import nu.xom.ParsingException;
 import nu.xom.Serializer;
 import nu.xom.ValidityException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLError;
@@ -60,12 +65,13 @@ import org.sbml.jsbml.validator.SBMLValidator;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.PackageWriter;
 
 
 /**
  * The main writer class. It uses the correct {@link BionetworkToJsbml} class
  * depending on the SBML level defined by the user
+ *
+ * To launch with -Dlog4j.configuration="log4jmet4j.properties"
  *
  * @author Benjamin
  * @since 3.0
@@ -115,21 +121,43 @@ public class JsbmlWriter {
      * Constructor
      *
      * @param outputFile   the output filename
-     * @param dir          the output directory
      * @param bionet       the bionetwork to convert
      * @param lvl          the level of the SBML
      * @param useValidator whether or not to use the validator
      */
-    public JsbmlWriter(String outputFile, String dir, BioNetwork bionet,
+    public JsbmlWriter(String outputFile, BioNetwork bionet,
                        int lvl, int version, boolean useValidator) {
+
         this.filename = outputFile;
-        this.setOutoutDir(dir);
         this.setNet(bionet);
         this.level = lvl;
         this.useValidator = useValidator;
         this.model = new Model();
         model.setLevel(lvl);
         model.setVersion(version);
+    }
+
+    public JsbmlWriter(String outputFile, BioNetwork bionet) {
+
+        this.filename = outputFile;
+        this.setNet(bionet);
+        this.level = 3;
+        this.useValidator = false;
+        this.model = new Model();
+        model.setLevel(this.level);
+        model.setVersion(2);
+    }
+
+    public void write() {
+
+        HashSet<PackageWriter> pkgs = new HashSet<>();
+        pkgs.add(new AnnotationWriter());
+        pkgs.add(new FBCWriter());
+        pkgs.add(new GroupPathwayWriter());
+        pkgs.add(new NotesWriter(false));
+
+        this.write(pkgs);
+
     }
 
     /**
@@ -313,8 +341,8 @@ public class JsbmlWriter {
     protected void prettifyXML(String sbmlFile) throws ValidityException,
             IOException, ParsingException {
 
-        FileOutputStream out = new FileOutputStream(this.getOutoutDir()
-                + this.getFilename());
+        FileOutputStream out = new FileOutputStream(
+                this.getFilename());
         Serializer serializer = new Serializer(out);
         serializer.setIndent(2); // or whatever you like
         serializer.write(new Builder().build(sbmlFile, ""));
@@ -335,20 +363,6 @@ public class JsbmlWriter {
      */
     public void setFilename(String filename) {
         this.filename = filename;
-    }
-
-    /**
-     * @return the outoutDir
-     */
-    public String getOutoutDir() {
-        return outoutDir;
-    }
-
-    /**
-     * @param outoutDir the outoutDir to set
-     */
-    public void setOutoutDir(String outoutDir) {
-        this.outoutDir = outoutDir;
     }
 
     /**

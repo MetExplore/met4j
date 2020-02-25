@@ -86,7 +86,9 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
     /**
      * Set this to true to allow the plugin to update the saved Notes
      */
-    public boolean updateValue = true;
+    public boolean updateValue = false;
+
+
 
     /**
      * Constructor

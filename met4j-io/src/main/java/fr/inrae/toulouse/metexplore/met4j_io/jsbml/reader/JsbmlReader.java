@@ -46,6 +46,10 @@ import java.util.HashSet;
 
 import javax.xml.stream.XMLStreamException;
 
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.utils.JSBMLUtils;
+import org.apache.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLError;
@@ -65,6 +69,8 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 /**
  * The main reader class. It uses the correct {@link JsbmlToBioNetwork} class
  * depending on the SBML level defined in the file
+ *
+ * To launch with -Dlog4j.configuration="log4jmet4j.properties"
  *
  * @author Benjamin
  * @since 3.0

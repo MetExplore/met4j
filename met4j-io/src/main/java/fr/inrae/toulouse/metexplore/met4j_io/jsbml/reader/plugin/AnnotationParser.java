@@ -44,6 +44,7 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML1Compatible;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML2Compatible;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.utils.JSBMLUtils;
 import org.sbml.jsbml.Annotation;
 import org.sbml.jsbml.CVTerm;
 import org.sbml.jsbml.Model;

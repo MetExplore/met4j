@@ -97,49 +97,59 @@ public class BioNetworkToMetexploreXml {
 
         BioUnitDefinitionCollection unitDefinitions = NetworkAttributes.getUnitDefinitions(network);
 
-        if (unitDefinitions.size() > 0) {
-            writer.write("  <listOfUnitDefinitions>\n");
+        NetworkAttributes.addUnitDefinitions(network, new BioUnitDefinitionCollection());
 
-            for (BioUnitDefinition ud : unitDefinitions) {
+        if (unitDefinitions == null || unitDefinitions.size() == 0) {
+            System.err.println("No unit definition, set defaults");
+            BioUnitDefinition u = new BioUnitDefinition();
+            BioUnitDefinitionCollection c = new BioUnitDefinitionCollection();
+            c.add(u);
+            NetworkAttributes.addUnitDefinitions(network, c);
+        }
 
-                String udId = ud.getId();
-                String udName = ud.getName();
+        writer.write("  <listOfUnitDefinitions>\n");
 
-                writer.write("    <unitDefinition id=\"" + udId + "\"");
-                if (udName != "") {
-                    writer.write(" name=\"" + udName + "\"");
-                }
+        unitDefinitions = NetworkAttributes.getUnitDefinitions(network);
 
-                writer.write(">\n");
+        for (BioUnitDefinition ud : unitDefinitions) {
 
-                HashMap<String, UnitSbml> units = ud.getUnits();
+            String udId = ud.getId();
+            String udName = ud.getName();
 
-                if (units.size() > 0) {
-
-                    writer.write("      <listOfUnits>\n");
-
-                    for (UnitSbml unit : units.values()) {
-
-                        String kind = unit.getKind();
-                        Integer scale = unit.getScale();
-                        Double exponent = unit.getExponent();
-                        Double multiplier = unit.getMultiplier();
-
-                        writer.write("        <unit kind=\"" + kind + "\"");
-                        writer.write(" scale=\"" + scale + "\"");
-                        writer.write(" exponent=\"" + exponent + "\"");
-                        writer.write(" multiplier=\"" + multiplier + "\"");
-                        writer.write("/>\n");
-                    }
-                    writer.write("      </listOfUnits>\n");
-                }
-                writer.write("    </unitDefinition>\n");
-
+            writer.write("    <unitDefinition id=\"" + udId + "\"");
+            if (udName != "") {
+                writer.write(" name=\"" + udName + "\"");
             }
 
-            writer.write("  </listOfUnitDefinitions>\n");
+            writer.write(">\n");
+
+            HashMap<String, UnitSbml> units = ud.getUnits();
+
+            if (units.size() > 0) {
+
+                writer.write("      <listOfUnits>\n");
+
+                for (UnitSbml unit : units.values()) {
+
+                    String kind = unit.getKind();
+                    Integer scale = unit.getScale();
+                    Double exponent = unit.getExponent();
+                    Double multiplier = unit.getMultiplier();
+
+                    writer.write("        <unit kind=\"" + kind + "\"");
+                    writer.write(" scale=\"" + scale + "\"");
+                    writer.write(" exponent=\"" + exponent + "\"");
+                    writer.write(" multiplier=\"" + multiplier + "\"");
+                    writer.write("/>\n");
+                }
+                writer.write("      </listOfUnits>\n");
+            }
+            writer.write("    </unitDefinition>\n");
 
         }
+
+        writer.write("  </listOfUnitDefinitions>\n");
+
 
     }
 
@@ -248,7 +258,7 @@ public class BioNetworkToMetexploreXml {
 
             // Write the EC number
 
-            String ec = reaction.getEcNumber() != null ? " ec=\"" + reaction.getEcNumber() + "\"" : "\"";
+            String ec = reaction.getEcNumber() != null ? " ec=\"" + reaction.getEcNumber() + "\"" : "";
 
             String holder = "";
 

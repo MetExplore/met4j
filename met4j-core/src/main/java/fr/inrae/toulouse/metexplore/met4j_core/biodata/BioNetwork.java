@@ -87,6 +87,13 @@ public class BioNetwork extends BioEntity {
         }
     }
 
+    public void add(BioCollection<?> bioEntities) {
+
+        for (BioEntity e : bioEntities) {
+            this.add(e);
+        }
+    }
+
     /**
      * Add one entity
      *

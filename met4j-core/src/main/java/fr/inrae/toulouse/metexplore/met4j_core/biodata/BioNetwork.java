@@ -122,10 +122,15 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Remove on cascade a BioEntity
+     *
      * @param e
      */
-    private void removeOnCascade(BioEntity e)  {
+    private void removeOnCascade(BioEntity e) {
 
+        if(e == null)
+        {
+            throw new NullPointerException();
+        }
         if (e instanceof BioPathway) {
             this.pathways.remove(e);
         } else if (e instanceof BioMetabolite) {

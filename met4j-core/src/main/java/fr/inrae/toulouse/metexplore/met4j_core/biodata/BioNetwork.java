@@ -1061,7 +1061,23 @@ public class BioNetwork extends BioEntity {
             }
             p.getReactions().forEach(r -> {
                 genes.addAll(r.getGenes());
-            });        }
+            });
+        }
+
+        return genes;
+
+    }
+
+    public BioCollection<BioGene> getGenesFromPathways(BioPathway... pathways) {
+        BioCollection<BioGene> genes = new BioCollection<>();
+        for (BioPathway p : pathways) {
+            if (!this.pathways.contains(p)) {
+                throw new IllegalArgumentException("Pathway " + p + " not present in the network");
+            }
+            p.getReactions().forEach(r -> {
+                genes.addAll(r.getGenes());
+            });
+        }
 
         return genes;
 

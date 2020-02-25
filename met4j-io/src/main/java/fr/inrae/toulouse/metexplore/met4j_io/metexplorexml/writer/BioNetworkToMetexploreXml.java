@@ -36,23 +36,7 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.metexplorexml.writer;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.HashMap;
-import java.util.Set;
-
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.AnnotatorComment;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
@@ -64,6 +48,12 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.UnitSbml;
 import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.HashMap;
+import java.util.Set;
 
 public class BioNetworkToMetexploreXml {
 

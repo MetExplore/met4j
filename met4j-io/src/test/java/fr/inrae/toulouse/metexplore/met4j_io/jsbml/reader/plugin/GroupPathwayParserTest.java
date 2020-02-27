@@ -143,7 +143,7 @@ public class GroupPathwayParserTest {
 
 		assertNotNull(p1);
 
-		assertEquals(testIds, network.getReactionsFromPathway(p1).getIds());
+		assertEquals(testIds, network.getReactionsFromPathways(p1).getIds());
 
 		testIds.remove("r1");
 
@@ -151,7 +151,7 @@ public class GroupPathwayParserTest {
 
 		assertNotNull(p2);
 
-		assertEquals(testIds, network.getReactionsFromPathway(p2).getIds());
+		assertEquals(testIds, network.getReactionsFromPathways(p2).getIds());
 
 	}
 

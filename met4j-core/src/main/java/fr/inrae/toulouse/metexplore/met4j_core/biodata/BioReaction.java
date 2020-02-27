@@ -71,10 +71,10 @@ public class BioReaction extends BioEntity {
 	private String ecNumber;
 	private boolean reversible=true;
 
-	private BioCollection<BioReactant> left = new BioCollection<>();
-	private BioCollection<BioReactant> right = new BioCollection<>();
+	private BioCollection<BioReactant> left;
+	private BioCollection<BioReactant> right;
 
-	private BioCollection<BioEnzyme> enzymes = new BioCollection<>();
+	private BioCollection<BioEnzyme> enzymes;
 
 	public enum Side {
 		LEFT, RIGHT
@@ -82,10 +82,16 @@ public class BioReaction extends BioEntity {
 
 	public BioReaction(String id) {
 		super(id);
+		left = new BioCollection<>();
+		right = new BioCollection<>();
+		enzymes = new BioCollection<>();
 	}
 
 	public BioReaction(String id, String name) {
 		super(id, name);
+		left = new BioCollection<>();
+		right = new BioCollection<>();
+		enzymes = new BioCollection<>();
 	}
 
 	/**
@@ -113,13 +119,14 @@ public class BioReaction extends BioEntity {
 	}
 
 	/**
+	 * @return true if the reaction is reversible
 	 */
 	public Boolean isReversible() {
 		return reversible;
 	}
 
 	/**
-	 * @return the spontaneous
+	 * @return true if the reaction is spontaneous
 	 */
 	public boolean isSpontaneous() {
 		return spontaneous;
@@ -142,7 +149,7 @@ public class BioReaction extends BioEntity {
 	/**
 	 * @return true if the reaction is a transport reaction, i.e a reaction that
 	 *         involves several compartmens Limitation : this reaction is considered
-	 *         as a transport reaction Ex : A_a + C_b -> D_a + B_b
+	 *         as a transport reaction Ex : A_a + C_b -&gt; D_a + B_b
 	 * 
 	 */
 	public Boolean isTransportReaction() {
@@ -245,7 +252,7 @@ public class BioReaction extends BioEntity {
 	}
 
 	/**
-	 * @param side : {@link Side}
+	 * @param side : {@link Side} the side of the reaction
 	 * @return {@link BioCollection} of {@link BioReactant}
 	 */
 	private BioCollection<BioReactant> getSideReactants(Side side) {
@@ -289,6 +296,9 @@ public class BioReaction extends BioEntity {
 
 	/**
 	 * Get the list of enzymes
+	 *
+	 * @return  a {@link BioCollection} of {@link BioEnzyme}
+	 *
 	 */
 	protected BioCollection<BioEnzyme> getEnzymes() {
 
@@ -297,7 +307,10 @@ public class BioReaction extends BioEntity {
 	}
 	
 	/**
-	 * Get the list of enzymes
+	 * Get an unmodifiable copy of the collection of enzymes
+	 *
+	 * @return a {@link BioCollection} of {@link BioEnzyme}
+	 *
 	 */
 	public BioCollection<BioEnzyme> getEnzymesView() {
 
@@ -307,6 +320,8 @@ public class BioReaction extends BioEntity {
 
 	/**
 	 * Add an enzyme that catalyses the reaction
+	 * @param e a {@link BioEnzyme}
+	 *
 	 */
 	protected void addEnzyme(BioEnzyme e) {
 		this.enzymes.add(e);
@@ -314,14 +329,14 @@ public class BioReaction extends BioEntity {
 
 	/**
 	 * Removes an enzyme frome a reaction
+	 *
+	 * @param e a {@link BioEnzyme}
 	 */
 	protected void removeEnzyme(BioEnzyme e) {
 		this.enzymes.remove(e);
 	}
 
-	/**
-	 * Remove a physical entity from a side of a reaction
-	 */
+	//Remove a physical entity from a side of a reaction
 	protected void removeSide(BioPhysicalEntity e, BioCompartment localisation, Side side) {
 
 		BioCollection<BioReactant> reactants;
@@ -342,9 +357,7 @@ public class BioReaction extends BioEntity {
 		}
 	}
 
-	/**
-	 * Get list of genes
-	 */
+	//Get list of genes
 	protected BioCollection<BioGene> getGenes() {
 
 		HashSet<BioGene> genes = new HashSet<>();

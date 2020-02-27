@@ -40,22 +40,42 @@ public class BioProtein extends BioPhysicalEntity {
 	private BioGene gene;
 
 
+	/**
+	 * Constructor
+	 * @param id the id of the BioProtein
+	 */
 	public BioProtein(String id) {
 		super(id);
 	}
-	
+
+	/**
+	 * Constructor
+	 * @param id the id of the BioProtein
+	 * @param name the name of the BioProtein
+	 */
 	public BioProtein(String id, String name) {
 		super(id, name);
 	}
 
+	/**
+	 * Set gene
+	 * @param g a {@link BioGene}
+	 */
 	protected  void setGene(BioGene g) {
 		this.gene = g;
 	}
 
+	/**
+	 * Get gene
+	 * @return a {@link BioGene}
+	 */
 	public BioGene getGene() {
 		return this.gene;
 	}
 
+	/**
+	 * Remove gene
+	 */
 	protected void removeGene() {
 		this.gene = null;
 	}

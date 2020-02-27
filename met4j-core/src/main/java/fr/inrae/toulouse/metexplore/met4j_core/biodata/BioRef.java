@@ -55,7 +55,14 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 	public String id;
 	public String baseURI;
 	public int confidenceLevel;
-	
+
+	/**
+	 * Constructor
+	 * @param origin source of the annotation
+	 * @param dbName name of the database
+	 * @param id reference id
+	 * @param confidenceLevel a confidence level
+	 */
 	public BioRef(String origin,String dbName,String id,int confidenceLevel) {
 		
 		Validate.notNull(dbName, "BioRef's database name can't be null");
@@ -68,49 +75,91 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 		// TODO : baseUri by default, not sure that we must keep this
 		this.baseURI="http://identifiers.org/"+dbName+"/";
 	}
-	
+
+	/**
+	 *
+	 * @return an url with the base url + dbName + refId
+	 */
 	public String getUri(){
 		return baseURI+id;
 	}
-	
+
+	/**
+	 *
+	 * @return the origin of the ref
+	 */
 	public String getOrigin() {
 		return origin;
 	}
 
+	/**
+	 * @param origin the origin of the ref
+	 */
 	public void setOrigin(String origin) {
 		this.origin = origin;
 	}
 
+	/**
+	 *
+	 * @return the database name
+	 */
 	public String getDbName() {
 		return dbName;
 	}
 
+	/**
+	 *
+	 * @param dbName the database name
+	 */
 	public void setDbName(String dbName) {
 		this.dbName = dbName;
 	}
 
+	/**
+	 *
+	 * @return the id of the reference
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 *
+	 * @param id the id of the reference
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	/**
+	 *
+	 * @return the confidence level
+	 */
 	public int getConfidenceLevel() {
 		return confidenceLevel;
 	}
-	
-	
+
+	/**
+	 *
+	 * @param confidenceLevel the confidence level
+	 */
 	public void setConfidenceLevel(int confidenceLevel) {
 		this.confidenceLevel = confidenceLevel;
 	}
 
 
+	/**
+	 *
+	 * @return the logical link of the reference
+	 */
 	public String getLogicallink() {
 		return logicallink;
 	}
 
+	/**
+	 *
+	 * @param logicallink the logical link of the reference
+	 */
 	public void setLogicallink(String logicallink) {
 		this.logicallink = logicallink;
 	}
@@ -146,10 +195,17 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 		return Objects.hash(this.getDbName().toUpperCase(),this.getId(),this.getLogicallink());
 	}
 
+	/**
+	 * @return the base url
+	 */
 	public String getBaseURI() {
 		return baseURI;
 	}
 
+	/**
+	 *
+	 * @param baseURI the base url
+	 */
 	public void setBaseURI(String baseURI) {
 		this.baseURI = baseURI;
 	}

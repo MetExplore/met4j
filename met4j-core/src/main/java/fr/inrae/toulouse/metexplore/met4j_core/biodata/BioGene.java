@@ -36,12 +36,20 @@
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 public class BioGene extends BioEntity {
-	
-	
+
+	/**
+	 * Constructor
+	 * @param id the id of the BioGene
+	 */
 	public BioGene(String id) {
 		super(id);
 	}
-	
+
+	/**
+	 * Constructor
+	 * @param id the id of the BioGene
+	 * @param name the name of the BioGene
+	 */
 	public BioGene(String id, String name) {
 		super(id, name);
 	}

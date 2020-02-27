@@ -41,12 +41,21 @@ public class BioEnzyme extends BioPhysicalEntity {
 
 	private BioCollection<BioEnzymeParticipant> participants;
 
+	/**
+	 * Constructor
+	 * @param id the id of the BioEnzyme
+	 */
 	public BioEnzyme(String id) {
 		super(id);
 
 		participants = new BioCollection<>();
 	}
-	
+
+	/**
+	 * Constructor
+	 * @param id the id of the BioEnzyme
+	 * @param name the name of the BioEnzyme
+	 */
 	public BioEnzyme(String id, String name) {
 		super(id, name);
 
@@ -78,6 +87,7 @@ public class BioEnzyme extends BioPhysicalEntity {
 
 	/**
 	 * Remove a participant from ifs physical entity
+	 * @param e a {@link BioPhysicalEntity}
 	 */
 	protected void removeParticipant(BioPhysicalEntity e) 
 	{

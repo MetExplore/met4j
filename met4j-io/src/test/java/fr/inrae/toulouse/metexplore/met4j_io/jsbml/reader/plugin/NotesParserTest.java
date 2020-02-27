@@ -169,9 +169,9 @@ public class NotesParserTest {
 
 		assertNotNull(p1);
 
-		assertEquals(1, network.getReactionsFromPathway(p1).size());
+		assertEquals(1, network.getReactionsFromPathways(p1).size());
 
-		assertEquals("r1", network.getReactionsFromPathway(p1).iterator().next().getId());
+		assertEquals("r1", network.getReactionsFromPathways(p1).iterator().next().getId());
 
 		assertEquals(7, reaction1.getRefs().size());
 

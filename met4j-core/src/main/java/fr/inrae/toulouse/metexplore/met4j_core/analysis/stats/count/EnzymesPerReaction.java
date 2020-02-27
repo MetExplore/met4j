@@ -44,6 +44,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 public class EnzymesPerReaction extends ObjectsPerObject {
 
+    /**
+     * Constructor
+     * @param network a {@link BioNetwork}
+     */
     public EnzymesPerReaction(BioNetwork network) {
 
         super(network);

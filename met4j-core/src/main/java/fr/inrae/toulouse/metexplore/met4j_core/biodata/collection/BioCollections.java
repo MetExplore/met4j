@@ -42,7 +42,13 @@ import java.util.HashSet;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 public class BioCollections{
-	
+
+	/**
+	 *
+	 * @param collections 0 or several {@link BioCollection}
+	 * @param <E> {@link BioEntity}
+	 * @return a {@link BioCollection} containing the entities formed by the intersection of the entities in collections
+	 */
 	public static <E extends BioEntity> BioCollection<E> intersect(BioCollection<E>... collections){
 		
 		BioCollection<E> intersect = new BioCollection<>(collections[0]);
@@ -52,7 +58,13 @@ public class BioCollections{
 		}
 		return intersect;
 	}
-	
+
+	/**
+	 *
+	 * @param collections 0 or several {@link BioCollection}
+	 * @param <E> {@link BioEntity}
+	 * @return a {@link BioCollection} containing the entities formed by the union of the entities in collections
+	 */
 	public static <E extends BioEntity> BioCollection<E> union(BioCollection<E>... collections){
 		
 		HashSet<E> union = new HashSet<>();

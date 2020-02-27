@@ -45,14 +45,21 @@ public class ErrorUtils {
 
 	
 	private static final String  prefix = "met4j";
-	
-	
+
+	/**
+	 * Prints a Warning message in stderr
+	 * @param message a String
+	 */
 	public static void warning(String message) {
 		
 		System.err.println("["+prefix+" WARNING] "+message);
 		
 	}
-	
+
+	/**
+	 * Prints an Error message in stderr
+	 * @param message a String
+	 */
 	public static void error(String message) {
 		
 		System.err.println("["+prefix+" ERROR] "+message);

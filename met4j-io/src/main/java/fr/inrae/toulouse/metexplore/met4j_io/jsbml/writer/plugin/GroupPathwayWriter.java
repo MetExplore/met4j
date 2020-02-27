@@ -77,7 +77,7 @@ public class GroupPathwayWriter implements PackageWriter, PrimaryDataTag {
             group.setId(StringUtils.convertToSID(p.getId()));
             group.setName(p.getName());
             plugin.addGroup(group);
-            BioCollection<BioReaction> reactions = bionetwork.getReactionsFromPathway(p);
+            BioCollection<BioReaction> reactions = bionetwork.getReactionsFromPathways(p);
             for (BioReaction r : reactions) {
                 Member member = new Member();
                 member.setIdRef(StringUtils.convertToSID(r.getId()));

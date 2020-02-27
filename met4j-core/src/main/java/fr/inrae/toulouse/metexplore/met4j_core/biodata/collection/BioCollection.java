@@ -107,6 +107,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	/**
 	 * Get the set of the ids of the entities in the collection
+	 * @return the {@link Set} of the entities' ids
 	 */
 	public Set<String> getIds() {
 		return this.entities.keySet();
@@ -175,6 +176,11 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 		return true;
 	}
 
+	/**
+	 * add several entities to the collection
+	 * @param newEntities : 0 or several {@link BioEntity}
+	 * @return always true
+	 */
 	public boolean add(E... newEntities) {
 		for(E e : newEntities) {
 			entities.put(e.getId(), e);
@@ -201,6 +207,10 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 		return true;
 	}
 
+	/**
+	 *
+	 * @return an unmodifiable copy of the {@link BioCollection}
+	 */
 	public BioCollection<E> getView() {
 		return new BioCollection<>(Collections.unmodifiableMap(new HashMap<>(this.entities)));
 	}

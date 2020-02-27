@@ -45,9 +45,11 @@ public class BioNetworkUtils {
 
 	/**
 	 * Return choke reactions
+	 * A choke reaction involves metabolites
+	 * that are consumed or produced only by this reaction
 	 * 
-	 * @param network
-	 * @return
+	 * @param network a {@link BioNetwork}
+	 * @return a {@link BioCollection} of {@link BioReaction}
 	 */
 	public static BioCollection<BioReaction> getChokeReactions(BioNetwork network) {
 
@@ -79,8 +81,9 @@ public class BioNetworkUtils {
 	}
 
 	/**
+	 * Remove from a network all the metabolites not connected to any reaction
 	 *
-	 * @param network
+	 * @param network a {@link BioNetwork}
 	 */
 	public static void removeNotConnectedMetabolites(BioNetwork network)
 	{
@@ -93,16 +96,5 @@ public class BioNetworkUtils {
 			}
 		}
 	}
-
-//	public static BioNetwork getSubNetwork(BioNetwork originalNetwork, BioCollection<BioReaction> reactions,
-//			BioCollection<BioMetabolite> additionalMetabolites) {
-//
-//		BioNetwork network = new BioNetwork();
-//
-//		BioCollection<BioMetabolite> metabolitesToAdd = originalNetwork.getMetabolitesFromReactions(reactions);
-//
-//		return network;
-//
-//	}
 
 }

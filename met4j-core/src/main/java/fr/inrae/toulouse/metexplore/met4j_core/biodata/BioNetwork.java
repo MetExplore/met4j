@@ -783,7 +783,7 @@ public class BioNetwork extends BioEntity {
      * @param unit a {@link BioPhysicalEntity} to remove from the enzyme
      * @param enzyme a {@link BioEnzyme}
      *
-     * @throws {@link IllegalArgumentException} if the enzyme or the entity is not present in the network
+     * @throws IllegalArgumentException if the enzyme or the entity is not present in the network
      */
     public void removeSubUnit(BioPhysicalEntity unit, BioEnzyme enzyme) {
 
@@ -919,6 +919,7 @@ public class BioNetwork extends BioEntity {
      * Get metabolites involved in a pathway
      *
      * @param p a {@link BioPathway}
+     * @return a {@link BioCollection} of {@link BioMetabolite}
      */
     public BioCollection<BioMetabolite> getMetabolitesFromPathway(BioPathway p) {
 
@@ -976,11 +977,12 @@ public class BioNetwork extends BioEntity {
      *
      * @param e  a {@link BioEntity}
      *
-     * @throw NullPointerException if e is null
-     * @throw IllegalArgumentException if e is not an instance of :
+     * @throws NullPointerException if e is null
+     * @throws IllegalArgumentException if e is not an instance of :
      * {@link BioProtein}, {@link BioMetabolite}, {@link BioGene}, {@link BioEnzyme},
      * {@link BioReaction}, {@link BioPathway}, or {@link BioCompartment}
      *
+     * @return true if the network contains the entity
      */
     public Boolean contains(BioEntity e) {
 
@@ -1014,6 +1016,8 @@ public class BioNetwork extends BioEntity {
      * @param substrates a {@link BioCollection} of {@link BioMetabolite}
      * @param exact if true, the match must be exact, if false, the reactions
      *              returned can have a superset of the specified substrates
+     *
+     * @return  a {@link BioCollection} of {@link BioReaction}
      */
     public BioCollection<BioReaction> getReactionsFromSubstrates(BioCollection<BioMetabolite> substrates, Boolean exact) {
 
@@ -1027,6 +1031,8 @@ public class BioNetwork extends BioEntity {
      * @param products a {@link BioCollection} of {@link BioMetabolite}
      * @param exact if true, the match must be exact, if false, the reactions
      *              returned can have a superset of the specified products
+     *
+     * @return  a {@link BioCollection} of {@link BioReaction}
      */
     public BioCollection<BioReaction> getReactionsFromProducts(BioCollection<BioMetabolite> products, Boolean exact) {
 
@@ -1036,6 +1042,7 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Get reactions from a list of of substrates (or products)
+     * @return  a {@link BioCollection} of {@link BioReaction}
      */
     private BioCollection<BioReaction> getReactionsFromSubstratesOrProducts(BioCollection<BioMetabolite> metabolites,
                                                                             Boolean exact, Boolean areSubstrates) {
@@ -1069,7 +1076,7 @@ public class BioNetwork extends BioEntity {
     /**
      * @param m
      * @param isSubstrate
-     * @return
+     * @return  a {@link BioCollection} of {@link BioReaction}
      */
     private BioCollection<BioReaction> getReactionsFromSubstrateOrProduct(BioMetabolite m, Boolean isSubstrate) {
 
@@ -1194,6 +1201,8 @@ public class BioNetwork extends BioEntity {
      *
      * @param reactions one or several {@link BioReaction}
      *
+     * @return a {@link BioCollection} of {@link BioGene}
+     *
      */
     public BioCollection<BioGene> getGenesFromReactions(BioReaction... reactions) {
 
@@ -1211,6 +1220,8 @@ public class BioNetwork extends BioEntity {
      *
      * @param reactions a {@link BioCollection} of {@link BioReaction} {@link BioReaction}
      *
+     * @return a {@link BioCollection} of {@link BioGene}
+     *
      */
     public BioCollection<BioGene> getGenesFromReactions(BioCollection<BioReaction> reactions) {
 
@@ -1222,7 +1233,7 @@ public class BioNetwork extends BioEntity {
      * @return a {@link BioCollection} of {@link BioGene}
      *
      * @throws IllegalArgumentException if reaction is not present in the network
-     *
+     * @return a {@link BioCollection} of {@link BioGene}
      */
     private BioCollection<BioGene> getGenesFromReaction(BioReaction reaction) {
         if (!this.contains(reaction)) {
@@ -1236,7 +1247,7 @@ public class BioNetwork extends BioEntity {
      * Get genes from pathways
      *
      * @param pathways a {@link BioCollection} of {@link BioPathway}
-     *
+     * @return a {@link BioCollection} of {@link BioGene}
      */
     public BioCollection<BioGene> getGenesFromPathways(BioCollection<BioPathway> pathways) {
         BioCollection<BioGene> genes = new BioCollection<>();
@@ -1256,6 +1267,7 @@ public class BioNetwork extends BioEntity {
      *
      * @param pathways 0 or several {@link BioPathway}
      *
+     * @return a {@link BioCollection} of {@link BioGene}
      */
     public BioCollection<BioGene> getGenesFromPathways(BioPathway... pathways) {
         BioCollection<BioGene> genes = new BioCollection<>();
@@ -1330,6 +1342,8 @@ public class BioNetwork extends BioEntity {
      *
      * @param genes a {@link BioCollection} of {@link BioGene}
      * @param all if true, the pathway must contain all the genes
+     *
+     * @return a {@link BioCollection} of {@link BioPathway}
      */
     public BioCollection<BioPathway> getPathwaysFromGenes(BioCollection<BioGene> genes, Boolean all) {
         for (BioGene g : genes) {

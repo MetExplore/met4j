@@ -47,7 +47,8 @@ public class BioEnzymeParticipant extends BioParticipant {
 
 
 	/**
-	 * @param physicalEntity
+	 * @param physicalEntity the physical entity that is contained in the enzyme
+	 * @param stoichiometry the number of unities of the physical entity
 	 */
 	public BioEnzymeParticipant(BioPhysicalEntity physicalEntity, Double stoichiometry) {
 		super(physicalEntity, stoichiometry);

@@ -190,7 +190,7 @@ public class BioNetwork extends BioEntity {
             BioCollection<BioEnzymeParticipant> participants = new BioCollection<>(
                     e.getParticipants());
 
-            Boolean remove = false;
+            boolean remove = false;
             for (BioEnzymeParticipant p : participants) {
                 if (p.getPhysicalEntity().equals(protein)) {
                     remove = true;
@@ -584,8 +584,6 @@ public class BioNetwork extends BioEntity {
 
     }
 
-    ;
-
     // relation enzyme -constituant
     private void affectSubUnit(BioEnzyme enzyme, Double quantity, BioPhysicalEntity unit) {
 
@@ -679,8 +677,6 @@ public class BioNetwork extends BioEntity {
 
     }
 
-    ;
-
     /**
      * Add a relation protein gene
      */
@@ -698,8 +694,6 @@ public class BioNetwork extends BioEntity {
 
     }
 
-    ;
-
     /**
      * Remove a relation between gene and product
      */
@@ -716,8 +710,6 @@ public class BioNetwork extends BioEntity {
         protein.removeGene();
 
     }
-
-    ;
 
     /**
      * Add a pathway affected to a reaction
@@ -794,8 +786,6 @@ public class BioNetwork extends BioEntity {
 
     }
 
-    ;
-
     /**
      * Affect several metabolites to a compartment
      *
@@ -821,8 +811,6 @@ public class BioNetwork extends BioEntity {
             this.affectToCompartment(compartment, e);
         }
     }
-
-    ;
 
     /**
      * Return true if the entity is in the list of metabolites, reactions, genes,
@@ -890,7 +878,7 @@ public class BioNetwork extends BioEntity {
             }
         }
 
-        HashSet<BioReaction> reactionSet = new HashSet<>(this.getReactionsView().stream().filter(o -> {
+        HashSet<BioReaction> reactionSet = this.getReactionsView().stream().filter(o -> {
             BioReaction r = o;
 
             if (!r.isReversible()) {
@@ -905,7 +893,7 @@ public class BioNetwork extends BioEntity {
                         : r.getRightsView().containsAll(metabolites)
                         || r.getLeftsView().containsAll(metabolites);
             }
-        }).collect(Collectors.toSet()));
+        }).collect(Collectors.toCollection(HashSet::new));
 
         return new BioCollection<>(reactionSet);
     }
@@ -924,7 +912,7 @@ public class BioNetwork extends BioEntity {
         BioCollection<BioReaction> reactions = new BioCollection<>();
 
         this.getReactionsView().forEach(r -> {
-            Boolean flag = false;
+            boolean flag = false;
 
             BioCollection<BioMetabolite> lefts = r.getLeftsView();
             BioCollection<BioMetabolite> rights = r.getRightsView();
@@ -976,10 +964,10 @@ public class BioNetwork extends BioEntity {
             }
         }
 
-        HashSet<BioPathway> pathwaySet = new HashSet<>(this.getPathwaysView().stream().
+        HashSet<BioPathway> pathwaySet = this.getPathwaysView().stream().
                 filter(p -> all ? p.getMetabolites().containsAll(metabolites)
-                        : !Collections.disjoint(metabolites, p.getMetabolites())).
-                collect(Collectors.toSet()));
+                        : !Collections.disjoint(metabolites, p.getMetabolites()))
+                .collect(Collectors.toCollection(HashSet::new));
 
         return new BioCollection<>(pathwaySet);
 
@@ -994,9 +982,9 @@ public class BioNetwork extends BioEntity {
             }
         }
 
-        HashSet<BioReaction> reactionSet = new HashSet<>(this.getReactionsView().stream().
-                filter(o -> all ? o.getGenes().containsAll(genes) : !Collections.disjoint(o.getGenes(), genes)).
-                collect(Collectors.toSet()));
+        HashSet<BioReaction> reactionSet = this.getReactionsView().stream().
+                filter(o -> all ? o.getGenes().containsAll(genes) : !Collections.disjoint(o.getGenes(), genes))
+                .collect(Collectors.toCollection(HashSet::new));
 
         return new BioCollection<>(reactionSet);
 
@@ -1008,9 +996,9 @@ public class BioNetwork extends BioEntity {
             throw new IllegalArgumentException("Gene " + gene + " not present in the network");
         }
 
-        HashSet<BioReaction> reactionSet = new HashSet<>(this.getReactionsView().stream().
-                filter(o -> o.getGenes().contains(gene)).
-                collect(Collectors.toSet()));
+        HashSet<BioReaction> reactionSet = this.getReactionsView().stream().
+                filter(o -> o.getGenes().contains(gene))
+                .collect(Collectors.toCollection(HashSet::new));
 
         return new BioCollection<>(reactionSet);
 
@@ -1059,9 +1047,7 @@ public class BioNetwork extends BioEntity {
             if (!this.pathways.contains(p)) {
                 throw new IllegalArgumentException("Pathway " + p + " not present in the network");
             }
-            p.getReactions().forEach(r -> {
-                genes.addAll(r.getGenes());
-            });
+            p.getReactions().forEach(r -> genes.addAll(r.getGenes()));
         }
 
         return genes;
@@ -1074,9 +1060,7 @@ public class BioNetwork extends BioEntity {
             if (!this.pathways.contains(p)) {
                 throw new IllegalArgumentException("Pathway " + p + " not present in the network");
             }
-            p.getReactions().forEach(r -> {
-                genes.addAll(r.getGenes());
-            });
+            p.getReactions().forEach(r -> genes.addAll(r.getGenes()));
         }
 
         return genes;
@@ -1150,9 +1134,9 @@ public class BioNetwork extends BioEntity {
             }
         }
 
-        HashSet<BioPathway> pathwaySet = new HashSet<>(this.getPathwaysView().stream().
-                filter(p -> all ? p.getGenes().containsAll(genes) : !Collections.disjoint(p.getGenes(), genes)).
-                collect(Collectors.toSet()));
+        HashSet<BioPathway> pathwaySet = this.getPathwaysView().stream().
+                filter(p -> all ? p.getGenes().containsAll(genes) : !Collections.disjoint(p.getGenes(), genes))
+                .collect(Collectors.toCollection(HashSet::new));
 
         return new BioCollection<>(pathwaySet);
 
@@ -1168,9 +1152,11 @@ public class BioNetwork extends BioEntity {
             }
         }
 
-        HashSet<BioPathway> pathwaySet = new HashSet<>(this.getPathwaysView().stream().
-                filter(p -> all ? p.getReactions().containsAll(reactions) : !Collections.disjoint(p.getReactions(), reactions)).
-                collect(Collectors.toSet()));
+        HashSet<BioPathway> pathwaySet = this.getPathwaysView().stream().
+                filter(p -> all
+                        ? p.getReactions().containsAll(reactions)
+                        : !Collections.disjoint(p.getReactions(), reactions))
+                .collect(Collectors.toCollection(HashSet::new));
 
         return new BioCollection<>(pathwaySet);
 
@@ -1184,13 +1170,13 @@ public class BioNetwork extends BioEntity {
             throw new IllegalArgumentException("Reaction " + r + " not present in the network");
         }
 
-        HashSet<BioPathway> pathwaySet = new HashSet<>(this.getPathwaysView().stream().filter(p -> {
+        HashSet<BioPathway> pathwaySet = this.getPathwaysView().stream().filter(p -> {
 
             Set<String> reactionRefIds = p.getReactions().getIds();
 
             return reactionRefIds.contains(r.getId());
 
-        }).collect(Collectors.toSet()));
+        }).collect(Collectors.toCollection(HashSet::new));
 
         return new BioCollection<>(pathwaySet);
 
@@ -1221,12 +1207,6 @@ public class BioNetwork extends BioEntity {
 
         return p.getReactions().getView();
     }
-
-    /**
-     * @param cpd
-     * @return the list of reactionNodes which involves the compound cpd as
-     *         substrate
-     */
 
     /**
      * @return the pathways
@@ -1304,11 +1284,7 @@ public class BioNetwork extends BioEntity {
 
         BioCollection<BioMetabolite> metabolites = new BioCollection<>();
 
-        reactants.forEach(m -> {
-
-            metabolites.add(m.getMetabolite());
-
-        });
+        reactants.forEach(m -> metabolites.add(m.getMetabolite()));
 
         return metabolites;
 

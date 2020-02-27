@@ -162,12 +162,9 @@ public class BioReactionUtils {
 		else {
 			finalSet = geneIdSets;
 		}
-		
-		
-		String gpr = StringUtils.join(finalSet.toArray(new String[0]), " OR ");
-		
-		
-		return gpr;
+
+
+		return StringUtils.join(finalSet.toArray(new String[0]), " OR ");
 		
 	}
 

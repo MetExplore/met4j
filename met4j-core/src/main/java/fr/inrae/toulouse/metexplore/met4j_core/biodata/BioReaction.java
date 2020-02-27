@@ -36,7 +36,6 @@
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import java.util.HashSet;
-import java.util.Objects;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
@@ -79,7 +78,7 @@ public class BioReaction extends BioEntity {
 
 	public enum Side {
 		LEFT, RIGHT
-	};
+	}
 
 	public BioReaction(String id) {
 		super(id);
@@ -349,18 +348,15 @@ public class BioReaction extends BioEntity {
 	protected BioCollection<BioGene> getGenes() {
 
 		HashSet<BioGene> genes = new HashSet<>();
-		this.getEnzymes().forEach(e -> {
+		this.getEnzymes().forEach(e -> e.getParticipants().getView().forEach(p -> {
+			if (p.getPhysicalEntity() instanceof BioProtein) {
+				BioGene gene = ((BioProtein) p.getPhysicalEntity()).getGene();
 
-			e.getParticipants().getView().forEach(p -> {
-				if (p.getPhysicalEntity() instanceof BioProtein) {
-					BioGene gene = ((BioProtein) p.getPhysicalEntity()).getGene();
-
-					if (gene != null) {
-						genes.add(((BioProtein) p.getPhysicalEntity()).getGene());
-					}
+				if (gene != null) {
+					genes.add(((BioProtein) p.getPhysicalEntity()).getGene());
 				}
-			});
-		});
+			}
+		}));
 
 		return new BioCollection<>(genes);
 	}

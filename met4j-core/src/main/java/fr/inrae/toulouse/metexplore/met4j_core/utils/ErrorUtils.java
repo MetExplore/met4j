@@ -44,7 +44,7 @@ package fr.inrae.toulouse.metexplore.met4j_core.utils;
 public class ErrorUtils {
 
 	
-	private static String  prefix = "met4j";
+	private static final String  prefix = "met4j";
 	
 	
 	public static void warning(String message) {

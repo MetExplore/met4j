@@ -51,7 +51,7 @@ public class BioNetworkUtils {
 	 */
 	public static BioCollection<BioReaction> getChokeReactions(BioNetwork network) {
 
-		BioCollection<BioReaction> chokeReactions = new BioCollection<BioReaction>();
+		BioCollection<BioReaction> chokeReactions = new BioCollection<>();
 
 		for (BioReaction r : network.getReactionsView()) {
 

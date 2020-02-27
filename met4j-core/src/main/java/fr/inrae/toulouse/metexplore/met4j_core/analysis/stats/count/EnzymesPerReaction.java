@@ -57,9 +57,9 @@ public class EnzymesPerReaction extends ObjectsPerObject {
 
         BioCollection<BioReaction> reactions = network.getReactionsView();
 
-        Integer sum = 0;
+        int sum = 0;
 
-        Integer nbReactionWithEnzymes = 0;
+        int nbReactionWithEnzymes = 0;
 
         for (BioReaction reaction : reactions) {
 
@@ -85,7 +85,7 @@ public class EnzymesPerReaction extends ObjectsPerObject {
         }
 
 
-        mean = sum.doubleValue() / nbReactionWithEnzymes.doubleValue();
+        mean = (double) sum / (double) nbReactionWithEnzymes;
 
     }
 }

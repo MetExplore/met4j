@@ -173,11 +173,11 @@ public abstract class BioEntity {
 	 * TODO : voir la coherence du code entre les deux methodes addRef. Celle ci
 	 * devrait se terminer par un this.addRef(ref)
 	 * 
-	 * @param dbName
-	 * @param dbId
-	 * @param confidenceLevel
-	 * @param relation
-	 * @param origin
+	 * @param dbName name of the database
+	 * @param dbId id of the database
+	 * @param confidenceLevel confidence level
+	 * @param relation Type of relation
+	 * @param origin Origin database
 	 */
 	public void addRef(String dbName, String dbId, int confidenceLevel, String relation, String origin) {
 		BioRef ref = new BioRef(origin, dbName, dbId, confidenceLevel);
@@ -191,6 +191,10 @@ public abstract class BioEntity {
 		}
 	}
 
+	/**
+	 *
+	 * @param ref a {@link BioRef}
+	 */
 	public void addRef(BioRef ref) {
 		String dbName = ref.getDbName();
 		if (!this.hasRef(ref)) {
@@ -209,11 +213,7 @@ public abstract class BioEntity {
 	}
 
 	public Set<BioRef> getRefs(String dbName) {
-		if (this.refs.containsKey(dbName)) {
-			return this.refs.get(dbName);
-		} else {
-			return null;
-		}
+		return this.refs.getOrDefault(dbName, null);
 	}
 
 	public boolean hasRef(String dbName, String dbId) {

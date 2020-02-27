@@ -55,11 +55,11 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	}
 
 	public BioCollection() {
-		entities = new HashMap<String, E>();
+		entities = new HashMap<>();
 	}
 
 	public BioCollection(Collection<E> set) {
-		entities = new HashMap<String, E>();
+		entities = new HashMap<>();
 		this.addAll(set);
 	}
 
@@ -77,7 +77,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	/**
 	 * Check if the collection contains a BioEntity which has a given id
 	 * 
-	 * @param id
+	 * @param id id
 	 * @return {@link Boolean}
 	 */
 	public Boolean containsId(String id) {
@@ -87,7 +87,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	/**
 	 * Check if the collection contains a BioEntity which has a given name
 	 * 
-	 * @param id
+	 * @param name name
 	 * @return {@link Boolean}
 	 */
 	public Boolean containsName(String name) {
@@ -97,14 +97,12 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	/**
 	 * Get entity with a specific id
 	 * 
-	 * @param id
+	 * @param id id
 	 * @return the entity or null
 	 */
 	public E get(String id) {
 
-		E entity = entities.get(id);
-
-		return entity;
+		return entities.get(id);
 	}
 
 	/**
@@ -117,8 +115,8 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	/**
 	 * Get entities with a specific name
 	 * 
-	 * @param name
-	 * @return
+	 * @param name name of the entity
+	 * @return a {@link BioCollection}
 	 */
 	public BioCollection<E> getEntitiesFromName(String name) {
 
@@ -186,8 +184,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	@Override
 	public boolean remove(Object o) {
-		Boolean flag = entities.values().remove(o);
-		return flag;
+		return entities.values().remove(o);
 
 	}
 
@@ -205,7 +202,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	}
 
 	public BioCollection<E> getView() {
-		return new BioCollection<E>(Collections.unmodifiableMap(new HashMap<>(this.entities)));
+		return new BioCollection<>(Collections.unmodifiableMap(new HashMap<>(this.entities)));
 	}
 
 	@Override
@@ -238,7 +235,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 		StringBuilder idsString = new StringBuilder();
 
-		ArrayList<String> ids = new ArrayList<String>(this.getIds());
+		ArrayList<String> ids = new ArrayList<>(this.getIds());
 
 		Collections.sort(ids);
 

@@ -37,8 +37,6 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
-import java.util.Objects;
-
 /**
  * A set or series of interactions, often forming a network, which biologists
  * have found useful to group together for organizational, historic, biophysical

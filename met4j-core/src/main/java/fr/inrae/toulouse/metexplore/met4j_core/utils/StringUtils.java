@@ -43,8 +43,7 @@ public class StringUtils {
 		if(in.isEmpty()) return true;
 		if(in.equalsIgnoreCase("NA")) return true;
 		if(in.matches("^\\s*$")) return true;
-		if(in.equalsIgnoreCase("null")) return true;
-		return false;
+		return in.equalsIgnoreCase("null");
 	}
 
 	/**
@@ -55,9 +54,7 @@ public class StringUtils {
 	public static boolean isInteger(String s) {
 		try {
 			Integer.parseInt(s);
-		} catch(NumberFormatException e) {
-			return false;
-		} catch(NullPointerException e) {
+		} catch(NumberFormatException | NullPointerException e) {
 			return false;
 		}
 		// only got here if we didn't return false
@@ -67,9 +64,7 @@ public class StringUtils {
 	public static boolean isDouble(String s) {
 		try {
 			Double.parseDouble(s);
-		} catch(NumberFormatException e) {
-			return false;
-		} catch(NullPointerException e) {
+		} catch(NumberFormatException | NullPointerException e) {
 			return false;
 		}
 		// only got here if we didn't return false

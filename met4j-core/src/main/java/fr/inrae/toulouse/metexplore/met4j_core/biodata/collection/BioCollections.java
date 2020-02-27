@@ -45,7 +45,7 @@ public class BioCollections{
 	
 	public static <E extends BioEntity> BioCollection<E> intersect(BioCollection<E>... collections){
 		
-		BioCollection<E> intersect = new BioCollection<E>(collections[0]);
+		BioCollection<E> intersect = new BioCollection<>(collections[0]);
 		for(int i=1; i<collections.length; i++){
 			intersect.retainAll(collections[i]);
 			if(intersect.isEmpty()) return intersect;
@@ -55,11 +55,11 @@ public class BioCollections{
 	
 	public static <E extends BioEntity> BioCollection<E> union(BioCollection<E>... collections){
 		
-		HashSet<E> union = new HashSet<E>();
+		HashSet<E> union = new HashSet<>();
 		for(BioCollection<E> collection : collections){
 			union.addAll(collection);
 		}
-		return new BioCollection<E>(union);
+		return new BioCollection<>(union);
 	}
 
 	

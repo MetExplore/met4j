@@ -48,9 +48,9 @@ public abstract class ObjectsPerObject {
 
     public BioNetwork network;
 
-    public TreeMap<Integer, Integer> distribution = new TreeMap<Integer, Integer>();
+    public TreeMap<Integer, Integer> distribution = new TreeMap<>();
 
-    public HashMap<String, Integer> nbs = new HashMap<String, Integer>();
+    public HashMap<String, Integer> nbs = new HashMap<>();
 
     public Double mean;
 

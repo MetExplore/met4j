@@ -35,9 +35,6 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
-
-import java.util.Objects;
-
 public class BioProtein extends BioPhysicalEntity {
 
 	private BioGene gene;

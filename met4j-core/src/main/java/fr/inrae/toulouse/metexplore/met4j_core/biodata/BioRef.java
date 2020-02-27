@@ -134,9 +134,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
         	BioRef r2 = ((BioRef) obj);
         	if(this.dbName.equalsIgnoreCase(r2.dbName)){
         		if(this.id.equals(r2.id)){
-        			if(this.logicallink.equals(r2.logicallink)){
-                		return true;
-                	}
+					return this.logicallink.equals(r2.logicallink);
             	}
         	}
         }

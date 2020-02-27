@@ -35,8 +35,6 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.Objects;
-
 /**
  *
  */

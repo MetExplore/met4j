@@ -37,8 +37,6 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
-import java.util.Objects;
-
 public class BioEnzyme extends BioPhysicalEntity {
 
 	private BioCollection<BioEnzymeParticipant> participants;

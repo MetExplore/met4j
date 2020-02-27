@@ -378,7 +378,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Remove a left reactant
      */
-    public void removeLeft(BioPhysicalEntity e, BioCompartment localisation, BioReaction reaction) {
+    public void removeLeft(BioMetabolite e, BioCompartment localisation, BioReaction reaction) {
 
         removeSideReaction(e, localisation, reaction, BioReaction.Side.LEFT);
     }
@@ -421,7 +421,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Remove a right reactant
      */
-    public void removeRight(BioPhysicalEntity e, BioCompartment localisation, BioReaction reaction) {
+    public void removeRight(BioMetabolite e, BioCompartment localisation, BioReaction reaction) {
 
         removeSideReaction(e, localisation, reaction, BioReaction.Side.RIGHT);
     }
@@ -496,7 +496,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Remove an entity from a side of reaction
      */
-    private void removeSideReaction(BioPhysicalEntity e, BioCompartment localisation, BioReaction reaction, BioReaction.Side side) {
+    private void removeSideReaction(BioMetabolite e, BioCompartment localisation, BioReaction reaction, BioReaction.Side side) {
 
         // The network must contain the compartment
         if (!this.compartments.contains(localisation)) {

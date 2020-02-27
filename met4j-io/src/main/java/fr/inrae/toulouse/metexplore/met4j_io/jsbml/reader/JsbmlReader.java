@@ -46,10 +46,6 @@ import java.util.HashSet;
 
 import javax.xml.stream.XMLStreamException;
 
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.utils.JSBMLUtils;
-import org.apache.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLError;

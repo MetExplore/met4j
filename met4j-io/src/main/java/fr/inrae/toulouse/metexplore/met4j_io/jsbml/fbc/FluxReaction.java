@@ -44,7 +44,8 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.utils.BioEnzymeUtils;
+
+import java.util.stream.Collectors;
 
 
 /**
@@ -73,7 +74,7 @@ public class FluxReaction extends BioEntity {
 	/**
 	 * Constructor using a {@link BioReaction}
 	 * 
-	 * @param reaction2
+	 * @param reaction
 	 *            the {@link #underlyingReaction}
 	 */
 	public FluxReaction(BioReaction reaction) {
@@ -149,7 +150,7 @@ public class FluxReaction extends BioEntity {
 
 			} else {
 				
-				String id = BioEnzymeUtils.createIdFromProteins(protlist);
+				String id = createIdFromProteins(protlist);
 				
 				BioEnzyme enz = new BioEnzyme(id, id);
 				
@@ -168,6 +169,11 @@ public class FluxReaction extends BioEntity {
 
 		}
 
+	}
+
+	public static String createIdFromProteins(BioCollection<BioProtein> proteins)
+	{
+		return proteins.getIds().stream().sorted().collect(Collectors.joining("_AND_"));
 	}
 
 	/**

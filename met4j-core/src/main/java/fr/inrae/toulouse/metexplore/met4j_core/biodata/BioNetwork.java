@@ -638,14 +638,11 @@ public class BioNetwork extends BioEntity {
      * @param quantity
      * @param units
      */
-    public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioCollection<?> units) {
+    public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioCollection<BioPhysicalEntity> units) {
 
-        for (BioEntity unit : units) {
-            if (BioPhysicalEntity.class.isInstance(unit)) {
-                affectSubUnit(enzyme, quantity, (BioPhysicalEntity) unit);
-            } else {
-                throw new IllegalArgumentException("Units of an enzyme must be BioPhysicalEntity instances");
-            }
+        for (BioPhysicalEntity unit : units) {
+                affectSubUnit(enzyme, quantity, unit);
+
         }
     }
 

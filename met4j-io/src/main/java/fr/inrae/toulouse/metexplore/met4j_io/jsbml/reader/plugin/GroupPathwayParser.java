@@ -38,7 +38,6 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin;
 
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.utils.JSBMLUtils;
 import org.sbml.jsbml.ListOf;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.ext.groups.Group;

@@ -41,7 +41,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.utils.JSBMLUtils;
 import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.ext.groups.Group;

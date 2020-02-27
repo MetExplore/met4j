@@ -1183,10 +1183,7 @@ public class BioNetwork extends BioEntity {
 
         BioCollection<BioReaction> reactions = new BioCollection<>();
         for (BioPathway p : pathways) {
-            if (!this.pathways.contains(p)) {
-                throw new IllegalArgumentException("Reaction " + p + " not present in the network");
-            }
-            reactions.addAll(p.getReactions());
+            reactions.addAll(this.getReactionsFromPathway(p));
         }
 
         return reactions;

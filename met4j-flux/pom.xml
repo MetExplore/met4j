@@ -112,7 +112,7 @@
         <dependency>
             <groupId>glpk</groupId>
             <artifactId>glpk</artifactId>
-            <version>1.11</version>
+            <version>glpk-for-met4j</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
@@ -147,7 +147,7 @@
         <dependency>
             <groupId>ibm.ilog</groupId>
             <artifactId>cplex</artifactId>
-            <version>10.4.1</version>
+            <version>cplex-for-met4j</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>

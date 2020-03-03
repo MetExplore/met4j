@@ -21,9 +21,9 @@ corresponds to the cpp library, you have to specify both in your project.
 
 ```shell script
 mvn install:install-file -Dfile=/usr/share/java/glpk-java.jar \ 
--DgroupId=glpk -DartifactId=glpk -Dversion=1.11 -Dpackaging=jar
+-DgroupId=glpk -DartifactId=glpk -Dversion=glpk-for-met4j -Dpackaging=jar
 ```
-Replace by the proper paths and versions.
+
 
 ##### Launch met4j-flux with GLPK
 
@@ -44,7 +44,7 @@ java .... -Djava.library.path=/usr/lib/x86_64-linux-gnu/jni
 
 ```shell script
 mvn install:install-file -Dfile=/usr/local/cplex/cplex/lib/cplex.jar -DgroupId=ibm.ilog \ 
--DartifactId=cplex -Dversion=10.4.1 -Dpackaging=jar
+-DartifactId=cplex -Dversion=cplex-for-met4j -Dpackaging=jar
 ```
 Replace by the proper paths and versions.
 

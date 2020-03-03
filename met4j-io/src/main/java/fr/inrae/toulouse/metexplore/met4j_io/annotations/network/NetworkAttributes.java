@@ -68,6 +68,10 @@ public class NetworkAttributes extends GenericAttributes {
 	 */
 	public static BioUnitDefinition getUnitDefinition(BioNetwork network, String unitId) {
 
+		BioUnitDefinitionCollection unitDefinitions = getUnitDefinitions(network);
+		if(unitDefinitions== null) {
+			throw new NullPointerException("No unit definition in the network");
+		}
 		return getUnitDefinitions(network).get(unitId);
 
 	}

@@ -40,6 +40,7 @@ import java.util.ArrayList;
 
 import javax.xml.stream.XMLStreamException;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import org.apache.commons.lang3.StringUtils;
@@ -55,11 +56,6 @@ import org.sbml.jsbml.SpeciesType;
 import org.sbml.jsbml.Unit;
 import org.sbml.jsbml.UnitDefinition;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.compartment.BioCompartmentType;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
@@ -124,7 +120,6 @@ public class JsbmlToBioNetwork {
 	/**
 	 * Parse the jsbml Model object and retrieves basic information from it
 	 * 
-	 * @param model the jsbml model
 	 */
 	private void parseNetworkData() {
 
@@ -139,7 +134,6 @@ public class JsbmlToBioNetwork {
 	 * Default way of parsing sbml UnitDefinition. Needs to be overridden to modify
 	 * behavior
 	 * 
-	 * @param model the jsbml model
 	 */
 	private void parseListOfUnitDefinitions() {
 
@@ -177,7 +171,6 @@ public class JsbmlToBioNetwork {
 	 * Default way of parsing sbml compartements. Needs to be overridden to modify
 	 * behavior
 	 * 
-	 * @param model the jsbml model
 	 */
 	private void parseListOfCompartments() {
 
@@ -276,7 +269,6 @@ public class JsbmlToBioNetwork {
 	/**
 	 * Method to parse the list of reaction of the jsbml model
 	 * 
-	 * @param model the jsbml model
 	 * @throws Met4jSbmlReaderException
 	 */
 	private void parseListOfReactions() throws Met4jSbmlReaderException {
@@ -485,10 +477,30 @@ public class JsbmlToBioNetwork {
 
 			if(sboTerm != null)
 			{
-				if(sboTerm.compareToIgnoreCase("SBO:0000252")==0 || sboTerm.compareToIgnoreCase("SBO:0000297")==0)
+				if(sboTerm.compareToIgnoreCase("SBO:0000252")==0)
 				{
 					validSboTerm = false;
 					hasInvalidSboTerms = true;
+					// It's considered as a gene
+					// We replace the first "_" by "" if exists
+					specieId = specieId.replaceFirst("^_", "");
+					specieId = specieId.replaceFirst("_.$", "");
+					specieName = specieName.replaceFirst("^_", "");
+					specieName = specieName.replaceFirst("_.$", "");
+					BioGene gene = new BioGene(specieId, specieName);
+					this.getNetwork().add(gene);
+				}
+				else if(sboTerm.compareToIgnoreCase("SBO:0000014")==0 || sboTerm.compareToIgnoreCase("SBO:0000297")==0)
+				{
+					validSboTerm = false;
+					hasInvalidSboTerms = true;
+					// It's considered as an enzyme
+					specieId = specieId.replaceFirst("^_", "");
+					specieId = specieId.replaceFirst("_.$", "");
+					specieName = specieName.replaceFirst("^_", "");
+					specieName = specieName.replaceFirst("_.$", "");
+					BioEnzyme enz = new BioEnzyme(specieId, specieName);
+					this.getNetwork().add(enz);
 				}
 			}
 
@@ -549,7 +561,8 @@ public class JsbmlToBioNetwork {
 
 		if(hasInvalidSboTerms)
 		{
-			System.err.println("[warning] Sbo term for some species are not metabolite sbo terms, they haven't been imported.");
+			System.err.println("[warning] Sbo term for some species are not metabolite sbo terms, they haven't been imported or have been imported as genes, " +
+					"depending on their sbo term (SBO:0000252) or as enzymes (SBO:0000014 or SBO:0000297).");
 		}
 	}
 
@@ -636,7 +649,6 @@ public class JsbmlToBioNetwork {
 	/**
 	 * Launch the parsing of the jsbml model by the different packages
 	 * 
-	 * @param model the jsbml model
 	 */
 	public void parsePackageAdditionalData() {
 		for (PackageParser parser : this.getSetOfPackage()) {

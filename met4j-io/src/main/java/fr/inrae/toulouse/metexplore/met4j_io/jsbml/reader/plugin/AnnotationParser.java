@@ -138,8 +138,9 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 		
 		this.parseSbmlAnnotations(bionetwork.getReactionsView());
 		this.parseSbmlAnnotations(bionetwork.getMetabolitesView());
-		this.parseSbmlAnnotations(bionetwork.getProteinsView());
-		this.parseSbmlAnnotations(bionetwork.getEnzymesView());
+		this.parseSbmlAnnotations(bionetwork.getGenesView());
+//		this.parseSbmlAnnotations(bionetwork.getProteinsView());
+//		this.parseSbmlAnnotations(bionetwork.getEnzymesView());
 		this.parseSbmlAnnotations(bionetwork.getCompartmentsView());
 	}
 

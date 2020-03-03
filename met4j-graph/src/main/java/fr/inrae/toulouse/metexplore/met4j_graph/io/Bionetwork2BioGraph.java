@@ -194,7 +194,7 @@ public class Bionetwork2BioGraph {
 			BioCollection<BioMetabolite> sources = new BioCollection<>();
 			BioCollection<BioMetabolite> products = new BioCollection<>();
 			//get reactions
-			for(BioReaction r : bn.getReactionsFromPathway(v)) {
+			for(BioReaction r : bn.getReactionsFromPathways(v)) {
 
 				//get sources and products
 				if(!r.isReversible()) {

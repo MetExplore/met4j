@@ -108,10 +108,11 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.0</version>
         </dependency>
+<!--        Locally installed-->
         <dependency>
             <groupId>glpk</groupId>
             <artifactId>glpk</artifactId>
-            <version>1.11</version>
+            <version>glpk-for-met4j</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
@@ -142,11 +143,11 @@
             <artifactId>jfreechart</artifactId>
             <version>1.0.19</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/cplex/cplex -->
+        <!--        Locally installed-->
         <dependency>
             <groupId>ibm.ilog</groupId>
             <artifactId>cplex</artifactId>
-            <version>10.4.1</version>
+            <version>cplex-for-met4j</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>

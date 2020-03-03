@@ -73,7 +73,7 @@ public class BioCompartment extends BioPhysicalEntity{
 	}
 
 	/**
-	 * @return an unmodifiable BioCollection of the components
+	 * @return an unmodifiable {@link BioCollection} of the components
 	 */
 	public BioCollection<BioEntity> getComponentsView() {
 		return components.getView();

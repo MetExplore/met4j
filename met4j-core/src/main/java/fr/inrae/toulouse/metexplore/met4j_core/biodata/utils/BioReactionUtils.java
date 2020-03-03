@@ -55,8 +55,15 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant;
 public class BioReactionUtils {
 	
 	/**
-	 * Comparison with another reaction : if the substrates and the products
-	 * have the same id, return true
+	 * Comparison of two reactions
+	 *
+	 * @param network a {@link BioNetwork}
+	 * @param r1 a first {@link BioReaction}
+	 * @param r2 a second {@link BioReaction}
+	 * @return true if the substrates and the products have the same id
+	 *
+	 * @throws IllegalArgumentException if one of the reaction is not in the network
+	 *
 	 */
 	public static Boolean areRedundant(BioNetwork network, BioReaction r1, BioReaction r2) {
 
@@ -107,10 +114,11 @@ public class BioReactionUtils {
 	
 	
 	/**
-	 * 
-	 * @param network
-	 * @param r
-	 * @return
+	 * get Gene association of a reaction in string format
+	 * @param network a {@link BioNetwork}
+	 * @param r a BioReaction
+	 * @param getGeneNames if true returns the gene names instead of the gene ids
+	 * @return a String like "G1 OR (G2 AND G3)
 	 */
 	public static String getGPR(BioNetwork network, BioReaction r, Boolean getGeneNames) {
 		
@@ -162,279 +170,20 @@ public class BioReactionUtils {
 		else {
 			finalSet = geneIdSets;
 		}
-		
-		
-		String gpr = StringUtils.join(finalSet.toArray(new String[0]), " OR ");
-		
-		
-		return gpr;
+
+
+		return StringUtils.join(finalSet.toArray(new String[0]), " OR ");
 		
 	}
 
+	/**
+	 * get Gene association of a reaction in string format
+	 * @param network a {@link BioNetwork}
+	 * @param r a BioReaction
+	 * @return a String like "G1 OR (G2 AND G3)
+	 */
 	public static String getGPR(BioNetwork network, BioReaction r) {
 		return getGPR(network, r, false);
 	}
-	
-	
-//	/**
-//	 * 
-//	 * @return a ArrayList<String> corresponding to the association between
-//	 *         genes and between proteins that enable the catalysis of the
-//	 *         reaction Ex : res.get(0) g1 and ( g2 or g3 ) res.get(1) p1 and p2
-//	 */
-//	public static ArrayList<String> getGPR(BioReaction r) {
-//
-//		String geneStr = "";
-//		String protStr = "";
-//		ArrayList<String> res = new ArrayList<String>();
-//
-//		int j = 0;
-//
-//		for (Iterator<String> iterEnz = r.getEnzList().keySet().iterator(); iterEnz
-//				.hasNext();) {
-//			j++;
-//
-//			if (j > 1) {
-//				protStr = protStr + " or ";
-//				geneStr = geneStr + " or ";
-//			}
-//
-//			BioPhysicalEntity enzyme = r.getEnzList().get(iterEnz.next());
-//
-//			String classe = enzyme.getClass().getSimpleName();
-//
-//			HashMap<String, BioGene> listOfGenes = new HashMap<String, BioGene>();
-//
-//			HashMap<String, BioProtein> listOfProteins = new HashMap<String, BioProtein>();
-//
-//			if (classe.compareTo("BioProtein") == 0) {
-//				listOfProteins.put(enzyme.getId(), (BioProtein) enzyme);
-//
-//				listOfGenes = ((BioProtein) enzyme).getGeneList();
-//
-//			} else if (classe.compareTo("BioComplex") == 0) {
-//
-//				listOfGenes = ((BioComplex) enzyme).getGeneList();
-//
-//				HashMap<String, BioPhysicalEntity> componentList = ((BioComplex) enzyme)
-//						.getAllComponentList();
-//
-//				for (Iterator<String> iterComponent = componentList.keySet()
-//						.iterator(); iterComponent.hasNext();) {
-//
-//					BioPhysicalEntity component = componentList
-//							.get(iterComponent.next());
-//
-//					if (component.getClass().getSimpleName()
-//							.compareTo("BioProtein") == 0) {
-//						listOfProteins.put(component.getId(),
-//								(BioProtein) component);
-//					}
-//
-//				}
-//			}
-//			int k = 0;
-//
-//			geneStr = geneStr + "( ";
-//
-//			for (Iterator<String> iterGene = listOfGenes.keySet().iterator(); iterGene
-//					.hasNext();) {
-//				k++;
-//
-//				if (k > 1) {
-//					geneStr = geneStr + " and ";
-//				}
-//
-//				BioGene gene = listOfGenes.get(iterGene.next());
-//
-//				geneStr = geneStr + StringUtils.htmlEncode(gene.getName());
-//			}
-//
-//			geneStr = geneStr + " )";
-//
-//			protStr = protStr + "( ";
-//
-//			k = 0;
-//
-//			for (Iterator<String> iterProt = listOfProteins.keySet().iterator(); iterProt
-//					.hasNext();) {
-//				k++;
-//				if (k > 1) {
-//					protStr = protStr + " and ";
-//				}
-//
-//				BioProtein prot = listOfProteins.get(iterProt.next());
-//				protStr = protStr + StringUtils.htmlEncode(prot.getName());
-//			}
-//
-//			protStr = protStr + " )";
-//
-//		}
-//
-//		res.add(geneStr);
-//		res.add(protStr);
-//
-//		return res;
-//
-//	}
-//	
-//	/**
-//	 * Compute the atom balances
-//	 * 
-//	 * @return
-//	 */
-//	public static HashMap<String, Double> computeAtomBalances(BioReaction r) {
-//
-//		HashMap<String, Double> balances = new HashMap<String, Double>();
-//
-//		for (BioParticipant bpe : r.getLeftParticipantList()
-//				.values()) {
-//
-//			String stoStr = bpe.getStoichiometricCoefficient();
-//
-//			Double sto = 0.0;
-//
-//			try {
-//				sto = Double.parseDouble(stoStr);
-//			} catch (NumberFormatException e) {
-//				System.err.println("Stoichiometry not valid in the reaction "
-//						+ r.getId());
-//				return new HashMap<String, Double>();
-//			}
-//
-//			String formula = bpe.getPhysicalEntity().getChemicalFormula();
-//
-//			if (formula.equals("NA")) {
-//				System.err.println("No formula for "
-//						+ bpe.getPhysicalEntity().getId() + " in "
-//						+ r.getId());
-//				return new HashMap<String, Double>();
-//			}
-//
-//			String REGEX = "[A-Z]{1}[a-z]*[0-9]*";
-//
-//			Pattern pattern = Pattern.compile(REGEX);
-//			Matcher matcher = pattern.matcher(formula);
-//
-//			while (matcher.find()) {
-//				String group = matcher.group(0);
-//
-//				String REGEX2 = "([A-Z]{1}[a-z]*)([0-9]*)";
-//
-//				Pattern pattern2 = Pattern.compile(REGEX2);
-//				Matcher matcher2 = pattern2.matcher(group);
-//
-//				matcher2.find();
-//
-//				String atom = matcher2.group(1);
-//
-//				String numStr = matcher2.group(2);
-//
-//				if (numStr.equals("")) {
-//					numStr = "1.0";
-//				}
-//
-//				Double number = Double.parseDouble(numStr);
-//
-//				if (!balances.containsKey(atom)) {
-//					balances.put(atom, sto * number);
-//				} else {
-//					balances.put(atom, balances.get(atom) + sto * number);
-//				}
-//
-//			}
-//
-//		}
-//
-//		for (BioParticipant bpe : r.getRightParticipantList()
-//				.values()) {
-//
-//			String stoStr = bpe.getStoichiometricCoefficient();
-//
-//			Double sto = 0.0;
-//
-//			try {
-//				sto = Double.parseDouble(stoStr);
-//			} catch (NumberFormatException e) {
-//				System.err.println("Stoichiometry not valid in the reaction "
-//						+ r.getId());
-//				return new HashMap<String, Double>();
-//			}
-//
-//			String formula = bpe.getPhysicalEntity().getChemicalFormula();
-//
-//			if (formula.equals("NA")) {
-//				System.err.println("No formula for "
-//						+ bpe.getPhysicalEntity().getId() + " in "
-//						+ r.getId());
-//				return new HashMap<String, Double>();
-//			}
-//
-//			String REGEX = "[A-Z]{1}[a-z]*[0-9]*";
-//
-//			Pattern pattern = Pattern.compile(REGEX);
-//			Matcher matcher = pattern.matcher(formula);
-//
-//			while (matcher.find()) {
-//				String group = matcher.group(0);
-//
-//				String REGEX2 = "([A-Z]{1}[a-z]*)([0-9]*)";
-//
-//				Pattern pattern2 = Pattern.compile(REGEX2);
-//				Matcher matcher2 = pattern2.matcher(group);
-//
-//				matcher2.find();
-//
-//				String atom = matcher2.group(1);
-//
-//				String numStr = matcher2.group(2);
-//
-//				if (numStr.equals("")) {
-//					numStr = "1.0";
-//				}
-//
-//				Double number = Double.parseDouble(numStr);
-//
-//				if (!balances.containsKey(atom)) {
-//					balances.put(atom, -sto * number);
-//				} else {
-//					balances.put(atom, balances.get(atom) + -sto * number);
-//				}
-//
-//			}
-//
-//		}
-//
-//		System.err.println(balances);
-//
-//		return balances;
-//
-//	}
-//
-//	/**
-//	 * Checks if a reaction is balanced
-//	 * 
-//	 * @return
-//	 */
-//	public static Boolean isBalanced(BioReaction r) {
-//
-//		Double sum = 0.0;
-//
-//		HashMap<String, Double> balances = computeAtomBalances(r);
-//
-//		if (balances.size() == 0) {
-//			return false;
-//		}
-//
-//		for (Double value : balances.values()) {
-//			sum = sum + value;
-//		}
-//
-//		if (sum != 0.0) {
-//			return false;
-//		} else {
-//			return true;
-//		}
-//	}
 	
 }

@@ -48,9 +48,9 @@ public abstract class ObjectsPerObject {
 
     public BioNetwork network;
 
-    public TreeMap<Integer, Integer> distribution = new TreeMap<Integer, Integer>();
+    public TreeMap<Integer, Integer> distribution = new TreeMap<>();
 
-    public HashMap<String, Integer> nbs = new HashMap<String, Integer>();
+    public HashMap<String, Integer> nbs = new HashMap<>();
 
     public Double mean;
 
@@ -63,8 +63,8 @@ public abstract class ObjectsPerObject {
 
     /**
      * Write distribution in file
-     * @param fileName
-     * @throws IOException
+     * @param fileName path of the output file
+     * @throws IOException if problem while writing in the file
      */
     public void writeDistributions(String fileName) throws IOException {
 
@@ -81,8 +81,8 @@ public abstract class ObjectsPerObject {
 
     /**
      * Write the number of objects per object in a file
-     * @param fileName
-     * @throws IOException
+     * @param fileName the path of the output file
+     * @throws IOException if problem while writing in the file
      */
     public void writeNumberOfObjectsPerObject(String fileName) throws IOException {
 

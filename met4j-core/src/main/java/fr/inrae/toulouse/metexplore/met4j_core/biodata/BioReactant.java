@@ -49,23 +49,36 @@ public class BioReactant extends BioParticipant {
 	private BioCompartment location = null;
 
 	/**
-	 * @param metabolite
-	 * @param stoichiometry
-	 * @param location
+	 * Constructor
+	 * @param metabolite a {@link BioMetabolite}
+	 * @param stoichiometry stoichiometric coefficient
+	 * @param location a {@link BioCompartment}
 	 */
 	public BioReactant(BioMetabolite metabolite, Double stoichiometry, BioCompartment location) {
 		super(metabolite, stoichiometry);
 		this.setLocation(location);
 	}
 
+	/**
+	 * Get location of the reactant
+	 * @return a {@link BioCompartment}
+	 */
 	public BioCompartment getLocation() {
 		return location;
 	}
 
+	/**
+	 * Set location
+	 * @param location a {@link BioCompartment}
+	 */
 	protected void setLocation(BioCompartment location) {
 		this.location = location;
 	}
 
+	/**
+	 * Get the associated metabolite
+	 * @return a {@link BioMetabolite}
+	 */
 	public BioMetabolite getMetabolite() {
 		return (BioMetabolite) this.getPhysicalEntity();
 	}

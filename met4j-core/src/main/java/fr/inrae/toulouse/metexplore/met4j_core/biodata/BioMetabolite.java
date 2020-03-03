@@ -35,8 +35,6 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.Objects;
-
 /**
  *
  */
@@ -47,11 +45,20 @@ public class BioMetabolite extends BioPhysicalEntity {
 	private String inchi;
 	private String smiles;
 	private Integer charge = 0;
-	
+
+	/**
+	 * Constructor
+	 * @param id the id of the BioMetabolite
+	 */
 	public BioMetabolite(String id) {
 		super(id);
 	}
-	
+
+	/**
+	 * Constructor
+	 * @param id the id of the BioMetabolite
+	 * @param name the name of the BioMetabolite
+	 */
 	public BioMetabolite(String id, String name) {
 		super(id, name);
 	}
@@ -95,12 +102,19 @@ public class BioMetabolite extends BioPhysicalEntity {
 	}
 
 
-
+	/**
+	 *
+	 * @return the chemical formula of the metabolite
+	 */
 	public String getChemicalFormula() {
 		return chemicalFormula;
 	}
 
 
+	/**
+	 *
+	 * @param chemicalFormula : a String like C6H12O6
+	 */
 	public void setChemicalFormula(String chemicalFormula) {
 		this.chemicalFormula = chemicalFormula;
 	}

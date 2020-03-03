@@ -148,7 +148,7 @@ public class PathwayEnrichment {
         if(!bn.getPathwaysView().contains(pathway)){
             throw new IllegalArgumentException("pathway not in network");
         }
-        Collection<BioReaction> reactionInPathway = bn.getReactionsFromPathway(pathway);
+        Collection<BioReaction> reactionInPathway = bn.getReactionsFromPathways(pathway);
 
         //build contingency table
         int a = intersect(reactionSet, reactionInPathway).size();

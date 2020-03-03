@@ -38,38 +38,43 @@ package fr.inrae.toulouse.metexplore.met4j_core.utils;
 
 public class StringUtils {
 
+	/**
+	 *
+	 * @param in a String
+	 * @return true if in is null or empty or equals to NA, na, multiple spaces, NULL, or null
+	 */
 	public static boolean isVoid (String in) {
 		if(in == null) return true;
 		if(in.isEmpty()) return true;
 		if(in.equalsIgnoreCase("NA")) return true;
 		if(in.matches("^\\s*$")) return true;
-		if(in.equalsIgnoreCase("null")) return true;
-		return false;
+		return in.equalsIgnoreCase("null");
 	}
 
 	/**
 	 * From https://stackoverflow.com/questions/5439529/determine-if-a-string-is-an-integer-in-java/5439632#5439632
-	 * @param s
-	 * @return
+	 * @param s a String
+	 * @return true if s corresponds to an integer
 	 */
 	public static boolean isInteger(String s) {
 		try {
 			Integer.parseInt(s);
-		} catch(NumberFormatException e) {
-			return false;
-		} catch(NullPointerException e) {
+		} catch(NumberFormatException | NullPointerException e) {
 			return false;
 		}
 		// only got here if we didn't return false
 		return true;
 	}
 
+	/**
+	 * From https://stackoverflow.com/questions/5439529/determine-if-a-string-is-an-integer-in-java/5439632#5439632
+	 * @param s a String
+	 * @return true if s corresponds to a double
+	 */
 	public static boolean isDouble(String s) {
 		try {
 			Double.parseDouble(s);
-		} catch(NumberFormatException e) {
-			return false;
-		} catch(NullPointerException e) {
+		} catch(NumberFormatException | NullPointerException e) {
 			return false;
 		}
 		// only got here if we didn't return false

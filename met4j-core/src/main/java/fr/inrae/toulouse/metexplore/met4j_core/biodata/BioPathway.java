@@ -37,8 +37,6 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
-import java.util.Objects;
-
 /**
  * A set or series of interactions, often forming a network, which biologists
  * have found useful to group together for organizational, historic, biophysical
@@ -47,16 +45,35 @@ import java.util.Objects;
 
 public class BioPathway extends BioEntity {
 
-	private BioCollection<BioReaction> reactions = new BioCollection<>();
+	private BioCollection<BioReaction> reactions;
 
+	/**
+	 *
+	 * Constructor
+	 *
+	 * @param id the id of the pathway
+	 */
 	public BioPathway(String id) {
 		super(id);
-	}
-	
-	public BioPathway(String id, String name) {
-		super(id, name);
+		reactions = new BioCollection<>();
 	}
 
+	/**
+	 *
+	 * Constructor
+	 *
+	 * @param id the name of the pathway
+	 * @param name the id of the pathway
+	 */
+	public BioPathway(String id, String name) {
+		super(id, name);
+		reactions = new BioCollection<>();
+	}
+
+	/**
+	 * Get reactions involved in the pathway
+	 * @return a {@link BioCollection} of pathways
+	 */
 	protected BioCollection<BioReaction> getReactions() {
 		return reactions;
 	}
@@ -76,6 +93,8 @@ public class BioPathway extends BioEntity {
 
 	/**
 	 * Get metabolites involved in pathways
+	 *
+	 * @return  a {@link BioCollection} of {@link BioMetabolite}
 	 */
 	protected BioCollection<BioMetabolite> getMetabolites() {
 		BioCollection<BioMetabolite> metaboliteSet = new BioCollection<>();
@@ -87,8 +106,10 @@ public class BioPathway extends BioEntity {
 
 	/**
 	 * Get genes involved in pathways
+	 *
+	 * @return  a {@link BioCollection} of {@link BioGene}
+	 *
 	 */
-
 	protected BioCollection<BioGene> getGenes() {
 		BioCollection<BioGene> geneSet = new BioCollection<>();
 

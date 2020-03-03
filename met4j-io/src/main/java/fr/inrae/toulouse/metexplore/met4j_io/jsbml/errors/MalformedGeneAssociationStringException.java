@@ -38,7 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors;
 
 /**
  * This error is thrown by
- * {@link parsebionet.io.jsbml.reader.plugin.NotesParser} class when the gene
+ * {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser} class when the gene
  * association read in the reaction notes does not have a correct syntax. In
  * most case it is a missing parenthesis.
  * 

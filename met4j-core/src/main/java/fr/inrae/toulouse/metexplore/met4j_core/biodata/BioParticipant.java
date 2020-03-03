@@ -45,7 +45,12 @@ public abstract class BioParticipant extends BioEntity {
 	private BioPhysicalEntity physicalEntity;
 	
 	private Double quantity;
-	
+
+	/**
+	 * Constructor
+	 * @param physicalEntity a {@link BioPhysicalEntity}
+	 * @param quantity number of units of physicalEntity
+	 */
 	public BioParticipant(BioPhysicalEntity physicalEntity, Double quantity) {
 		super(physicalEntity.getId());
 		this.physicalEntity=physicalEntity;

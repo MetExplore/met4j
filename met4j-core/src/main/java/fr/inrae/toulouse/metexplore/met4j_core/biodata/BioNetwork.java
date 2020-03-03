@@ -48,9 +48,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
+ * The BioNetwork class is the essential class of met4j.
  *
+ * It contains and links all the entities composing a metabolic network (metabolites, reactions,
+ * pathways, genes, proteins, enzymes, compartments)
  */
-
 public class BioNetwork extends BioEntity {
 
     private BioCollection<BioPathway> pathways = new BioCollection<>();
@@ -78,7 +80,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Add several entities
      *
-     * @param bioEntities
+     * @param bioEntities 0 to several {@link BioEntity} instances
      */
     public void add(BioEntity... bioEntities) {
 
@@ -87,6 +89,11 @@ public class BioNetwork extends BioEntity {
         }
     }
 
+    /**
+     * Add several entities
+     *
+     * @param bioEntities a {@link BioCollection} of {@link BioEntity}
+     */
     public void add(BioCollection<?> bioEntities) {
 
         for (BioEntity e : bioEntities) {
@@ -97,7 +104,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Add one entity
      *
-     * @param e
+     * @param e a {@link BioEntity}
      */
     public void add(BioEntity e) {
         if (e instanceof BioPathway) {
@@ -158,7 +165,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Remove on cascade several entities
      *
-     * @param entities
+     * @param entities 0 or several {@link BioEntity}
      */
     public void removeOnCascade(BioEntity... entities) {
         for (BioEntity e : entities) {
@@ -169,7 +176,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Remove on cascade several entities stored in a BioCollection
      *
-     * @param entities
+     * @param entities a {@link BioCollection} of {@link BioEntity}
      */
     public void removeOnCascade(BioCollection<?> entities) {
         for (BioEntity e : entities) {
@@ -181,6 +188,9 @@ public class BioNetwork extends BioEntity {
     /**
      * Remove protein from the network and from the enzymes and the compartments
      * where it is involved
+     *
+     * @param protein a {@link BioProtein} instance
+     *
      */
     private void removeProtein(BioProtein protein) {
 
@@ -190,7 +200,7 @@ public class BioNetwork extends BioEntity {
             BioCollection<BioEnzymeParticipant> participants = new BioCollection<>(
                     e.getParticipants());
 
-            Boolean remove = false;
+            boolean remove = false;
             for (BioEnzymeParticipant p : participants) {
                 if (p.getPhysicalEntity().equals(protein)) {
                     remove = true;
@@ -221,6 +231,9 @@ public class BioNetwork extends BioEntity {
     /**
      * Remove a metabolite from the network and from the reactions and compartments
      * where it is involved and from the c
+     *
+     * @param m a {@link BioMetabolite}
+     *
      */
     private void removeMetabolite(BioMetabolite m) {
 
@@ -281,6 +294,9 @@ public class BioNetwork extends BioEntity {
     /**
      * Remove a gene from the network and remove the link between the gene and
      * proteins
+     *
+     * @param g a {@link BioGene}
+     *
      */
     private void removeGene(BioGene g) {
 
@@ -297,6 +313,9 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Remove a reaction from the network and from the pathways where it is involved
+     *
+     * @param r a {@link BioReaction}
+     *
      */
     private void removeReaction(BioReaction r) {
 
@@ -315,6 +334,9 @@ public class BioNetwork extends BioEntity {
     /**
      * Remove a compartment and all the reactions that involve reactants in this
      * compartment
+     *
+     * @param c a BioCompartment
+     *
      */
     private void removeCompartment(BioCompartment c) {
 
@@ -335,6 +357,7 @@ public class BioNetwork extends BioEntity {
 
     /**
      * add a relation reactant-reaction
+     *
      */
     private void affectLeft(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite substrate) {
 
@@ -342,6 +365,15 @@ public class BioNetwork extends BioEntity {
 
     }
 
+    /**
+     *
+     * Add several left metabolites to a reaction
+     *
+     * @param reaction a {@link BioReaction}
+     * @param stoichiometry the stroichiometric coefficient
+     * @param localisation the compartment of the substrates
+     * @param substrates 0 or several {@link BioMetabolite}
+     */
     public void affectLeft(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite... substrates) {
 
         for (BioMetabolite s : substrates)
@@ -349,6 +381,15 @@ public class BioNetwork extends BioEntity {
 
     }
 
+    /**
+     *
+     * Add several left metabolites to a reaction
+     *
+     * @param reaction a {@link BioReaction}
+     * @param stoichiometry the stroichiometric coefficient
+     * @param localisation the compartment of the substrates
+     * @param substrates a {@link BioCollection} of {@link BioMetabolite}
+     */
     public void affectLeft(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioCollection<BioMetabolite> substrates) {
 
         for (BioMetabolite s : substrates)
@@ -365,37 +406,75 @@ public class BioNetwork extends BioEntity {
 
     }
 
+    /**
+     *
+     * Add several left reactants to a reaction
+     *
+     * @param reaction a {@link BioReaction}
+     * @param reactants 0 or several {@link BioReactant}
+     */
     public void affectLeft(BioReaction reaction, BioReactant... reactants) {
         for (BioReactant reactant : reactants) {
             this.affectLeft(reaction, reactant);
         }
     }
 
+    /**
+     *
+     * Add several left reactants to a reaction
+     *
+     * @param reaction a {@link BioReaction}
+     * @param reactants a {@link BioCollection} {@link BioReactant}
+     */
     public void affectLeft(BioReaction reaction, BioCollection<BioReactant> reactants) {
         this.affectLeft(reaction, reactants.toArray(new BioReactant[0]));
     }
 
     /**
      * Remove a left reactant
+     * @param e a {@link BioMetabolite} to remove from the left side of the reaction
+     * @param localisation a {@link BioCompartment}
+     * @param reaction a {@link BioReaction}
      */
-    public void removeLeft(BioPhysicalEntity e, BioCompartment localisation, BioReaction reaction) {
+    public void removeLeft(BioMetabolite e, BioCompartment localisation, BioReaction reaction) {
 
         removeSideReaction(e, localisation, reaction, BioReaction.Side.LEFT);
     }
 
     /**
      * Add a relation product-reaction
+     *
+     * @param reaction a {@link BioReaction}
+     * @param stoichiometry the stoichiometric coefficient
+     * @param localisation  a {@link BioCompartment}
+     * @param product a {@link BioMetabolite} to add to the right side of the reaction
      */
     public void affectRight(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite product) {
 
         affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.RIGHT, product);
     }
 
+    /**
+     * Add several relation product-reaction
+     *
+     * @param reaction a {@link BioReaction}
+     * @param stoichiometry the stoichiometric coefficient
+     * @param localisation  a {@link BioCompartment}
+     * @param products 0 or several {@link BioMetabolite} to add to the right side of the reaction
+     */
     public void affectRight(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite... products) {
         for (BioMetabolite product : products)
             affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.RIGHT, product);
     }
 
+    /**
+     * Add several relation product-reaction
+     *
+     * @param reaction a {@link BioReaction}
+     * @param stoichiometry the stoichiometric coefficient
+     * @param localisation  a {@link BioCompartment}
+     * @param products a {@link BioCollection} of {@link BioMetabolite} to add to the right side of the reaction
+     */
     public void affectRight(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioCollection<BioMetabolite> products) {
         for (BioMetabolite product : products)
             affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.RIGHT, product);
@@ -408,20 +487,38 @@ public class BioNetwork extends BioEntity {
         affectSideReaction(reactant, reaction, BioReaction.Side.RIGHT);
     }
 
+    /**
+     *
+     * affect several reactant to the right side of a reaction
+     *
+     * @param reaction a {@link BioReaction}
+     * @param reactants 0 or several {@link BioReactant}
+     */
     public void affectRight(BioReaction reaction, BioReactant... reactants) {
         for (BioReactant reactant : reactants) {
             this.affectRight(reaction, reactant);
         }
     }
 
+    /**
+     *
+     * affect several reactant to the right side of a reaction
+     *
+     * @param reaction a {@link BioReaction}
+     * @param reactants a {@link BioCollection} {@link BioReactant} of {@link BioReactant}
+     */
     public void affectRight(BioReaction reaction, BioCollection<BioReactant> reactants) {
         this.affectRight(reaction, reactants.toArray(new BioReactant[0]));
     }
 
     /**
      * Remove a right reactant
+     *
+     * @param e a {@link BioMetabolite} to remove from the right side of the reaction
+     * @param localisation a {@link BioCompartment}
+     * @param reaction a {@link BioReaction}
      */
-    public void removeRight(BioPhysicalEntity e, BioCompartment localisation, BioReaction reaction) {
+    public void removeRight(BioMetabolite e, BioCompartment localisation, BioReaction reaction) {
 
         removeSideReaction(e, localisation, reaction, BioReaction.Side.RIGHT);
     }
@@ -496,7 +593,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Remove an entity from a side of reaction
      */
-    private void removeSideReaction(BioPhysicalEntity e, BioCompartment localisation, BioReaction reaction, BioReaction.Side side) {
+    private void removeSideReaction(BioMetabolite e, BioCompartment localisation, BioReaction reaction, BioReaction.Side side) {
 
         // The network must contain the compartment
         if (!this.compartments.contains(localisation)) {
@@ -541,8 +638,8 @@ public class BioNetwork extends BioEntity {
     /**
      * Affect several enzymes to a reaction
      *
-     * @param reaction
-     * @param enzymes
+     * @param reaction a {@link BioReaction}
+     * @param enzymes 0 or several enzymes
      */
     public void affectEnzyme(BioReaction reaction, BioEnzyme... enzymes) {
 
@@ -553,10 +650,10 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     * Affect several enzymes stored in a BioCollection to a reaction
+     * Affect several enzymes to a reaction
      *
-     * @param reaction
-     * @param enzymes
+     * @param reaction a {@link BioReaction}
+     * @param enzymes a {@link BioCollection of enzymes}
      */
     public void affectEnzyme(BioReaction reaction, BioCollection<BioEnzyme> enzymes) {
 
@@ -569,6 +666,12 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Remove the link between enzyme from a reaction
+     *
+     * @param enzyme a {@link BioEnzyme}
+     * @param reaction a {@link BioReaction}
+     *
+     * @throws IllegalArgumentException if the enzyme or the reaction are not present in the network
+     *
      */
     public void removeEnzymeFromReaction(BioEnzyme enzyme, BioReaction reaction) {
 
@@ -584,9 +687,14 @@ public class BioNetwork extends BioEntity {
 
     }
 
-    ;
-
-    // relation enzyme -constituant
+    /**
+     * Add a subunit to an enzymes
+     * @param enzyme a {@link BioEnzyme}
+     * @param quantity number of units
+     * @param unit a {@link BioPhysicalEntity}
+     *
+     * @throws IllegalArgumentException of the enzyme of the unit is not present in the network
+     */
     private void affectSubUnit(BioEnzyme enzyme, Double quantity, BioPhysicalEntity unit) {
 
         BioEnzymeParticipant p = new BioEnzymeParticipant(unit, quantity);
@@ -603,7 +711,13 @@ public class BioNetwork extends BioEntity {
 
     }
 
-    // relation enzyme -constituant
+    /**
+     * Add a subunit to an enzyme
+     * @param enzyme a {@link BioEnzyme}
+     * @param unit a {@link BioEnzymeParticipant}
+     *
+     * @throws IllegalArgumentException of the enzyme of the unit is not present in the network
+     */
     private void affectSubUnit(BioEnzyme enzyme, BioEnzymeParticipant unit) {
 
 
@@ -622,9 +736,9 @@ public class BioNetwork extends BioEntity {
     /**
      * Adds several subunits to an enzyme with the same stoichiometric coefficient
      *
-     * @param enzyme
-     * @param quantity
-     * @param units
+     * @param enzyme a {@link BioEnzyme}
+     * @param quantity the number of units of each subunit to add
+     * @param units 0 or several {@link BioPhysicalEntity}
      */
     public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioPhysicalEntity... units) {
 
@@ -634,28 +748,27 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     * Adds several subunits stored in a BioCollection to an enzyme with the same stoichiometric coefficient
+     * Adds several subunits to an enzyme with the same stoichiometric coefficient
      *
-     * @param enzyme
-     * @param quantity
-     * @param units
+     * @param enzyme a {@link BioEnzyme}
+     * @param quantity the number of units of each subunit to add
+     * @param units a {@link BioCollection} of {@link BioPhysicalEntity}
+     *
+     *
      */
-    public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioCollection<?> units) {
+    public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioCollection<BioPhysicalEntity> units) {
 
-        for (BioEntity unit : units) {
-            if (BioPhysicalEntity.class.isInstance(unit)) {
-                affectSubUnit(enzyme, quantity, (BioPhysicalEntity) unit);
-            } else {
-                throw new IllegalArgumentException("Units of an enzyme must be BioPhysicalEntity instances");
-            }
+        for (BioPhysicalEntity unit : units) {
+                affectSubUnit(enzyme, quantity, unit);
+
         }
     }
 
     /**
-     * Adds several subunits stored in a BioCollection to an enzyme with the same stoichiometric coefficient
+     * Adds several subunits to an enzyme
      *
-     * @param enzyme
-     * @param units
+     * @param enzyme a {@link BioEnzyme}
+     * @param units a {@link BioCollection} of {@link BioEnzymeParticipant}
      */
     public void affectSubUnit(BioEnzyme enzyme, BioCollection<BioEnzymeParticipant> units) {
 
@@ -665,6 +778,13 @@ public class BioNetwork extends BioEntity {
     }
 
 
+    /**
+     * Remove a subunit from an enzyme
+     * @param unit a {@link BioPhysicalEntity} to remove from the enzyme
+     * @param enzyme a {@link BioEnzyme}
+     *
+     * @throws IllegalArgumentException if the enzyme or the entity is not present in the network
+     */
     public void removeSubUnit(BioPhysicalEntity unit, BioEnzyme enzyme) {
 
         if (!this.contains(enzyme)) {
@@ -679,10 +799,13 @@ public class BioNetwork extends BioEntity {
 
     }
 
-    ;
-
     /**
      * Add a relation protein gene
+     *
+     * @param protein a {@link BioProtein} instance
+     * @param gene a {@link BioGene}
+     *
+     * @throws IllegalArgumentException if the gene or the protein is not present in the network
      */
     public void affectGeneProduct(BioProtein protein, BioGene gene) {
 
@@ -698,10 +821,12 @@ public class BioNetwork extends BioEntity {
 
     }
 
-    ;
-
     /**
      * Remove a relation between gene and product
+     *
+     * @param protein a {@link BioProtein} instance
+     * @param gene a {@link BioGene}
+     * @throws IllegalArgumentException if the gene or the protein is not present in the network
      */
     public void removeGeneProduct(BioProtein protein, BioGene gene) {
 
@@ -717,10 +842,14 @@ public class BioNetwork extends BioEntity {
 
     }
 
-    ;
-
     /**
-     * Add a pathway affected to a reaction
+     * Add a reaction to a pathway
+     *
+     * @param pathway a {@link BioPathway}
+     * @param reaction a {@link BioReaction}
+     *
+     * @throws IllegalArgumentException if the pathway or the reaction is not present
+     *
      */
     private void affectToPathway(BioPathway pathway, BioReaction reaction) {
 
@@ -737,6 +866,13 @@ public class BioNetwork extends BioEntity {
     }
 
 
+    /**
+     * Add several reactions to a pathway
+     *
+     * @param pathway a {@link BioPathway}
+     * @param reactions 0 or several {@link BioReaction}
+     *
+     */
     public void affectToPathway(BioPathway pathway, BioReaction... reactions) {
 
         for (BioReaction reaction : reactions) {
@@ -744,6 +880,13 @@ public class BioNetwork extends BioEntity {
         }
     }
 
+    /**
+     * Add several reactions to a pathway
+     *
+     * @param pathway a {@link BioPathway}
+     * @param reactions a {@link BioCollection} of {@link BioReaction}
+     *
+     */
     public void affectToPathway(BioPathway pathway, BioCollection<BioReaction> reactions) {
 
         for (BioReaction reaction : reactions) {
@@ -754,6 +897,11 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Remove a reaction from a pathway
+     *
+     * @param r a {@link BioReaction}
+     * @param p a {@link BioPathway}
+     *
+     * @throws IllegalArgumentException if the pathway or the reaction is not present
      */
     public void removeReactionFromPathway(BioReaction r, BioPathway p) {
         if (!this.contains(p)) {
@@ -769,6 +917,9 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Get metabolites involved in a pathway
+     *
+     * @param p a {@link BioPathway}
+     * @return a {@link BioCollection} of {@link BioMetabolite}
      */
     public BioCollection<BioMetabolite> getMetabolitesFromPathway(BioPathway p) {
 
@@ -794,13 +945,11 @@ public class BioNetwork extends BioEntity {
 
     }
 
-    ;
-
     /**
      * Affect several metabolites to a compartment
      *
-     * @param compartment
-     * @param entities
+     * @param compartment a {@link BioCompartment}
+     * @param entities one or several {@link BioEntity}
      */
     public void affectToCompartment(BioCompartment compartment, BioEntity... entities) {
 
@@ -813,8 +962,8 @@ public class BioNetwork extends BioEntity {
     /**
      * Affect several metabolites from a collection to a compartment
      *
-     * @param compartment
-     * @param entities
+     * @param compartment a {@link BioCompartment}
+     * @param entities a BioCollection of {@link BioEntity}
      */
     public void affectToCompartment(BioCompartment compartment, BioCollection<?> entities) {
         for (BioEntity e : entities) {
@@ -822,11 +971,18 @@ public class BioNetwork extends BioEntity {
         }
     }
 
-    ;
-
     /**
      * Return true if the entity is in the list of metabolites, reactions, genes,
      * pathways, proteins, etc...
+     *
+     * @param e  a {@link BioEntity}
+     *
+     * @throws NullPointerException if e is null
+     * @throws IllegalArgumentException if e is not an instance of :
+     * {@link BioProtein}, {@link BioMetabolite}, {@link BioGene}, {@link BioEnzyme},
+     * {@link BioReaction}, {@link BioPathway}, or {@link BioCompartment}
+     *
+     * @return true if the network contains the entity
      */
     public Boolean contains(BioEntity e) {
 
@@ -857,8 +1013,11 @@ public class BioNetwork extends BioEntity {
      * returns the list of reactions that can use as substrates a list of
      * metabolites
      *
+     * @param substrates a {@link BioCollection} of {@link BioMetabolite}
      * @param exact if true, the match must be exact, if false, the reactions
      *              returned can have a superset of the specified substrates
+     *
+     * @return  a {@link BioCollection} of {@link BioReaction}
      */
     public BioCollection<BioReaction> getReactionsFromSubstrates(BioCollection<BioMetabolite> substrates, Boolean exact) {
 
@@ -869,17 +1028,21 @@ public class BioNetwork extends BioEntity {
     /**
      * returns the list of reactions that can produce a list of metabolites
      *
+     * @param products a {@link BioCollection} of {@link BioMetabolite}
      * @param exact if true, the match must be exact, if false, the reactions
      *              returned can have a superset of the specified products
+     *
+     * @return  a {@link BioCollection} of {@link BioReaction}
      */
-    public BioCollection<BioReaction> getReactionsFromProducts(BioCollection<BioMetabolite> substrates, Boolean exact) {
+    public BioCollection<BioReaction> getReactionsFromProducts(BioCollection<BioMetabolite> products, Boolean exact) {
 
-        return this.getReactionsFromSubstratesOrProducts(substrates, exact, false);
+        return this.getReactionsFromSubstratesOrProducts(products, exact, false);
 
     }
 
     /**
-     * Get reactions from a list of ids of substrates (or products)
+     * Get reactions from a list of of substrates (or products)
+     * @return  a {@link BioCollection} of {@link BioReaction}
      */
     private BioCollection<BioReaction> getReactionsFromSubstratesOrProducts(BioCollection<BioMetabolite> metabolites,
                                                                             Boolean exact, Boolean areSubstrates) {
@@ -890,7 +1053,7 @@ public class BioNetwork extends BioEntity {
             }
         }
 
-        HashSet<BioReaction> reactionSet = new HashSet<>(this.getReactionsView().stream().filter(o -> {
+        HashSet<BioReaction> reactionSet = this.getReactionsView().stream().filter(o -> {
             BioReaction r = o;
 
             if (!r.isReversible()) {
@@ -905,7 +1068,7 @@ public class BioNetwork extends BioEntity {
                         : r.getRightsView().containsAll(metabolites)
                         || r.getLeftsView().containsAll(metabolites);
             }
-        }).collect(Collectors.toSet()));
+        }).collect(Collectors.toCollection(HashSet::new));
 
         return new BioCollection<>(reactionSet);
     }
@@ -913,7 +1076,7 @@ public class BioNetwork extends BioEntity {
     /**
      * @param m
      * @param isSubstrate
-     * @return
+     * @return  a {@link BioCollection} of {@link BioReaction}
      */
     private BioCollection<BioReaction> getReactionsFromSubstrateOrProduct(BioMetabolite m, Boolean isSubstrate) {
 
@@ -924,7 +1087,7 @@ public class BioNetwork extends BioEntity {
         BioCollection<BioReaction> reactions = new BioCollection<>();
 
         this.getReactionsView().forEach(r -> {
-            Boolean flag = false;
+            boolean flag = false;
 
             BioCollection<BioMetabolite> lefts = r.getLeftsView();
             BioCollection<BioMetabolite> rights = r.getRightsView();
@@ -948,8 +1111,8 @@ public class BioNetwork extends BioEntity {
     /**
      * Return the reactions involving m as substrate
      *
-     * @param m
-     * @return
+     * @param m a {@link BioMetabolite}
+     * @return a {@link BioCollection} of {@link BioReaction}
      */
     public BioCollection<BioReaction> getReactionsFromSubstrate(BioMetabolite m) {
         return this.getReactionsFromSubstrateOrProduct(m, true);
@@ -958,15 +1121,20 @@ public class BioNetwork extends BioEntity {
     /**
      * Return the reactions involving m as product
      *
-     * @param m
-     * @return
+     * @param m a {@link BioMetabolite}
+     * @return a {@link BioCollection} of {@link BioReaction}
      */
     public BioCollection<BioReaction> getReactionsFromProduct(BioMetabolite m) {
         return this.getReactionsFromSubstrateOrProduct(m, false);
     }
 
     /**
-     * Get pathways where a metabolite is involved
+     *  Get pathways where a metabolite is involved
+     *
+     * @param metabolites a {@link BioCollection} of {@link BioMetabolite}
+     * @param all if true : a pathway must contain all the metabolites, if false, a pathway must contain at least
+     *            one of the metabolites
+     * @return a {@link BioCollection} of {@link BioPathway}
      */
     public BioCollection<BioPathway> getPathwaysFromMetabolites(BioCollection<BioMetabolite> metabolites, Boolean all) {
 
@@ -976,16 +1144,23 @@ public class BioNetwork extends BioEntity {
             }
         }
 
-        HashSet<BioPathway> pathwaySet = new HashSet<>(this.getPathwaysView().stream().
+        HashSet<BioPathway> pathwaySet = this.getPathwaysView().stream().
                 filter(p -> all ? p.getMetabolites().containsAll(metabolites)
-                        : !Collections.disjoint(metabolites, p.getMetabolites())).
-                collect(Collectors.toSet()));
+                        : !Collections.disjoint(metabolites, p.getMetabolites()))
+                .collect(Collectors.toCollection(HashSet::new));
 
         return new BioCollection<>(pathwaySet);
 
     }
 
 
+    /**
+     * Get reactions from genes
+     * @param genes a {@link BioCollection} of {@link BioGene}
+     * @param all if true, a reaction must be coded by all the genes, if false a reaction must be coded by
+     *            at least one of the genes
+     * @return a {@link BioCollection} of {@link BioReaction}
+     */
     public BioCollection<BioReaction> getReactionsFromGenes(BioCollection<BioGene> genes, Boolean all) {
 
         for (BioGene g : genes) {
@@ -994,23 +1169,28 @@ public class BioNetwork extends BioEntity {
             }
         }
 
-        HashSet<BioReaction> reactionSet = new HashSet<>(this.getReactionsView().stream().
-                filter(o -> all ? o.getGenes().containsAll(genes) : !Collections.disjoint(o.getGenes(), genes)).
-                collect(Collectors.toSet()));
+        HashSet<BioReaction> reactionSet = this.getReactionsView().stream().
+                filter(o -> all ? o.getGenes().containsAll(genes) : !Collections.disjoint(o.getGenes(), genes))
+                .collect(Collectors.toCollection(HashSet::new));
 
         return new BioCollection<>(reactionSet);
 
     }
 
+    /**
+     * Get reactions from a gene
+     * @param gene a {@link BioGene}
+     * @return a {@link BioCollection} of {@link BioReaction}
+     */
     public BioCollection<BioReaction> getReactionsFromGene(BioGene gene) {
 
         if (!this.genes.contains(gene)) {
             throw new IllegalArgumentException("Gene " + gene + " not present in the network");
         }
 
-        HashSet<BioReaction> reactionSet = new HashSet<>(this.getReactionsView().stream().
-                filter(o -> o.getGenes().contains(gene)).
-                collect(Collectors.toSet()));
+        HashSet<BioReaction> reactionSet = this.getReactionsView().stream().
+                filter(o -> o.getGenes().contains(gene))
+                .collect(Collectors.toCollection(HashSet::new));
 
         return new BioCollection<>(reactionSet);
 
@@ -1018,6 +1198,11 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Get genes involved in a set of reactions
+     *
+     * @param reactions one or several {@link BioReaction}
+     *
+     * @return a {@link BioCollection} of {@link BioGene}
+     *
      */
     public BioCollection<BioGene> getGenesFromReactions(BioReaction... reactions) {
 
@@ -1032,6 +1217,11 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Get genes involved in a set of reactions
+     *
+     * @param reactions a {@link BioCollection} of {@link BioReaction} {@link BioReaction}
+     *
+     * @return a {@link BioCollection} of {@link BioGene}
+     *
      */
     public BioCollection<BioGene> getGenesFromReactions(BioCollection<BioReaction> reactions) {
 
@@ -1039,8 +1229,11 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     * @param reaction
-     * @return
+     * @param reaction a {@link BioReaction}
+     * @return a {@link BioCollection} of {@link BioGene}
+     *
+     * @throws IllegalArgumentException if reaction is not present in the network
+     * @return a {@link BioCollection} of {@link BioGene}
      */
     private BioCollection<BioGene> getGenesFromReaction(BioReaction reaction) {
         if (!this.contains(reaction)) {
@@ -1052,6 +1245,9 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Get genes from pathways
+     *
+     * @param pathways a {@link BioCollection} of {@link BioPathway}
+     * @return a {@link BioCollection} of {@link BioGene}
      */
     public BioCollection<BioGene> getGenesFromPathways(BioCollection<BioPathway> pathways) {
         BioCollection<BioGene> genes = new BioCollection<>();
@@ -1059,24 +1255,27 @@ public class BioNetwork extends BioEntity {
             if (!this.pathways.contains(p)) {
                 throw new IllegalArgumentException("Pathway " + p + " not present in the network");
             }
-            p.getReactions().forEach(r -> {
-                genes.addAll(r.getGenes());
-            });
+            p.getReactions().forEach(r -> genes.addAll(r.getGenes()));
         }
 
         return genes;
 
     }
 
+    /**
+     * Get genes from pathways
+     *
+     * @param pathways 0 or several {@link BioPathway}
+     *
+     * @return a {@link BioCollection} of {@link BioGene}
+     */
     public BioCollection<BioGene> getGenesFromPathways(BioPathway... pathways) {
         BioCollection<BioGene> genes = new BioCollection<>();
         for (BioPathway p : pathways) {
             if (!this.pathways.contains(p)) {
                 throw new IllegalArgumentException("Pathway " + p + " not present in the network");
             }
-            p.getReactions().forEach(r -> {
-                genes.addAll(r.getGenes());
-            });
+            p.getReactions().forEach(r -> genes.addAll(r.getGenes()));
         }
 
         return genes;
@@ -1086,8 +1285,8 @@ public class BioNetwork extends BioEntity {
     /**
      * Return genes involved in enzymes
      *
-     * @param enzymes
-     * @return
+     * @param enzymes a {@link BioCollection of enzymes} of {@link BioEnzyme}
+     * @return a {@link BioCollection} of {@link BioGene}
      */
     public BioCollection<BioGene> getGenesFromEnzymes(BioCollection<BioEnzyme> enzymes) {
 
@@ -1106,8 +1305,8 @@ public class BioNetwork extends BioEntity {
     /**
      * Return the collection of genes coding for an enzyme
      *
-     * @param e
-     * @return
+     * @param e a {@link BioEnzyme}
+     * @return a {@link BioCollection} of {@link BioGene}
      */
     public BioCollection<BioGene> getGenesFromEnzyme(BioEnzyme e) {
 
@@ -1141,7 +1340,10 @@ public class BioNetwork extends BioEntity {
     /**
      * Get pathways from gene ids
      *
+     * @param genes a {@link BioCollection} of {@link BioGene}
      * @param all if true, the pathway must contain all the genes
+     *
+     * @return a {@link BioCollection} of {@link BioPathway}
      */
     public BioCollection<BioPathway> getPathwaysFromGenes(BioCollection<BioGene> genes, Boolean all) {
         for (BioGene g : genes) {
@@ -1150,9 +1352,9 @@ public class BioNetwork extends BioEntity {
             }
         }
 
-        HashSet<BioPathway> pathwaySet = new HashSet<>(this.getPathwaysView().stream().
-                filter(p -> all ? p.getGenes().containsAll(genes) : !Collections.disjoint(p.getGenes(), genes)).
-                collect(Collectors.toSet()));
+        HashSet<BioPathway> pathwaySet = this.getPathwaysView().stream().
+                filter(p -> all ? p.getGenes().containsAll(genes) : !Collections.disjoint(p.getGenes(), genes))
+                .collect(Collectors.toCollection(HashSet::new));
 
         return new BioCollection<>(pathwaySet);
 
@@ -1160,6 +1362,14 @@ public class BioNetwork extends BioEntity {
 
     /**
      * get pathways from reactions
+     *
+     * @param reactions a {@link BioCollection} of {@link BioReaction}
+     * @param all if true, the pathway must contain all the reactions
+     *
+     * @return a {@link BioCollection} of {@link BioPathway}
+     *
+     * @throws IllegalArgumentException if a reaction is missing in the network
+     *
      */
     public BioCollection<BioPathway> getPathwaysFromReactions(BioCollection<BioReaction> reactions, Boolean all) {
         for (BioReaction r : reactions) {
@@ -1168,9 +1378,11 @@ public class BioNetwork extends BioEntity {
             }
         }
 
-        HashSet<BioPathway> pathwaySet = new HashSet<>(this.getPathwaysView().stream().
-                filter(p -> all ? p.getReactions().containsAll(reactions) : !Collections.disjoint(p.getReactions(), reactions)).
-                collect(Collectors.toSet()));
+        HashSet<BioPathway> pathwaySet = this.getPathwaysView().stream().
+                filter(p -> all
+                        ? p.getReactions().containsAll(reactions)
+                        : !Collections.disjoint(p.getReactions(), reactions))
+                .collect(Collectors.toCollection(HashSet::new));
 
         return new BioCollection<>(pathwaySet);
 
@@ -1178,32 +1390,63 @@ public class BioNetwork extends BioEntity {
 
     /**
      * get pathways from reaction
+     *
+     * @param r a {@link BioReaction}
+     *
+     * @return a {@link BioCollection} of {@link BioPathway}
+     *
+     * throws {@link IllegalArgumentException} if r is not in the network
+     *
      */
     public BioCollection<BioPathway> getPathwaysFromReaction(BioReaction r) {
         if (!this.reactions.contains(r)) {
             throw new IllegalArgumentException("Reaction " + r + " not present in the network");
         }
 
-        HashSet<BioPathway> pathwaySet = new HashSet<>(this.getPathwaysView().stream().filter(p -> {
+        HashSet<BioPathway> pathwaySet = this.getPathwaysView().stream().filter(p -> {
 
             Set<String> reactionRefIds = p.getReactions().getIds();
 
             return reactionRefIds.contains(r.getId());
 
-        }).collect(Collectors.toSet()));
+        }).collect(Collectors.toCollection(HashSet::new));
 
         return new BioCollection<>(pathwaySet);
 
     }
 
+    /**
+     * get reactions from pathways
+     * @param pathways a {@link BioCollection} of {@link BioPathway}
+     * @return a {@link BioCollection} of {@link BioReaction}
+     *
+     * @throws IllegalArgumentException if one of the pathways is not in the network
+     *
+     */
     public BioCollection<BioReaction> getReactionsFromPathways(BioCollection<BioPathway> pathways) {
 
         BioCollection<BioReaction> reactions = new BioCollection<>();
         for (BioPathway p : pathways) {
-            if (!this.pathways.contains(p)) {
-                throw new IllegalArgumentException("Reaction " + p + " not present in the network");
-            }
-            reactions.addAll(p.getReactions());
+            reactions.addAll(this.getReactionsFromPathway(p));
+        }
+
+        return reactions;
+
+    }
+
+    /**
+     * get reactions from pathways
+     * @param pathways one or several {@link BioPathway}
+     * @return a {@link BioCollection} of {@link BioReaction}
+     *
+     * @throws IllegalArgumentException if one of the pathways is not in the network
+     *
+     */
+    public BioCollection<BioReaction> getReactionsFromPathways(BioPathway... pathways) {
+
+        BioCollection<BioReaction> reactions = new BioCollection<>();
+        for (BioPathway p : pathways) {
+            reactions.addAll(this.getReactionsFromPathway(p));
         }
 
         return reactions;
@@ -1214,75 +1457,37 @@ public class BioNetwork extends BioEntity {
     /**
      * Get reactions involved in a pathway
      *
-     * @param p
-     * @return
+     * @param p a {@link BioPathway}
+     * @return a {@link BioCollection} of {@link BioReaction}
+     *
+     * @throws IllegalArgumentException if the pathway is not in the network
+     *
      */
-    public BioCollection<BioReaction> getReactionsFromPathway(BioPathway p) {
+    private BioCollection<BioReaction> getReactionsFromPathway(BioPathway p) {
 
+        if (!this.pathways.contains(p)) {
+            throw new IllegalArgumentException("Pathway " + p + " not present in the network");
+        }
         return p.getReactions().getView();
     }
 
-    /**
-     * @param cpd
-     * @return the list of reactionNodes which involves the compound cpd as
-     *         substrate
-     */
 
     /**
-     * @return the pathways
+     * Get left reactants of a reaction
+     * @param r a {@link BioReaction}
+     * @return a {@link BioCollection} of {@link BioReactant}
      */
-    public BioCollection<BioPathway> getPathwaysView() {
-        return pathways.getView();
-    }
-
-    /**
-     * @return the metabolites
-     */
-    public BioCollection<BioMetabolite> getMetabolitesView() {
-        return metabolites.getView();
-    }
-
-    /**
-     * @return the proteins
-     */
-    public BioCollection<BioProtein> getProteinsView() {
-        return proteins.getView();
-    }
-
-    /**
-     * @return the genes
-     */
-    public BioCollection<BioGene> getGenesView() {
-        return genes.getView();
-    }
-
-    /**
-     * @return the reactions
-     */
-    public BioCollection<BioReaction> getReactionsView() {
-        return reactions.getView();
-    }
-
-    /**
-     * @return the compartments
-     */
-    public BioCollection<BioCompartment> getCompartmentsView() {
-        return compartments.getView();
-    }
-
-    /**
-     * @return the enzymes
-     */
-    public BioCollection<BioEnzyme> getEnzymesView() {
-        return enzymes.getView();
-    }
-
     public BioCollection<BioReactant> getLeftReactants(BioReaction r) {
 
         return r.getLeftReactants().getView();
 
     }
 
+    /**
+     * Get right reactants of a reaction
+     * @param r a {@link BioReaction}
+     * @return a {@link BioCollection} of {@link BioReactant}
+     */
     public BioCollection<BioReactant> getRightReactants(BioReaction r) {
 
         return r.getRightReactants().getView();
@@ -1290,9 +1495,9 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     * @param r
-     * @param left
-     * @return
+     * Get left or right reactants of a reaction
+     * @param r a {@link BioReaction}
+     * @return a {@link BioCollection} of {@link BioReactant}
      */
     private BioCollection<BioMetabolite> getLeftsOrRights(BioReaction r, Boolean left) {
 
@@ -1304,31 +1509,25 @@ public class BioNetwork extends BioEntity {
 
         BioCollection<BioMetabolite> metabolites = new BioCollection<>();
 
-        reactants.forEach(m -> {
-
-            metabolites.add(m.getMetabolite());
-
-        });
+        reactants.forEach(m -> metabolites.add(m.getMetabolite()));
 
         return metabolites;
 
     }
 
     /**
-     * Return the left metabolites of a reaction
-     *
-     * @param r
-     * @return
+     * Get left metabolites of a reaction
+     * @param r a {@link BioReaction}
+     * @return a {@link BioCollection} of {@link BioMetabolite}
      */
     public BioCollection<BioMetabolite> getLefts(BioReaction r) {
         return this.getLeftsOrRights(r, true);
     }
 
     /**
-     * Return the right metabolites of a reaction
-     *
-     * @param r
-     * @return
+     * Get right metabolites of a reaction
+     * @param r a {@link BioReaction}
+     * @return a {@link BioCollection} of {@link BioMetabolite}
      */
     public BioCollection<BioMetabolite> getRights(BioReaction r) {
         return this.getLeftsOrRights(r, false);
@@ -1337,8 +1536,8 @@ public class BioNetwork extends BioEntity {
     /**
      * Return all the metabolites involved in a set of reactions
      *
-     * @param reactions
-     * @return
+     * @param reactions a {@link BioCollection} of {@link BioReaction}
+     * @return a {@link BioCollection} of {@link BioMetabolite}
      */
     public BioCollection<BioMetabolite> getMetabolitesFromReactions(BioCollection<BioReaction> reactions) {
 
@@ -1357,8 +1556,8 @@ public class BioNetwork extends BioEntity {
     /**
      * Get all the reactions where the metabolite m is involved
      *
-     * @param m
-     * @return
+     * @param m a {@link BioMetabolite}
+     * @return a {@link BioCollection} of {@link BioReaction}
      */
     public BioCollection<BioReaction> getReactionsFromMetabolite(BioMetabolite m) {
 
@@ -1371,8 +1570,14 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     * @param e
-     * @return
+     *
+     * Get compartments where is involved an entity
+     *
+     * @param e a {@link BioEntity}
+     * @return a {@link BioCollection} of {@link BioCompartment}
+     *
+     * @throws IllegalArgumentException if the entity is not present in the network
+     *
      */
     public BioCollection<BioCompartment> getCompartmentsOf(BioEntity e) {
 
@@ -1390,6 +1595,55 @@ public class BioNetwork extends BioEntity {
 
         return cpts;
 
+    }
+
+    /**
+     * @return an unmodifiable {@link BioCollection} copy of the pathways
+     */
+    public BioCollection<BioPathway> getPathwaysView() {
+        return pathways.getView();
+    }
+
+    /**
+     * @return an unmodifiable {@link BioCollection} copy of the metabolites
+     */
+    public BioCollection<BioMetabolite> getMetabolitesView() {
+        return metabolites.getView();
+    }
+
+    /**
+     * @return an unmodifiable {@link BioCollection} copy of the proteins
+     */
+    public BioCollection<BioProtein> getProteinsView() {
+        return proteins.getView();
+    }
+
+    /**
+     * @return an unmodifiable {@link BioCollection} copy of the genes
+     */
+    public BioCollection<BioGene> getGenesView() {
+        return genes.getView();
+    }
+
+    /**
+     * @return an unmodifiable {@link BioCollection} copy of the reactions
+     */
+    public BioCollection<BioReaction> getReactionsView() {
+        return reactions.getView();
+    }
+
+    /**
+     * @return an unmodifiable {@link BioCollection} copy of the compartments
+     */
+    public BioCollection<BioCompartment> getCompartmentsView() {
+        return compartments.getView();
+    }
+
+    /**
+     * @return an unmodifiable {@link BioCollection} copy of the enzymes
+     */
+    public BioCollection<BioEnzyme> getEnzymesView() {
+        return enzymes.getView();
     }
 
     @Override

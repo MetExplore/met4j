@@ -89,17 +89,17 @@ public class GroupPathwayWriterTest {
         ListOf<Group> groups = plugin.getListOfGroups();
 
         Group p1Group = groups.get(p1.getId());
-        assertEquals(network.getReactionsFromPathway(p1).size(), p1Group.getMemberCount());
+        assertEquals(network.getReactionsFromPathways(p1).size(), p1Group.getMemberCount());
 
         Group p2Group = groups.get(p2.getId());
-        assertEquals(network.getReactionsFromPathway(p2).size(), p2Group.getMemberCount());
+        assertEquals(network.getReactionsFromPathways(p2).size(), p2Group.getMemberCount());
 
-        Set<String> refsIdsP1 = network.getReactionsFromPathway(p1).getIds();
+        Set<String> refsIdsP1 = network.getReactionsFromPathways(p1).getIds();
         Set<String> testsIdsP1 = p1Group.getListOfMembers().stream().map(member -> member.getIdRef()).collect(Collectors.toSet());
 
         assertEquals(refsIdsP1, testsIdsP1);
 
-        Set<String> refsIdsP2 = network.getReactionsFromPathway(p2).getIds();
+        Set<String> refsIdsP2 = network.getReactionsFromPathways(p2).getIds();
         Set<String> testsIdsP2 = p2Group.getListOfMembers().stream().map(member -> member.getIdRef()).collect(Collectors.toSet());
 
         assertEquals(refsIdsP2, testsIdsP2);

@@ -173,24 +173,23 @@ public abstract class BioEntity {
 	 * TODO : voir la coherence du code entre les deux methodes addRef. Celle ci
 	 * devrait se terminer par un this.addRef(ref)
 	 * 
-	 * @param dbName
-	 * @param dbId
-	 * @param confidenceLevel
-	 * @param relation
-	 * @param origin
+	 * @param dbName name of the database
+	 * @param dbId id of the database
+	 * @param confidenceLevel confidence level
+	 * @param relation Type of relation
+	 * @param origin Origin database
 	 */
 	public void addRef(String dbName, String dbId, int confidenceLevel, String relation, String origin) {
 		BioRef ref = new BioRef(origin, dbName, dbId, confidenceLevel);
 		ref.setLogicallink(relation);
-		if (this.refs.containsKey(dbName)) {
-			refs.get(dbName).add(ref);
-		} else {
-			Set<BioRef> refList = new HashSet<>();
-			refList.add(ref);
-			this.refs.put(dbName, refList);
-		}
+		this.addRef(ref);
 	}
 
+	/**
+	 *
+	 * Add a reference
+	 * @param ref a {@link BioRef}
+	 */
 	public void addRef(BioRef ref) {
 		String dbName = ref.getDbName();
 		if (!this.hasRef(ref)) {
@@ -204,30 +203,50 @@ public abstract class BioEntity {
 		}
 	}
 
+	/**
+	 * Get all refs
+	 * @return a {@link HashMap} for which the key is the database name and the values the set of {@link BioRef}
+	 * associated to this database
+	 */
 	public HashMap<String, Set<BioRef>> getRefs() {
 		return this.refs;
 	}
 
+	/**
+	 * Get all refs associated to a database
+	 *
+	 * @param dbName  the database name
+	 *
+	 * @return a {@link Set} of {@link BioRef}
+	 */
 	public Set<BioRef> getRefs(String dbName) {
-		if (this.refs.containsKey(dbName)) {
-			return this.refs.get(dbName);
-		} else {
-			return null;
-		}
+		return this.refs.getOrDefault(dbName, null);
 	}
 
-	public boolean hasRef(String dbName, String dbId) {
+	/**
+	 * Check if the entity has a reference whose the database name is dbName and that contains a refence
+	 * whose the id is refId
+	 * @param dbName the database name
+	 * @param refId the reference id
+	 * @return true if the entity has the reference
+	 */
+	public boolean hasRef(String dbName, String refId) {
 		if (this.refs == null || !this.refs.containsKey(dbName)) {
 			return false;
 		}
 		for (BioRef ref : this.refs.get(dbName)) {
-			if (ref.getId().equals(dbId)) {
+			if (ref.getId().equals(refId)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
+	/**
+	 * Check if the entity contains a reference
+	 * @param unkRef a {@link BioRef}
+	 * @return true if the entity has the reference
+	 */
 	public boolean hasRef(BioRef unkRef) {
 
 		if (this.refs == null || !this.refs.containsKey(unkRef.dbName)) {

@@ -746,9 +746,7 @@ public class MetexploreXmlReader {
 
                                 BioUnitDefinition ud;
                                 if (units != null && !units.equals("")) {
-
                                     ud = NetworkAttributes.getUnitDefinition(network, units);
-
                                 } else {
                                     throw new ParseException("Invalid unit definition for reaction " + rxn.getId());
                                 }

@@ -44,6 +44,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 public class EnzymesPerReaction extends ObjectsPerObject {
 
+    /**
+     * Constructor
+     * @param network a {@link BioNetwork}
+     */
     public EnzymesPerReaction(BioNetwork network) {
 
         super(network);
@@ -57,9 +61,9 @@ public class EnzymesPerReaction extends ObjectsPerObject {
 
         BioCollection<BioReaction> reactions = network.getReactionsView();
 
-        Integer sum = 0;
+        int sum = 0;
 
-        Integer nbReactionWithEnzymes = 0;
+        int nbReactionWithEnzymes = 0;
 
         for (BioReaction reaction : reactions) {
 
@@ -85,7 +89,7 @@ public class EnzymesPerReaction extends ObjectsPerObject {
         }
 
 
-        mean = sum.doubleValue() / nbReactionWithEnzymes.doubleValue();
+        mean = (double) sum / (double) nbReactionWithEnzymes;
 
     }
 }

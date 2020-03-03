@@ -35,18 +35,26 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
-//07-04-2017 refactoring
 /**
- * @author ludo & clement
+ * @author Ludo Cottret and Clement Frainay
  * 
  *
  */
 public abstract class BioPhysicalEntity extends BioEntity {
-	
+
+	/**
+	 * Constructor
+	 * @param id the id of the BioPhysicalEntity
+	 */
 	public BioPhysicalEntity(String id) {
 		super(id);
 	}
-	
+
+	/**
+	 * Constructor
+	 * @param id the id of the BioPhysicalEntity
+	 * @param name the name of the BioPhysicalEntity
+	 */
 	public BioPhysicalEntity(String id, String name) {
 		super(id, name);
 	}

@@ -128,7 +128,9 @@ public class JsbmlToBioNetworkTest {
 		model.setName("modelName");
 
 		c1 = model.createCompartment("c1");
+		c1.setName("compartment1");
 		c2 = model.createCompartment("c2");
+		c2.setName("compartment2");
 		c3 = model.createCompartment("c3");
 
 		CompartmentType compartmentType = new CompartmentType("cType");
@@ -278,35 +280,39 @@ public class JsbmlToBioNetworkTest {
 
 		assertEquals(testIds, parser.getNetwork().getCompartmentsView().getIds());
 
-		BioCompartment c1 = parser.getNetwork().getCompartmentsView().get("c1");
-		BioCompartment c2 = parser.getNetwork().getCompartmentsView().get("c2");
-		BioCompartment c3 = parser.getNetwork().getCompartmentsView().get("c3");
+		BioCompartment c1Test = parser.getNetwork().getCompartmentsView().get("c1");
+		BioCompartment c2Test = parser.getNetwork().getCompartmentsView().get("c2");
+		BioCompartment c3Test = parser.getNetwork().getCompartmentsView().get("c3");
 
-		assertNotNull(c1);
-		assertNotNull(c2);
-		assertNotNull(c3);
+		assertNotNull(c1Test);
+		assertNotNull(c2Test);
+		assertNotNull(c3Test);
+
+		assertEquals(c1.getName(), c1Test.getName() );
+		assertEquals(c2.getName(), c2Test.getName() );
+		assertEquals(c3.getId(), c3Test.getName() );
 
 		// test outside compartment
 
-		BioCompartment cOutside = CompartmentAttributes.getOutsideCompartment(c1);
-		assertEquals(c2, cOutside);
+		BioCompartment cOutside = CompartmentAttributes.getOutsideCompartment(c1Test);
+		assertEquals(c2Test, cOutside);
 
-		cOutside = CompartmentAttributes.getOutsideCompartment(c2);
-		assertEquals(c1, cOutside);
+		cOutside = CompartmentAttributes.getOutsideCompartment(c2Test);
+		assertEquals(c1Test, cOutside);
 
 		// test units
-		BioUnitDefinition u = CompartmentAttributes.getUnitDefinition(c1);
+		BioUnitDefinition u = CompartmentAttributes.getUnitDefinition(c1Test);
 
 		assertNotNull(u);
 
 		assertTrue(u.getUnits().containsKey(Kind.METRE.getName()));
 
 		// test size
-		Double size = CompartmentAttributes.getSize(c1);
+		Double size = CompartmentAttributes.getSize(c1Test);
 		assertEquals(2.0, size, 0.0);
 
 		// test spatial dimensions
-		int dims = CompartmentAttributes.getSpatialDimensions(c1);
+		int dims = CompartmentAttributes.getSpatialDimensions(c1Test);
 		assertEquals(4, dims);
 
 	}

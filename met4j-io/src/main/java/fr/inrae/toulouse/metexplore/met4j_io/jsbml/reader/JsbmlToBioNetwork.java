@@ -120,7 +120,6 @@ public class JsbmlToBioNetwork {
 	/**
 	 * Parse the jsbml Model object and retrieves basic information from it
 	 * 
-	 * @param model the jsbml model
 	 */
 	private void parseNetworkData() {
 
@@ -135,7 +134,6 @@ public class JsbmlToBioNetwork {
 	 * Default way of parsing sbml UnitDefinition. Needs to be overridden to modify
 	 * behavior
 	 * 
-	 * @param model the jsbml model
 	 */
 	private void parseListOfUnitDefinitions() {
 
@@ -479,7 +477,7 @@ public class JsbmlToBioNetwork {
 
 			if(sboTerm != null)
 			{
-				if(sboTerm.compareToIgnoreCase("SBO:0000252")==0 || sboTerm.compareToIgnoreCase("SBO:0000297")==0)
+				if(sboTerm.compareToIgnoreCase("SBO:0000252")==0)
 				{
 					validSboTerm = false;
 					hasInvalidSboTerms = true;
@@ -491,6 +489,18 @@ public class JsbmlToBioNetwork {
 					specieName = specieName.replaceFirst("_.$", "");
 					BioGene gene = new BioGene(specieId, specieName);
 					this.getNetwork().add(gene);
+				}
+				else if(sboTerm.compareToIgnoreCase("SBO:0000014")==0 || sboTerm.compareToIgnoreCase("SBO:0000297")==0)
+				{
+					validSboTerm = false;
+					hasInvalidSboTerms = true;
+					// It's considered as an enzyme
+					specieId = specieId.replaceFirst("^_", "");
+					specieId = specieId.replaceFirst("_.$", "");
+					specieName = specieName.replaceFirst("^_", "");
+					specieName = specieName.replaceFirst("_.$", "");
+					BioEnzyme enz = new BioEnzyme(specieId, specieName);
+					this.getNetwork().add(enz);
 				}
 			}
 
@@ -551,8 +561,8 @@ public class JsbmlToBioNetwork {
 
 		if(hasInvalidSboTerms)
 		{
-			System.err.println("[warning] Sbo term for some species are not metabolite sbo terms, they haven't been imported or have been imported, " +
-					"depending on their sbo term (252 or 297).");
+			System.err.println("[warning] Sbo term for some species are not metabolite sbo terms, they haven't been imported or have been imported as genes, " +
+					"depending on their sbo term (SBO:0000252) or as enzymes (SBO:0000014 or SBO:0000297).");
 		}
 	}
 
@@ -639,7 +649,6 @@ public class JsbmlToBioNetwork {
 	/**
 	 * Launch the parsing of the jsbml model by the different packages
 	 * 
-	 * @param model the jsbml model
 	 */
 	public void parsePackageAdditionalData() {
 		for (PackageParser parser : this.getSetOfPackage()) {

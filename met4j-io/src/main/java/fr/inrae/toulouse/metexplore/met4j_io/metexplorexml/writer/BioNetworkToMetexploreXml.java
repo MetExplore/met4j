@@ -97,8 +97,6 @@ public class BioNetworkToMetexploreXml {
 
         BioUnitDefinitionCollection unitDefinitions = NetworkAttributes.getUnitDefinitions(network);
 
-        NetworkAttributes.addUnitDefinitions(network, new BioUnitDefinitionCollection());
-
         if (unitDefinitions == null || unitDefinitions.size() == 0) {
             System.err.println("No unit definition, set defaults");
             BioUnitDefinition u = new BioUnitDefinition();

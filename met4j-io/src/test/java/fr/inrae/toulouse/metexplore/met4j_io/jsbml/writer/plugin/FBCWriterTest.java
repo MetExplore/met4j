@@ -256,9 +256,9 @@ public class FBCWriterTest {
 
 		FBCReactionPlugin rxn2Plugin = (FBCReactionPlugin) reaction2.getPlugin("fbc");
 
-		assertNull(rxn2Plugin.getUpperFluxBoundInstance());
+		assertEquals(Flux.FLUXMAX,rxn2Plugin.getUpperFluxBoundInstance().getValue(), 0 );
+		assertEquals(Flux.FLUXMIN,rxn2Plugin.getLowerFluxBoundInstance().getValue(), 0 );
 
-		assertNull(rxn2Plugin.getLowerFluxBoundInstance());
 
 	}
 

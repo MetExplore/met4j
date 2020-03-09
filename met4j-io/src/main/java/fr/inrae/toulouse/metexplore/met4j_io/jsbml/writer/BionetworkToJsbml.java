@@ -179,22 +179,34 @@ public class BionetworkToJsbml {
         if (unitDefinitions != null) {
 
             for (BioUnitDefinition bioUD : unitDefinitions) {
-                UnitDefinition ud = model.createUnitDefinition();
-
-                ud.setId(StringUtils.convertToSID(bioUD.getId()));
-                ud.setName(bioUD.getName());
-
-                for (UnitSbml bioUnits : bioUD.getUnits().values()) {
-                    Unit libSBMLUnit = ud.createUnit();
-                    libSBMLUnit.setExponent(bioUnits.getExponent());
-                    libSBMLUnit.setMultiplier(bioUnits.getMultiplier());
-                    libSBMLUnit.setScale(bioUnits.getScale());
-
-                    libSBMLUnit.setKind(Kind.valueOf(bioUnits.getKind().toUpperCase()));
-                }
+               this.createModelUnitDefinition(bioUD);
             }
         }
     }
+
+    protected void createModelUnitDefinition(BioUnitDefinition bioUD) {
+
+        String id = StringUtils.convertToSID(bioUD.getId());
+
+        if(model.getUnitDefinition(id) == null) {
+            UnitDefinition ud = model.createUnitDefinition();
+
+            System.err.println("id " + id);
+            ud.setId(id);
+            ud.setName(bioUD.getName());
+
+            for (UnitSbml bioUnits : bioUD.getUnits().values()) {
+//            if(ud.getListOfUnits().)
+                Unit libSBMLUnit = ud.createUnit();
+                libSBMLUnit.setExponent(bioUnits.getExponent());
+                libSBMLUnit.setMultiplier(bioUnits.getMultiplier());
+                libSBMLUnit.setScale(bioUnits.getScale());
+
+                libSBMLUnit.setKind(Kind.valueOf(bioUnits.getKind().toUpperCase()));
+            }
+        }
+    }
+
 
     /**
      * @return true if the parse contains the FBC package
@@ -355,61 +367,68 @@ public class BionetworkToJsbml {
             ciNode.setName("FLUX_VALUE");
             law.setMath(ciNode);
 
-            if (ReactionAttributes.getLowerBound(bionetReaction) != null
-                    && ReactionAttributes.getUpperBound(bionetReaction) != null) {
+            Flux lb = ReactionAttributes.getLowerBound(bionetReaction);
+            if (lb == null) {
+                lb = new Flux(bionetReaction.isReversible() ? Flux.FLUXMIN : 0.0);
+                NetworkAttributes.addUnitDefinition(net, lb.unitDefinition);
+                createModelUnitDefinition(lb.unitDefinition);
+            }
 
-                if (!this.containsFbcPackage()) {
+            Flux ub = ReactionAttributes.getUpperBound(bionetReaction);
+            if (ub == null) {
+                ub = new Flux(Flux.FLUXMAX);
+                NetworkAttributes.addUnitDefinition(net,ub.unitDefinition);
+                createModelUnitDefinition(ub.unitDefinition);
+            }
+
+            if (level < 3) {
+                Parameter LBound = new Parameter();
+                LBound.setId("LOWER_BOUND");
+                LBound.setValue(lb.value);
+                LBound.setUnits(StringUtils
+                        .convertToSID(lb.unitDefinition.getId()));
+
+                law.addParameter(LBound);
+
+                Parameter UBound = new Parameter();
+                UBound.setId("UPPER_BOUND");
+                UBound.setValue(ub.value);
+                UBound.setUnits(StringUtils
+                        .convertToSID(ub.unitDefinition.getId()));
+
+                law.addParameter(UBound);
+            } else {
+                LocalParameter LBound = law.createLocalParameter();
+                LBound.setId("LOWER_BOUND");
+                LBound.setValue(lb.value);
+                LBound.setUnits(StringUtils
+                        .convertToSID(lb.unitDefinition.getId()));
+
+                LocalParameter UBound = law.createLocalParameter();
+                UBound.setId("UPPER_BOUND");
+                UBound.setValue(ub.value);
+                UBound.setUnits(StringUtils
+                        .convertToSID(ub.unitDefinition.getId()));
+            }
+
+            FluxCollection additionalFluxParams = ReactionAttributes.getAdditionalFluxParams(bionetReaction);
+            if (additionalFluxParams != null) {
+
+                for (Flux flux : additionalFluxParams) {
+
                     if (level < 3) {
-                        Parameter LBound = new Parameter();
-                        LBound.setId("LOWER_BOUND");
-                        LBound.setValue(ReactionAttributes.getLowerBound(bionetReaction).value);
-                        LBound.setUnits(StringUtils
-                                .convertToSID(ReactionAttributes.getLowerBound(bionetReaction).unitDefinition.getId()));
+                        Parameter param = new Parameter();
+                        param.setId(flux.getId());
+                        param.setValue(flux.value);
+                        param.setUnits(StringUtils.convertToSID(flux.unitDefinition.getId()));
 
-                        law.addParameter(LBound);
-
-                        Parameter UBound = new Parameter();
-                        UBound.setId("UPPER_BOUND");
-                        UBound.setValue(ReactionAttributes.getUpperBound(bionetReaction).value);
-                        UBound.setUnits(StringUtils
-                                .convertToSID(ReactionAttributes.getLowerBound(bionetReaction).unitDefinition.getId()));
-
-                        law.addParameter(UBound);
+                        law.addParameter(param);
                     } else {
-                        LocalParameter LBound = law.createLocalParameter();
-                        LBound.setId("LOWER_BOUND");
-                        LBound.setValue(ReactionAttributes.getLowerBound(bionetReaction).value);
-                        LBound.setUnits(StringUtils
-                                .convertToSID(ReactionAttributes.getLowerBound(bionetReaction).unitDefinition.getId()));
+                        LocalParameter param = law.createLocalParameter();
+                        param.setId(flux.getId());
+                        param.setValue(flux.value);
+                        param.setUnits(StringUtils.convertToSID(flux.unitDefinition.getId()));
 
-                        LocalParameter UBound = law.createLocalParameter();
-                        UBound.setId("UPPER_BOUND");
-                        UBound.setValue(ReactionAttributes.getUpperBound(bionetReaction).value);
-                        UBound.setUnits(StringUtils
-                                .convertToSID(ReactionAttributes.getUpperBound(bionetReaction).unitDefinition.getId()));
-                    }
-
-                }
-
-                FluxCollection additionalFluxParams = ReactionAttributes.getAdditionalFluxParams(bionetReaction);
-                if (additionalFluxParams != null) {
-
-                    for (Flux flux : additionalFluxParams) {
-
-                        if (level < 3) {
-                            Parameter param = new Parameter();
-                            param.setId(flux.getId());
-                            param.setValue(flux.value);
-                            param.setUnits(StringUtils.convertToSID(flux.unitDefinition.getId()));
-
-                            law.addParameter(param);
-                        } else {
-                            LocalParameter param = law.createLocalParameter();
-                            param.setId(flux.getId());
-                            param.setValue(flux.value);
-                            param.setUnits(StringUtils.convertToSID(flux.unitDefinition.getId()));
-
-                        }
                     }
                 }
             }

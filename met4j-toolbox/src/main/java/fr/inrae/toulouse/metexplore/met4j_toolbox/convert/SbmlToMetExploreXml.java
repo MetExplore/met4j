@@ -34,25 +34,19 @@
  *
  */
 
-package fr.inrae.toulouse.metexplore.met4j_toolbox.convert.sbml;
+package fr.inrae.toulouse.metexplore.met4j_toolbox.convert;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.AnnotationWriter;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.GroupPathwayWriter;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.NotesWriter;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.PackageWriter;
+import fr.inrae.toulouse.metexplore.met4j_io.metexplorexml.writer.BioNetworkToMetexploreXml;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.Met4jApplication;
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
-import java.util.HashSet;
 
-public class FbcToNotes extends Met4jApplication {
+public class SbmlToMetExploreXml extends Met4jApplication {
+
 
     @Option(name = "-i", usage = "input file", required = true)
     public String inputPath = null;
@@ -60,41 +54,28 @@ public class FbcToNotes extends Met4jApplication {
     @Option(name = "-o", usage = "output file", required = true)
     public String outputPath = null;
 
+
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
 
-        FbcToNotes f = new FbcToNotes();
+        SbmlToMetExploreXml app = new SbmlToMetExploreXml();
 
-        CmdLineParser parser = new CmdLineParser(f);
+        app.parseArguments(args);
 
-        try {
-            parser.parseArgument(args);
-        } catch (CmdLineException e) {
-            System.err.println("Error in arguments");
-            parser.printUsage(System.err);
-            System.exit(0);
-        }
-
-        f.run();
+        app.run();
 
     }
 
-    private void run() throws IOException, Met4jSbmlReaderException {
 
+    public void run() throws IOException, Met4jSbmlReaderException {
         JsbmlReader reader = new JsbmlReader(this.inputPath);
 
         BioNetwork network = reader.read();
 
-        JsbmlWriter writer = new JsbmlWriter(this.outputPath, network, 3, 1, false );
+        BioNetworkToMetexploreXml writer = new BioNetworkToMetexploreXml(network, this.outputPath);
 
-        HashSet<PackageWriter> pkgs = new HashSet();
-        pkgs.add(new AnnotationWriter());
-        pkgs.add(new GroupPathwayWriter());
-        pkgs.add(new NotesWriter(false));
-
-        writer.write(pkgs);
+        writer.write();
 
     }
-
 
     @Override
     public String getLabel() {
@@ -103,9 +84,6 @@ public class FbcToNotes extends Met4jApplication {
 
     @Override
     public String getDescription() {
-        return "Converts FBC package annotations to sbml notes";
+        return "Converts a SBML file to a MetExploreXml file";
     }
-
-
-
 }

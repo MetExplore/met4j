@@ -36,67 +36,23 @@
 
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetGprsFromFile;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.Met4jApplication;
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.IOException;
+public abstract class AbstractSbmlSetAny extends AbstractSbmlSet {
 
-public class SbmlSetGprsFromFile  extends AbstractSbmlSetReaction {
+    @Option(name="-ci", usage="[1] number of the column where are the object ids")
+    protected int colid=1;
 
+    @Option(name="-p", usage="[deactivated] To match the objects in the sbml file, adds the prefix R_ to reactions and M_ to metabolites")
+    protected Boolean p=false;
 
-    @Option(name="-cgpr", usage="[2] number of the column where are the gprs")
-    private int colgpr=2;
+    @Option(name="-s", usage="[deactivated] To match the objects in the sbml file, adds the suffix _comparmentID to metabolites")
+    protected Boolean s=false;
 
-    @Override
-    public String getLabel() {
-        return this.getClass().getSimpleName();
+    @Option(name="-o", usage="[R] Object type in the column id. R:reaction;M:metabolite;P:protein;G:gene")
+    protected String o="R";
+
+    public AbstractSbmlSetAny() {
     }
-
-    @Override
-    public String getDescription() {
-        return "Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and gprs written in a cobra way";
-    }
-
-    public static void main(String[] args) throws IOException {
-
-        SbmlSetGprsFromFile s = new SbmlSetGprsFromFile();
-
-        s.parseArguments(args);
-
-        s.run();
-    }
-
-    private void run() {
-
-        BioNetwork bn = this.readSbml();
-
-        SetGprsFromFile sgff = new SetGprsFromFile(this.colid-1, this.colgpr-1, bn, this.tab, this.c, this.nSkip, this.p, false);
-
-        Boolean flag = true;
-
-        try {
-            flag = sgff.setAttributes();
-        } catch (Exception e) {
-            flag=false;
-        }
-
-        if(!flag) {
-            System.err.println("Error in setting gene associations");
-            System.exit(0);
-        }
-
-        this.writeSbml(bn);
-
-        System.exit(1);
-
-    }
-
 
 }

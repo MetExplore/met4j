@@ -38,21 +38,13 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetGprsFromFile;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.Met4jApplication;
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
+import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetNamesFromFile;
 import org.kohsuke.args4j.Option;
 
-import java.io.IOException;
+public class SbmlSetNamesFromFile extends AbstractSbmlSetAny {
 
-public class SbmlSetGprsFromFile  extends AbstractSbmlSetReaction {
-
-
-    @Option(name="-cgpr", usage="[2] number of the column where are the gprs")
-    private int colgpr=2;
+    @Option(name="-cname", usage="[2] number of the column where are the names")
+    private int colname=2;
 
     @Override
     public String getLabel() {
@@ -61,23 +53,25 @@ public class SbmlSetGprsFromFile  extends AbstractSbmlSetReaction {
 
     @Override
     public String getDescription() {
-        return "Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and gprs written in a cobra way";
+        return "Set Names to network objects from a tabulated file containing the object ids and the names";
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
-        SbmlSetGprsFromFile s = new SbmlSetGprsFromFile();
+        SbmlSetNamesFromFile app = new SbmlSetNamesFromFile();
 
-        s.parseArguments(args);
+        app.parseArguments(args);
 
-        s.run();
+        app.run();
+
     }
 
     private void run() {
 
         BioNetwork bn = this.readSbml();
 
-        SetGprsFromFile sgff = new SetGprsFromFile(this.colid-1, this.colgpr-1, bn, this.tab, this.c, this.nSkip, this.p, false);
+        SetNamesFromFile sgff = new SetNamesFromFile(this.colid-1, this.colname-1,
+                bn, this.tab, this.c, this.nSkip, this.p, this.s, this.o);
 
         Boolean flag = true;
 
@@ -88,13 +82,15 @@ public class SbmlSetGprsFromFile  extends AbstractSbmlSetReaction {
         }
 
         if(!flag) {
-            System.err.println("Error in setting gene associations");
+            System.err.println("Error in SbmlSetNames");
             System.exit(0);
         }
+
 
         this.writeSbml(bn);
 
         System.exit(1);
+
 
     }
 

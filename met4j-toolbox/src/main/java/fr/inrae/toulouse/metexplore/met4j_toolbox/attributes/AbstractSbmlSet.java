@@ -36,8 +36,14 @@
 
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.Met4jApplication;
 import org.kohsuke.args4j.Option;
+
+import java.io.IOException;
 
 public abstract class AbstractSbmlSet extends Met4jApplication {
 
@@ -58,5 +64,41 @@ public abstract class AbstractSbmlSet extends Met4jApplication {
 
     public AbstractSbmlSet() {
     }
+
+    protected BioNetwork readSbml() {
+        JsbmlReader reader = null;
+        try {
+            reader = new JsbmlReader(this.sbml);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Unable to read the sbml file "+this.sbml);
+            System.exit(0);
+        }
+
+        BioNetwork bn = null;
+        try {
+            bn = reader.read();
+        } catch (Met4jSbmlReaderException e) {
+            e.printStackTrace();
+            System.err.println("Problem while reading the sbml file "+this.sbml);
+            System.exit(0);
+        }
+
+        return bn;
+
+    }
+
+    protected void writeSbml(BioNetwork network) {
+        JsbmlWriter writer = new JsbmlWriter(this.out, network);
+
+        try {
+            writer.write();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error in writing the sbml file");
+            System.exit(0);
+        }
+    }
+
 
 }

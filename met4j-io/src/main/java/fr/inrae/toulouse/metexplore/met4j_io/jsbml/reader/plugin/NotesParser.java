@@ -39,6 +39,7 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
+import fr.inrae.toulouse.metexplore.met4j_io.annotations.gpr.GPR;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
@@ -499,13 +500,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
             if (this.getGPRPattern() != null
                     && (m = Pattern.compile(this.getGPRPattern()).matcher(reactionNotes)).find()) {
-
-                FluxReaction flx = new FluxReaction(reaction);
-
-                flx.setReactionGeneAssociation(new GeneAssociation());
                 try {
-                    flx.setReactionGeneAssociation(this.computeGeneAssociation(m.group(1), this.network));
-                    flx.convertGeneAssociationstoComplexes(this.network);
+                    GPR.createGPRfromString(this.network, reaction, m.group(1));
                 } catch (MalformedGeneAssociationStringException e) {
                     NotesParser.errorsAndWarnings.add(e.getLocalizedMessage());
                 }

@@ -34,59 +34,71 @@
  *
  */
 
-package fr.inrae.toulouse.metexplore.met4j_toolbox.generic;
+package fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes;
 
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 
-public abstract class AbstractMet4jApplication {
+import java.io.IOException;
 
+public class SetEcsFromFile extends AbstractSetAttributesFromFile {
     /**
-     * @return the label
+     *
+     * @param colId number of the column where are the reaction ids
+     * @param colAttr number of the column where are the gpr
+     * @param bn BioNetwork
+     * @param fileIn tabulated file
+     * @param c comment string
+     * @param nSkip number of lines to skip at the beginning of the file
+     * @param p if true, to match the reactions in the sbml file, the reaction ids in the tabulated file are formatted in the palsson way
      */
-    public abstract String getLabel();
+    public SetEcsFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s) {
 
-    /**
-     * @return the description
-     */
-    public abstract String getDescription();
+        super(colId, colAttr, bn, fileIn, c, nSkip, REACTION, p, s);
 
-    @Option(name = "-h", usage = "prints the help", required = false)
-    private Boolean h = false;
-
-    private void printHeader()
-    {
-        System.err.println(this.getLabel());
-        System.err.println(this.getDescription());
     }
 
+    /**
+     * Test the ec
+     * TODO : to complete
+     */
+    public Boolean testAttribute(String ec) {
+        return true;
+    }
 
-    protected void parseArguments(String[] args) {
-        CmdLineParser parser = new CmdLineParser(this);
+    /**
+     * Reads the file and sets the attributes
+     * @return
+     * @throws IOException
+     */
+    public Boolean setAttributes() throws IOException {
+
+        Boolean flag = true;
 
         try {
-            parser.parseArgument(args);
-        } catch (CmdLineException e) {
-            if(this.h == false) {
-                this.printHeader();
-                System.err.println("Error in arguments");
-                parser.printUsage(System.err);
-                System.exit(0);
-            }
-            else {
-                this.printHeader();
-                parser.printUsage(System.err);
-                System.exit(1);
-            }
+            flag = this.test();
+        } catch (IOException e) {
+            return false;
         }
 
-        if(this.h == true)
-        {
-            this.printHeader();
-            parser.printUsage(System.err);
-            System.exit(1);
+        if(!flag) {
+            return false;
         }
+
+        int n = 0;
+
+        for(String id : this.getIdAttributeMap().keySet()) {
+
+            n++;
+
+            String EC = this.getIdAttributeMap().get(id);
+
+            this.getNetwork().getReactionsView().get(id).setEcNumber(EC);
+
+        }
+
+        System.err.println(n+" reactions processed");
+
+        return flag;
+
     }
-
 }

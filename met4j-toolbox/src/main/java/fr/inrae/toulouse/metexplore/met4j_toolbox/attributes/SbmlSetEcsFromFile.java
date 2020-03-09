@@ -34,59 +34,57 @@
  *
  */
 
-package fr.inrae.toulouse.metexplore.met4j_toolbox.generic;
+package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetEcsFromFile;
 import org.kohsuke.args4j.Option;
 
-public abstract class AbstractMet4jApplication {
+public class SbmlSetEcsFromFile extends AbstractSbmlSetReaction {
 
-    /**
-     * @return the label
-     */
-    public abstract String getLabel();
 
-    /**
-     * @return the description
-     */
-    public abstract String getDescription();
+    @Option(name="-cec", usage="[2] number of the column where are the ecs")
+    private int colec=2;
 
-    @Option(name = "-h", usage = "prints the help", required = false)
-    private Boolean h = false;
 
-    private void printHeader()
-    {
-        System.err.println(this.getLabel());
-        System.err.println(this.getDescription());
+    @Override
+    public String getLabel() {
+        return this.getClass().getSimpleName();
     }
 
+    @Override
+    public String getDescription() {
+        return "Set EC numbers to reactions from a tabulated file containing the reaction ids and the EC";
+    }
 
-    protected void parseArguments(String[] args) {
-        CmdLineParser parser = new CmdLineParser(this);
+    public static void main(String[] args) {
+        SbmlSetEcsFromFile app = new SbmlSetEcsFromFile();
+
+        app.parseArguments(args);
+
+        app.run();
+    }
+
+    private void run() {
+        BioNetwork bn = this.readSbml();
+
+        SetEcsFromFile sgff = new SetEcsFromFile(this.colid-1, this.colec-1, bn, this.tab,
+                this.c, this.nSkip, this.p, false);
+
+        Boolean flag = true;
 
         try {
-            parser.parseArgument(args);
-        } catch (CmdLineException e) {
-            if(this.h == false) {
-                this.printHeader();
-                System.err.println("Error in arguments");
-                parser.printUsage(System.err);
-                System.exit(0);
-            }
-            else {
-                this.printHeader();
-                parser.printUsage(System.err);
-                System.exit(1);
-            }
+            flag = sgff.setAttributes();
+        } catch (Exception e) {
+            flag=false;
         }
 
-        if(this.h == true)
-        {
-            this.printHeader();
-            parser.printUsage(System.err);
-            System.exit(1);
+        if(!flag) {
+            System.err.println("Error in setting ECs");
+            System.exit(0);
         }
+
+        this.writeSbml(bn);
+
     }
-
 }

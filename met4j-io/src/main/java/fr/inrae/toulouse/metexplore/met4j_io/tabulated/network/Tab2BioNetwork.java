@@ -35,7 +35,7 @@
  */
 
 
-package fr.inrae.toulouse.metexplore.met4j_io.tabulated;
+package fr.inrae.toulouse.metexplore.met4j_io.tabulated.network;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;

@@ -38,7 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.convert;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.Tab2BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_io.tabulated.network.Tab2BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.Met4jApplication;
 import org.kohsuke.args4j.Option;
 

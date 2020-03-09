@@ -34,62 +34,61 @@
  *
  */
 
-package fr.inrae.toulouse.metexplore.met4j_toolbox.generic;
+package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetFormulasFromFile;
 import org.kohsuke.args4j.Option;
 
-public abstract class Met4jApplication {
+public class SbmlSetFormulasFromFile extends AbstractSbmlSetMetabolite {
 
-    /**
-     * @return the label
-     */
-    public abstract String getLabel();
+    @Option(name="-cf", usage="[2] number of the column where are the formulas")
+    private int colformula=2;
 
-    /**
-     * @return the description
-     */
-    public abstract String getDescription();
-
-    @Option(name = "-h", usage = "prints the help", required = false)
-    private Boolean h = false;
-
-    private void printHeader()
-    {
-        System.err.println(this.getLabel());
-        System.err.println(this.getDescription());
+    @Override
+    public String getLabel() {
+        return this.getClass().getSimpleName();
     }
 
+    @Override
+    public String getDescription() {
+        return "Set Formula to network metabolites from a tabulated file containing the metabolite ids and the formulas";
+    }
 
-    protected void parseArguments(String[] args) {
-        CmdLineParser parser = new CmdLineParser(this);
+    public static void main(String[] args) {
+
+        SbmlSetFormulasFromFile app = new SbmlSetFormulasFromFile();
+
+        app.parseArguments(args);
+
+        app.run();
+
+    }
+
+    private void run() {
+
+        BioNetwork bn = this.readSbml();
+
+        SetFormulasFromFile sgff = new SetFormulasFromFile(this.colid-1, this.colformula-1,
+                bn, this.tab, this.c, this.nSkip, this.p, this.s);
+
+        Boolean flag = true;
 
         try {
-            parser.parseArgument(args);
-        } catch (CmdLineException e) {
-            if(this.h == false) {
-                this.printHeader();
-                System.err.println("Error in arguments");
-                parser.printUsage(System.err);
-                System.exit(0);
-            }
-            else {
-                this.printHeader();
-                parser.printUsage(System.err);
-                System.exit(1);
-            }
+            flag = sgff.setAttributes();
+        } catch (Exception e) {
+            e.printStackTrace();
+            flag=false;
         }
 
-        if(this.h == true)
-        {
-            this.printHeader();
-            parser.printUsage(System.err);
-            System.exit(1);
+        if(!flag) {
+            System.err.println("Error in SbmlSetFormula");
+            System.exit(0);
         }
 
+        this.writeSbml(bn);
 
-
+        System.exit(1);
     }
 
 

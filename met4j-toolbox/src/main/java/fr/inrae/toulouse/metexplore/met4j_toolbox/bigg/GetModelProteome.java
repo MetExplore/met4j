@@ -36,7 +36,7 @@
 
 package fr.inrae.toulouse.metexplore.met4j_toolbox.bigg;
 
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.Met4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -46,7 +46,6 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -57,7 +56,7 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
-public class GetModelProteome extends Met4jApplication {
+public class GetModelProteome extends AbstractMet4jApplication {
 
     public String description = "Get proteome in fasta format of a model present in BIGG";
     @Option(name = "-m", usage = "[ex: iMM904] id of the BIGG model", required = true)

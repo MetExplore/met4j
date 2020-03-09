@@ -40,12 +40,12 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_io.metexplorexml.writer.BioNetworkToMetexploreXml;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.Met4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 
-public class SbmlToMetExploreXml extends Met4jApplication {
+public class SbmlToMetExploreXml extends AbstractMet4jApplication {
 
 
     @Option(name = "-i", usage = "input file", required = true)

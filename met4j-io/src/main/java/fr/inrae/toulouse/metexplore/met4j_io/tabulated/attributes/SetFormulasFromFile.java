@@ -34,19 +34,63 @@
  *
  */
 
-package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
+package fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes;
 
-import org.kohsuke.args4j.Option;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 
-public abstract class AbstractSbmlSetReaction extends AbstractSbmlSet {
+import java.io.IOException;
 
-    @Option(name="-ci", usage="[1] number of the column where are the reaction ids")
-    protected int colid=1;
+public class SetFormulasFromFile extends AbstractSetAttributesFromFile {
 
-    @Option(name="-p", usage="[deactivated] To match the objects in the sbml file, adds the prefix R_ to reactions")
-    protected Boolean p=false;
+    public SetFormulasFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s) {
 
-    public AbstractSbmlSetReaction() {
-        super();
+        super(colId, colAttr, bn, fileIn, c, nSkip, "M", p, s);
+
     }
+
+    /**
+     * Test the name
+     */
+    public Boolean testAttribute(String formula) {
+        return true;
+    }
+
+    /**
+     * Reads the file and sets the attributes
+     * @return
+     * @throws IOException
+     */
+    public Boolean setAttributes() throws IOException {
+
+        Boolean flag = true;
+
+        try {
+            flag = this.test();
+        } catch (IOException e) {
+            return false;
+        }
+
+        if(!flag) {
+            return false;
+        }
+
+        int n = 0;
+
+        for(String id : this.getIdAttributeMap().keySet()) {
+
+            n++;
+
+            String formula = this.getIdAttributeMap().get(id);
+
+            this.getNetwork().getMetabolitesView().get(id).setChemicalFormula(formula);
+
+        }
+
+
+        System.err.println(n+" attributions");
+
+        return flag;
+
+    }
+
 }

@@ -39,12 +39,12 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.convert;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.network.Tab2BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.Met4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 
-public class Tab2Sbml extends Met4jApplication {
+public class Tab2Sbml extends AbstractMet4jApplication {
 
     @Option(name="-ci", usage="[1] number of the column where are the reaction ids")
     public int colid=1;

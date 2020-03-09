@@ -44,7 +44,7 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.AnnotationWrite
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.GroupPathwayWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.NotesWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.PackageWriter;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.Met4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -52,7 +52,7 @@ import org.kohsuke.args4j.Option;
 import java.io.IOException;
 import java.util.HashSet;
 
-public class FbcToNotes extends Met4jApplication {
+public class FbcToNotes extends AbstractMet4jApplication {
 
     @Option(name = "-i", usage = "input file", required = true)
     public String inputPath = null;

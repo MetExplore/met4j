@@ -40,12 +40,12 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.Met4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 
-public abstract class AbstractSbmlSet extends Met4jApplication {
+public abstract class AbstractSbmlSet extends AbstractMet4jApplication {
 
     @Option(name="-n", usage="[0] Number of lines to skip at the beginning of the tabulated file")
     protected int nSkip = 0;

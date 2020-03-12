@@ -102,7 +102,6 @@ public class SetNamesFromFile extends AbstractSetAttributesFromFile {
                 object = this.getNetwork().getReactionsView().get(id);
             }
 
-            System.err.println("Set name "+name+" to "+object.getId());
             object.setName(name);
         }
 

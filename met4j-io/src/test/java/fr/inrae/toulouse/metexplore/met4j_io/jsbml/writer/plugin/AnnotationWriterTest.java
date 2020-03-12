@@ -91,7 +91,7 @@ public class AnnotationWriterTest {
 
 		r1 = new BioReaction("r1");
 
-		BioRef refR1 = new BioRef("origin1", "dbName1", "id1", 1);
+		BioRef refR1 = new BioRef("origin1", "kegg.reaction", "id1", 1);
 		r1.addRef(refR1);
 		
 		r1.setEcNumber("1.2.3.4");
@@ -103,7 +103,7 @@ public class AnnotationWriterTest {
 
 		m1 = new BioMetabolite("m1");
 
-		BioRef refR2 = new BioRef("origin2", "dbName2", "id2", 2);
+		BioRef refR2 = new BioRef("origin2", "kegg.reaction", "id2", 2);
 		m1.addRef(refR2);
 
 		m1.setInchi("inchi1");
@@ -125,7 +125,7 @@ public class AnnotationWriterTest {
 		network.add(m2);
 
 		c1 = new BioCompartment("c1");
-		BioRef refR3 = new BioRef("origin3", "dbName3", "id3", 3);
+		BioRef refR3 = new BioRef("origin3", "bigg.compartment", "id3", 3);
 		c1.addRef(refR3);
 
 		c2 = new BioCompartment("c2");
@@ -188,7 +188,7 @@ public class AnnotationWriterTest {
 
 		assertNotNull(s1);
 
-		assertTrue(s1.getAnnotationString().contains("http://identifiers.org/dbName2/id2"));
+		assertTrue(s1.getAnnotationString().contains("http://identifiers.org/kegg.reaction/id2"));
 
 	}
 
@@ -238,7 +238,7 @@ public class AnnotationWriterTest {
 
 		assertNotNull(r1);
 
-		assertTrue(r1.getAnnotationString().contains("http://identifiers.org/dbName1/id1"));
+		assertTrue(r1.getAnnotationString().contains("http://identifiers.org/kegg.reaction/id1"));
 
 	}
 	

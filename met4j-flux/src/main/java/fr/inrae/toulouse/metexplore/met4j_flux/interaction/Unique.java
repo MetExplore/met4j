@@ -237,6 +237,8 @@ public class Unique extends Relation {
 		this.priority=pr;
 	}
 
-
+	public Operation getOperation() {
+		return operation;
+	}
 
 }

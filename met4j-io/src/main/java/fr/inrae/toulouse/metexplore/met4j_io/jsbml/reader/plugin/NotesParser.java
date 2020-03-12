@@ -80,45 +80,45 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     /**
      * The default pattern used to retrieve reaction's pathway data
      */
-    public static final String defaultPathwayPattern = ">\\s*SUBSYSTEM:\\s*([^<]+)<";
+    public static final String defaultPathwayPattern = "(?i:>\\s*SUBSYSTEM:\\s*([^<]+)<)";
     /**
      * The default pattern used to retrieve reaction's ec number
      */
-    public static final String defaultECPattern = ">\\s*EC.NUMBER:\\s*([^<]+)<";
+    public static final String defaultECPattern = "(?i:>\\s*EC.NUMBER:\\s*([^<]+)<)";
     /**
      * The default pattern used to retrieve reaction's GPR data
      */
-    public static final String defaultGPRPattern = ">\\s*GENE.{0,1}ASSOCIATION:\\s*([^<]+)<";
+    public static final String defaultGPRPattern = "(?i:>\\s*GENE.{0,1}ASSOCIATION:\\s*([^<]+)<)";
     /**
      * The default pattern used to retrieve reaction's score
      */
-    public static final String defaultscorePattern = ">\\s*SCORE:\\s*([^<]+)<";
+    public static final String defaultscorePattern = "(?i:>\\s*SCORE:\\s*([^<]+)<)";
     /**
      * The default pattern used to retrieve reaction's status
      */
-    public static final String defaultstatusPattern = ">\\s*STATUS:\\s*([^<]+)<";
+    public static final String defaultstatusPattern = "(?i:>\\s*STATUS:\\s*([^<]+)<)";
     /**
      * The default pattern used to retrieve reaction's comment
      */
-    public static final String defaultcommentPattern = ">\\s*COMMENTS:\\s*([^<]+)<";
+    public static final String defaultcommentPattern = "(?i:>\\s*COMMENTS:\\s*([^<]+)<)";
     /**
      * The default pattern used to retrieve reaction's PubMeb references
      */
-    public static final String defaultpmidPattern = "PMID\\s*:\\s*([0-9,;+]+)";
+    public static final String defaultpmidPattern = "(?i:PMID\\s*:\\s*([0-9,;+]+))";
     /**
      * The default pattern used to retrieve metabolite's charge
      */
-    public static final String defaultchargePattern = ">\\s*CHARGE:\\s*([^<]+)<";
+    public static final String defaultchargePattern = "(?i:>\\s*CHARGE:\\s*([^<]+)<)";
     /**
      * The default pattern used to retrieve metabolite's chemical formula
      */
-    public static final String defaultformulaPattern = "(?i)>\\s*FORMULA:\\s*([^<]+)<";
+    public static final String defaultformulaPattern = "(?i:>\\s*FORMULA:\\s*([^<]+)<)";
     /**
      * The default pattern used to retrieve element external identifiers
      */
     public static final String defaultextDBidsPAttern = "[>]+([a-zA-Z\\._0-9 ]+):\\s*([^<]+)<";
-    public static final String defaultInchiPattern = ">\\s*INCHI:\\s*([^<]+)<";
-    public static final String defaultSmilesPattern = ">\\s*SMILES:\\s*([^<]+)<";
+    public static final String defaultInchiPattern = "(?i:>\\s*INCHI:\\s*([^<]+)<)";
+    public static final String defaultSmilesPattern = "(?i:>\\s*SMILES:\\s*([^<]+)<)";
     /**
      * The default separator in Notes values.
      */
@@ -613,10 +613,15 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
                 } else {
                     if (dbName.compareToIgnoreCase(MetaboliteAttributes.INCHI) != 0) {
-                        String[] ids = values.split(this.getSeparator());
-                        for (String value : ids) {
-                            if (!e.hasRef(dbName, value)) {
-                                e.addRef(new BioRef("SBML", dbName, value, 1));
+                        if (!dbName.matches(NotesParser.defaultchargePattern) &&
+                                !dbName.matches(NotesParser.defaultECPattern) &&
+                                !dbName.matches(NotesParser.defaultPathwayPattern) &&
+                                !dbName.matches(NotesParser.defaultformulaPattern)) {
+                            String[] ids = values.split(this.getSeparator());
+                            for (String value : ids) {
+                                if (!e.hasRef(dbName, value)) {
+                                    e.addRef(new BioRef("SBML", dbName, value, 1));
+                                }
                             }
                         }
                     } else {
@@ -625,11 +630,11 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
                         e.addRef(new BioRef("SBML", dbName, inchi, 1));
                     }
                 }
-
                 notes = notes.replace(m.group(0), "");
                 m = Pattern.compile(NotesParser.defaultextDBidsPAttern).matcher(notes);
-
             }
+
+
         }
 
     }

@@ -296,13 +296,16 @@ public class BionetworkToJsbml {
                 if (!isVoid(MetaboliteAttributes.getSboTerm(bioMetab))) {
                     metab.setSBOTerm(MetaboliteAttributes.getSboTerm(bioMetab));
                 } else {
-                    metab.setSBOTerm("SBO:0000299");
+                    metab.setSBOTerm("SBO:0000240");
                 }
 
                 // TODO Ne semble pas exister du côté reader...
                 Boolean hasOnlySubstanceUnits = MetaboliteAttributes.getHasOnlySubstanceUnits(bioMetab);
                 if (hasOnlySubstanceUnits != null) {
                     metab.setHasOnlySubstanceUnits(MetaboliteAttributes.getHasOnlySubstanceUnits(bioMetab));
+                }
+                else {
+                    metab.setHasOnlySubstanceUnits(true);
                 }
 
                 if (MetaboliteAttributes.getInitialAmount(bioMetab) != null) {
@@ -366,6 +369,7 @@ public class BionetworkToJsbml {
             ASTNode ciNode = new ASTNode(Type.NAME);
             ciNode.setName("FLUX_VALUE");
             law.setMath(ciNode);
+
 
             Flux lb = ReactionAttributes.getLowerBound(bionetReaction);
             if (lb == null) {

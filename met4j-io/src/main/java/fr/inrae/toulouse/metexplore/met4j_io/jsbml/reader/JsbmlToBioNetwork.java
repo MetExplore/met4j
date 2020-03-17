@@ -483,23 +483,34 @@ public class JsbmlToBioNetwork {
 					hasInvalidSboTerms = true;
 					// It's considered as a gene
 					// We replace the first "_" by "" if exists
+
+					String oldId = specieId;
+
 					specieId = specieId.replaceFirst("^_", "");
 					specieId = specieId.replaceFirst("_.$", "");
 					specieName = specieName.replaceFirst("^_", "");
 					specieName = specieName.replaceFirst("_.$", "");
 					BioGene gene = new BioGene(specieId, specieName);
+
+					gene.setAttribute("oldId", oldId);
+
 					this.getNetwork().add(gene);
 				}
 				else if(sboTerm.compareToIgnoreCase("SBO:0000014")==0 || sboTerm.compareToIgnoreCase("SBO:0000297")==0)
 				{
 					validSboTerm = false;
 					hasInvalidSboTerms = true;
+
+					String oldId = specieId;
 					// It's considered as an enzyme
 					specieId = specieId.replaceFirst("^_", "");
 					specieId = specieId.replaceFirst("_.$", "");
 					specieName = specieName.replaceFirst("^_", "");
 					specieName = specieName.replaceFirst("_.$", "");
 					BioEnzyme enz = new BioEnzyme(specieId, specieName);
+
+					enz.setAttribute("oldId", oldId);
+
 					this.getNetwork().add(enz);
 				}
 			}

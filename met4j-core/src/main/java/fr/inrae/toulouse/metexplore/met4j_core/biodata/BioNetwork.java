@@ -276,13 +276,16 @@ public class BioNetwork extends BioEntity {
             BioCollection<BioEnzymeParticipant> participants = new BioCollection<>(
                     e.getParticipants());
 
+            boolean contains = false;
+
             for (BioEnzymeParticipant p : participants) {
                 if (p.getPhysicalEntity().equals(m)) {
+                    contains = true;
                     e.getParticipants().remove(p);
                 }
             }
 
-            if (e.getParticipantsView().size() == 0) {
+            if (e.getParticipantsView().size() == 0 && contains) {
                 this.removeOnCascade(e);
             }
         });

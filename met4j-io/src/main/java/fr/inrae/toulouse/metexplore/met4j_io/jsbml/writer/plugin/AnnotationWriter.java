@@ -44,7 +44,7 @@ import javax.xml.stream.XMLStreamException;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.refs.IdentifiersOrg;
+import fr.inrae.toulouse.metexplore.met4j_io.refs.IdentifiersOrg;
 import org.sbml.jsbml.Annotation;
 import org.sbml.jsbml.CVTerm;
 import org.sbml.jsbml.CVTerm.Qualifier;

@@ -1,4 +1,4 @@
-package fr.inrae.toulouse.metexplore.met4j_io.jsbml.refs;
+package fr.inrae.toulouse.metexplore.met4j_io.refs;
 
 import java.util.ArrayList;
 import java.util.Arrays;

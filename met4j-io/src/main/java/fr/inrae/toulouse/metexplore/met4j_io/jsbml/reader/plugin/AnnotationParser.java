@@ -213,7 +213,7 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 			while (m.find()) {
 
 				if (m.group(1).equalsIgnoreCase("http://biomodels.net/inchi")) {
-					String inchi = m.group(2).replace("InChI=", "");
+					String inchi = m.group(2);
 					if (!ent.hasRef("inchi", inchi)) {
 						ent.addRef("inchi", inchi, 1, "is", ORIGIN);
 					}

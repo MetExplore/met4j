@@ -759,10 +759,10 @@ public class BioNetwork extends BioEntity {
      *
      *
      */
-    public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioCollection<BioPhysicalEntity> units) {
+    public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioCollection<?> units) {
 
-        for (BioPhysicalEntity unit : units) {
-                affectSubUnit(enzyme, quantity, unit);
+        for (BioEntity unit : units) {
+                affectSubUnit(enzyme, quantity, (BioPhysicalEntity)unit);
 
         }
     }

@@ -473,10 +473,11 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
                         String pmid = pmids[i].trim();
 
                         if (!isVoid(pmid)) {
+                            String pmidInt = pmid.replaceAll("[^\\d]", "");
                             try {
-                                ReactionAttributes.addPmid(reaction, Integer.parseInt(pmid));
+                                ReactionAttributes.addPmid(reaction, Integer.parseInt(pmidInt));
                             } catch (NumberFormatException e) {
-                                NotesParser.errorsAndWarnings.add("[Warning] Pmid " + pmid + " is not an integer");
+                                NotesParser.errorsAndWarnings.add("[Warning] Pmid " + pmidInt + " is not an integer");
                             }
                         }
                     }

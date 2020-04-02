@@ -630,6 +630,46 @@ public class StringUtils {
 
 		return matcher.find() || matcher2.find();
 	}
-	
+
+	/**
+	 * Format a reaction id to the format R_reactionId (Cobra format)
+	 * @param id the original id
+	 * @return the id cobra formatted
+	 */
+	public static String formatReactionIdCobra(String id) {
+
+		String out=id;
+
+		if (!id.startsWith("R_")) {
+			out = "R_" + id;
+		}
+
+		return out;
+
+	}
+
+	/**
+	 * Format a metabolite id in the cobra way (M_metaboliteId_compartmentId)
+	 * @param metaboliteId the original metabolite id
+	 * @param compartmentId  the compartment id
+	 * @return the metaboliteId formatted
+	 */
+	public static String formatMetaboliteIdCobra(String metaboliteId, String compartmentId) {
+
+		String out = metaboliteId;
+
+		if(! metaboliteId.startsWith("M_")) {
+			out = "M_"+metaboliteId;
+		}
+
+		if(! metaboliteId.endsWith("_"+compartmentId)) {
+			out = out+"_"+compartmentId;
+		}
+
+		return out;
+
+
+	}
+
 	
 }

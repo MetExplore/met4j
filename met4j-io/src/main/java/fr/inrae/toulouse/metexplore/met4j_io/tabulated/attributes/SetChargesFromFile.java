@@ -34,56 +34,72 @@
  *
  */
 
-package fr.inrae.toulouse.metexplore.met4j_toolbox.convert.sbml;
+package fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-import fr.inrae.toulouse.metexplore.met4j_io.metexplorexml.writer.BioNetworkToMetexploreXml;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.Met4jApplication;
-import org.kohsuke.args4j.Option;
+import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 import java.io.IOException;
 
-public class SbmlToMetExploreXml extends Met4jApplication {
+public class SetChargesFromFile extends AbstractSetAttributesFromFile {
+
+    public SetChargesFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s) {
+
+        super(colId, colAttr, bn, fileIn, c, nSkip, "M", p, s);
+
+    }
+
+    /**
+     * Test the charge
+     */
+    public Boolean testAttribute(String charge) {
+        if(StringUtils.isInteger(charge)) {
+            return true;
+        }
+        else {
+            System.err.println(charge+ " no in good format (integer)");
+            return false;
+        }
+
+    }
+
+    /**
+     * Reads the file and sets the attributes
+     * @return
+     * @throws IOException
+     */
+    public Boolean setAttributes() throws IOException {
+
+        Boolean flag = true;
+
+        try {
+            flag = this.test();
+        } catch (IOException e) {
+            return false;
+        }
+
+        if(!flag) {
+            return false;
+        }
+
+        int n = 0;
+
+        for(String id : this.getIdAttributeMap().keySet()) {
+
+            n++;
+
+            String charge = this.getIdAttributeMap().get(id);
+
+            this.getNetwork().getMetabolitesView().get(id).setCharge(Integer.parseInt(charge));
+
+        }
 
 
-    @Option(name = "-i", usage = "input file", required = true)
-    public String inputPath = null;
+        System.err.println(n+" attributions");
 
-    @Option(name = "-o", usage = "output file", required = true)
-    public String outputPath = null;
-
-
-    public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
-
-        SbmlToMetExploreXml app = new SbmlToMetExploreXml();
-
-        app.parseArguments(args);
-
-        app.run();
+        return flag;
 
     }
 
 
-    public void run() throws IOException, Met4jSbmlReaderException {
-        JsbmlReader reader = new JsbmlReader(this.inputPath);
-
-        BioNetwork network = reader.read();
-
-        BioNetworkToMetexploreXml writer = new BioNetworkToMetexploreXml(network, this.outputPath);
-
-        writer.write();
-
-    }
-
-    @Override
-    public String getLabel() {
-        return this.getClass().getSimpleName();
-    }
-
-    @Override
-    public String getDescription() {
-        return "Converts a SBML file to a MetExploreXml file";
-    }
 }

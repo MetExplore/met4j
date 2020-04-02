@@ -153,7 +153,14 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 
 		for (BioEntity entry : collection) {
 
-			UniqueNamedSBase sbase = this.getModel().findUniqueNamedSBase(entry.getId());
+			String id = entry.getId();
+
+			if(entry.getAttribute("oldId") != null)
+			{
+				id = (String) entry.getAttribute("oldId");
+			}
+
+			UniqueNamedSBase sbase = this.getModel().findUniqueNamedSBase(id);
 
 			if (sbase != null && !sbase.getAnnotation().isEmpty() && sbase.hasValidAnnotation()) {
 
@@ -206,8 +213,9 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 			while (m.find()) {
 
 				if (m.group(1).equalsIgnoreCase("http://biomodels.net/inchi")) {
-					if (!ent.hasRef("inchi", m.group(2))) {
-						ent.addRef("inchi", m.group(2), 1, "is", ORIGIN);
+					String inchi = m.group(2);
+					if (!ent.hasRef("inchi", inchi)) {
+						ent.addRef("inchi", inchi, 1, "is", ORIGIN);
 					}
 				}
 			}

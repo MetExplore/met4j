@@ -40,11 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
-import org.sbml.jsbml.Model;
-import org.sbml.jsbml.Parameter;
-import org.sbml.jsbml.Reaction;
-import org.sbml.jsbml.Species;
-import org.sbml.jsbml.SpeciesReference;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
+import org.sbml.jsbml.*;
 import org.sbml.jsbml.ext.fbc.And;
 import org.sbml.jsbml.ext.fbc.Association;
 import org.sbml.jsbml.ext.fbc.FBCModelPlugin;
@@ -146,10 +143,8 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
                 if (bioMetab.getCharge() != null) {
                     try {
                         speciePlugin.setCharge(bioMetab.getCharge());
-                    }
-                    catch (IllegalArgumentException e)
-                    {
-                        System.err.println("Charge not in good format ("+bioMetab.getCharge()+") for "+bioMetab.getId());
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("Charge not in good format (" + bioMetab.getCharge() + ") for " + bioMetab.getId());
                     }
 
                 }
@@ -158,10 +153,8 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
                         .isVoid(bioMetab.getChemicalFormula()))
                     try {
                         speciePlugin.setChemicalFormula(bioMetab.getChemicalFormula());
-                    }
-                    catch (IllegalArgumentException e)
-                    {
-                        System.err.println("Chemical formula not in good format ("+bioMetab.getChemicalFormula()+") for "+bioMetab.getId());
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("Chemical formula not in good format (" + bioMetab.getChemicalFormula() + ") for " + bioMetab.getId());
                     }
             }
         }
@@ -216,35 +209,41 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
 
             Flux ub = ReactionAttributes.getUpperBound(bioRxn);
 
-            if (ub != null) {
-
-                Parameter up = this.getFbcModel().getParent()
-                        .getParameter(StringUtils.convertToSID(("UPPER_BOUND_" + ub.value).replaceAll("[\\+\\-]", "")));
-                if (up == null) {
-                    up = this.getFbcModel().getParent().createParameter(
-                            StringUtils.convertToSID(("UPPER_BOUND_" + ub.value).replaceAll("[\\+\\-]", "")));
-                    up.setValue(ub.value);
-                    up.setConstant(true);
-                    up.setUnits(StringUtils.convertToSID(ub.unitDefinition.getId()));
-                }
-                rxnPlugin.setUpperFluxBound(up);
+            if (ub == null) {
+                ub = new Flux(Flux.FLUXMAX);
+                NetworkAttributes.addUnitDefinition(this.getFlxNet().getUnderlyingBionet(),ub.unitDefinition);
             }
+
+
+            Parameter up = this.getFbcModel().getParent()
+                    .getParameter(StringUtils.convertToSID(("UPPER_BOUND_" + ub.value).replaceAll("[\\+\\-]", "")));
+            if (up == null) {
+                up = this.getFbcModel().getParent().createParameter(
+                        StringUtils.convertToSID(("UPPER_BOUND_" + ub.value).replaceAll("[\\+\\-]", "")));
+                up.setValue(ub.value);
+                up.setConstant(true);
+                up.setUnits(StringUtils.convertToSID(ub.unitDefinition.getId()));
+            }
+            rxnPlugin.setUpperFluxBound(up);
 
             Flux lb = ReactionAttributes.getLowerBound(bioRxn);
 
-            if (lb != null) {
-                Parameter down = this.getFbcModel().getParent()
-                        .getParameter(StringUtils.convertToSID(("LOWER_BOUND_" + lb.value).replaceAll("[\\+\\-]", "")));
-
-                if (down == null) {
-                    down = this.getFbcModel().getParent().createParameter(
-                            StringUtils.convertToSID(("LOWER_BOUND_" + lb.value).replaceAll("[\\+\\-]", "")));
-                    down.setValue(lb.value);
-                    down.setConstant(true);
-                    down.setUnits(StringUtils.convertToSID(lb.unitDefinition.getId()));
-                }
-                rxnPlugin.setLowerFluxBound(down);
+            if (lb == null) {
+                lb = new Flux(bioRxn.isReversible() ? Flux.FLUXMIN : 0.0);
+                NetworkAttributes.addUnitDefinition(this.getFlxNet().getUnderlyingBionet(),lb.unitDefinition);
             }
+
+            Parameter down = this.getFbcModel().getParent()
+                    .getParameter(StringUtils.convertToSID(("LOWER_BOUND_" + lb.value).replaceAll("[\\+\\-]", "")));
+
+            if (down == null) {
+                down = this.getFbcModel().getParent().createParameter(
+                        StringUtils.convertToSID(("LOWER_BOUND_" + lb.value).replaceAll("[\\+\\-]", "")));
+                down.setValue(lb.value);
+                down.setConstant(true);
+                down.setUnits(StringUtils.convertToSID(lb.unitDefinition.getId()));
+            }
+            rxnPlugin.setLowerFluxBound(down);
 
             /**
              * update modifiers to geneProduct references

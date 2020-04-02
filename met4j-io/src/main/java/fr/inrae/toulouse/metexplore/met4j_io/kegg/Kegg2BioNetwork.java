@@ -42,11 +42,13 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
+import com.sun.jersey.api.client.ClientHandlerException;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reactant.ReactantAttributes;
@@ -136,11 +138,15 @@ public class Kegg2BioNetwork {
 
             System.err.println("Retrieving Data on Reactions...");
             for (BioReaction rxn : this.network.getReactionsView()) {
+                TimeUnit.MILLISECONDS.sleep(100);
+
                 this.getReactionData(rxn);
             }
 
             System.err.println("Retrieving Data on Metabolites...");
             for (BioMetabolite ent : this.network.getMetabolitesView()) {
+                TimeUnit.MILLISECONDS.sleep(100);
+
                 this.getCompoundData(ent);
             }
         }
@@ -207,6 +213,10 @@ public class Kegg2BioNetwork {
 
             this.getPathwayComponents(path);
 
+            if(this.network.getReactionsFromPathways(path).size()==0)
+            {
+                this.network.removeOnCascade(path);
+            }
         }
     }
 
@@ -342,7 +352,13 @@ public class Kegg2BioNetwork {
      */
     private void getReactionData(BioReaction rxn) {
 
-        HashMap<String, ArrayList<String>> Data=this.getEntityDataHasHash(rxn.getId());
+
+        HashMap<String, ArrayList<String>> Data= null;
+        try {
+            Data = this.getEntityDataHasHash(rxn.getId());
+        } catch (Exception e) {
+            throw e;
+        }
 
         if(Data.get("NAME")!=null){
             rxn.setName( Data.get("NAME").get(0));
@@ -445,7 +461,12 @@ public class Kegg2BioNetwork {
         MetaboliteAttributes.setConstant(metabolite, false);
         MetaboliteAttributes.setHasOnlySubstanceUnits(metabolite, false);
 
-        HashMap<String, ArrayList<String>> Data=this.getEntityDataHasHash(metabolite.getId());
+        HashMap<String, ArrayList<String>> Data= null;
+        try {
+            Data = this.getEntityDataHasHash(metabolite.getId());
+        } catch (Exception e) {
+            throw e;
+        }
 
         if(Data.get("NAME")!=null){ //kegg glycans entries do not always have names or chemical formulas
             metabolite.setName( Data.get("NAME").get(0));
@@ -510,7 +531,15 @@ public class Kegg2BioNetwork {
      */
     public HashMap<String, ArrayList<String>> getEntityDataHasHash(String id) {
 
-        String[] Data=this.webResource.path("get").path(id).get(String.class).split("\\n");
+        String[] Data= new String[0];
+
+        try {
+            Data = this.webResource.path("get").path(id).get(String.class).split("\\n");
+        } catch (UniformInterfaceException e) {
+           throw e;
+        } catch (ClientHandlerException e) {
+           throw e;
+        }
 
         String lastKey=null;
         HashMap<String, ArrayList<String>> output=new HashMap<String, ArrayList<String>>();

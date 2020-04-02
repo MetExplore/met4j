@@ -276,13 +276,16 @@ public class BioNetwork extends BioEntity {
             BioCollection<BioEnzymeParticipant> participants = new BioCollection<>(
                     e.getParticipants());
 
+            boolean contains = false;
+
             for (BioEnzymeParticipant p : participants) {
                 if (p.getPhysicalEntity().equals(m)) {
+                    contains = true;
                     e.getParticipants().remove(p);
                 }
             }
 
-            if (e.getParticipantsView().size() == 0) {
+            if (e.getParticipantsView().size() == 0 && contains) {
                 this.removeOnCascade(e);
             }
         });
@@ -756,10 +759,10 @@ public class BioNetwork extends BioEntity {
      *
      *
      */
-    public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioCollection<BioPhysicalEntity> units) {
+    public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioCollection<?> units) {
 
-        for (BioPhysicalEntity unit : units) {
-                affectSubUnit(enzyme, quantity, unit);
+        for (BioEntity unit : units) {
+                affectSubUnit(enzyme, quantity, (BioPhysicalEntity)unit);
 
         }
     }

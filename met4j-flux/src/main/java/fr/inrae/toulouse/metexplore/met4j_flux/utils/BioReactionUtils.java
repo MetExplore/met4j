@@ -51,8 +51,8 @@ public class BioReactionUtils {
 	 */
 	static public Boolean isExchangeReaction(BioNetwork n, BioReaction r) {
 
-		BioCollection<BioReactant> lefts = n.getLeftReactants(r);
-		BioCollection<BioReactant> rights = n.getRightReactants(r);
+		BioCollection<BioReactant> lefts = new BioCollection<>(n.getLeftReactants(r));
+		BioCollection<BioReactant> rights = new BioCollection<>(n.getRightReactants(r));
 
 		if (lefts.size() == 0 || rights.size() == 0) {
 			return true;

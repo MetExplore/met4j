@@ -20,7 +20,7 @@ corresponds to the cpp library, you have to specify both in your project.
 - Include the jar library into maven local repository
 
 ```shell script
-mvn install:install-file -Dfile=/usr/share/java/glpk-java.jar \ 
+mvn install:install-file -Dfile=/usr/share/java/glpk-java.jar \
 -DgroupId=glpk -DartifactId=glpk -Dversion=glpk-for-met4j -Dpackaging=jar
 ```
 
@@ -43,7 +43,7 @@ java .... -Djava.library.path=/usr/lib/x86_64-linux-gnu/jni
 - Include the jar library into maven local repository
 
 ```shell script
-mvn install:install-file -Dfile=/usr/local/cplex/cplex/lib/cplex.jar -DgroupId=ibm.ilog \ 
+mvn install:install-file -Dfile=/usr/local/cplex/cplex/lib/cplex.jar -DgroupId=ibm.ilog \
 -DartifactId=cplex -Dversion=cplex-for-met4j -Dpackaging=jar
 ```
 Replace by the proper paths and versions.

@@ -407,14 +407,16 @@ public class BioNetworkToMetexploreXml {
                 }
             } else {
                 lbValue = lb.value;
-                lbUnits = lb.unitDefinition.getId();
+                if (lb.unitDefinition != null)
+                    lbUnits = lb.unitDefinition.getId();
             }
 
             if (ub == null) {
                 ubValue = Flux.FLUXMAX;
             } else {
                 ubValue = ub.value;
-                ubUnits = lb.unitDefinition.getId();
+                if (ub.unitDefinition != null)
+                    ubUnits = ub.unitDefinition.getId();
             }
 
             writer.write("    <kineticLaw>\n");

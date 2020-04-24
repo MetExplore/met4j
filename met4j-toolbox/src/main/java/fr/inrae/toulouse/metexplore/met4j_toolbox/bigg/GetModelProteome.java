@@ -132,9 +132,6 @@ public class GetModelProteome extends AbstractMet4jApplication {
     }
 
 
-
-
-
     /**
      * @return a @{@link URL} instance to access the genes json file
      * @throws MalformedURLException
@@ -242,9 +239,9 @@ public class GetModelProteome extends AbstractMet4jApplication {
         for (Object o : jsonArray) {
             JSONObject jsonObject = (JSONObject) o;
             Sequence seq = new Sequence();
-            if(jsonObject.containsKey("bigg_id") && jsonObject.get("bigg_id") != null) {
+            if (jsonObject.containsKey("bigg_id") && jsonObject.get("bigg_id") != null) {
                 seq.id = jsonObject.get("bigg_id").toString();
-                if(jsonObject.containsKey("name") && jsonObject.get("name") != null) {
+                if (jsonObject.containsKey("name") && jsonObject.get("name") != null) {
                     seq.name = jsonObject.get("name").toString();
                 }
                 seq.sequence = this.getProteinSequence(seq.id);
@@ -295,7 +292,7 @@ public class GetModelProteome extends AbstractMet4jApplication {
         FileWriter writer = new FileWriter(new File(this.outputFile));
 
         for (Sequence seq : sequences) {
-            if(! seq.sequence.isEmpty())
+            if (!seq.sequence.isEmpty())
                 writer.write(seq.toFasta());
         }
 

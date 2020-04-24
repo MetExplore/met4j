@@ -36,21 +36,15 @@
 
 package fr.inrae.toulouse.metexplore.met4j_core.biodata.utils;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant;
 
 public class BioReactionUtils {
 	
@@ -185,5 +179,42 @@ public class BioReactionUtils {
 	public static String getGPR(BioNetwork network, BioReaction r) {
 		return getGPR(network, r, false);
 	}
-	
+
+	public static String getEquation(BioReaction r, Boolean getNames, String revSep, String irrevSep) {
+
+		BioCollection<BioReactant> lefts = r.getLeftReactantsView();
+		BioCollection<BioReactant> rights = r.getRightReactantsView();
+		Boolean rev = r.isReversible();
+
+		String eq = rev ? " "+revSep+" " : " "+irrevSep+" ";
+
+		return reactantsToString(lefts, getNames) + eq + reactantsToString(rights,getNames);
+	}
+
+	private static String reactantsToString(BioCollection<BioReactant> reactants, Boolean getNames)
+	{
+		ArrayList<String> parts = new ArrayList<>();
+
+		for(BioReactant r : reactants) {
+			String id = getNames ? r.getMetabolite().getName() : r.getMetabolite().getId();
+			Double sto = r.getQuantity();
+			String cptId = r.getLocation().getId();
+
+			String reactantString  = (sto == 1.0 ? "" : sto+" ") + id +"["+cptId+"]";
+
+			parts.add(reactantString);
+		}
+
+		return String.join(" + ", parts);
+
+	}
+
+	public static String getPathwaysString(BioReaction r, BioNetwork n, Boolean getNames, String delim) {
+
+		BioCollection<BioPathway> pathways = n.getPathwaysFromReaction(r);
+
+		List<String> stringArrayList = pathways.stream().map(p -> getNames ? p.getName() : p.getId()).collect(Collectors.toList());
+
+		return String.join(delim, stringArrayList);
+	}
 }

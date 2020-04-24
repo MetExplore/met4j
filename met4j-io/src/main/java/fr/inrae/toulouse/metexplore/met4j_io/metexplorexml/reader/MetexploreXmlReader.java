@@ -96,6 +96,7 @@ public class MetexploreXmlReader {
             network = new BioNetwork(model.getAttribute("id"));
             network.setName(model.getAttribute("name"));
 
+            System.err.println("Start unit");
             this.readUnitDefinitions();
             this.readCompartments();
             this.readMetabolites();
@@ -117,10 +118,9 @@ public class MetexploreXmlReader {
      */
     public void readUnitDefinitions() throws ParseException {
         NodeList listOfUnitDefinitions = document.getElementsByTagName("listOfUnitDefinitions");
+        System.err.println("Read Unit definitions");
+        if (listOfUnitDefinitions != null && listOfUnitDefinitions.getLength() > 0) {
 
-        if (listOfUnitDefinitions != null) {
-
-            if (listOfUnitDefinitions.getLength() > 0) {
                 NodeList unitDefinitions = ((Element) (listOfUnitDefinitions.item(0)))
                         .getElementsByTagName("unitDefinition");
 
@@ -204,9 +204,10 @@ public class MetexploreXmlReader {
                     NetworkAttributes.addUnitDefinition(network, unitDefinition);
 
                 }
-            }
         } else {
-            throw new ParseException("Incorrect Format: Can't find node [listOfUnidefinitions]");
+            System.err.println("[WARNING] No unit definition, set default");
+            BioUnitDefinition unitDefinition = new BioUnitDefinition();
+            NetworkAttributes.addUnitDefinition(network, unitDefinition);
         }
     }
 

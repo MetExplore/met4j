@@ -257,4 +257,12 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	}
 
+	/**
+	 *
+	 * @return the map of entities
+	 */
+	public HashMap<String, E> getMapView() {
+		return new HashMap<>(this.entities);
+	}
+
 }

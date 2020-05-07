@@ -73,4 +73,16 @@ public class BioReactionUtils {
 		return false;
 	}
 
+	static public String getReactionType(BioNetwork n, BioReaction r) {
+		String type = "inner";
+
+		if(isExchangeReaction(n, r)) {
+			type = "exchange";
+		}
+		else if(r.isTransportReaction()) {
+			type = "transport";
+		}
+		return type;
+	}
+
 }

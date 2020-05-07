@@ -191,6 +191,20 @@ public class BioReactionUtils {
 		return reactantsToString(lefts, getNames) + eq + reactantsToString(rights,getNames);
 	}
 
+	public static String getEquation(BioReaction r, Boolean getNames) {
+
+		BioCollection<BioReactant> lefts = r.getLeftReactantsView();
+		BioCollection<BioReactant> rights = r.getRightReactantsView();
+		Boolean rev = r.isReversible();
+
+		String revSep = "<==>";
+		String irrevSep = "-->";
+
+		String eq = rev ? " "+revSep+" " : " "+irrevSep+" ";
+
+		return reactantsToString(lefts, getNames) + eq + reactantsToString(rights,getNames);
+	}
+
 	private static String reactantsToString(BioCollection<BioReactant> reactants, Boolean getNames)
 	{
 		ArrayList<String> parts = new ArrayList<>();

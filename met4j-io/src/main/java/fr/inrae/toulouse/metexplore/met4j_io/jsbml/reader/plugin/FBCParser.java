@@ -334,7 +334,14 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 		for (Objective fbcObj : this.getFbcModel().getListOfObjectives()) {
 
 			BioObjective objective = new BioObjective(fbcObj.getId(), fbcObj.getName());
-			
+
+			String type = "maximize";
+
+			if(fbcObj.getType() != null)
+			{
+				type = fbcObj.getType().toString();
+			}
+
 			objective.setType(fbcObj.getType().toString());
 			
 			objective.active = this.getFbcModel().getActiveObjective().equals(fbcObj.getId()) ? true : false;

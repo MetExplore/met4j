@@ -190,8 +190,6 @@ public class BionetworkToJsbml {
 
         if(model.getUnitDefinition(id) == null) {
             UnitDefinition ud = model.createUnitDefinition();
-
-            System.err.println("id " + id);
             ud.setId(id);
             ud.setName(bioUD.getName());
 

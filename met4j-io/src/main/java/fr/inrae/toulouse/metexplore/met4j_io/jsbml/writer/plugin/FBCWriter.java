@@ -293,6 +293,10 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
                     this.getFbcModel().setActiveObjective(objective.getId());
                 }
 
+                if(objective.getType() != null) {
+                    obj.setType(objective.getType().toString());
+                }
+
                 for (ReactionObjective rObj : objective.getListOfReactionObjectives()) {
                     FluxObjective sObj = obj.createFluxObjective();
                     sObj.setReaction(StringUtils.convertToSID(rObj.getFlxReaction().getUnderlyingReaction().getId()));

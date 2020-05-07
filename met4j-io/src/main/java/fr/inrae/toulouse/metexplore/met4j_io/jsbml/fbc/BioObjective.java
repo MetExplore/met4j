@@ -84,8 +84,8 @@ public class BioObjective extends BioEntity {
 	 * 
 	 * @return the {@link #type} as a string
 	 */
-	public String getType() {
-		return type.toString();
+	public FbcType getType() {
+		return type;
 	}
 
 	/**

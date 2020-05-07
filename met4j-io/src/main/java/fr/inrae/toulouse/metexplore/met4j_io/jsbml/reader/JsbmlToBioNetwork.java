@@ -174,6 +174,11 @@ public class JsbmlToBioNetwork {
 	 */
 	private void parseListOfCompartments() {
 
+		if(model.getListOfCompartments().size()==0)
+		{
+			System.err.println("[WARNING] No compartment in the model !");
+		}
+
 		for (Compartment jSBMLCompart : model.getListOfCompartments()) {
 
 			String compartId = jSBMLCompart.getId();

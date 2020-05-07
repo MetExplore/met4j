@@ -73,6 +73,18 @@ public class BioCompartment extends BioPhysicalEntity{
 	}
 
 	/**
+	 * Copy of a compartment
+	 * Do not copy the list of components
+	 * @param compartment the original compartment
+	 */
+	public BioCompartment(BioCompartment compartment) {
+		super(compartment);
+
+		components  = new BioCollection<>();
+	}
+
+
+	/**
 	 * @return an unmodifiable {@link BioCollection} of the components
 	 */
 	public BioCollection<BioEntity> getComponentsView() {

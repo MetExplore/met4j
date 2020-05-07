@@ -71,6 +71,15 @@ public class BioPathway extends BioEntity {
 	}
 
 	/**
+	 * Copy pathway attributes but not the reactions
+	 * @param pathway the original pathway
+	 */
+	public BioPathway(BioPathway pathway) {
+		super(pathway);
+		reactions = new BioCollection<>();
+	}
+
+	/**
 	 * Get reactions involved in the pathway
 	 * @return a {@link BioCollection} of pathways
 	 */

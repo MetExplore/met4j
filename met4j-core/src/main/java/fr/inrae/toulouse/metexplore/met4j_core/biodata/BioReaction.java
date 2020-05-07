@@ -94,6 +94,13 @@ public class BioReaction extends BioEntity {
 		enzymes = new BioCollection<>();
 	}
 
+	public BioReaction(BioReaction reaction) {
+		super(reaction);
+		left = new BioCollection<>();
+		right = new BioCollection<>();
+		enzymes = new BioCollection<>();
+	}
+
 	/**
 	 * 
 	 */

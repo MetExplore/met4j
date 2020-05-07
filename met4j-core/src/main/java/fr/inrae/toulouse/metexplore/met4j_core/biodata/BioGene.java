@@ -53,4 +53,13 @@ public class BioGene extends BioEntity {
 	public BioGene(String id, String name) {
 		super(id, name);
 	}
+
+	/**
+	 * Copy of a gene
+	 * @param gene the original gene
+	 */
+	public BioGene(BioGene gene) {
+		super(gene);
+	}
+
 }

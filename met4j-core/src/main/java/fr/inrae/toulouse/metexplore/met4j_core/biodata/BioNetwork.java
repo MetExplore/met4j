@@ -78,6 +78,14 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
+     * Copy only the id, the refs and the attributes
+     * @param network
+     */
+    public BioNetwork(BioNetwork network) {
+        super(network);
+    }
+
+    /**
      * Add several entities
      *
      * @param bioEntities 0 to several {@link BioEntity} instances
@@ -540,7 +548,7 @@ public class BioNetwork extends BioEntity {
 
         // The metabolite must be connected to the compartment
         if (!localisation.getComponents().contains(e)) {
-            throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the compartment");
+            throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the compartment "+localisation.getId());
         }
 
         // The network must contain the reaction
@@ -733,6 +741,22 @@ public class BioNetwork extends BioEntity {
         }
 
         enzyme.addParticipant(unit);
+
+    }
+
+    /**
+     * Add a subunit to an enzyme
+     * @param enzyme a {@link BioEnzyme}
+     * @param unit a {@link BioEnzymeParticipant}
+     *
+     * @throws IllegalArgumentException of the enzyme of the unit is not present in the network
+     */
+    public void affectSubUnit(BioEnzyme enzyme, BioEnzymeParticipant... units) {
+
+       for(BioEnzymeParticipant u : units)
+       {
+           this.affectSubUnit(enzyme, u);
+       }
 
     }
 
@@ -990,6 +1014,7 @@ public class BioNetwork extends BioEntity {
     public Boolean contains(BioEntity e) {
 
         if (e == null) {
+            System.err.println("Entity is null");
             throw new NullPointerException();
         }
 

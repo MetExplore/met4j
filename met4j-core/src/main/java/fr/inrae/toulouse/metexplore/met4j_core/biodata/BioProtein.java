@@ -57,6 +57,16 @@ public class BioProtein extends BioPhysicalEntity {
 		super(id, name);
 	}
 
+
+	/**
+	 * Copy of a protein
+	 * Be careful, the gene information is not copied
+	 * @param protein Original protein
+	 */
+	public BioProtein(BioProtein protein) {
+		super(protein);
+	}
+
 	/**
 	 * Set gene
 	 * @param g a {@link BioGene}

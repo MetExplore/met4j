@@ -64,7 +64,6 @@ public class BioEnzymeParticipant extends BioParticipant {
 		super(physicalEntity, 1.0);
 	}
 
-
 	@Override
 	public String toString() {
 

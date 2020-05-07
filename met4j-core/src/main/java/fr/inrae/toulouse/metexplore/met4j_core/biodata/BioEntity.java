@@ -90,6 +90,24 @@ public abstract class BioEntity {
 		attributes = new HashMap<>();
 	}
 
+	/**
+	 * Deep copy
+	 *
+	 * The refs and attributes are not deeply copied
+	 *
+	 * @param e
+	 */
+	public BioEntity(BioEntity e)
+	{
+		this.id = e.getId();
+		this.name =e.getName();
+		this.setSynonyms(new ArrayList<>(e.getSynonyms()));
+		this.setComment(e.getComment());
+		this.setRefs(new HashMap<>(e.getRefs()));
+		this.setAttributes(new HashMap<>(e.getAttributes()));
+	}
+
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

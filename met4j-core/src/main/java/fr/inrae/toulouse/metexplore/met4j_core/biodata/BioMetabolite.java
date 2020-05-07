@@ -35,111 +35,132 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+
 /**
  *
  */
 public class BioMetabolite extends BioPhysicalEntity {
-	
-	private Double molecularWeight;
-	private String chemicalFormula;
-	private String inchi;
-	private String smiles;
-	private Integer charge = 0;
 
-	/**
-	 * Constructor
-	 * @param id the id of the BioMetabolite
-	 */
-	public BioMetabolite(String id) {
-		super(id);
-	}
+    private Double molecularWeight;
+    private String chemicalFormula;
+    private String inchi;
+    private String smiles;
+    private Integer charge = 0;
 
-	/**
-	 * Constructor
-	 * @param id the id of the BioMetabolite
-	 * @param name the name of the BioMetabolite
-	 */
-	public BioMetabolite(String id, String name) {
-		super(id, name);
-	}
-	
-	/**
-	 * @return the inchi
-	 */
-	public String getInchi() {
-		return inchi;
-	}
+    /**
+     * Constructor
+     *
+     * @param id the id of the BioMetabolite
+     */
+    public BioMetabolite(String id) {
+        super(id);
+    }
 
-	/**
-	 * @param inchi the inchi to set
-	 */
-	public void setInchi(String inchi) {
-		this.inchi = inchi;
-	}
+    /**
+     * Constructor
+     *
+     * @param id   the id of the BioMetabolite
+     * @param name the name of the BioMetabolite
+     */
+    public BioMetabolite(String id, String name) {
+        super(id, name);
+    }
 
+    /**
+     * Copy a BioMetabolite.
+     * The refs and attributes are not deeply copied
+     * @param metabolite the original metabolite
+     */
+    public BioMetabolite(BioMetabolite metabolite) {
+        super(metabolite);
 
-	/**
-	 * @return the smile
-	 */
-	public String getSmiles() {
-		return smiles;
-	}
+        this.inchi = metabolite.inchi;
+        this.smiles = metabolite.smiles;
+        this.charge = metabolite.charge;
+        this.molecularWeight = metabolite.molecularWeight;
+        this.chemicalFormula = metabolite.chemicalFormula;
+
+    }
 
 
-	/**
-	 * @param smile the smile to set
-	 */
-	public void setSmiles(String smile) {
-		this.smiles = smile;
-	}
+    /**
+     * @return the inchi
+     */
+    public String getInchi() {
+        return inchi;
+    }
+
+    /**
+     * @param inchi the inchi to set
+     */
+    public void setInchi(String inchi) {
+        this.inchi = inchi;
+    }
 
 
-	/**
-	 * @param molecularWeight the molecularWeight to set
-	 */
-	public void setMolecularWeight(double molecularWeight) {
-		this.molecularWeight = molecularWeight;
-	}
+    /**
+     * @return the smile
+     */
+    public String getSmiles() {
+        return smiles;
+    }
 
 
-	/**
-	 *
-	 * @return the chemical formula of the metabolite
-	 */
-	public String getChemicalFormula() {
-		return chemicalFormula;
-	}
+    /**
+     * @param smile the smile to set
+     */
+    public void setSmiles(String smile) {
+        this.smiles = smile;
+    }
 
 
-	/**
-	 *
-	 * @param chemicalFormula : a String like C6H12O6
-	 */
-	public void setChemicalFormula(String chemicalFormula) {
-		this.chemicalFormula = chemicalFormula;
-	}
+    /**
+     * @param molecularWeight the molecularWeight to set
+     */
+    public void setMolecularWeight(double molecularWeight) {
+        this.molecularWeight = molecularWeight;
+    }
 
 
-	/**
-	 * @return the molecularWeight
-	 */
-	public Double getMolecularWeight() {
-		return molecularWeight;
-	}
+    /**
+     * @return the chemical formula of the metabolite
+     */
+    public String getChemicalFormula() {
+        return chemicalFormula;
+    }
 
 
-	/**
-	 * @return the charge
-	 */
-	public Integer getCharge() {
-		return charge;
-	}
+    /**
+     * @param chemicalFormula : a String like C6H12O6
+     */
+    public void setChemicalFormula(String chemicalFormula) {
+        this.chemicalFormula = chemicalFormula;
+    }
 
 
-	/**
-	 * @param charge the charge to set
-	 */
-	public void setCharge(Integer charge) {
-		this.charge = charge;
-	}
+    /**
+     * @return the molecularWeight
+     */
+    public Double getMolecularWeight() {
+        return molecularWeight;
+    }
+
+
+    /**
+     * @return the charge
+     */
+    public Integer getCharge() {
+        return charge;
+    }
+
+
+    /**
+     * @param charge the charge to set
+     */
+    public void setCharge(Integer charge) {
+        this.charge = charge;
+    }
 }

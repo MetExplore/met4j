@@ -63,6 +63,17 @@ public class BioEnzyme extends BioPhysicalEntity {
 	}
 
 	/**
+	 * Copy of an enzyme
+	 * Don't copy the participants
+	 * @param e Original enzyme
+	 */
+	public BioEnzyme(BioEnzyme e) {
+		super(e);
+
+		participants = new BioCollection<>();
+	}
+
+	/**
 	 * @return the participants
 	 */
 	protected BioCollection<BioEnzymeParticipant> getParticipants() {

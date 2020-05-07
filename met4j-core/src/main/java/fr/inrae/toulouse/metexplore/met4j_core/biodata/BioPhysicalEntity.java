@@ -59,4 +59,14 @@ public abstract class BioPhysicalEntity extends BioEntity {
 		super(id, name);
 	}
 
+
+	/**
+	 * Deep copy
+	 * @param p the original {@link BioPhysicalEntity}
+	 */
+	public BioPhysicalEntity(BioPhysicalEntity p)
+	{
+		super(p);
+	}
+
 }

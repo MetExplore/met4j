@@ -58,6 +58,8 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
 
+import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
+
 /**
  * Creates MIRIAM annotation for the SBML entities of the model created by
  *
@@ -158,7 +160,12 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 
         System.err.println("Generating Model Annotations...");
 
-        this.getModel().setMetaId(this.getBionetwork().getId());
+        String id = "NA";
+        if(! isVoid(this.getBionetwork().getId())) {
+            id = this.getBionetwork().getId();
+        }
+
+        this.getModel().setMetaId(id);
 
         HashMap<String, Set<BioRef>> refs = this.getBionetwork().getRefs();
 

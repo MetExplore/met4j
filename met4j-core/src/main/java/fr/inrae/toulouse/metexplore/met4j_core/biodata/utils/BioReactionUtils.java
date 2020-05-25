@@ -41,6 +41,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -180,7 +181,7 @@ public class BioReactionUtils {
 		return getGPR(network, r, false);
 	}
 
-	public static String getEquation(BioReaction r, Boolean getNames, String revSep, String irrevSep) {
+	public static String getEquation(BioReaction r, Boolean getNames, String revSep, String irrevSep, Boolean getCompartment) {
 
 		BioCollection<BioReactant> lefts = r.getLeftReactantsView();
 		BioCollection<BioReactant> rights = r.getRightReactantsView();
@@ -188,10 +189,10 @@ public class BioReactionUtils {
 
 		String eq = rev ? " "+revSep+" " : " "+irrevSep+" ";
 
-		return reactantsToString(lefts, getNames) + eq + reactantsToString(rights,getNames);
+		return reactantsToString(lefts, getNames, getCompartment) + eq + reactantsToString(rights,getNames, getCompartment);
 	}
 
-	public static String getEquation(BioReaction r, Boolean getNames) {
+	public static String getEquation(BioReaction r, Boolean getNames, Boolean getCompartment) {
 
 		BioCollection<BioReactant> lefts = r.getLeftReactantsView();
 		BioCollection<BioReactant> rights = r.getRightReactantsView();
@@ -202,10 +203,10 @@ public class BioReactionUtils {
 
 		String eq = rev ? " "+revSep+" " : " "+irrevSep+" ";
 
-		return reactantsToString(lefts, getNames) + eq + reactantsToString(rights,getNames);
+		return reactantsToString(lefts, getNames, getCompartment) + eq + reactantsToString(rights,getNames, getCompartment);
 	}
 
-	private static String reactantsToString(BioCollection<BioReactant> reactants, Boolean getNames)
+	private static String reactantsToString(BioCollection<BioReactant> reactants, Boolean getNames, Boolean getCompartment)
 	{
 		ArrayList<String> parts = new ArrayList<>();
 
@@ -214,7 +215,7 @@ public class BioReactionUtils {
 			Double sto = r.getQuantity();
 			String cptId = r.getLocation().getId();
 
-			String reactantString  = (sto == 1.0 ? "" : sto+" ") + id +"["+cptId+"]";
+			String reactantString  = (sto == 1.0 ? "" : sto+" ") + id + (getCompartment ? "["+cptId+"]" : "");
 
 			parts.add(reactantString);
 		}
@@ -227,7 +228,7 @@ public class BioReactionUtils {
 
 		BioCollection<BioPathway> pathways = n.getPathwaysFromReaction(r);
 
-		List<String> stringArrayList = pathways.stream().map(p -> getNames ? p.getName() : p.getId()).collect(Collectors.toList());
+		Set<String> stringArrayList = pathways.stream().map(p -> getNames ? p.getName() : p.getId()).collect(Collectors.toSet());
 
 		return String.join(delim, stringArrayList);
 	}

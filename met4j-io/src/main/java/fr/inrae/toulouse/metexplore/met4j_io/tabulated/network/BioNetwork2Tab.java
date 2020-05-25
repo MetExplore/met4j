@@ -78,8 +78,8 @@ public class BioNetwork2Tab {
         for(BioReaction r : reactions.values()) {
 
             String name = r.getName();
-            String formulaIds = BioReactionUtils.getEquation(r, false, revSep, irrevSep);
-            String formulaNames =BioReactionUtils.getEquation(r, true, revSep, irrevSep);
+            String formulaIds = BioReactionUtils.getEquation(r, false, revSep, irrevSep, true);
+            String formulaNames =BioReactionUtils.getEquation(r, true, revSep, irrevSep, true);
             String ec = r.getEcNumber() == null ? "NA" : r.getEcNumber();
             String pathways = BioReactionUtils.getPathwaysString(r, this.network,true, " ; ");
             String gpr = BioReactionUtils.getGPR(this.network, r);

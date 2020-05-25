@@ -218,11 +218,20 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
 
             if (n != null && !n.isEmpty()) {
                 String notesStr = n.getXHTMLasString();
-                notesStr = notesStr.replaceAll("<body>", "<body xmlns=\"http://www.w3.org/1999/xhtml\">");
+                if(!org.apache.commons.lang3.StringUtils.containsIgnoreCase(notesStr, "<body")) {
+                    notesStr = notesStr.replaceAll("(?)<notes>", "<notes><body xmlns=\"http://www.w3.org/1999/xhtml\">");
+                }
+
+                if(!org.apache.commons.lang3.StringUtils.containsIgnoreCase(notesStr, "</body")) {
+                    notesStr = notesStr.replaceAll("(?)</notes>", "</body></notes>");
+                }
+
+                notesStr = notesStr.replaceAll("(?)<body>", "<body xmlns=\"http://www.w3.org/1999/xhtml\">");
 
                 try {
                     sbase.setNotes(notesStr);
                 } catch (XMLStreamException e) {
+                    System.err.println("Invalid notes : "+notesStr);
                     e.printStackTrace();
                 }
             }

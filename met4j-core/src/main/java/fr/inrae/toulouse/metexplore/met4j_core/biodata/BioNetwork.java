@@ -159,7 +159,7 @@ public class BioNetwork extends BioEntity {
         } else if (e instanceof BioCompartment) {
             this.removeCompartment((BioCompartment) e);
         } else if (e instanceof BioEnzyme) {
-            this.enzymes.remove(e);
+            this.removeEnzyme((BioEnzyme)e);
         } else {
 
             throw new IllegalArgumentException(
@@ -167,6 +167,22 @@ public class BioNetwork extends BioEntity {
         }
 
         e = null;
+
+    }
+
+    /**
+     * Remove on cascade an enzyme : remove also the enzymes in the reactions
+     * @param e enzyme
+     */
+    public void removeEnzyme(BioEnzyme e) {
+
+        BioCollection<BioReaction> reactions = this.reactions;
+
+        for(BioReaction r : reactions) {
+            this.removeEnzymeFromReaction(e, r);
+        }
+
+        this.enzymes.remove(e);
 
     }
 

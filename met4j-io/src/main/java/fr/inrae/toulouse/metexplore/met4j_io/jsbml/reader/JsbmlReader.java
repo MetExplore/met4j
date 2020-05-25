@@ -230,6 +230,15 @@ public class JsbmlReader {
         return this.read(pkgs);
     }
 
+    public BioNetwork readWithoutNotes() throws Met4jSbmlReaderException {
+        HashSet<PackageParser> pkgs = new HashSet<PackageParser>(Arrays.asList( new FBCParser(), new GroupPathwayParser(), new AnnotationParser(
+                        true)));
+
+        return this.read(pkgs);
+    }
+
+
+
     /**
      * Verifies the Set of user defined packages and orders them
      *

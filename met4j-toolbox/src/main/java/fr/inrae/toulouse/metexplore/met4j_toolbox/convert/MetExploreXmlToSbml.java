@@ -40,6 +40,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import fr.inrae.toulouse.metexplore.met4j_io.metexplorexml.reader.MetexploreXmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.metexplorexml.writer.BioNetworkToMetexploreXml;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
@@ -57,7 +58,7 @@ public class MetExploreXmlToSbml extends AbstractMet4jApplication {
     public String outputPath = null;
 
 
-    public static void main(String[] args) throws IOException, Met4jSbmlReaderException, ParseException {
+    public static void main(String[] args) throws IOException, Met4jSbmlReaderException, ParseException, Met4jSbmlWriterException {
 
         MetExploreXmlToSbml app = new MetExploreXmlToSbml();
 
@@ -68,7 +69,7 @@ public class MetExploreXmlToSbml extends AbstractMet4jApplication {
     }
 
 
-    public void run() throws IOException, Met4jSbmlReaderException, ParseException {
+    public void run() throws IOException, Met4jSbmlReaderException, ParseException, Met4jSbmlWriterException {
 
         MetexploreXmlReader reader = new MetexploreXmlReader(this.inputPath);
         reader.read();

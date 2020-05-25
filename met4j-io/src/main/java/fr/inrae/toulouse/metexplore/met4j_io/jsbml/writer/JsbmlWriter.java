@@ -38,6 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -147,7 +148,7 @@ public class JsbmlWriter {
         model.setVersion(2);
     }
 
-    public void write() {
+    public void write() throws Met4jSbmlWriterException {
 
         HashSet<PackageWriter> pkgs = new HashSet<>();
         pkgs.add(new AnnotationWriter());
@@ -159,6 +160,16 @@ public class JsbmlWriter {
 
     }
 
+    public void writeWithoutNotes() throws Met4jSbmlWriterException {
+
+        HashSet<PackageWriter> pkgs = new HashSet<>();
+        pkgs.add(new AnnotationWriter());
+        pkgs.add(new FBCWriter());
+        pkgs.add(new GroupPathwayWriter());
+        this.write(pkgs);
+
+    }
+
     /**
      * One of the main methods. converts the {@link #net} to a jsbml object and
      * write it as a file.</br> Use the user defined set of package to add
@@ -166,7 +177,7 @@ public class JsbmlWriter {
      *
      * @param pkgs Set of writer package to use
      */
-    public void write(HashSet<PackageWriter> pkgs) {
+    public void write(HashSet<PackageWriter> pkgs) throws Met4jSbmlWriterException {
         // System.err.println("Verifying packages...");
 
         ArrayList<PackageWriter> verifiedPkgs = this.verifyPackages(pkgs);
@@ -340,6 +351,9 @@ public class JsbmlWriter {
     protected void prettifyXML(String sbmlFile) throws ValidityException,
             IOException, ParsingException {
 
+        File file;
+        FileWriter fw = new FileWriter(new File("/tmp/toto"));
+        fw.write(sbmlFile);
         FileOutputStream out = new FileOutputStream(
                 this.getFilename());
         Serializer serializer = new Serializer(out);

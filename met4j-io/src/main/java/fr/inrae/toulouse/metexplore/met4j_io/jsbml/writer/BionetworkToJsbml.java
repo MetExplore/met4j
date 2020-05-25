@@ -136,7 +136,7 @@ public class BionetworkToJsbml {
      * @param net the input {@link BioNetwork}
      * @return The completed SBML Model
      */
-    public Model parseBioNetwork(BioNetwork net) {
+    public Model parseBioNetwork(BioNetwork net) throws Met4jSbmlWriterException {
         this.setModel(this.createModel(net));
 
         this.createUnits(net);
@@ -179,7 +179,7 @@ public class BionetworkToJsbml {
         if (unitDefinitions != null) {
 
             for (BioUnitDefinition bioUD : unitDefinitions) {
-               this.createModelUnitDefinition(bioUD);
+                this.createModelUnitDefinition(bioUD);
             }
         }
     }
@@ -188,7 +188,7 @@ public class BionetworkToJsbml {
 
         String id = StringUtils.convertToSID(bioUD.getId());
 
-        if(model.getUnitDefinition(id) == null) {
+        if (model.getUnitDefinition(id) == null) {
             UnitDefinition ud = model.createUnitDefinition();
             ud.setId(id);
             ud.setName(bioUD.getName());
@@ -270,11 +270,16 @@ public class BionetworkToJsbml {
      *
      * @param net The Bionetwork
      */
-    protected void createSpecies(BioNetwork net) {
+    protected void createSpecies(BioNetwork net) throws Met4jSbmlWriterException {
 
         for (BioMetabolite bioMetab : net.getMetabolitesView()) {
 
             BioCollection<BioCompartment> cpts = net.getCompartmentsOf(bioMetab);
+
+            if (cpts.size() == 0) {
+                throw new Met4jSbmlWriterException("No compartment for " + bioMetab.getId() +
+                        ", please check the list of compartments and the compartment of the metabolite");
+            }
 
             // TODO : to check : if the metabolite has several compartments, it will fail
             for (BioCompartment cpt : cpts) {
@@ -301,8 +306,7 @@ public class BionetworkToJsbml {
                 Boolean hasOnlySubstanceUnits = MetaboliteAttributes.getHasOnlySubstanceUnits(bioMetab);
                 if (hasOnlySubstanceUnits != null) {
                     metab.setHasOnlySubstanceUnits(MetaboliteAttributes.getHasOnlySubstanceUnits(bioMetab));
-                }
-                else {
+                } else {
                     metab.setHasOnlySubstanceUnits(true);
                 }
 
@@ -370,16 +374,29 @@ public class BionetworkToJsbml {
 
 
             Flux lb = ReactionAttributes.getLowerBound(bionetReaction);
+
             if (lb == null) {
                 lb = new Flux(bionetReaction.isReversible() ? Flux.FLUXMIN : 0.0);
-                NetworkAttributes.addUnitDefinition(net, lb.unitDefinition);
                 createModelUnitDefinition(lb.unitDefinition);
+                NetworkAttributes.addUnitDefinition(net, lb.unitDefinition);
+            }
+
+            if (lb.unitDefinition == null) {
+                lb.unitDefinition = new BioUnitDefinition();
+                createModelUnitDefinition(lb.unitDefinition);
+                NetworkAttributes.addUnitDefinition(net, lb.unitDefinition);
             }
 
             Flux ub = ReactionAttributes.getUpperBound(bionetReaction);
             if (ub == null) {
                 ub = new Flux(Flux.FLUXMAX);
-                NetworkAttributes.addUnitDefinition(net,ub.unitDefinition);
+                NetworkAttributes.addUnitDefinition(net, ub.unitDefinition);
+                createModelUnitDefinition(ub.unitDefinition);
+            }
+
+            if (ub.unitDefinition == null) {
+                ub.unitDefinition = new BioUnitDefinition();
+                NetworkAttributes.addUnitDefinition(net, ub.unitDefinition);
                 createModelUnitDefinition(ub.unitDefinition);
             }
 

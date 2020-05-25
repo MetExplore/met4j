@@ -38,6 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.convert;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.network.Tab2BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import org.kohsuke.args4j.Option;
@@ -99,7 +100,7 @@ public class Tab2Sbml extends AbstractMet4jApplication {
      * @param args
      * @throws IOException
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, Met4jSbmlWriterException {
 
         Tab2Sbml ts = new Tab2Sbml();
 
@@ -109,7 +110,7 @@ public class Tab2Sbml extends AbstractMet4jApplication {
 
     }
 
-    private void run() {
+    private void run() throws Met4jSbmlWriterException {
 
             Tab2BioNetwork tb = new Tab2BioNetwork(this.id, this.colid-1,
                     this.colformula-1,

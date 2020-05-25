@@ -48,6 +48,7 @@ import javax.xml.stream.XMLStreamException;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.BionetworkToJsbml;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import org.junit.Before;
 import org.junit.Test;
 import org.sbml.jsbml.Compartment;
@@ -82,7 +83,7 @@ public class AnnotationWriterTest {
 	AnnotationWriter writer;
 
 	@Before
-	public void init() {
+	public void init() throws Met4jSbmlWriterException {
 
 		doc = new SBMLDocument(3, 1);
 		model = doc.createModel();

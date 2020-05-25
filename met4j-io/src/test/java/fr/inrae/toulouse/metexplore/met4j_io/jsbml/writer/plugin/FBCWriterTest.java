@@ -49,6 +49,7 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.FluxReaction;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.ReactionObjective;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.BionetworkToJsbml;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import org.junit.Before;
 import org.junit.Test;
 import org.sbml.jsbml.Compartment;
@@ -94,7 +95,7 @@ public class FBCWriterTest {
 	FBCWriter writer;
 
 	@Before
-	public void init() throws JSBMLPackageWriterException {
+	public void init() throws JSBMLPackageWriterException, Met4jSbmlWriterException {
 
 		doc = new SBMLDocument(3, 1);
 		model = doc.createModel();

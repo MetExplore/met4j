@@ -40,6 +40,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.AnnotationWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.GroupPathwayWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.NotesWriter;
@@ -60,7 +61,7 @@ public class FbcToNotes extends AbstractMet4jApplication {
     @Option(name = "-o", usage = "output file", required = true)
     public String outputPath = null;
 
-    public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
+    public static void main(String[] args) throws IOException, Met4jSbmlReaderException, Met4jSbmlWriterException {
 
         FbcToNotes f = new FbcToNotes();
 
@@ -78,7 +79,7 @@ public class FbcToNotes extends AbstractMet4jApplication {
 
     }
 
-    private void run() throws IOException, Met4jSbmlReaderException {
+    private void run() throws IOException, Met4jSbmlReaderException, Met4jSbmlWriterException {
 
         JsbmlReader reader = new JsbmlReader(this.inputPath);
 

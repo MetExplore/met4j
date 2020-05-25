@@ -41,6 +41,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageWriterException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.BionetworkToJsbml;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import org.junit.Test;
 import org.sbml.jsbml.ListOf;
 import org.sbml.jsbml.Model;
@@ -58,7 +59,7 @@ public class GroupPathwayWriterTest {
 
 
     @Test
-    public void parseBionetwork() throws JSBMLPackageWriterException {
+    public void parseBionetwork() throws JSBMLPackageWriterException, Met4jSbmlWriterException {
 
         SBMLDocument doc = new SBMLDocument(3, 1);
         Model model = doc.createModel();

@@ -46,6 +46,7 @@ import java.util.stream.Collectors;
 import javax.xml.stream.XMLStreamException;
 
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import org.junit.Before;
 import org.junit.Test;
 import org.sbml.jsbml.Model;
@@ -133,7 +134,7 @@ public class FBCParserTest {
 	}
 
 	@Test
-	public void testParseFluxReactions() throws SBMLException, XMLStreamException {
+	public void testParseFluxReactions() throws SBMLException, XMLStreamException, Met4jSbmlReaderException {
 
 		plugin = (FBCModelPlugin) model.getPlugin(PackageNamespace);
 		plugin.setStrict(true);
@@ -199,7 +200,7 @@ public class FBCParserTest {
 	}
 
 	@Test
-	public void testComputeGeneAssociations() throws SBMLException, XMLStreamException {
+	public void testComputeGeneAssociations() throws SBMLException, XMLStreamException, Met4jSbmlReaderException {
 
 		plugin = (FBCModelPlugin) model.getPlugin(PackageNamespace);
 		plugin.setStrict(true);
@@ -264,7 +265,7 @@ public class FBCParserTest {
 	}
 
 	@Test
-	public void testParseFluxSpecies() {
+	public void testParseFluxSpecies() throws Met4jSbmlReaderException {
 
 		plugin = (FBCModelPlugin) model.getPlugin(PackageNamespace);
 		plugin.setStrict(true);
@@ -300,7 +301,7 @@ public class FBCParserTest {
 	}
 
 	@Test
-	public void testParseListOfFluxObjectives() throws SBMLException, XMLStreamException {
+	public void testParseListOfFluxObjectives() throws SBMLException, XMLStreamException, Met4jSbmlReaderException {
 
 		plugin = (FBCModelPlugin) model.getPlugin(PackageNamespace);
 		plugin.setStrict(true);

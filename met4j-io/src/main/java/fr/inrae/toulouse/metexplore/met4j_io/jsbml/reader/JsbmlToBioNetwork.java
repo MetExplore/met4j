@@ -666,7 +666,7 @@ public class JsbmlToBioNetwork {
 	 * Launch the parsing of the jsbml model by the different packages
 	 * 
 	 */
-	public void parsePackageAdditionalData() {
+	public void parsePackageAdditionalData() throws Met4jSbmlReaderException {
 		for (PackageParser parser : this.getSetOfPackage()) {
 			parser.parseModel(model, this.getNetwork());
 		}

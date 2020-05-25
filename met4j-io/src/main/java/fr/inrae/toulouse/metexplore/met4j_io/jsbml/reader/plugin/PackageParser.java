@@ -38,6 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin;
 
 import java.util.ArrayList;
 
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import org.sbml.jsbml.Model;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
@@ -61,7 +62,7 @@ public interface PackageParser {
 	 * @param bionetwork
 	 * The BioNetwork
 	 */
-	void parseModel(Model model, BioNetwork bionetwork);
+	void parseModel(Model model, BioNetwork bionetwork) throws Met4jSbmlReaderException;
 	
 	/**
 	 * If this package plugin uses an official SBML package, this method must return the key name of your package 

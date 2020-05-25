@@ -77,7 +77,7 @@ public class GroupPathwayWriter implements PackageWriter, PrimaryDataTag {
             group.setId(StringUtils.convertToSID(p.getId()));
             group.setName(p.getName());
             group.setKind(Group.Kind.classification);
-            plugin.addGroup(group);
+
             BioCollection<BioReaction> reactions = bionetwork.getReactionsFromPathways(p);
             for (BioReaction r : reactions) {
                 Member member = new Member();
@@ -85,7 +85,11 @@ public class GroupPathwayWriter implements PackageWriter, PrimaryDataTag {
                 group.addMember(member);
             }
             if (group.getMemberCount() > 0) {
-                plugin.addGroup(group);
+                try {
+                    plugin.addGroup(group);
+                } catch (Exception e) {
+                    System.err.println("[WARNING] Impossible to add pathway "+p.getId()+" in the SBML...");
+                }
             }
         }
     }

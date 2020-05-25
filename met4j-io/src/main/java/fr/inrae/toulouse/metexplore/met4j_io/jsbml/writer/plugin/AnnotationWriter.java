@@ -244,9 +244,18 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 
                 if (IdentifiersOrg.validIdentifiers.contains(r.getDbName().toLowerCase())){
 
+                    Qualifier qual;
+
+                    try {
+                        qual = Qualifier.valueOf("BQB_" + r.logicallink.toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("Bad property in annotations: "+ r.logicallink+", set to HAS_PROPERTY");
+                        qual = Qualifier.BQB_HAS_PROPERTY;
+                    }
+
                     for (CVTerm innerCV : annot.getListOfCVTerms()) {
                         if (innerCV.getBiologicalQualifierType()
-                                .compareTo(Qualifier.valueOf("BQB_" + r.logicallink.toUpperCase())) == 0) {
+                                .compareTo(qual) == 0) {
                             innerCV.addResource(usedPattern + r.getDbName() + separator + r.id);
                             continue addingLoop;
                         }
@@ -254,7 +263,8 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 
                     CVTerm cvTerm = new CVTerm();
                     cvTerm.setQualifierType(Type.BIOLOGICAL_QUALIFIER);
-                    cvTerm.setBiologicalQualifierType(Qualifier.valueOf("BQB_" + r.logicallink.toUpperCase()));
+
+                    cvTerm.setBiologicalQualifierType(qual);
                     cvTerm.addResource(usedPattern + r.getDbName() + separator + r.id);
                     annot.addCVTerm(cvTerm);
                 }

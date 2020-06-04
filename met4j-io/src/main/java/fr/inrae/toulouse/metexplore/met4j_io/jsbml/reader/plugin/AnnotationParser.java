@@ -40,6 +40,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML1Compatible;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML2Compatible;
@@ -56,6 +57,8 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
+
+import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.*;
 
 /**
  * This class is used to parse the annotation of every SBML element.
@@ -196,7 +199,14 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 						&& (m = Pattern.compile(this.getAnnotationPattern()).matcher(ress)).matches()) {
 
 					if (m.group(1).equalsIgnoreCase("ec-code") && ent instanceof BioReaction) {
-						((BioReaction) ent).setEcNumber(m.group(2));
+						String oldEc = ((BioReaction) ent).getEcNumber();
+						if(isVoid(oldEc))
+						{
+							((BioReaction) ent).setEcNumber(m.group(2));
+						}
+						else {
+							((BioReaction) ent).setEcNumber(oldEc+";"+m.group(2));
+						}
 					}
 					ent.addRef(m.group(1), m.group(2), 1, qual, ORIGIN);
 				}

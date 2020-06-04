@@ -172,6 +172,12 @@ public class AnnotationParserTest {
 		cvEc.setBiologicalQualifierType(Qualifier.BQB_IS);
 		genericAnnotation.addCVTerm(cvEc);
 
+		CVTerm cvEc2 = new CVTerm();
+		cvEc2.addResource("http://identifiers.org/ec-code/1.1.1.2");
+		cvEc2.setQualifierType(Type.BIOLOGICAL_QUALIFIER);
+		cvEc2.setBiologicalQualifierType(Qualifier.BQB_IS);
+		genericAnnotation.addCVTerm(cvEc2);
+
 		model.getReaction("r1").setAnnotation(genericAnnotation);
 
 		model.getReaction("r2").setAnnotation(pubmedAnnotation);
@@ -228,7 +234,7 @@ public class AnnotationParserTest {
 
 		assertEquals(r1.getRefs("kegg.reaction").iterator().next(), ref);
 
-		assertEquals("1.1.1.1", r1.getEcNumber());
+		assertEquals("1.1.1.1;1.1.1.2", r1.getEcNumber());
 
 		BioRef ref2 = new BioRef(AnnotationParser.ORIGIN, "pubmed", "1", 1);
 		ref2.setLogicallink("isDescribedBy");

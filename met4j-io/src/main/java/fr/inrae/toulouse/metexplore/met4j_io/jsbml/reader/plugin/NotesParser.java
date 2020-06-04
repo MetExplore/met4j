@@ -423,11 +423,18 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
         }
 
         // get the ec number
-        if (this.getECPattern() != null && (m = Pattern.compile(this.getECPattern()).matcher(reactionNotes)).find()) {
-
-            String ec = m.group(1).trim();
-            if (!isVoid(ec)) {
-                reaction.setEcNumber(ec);
+        if (this.getECPattern() != null) {
+            m = Pattern.compile(this.getECPattern()).matcher(reactionNotes);
+            while (m.find()) {
+                String ec = m.group(1).trim();
+                if (!isVoid(ec)) {
+                    String oldEcNumber = reaction.getEcNumber();
+                    if (isVoid(oldEcNumber)) {
+                        reaction.setEcNumber(ec);
+                    } else {
+                        reaction.setEcNumber(oldEcNumber + ";" + ec);
+                    }
+                }
             }
         }
 

@@ -140,7 +140,7 @@ public class NotesParserTest {
 		Reaction r1 = model.createReaction("r1");
 
 		String notesStr = "<body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-				+ "    <p>Attribut1 : value1</p><p>EC-NUMBER: 1.1.1.1</p>" + "<p>PMID: 10000,12323;PMID: 12</p>"
+				+ "    <p>Attribut1 : value1</p><p>EC-NUMBER: 1.1.1.1</p><p>EC-NUMBER: 1.1.1.2</p>" + "<p>PMID: 10000,12323;PMID: 12</p>"
 				+ "<p>SUBSYSTEM: Pathway1 || Pathway2</p>" + "<p>SCORE: 1</p>" + "<p>STATUS: Not defined</p>"
 				+ "<p>COMMENTS: comment</p>" + "<p>GENE ASSOCIATION: (G1 and G2 or G2 and G3) and (G4 AND G5 or (G6) or (G4 AND G7))</p>\n" + "  </body>";
 
@@ -161,7 +161,7 @@ public class NotesParserTest {
 
 		assertEquals("<notes>\n  " + notesStr + "\n</notes>", notes.getXHTMLasString());
 
-		assertEquals("1.1.1.1", reaction1.getEcNumber());
+		assertEquals("1.1.1.1;1.1.1.2", reaction1.getEcNumber());
 
 		assertEquals(2, network.getPathwaysView().size());
 

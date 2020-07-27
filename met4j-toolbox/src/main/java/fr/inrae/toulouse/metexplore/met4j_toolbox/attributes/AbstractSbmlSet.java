@@ -53,7 +53,7 @@ public abstract class AbstractSbmlSet extends AbstractMet4jApplication {
     @Option(name="-out", usage="[out.sbml] Out sbml file")
     protected String out = "out.sbml";
 
-    @Option(name="-sbml", usage="Original sbml file")
+    @Option(name="-sbml", usage="Original sbml file", required=true)
     protected String sbml;
 
     @Option(name="-tab", usage="Tabulated file")

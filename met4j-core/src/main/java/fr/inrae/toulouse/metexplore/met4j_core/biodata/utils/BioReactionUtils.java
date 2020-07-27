@@ -139,11 +139,14 @@ public class BioReactionUtils {
 				{
 					BioProtein prot = (BioProtein) ent;
 					BioGene g = prot.getGene();
-					
-					String id = getGeneNames ? g.getName() : g.getId();
-					
-					geneIds.add(id);
-					
+					if(g == null)
+					{
+						System.err.println("[WARNING] No gene for the protein "+prot.getId());
+					}
+					else {
+						String id = getGeneNames ? g.getName() : g.getId();
+						geneIds.add(id);
+					}
 				}
 			}
 			

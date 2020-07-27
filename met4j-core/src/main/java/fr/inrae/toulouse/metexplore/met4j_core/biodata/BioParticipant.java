@@ -91,7 +91,7 @@ public abstract class BioParticipant extends BioEntity {
 		
 		if(Double.isNaN(quantity) || Double.isInfinite(quantity) || quantity <= 0)
 		{
-			ErrorUtils.error("Illegal argument: the quantity must be finite and positive");
+			ErrorUtils.error("Illegal argument for "+quantity+" "+this.getPhysicalEntity().getId()+": the quantity must be finite and positive");
 			throw new IllegalArgumentException();
 		}
 		

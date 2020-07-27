@@ -190,7 +190,9 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	@Override
 	public boolean remove(Object o) {
-		return entities.values().remove(o);
+		Object removed =  entities.remove(((BioEntity) o).getId());
+
+		return removed == null ? false : true;
 
 	}
 

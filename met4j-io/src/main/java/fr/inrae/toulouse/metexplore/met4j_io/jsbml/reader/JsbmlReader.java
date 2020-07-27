@@ -36,8 +36,7 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -100,6 +99,8 @@ public class JsbmlReader {
      */
     private boolean useValidator = true;
 
+    private String xml = null;
+
     /**
      * Constructor
      *
@@ -119,6 +120,29 @@ public class JsbmlReader {
     public JsbmlReader(String filename, boolean useValidator) throws IOException {
         this.filename = filename;
         this.useValidator = useValidator;
+    }
+
+    public JsbmlReader(InputStream inputStream) throws IOException {
+        this.xml = this.inputStreamToString(inputStream);
+        this.useValidator = false;
+
+    }
+
+    public JsbmlReader(InputStream inputStream, boolean useValidator) throws IOException {
+        this.xml = this.inputStreamToString(inputStream);
+        this.useValidator = useValidator;
+    }
+
+    private String inputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+            sb.append(line + System.lineSeparator());
+        }
+
+        return sb.toString();
+
     }
 
     /**
@@ -282,9 +306,16 @@ public class JsbmlReader {
      *                            SBMLReader.read(..) method
      */
     private void initiateModel() throws IOException, XMLStreamException {
-        File sbmlFile = new File(this.getFilename());
 
-        SBMLDocument doc = SBMLReader.read(sbmlFile);
+
+        SBMLDocument doc;
+        if(this.xml == null) {
+            File sbmlFile = new File(this.getFilename());
+            doc = SBMLReader.read(sbmlFile);
+        }
+        else {
+            doc = SBMLReader.read(xml);
+        }
 
         if (this.useValidator) {
             System.err.println("Validating Input SBML..");

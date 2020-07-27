@@ -182,6 +182,8 @@ public class BioNetwork extends BioEntity {
             this.removeEnzymeFromReaction(e, r);
         }
 
+//        reactions.parallelStream().forEach(bioReaction -> {this.removeEnzymeFromReaction(e, bioReaction);});
+
         this.enzymes.remove(e);
 
     }

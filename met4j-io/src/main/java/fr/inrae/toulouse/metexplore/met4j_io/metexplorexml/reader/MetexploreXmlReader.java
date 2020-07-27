@@ -96,7 +96,6 @@ public class MetexploreXmlReader {
             network = new BioNetwork(model.getAttribute("id"));
             network.setName(model.getAttribute("name"));
 
-            System.err.println("Start unit");
             this.readUnitDefinitions();
             this.readCompartments();
             this.readMetabolites();
@@ -118,7 +117,6 @@ public class MetexploreXmlReader {
      */
     public void readUnitDefinitions() throws ParseException {
         NodeList listOfUnitDefinitions = document.getElementsByTagName("listOfUnitDefinitions");
-        System.err.println("Read Unit definitions");
         if (listOfUnitDefinitions != null && listOfUnitDefinitions.getLength() > 0) {
 
                 NodeList unitDefinitions = ((Element) (listOfUnitDefinitions.item(0)))
@@ -233,8 +231,8 @@ public class MetexploreXmlReader {
         // some
         for (int i = 1; i < compartmentCount; i = i + 2) {
             Element compartment = (Element) compartments.item(i);
-            String compartmentId = StringUtils.sbmlDecode(compartment.getAttribute("id"));
-            String compartmentName = StringUtils.sbmlDecode(compartment.getAttribute("name"));
+            String compartmentId = compartment.getAttribute("id");
+            String compartmentName = compartment.getAttribute("name");
 
             if (compartmentId == null) {
                 compartmentId = "NA";
@@ -273,12 +271,12 @@ public class MetexploreXmlReader {
         // some
         for (int i = 1; i < compoundCount; i = i + 2) {
             Element compound = (Element) listOfCompounds.item(i);
-            String cpdId = StringUtils.sbmlDecode(compound.getAttribute("id"));
-            String cpdName = StringUtils.sbmlDecode(compound.getAttribute("name"));
+            String cpdId = compound.getAttribute("id");
+            String cpdName = compound.getAttribute("name");
 
             BioMetabolite cpd = new BioMetabolite(cpdId, cpdName);
 
-            String compartmentId = StringUtils.sbmlDecode(compound.getAttribute("compartment"));
+            String compartmentId = compound.getAttribute("compartment");
 
             compartmentMetabolites.put(cpdId, compartmentId);
 
@@ -412,8 +410,8 @@ public class MetexploreXmlReader {
         for (int i = 1; i < reactionCount; i = i + 2) {
             Element reaction = (Element) reactionsList.item(i);
 
-            BioReaction rxn = new BioReaction(StringUtils.sbmlDecode(reaction.getAttribute("id")),
-                    StringUtils.sbmlDecode(reaction.getAttribute("name")));
+            BioReaction rxn = new BioReaction(reaction.getAttribute("id"),
+                    reaction.getAttribute("name"));
 
             network.add(rxn);
 
@@ -489,8 +487,8 @@ public class MetexploreXmlReader {
         for (int i = 0; i < nbEnzymes; i++) {
 
             Element enzymeNode = (Element) enzymeNodes.item(i);
-            String enzymeId = StringUtils.sbmlDecode(enzymeNode.getAttribute("id"));
-            String enzymeName = StringUtils.sbmlDecode(enzymeNode.getAttribute("name"));
+            String enzymeId = enzymeNode.getAttribute("id");
+            String enzymeName = enzymeNode.getAttribute("name");
 
             BioEnzyme enzyme;
 
@@ -509,8 +507,8 @@ public class MetexploreXmlReader {
             for (int j = 0; j < proteinNodes.getLength(); j++) {
 
                 Element proteinNode = (Element) proteinNodes.item(j);
-                String proteinId = StringUtils.sbmlDecode(proteinNode.getAttribute("id"));
-                String proteinName = StringUtils.sbmlDecode(proteinNode.getAttribute("name"));
+                String proteinId = proteinNode.getAttribute("id");
+                String proteinName = proteinNode.getAttribute("name");
 
                 BioProtein protein;
 
@@ -529,8 +527,8 @@ public class MetexploreXmlReader {
                 for (int k = 0; k < listOfGenes.getLength(); k++) {
 
                     Element geneNode = (Element) listOfGenes.item(k);
-                    String geneId = StringUtils.sbmlDecode(geneNode.getAttribute("id"));
-                    String geneName = StringUtils.sbmlDecode(geneNode.getAttribute("name"));
+                    String geneId = geneNode.getAttribute("id");
+                    String geneName = geneNode.getAttribute("name");
 
                     BioGene gene;
                     if (!network.getGenesView().containsId(geneId)) {
@@ -619,8 +617,8 @@ public class MetexploreXmlReader {
 
             Element pathwayNode = (Element) pathwayNodes.item(i);
 
-            String pathwayId = StringUtils.sbmlDecode(pathwayNode.getAttribute("id"));
-            String pathwayName = StringUtils.sbmlDecode(pathwayNode.getAttribute("name"));
+            String pathwayId = pathwayNode.getAttribute("id");
+            String pathwayName = pathwayNode.getAttribute("name");
 
             BioPathway pathway;
 
@@ -784,7 +782,7 @@ public class MetexploreXmlReader {
                 Element speciesReference = (Element) speciesReferences.item(j);
 
                 String idSpecies = speciesReference.getAttribute("species");
-                ReactionAttributes.addSideCompound(rxn, StringUtils.sbmlDecode(idSpecies));
+                ReactionAttributes.addSideCompound(rxn, idSpecies);
             }
         }
 
@@ -793,7 +791,7 @@ public class MetexploreXmlReader {
     private void addReactant(Element reactant, BioReaction rxn, Boolean left) throws ParseException {
         // Finds the compound
         BioMetabolite c = network.getMetabolitesView()
-                .get(StringUtils.sbmlDecode(reactant.getAttribute("species")));
+                .get(reactant.getAttribute("species"));
 
         if (c != null) {
             String coeffAttr = reactant.getAttribute("stoichiometry");

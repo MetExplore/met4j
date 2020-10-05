@@ -63,7 +63,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.AnnotatorComment;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.Flux;
-import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
 import fr.inrae.toulouse.metexplore.met4j_io.utils.XmlUtils;
 
 import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
@@ -245,6 +244,8 @@ public class MetexploreXmlReader {
 
             this.network.add(comp);
 
+            System.err.println(comp.getId() +" _ "+comp.getName());
+
         }
     }
 
@@ -318,7 +319,7 @@ public class MetexploreXmlReader {
             }
 
             if (!this.network.getCompartmentsView().containsId(compartmentId)) {
-                throw new ParseException("Compartment of " + cpd.getId() + " not declared");
+                throw new ParseException("Compartment "+compartmentId+" of " + cpd.getId() + " not declared");
             }
 
             if (charge != null)

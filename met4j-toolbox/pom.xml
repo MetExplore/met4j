@@ -86,6 +86,7 @@
                     <source>11</source>
                     <target>11</target>
                 </configuration>
+                <version>3.8.1</version>
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -99,6 +100,7 @@
                         </manifest>
                     </archive>
                 </configuration>
+                <version>2.2-beta-5</version>
             </plugin>
         </plugins>
     </build>

@@ -215,7 +215,7 @@ public class BioNetworkToMetexploreXml {
         // TODO : to check : if the metabolite has several compartments, it will fail
         for (BioCompartment cpt : cpts) {
 
-            writer.write("  <species id=\"" + id + "\" name=\"" + name + "\" compartment=\"" + cpt.getId()
+            writer.write("  <species id=\"" + id + "\" name=\"" + name + "\" compartment=\"" + StringUtils.sbmlEncode(cpt.getId())
                     + "\" boundaryCondition=\"" + boundaryCondition + "\"");
 
             writer.write(" mass=\"" + cpd.getMolecularWeight() + "\" formula=\"" + cpd.getChemicalFormula()

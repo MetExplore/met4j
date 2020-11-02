@@ -94,11 +94,6 @@ public class ReactionAttributes extends GenericAttributes {
      * @param val
      */
     public static void setLowerBound(BioReaction r, Flux val) {
-
-        if (!r.isReversible() && (val != null && val.value < 0)) {
-            throw new IllegalArgumentException(
-                    "The flux value for reaction "+r.getId()+" must be greater or equal to 0 since the reaction is irreversible");
-        }
         r.setAttribute(LOWER_BOUND, val);
     }
 
@@ -109,11 +104,6 @@ public class ReactionAttributes extends GenericAttributes {
      * @param val
      */
     public static void setUpperBound(BioReaction r, Flux val) {
-
-        if (!r.isReversible() && (val != null && val.value < 0)) {
-            throw new IllegalArgumentException(
-                    "The flux value for reaction "+r.getId()+" must be greater or equal to 0 since the reaction is irreversible");
-        }
         r.setAttribute(UPPER_BOUND, val);
     }
 

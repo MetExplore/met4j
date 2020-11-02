@@ -96,34 +96,21 @@ public class ReactionAttributesTest {
 		ReactionAttributes.setLowerBound(r, f);
 
 		assertEquals("test set lower bound", 150.0, ((Flux) r.getAttribute(ReactionAttributes.LOWER_BOUND)).value, 0.0);
-		
+
 		f.value = -150.0;
 
 		ReactionAttributes.setLowerBound(r, f);
-		
+
 		assertEquals("test set lower bound", -150.0, ((Flux) r.getAttribute(ReactionAttributes.LOWER_BOUND)).value, 0.0);
 
 		f.value = 150.0;
-		
+
 		r.setReversible(false);
 
 		ReactionAttributes.setLowerBound(r, f);
 		assertEquals("test set lower bound", 150.0, ((Flux) r.getAttribute(ReactionAttributes.LOWER_BOUND)).value, 0.0);
 
-
 	}
-	
-	@Test
-	public void testSetBadLowerBound() {
-		
-		exception.expect(IllegalArgumentException.class);
-		r.setReversible(false);
-
-		f.value = -150.0;
-		
-		ReactionAttributes.setLowerBound(r, f);
-	}
-	
 
 	@Test
 	public void testSetUpperBound() {
@@ -147,19 +134,6 @@ public class ReactionAttributesTest {
 		assertEquals("test set upper bound", 150.0, ((Flux) r.getAttribute(ReactionAttributes.UPPER_BOUND)).value, 0.0);
 
 	}
-	
-	
-	@Test
-	public void testSetBadUpperBound() {
-		
-		exception.expect(IllegalArgumentException.class);
-		r.setReversible(false);
-
-		f.value = -150.0;
-		
-		ReactionAttributes.setUpperBound(r, f);
-	}
-	
 
 	@Test
 	public void testSetNotes() {

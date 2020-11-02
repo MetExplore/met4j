@@ -259,7 +259,6 @@ public class FVA_KO_DRIT {
 
         List<BioEntity> dead = resultDr.getDeadReactions();
 
-        System.err.println(dead.size());
         assertEquals("False number of dead reactions", 8, dead.size());
 
         List<BioEntity> testDead = new ArrayList<BioEntity>();

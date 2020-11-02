@@ -273,8 +273,6 @@ public class InteractionIT {
 
 //		result.plot();
 
-        System.out.println(result.getObjValue());
-
         Assert.assertTrue(result.getObjValue() == 6.0);
 
     }

@@ -341,7 +341,6 @@ public class ConstraintsFileReader {
 						else if (line.contains("=")) {
 							Constraint c = new Constraint(finalEquation, bound, bound);
 							constraints.add(c);
-							System.out.println(c);
 						} else if (line.contains("<")) {
 							if (Vars.cheat) {
 
@@ -376,7 +375,7 @@ public class ConstraintsFileReader {
 				nbLine++;
 			}
 
-			if (loadObjective) {
+			if (loadObjective && objString.size() > 0 ) {
 
 				String realObjString = objString.get(objString.size() - 1);
 

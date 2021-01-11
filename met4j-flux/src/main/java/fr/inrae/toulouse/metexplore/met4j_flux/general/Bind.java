@@ -269,7 +269,7 @@ public abstract class Bind {
      * Clears the solver.
      *
      */
-    protected void clearSolver() {
+    public void clearSolver() {
 
         clear();
         solverPrepared = false;

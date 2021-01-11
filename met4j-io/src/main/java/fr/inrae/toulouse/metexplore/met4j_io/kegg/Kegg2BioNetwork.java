@@ -357,7 +357,8 @@ public class Kegg2BioNetwork {
         try {
             Data = this.getEntityDataHasHash(rxn.getId());
         } catch (Exception e) {
-            throw e;
+            System.err.println("Problem while loading reaction "+rxn.getId()+" via kegg api!");
+            return;
         }
 
         if(Data.get("NAME")!=null){
@@ -401,7 +402,15 @@ public class Kegg2BioNetwork {
                     this.network.add(cpd);
                     this.network.affectToCompartment(cpt, cpd);
                 }
-                BioReactant lpart = new BioReactant(cpd, Double.parseDouble(stoechio), cpt);
+
+                Double coeff = 1.0;
+                try {
+                    coeff = Double.parseDouble(stoechio);
+                }catch (NumberFormatException e) {
+                    System.err.println("The stoechiometry "+stoechio+" is not a number, it is left as 1.0");
+                }
+
+                BioReactant lpart = new BioReactant(cpd, coeff, cpt);
                 ReactantAttributes.setConstant(lpart, false);
                 network.affectLeft(rxn, lpart);
             }
@@ -429,7 +438,15 @@ public class Kegg2BioNetwork {
                     this.network.add(cpd);
                     this.network.affectToCompartment(cpt, cpd);
                 }
-                BioReactant rpart = new BioReactant(cpd, Double.parseDouble(stoechio), cpt);
+
+                Double coeff = 1.0;
+                try {
+                    coeff = Double.parseDouble(stoechio);
+                }catch (NumberFormatException e) {
+                    System.err.println("The stoechiometry "+stoechio+" is not a number, it is left as 1.0");
+                }
+
+                BioReactant rpart = new BioReactant(cpd, coeff, cpt);
                 ReactantAttributes.setConstant(rpart, false);
                 network.affectRight(rxn, rpart);
             }
@@ -465,7 +482,7 @@ public class Kegg2BioNetwork {
         try {
             Data = this.getEntityDataHasHash(metabolite.getId());
         } catch (Exception e) {
-            throw e;
+            System.err.println("Problem while loading metabolite "+metabolite.getId()+" via KEGG api!");
         }
 
         if(Data.get("NAME")!=null){ //kegg glycans entries do not always have names or chemical formulas
@@ -475,9 +492,21 @@ public class Kegg2BioNetwork {
             metabolite.setChemicalFormula(Data.get("FORMULA").get(0));
         }
         if(Data.get("MASS")!=null){
-            metabolite.setMolecularWeight(Double.parseDouble(Data.get("MASS").get(0)));
+            Double mass = 0.0;
+            try {
+                mass = Double.parseDouble(Data.get("MASS").get(0));
+            }catch (NumberFormatException e) {
+                System.err.println("The mass "+Data.get("MASS").get(0)+" is not a number, it is left as 0.0");
+            }
+            metabolite.setMolecularWeight(mass);
         }else if(Data.get("MOL_WEIGHT")!= null){
-            metabolite.setMolecularWeight(Double.parseDouble(Data.get("MOL_WEIGHT").get(0)));
+            Double mass = 0.0;
+            try {
+                mass = Double.parseDouble(Data.get("MOL_WEIGHT").get(0));
+            }catch (NumberFormatException e) {
+                System.err.println("The mass "+Data.get("MOL_WEIGHT").get(0)+" is not a number, it is left as 0.0");
+            }
+            metabolite.setMolecularWeight(mass);
         }
 
         metabolite.addRef(new BioRef("Import", "kegg.compound", metabolite.getId(), 1));
@@ -533,13 +562,7 @@ public class Kegg2BioNetwork {
 
         String[] Data= new String[0];
 
-        try {
-            Data = this.webResource.path("get").path(id).get(String.class).split("\\n");
-        } catch (UniformInterfaceException e) {
-           throw e;
-        } catch (ClientHandlerException e) {
-           throw e;
-        }
+        Data = this.webResource.path("get").path(id).get(String.class).split("\\n");
 
         String lastKey=null;
         HashMap<String, ArrayList<String>> output=new HashMap<String, ArrayList<String>>();

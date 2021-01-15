@@ -88,7 +88,7 @@ public class CplexBind extends Bind {
 			cplex.setWarning(null);
 
 			// cplex parameters
-			cplex.setParam(IloCplex.IntParam.Threads, 1);
+			cplex.setParam(IloCplex.IntParam.Threads, Vars.maxThread);
 			cplex.setParam(IloCplex.DoubleParam.EpRHS, Math.pow(10, -Vars.decimalPrecision));
 
 			// cplex.setParam(IloCplex.IntParam.MIRCuts,-1);
@@ -288,17 +288,15 @@ public class CplexBind extends Bind {
 	public synchronized DoubleResult go(boolean saveResults) {
 		try {
 
-			while (cplex.getNMIPStarts() > 0) {
+			// Why was this there ? I don't know...
+			/*while (cplex.getNMIPStarts() > 0) {
 
 				cplex.deleteMIPStarts(0);
 
-			}
-
+			}*/
 			if (cplex.solve()) {
 
 				if (saveResults) {
-
-					// cplex.getc
 
 					for (String name : vars.keySet()) {
 						try {
@@ -309,11 +307,6 @@ public class CplexBind extends Bind {
 
 						}
 					}
-				}
-
-				Iterator it0 = cplex.rangeIterator();
-				while (it0.hasNext()) {
-					IloRange r = (IloRange) it0.next();
 				}
 
 				return new DoubleResult(cplex.getObjValue(), 0);
@@ -430,16 +423,21 @@ public class CplexBind extends Bind {
 
 	public void clear() {
 		try {
+			cplex.clearCuts();
+			cplex.clearCallbacks();
+			cplex.clearUserCuts();
+			cplex.clearLazyConstraints();
 			cplex.clearModel();
 		} catch (IloException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+
 	}
 
 	public void end() {
-		cplex.end();
+		clear(); cplex.end();
 	}
 
 	public void setMIPStart() {
@@ -483,6 +481,11 @@ public class CplexBind extends Bind {
 	@Override
 	public void freeEnv() {
 		return;
+	}
+
+
+	public IloCplex getCplex() {
+		return this.cplex;
 	}
 
 }

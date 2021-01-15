@@ -29,7 +29,7 @@
                 <version>2.22.0</version>
                 <configuration>
                     <argLine>
-                        -Djava.library.path=/usr/lib/x86_64-linux-gnu/jni:/usr/local/cplex/cplex/bin/x86-64_sles10_4.1/
+                        -Djava.library.path=/usr/lib/x86_64-linux-gnu/jni:/usr/local/cplex1210/cplex/bin/x86-64_linux/
                     </argLine>
                 </configuration>
                 <executions>

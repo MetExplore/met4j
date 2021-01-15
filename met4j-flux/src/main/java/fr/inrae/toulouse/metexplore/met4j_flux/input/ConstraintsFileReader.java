@@ -327,19 +327,20 @@ public class ConstraintsFileReader {
 
 						// we seperate the different cases
 						// order is important
+
 						if (line.contains("<=")) {
 
-							Constraint c = new Constraint(finalEquation, -Double.MAX_VALUE, bound);
+							Constraint c = new Constraint(finalEquation, -Double.MAX_VALUE, bound + Vars.epsilon);
 							constraints.add(c);
 
 						} else if (line.contains(">=")) {
 
-							Constraint c = new Constraint(finalEquation, bound, Double.MAX_VALUE);
+							Constraint c = new Constraint(finalEquation, bound - Vars.epsilon, Double.MAX_VALUE);
 							constraints.add(c);
 						}
 
 						else if (line.contains("=")) {
-							Constraint c = new Constraint(finalEquation, bound, bound);
+							Constraint c = new Constraint(finalEquation, bound -Vars.epsilon, bound+Vars.epsilon);
 							constraints.add(c);
 						} else if (line.contains("<")) {
 							if (Vars.cheat) {

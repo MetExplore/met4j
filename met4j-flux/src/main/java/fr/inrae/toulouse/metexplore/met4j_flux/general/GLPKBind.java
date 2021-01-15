@@ -344,7 +344,13 @@ public class GLPKBind extends Bind {
 	}
 
 	public void end() {
-		GLPK.glp_delete_prob(model);
+		// This causes memory allocation error...
+		/*try {
+			GLPK.glp_delete_prob(model);
+		} catch (Exception e) {
+			System.err.println("Met4j-flux warning : end GLPK model fails");
+			e.printStackTrace();
+		}*/
 	}
 
 	protected void changeVarBounds(String entity, double[] bounds) {

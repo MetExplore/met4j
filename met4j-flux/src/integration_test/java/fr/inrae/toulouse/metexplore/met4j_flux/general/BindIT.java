@@ -227,6 +227,8 @@ public class BindIT {
         BioNetwork network = parser.read();
 
         System.err.println(network.getReactionsView().size() + " reactions");
+
+        bind.intNet.clear();
         bind.setNetworkAndConstraints(network);
 
         Assert.assertTrue(bind.getConstraints().size() == 13);

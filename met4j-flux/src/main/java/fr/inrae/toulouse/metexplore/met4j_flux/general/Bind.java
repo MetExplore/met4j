@@ -281,20 +281,19 @@ public abstract class Bind {
      */
     public void clearAll() {
         this.clearSolver();
-        this.end();
-        this.constraintObjectives = null;
+        this.constraintObjectives.clear();
 //		this.intNet.allNull();
-        this.intNet = null;
-        this.bioNet = null;
-        this.constraints = null;
-        this.deadReactions = null;
-        this.simpleConstraints = null;
-        this.steadyStateConstraints = null;
-        this.solverSimpleConstraints = null;
-        this.exchangeInteractions = null;
-        this.interactionsEntitiesConsequence = null;
-        this.interactionsEntitiesCause = null;
-        this.constrainedEntities = null;
+/*        this.intNet = null;
+        this.bioNet = null;*/
+        this.constraints.clear();
+        this.deadReactions.clear();
+        this.simpleConstraints.clear();
+        this.steadyStateConstraints.clear();
+        this.solverSimpleConstraints.clear();
+        this.exchangeInteractions.clear();
+        this.interactionsEntitiesConsequence.clear();
+        this.interactionsEntitiesCause.clear();
+        this.constrainedEntities.clear();
     }
 
     /**
@@ -613,10 +612,12 @@ public abstract class Bind {
         this.bioNet = network;
 //        deadReactions = BioNetworkUtils.trim(network);
 
-        simpleConstraints.clear();
-        constraints.clear();
-        intNet.clear();
-        clear();
+/*        simpleConstraints.clear();
+        constraints.clear();*/
+        /*intNet.clear();
+        clear();*/
+        /*intNet.clear();*/
+        this.clearAll();
 
 //        // we add the trimed reactions as set to 0
 //        for (BioReaction trimed : deadReactions) {

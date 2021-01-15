@@ -140,7 +140,9 @@ public class ThreadFVA extends ResolveThread {
 
 		}
 
-//		bind.end();
+		bind.clearAll();
+		bind.end();
+
 		nbPrintedStars = new AtomicInteger(0);
 	}
 

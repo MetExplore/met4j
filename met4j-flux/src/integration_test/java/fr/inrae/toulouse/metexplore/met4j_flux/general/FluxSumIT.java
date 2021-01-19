@@ -111,7 +111,7 @@ public class FluxSumIT {
 				+ Math.abs(bind.getLastSolve().get("R_EX_A")) + Math.abs(bind.getLastSolve().get("R_EX_B"))
 				+ Math.abs(bind.getLastSolve().get("R_EX_F")) + Math.abs(bind.getLastSolve().get("R_EX_G"));
 
-		Assert.assertEquals(sum,calc ,0);
+		Assert.assertEquals(sum,calc ,0.00001);
 	}
 
 }

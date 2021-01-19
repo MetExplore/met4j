@@ -176,25 +176,27 @@ public class CplexBind extends Bind {
 				i++;
 			}
 
-			IloConstraint cplexConstraint;
-			if (!constraint.getNot()) {
-				cplexConstraint = model.range(lb, cplex.sum(somme), ub);
-				if (toRemoveFromModel != null) {
-					toRemoveFromModel.add(cplexConstraint);
-				}
-				try {
-					model.add(cplexConstraint);
-				} catch (CpxException e) {
-					System.out.println("Error: " + e.getMessage());
-					System.out.println(cplexConstraint);
-				}
+			if(somme.length > 0 ) {
+				IloConstraint cplexConstraint;
+				if (!constraint.getNot()) {
+					cplexConstraint = model.range(lb, cplex.sum(somme), ub);
+					if (toRemoveFromModel != null) {
+						toRemoveFromModel.add(cplexConstraint);
+					}
+					try {
+						model.add(cplexConstraint);
+					} catch (CpxException e) {
+						System.out.println("Error: " + e.getMessage());
+						System.out.println(cplexConstraint);
+					}
 
-			} else {
-				cplexConstraint = cplex.not(model.range(lb, cplex.sum(somme), ub));
-				if (toRemoveFromModel != null) {
-					toRemoveFromModel.add(cplexConstraint);
+				} else {
+					cplexConstraint = cplex.not(model.range(lb, cplex.sum(somme), ub));
+					if (toRemoveFromModel != null) {
+						toRemoveFromModel.add(cplexConstraint);
+					}
+					model.add(cplexConstraint);
 				}
-				model.add(cplexConstraint);
 			}
 
 		} catch (IloException e) {
@@ -420,7 +422,6 @@ public class CplexBind extends Bind {
 		return new DoubleResult(Double.NaN, 1);
 
 	}
-
 	public void clear() {
 		try {
 			cplex.clearCuts();
@@ -460,7 +461,7 @@ public class CplexBind extends Bind {
 
 	}
 
-	protected void changeVarBounds(String entity, double[] bounds) {
+	protected void changeVarBounds(String entity, Double[] bounds) {
 		try {
 			vars.get(entity).setLB(bounds[0]);
 
@@ -470,6 +471,26 @@ public class CplexBind extends Bind {
 			e.printStackTrace();
 		}
 
+	}
+
+	protected void changeVarLowerBound(String entity, Double lb) {
+		try {
+			vars.get(entity).setLB(lb);
+
+		} catch (IloException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	protected void changeVarUpperBound(String entity, Double ub) {
+		try {
+			vars.get(entity).setUB(ub);
+
+		} catch (IloException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override

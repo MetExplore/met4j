@@ -148,6 +148,8 @@ public class FVA_KO_DRIT {
 
         FVAAnalysis fva = new FVAAnalysis(bind, null, null);
         FVAResult result = fva.runAnalysis();
+
+
         try {
             BufferedReader in = new BufferedReader(new FileReader(metFVAformatedFileString));
 
@@ -161,8 +163,11 @@ public class FVA_KO_DRIT {
                 double min = Double.parseDouble(splittedLine[1]);
                 double max = Double.parseDouble(splittedLine[2]);
 
-                Assert.assertTrue(Math
-                        .abs(result.getValuesForEntity(bind.getInteractionNetwork().getEntity(name))[0] - min) < 0.001);
+                Assert.assertEquals(Math
+                        .abs(min),Math
+                        .abs(result.getValuesForEntity(bind.getInteractionNetwork().getEntity(name))[0]) , 0.001);
+               /* Assert.assertTrue(Math
+                        .abs(result.getValuesForEntity(bind.getInteractionNetwork().getEntity(name))[0] - min) < 0.001);*/
 
                 Assert.assertTrue(Math
                         .abs(result.getValuesForEntity(bind.getInteractionNetwork().getEntity(name))[1] - max) < 0.001);

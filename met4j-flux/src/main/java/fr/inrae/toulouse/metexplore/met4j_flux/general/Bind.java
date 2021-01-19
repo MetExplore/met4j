@@ -146,11 +146,14 @@ public abstract class Bind {
     protected Map<BioEntity, Map<Relation, double[]>> interactionsEntitiesConsequence = new HashMap<BioEntity, Map<Relation, double[]>>();
 
     protected Map<BioEntity, Relation> interactionsEntitiesCause = new HashMap<BioEntity, Relation>();
+
+    protected Map<BioReaction, Double[]> bounds = new HashMap<BioReaction, Double[]>();
+
     /**
      * Used for pareto analysis and conditionComparison, if set to false, the
      * objective in the constraints file is ignored.
      */
-    private boolean loadObjective = true;
+    public boolean loadObjective = true;
 
     /**
      * Constructor used to copy the bind.
@@ -238,7 +241,7 @@ public abstract class Bind {
      * @param entity The entity to change
      * @param bounds New bounds
      */
-    protected abstract void changeVarBounds(String entity, double[] bounds);
+    protected abstract void changeVarBounds(String entity, Double[] bounds);
 
     /**
      * Transforms the porblem's objective into a solver objective.
@@ -281,6 +284,7 @@ public abstract class Bind {
      */
     public void clearAll() {
         this.clearSolver();
+        this.bounds.clear();
         this.constraintObjectives.clear();
 //		this.intNet.allNull();
 /*        this.intNet = null;
@@ -479,14 +483,14 @@ public abstract class Bind {
 
                             for (BioReaction reac : reactionsAsSubstrate) {
                                 //
-                                if (simpleConstraints.containsKey(reac)) {
+                                if (bounds.containsKey(reac)) {
 
                                     BioCollection<BioMetabolite> lefts = bioNet.getLefts(reac);
                                     BioCollection<BioMetabolite> rights = bioNet.getRights(reac);
 
                                     if (lefts.size() == 1 && lefts.containsId(metab.getId())) {
 
-                                        double lb = simpleConstraints.get(reac).getLb();
+                                        double lb = bounds.get(reac)[0];
                                         double ub = 0.0;
 
                                         Map<BioEntity, Double> constMap = new HashMap<BioEntity, Double>();
@@ -499,7 +503,7 @@ public abstract class Bind {
 
                                         double lb = 0.0;
 
-                                        double ub = simpleConstraints.get(reac).getUb();
+                                        double ub = bounds.get(reac)[1];
 
                                         Map<BioEntity, Double> constMap = new HashMap<BioEntity, Double>();
                                         constMap.put(reac, 1.0);
@@ -688,8 +692,7 @@ public abstract class Bind {
      */
     public void loadConstraintsFile(String path) {
 
-        ConstraintsFileReader r = new ConstraintsFileReader(path, intNet, constraints, simpleConstraints,
-                steadyStateConstraints, bioNet, loadObjective);
+        ConstraintsFileReader r = new ConstraintsFileReader(path, this);
 
         r.readConstraintsFile();
 
@@ -712,8 +715,7 @@ public abstract class Bind {
 
         if (intNet.getEntity(Vars.FluxSumKeyWord) == null) {
 
-            ConstraintsFileReader r = new ConstraintsFileReader("", intNet, constraints, simpleConstraints,
-                    steadyStateConstraints, bioNet, true);
+            ConstraintsFileReader r = new ConstraintsFileReader("", this);
 
             return r.createFluxesSummation();
         }
@@ -732,8 +734,7 @@ public abstract class Bind {
      */
     public Objective makeObjectiveFromString(String expr, boolean maximize, String name) {
 
-        ConstraintsFileReader r = new ConstraintsFileReader("", intNet, constraints, simpleConstraints,
-                steadyStateConstraints, bioNet, true);
+        ConstraintsFileReader r = new ConstraintsFileReader("", this);
 
         return r.makeObjectiveFromString(expr, maximize, name);
 
@@ -755,6 +756,8 @@ public abstract class Bind {
         entitiesToSolverVars();
 
         constraintsToSolverConstraints();
+        
+        boundsToSolverBounds();
 
         if (obj != null) {
             makeSolverObjective();
@@ -975,11 +978,13 @@ public abstract class Bind {
                 }
             }
 
-            Map<BioEntity, Double> constraintMap = new HashMap<BioEntity, Double>();
+            bounds.put(reaction, new Double[]{lb.value, ub.value});
+
+          /*  Map<BioEntity, Double> constraintMap = new HashMap<BioEntity, Double>();
             constraintMap.put(reaction, 1.0);
             Constraint c = new Constraint(constraintMap, lb.value, ub.value);
             constraints.add(c);
-            simpleConstraints.put(reaction, c);
+            simpleConstraints.put(reaction, c);*/
 
         }
 
@@ -997,6 +1002,13 @@ public abstract class Bind {
             makeSolverConstraint(constraint, null);
         }
 
+    }
+
+    protected void boundsToSolverBounds() {
+        for(BioEntity e : this.bounds.keySet()) {
+            String id = e.getId();
+            changeVarBounds(id, this.bounds.get(e));
+        }
     }
 
     public BioNetwork getBioNetwork() {
@@ -1278,6 +1290,8 @@ public abstract class Bind {
 
         }
 
+        newBind.bounds = new HashMap<>(bounds);
+
         newBind.setNetwork(this.bioNet);
 
         newBind.setInteractionNetwork(this.getInteractionNetwork().copy());
@@ -1304,4 +1318,11 @@ public abstract class Bind {
 
     }
 
+    public Map<BioReaction, Double[]> getBounds() {
+        return bounds;
+    }
+
+    public Map<BioEntity, List<Constraint>> getSteadyStateConstraints() {
+        return steadyStateConstraints;
+    }
 }

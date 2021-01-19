@@ -36,6 +36,7 @@
 
 package fr.inrae.toulouse.metexplore.met4j_flux.input;
 
+import fr.inrae.toulouse.metexplore.met4j_flux.general.Bind;
 import fr.inrae.toulouse.metexplore.met4j_flux.general.BioRegulator;
 import fr.inrae.toulouse.metexplore.met4j_flux.general.Constraint;
 import fr.inrae.toulouse.metexplore.met4j_flux.general.Vars;
@@ -54,6 +55,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ConstraintsFileReader {
 
+	public Map<BioReaction, Double[]> bounds;
 	public List<Constraint> constraints = new ArrayList<Constraint>();
 	public Map<BioEntity, Constraint> simpleConstraints = new ConcurrentHashMap<BioEntity, Constraint>();
 
@@ -81,17 +83,16 @@ public class ConstraintsFileReader {
 
 	}
 
-	public ConstraintsFileReader(String path, InteractionNetwork intNet, List<Constraint> constraints,
-                                 Map<BioEntity, Constraint> simpleConstraints, Map<BioEntity, List<Constraint>> steadyStateConstraints,
-                                 BioNetwork bioNet, boolean loadObjective) {
+	public ConstraintsFileReader(String path, Bind b) {
 
 		this.path = path;
-		this.intNet = intNet;
-		this.constraints = constraints;
-		this.simpleConstraints = simpleConstraints;
-		this.steadyStateConstraints = steadyStateConstraints;
-		this.bioNet = bioNet;
-		this.loadObjective = loadObjective;
+		this.intNet = b.getInteractionNetwork();
+		this.constraints = b.getConstraints();
+		this.simpleConstraints = b.getSimpleConstraints();
+		this.steadyStateConstraints = b.getSteadyStateConstraints();
+		this.bioNet = b.getBioNetwork();
+		this.loadObjective = b.loadObjective;
+		this.bounds = b.getBounds();
 
 	}
 
@@ -510,8 +511,8 @@ public class ConstraintsFileReader {
 
 		for (BioReaction r : bioNet.getReactionsView()) {
 
-			if (simpleConstraints.get(r).getLb() < 0) {
-
+			Double lb = this.bounds.get(r)[0];
+			if (lb <0) {
 				// In this case we create the absolute value of the reaction
 				// with reacAbs
 				BioRegulator reacAbs = new BioRegulator(r.getId() + Vars.absolute);

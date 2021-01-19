@@ -353,7 +353,7 @@ public class GLPKBind extends Bind {
 		}*/
 	}
 
-	protected void changeVarBounds(String entity, double[] bounds) {
+	protected void changeVarBounds(String entity, Double[] bounds) {
 
 		double lb = bounds[0];
 		double ub = bounds[1];
@@ -364,6 +364,7 @@ public class GLPKBind extends Bind {
 			GLPK.glp_set_col_bnds(model, vars.get(entity), GLPKConstants.GLP_DB, lb, ub);
 		}
 	}
+
 
 	@Override
 	public void sensitivityAnalysis(String fileName) {

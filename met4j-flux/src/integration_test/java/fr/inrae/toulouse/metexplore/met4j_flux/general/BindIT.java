@@ -38,6 +38,7 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_flux.general;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_flux.interaction.*;
 import fr.inrae.toulouse.metexplore.met4j_flux.io.Utils;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
@@ -113,7 +114,7 @@ public class BindIT {
         }
 
         try {
-            if (solver.equals("CPLEX")) {
+            if (solver.equalsIgnoreCase("CPLEX")) {
                 bind = new CplexBind();
             } else {
                 bind = new GLPKBind();
@@ -163,9 +164,7 @@ public class BindIT {
             }
         }
 
-        Assert.assertEquals(bind.getConstraints().size(), intMet
-                + n.getReactionsView().size()
-                + bind.getDeadReactions().size());
+        Assert.assertEquals(bind.getConstraints().size(), intMet);
 
         // constraint for the metabolite M_10fthf_c
         boolean isConstraintWellFormed = false;
@@ -203,7 +202,16 @@ public class BindIT {
 
         Assert.assertTrue("Steady state constraint not formed properly",
                 isConstraintWellFormed);
+
+        Double[] R_HYXNtexBounds = this.bind.getBounds().get(n.getReactionsView().get("R_HYXNtex"));
+        Assert.assertNotNull(R_HYXNtexBounds);
+        revBound = R_HYXNtexBounds[0] == -999999 && R_HYXNtexBounds[1] == 999999;
         Assert.assertTrue(revBound);
+
+        Double[] R_GLUt4ppBounds = this.bind.getBounds().get(n.getReactionsView().get("R_GLUt4pp"));
+        Assert.assertNotNull(R_GLUt4ppBounds);
+        irrevBound = R_GLUt4ppBounds[0] == 0 && R_GLUt4ppBounds[1] == 999999;
+
         Assert.assertTrue(irrevBound);
 
         // the gpr interaction are well formed
@@ -231,7 +239,7 @@ public class BindIT {
         bind.intNet.clear();
         bind.setNetworkAndConstraints(network);
 
-        Assert.assertTrue(bind.getConstraints().size() == 13);
+        Assert.assertTrue(bind.getConstraints().size() == 5); // Number of metabolites
         Assert.assertTrue(bind.getInteractionNetwork().getNumEntities().size() == 17);
 
         // starting tests on analysis and parsing files
@@ -271,7 +279,7 @@ public class BindIT {
         }
         bind2.setNetworkAndConstraints(network);
 
-        Assert.assertTrue(bind2.getConstraints().size() == 13);
+        Assert.assertTrue(bind2.getConstraints().size() == 5);
         Assert.assertTrue(bind2.getInteractionNetwork().getNumEntities().size() == 17);
 
         bind2.loadConstraintsFile(condTestString);

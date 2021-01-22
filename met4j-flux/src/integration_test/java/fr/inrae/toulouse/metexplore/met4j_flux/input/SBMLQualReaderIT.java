@@ -115,12 +115,16 @@ public class SBMLQualReaderIT {
         BioEntity entity3 = bind.getInteractionNetwork().getEntity("s_VLCFA");
         BioEntity entity4 = bind.getInteractionNetwork()
                 .getEntity("s_Bacteria");
+        BioEntity R_ACALD = bind.getInteractionNetwork()
+                .getEntity("R_ACALD");
 
         assertTrue(bind.getInteractionNetwork().getInitialState(entity1) == 3);
 
         assertTrue(bind.getInteractionNetwork().getInitialState(entity2) == 1);
 
         assertTrue(bind.getInteractionNetwork().getInitialState(entity3) == 0);
+
+        assertTrue(bind.getInteractionNetwork().getInitialState(R_ACALD) == 1);
 
         // /interactions
 
@@ -151,6 +155,11 @@ public class SBMLQualReaderIT {
                 .getConstraintFromState(entity1, 0).getUb() == 0.5);
 
         assertTrue(bind.getInteractionNetwork().getStateFromValue(entity1, 0.7) == 1);
+
+        assertTrue(bind.getInteractionNetwork().getStateFromValue(R_ACALD, 0) == 0);
+        assertTrue(bind.getInteractionNetwork().getStateFromValue(R_ACALD, 10.0) == 1);
+
+
 
         // System.out.println(bind.getInteractionNetwork().getTargetToInteractions()
         // .get(entity2).getConditionalInteractions().get(0));

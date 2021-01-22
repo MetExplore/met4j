@@ -179,7 +179,7 @@ public class InteractionNetwork {
 
 		// if ND
 		if (entityStateConstraintTranslation.get(ent).get(state) == null) {
-			return (new Constraint(ent, -Double.MAX_VALUE, Double.MAX_VALUE));
+			return null;
 		}
 
 		return entityStateConstraintTranslation.get(ent).get(state);

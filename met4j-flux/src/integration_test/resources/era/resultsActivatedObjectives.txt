@@ -1,4 +1,0 @@
-# number of conditions where each objective is activated
-objectiveId	nbConditions
-maxR_OBJ	4
-minR_OBJ2	5

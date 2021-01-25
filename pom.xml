@@ -8,7 +8,7 @@
     <packaging>pom</packaging>
 
     <scm>
-        <developerConnection>scm:git:forgemia.inra.fr:metexplore/met4j.git</developerConnection>
+        <developerConnection>scm:git:ssh://git@forgemia.inra.fr:metexplore/met4j.git</developerConnection>
       <tag>met4j-0.1.2</tag>
   </scm>
 

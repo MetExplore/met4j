@@ -46,7 +46,7 @@
     <groupId>fr.inrae.toulouse.metexplore</groupId>
     <artifactId>met4j</artifactId>
 
-    <version>0.1.6</version>
+    <version>0.1.7-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -76,7 +76,7 @@
     <dependency>
     	<groupId>fr.inrae.toulouse.metexplore</groupId>
     	<artifactId>met4j-core</artifactId>
-    	<version>0.1.6</version>
+    	<version>0.1.7-SNAPSHOT</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
     <dependency>

@@ -39,7 +39,7 @@
     </dependency>
   </dependencies>
 
-  <build>
+<!--  <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -71,8 +71,8 @@
         </executions>
       </plugin>
     </plugins>
-  </build>
-  <profiles>
+  </build>-->
+  <!--<profiles>
     <profile>
       <id>release-sign-artifacts</id>
       <activation>
@@ -99,5 +99,5 @@
         </plugins>
       </build>
     </profile>
-  </profiles>
+  </profiles>-->
 </project>

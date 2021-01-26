@@ -70,7 +70,7 @@
     <description>bundle of all met4j modules and api</description>
 
 
-    <build>
+<!--    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -153,5 +153,5 @@
                 </plugins>
             </build>
         </profile>
-    </profiles>
+    </profiles>-->
 </project>

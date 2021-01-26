@@ -20,7 +20,7 @@
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
-    <build>
+<!--    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -60,7 +60,7 @@
                 </executions>
             </plugin>
         </plugins>
-    </build>
+    </build>-->
     <dependencies>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
@@ -102,7 +102,7 @@
         </dependency>
 
     </dependencies>
-    <profiles>
+<!--    <profiles>
         <profile>
             <id>release-sign-artifacts</id>
             <activation>
@@ -129,5 +129,5 @@
                 </plugins>
             </build>
         </profile>
-    </profiles>
+    </profiles>-->
 </project>

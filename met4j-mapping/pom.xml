@@ -22,7 +22,7 @@
         </dependency>
     </dependencies>
 
-    <build>
+<!--    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -82,6 +82,6 @@
                 </plugins>
             </build>
         </profile>
-    </profiles>
+    </profiles>-->
 
 </project>

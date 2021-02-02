@@ -45,7 +45,6 @@
   <parent>
     <groupId>fr.inrae.toulouse.metexplore</groupId>
     <artifactId>met4j</artifactId>
-
     <version>0.1.10-SNAPSHOT</version>
   </parent>
 

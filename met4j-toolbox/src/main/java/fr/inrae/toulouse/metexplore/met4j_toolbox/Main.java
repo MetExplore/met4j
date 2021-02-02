@@ -35,6 +35,9 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_toolbox;
 
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.ResourceURLFilter;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Resources;
+
 import java.lang.reflect.Constructor;
 import java.net.URL;
 
@@ -53,74 +56,66 @@ public class Main {
 
 	public static void main(String[] args) {
 
-//		try {
-//			ResourceURLFilter filter = new ResourceURLFilter() {
-//
-//				public
-//				boolean accept(URL u) {
-//
-//					String path = Main.class.getPackage().getName()
-//							.replace(".", "/");
-//
-//					String s = u.getFile();
-//					return s.endsWith(".class") && !s.contains("$")
-//							&& s.contains(path);
-//				}
-//			};
-//
-//			String path = Main.class.getPackage().getName().replace(".", "/");
-//
-//			for (URL u : Resources.getResourceURLs(Resources.class, filter)) {
-//
-//				String entry = u.getFile();
-//
-//				int idx = entry.indexOf(path);
-//
-//				entry = entry
-//						.substring(idx, entry.length() - ".class".length());
-//
-//				Class<?> myClass = Class.forName(entry.replace('/', '.'));
-//
-//				try {
-//					myClass.getMethod("main", String[].class);
-//					Constructor<?> ctor = myClass.getConstructor();
-//
-//					Object obj = ctor.newInstance();
-//
-//					System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#\n# "
-//							+ myClass.getCanonicalName()
-//							+ "\n#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#\n");
-//
-//					try {
-//						myClass.getField("message");
-//						System.out.println(myClass.getField("message").get(obj)+"\n");
-//
-//						try {
-//							myClass.getField("h");
-//
-//							System.out.println("Launch the function with the parameter -h to get help");
-//
-//						} catch (Exception e) {
-//
-//						}
-//
-//
-//					} catch (Exception e) {
-//						System.out.println("No field message !\n");
-//					}
-//
-//
-//
-//
-//
-//				} catch (Exception e1) {
-//				}
-//
-//			}
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		try {
+			ResourceURLFilter filter = new ResourceURLFilter() {
+
+				public
+				boolean accept(URL u) {
+
+					String path = Main.class.getPackage().getName()
+							.replace(".", "/");
+
+					String s = u.getFile();
+					return s.endsWith(".class") && !s.contains("$")
+							&& s.contains(path);
+				}
+			};
+
+			String path = Main.class.getPackage().getName().replace(".", "/");
+
+			for (URL u : Resources.getResourceURLs(Resources.class, filter)) {
+
+				String entry = u.getFile();
+
+				int idx = entry.indexOf(path);
+
+				entry = entry
+						.substring(idx, entry.length() - ".class".length());
+
+				Class<?> myClass = Class.forName(entry.replace('/', '.'));
+
+				try {
+					myClass.getMethod("main", String[].class);
+					Constructor<?> ctor = myClass.getConstructor();
+
+					Object obj = ctor.newInstance();
+
+					System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#\n# "
+							+ myClass.getCanonicalName()
+							+ "\n#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#\n");
+
+					try {
+						myClass.getMethod("printHeader").invoke(obj);
+						System.out.println("");
+					} catch (Exception e) {
+						System.out.println("No field message !\n");
+					}
+
+					try {
+						myClass.getMethod("printUsage").invoke(obj);
+						System.out.println("");
+					} catch (Exception e) {
+						System.out.println("No usage !\n");
+					}
+
+				} catch (Exception e1) {
+				}
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

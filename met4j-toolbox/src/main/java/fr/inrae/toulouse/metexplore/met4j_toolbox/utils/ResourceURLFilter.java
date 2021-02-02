@@ -1,5 +1,5 @@
 /*
- * Copyright INRAE (2020)
+ * Copyright INRAE (2021)
  *
  * contact-metexplore@inrae.fr
  *
@@ -34,63 +34,10 @@
  *
  */
 
-package fr.inrae.toulouse.metexplore.met4j_toolbox.generic;
+package fr.inrae.toulouse.metexplore.met4j_toolbox.utils;
 
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
+import java.net.URL;
 
-public abstract class AbstractMet4jApplication {
-
-    /**
-     * @return the label
-     */
-    public abstract String getLabel();
-
-    /**
-     * @return the description
-     */
-    public abstract String getDescription();
-
-    @Option(name = "-h", usage = "prints the help", required = false)
-    private Boolean h = false;
-
-    public void printHeader()
-    {
-        System.out.println(this.getLabel());
-        System.out.println(this.getDescription());
-    }
-
-    public void printUsage() {
-        CmdLineParser parser = new CmdLineParser(this);
-        parser.printUsage(System.out);
-    }
-
-    protected void parseArguments(String[] args) {
-        CmdLineParser parser = new CmdLineParser(this);
-
-        try {
-            parser.parseArgument(args);
-        } catch (CmdLineException e) {
-            if(this.h == false) {
-                this.printHeader();
-                System.err.println("Error in arguments");
-                parser.printUsage(System.err);
-                System.exit(0);
-            }
-            else {
-                this.printHeader();
-                parser.printUsage(System.err);
-                System.exit(1);
-            }
-        }
-
-        if(this.h == true)
-        {
-            this.printHeader();
-            parser.printUsage(System.err);
-            System.exit(1);
-        }
-    }
-
+public interface ResourceURLFilter {
+    public boolean accept(URL resourceUrl);
 }

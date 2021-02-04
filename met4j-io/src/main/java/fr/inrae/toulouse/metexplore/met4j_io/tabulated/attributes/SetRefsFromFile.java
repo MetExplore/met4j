@@ -48,8 +48,8 @@ public class SetRefsFromFile extends AbstractSetAttributesFromFile {
 
     private String ref = "";
 
-    public SetRefsFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s, String ref) {
-        super(colId, colAttr, bn, fileIn, c, nSkip, "M", p, s);
+    public SetRefsFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s, String ref, String type) {
+        super(colId, colAttr, bn, fileIn, c, nSkip, type, p, s);
 
         this.ref = ref;
 
@@ -81,8 +81,7 @@ public class SetRefsFromFile extends AbstractSetAttributesFromFile {
         int n = 0;
 
         if(! IdentifiersOrg.validIdentifiers.contains(ref)) {
-            System.err.println("Error : the identifier "+ref+" is not a valid id in identifiers.org");
-            return false;
+            System.err.println("Warning : the identifier "+ref+" is not a valid id in identifiers.org, it will appear only in SBML notes");
         }
 
         for(String id : this.getIdAttributeMap().keySet()) {
@@ -90,8 +89,6 @@ public class SetRefsFromFile extends AbstractSetAttributesFromFile {
 
             BioEntity object;
             n++;
-
-            String name = this.getIdAttributeMap().get(id);
 
             if(this.getObject().equalsIgnoreCase(METABOLITE)) {
                 object = this.getNetwork().getMetabolitesView().get(id);

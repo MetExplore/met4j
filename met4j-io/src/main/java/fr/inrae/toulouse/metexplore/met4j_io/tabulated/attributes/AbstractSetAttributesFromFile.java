@@ -178,14 +178,14 @@ public abstract class AbstractSetAttributesFromFile {
 
                     if (tab.length <= this.colId || tab.length <= this.colAttr) {
                         System.err
-                                .println("********\n[Fatal Error]Bad number of columns line " + nLines + "\n********");
+                                .println("********\n[Warning]Bad number of columns line " + nLines + "\n********");
                         // flag = false;
                     } else {
 
                         String attribute = tab[this.colAttr];
 
                         if (!this.testAttribute(attribute)) {
-                            System.err.println("********\n[Fatal Error]Attribute \"" + attribute
+                            System.err.println("********\n[Warning]Attribute \"" + attribute
                                     + "\" not well formatted\n********");
                             // flag = false;
                         }

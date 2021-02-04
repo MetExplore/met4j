@@ -73,7 +73,7 @@ public class SbmlSetRefsFromFile extends AbstractSbmlSetAny {
         BioNetwork bn = this.readSbml();
 
         SetRefsFromFile s = new SetRefsFromFile(this.colid-1, this.colRef-1,
-                bn, this.tab, this.c, this.nSkip, this.p, this.s, this.ref);
+                bn, this.tab, this.c, this.nSkip, this.p, this.s, this.ref, this.o);
 
         Boolean flag = true;
 

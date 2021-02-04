@@ -46,7 +46,7 @@ public class StringUtils {
 	public static boolean isVoid (String in) {
 		if(in == null) return true;
 		if(in.isEmpty()) return true;
-		if(in.equalsIgnoreCase("NA")) return true;
+
 		if(in.matches("^\\s*$")) return true;
 		return in.equalsIgnoreCase("null");
 	}

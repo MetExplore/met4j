@@ -62,7 +62,7 @@ public abstract class BioEntity {
 	public BioEntity(String id, String name) {
 
 		if (StringUtils.isVoid(id)) {
-			throw new IllegalArgumentException("Invalid id for building a BioEntity");
+			throw new IllegalArgumentException("Invalid id for building a BioEntity: "+id);
 		}
 
 		this.id = id;
@@ -79,8 +79,8 @@ public abstract class BioEntity {
 	 */
 	public BioEntity(String id) {
 
-		if (id == null) {
-			throw new NullPointerException();
+		if (StringUtils.isVoid(id)) {
+			throw new IllegalArgumentException("Invalid id for building a BioEntity: "+id);
 		}
 
 		this.id = id;

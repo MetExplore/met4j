@@ -36,6 +36,7 @@
 package fr.inrae.toulouse.metexplore.met4j_graph.core.compound;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.jgrapht.EdgeFactory;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
@@ -46,6 +47,6 @@ public class ReactionEdgeFactory implements EdgeFactory<BioMetabolite, ReactionE
 	@Override
 	public ReactionEdge createEdge(BioMetabolite arg0,
                                    BioMetabolite arg1) {
-		return new ReactionEdge(arg0, arg1, new BioReaction(""));
+		return new ReactionEdge(arg0, arg1, new BioReaction(RandomStringUtils.random(8, true, false)));
 	}
 }

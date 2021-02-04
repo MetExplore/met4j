@@ -402,13 +402,15 @@ public class JsbmlToBioNetwork {
 							if (param.getId().equalsIgnoreCase("UPPER_BOUND")
 									|| param.getName().equalsIgnoreCase("UPPER_BOUND")) {
 
-								Flux newflux = new Flux(param.getName(), param.getValue(), UD);
+								String name = "UPPER_BOUND";
+								Flux newflux = new Flux(name, param.getValue(), UD);
 								ReactionAttributes.setUpperBound(bionetReaction, newflux);
 
 							} else if (param.getId().equalsIgnoreCase("LOWER_BOUND")
 									|| param.getName().equalsIgnoreCase("LOWER_BOUND")) {
 
-								Flux newflux = new Flux(param.getName(), param.getValue(), UD);
+								String name = "LOWER_BOUND";
+								Flux newflux = new Flux(name, param.getValue(), UD);
 								ReactionAttributes.setLowerBound(bionetReaction, newflux);
 
 							} else {
@@ -555,9 +557,8 @@ public class JsbmlToBioNetwork {
 						}
 						try {
 							if (stype.isSetAnnotation()) {
-
 								MetaboliteAttributes.setAnnotation(bionetSpecies,
-										new SbmlAnnotation(stype.getMetaId(), stype.getAnnotationString()));
+										new SbmlAnnotation(stype.getId(), stype.getAnnotationString()));
 							}
 							if (stype.isSetNotes()) {
 								MetaboliteAttributes.setNotes(bionetSpecies, new Notes(stype.getNotesString()));

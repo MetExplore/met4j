@@ -38,7 +38,6 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetChargesFromFile;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetFormulasFromFile;
 import org.kohsuke.args4j.Option;
 
 public class SbmlSetChargesFromFile extends AbstractSbmlSetMetabolite {

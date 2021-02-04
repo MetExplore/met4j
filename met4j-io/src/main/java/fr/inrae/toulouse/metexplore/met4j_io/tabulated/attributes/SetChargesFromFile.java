@@ -90,7 +90,11 @@ public class SetChargesFromFile extends AbstractSetAttributesFromFile {
 
             String charge = this.getIdAttributeMap().get(id);
 
-            this.getNetwork().getMetabolitesView().get(id).setCharge(Integer.parseInt(charge));
+            try {
+                this.getNetwork().getMetabolitesView().get(id).setCharge(Integer.parseInt(charge));
+            } catch (NumberFormatException e) {
+                System.err.println("Warning : the charge + \""+charge+"\" for the metabolite "+id+" is not an integer");
+            }
 
         }
 

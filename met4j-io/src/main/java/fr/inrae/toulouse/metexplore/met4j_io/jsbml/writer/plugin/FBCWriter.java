@@ -167,13 +167,17 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
      */
     private void createGeneProductsInBioNet() {
         for (BioGene bioGene : this.flxNet.getUnderlyingBionet().getGenesView()) {
-            GeneProduct geneProd = this.getFbcModel().createGeneProduct();
+            GeneProduct geneProd;
 
-            geneProd.setId(StringUtils.convertToSID(bioGene.getId()));
-            geneProd.setName(bioGene.getName());
+            geneProd = this.getFbcModel().getGeneProduct(StringUtils.convertToSID(bioGene.getId()));
 
-            geneProd.setLabel(bioGene.getName());
+            if (geneProd == null) {
+                geneProd = this.getFbcModel().createGeneProduct();
+                geneProd.setId(StringUtils.convertToSID(bioGene.getId()));
+                geneProd.setName(bioGene.getName());
 
+                geneProd.setLabel(bioGene.getName());
+            }
         }
     }
 
@@ -211,7 +215,7 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
 
             if (ub == null) {
                 ub = new Flux(Flux.FLUXMAX);
-                NetworkAttributes.addUnitDefinition(this.getFlxNet().getUnderlyingBionet(),ub.unitDefinition);
+                NetworkAttributes.addUnitDefinition(this.getFlxNet().getUnderlyingBionet(), ub.unitDefinition);
             }
 
 
@@ -230,7 +234,7 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
 
             if (lb == null) {
                 lb = new Flux(bioRxn.isReversible() ? Flux.FLUXMIN : 0.0);
-                NetworkAttributes.addUnitDefinition(this.getFlxNet().getUnderlyingBionet(),lb.unitDefinition);
+                NetworkAttributes.addUnitDefinition(this.getFlxNet().getUnderlyingBionet(), lb.unitDefinition);
             }
 
             Parameter down = this.getFbcModel().getParent()
@@ -293,7 +297,7 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
                     this.getFbcModel().setActiveObjective(objective.getId());
                 }
 
-                if(objective.getType() != null) {
+                if (objective.getType() != null) {
                     obj.setType(objective.getType().toString());
                 }
 

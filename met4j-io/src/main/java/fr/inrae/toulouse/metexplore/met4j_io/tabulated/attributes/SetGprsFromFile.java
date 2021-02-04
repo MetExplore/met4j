@@ -83,6 +83,7 @@ public class SetGprsFromFile extends AbstractSetAttributesFromFile {
         try {
             flag = this.test();
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
 
@@ -103,7 +104,7 @@ public class SetGprsFromFile extends AbstractSetAttributesFromFile {
 
             try {
                 GPR.createGPRfromString(this.getNetwork(), reaction, gpr);
-            } catch (MalformedGeneAssociationStringException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("GPR badly formatted line "+n);
             }

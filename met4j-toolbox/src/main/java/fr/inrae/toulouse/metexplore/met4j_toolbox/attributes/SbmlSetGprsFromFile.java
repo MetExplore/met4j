@@ -78,6 +78,7 @@ public class SbmlSetGprsFromFile  extends AbstractSbmlSetReaction {
         try {
             flag = sgff.setAttributes();
         } catch (Exception e) {
+            e.printStackTrace();
             flag=false;
         }
 

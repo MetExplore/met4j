@@ -135,6 +135,9 @@ public class JsbmlWriter {
         this.model = new Model();
         model.setLevel(lvl);
         model.setVersion(version);
+        model.setId(bionet.getId());
+        model.setName(bionet.getId());
+        model.setMetaId(bionet.getId());
     }
 
     public JsbmlWriter(String outputFile, BioNetwork bionet) {
@@ -146,6 +149,9 @@ public class JsbmlWriter {
         this.model = new Model();
         model.setLevel(this.level);
         model.setVersion(2);
+        model.setId(bionet.getId());
+        model.setName(bionet.getId());
+        model.setMetaId(bionet.getId());
     }
 
     public void write() throws Met4jSbmlWriterException {

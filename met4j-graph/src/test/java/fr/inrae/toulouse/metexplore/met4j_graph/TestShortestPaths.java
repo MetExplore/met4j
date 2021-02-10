@@ -48,9 +48,12 @@ import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.FloydWarshall;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.KShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.ShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.GraphCentralityMeasure;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjacencyMatrix;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -93,8 +96,7 @@ public class TestShortestPaths {
 		bh = new ReactionEdge(b,h,new BioReaction("bh"));g.addEdge(b, h, bh);g.setEdgeWeight(bh, 1.0);
 		eb = new ReactionEdge(e,b,new BioReaction("eb"));g.addEdge(e, b, eb);g.setEdgeWeight(eb, 1.0);
 		ic = new ReactionEdge(i,c,new BioReaction("ic"));g.addEdge(i, c, ic);g.setEdgeWeight(ic, 1.0);
-		
-		
+
 //		BioReaction r1 = new BioReaction("acyz");
 //		r1.setReversible(true);
 //		ReactionEdge az,za,zc,cz;
@@ -465,6 +467,34 @@ public class TestShortestPaths {
 					assertEquals(0.0, res.get(a).get(b), Double.MIN_VALUE);
 				}else{
 					BioPath<BioMetabolite, ReactionEdge> sp = spComputor.getShortest(g.getVertex(a), g.getVertex(b));
+					double weight = (sp==null) ? Double.POSITIVE_INFINITY : sp.getWeight();
+					assertEquals(weight, res.get(a).get(b), Double.MIN_VALUE);
+				}
+			}
+		}
+	}
+
+	@Test
+	public void testFloydWarshallDistUndirected(){
+		CompoundGraph g2 =new CompoundGraph(g);
+		ReactionEdge ab2 = new ReactionEdge(a,b,new BioReaction("ab"));g2.addEdge(a, b, ab2);g2.setEdgeWeight(ab2, 100000.0);
+		ReactionEdge ba = new ReactionEdge(b,a,new BioReaction("ab"));g2.addEdge(b, a, ba);g2.setEdgeWeight(ba, 100000.0);
+		ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> spComputor = new ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph>(g);
+		ComputeAdjacencyMatrix builder = new ComputeAdjacencyMatrix(g2);
+		builder.asUndirected();
+		builder.parallelEdgeWeightsHandling((a,b)->Math.min(a,b));
+		FloydWarshall<BioMetabolite,ReactionEdge,CompoundGraph> computor = new FloydWarshall<BioMetabolite,ReactionEdge,CompoundGraph>(g2, builder);
+		BioMatrix distmat = computor.getDistances();
+		assertEquals(distmat.numRows(),g2.vertexSet().size());
+		assertEquals(distmat.numCols(),g2.vertexSet().size());
+		HashMap<String, HashMap<String, Double>> res = ExportMatrix.matrixToMap(distmat);
+		for(String a : res.keySet()){
+			for(String b : res.get(a).keySet()){
+				if(a.equals(b)){
+					assertEquals(0.0, res.get(a).get(b), Double.MIN_VALUE);
+				}else{
+					assertEquals(res.get(a).get(b), res.get(b).get(a));//check if symmetric
+					BioPath<BioMetabolite, ReactionEdge> sp = spComputor.getShortestAsUndirected(g.getVertex(a), g.getVertex(b));
 					double weight = (sp==null) ? Double.POSITIVE_INFINITY : sp.getWeight();
 					assertEquals(weight, res.get(a).get(b), Double.MIN_VALUE);
 				}

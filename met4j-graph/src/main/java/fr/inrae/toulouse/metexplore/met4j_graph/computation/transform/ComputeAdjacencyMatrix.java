@@ -38,6 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_graph.computation.transform;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.function.DoubleBinaryOperator;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
@@ -58,7 +59,9 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 	BioMatrix adjacencyMatrix;
 	
 	/**consider as undirected */
-	boolean undirected;
+	boolean undirected=false;
+
+	DoubleBinaryOperator l = ((a,b) -> a+b);
 	
 	/**
 	 * Instantiates a new adjacency matrix computor.
@@ -70,7 +73,6 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 		this.g=g;
 		this.undirected=undirected;
         adjacencyMatrix = new EjmlMatrix(g.vertexSet().size(),g.vertexSet().size());
-        buildadjacencyMatrix();
 	}
 	
 	
@@ -82,7 +84,6 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 	public ComputeAdjacencyMatrix(G g) {
 		this.g=g;
         adjacencyMatrix = new EjmlMatrix(g.vertexSet().size(),g.vertexSet().size());
-        buildadjacencyMatrix();
 	}
 	
 	/**
@@ -100,9 +101,8 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 
         adjacencyMatrix = (BioMatrix) matrixClass.getDeclaredConstructor(int.class, int.class).newInstance(g.vertexSet().size(),g.vertexSet().size());
 
-        buildadjacencyMatrix();
 	}
-	
+
 	/**
 	 * Builds the adjacency matrix.
 	 */
@@ -124,16 +124,16 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 			for (E edge : g.outgoingEdgesOf(node)){
 				int j = adjacencyMatrix.getColumnFromLabel(edge.getV2().getId());
 				if(adjacencyMatrix.get(i, j)!=0.0){
-					//sum weight from edges with same source/target
-                    adjacencyMatrix.set(i, j, adjacencyMatrix.get(i, j)+ g.getEdgeWeight(edge));
+					//resolve final weight if exists edges with same source/target
+                    adjacencyMatrix.set(i, j, l.applyAsDouble(adjacencyMatrix.get(i, j), g.getEdgeWeight(edge)));
 				}else{
                     adjacencyMatrix.set(i, j, g.getEdgeWeight(edge));
 				}
 				
 				if(undirected){
 					if(adjacencyMatrix.get(j, i)!=0.0){
-						//sum weight from edges with same source/target
-                        adjacencyMatrix.set(j, i, adjacencyMatrix.get(i, j)+ g.getEdgeWeight(edge));
+						//resolve final weight if exists edges with same source/target
+                        adjacencyMatrix.set(j, i, l.applyAsDouble(adjacencyMatrix.get(j, i), g.getEdgeWeight(edge)));
 					}else{
                         adjacencyMatrix.set(j, i, g.getEdgeWeight(edge));
 					}
@@ -143,6 +143,7 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 		
 		return;
 	}
+
 	
 	/**
 	 * Gets the adjacency matrix.
@@ -150,26 +151,22 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 	 * @return the adjacency matrix
 	 */
 	public BioMatrix getadjacencyMatrix(){
+		this.buildadjacencyMatrix();
 		return adjacencyMatrix;
 	}
-	
-	/**
-	 * Gets the label map.
-	 *
-	 * @return the label map
-	 */
-	public HashMap<String, Integer> getLabelMap(){
-		return adjacencyMatrix.getRowLabelMap();
-	}
-	
-	/**
-	 * Gets the index map.
-	 *
-	 * @return the index map
-	 */
-	public HashMap<Integer, String> getIndexMap(){
-		return adjacencyMatrix.getRowIndexMap();
-	}
-	
 
+	/**
+	 * if the graph should be considered as undirected
+	 */
+	public void asUndirected() {
+		this.undirected = true;
+	}
+
+	/**
+	 * lambda expression for resolving weight conflicts in case of parallel edges. Default use weight sum
+	 * @param l
+	 */
+	public void parallelEdgeWeightsHandling(DoubleBinaryOperator l) {
+		this.l = l;
+	}
 }

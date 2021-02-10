@@ -178,7 +178,7 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 		
 		
 		HashMap<V, Double> res = new HashMap<>();
-		HashMap<Integer, String> index = adjComputor.getIndexMap();
+		HashMap<Integer, String> index = adj.getRowIndexMap();
 		
 		for( int j=0;j<katzVector.numCols();j++){
 			V node = g.getVertex(index.get(j));

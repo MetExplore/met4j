@@ -60,6 +60,9 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 	/** The graph. */
 	G g;
 
+
+	private BioMatrix matrix;
+
 	/**
 	 * Instantiates a new floyd warshall computor.
 	 *
@@ -67,6 +70,34 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 	 */
 	public FloydWarshall(G g) {
 		this.g=g;
+		ComputeAdjacencyMatrix<V,E,G> computor = new ComputeAdjacencyMatrix<>(g);
+		computor.parallelEdgeWeightsHandling((a,b)->Math.min(a,b));
+		matrix = computor.getadjacencyMatrix();
+	}
+
+	/**
+	 * Instantiates a new floyd warshall computor.
+	 *
+	 * @param g the graph
+	 * @param  undirected if the graph should be considered undirected
+	 */
+	public FloydWarshall(G g, Boolean undirected) {
+		this.g=g;
+		ComputeAdjacencyMatrix<V,E,G> computor = new ComputeAdjacencyMatrix<>(g);
+		if (undirected) { computor.asUndirected(); }
+		computor.parallelEdgeWeightsHandling((a,b)->Math.min(a,b));
+		matrix = computor.getadjacencyMatrix();
+	}
+
+	/**
+	 * Instantiates a new floyd warshall computor.
+	 *
+	 * @param g the graph
+	 * @param  computor the adjacency matrix builder
+	 */
+	public FloydWarshall(G g, ComputeAdjacencyMatrix<V,E,G> computor) {
+		this.g=g;
+		matrix = computor.getadjacencyMatrix();
 	}
 	
 	/**
@@ -75,9 +106,7 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 	 * @return the distances
 	 */
 	public BioMatrix getDistances(){
-		ComputeAdjacencyMatrix<V,E,G> computor = new ComputeAdjacencyMatrix<>(g);
-
-		BioMatrix matrix = computor.getadjacencyMatrix();
+		BioMatrix matrix = this.matrix.copy();
 		for(int i = 0; i< g.vertexSet().size(); i++){
 			for(int j = 0; j< g.vertexSet().size(); j++){
 				if(i!=j && matrix.get(i, j)==0.0){
@@ -110,11 +139,11 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 	 * @return the paths
 	 */
 	public HashMap<String, HashMap<String, BioPath<V, E>>> getPaths(){
-		ComputeAdjacencyMatrix<V,E,G> computor = new ComputeAdjacencyMatrix<>(g);
-		
+
+
 		HashMap<Integer,HashMap<Integer,Integer>> next = new HashMap<>();
-		
-		BioMatrix matrix = computor.getadjacencyMatrix();
+
+		BioMatrix matrix = this.matrix.copy();
 		for(int i = 0; i< g.vertexSet().size(); i++){
 			next.put(i, new HashMap<>());
 			for(int j = 0; j< g.vertexSet().size(); j++){
@@ -149,22 +178,22 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 		HashMap<String,HashMap<String,BioPath<V,E>>> res = new HashMap<>();
 		for(Map.Entry<Integer, HashMap<Integer, Integer>> entry : next.entrySet()){
 			int i = entry.getKey();
-			String iLabel = computor.getIndexMap().get(i);
+			String iLabel = matrix.getRowIndexMap().get(i);
 			HashMap<String,BioPath<V,E>> map = new HashMap<>();
 			
 			for(int j : entry.getValue().keySet()){
 				
-				String jLabel = computor.getIndexMap().get(j);
+				String jLabel = matrix.getRowIndexMap().get(j);
 				List<E> path = new ArrayList<>();
 				double w = 0.0;
 				
 				int k = i;
 				while(k!=j){
-					String kLabel = computor.getIndexMap().get(k);
+					String kLabel = matrix.getRowIndexMap().get(k);
 					V v1 = g.getVertex(kLabel);
 					
 					k = next.get(k).get(j);
-					kLabel = computor.getIndexMap().get(k);
+					kLabel = matrix.getRowIndexMap().get(k);
 					V v2 = g.getVertex(kLabel);
 					
 					E edge = g.getEdge(v1, v2);

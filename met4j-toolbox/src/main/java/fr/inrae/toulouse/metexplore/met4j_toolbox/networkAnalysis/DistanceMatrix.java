@@ -1,8 +1,19 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.FloydWarshall;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.ShortestPath;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjacencyMatrix;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.Merger;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.DefaultWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.DegreeWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.WeightsFromFile;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
@@ -11,36 +22,48 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBCParser;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.GroupPathwayParser;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import org.kohsuke.args4j.Option;
+import org.openscience.cdk.graph.matrix.AdjacencyMatrix;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class Sbml2DistanceMatrix extends AbstractMet4jApplication {
+public class DistanceMatrix extends AbstractMet4jApplication {
 
     @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
-    @Option(name = "-o", usage = "output Graph file", required = true)
+    @Option(name = "-o", usage = "output Matrix file", required = true)
     public String outputPath = null;
 
-    @Option(name = "-b", aliases = {"--bipartite"},usage = "create bipartite graph", forbids={"-c"})
-    public Boolean bipartite = false;
+    @Option(name = "-s", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore")
+    public String sideCompoundFile = null;
 
-    @Option(name = "-c", aliases = {"--compound"}, usage = "create compound graph", forbids={"-b"})
-    public Boolean compound = true;
+    @Option(name = "-dw", aliases = {"--degree"}, usage = "penalize traversal of hubs by using degree square weighting", forbids={"-w"})
+    public Boolean degree = false;
 
-    @Option(name = "-tab", usage = "export in tabulated file", forbids={"-gml"})
-    public Boolean tab = false;
+    @Option(name = "-w", aliases = {"--weights"}, usage = "an optional file containing weights for compound pairs", forbids={"-d"})
+    public String weightFile = null;
 
-    @Option(name = "-gml", usage = "export in GML file", forbids={"-tab"})
-    public Boolean gml = true;
+    @Option(name = "-u", aliases = {"--undirected"}, usage = "Ignore reaction direction")
+    public Boolean undirected = false;
+
+
 
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
 
-        Sbml2DistanceMatrix app = new Sbml2DistanceMatrix();
+        DistanceMatrix app = new DistanceMatrix();
 
         app.parseArguments(args);
 
@@ -50,37 +73,59 @@ public class Sbml2DistanceMatrix extends AbstractMet4jApplication {
 
 
     public void run() throws IOException, Met4jSbmlReaderException {
+        //import network
         JsbmlReader reader = new JsbmlReader(this.inputPath, false);
-        HashSet<PackageParser> pkgs = new HashSet<>(Arrays.asList(
-                new NotesParser(false), new FBCParser(), new GroupPathwayParser()));
-        BioNetwork network = reader.read(pkgs);
+        BioNetwork network = reader.read();
+
+        //Create compound graph
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
+        CompoundGraph graph = builder.getCompoundGraph();
+        network=null;
 
-        if(bipartite) compound = false;
-        if(tab) gml = false;
-
-        if(compound){
-            CompoundGraph graph = builder.getCompoundGraph();
-            if(gml){
-                ExportGraph.toGml(graph, this.outputPath);
-            }else{
-                ExportGraph.toTab(graph, this.outputPath);
+        //Graph processing: side compound removal [optional]
+        if(sideCompoundFile!=null){
+            BioCollection<BioMetabolite> sideCpds=new BioCollection<>();
+            BufferedReader fr = new BufferedReader(new FileReader(sideCompoundFile));
+            String line;
+            while ((line = fr.readLine()) != null) {
+                BioMetabolite s = network.getMetabolitesView().get(line);
+                sideCpds.add(s);
             }
-        }else{
-            BipartiteGraph graph = builder.getBipartiteGraph();
-            if(gml){
-                ExportGraph.toGml(graph, this.outputPath);
-            }else{
-                ExportGraph.toTab(graph, this.outputPath);
-            }
+            fr.close();
+            graph.removeAllVertices(sideCpds);
         }
-        return;
+
+        //Graph processing: set weights [optional]
+        WeightingPolicy wp = new DefaultWeightPolicy();
+        if(weightFile!=null){
+            wp = new WeightsFromFile(weightFile, true);
+        }else if(degree){
+            int pow = 2;
+            wp = new DegreeWeightPolicy(pow);
+        }
+        wp.setWeight(graph);
+
+
+        //compute distance matrix
+        ComputeAdjacencyMatrix adjBuilder = new ComputeAdjacencyMatrix(graph);
+        if(undirected) adjBuilder.asUndirected();
+        adjBuilder.parallelEdgeWeightsHandling((a,b)->Math.min(a,b)); //keep lowest weight if parallel edges
+        FloydWarshall matrixComputor = new FloydWarshall<>(graph, adjBuilder);
+        BioMatrix distM = matrixComputor.getDistances();
+
+        //export results
+        ExportMatrix.toCSV(outputPath, distM);
+
     }
     @Override
     public String getLabel() {return this.getClass().getSimpleName();}
 
     @Override
-    public String getDescription() {return "Create a graph representation of a SBML file content, and export it in graph file format.\n" +
-            "The graph can be either a compound graph or a bipartite graph, and can be exported in gml or tabulated file format.";}
+    public String getDescription() {return "Create a compound to compound distance matrix.\n" +
+            "The distance between two compounds is computed as the length of the shortest path connecting the two in the compound graph, " +
+            "where two compounds are linked if they are respectively substrate and product of the same reaction.\n" +
+            "An optional edge weighting can be used, turning the distances into the sum of edge weights in the lightest path, rather than the length of the shortest path." +
+            "The default weighting use target's degree squared. Alternatively, custom weighting can be provided in a file. In that case, edges without weight are ignored during path search.\n" +
+            "If no edge weighting is set, it is recommended to provide a list of side compounds to ignore during network traversal.";}
 
 }

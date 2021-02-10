@@ -93,6 +93,7 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 	 * @param matrixClass the matrix class
 	 * @throws Exception
 	 */
+	@Deprecated
 	public ComputeAdjacencyMatrix(G g, Class<?> matrixClass) throws Exception{
 		this.g=g;
 		if(!Arrays.asList(matrixClass.getInterfaces()).contains(BioMatrix.class)){
@@ -107,7 +108,8 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 	 * Builds the adjacency matrix.
 	 */
 	private void buildadjacencyMatrix(){
-		
+
+		this.adjacencyMatrix = new EjmlMatrix(g.vertexSet().size(),g.vertexSet().size());
 		int index = 0;
 		Set<V> vertexSet = g.vertexSet();
 		

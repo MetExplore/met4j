@@ -59,7 +59,7 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 	
 	/** The file path. */
 	String filePath;
-	boolean removeEdgeNotInFile;
+	boolean removeEdgeNotInFile=false;
 	
 	/**
 	 * Instantiates a new weights from file.

@@ -9,6 +9,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Set;
 
 public class PrecursorNetwork {
 
@@ -82,7 +83,7 @@ public class PrecursorNetwork {
             BioMetabolite m = metabolitesToProduce.remove();
 
             //add compound to network
-            precusorNetwork.addVertex(m);
+            if(!precusorNetwork.containsVertex(m)) precusorNetwork.addVertex(m);
 
             for(BioEntity p : g.predecessorListOf(m)) {
                 BioReaction r = (BioReaction) p;
@@ -99,6 +100,8 @@ public class PrecursorNetwork {
                             BioMetabolite s = (BioMetabolite) p2;
                             if (!visited.contains(s) && !metabolitesToProduce.contains(s)) {
                                 metabolitesToProduce.add(s);
+                                if(!precusorNetwork.containsVertex(s)) precusorNetwork.addVertex(s);
+                                precusorNetwork.addEdge(s, r, g.getEdge(s, r));
                             }
                         }
                     }else{
@@ -106,12 +109,16 @@ public class PrecursorNetwork {
                             for (BioMetabolite s : r.getRightsView()) {
                                 if (!visited.contains(s) && !metabolitesToProduce.contains(s)) {
                                     metabolitesToProduce.add(s);
+                                    if(!precusorNetwork.containsVertex(s)) precusorNetwork.addVertex(s);
+                                    precusorNetwork.addEdge(s, r, g.getEdge(s, r));
                                 }
                             }
                         }else{
                             for (BioMetabolite s : r.getLeftsView()) {
                                 if (!visited.contains(s) && !metabolitesToProduce.contains(s)) {
                                     metabolitesToProduce.add(s);
+                                    if(!precusorNetwork.containsVertex(s)) precusorNetwork.addVertex(s);
+                                    precusorNetwork.addEdge(s, r, g.getEdge(s, r));
                                 }
                             }
                         }
@@ -136,12 +143,12 @@ public class PrecursorNetwork {
         BioCollection<BioMetabolite> precursor = new BioCollection<>();
         BioCollection<BioReaction> exchange = PrecursorNetwork.getExchangeReactions(precusorNetwork);
         for(BioMetabolite v : precusorNetwork.compoundVertexSet()){
-            if(precusorNetwork.inDegreeOf(v)==0){
+            Set<BioEntity> pList = precusorNetwork.predecessorListOf(v);
+            if(pList.isEmpty() || exchange.containsAll(pList)){
                 precursor.add(v);
-            }else{
-                if(exchange.containsAll(precusorNetwork.predecessorListOf(v))){
-                    precursor.add(v);
-                }
+            }else if(pList.size()==1){
+                BioReaction r = (BioReaction) pList.toArray()[0];
+                if(r.isReversible()) precursor.add(v);
             }
         }
         return precursor;

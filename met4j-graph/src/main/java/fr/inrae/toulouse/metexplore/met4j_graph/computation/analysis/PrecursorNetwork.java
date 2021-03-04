@@ -62,8 +62,9 @@ public class PrecursorNetwork {
 
 
     /**
-     * Gets the precursor network: all the upstream reactions that leads to the production of a set of compounds
-     *
+     * Gets the precursor network: all the upstream reactions that leads to the production of a set of compounds.
+     * The computation doesn't put restrictions on reversible reactions directions, thus both aren't mutually exclusive and can coexist in the obtained network
+     * 
      * @return the precursor network
      */
     public BipartiteGraph getPrecursorNetwork() throws IllegalArgumentException {
@@ -93,17 +94,8 @@ public class PrecursorNetwork {
                     //add producing reaction to network
                     precusorNetwork.addVertex(r);
 
-                    //get predecessors
-                    BioCollection<BioMetabolite> predecessors = new BioCollection<>();
-                    if (!r.isReversible()) {
-                        predecessors = r.getLeftsView();
-                    }else if(r.getLeftsView().contains(m)){
-                        predecessors = r.getRightsView();
-                    }else{
-                        predecessors = r.getLeftsView();
-                    }
-
-                    for (BioMetabolite s : predecessors) {
+                    for (BioEntity pr : g.predecessorListOf(r)) {
+                        BioMetabolite s = (BioMetabolite) pr;
                         //add substrate of producing reaction to queue, if not already visited.
                         if (!visited.contains(s) && !metabolitesToProduce.contains(s)) {
                             metabolitesToProduce.add(s);

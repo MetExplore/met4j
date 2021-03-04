@@ -36,12 +36,12 @@
 
 package fr.inrae.toulouse.metexplore.met4j_graph;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.PrecursorNetwork;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.ScopeCompounds;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import org.junit.BeforeClass;
@@ -54,7 +54,7 @@ public class TestPrecursorNetwork {
 	
 	
 	public static BioMetabolite v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,side;
-	public static BioReaction r1,r2,r3,r4,r5,r6,r7,ex,no;
+	public static BioReaction r1,r1b,r2,r3,r4,r5,r6,r7,ex,no;
 	public static BioCompartment comp;
 	public static BipartiteGraph g;
 	public static BioNetwork bn;
@@ -86,6 +86,7 @@ public class TestPrecursorNetwork {
 		bn.affectToCompartment(comp, v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,side);
 
 		r1 = new BioReaction("r1");
+		r1b = new BioReaction("r1b");
 		r2 = new BioReaction("r2");
 		r3 = new BioReaction("r3");
 		r4 = new BioReaction("r4");
@@ -94,12 +95,16 @@ public class TestPrecursorNetwork {
 		r7 = new BioReaction("r7");
 		ex = new BioReaction("ex");
 		no = new BioReaction("no");
-		bn.add(r1,r2,r3,r4,r5,r6,r7,ex,no);
+		bn.add(r1,r1b,r2,r3,r4,r5,r6,r7,ex,no);
 
 
 		bn.affectLeft(r1, 1.0, comp, v1);
 		bn.affectRight(r1, 1.0, comp, v3);
 		r1.setReversible(false);
+
+		bn.affectLeft(r1b, 1.0, comp, v1);
+		bn.affectRight(r1b, 1.0, comp, v3);
+		r1b.setReversible(false);
 
 		bn.affectLeft(r2, 1.0, comp, v2);
 		bn.affectRight(r2, 1.0, comp, side);
@@ -152,39 +157,37 @@ public class TestPrecursorNetwork {
 		PrecursorNetwork pn = new PrecursorNetwork(g,bs,cpdToReach,reactionsToAvoid);
 		BipartiteGraph precursor = pn.getPrecursorNetwork();
 
-		System.err.println(precursor.edgeSet().toString());
-
-		assertEquals(7, precursor.compoundVertexSet().size());
-		assertEquals(5, precursor.reactionVertexSet().size());
-		assertEquals(11, precursor.edgeSet().size());
+		assertEquals(8, precursor.compoundVertexSet().size());
+		assertEquals(6, precursor.reactionVertexSet().size());
+		assertEquals(17, precursor.edgeSet().size());
 
 		assertTrue(precursor.compoundVertexSet().contains(v1));
 		assertTrue(precursor.compoundVertexSet().contains(v3));
 		assertTrue(precursor.compoundVertexSet().contains(v4));
 		assertTrue(precursor.compoundVertexSet().contains(v6));
 		assertTrue(precursor.compoundVertexSet().contains(v7));
+		assertTrue(precursor.compoundVertexSet().contains(v8));
 		assertTrue(precursor.compoundVertexSet().contains(v10));
+		assertTrue(precursor.compoundVertexSet().contains(side));
 
 		assertTrue(precursor.reactionVertexSet().contains(ex));
 		assertTrue(precursor.reactionVertexSet().contains(r1));
+		assertTrue(precursor.reactionVertexSet().contains(r1b));
 		assertTrue(precursor.reactionVertexSet().contains(r4));
 		assertTrue(precursor.reactionVertexSet().contains(r5));
 		assertTrue(precursor.reactionVertexSet().contains(r7));
 
 		BioCollection<BioReaction> e = PrecursorNetwork.getExchangeReactions(precursor);
-		System.err.println(e.toString());
-
-		System.out.println(precursor.degreeOf(r4));
 		assertEquals(1, e.size());
 		assertTrue(e.contains(ex));
 
 		BioCollection<BioMetabolite> p = PrecursorNetwork.getPrecursors(precursor);
-		System.err.println(p.toString());
-
-		assertEquals(3, p.size());
+		assertEquals(5, p.size());
 		assertTrue(p.contains(v1));
 		assertTrue(p.contains(v4));
 		assertTrue(p.contains(v10));
+		assertTrue(p.contains(v8));
+		assertTrue(p.contains(side));
 	}
 
 

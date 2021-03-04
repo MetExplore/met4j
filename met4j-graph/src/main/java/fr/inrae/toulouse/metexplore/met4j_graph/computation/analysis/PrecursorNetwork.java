@@ -93,38 +93,30 @@ public class PrecursorNetwork {
                     //add producing reaction to network
                     precusorNetwork.addVertex(r);
 
-
+                    //get predecessors
+                    BioCollection<BioMetabolite> predecessors = new BioCollection<>();
                     if (!r.isReversible()) {
-                        //add substrate of producing reaction to queue, if not already visited.
-                        for (BioEntity p2 : g.predecessorListOf(r)) {
-                            BioMetabolite s = (BioMetabolite) p2;
-                            if (!visited.contains(s) && !metabolitesToProduce.contains(s)) {
-                                metabolitesToProduce.add(s);
-                                if(!precusorNetwork.containsVertex(s)) precusorNetwork.addVertex(s);
-                                precusorNetwork.addEdge(s, r, g.getEdge(s, r));
-                            }
-                        }
+                        predecessors = r.getLeftsView();
+                    }else if(r.getLeftsView().contains(m)){
+                        predecessors = r.getRightsView();
                     }else{
-                        if(r.getLeftsView().contains(m)){
-                            for (BioMetabolite s : r.getRightsView()) {
-                                if (!visited.contains(s) && !metabolitesToProduce.contains(s)) {
-                                    metabolitesToProduce.add(s);
-                                    if(!precusorNetwork.containsVertex(s)) precusorNetwork.addVertex(s);
-                                    precusorNetwork.addEdge(s, r, g.getEdge(s, r));
-                                }
-                            }
-                        }else{
-                            for (BioMetabolite s : r.getLeftsView()) {
-                                if (!visited.contains(s) && !metabolitesToProduce.contains(s)) {
-                                    metabolitesToProduce.add(s);
-                                    if(!precusorNetwork.containsVertex(s)) precusorNetwork.addVertex(s);
-                                    precusorNetwork.addEdge(s, r, g.getEdge(s, r));
-                                }
-                            }
+                        predecessors = r.getLeftsView();
+                    }
+
+                    for (BioMetabolite s : predecessors) {
+                        //add substrate of producing reaction to queue, if not already visited.
+                        if (!visited.contains(s) && !metabolitesToProduce.contains(s)) {
+                            metabolitesToProduce.add(s);
                         }
+
+                        if(!precusorNetwork.containsVertex(s)) precusorNetwork.addVertex(s);
+                        precusorNetwork.addEdge(s, r, g.getEdge(s, r));
+
                     }
                 }
+
                 precusorNetwork.addEdge(r, m, g.getEdge(r, m));
+
             }
             visited.add(m);
         }

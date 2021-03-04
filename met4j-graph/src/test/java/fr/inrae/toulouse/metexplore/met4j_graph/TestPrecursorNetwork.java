@@ -154,7 +154,7 @@ public class TestPrecursorNetwork {
 
 		System.err.println(precursor.edgeSet().toString());
 
-		assertEquals(6, precursor.compoundVertexSet().size());
+		assertEquals(7, precursor.compoundVertexSet().size());
 		assertEquals(5, precursor.reactionVertexSet().size());
 		assertEquals(11, precursor.edgeSet().size());
 

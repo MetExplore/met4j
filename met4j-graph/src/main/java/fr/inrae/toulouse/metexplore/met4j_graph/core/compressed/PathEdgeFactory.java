@@ -45,7 +45,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 public class PathEdgeFactory<V extends BioEntity,E extends Edge<V>> implements EdgeFactory<V, PathEdge<V,E>> {
-	BioGraph<V,E> g;
+	final BioGraph<V,E> g;
 	
 	public 	PathEdgeFactory(BioGraph<V,E> g){
 		this.g=g;

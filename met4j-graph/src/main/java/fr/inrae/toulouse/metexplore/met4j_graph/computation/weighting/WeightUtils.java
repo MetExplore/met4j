@@ -80,8 +80,7 @@ public class WeightUtils {
 			double w = g.getEdgeWeight(e);
 			g.setEdgeWeight(e,(w-min)/(max-min));
 		}
-		return;
-	}
+    }
 	
 	/**
 	 * Put all weights to the power of the given number.
@@ -94,8 +93,7 @@ public class WeightUtils {
 			double w = g.getEdgeWeight(e);
 			g.setEdgeWeight(e, StrictMath.pow(w, pow));
 		}
-		return;
-	}
+    }
 	
 	/**
 	 * Invert weights (weights have to be between 0 and 1, which can be done using the {@link WeightUtils#scale(BioGraph)})
@@ -109,8 +107,7 @@ public class WeightUtils {
 			if(w>1 || w<0) throw (new IllegalArgumentException("weights have to be between 0 and 1 : "+e.getV1().getId()+" -> "+e.getV2().getId()+" ("+ e +") "+g.getEdgeWeight(e)));
 			g.setEdgeWeight(e, 1.0-w);
 		}
-		return;
-	}
+    }
 	
 	/**
 	 * add a given value to all weights in the graph
@@ -125,8 +122,7 @@ public class WeightUtils {
 			if(Double.isNaN(w)) throw (new IllegalArgumentException("NaN weight"));
 			g.setEdgeWeight(e, n+w);
 		}
-		return;
-	}
+    }
 	
 	/**
 	 * Removes the edge with an invalid weight (Not a number).
@@ -165,7 +161,6 @@ public class WeightUtils {
 			out.newLine();
 		}
 		out.close();
-		return;
-	}
+    }
 
 }

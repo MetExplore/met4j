@@ -56,10 +56,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 public class ExtractConnectingSubgraph<V extends BioEntity, E extends Edge<V>> {
 
 	/** The graph. */
-	public BioGraph<V, E> g;
+	public final BioGraph<V, E> g;
 	
 	/** The nodes of interest. */
-	public Set<String> nodesOfInterest;
+	public final Set<String> nodesOfInterest;
 
 //
 	/** The reach by matrix. */
@@ -110,7 +110,6 @@ public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInter
 		EdgeReversedGraph<V, E> g2 = new EdgeReversedGraph<>(g);
 		reachby = getReachMatrix(g, colIndexMap, rowIndexMap, false);
 		reach = getReachMatrix(g2, colIndexMap, rowIndexMap, true);
-		return;
 	}
 	
 	/**
@@ -150,7 +149,6 @@ public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInter
 
 		System.err.println("Removing "+noPathbetween.size()+" nodes out of paths between nodes of interest...");
 		g.removeAllVertices(noPathbetween);
-		return;
 	}
 	
 	/**

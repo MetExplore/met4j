@@ -56,7 +56,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G extends BioGraph<V, E>> {
 
 	/** The graph. */
-	G g;
+	final G g;
 	
 	/** The shortest paths. */
 	private Set<BioPath<V,E>> allShortestPaths;

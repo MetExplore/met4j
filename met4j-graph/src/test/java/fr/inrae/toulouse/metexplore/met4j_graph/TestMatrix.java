@@ -68,7 +68,7 @@ public class TestMatrix {
 	
 	public static CompoundGraph graph;
 	
-	public static Class<?>[] matrixClasses = {EjmlMatrix.class, MtjMatrix.class};
+	public static final Class<?>[] matrixClasses = {EjmlMatrix.class, MtjMatrix.class};
 	
 	@BeforeClass
 	public static void init(){
@@ -304,9 +304,6 @@ public class TestMatrix {
 				assertEquals("Error in Matrix export : wrong number of columns", graph.vertexSet().size()+1,array.length);
 			}
 			assertEquals("Error in Matrix export : wrong number of rows", graph.vertexSet().size()+1,nbLine);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			fail();
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail();

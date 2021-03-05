@@ -126,8 +126,7 @@ public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioMetabo
 				}
 			}
 		}
-		return;
-	}
+    }
 
 
 	/**

@@ -52,7 +52,7 @@ import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
 public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V, E>> {
 	
 	/** The graph. */
-	G g;
+	final G g;
 	
 	/** The adjacency matrix. */
 	BioMatrix adjacencyMatrix;
@@ -141,8 +141,7 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 				}
 			}
 		}
-		
-		return;
+
 	}
 
 	

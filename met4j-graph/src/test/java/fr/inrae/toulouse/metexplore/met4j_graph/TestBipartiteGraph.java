@@ -129,8 +129,8 @@ public class TestBipartiteGraph {
 		BipartiteEdge e = bg.copyEdge(e6);
 		assertEquals(v3, e.getV1());
 		assertEquals(r2, e.getV2());
-		assertEquals(true, e.isReversible());
-		assertEquals(false, e.isSide());
+		assertTrue(e.isReversible());
+		assertFalse(e.isSide());
 	}
 	
 	@Test
@@ -183,8 +183,8 @@ public class TestBipartiteGraph {
 		assertEquals(v1, r.getV2());
 		assertEquals(r1, r.getV1());
 		assertEquals(e1.getLabel(), r.getLabel());
-		assertEquals(false, r.isReversible());
-		assertEquals(false, r.isSide());
+		assertFalse(r.isReversible());
+		assertFalse(r.isSide());
 	}
 	
 	@Test(expected=IllegalArgumentException.class)

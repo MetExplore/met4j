@@ -90,7 +90,7 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 	/**
 	 * Gets the edges from reaction.
 	 *
-	 * @param reactionId the reaction id
+	 * @param compoundId the compound id
 	 * @return the edges from reaction
 	 */
 	public HashSet<CompoundEdge> getEdgesFromCompound(String compoundId){

@@ -212,7 +212,7 @@ public class RankUtils {
 	static class ScoreComparator<T> implements Comparator<T>, Serializable {
 		
 		/** The reaction score map. */
-		HashMap<T, Double> reactionScoreMap;
+		final HashMap<T, Double> reactionScoreMap;
 		
 		/**
 		 * Instantiates a new score comparator.

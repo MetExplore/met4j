@@ -58,7 +58,7 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 	extends WeightingPolicy<V,E,G> {
 	
 	/** The file path. */
-	String filePath;
+	final String filePath;
 	boolean removeEdgeNotInFile=false;
 	
 	/**

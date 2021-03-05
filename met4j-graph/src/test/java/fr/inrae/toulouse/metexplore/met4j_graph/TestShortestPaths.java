@@ -363,11 +363,8 @@ public class TestShortestPaths {
 		assertTrue(avg2.containsKey(c));
 		assertEquals(2.5, avg2.get(c), Double.MIN_VALUE);
 	}
-	
-	/**
-	 * Test the get k shortest union.
-	 */
-//	@Test
+
+	//	@Test
 //	public void testGetKShortestUnion() {
 //		g.setEdgeWeight(ef,500.0);
 //		HashSet<BioMetabolite> noi = new HashSet<BioMetabolite>();
@@ -406,11 +403,8 @@ public class TestShortestPaths {
 		}
 		Assert.assertEquals("wrong path",expectedPath,(g2.edgeSet()));
 	}
-	
-	/**
-	 * Test the get shortest union.
-	 */
-//	@Test
+
+	//	@Test
 //	public void testGetShortestUnion() {
 //		HashSet<BioMetabolite> noi = new HashSet<BioMetabolite>();
 //		noi.add(a);noi.add(c);noi.add(i);
@@ -513,7 +507,7 @@ public class TestShortestPaths {
 				if(!a.equals(b)){
 					BioPath<BioMetabolite, ReactionEdge> sp = spComputor.getShortest(g.getVertex(a), g.getVertex(b));
 					if(sp==null){
-						assertTrue(!res.get(a).containsKey(b));
+						assertFalse(res.get(a).containsKey(b));
 					}else{
 						assertEquals(sp.getWeight(), res.get(a).get(b).getWeight(), Double.MIN_VALUE);
 					}

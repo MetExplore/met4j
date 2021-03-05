@@ -61,31 +61,31 @@ public class TestGraphMeasure {
 	public static ReactionEdge az,zb,ab,xb,bc,cx,yx,ay,ea,ey,xd,ed,fe,df,ax;	//e=15
 	
 	/** The expected alpha. */
-	public double expectedAlpha = 0.166666;	// (e-(v-1))/((v(v-1)/2)-(v-1)) = 6/36 = 0,166666667
+	public final double expectedAlpha = 0.166666;	// (e-(v-1))/((v(v-1)/2)-(v-1)) = 6/36 = 0,166666667
 	
 	/** The expected beta. */
-	public double expectedBeta = 1.5;	// e/v = 15/10 = 1.5
+	public final double expectedBeta = 1.5;	// e/v = 15/10 = 1.5
 	
 	/** The expected diameter. */
-	public double expectedDiameter = 49; // max sp path length :  z -> a = 49
+	public final double expectedDiameter = 49; // max sp path length :  z -> a = 49
 	
 	/** The expected length. */
-	public double expectedLength = 81;	//2+8+9+4+8+3+1+2+8+2+6+5+8+8+7=81
+	public final double expectedLength = 81;	//2+8+9+4+8+3+1+2+8+2+6+5+8+8+7=81
 	
 	/** The expected number of connected comp. */
-	public int expectedNumberOfConnectedComp = 2;
+	public final int expectedNumberOfConnectedComp = 2;
 	
 	/** The expected number of cycle. */
-	public int expectedNumberOfCycle = 7; 	// e-v+p = 15-10+2 = 7
+	public final int expectedNumberOfCycle = 7; 	// e-v+p = 15-10+2 = 7
 	
 	/** The expected pi. */
-	public double expectedPi = 0.604938;	// D/L = 49/81 = 0.604938
+	public final double expectedPi = 0.604938;	// D/L = 49/81 = 0.604938
 	
 	/** The expected eta. */
-	public double expectedEta = 5.4;	// L/e = 81/15 = 5.4
+	public final double expectedEta = 5.4;	// L/e = 81/15 = 5.4
 	
 	/** The expected gamma. */
-	public double expectedGamma = 0.333333;	// (v*(v-1))/2 = 90/2 = 45 ; e/(v*(v-1))/2) = 15/45 = 0.3333333
+	public final double expectedGamma = 0.333333;	// (v*(v-1))/2 = 90/2 = 45 ; e/(v*(v-1))/2) = 15/45 = 0.3333333
 
 	
 	@BeforeClass
@@ -215,8 +215,8 @@ public class TestGraphMeasure {
 	
 	@Test
 	public void testDegree(){
-		assertEquals(true,g.areConnected(a, z));
-		assertEquals(false,g.areConnected(a, e));
+		assertTrue(g.areConnected(a, z));
+		assertFalse(g.areConnected(a, e));
 		assertEquals(0,g.degreeOf(l));
 		assertEquals(5,g.degreeOf(a));
 		assertEquals(5,g.neighborListOf(a).size());

@@ -78,9 +78,8 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 	 * Instantiates a new eigen vector centrality computor.
 	 *
 	 * @param adjacencyMatrix the adjacency matrix
-	 * @throws Exception if matrix is not square
 	 */
-	public EigenVectorCentrality(BioMatrix adjacencyMatrix) throws Exception{
+	public EigenVectorCentrality(BioMatrix adjacencyMatrix) {
 		if(adjacencyMatrix.numRows()!=adjacencyMatrix.numCols()) throw new IllegalArgumentException("adjacency matrix must be square");
 		this.adjacencyMatrix=adjacencyMatrix;
 	}

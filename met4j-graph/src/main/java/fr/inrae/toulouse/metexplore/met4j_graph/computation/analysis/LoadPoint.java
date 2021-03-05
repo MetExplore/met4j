@@ -61,7 +61,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
  */
 public class LoadPoint<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V, E>> {
 	
-	G g;
+	final G g;
 	
 	/**
 	 * Instantiate load points computor

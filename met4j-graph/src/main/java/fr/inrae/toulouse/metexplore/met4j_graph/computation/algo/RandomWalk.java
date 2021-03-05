@@ -219,8 +219,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 		}
 		
 //		System.err.println("\tdone.");
-		return;
-	}
+    }
 	
 	/**
 	 * compute transients states matrix (without starting state)
@@ -353,8 +352,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 				g.setEdgeScore(edge, g.getEdgeWeight(edge)* edgeNumberOfWalks.get(sourceIndex, targetIndex));
 			}
 		}
-		return;
-	}
+    }
 	
 	/**
 	 * Computes the edges passage time.
@@ -543,8 +541,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 
         edgeNumberOfWalks = edgeNumberOfWalks.scale(1.0/tot);
 
-		return;
-	}
+    }
 	
 	/**
 	 * Computes the node of interest table.

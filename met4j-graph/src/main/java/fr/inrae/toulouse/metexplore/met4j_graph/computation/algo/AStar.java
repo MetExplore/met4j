@@ -56,10 +56,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 public class AStar<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V ,E>>{
 	
 	/** The graph. */
-	public G g;
+	public final G g;
 	
 	/** The heuristic. */
-	public AStarHeuristic<V> h;
+	public final AStarHeuristic<V> h;
 
 	
 	/**

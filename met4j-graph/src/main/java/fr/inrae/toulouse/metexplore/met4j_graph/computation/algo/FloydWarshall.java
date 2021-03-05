@@ -58,7 +58,7 @@ import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> {
 	
 	/** The graph. */
-	G g;
+	final G g;
 
 
 	private final BioMatrix matrix;

@@ -48,7 +48,7 @@ public class ProbabilityWeightPolicy<V extends BioEntity, E extends Edge<V>,G ex
 	extends WeightingPolicy<V,E,G> {
 	
 	/** The weighting policy. */
-	WeightingPolicy<V,E,G> wp;
+    final WeightingPolicy<V,E,G> wp;
 		
 	/**
 	 * Instantiates a new probability weight policy.
@@ -94,6 +94,5 @@ public class ProbabilityWeightPolicy<V extends BioEntity, E extends Edge<V>,G ex
 				}
 			}
 		}
-		return;
 	}
 }

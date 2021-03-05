@@ -110,9 +110,9 @@ public class BioGraph2XGMML{
 	 * @param g the graph
 	 * @param name the name of the graph
 	 */
-	public BioGraph2XGMML(BipartiteGraph g, String Name){
+	public BioGraph2XGMML(BipartiteGraph g, String name){
 		this.g=g;
-		this.graphName =Name;
+		this.graphName =name;
 	}
 	
 	/**
@@ -296,7 +296,7 @@ public class BioGraph2XGMML{
 	 * Creates an attribute from string list.
 	 *
 	 * @param name the attribute's name
-	 * @param value the attribute's value
+	 * @param valueList the attribute's values
 	 * @return the xml element
 	 */
 	private Element createAttribute(String name, Collection<String> valueList){

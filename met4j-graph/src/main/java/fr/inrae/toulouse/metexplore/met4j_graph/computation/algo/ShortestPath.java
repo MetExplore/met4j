@@ -57,7 +57,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGraph<V ,E>>{
 	
 	/** The graph. */
-	public G g;
+	public final G g;
 	
 	/**
 	 * Instantiates a new shortest paths computor.
@@ -71,7 +71,6 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	/**
 	 * compute the shortest paths (or lightest paths if the graph is weighted) between 2 nodes
 	 *
-	 * @param graph the graph
 	 * @param start the start vertex
 	 * @param end the end vertex
 	 * @return the list of edges involved in the shortest path
@@ -96,9 +95,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 		
 		unseen.add(start);
 		distMap.put(start,0.0);
-//		
-//		System.out.println(" FROM "+start+" TO "+end);
-//		
+
 		
 		while (!unseen.isEmpty()) {
 			
@@ -106,13 +103,6 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 			V n = getNearest(distMap,unseen);
 			unseen.remove(n);
 			seen.add(n);
-//			
-//			System.out.println(unseen);
-//			System.out.println(n.getId());
-//			System.out.println(distMap);
-//			System.out.println(seen);
-//			System.out.println("---------------------------------");
-//			
 			
 			
 			//add current nodes's successor to the list of node to process, if not already seen
@@ -130,11 +120,6 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 					incoming.put(successor, e);
 				}
 			}
-//			
-//			System.out.println(unseen);
-//			System.out.println(distMap);
-//			System.out.println("================================\n\n");
-//	
 		}
 		if(!incoming.containsKey(end)) return null;
 		
@@ -151,9 +136,6 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 			if(incoming.isEmpty() && currentVertex!=start ) return null;
 		}
 		Collections.reverse(sp);
-//		
-//		System.out.println(new BioPath<V,E>(g, start, end, sp, weight));
-//		
 		return new BioPath<>(g, start, end, sp, weight);
 	}
 	
@@ -161,7 +143,6 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	/**
 	 * compute the shortest paths (or lightest paths if the graph is weighted) between 2 nodes as if the graph was undirected
 	 *
-	 * @param graph the graph
 	 * @param start the start vertex
 	 * @param end the end vertex
 	 * @return the list of edges involved in the shortest path
@@ -263,14 +244,6 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 				nearest=v;
 			}
 		}
-//	
-//		if(nearest == null){
-//			System.out.println("null nearest!\nunseen:");
-//			for(V v : unseen){
-//				System.out.println(v.getId()+":"+distMap.get(v));
-//			}
-//		}
-//		
 		return nearest;
 	}
 	
@@ -278,7 +251,6 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	/**
 	 * compute the list of edges from the union of all shortest paths between all nodes in a given set
 	 *
-	 * @param graph the graph
 	 * @param nodeOfInterest the node of interest list
 	 * @return the list of edges involved in the shortest path union
 	 */
@@ -290,7 +262,6 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	/**
 	 * compute the list of edges from the union of all shortest paths between sources and target nodes
 	 *
-	 * @param graph the graph
 	 * @param startNodes the start nodes
 	 * @param targetNodes the target nodes
 	 * @return the list of edges involved in the shortest path union
@@ -348,16 +319,13 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 				}
 			}
 		}
-//		for(PathEdge<V, E> e : cg.edgeSet()){
-//			System.out.println(e.getV1().getId()+" -> "+e.getV2().getId()+" ("+cg.getEdgeWeight(e)+")");
-//		}
+
 		return cg;
 	}
 	
 	/**
 	 * compute for each node in the first list, the minimum path length to be reached by nodes in the second set
 	 *
-	 * @param g the graph
 	 * @param sources the sources
 	 * @param targets the targets
 	 * @param weighted if the graph is weighted
@@ -387,7 +355,6 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	/**
 	 * compute for each node in the first list, the average minimum path length to be reached by nodes in the second set
 	 *
-	 * @param g the graph
 	 * @param sources the sources
 	 * @param targets the targets
 	 * @param weighted if the graph is weighted
@@ -415,12 +382,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	
 	/**
 	 * return all the shortest path in the given graph.
-<<<<<<< Updated upstream
-	 * @param k
-	 * @return
-=======
 	 * @return all the shortest path in the given graph.
->>>>>>> Stashed changes
 	 */
 	public Set<BioPath<V,E>> getAllShortestPaths(){
 		HashSet<BioPath<V, E>> paths = new HashSet<>();

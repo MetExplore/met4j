@@ -63,7 +63,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollections;
 
 /**
- * Export informations from graphs generated from {@link Bionetwork2Graph} into Cytoscape-readable files
+ * Export informations from graphs generated from {@link Bionetwork2BioGraph} into Cytoscape-readable files
  * @author clement
  */
 public class ExportGraph {
@@ -85,7 +85,7 @@ public class ExportGraph {
 	public static void exportEdgeWeight(CompoundGraph graph, String attName, String outputPath){
 		attName=attName.replaceAll("\\s+", "_");
 		try {	    	
-    		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
+    		BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath, true));
     		bw.write(attName+" (class=Double)");
     		bw.newLine();
     		for(ReactionEdge e:graph.edgeSet()){
@@ -114,7 +114,7 @@ public class ExportGraph {
 	public static void exportEdgeScore(CompoundGraph graph, String attName, String outputPath){
 		attName=attName.replaceAll("\\s+", "_");
 		try {	    	
-    		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
+    		BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath, true));
     		bw.write(attName+" (class=Double)");
     		bw.newLine();
     		for(ReactionEdge e:graph.edgeSet()){
@@ -145,7 +145,7 @@ public class ExportGraph {
 	public static void exportEdgeAtt(CompoundGraph graph, String attName, String outputPath){
 		attName=attName.replaceAll("\\s+", "_");
 		try {	    	
-    		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
+    		BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath, true));
     		bw.write(attName);
     		bw.newLine();
     		for(ReactionEdge e:graph.edgeSet()){
@@ -176,7 +176,7 @@ public class ExportGraph {
 	 */
 	public static void exportNodeName(CompoundGraph graph, String outputPath){
 		try {	    	
-    		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
+    		BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath, true));
     		bw.write("Name (class=String)");
     		bw.newLine();
     		for(BioMetabolite e:graph.vertexSet()){
@@ -204,7 +204,7 @@ public class ExportGraph {
 	 */
 	public static void exportNodeName(BioNetwork bn, String outputPath){
 		try {	    	
-    		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
+    		BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath, true));
     		bw.write("Name (class=String)");
     		bw.newLine();
     		for(BioMetabolite e:bn.getMetabolitesView()){
@@ -236,7 +236,7 @@ public class ExportGraph {
 	 */
 	public static void exportEdgeTabular(CompoundGraph graph, String outputPath){
 		try {	    	
-    		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
+    		BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath, true));
     		bw.write("CanonicalName\tSubstrateId\tSubstrateName\tSubstrateComp\tReactionId\tReactionName\tProductId\tProductName\tProductComp\tWeight\tScore");
     		bw.newLine();
     		for(ReactionEdge e:graph.edgeSet()){
@@ -264,7 +264,7 @@ public class ExportGraph {
 	 */
 	public static void exportNodeTabular(CompoundGraph graph, String outputPath){
 		try {	    	
-    		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
+    		BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath, true));
     		bw.write("CanonicalName\tName");
     		bw.newLine();
     		for(BioMetabolite v : graph.vertexSet()){
@@ -287,7 +287,7 @@ public class ExportGraph {
 	 */
 	public static void exportNodeTabular(CompoundGraph graph, String outputPath, HashMap<String, Double> weights){
 		try {	    	
-    		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
+    		BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath, true));
     		bw.write("CanonicalName\tName\tWeight");
     		bw.newLine();
     		for(BioMetabolite v : graph.vertexSet()){
@@ -347,7 +347,7 @@ public class ExportGraph {
 	 */
 	public static void exportBipartiteEdge(BipartiteGraph bip, String outputPath){
 		try {	    	
-    		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
+    		BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath, true));
 //    		bw.write("Reversible");
     		bw.write("edgeId\tReversible\tSide");
     		bw.newLine();
@@ -378,14 +378,14 @@ public class ExportGraph {
 	/**
 	 * Export bipartite graph node in tabular format.
 	 *
-	 * @param graph the graph
+	 * @param bip the bipartite graph
 	 * @param outputPath the output path
 	 */
 	public static void exportBipNodeTabular(BipartiteGraph bip, String outputPath ){
 		
 		BufferedWriter bw = null;
 		try {	    	
-    		bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
+    		bw = new BufferedWriter(new FileWriter(outputPath, true));
     		bw.write("CanonicalName\tName\tClass");
     		bw.newLine();
     		for(BioEntity v : bip.vertexSet()){
@@ -426,7 +426,7 @@ public class ExportGraph {
 	 */
 	public static void toTab(CompoundGraph cmpdGraph, String outputPath){
 		try {	    	
-    		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
+    		BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath, true));
     		bw.write("source\tinteraction\ttarget");
     		bw.newLine();
     		for(ReactionEdge e:cmpdGraph.edgeSet()){
@@ -448,7 +448,7 @@ public class ExportGraph {
 	 */
 	public static void toTab(BipartiteGraph bip, String outputPath){
 		try {	    	
-    		BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputPath), true));
+    		BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath, true));
     		bw.write("source\tinteraction\ttarget");
     		bw.newLine();
     		for(BipartiteEdge e:bip.edgeSet()){

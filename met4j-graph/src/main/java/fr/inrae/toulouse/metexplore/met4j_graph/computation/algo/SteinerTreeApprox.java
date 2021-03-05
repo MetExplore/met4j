@@ -57,7 +57,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V ,E>>{
 	
 	/** The graph. */
-	public G g;
+	public final G g;
 	
 	/** if the graph should be treated as weighted or not **/
 	public boolean weighted = true;
@@ -85,7 +85,6 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 	/**
 	 * Gets the steiner tree list.
 	 *
-	 * @param g the graph
 	 * @param terminal the targets list
 	 * @param weighted if the graph is weighted
 	 * @return the steiner tree list
@@ -113,7 +112,6 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 	/**
 	 * Gets the steiner tree list.
 	 *
-	 * @param g the graph
 	 * @param startNodes the targets list
 	 * @param endNodes the targets list
 	 * @param weighted if the graph is weighted

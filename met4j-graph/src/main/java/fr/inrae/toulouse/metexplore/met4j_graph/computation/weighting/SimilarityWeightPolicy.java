@@ -69,7 +69,6 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,Reacti
 	
 	/**
 	 * Instantiates a new similarity weight policy using specified fingerprint type
-	 * @see parsebionet.computation.chemicalSimilarity.FingerprintBuilder
 	 */
 	public SimilarityWeightPolicy(int fingerprintType) {
 		this.fingerprintType=fingerprintType;

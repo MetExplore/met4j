@@ -296,7 +296,7 @@ public class BioPathUtils {
 	/**
 	 * Filter path set according to a length value and a comparison operator.
 	 *
-	 * @param path the set of paths
+	 * @param paths the set of paths
 	 * @param value the value used for filtering
 	 * @param operator the operator
 	 * @return the filtered set
@@ -308,7 +308,7 @@ public class BioPathUtils {
 	/**
 	 * Filter path set according to a weight value and a comparison operator.
 	 *
-	 * @param path the set of paths
+	 * @param paths the set of paths
 	 * @param value the value used for filtering
 	 * @param operator the operator
 	 * @return the filtered set

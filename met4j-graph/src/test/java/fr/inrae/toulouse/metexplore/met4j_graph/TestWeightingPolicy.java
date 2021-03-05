@@ -61,7 +61,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.WeightUtil
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.WeightsFromFile;
 
 /**
- * Test {@link Bionetwork2CompoundGraph} with {@link WeightingPolicy <BioMetabolite, ReactionEdge , CompoundGraph >}
+ * Test {@link fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph} with {@link WeightingPolicy <BioMetabolite, ReactionEdge , CompoundGraph >}
  * @author clement
  */
 public class TestWeightingPolicy {
@@ -181,15 +181,6 @@ public class TestWeightingPolicy {
 		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new SimilarityWeightPolicy();
 		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
 		wp.setWeight(g);
-//		System.out.println("abWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(ab.getV1()),FingerprintBuilder.getExtendedFingerprint(ab.getV2())));
-//		System.out.println("bcWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(bc.getV1()),FingerprintBuilder.getExtendedFingerprint(bc.getV2())));
-//		System.out.println("adWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(ad.getV1()),FingerprintBuilder.getExtendedFingerprint(ad.getV2())));
-//		System.out.println("efWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(ef.getV1()),FingerprintBuilder.getExtendedFingerprint(ef.getV2())));
-//		System.out.println("bxWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(bx.getV1()),FingerprintBuilder.getExtendedFingerprint(bx.getV2())));
-//		System.out.println("ebWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(eb.getV1()),FingerprintBuilder.getExtendedFingerprint(eb.getV2())));
-//		System.out.println("deWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(de.getV1()),FingerprintBuilder.getExtendedFingerprint(de.getV2())));
-//		System.out.println("fcWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(fc.getV1()),FingerprintBuilder.getExtendedFingerprint(fc.getV2())));
-//		System.out.println("ycWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(yc.getV1()),FingerprintBuilder.getExtendedFingerprint(yc.getV2())));
 		abWeight=0.15566037735849056;
 		bcWeight=0.0661764705882353;
 		adWeight=0.5751633986928104;

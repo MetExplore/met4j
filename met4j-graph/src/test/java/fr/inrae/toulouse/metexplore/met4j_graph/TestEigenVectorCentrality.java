@@ -109,7 +109,7 @@ public class TestEigenVectorCentrality {
 	 */
 	@Test
 	public void testGolbalEigenVectorCentrality() {
-		EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph> pg = new EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph>(graph);
+		EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph> pg = new EigenVectorCentrality<>(graph);
 		for(int i=0; i<pg.adjacencyMatrix.numRows(); i++){
 			pg.adjacencyMatrix.set(i, i, 1.0);
 		}
@@ -142,8 +142,8 @@ public class TestEigenVectorCentrality {
 		ReactionEdge ec = new ReactionEdge(e, c, new BioReaction("ec")); graph.addEdge(e, c, ec); graph.setEdgeWeight(ec, 0.2);
 		ReactionEdge eb = new ReactionEdge(e, b, new BioReaction("eb")); graph.addEdge(e, b, eb); graph.setEdgeWeight(eb, 0.4);
 		ReactionEdge ed = new ReactionEdge(e, d, new BioReaction("ed")); graph.addEdge(e, d, ed); graph.setEdgeWeight(ed, 0.4);
-		EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph> pg = new EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph>(graph);
-		HashMap<String, Double> seeds = new HashMap<String, Double>();
+		EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph> pg = new EigenVectorCentrality<>(graph);
+		HashMap<String, Double> seeds = new HashMap<>();
 //		double p = 1.0/graph.vertexSet().size();
 		for(BioMetabolite entity: graph.vertexSet()){
 			if(entity==a){
@@ -219,11 +219,11 @@ public class TestEigenVectorCentrality {
 		ReactionEdge gf = new ReactionEdge(g, f, new BioReaction("gf")); graph.addEdge(g, f, gf); graph.setEdgeWeight(gf, 1.0/3.0);
 		ReactionEdge ib = new ReactionEdge(i, b, new BioReaction("ib")); graph.addEdge(i, b, ib); graph.setEdgeWeight(ib, 1.0/3.0);
 
-		EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph> pg = new EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph>(graph);
-		HashMap<String, Double> seeds = new HashMap<String, Double>();
+		EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph> pg = new EigenVectorCentrality<>(graph);
+		HashMap<String, Double> seeds = new HashMap<>();
 		double p = 1.0/graph.vertexSet().size();
 		
-		HashSet<String>  roots = new HashSet<String>();
+		HashSet<String>  roots = new HashSet<>();
 		roots.add(a.getId()); roots.add(f.getId());
 		for(BioMetabolite entity: graph.vertexSet()){
 //			if(roots.contains(entity.getId())){
@@ -280,13 +280,13 @@ public class TestEigenVectorCentrality {
 		ReactionEdge eb = new ReactionEdge(e, b, new BioReaction("eb")); graph.addEdge(e, b, eb); graph.setEdgeWeight(eb, 0.4);
 		ReactionEdge ed = new ReactionEdge(e, d, new BioReaction("ed")); graph.addEdge(e, d, ed); graph.setEdgeWeight(ed, 0.4);
 		
-		BioMatrix adj = new ComputeAdjacencyMatrix<BioMetabolite, ReactionEdge, CompoundGraph>(graph).getadjacencyMatrix();
+		BioMatrix adj = new ComputeAdjacencyMatrix<>(graph).getadjacencyMatrix();
 		
 		EigenVectorCentrality<BioMetabolite, ReactionEdge, CompoundGraph> pg;
 		try {
-			pg = new EigenVectorCentrality<BioMetabolite,ReactionEdge,CompoundGraph>(adj);
-			HashMap<String, Double> seeds = new HashMap<String, Double>();
-			HashMap<String, Double> weights = new HashMap<String, Double>();
+			pg = new EigenVectorCentrality<>(adj);
+			HashMap<String, Double> seeds = new HashMap<>();
+			HashMap<String, Double> weights = new HashMap<>();
 //			double p = 1.0/graph.vertexSet().size();
 			for(BioMetabolite entity: graph.vertexSet()){
 				if(entity==a){

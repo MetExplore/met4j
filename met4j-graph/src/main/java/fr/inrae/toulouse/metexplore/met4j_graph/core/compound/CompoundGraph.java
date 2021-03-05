@@ -206,12 +206,12 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 	}
 	
 	public static GraphFactory<BioMetabolite, ReactionEdge, CompoundGraph> getFactory(){
-		return new GraphFactory<BioMetabolite, ReactionEdge, CompoundGraph>(){
-			@Override
-			public CompoundGraph createGraph() {
-				return new CompoundGraph();
-			}
-		};
+		return new GraphFactory<>() {
+            @Override
+            public CompoundGraph createGraph() {
+                return new CompoundGraph();
+            }
+        };
 	}
 
 	@Override

@@ -55,12 +55,12 @@ public class CompressedGraph<V extends BioEntity, E extends Edge<V>, G extends B
 
 	
 	public GraphFactory<V, PathEdge<V,E>, CompressedGraph<V,E,G>> getFactory(){
-		return new GraphFactory<V, PathEdge<V,E>, CompressedGraph<V,E,G>>() {
-			@Override
-			public CompressedGraph<V, E,G> createGraph() {
-				return new CompressedGraph<>(originalGraph);
-			}
-		};
+		return new GraphFactory<>() {
+            @Override
+            public CompressedGraph<V, E, G> createGraph() {
+                return new CompressedGraph<>(originalGraph);
+            }
+        };
 	}
 
 	@Override

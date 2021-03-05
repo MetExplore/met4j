@@ -154,9 +154,9 @@ public class TestGraphCentrality {
 		linearGraph.addEdge(e, d, ed);
 		
 		
-		toyMeasure = new GraphCentralityMeasure<BioMetabolite, ReactionEdge, CompoundGraph>(toyGraph);
-		linearMeasure = new GraphCentralityMeasure<BioMetabolite, ReactionEdge, CompoundGraph>(linearGraph);
-		starMeasure = new GraphCentralityMeasure<BioMetabolite, ReactionEdge, CompoundGraph>(starGraph);
+		toyMeasure = new GraphCentralityMeasure<>(toyGraph);
+		linearMeasure = new GraphCentralityMeasure<>(linearGraph);
+		starMeasure = new GraphCentralityMeasure<>(starGraph);
 	}
 	@Test
 	public void testBetweenness() {
@@ -325,7 +325,7 @@ public class TestGraphCentrality {
 	@Test
 	public void testOCCI(){
 		GraphMeasure<BioMetabolite, ReactionEdge> measure =
-				new GraphMeasure<BioMetabolite, ReactionEdge>(starGraph);
+                new GraphMeasure<>(starGraph);
 		
 		assertEquals(1.0, measure.getOCCI(), 0.000001);
 		

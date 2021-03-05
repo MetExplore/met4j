@@ -121,7 +121,7 @@ public class TestWeightingPolicy {
 	 */
 	@Test
 	public void testDefaultWeightPolicy() {
-		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new DefaultWeightPolicy<BioMetabolite,ReactionEdge,CompoundGraph>();
+		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new DefaultWeightPolicy<>();
 		wp.setWeight(g);
 		double defautValue = 1.0;
 		for(ReactionEdge e : g.edgeSet()){
@@ -134,7 +134,7 @@ public class TestWeightingPolicy {
 	 */
 	@Test
 	public void testProbabilityWeightPolicy() {
-		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new ProbabilityWeightPolicy<BioMetabolite,ReactionEdge,CompoundGraph>();
+		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new ProbabilityWeightPolicy<>();
 		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
 		abWeight=bcWeight=adWeight=efWeight=bxWeight=ebWeight = 0.5;
 		deWeight=fcWeight=ycWeight = 1.0;
@@ -299,7 +299,7 @@ public class TestWeightingPolicy {
 		}
 		
 		resetWeight();
-		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp = new WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph>(tmpPath.toString());
+		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp = new WeightsFromFile<>(tmpPath.toString());
 		wp.setWeight(g);
 		
 		assertEquals("wrong weight after export", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
@@ -345,7 +345,7 @@ public class TestWeightingPolicy {
 		fcWeight=0.8;
 		ycWeight=0.9;
 		
-		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp = new WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph>(filePath);
+		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp = new WeightsFromFile<>(filePath);
 		wp.setWeight(g);
 		
 		assertEquals("wrong weight after export", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);

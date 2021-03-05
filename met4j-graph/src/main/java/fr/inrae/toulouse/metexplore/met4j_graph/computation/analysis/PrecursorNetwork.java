@@ -21,17 +21,17 @@ public class PrecursorNetwork {
     /**
      * The available compounds.
      */
-    private BioCollection<BioMetabolite> availableCpds;
+    private final BioCollection<BioMetabolite> availableCpds;
 
     /**
      * The compounds to reach (optional)
      */
-    private BioCollection<BioMetabolite> cpdToProduce;
+    private final BioCollection<BioMetabolite> cpdToProduce;
 
     /**
      *  add by-products, compounds produced by reactions of the precursor set whitout being a precursor of the compounds to produce.
      */
-    private boolean addByProducts = false; //TODO
+    private final boolean addByProducts = false; //TODO
 
     /**
      * Instantiates a new precursor class
@@ -64,7 +64,7 @@ public class PrecursorNetwork {
     /**
      * Gets the precursor network: all the upstream reactions that leads to the production of a set of compounds.
      * The computation doesn't put restrictions on reversible reactions directions, thus both aren't mutually exclusive and can coexist in the obtained network
-     * 
+     *
      * @return the precursor network
      */
     public BipartiteGraph getPrecursorNetwork() throws IllegalArgumentException {

@@ -219,8 +219,7 @@ public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInter
 		for (Map.Entry<V, Integer> entry : colIndexMap.entrySet()){
 			V start = entry.getKey();
 
-			Set<E> edgesToRemove = new HashSet<E>();
-			edgesToRemove.addAll(g.incomingEdgesOf(start));
+			Set<E> edgesToRemove = new HashSet<>(g.incomingEdgesOf(start));
 			for (V end :colIndexMap.keySet()){
 				if(!end.equals(start)){
 					edgesToRemove.addAll(g.outgoingEdgesOf(end));

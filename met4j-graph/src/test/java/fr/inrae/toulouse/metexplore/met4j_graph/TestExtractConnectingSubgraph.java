@@ -107,10 +107,10 @@ public class TestExtractConnectingSubgraph {
 
     @Test
     public void cleanGraph() {
-        BioCollection<BioReaction> noi = new BioCollection<BioReaction>();
+        BioCollection<BioReaction> noi = new BioCollection<>();
         noi.add(r1);
         noi.add(r3);
-        ExtractConnectingSubgraph<BioReaction, CompoundEdge> extractor = new ExtractConnectingSubgraph<BioReaction, CompoundEdge>(rg, noi);
+        ExtractConnectingSubgraph<BioReaction, CompoundEdge> extractor = new ExtractConnectingSubgraph<>(rg, noi);
         extractor.cleanGraph();
 
         assertEquals(3, rg.vertexSet().size());

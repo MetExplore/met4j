@@ -83,20 +83,20 @@ public class TestGraphSimilarity {
 	
 	@Test
 	public void testGetNumberOfSharedLinks() {
-		GraphSimilarity<BioMetabolite, ReactionEdge, CompoundGraph> gSim = new GraphSimilarity<BioMetabolite, ReactionEdge, CompoundGraph>(g1, g2);
+		GraphSimilarity<BioMetabolite, ReactionEdge, CompoundGraph> gSim = new GraphSimilarity<>(g1, g2);
 		assertEquals(3, gSim.getNumberOfSharedLinks());
 		
-		GraphSimilarity<BioMetabolite, ReactionEdge, CompoundGraph> gSim2 = new GraphSimilarity<BioMetabolite, ReactionEdge, CompoundGraph>(g2, g1);
+		GraphSimilarity<BioMetabolite, ReactionEdge, CompoundGraph> gSim2 = new GraphSimilarity<>(g2, g1);
 		assertEquals(3, gSim2.getNumberOfSharedLinks());
 	}
 	
 	
 	@Test
 	public void testGetTanimoto() {
-		GraphSimilarity<BioMetabolite, ReactionEdge, CompoundGraph> gSim = new GraphSimilarity<BioMetabolite, ReactionEdge, CompoundGraph>(g1, g2);
+		GraphSimilarity<BioMetabolite, ReactionEdge, CompoundGraph> gSim = new GraphSimilarity<>(g1, g2);
 		assertEquals(3.0/5.0, gSim.getTanimoto(), 0.0000001);
 		
-		GraphSimilarity<BioMetabolite, ReactionEdge, CompoundGraph> gSim2 = new GraphSimilarity<BioMetabolite, ReactionEdge, CompoundGraph>(g2, g1);
+		GraphSimilarity<BioMetabolite, ReactionEdge, CompoundGraph> gSim2 = new GraphSimilarity<>(g2, g1);
 		assertEquals(3.0/5.0, gSim2.getTanimoto(), 0.0000001);
 	}
 

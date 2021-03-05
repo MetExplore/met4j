@@ -116,7 +116,7 @@ public class TestGraphMeasure {
 		fe = new ReactionEdge(f,e,new BioReaction("fe"));g.addEdge(f, e, fe);g.setEdgeWeight(fe, 8);
 		df = new ReactionEdge(d,f,new BioReaction("df"));g.addEdge(d, f, df);g.setEdgeWeight(df, 8);
 		ax = new ReactionEdge(a,x,new BioReaction("ax"));g.addEdge(a, x, ax);g.setEdgeWeight(ax, 7);
-		m = new GraphMeasure<BioMetabolite,ReactionEdge>(g);
+		m = new GraphMeasure<>(g);
 		m.setDirected(false);
 		
 //		ShortestPaths sp = new ShortestPaths(g); 
@@ -135,7 +135,7 @@ public class TestGraphMeasure {
 		assertEquals("error while creating copy of graph", 15, g2.edgeSet().size());
 		ReactionEdge az2 = new ReactionEdge(a,z,new BioReaction("az2"));
 		g2.addEdge(a, z, az2);
-		GraphMeasure<BioMetabolite, ReactionEdge> m = new GraphMeasure<BioMetabolite, ReactionEdge>(g2);
+		GraphMeasure<BioMetabolite, ReactionEdge> m = new GraphMeasure<>(g2);
 		m.adjustEdgeCountForMultiGraph();
 		assertEquals("error while creating multi-edge", 16, g2.edgeSet().size());
 		assertEquals("error while creating multi-edge", 15, m.getNumberOfEdges(), Double.MIN_VALUE);

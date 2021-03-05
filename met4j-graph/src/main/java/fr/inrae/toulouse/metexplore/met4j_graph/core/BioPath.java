@@ -210,11 +210,11 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 
 	@Override
 	public Iterator<E> iterator() {
-		Iterator<E> it = new Iterator<E>() {
-			
+		Iterator<E> it = new Iterator<>() {
+
 			private final ArrayList<E> edgeList = new ArrayList<>(getEdgeList());
 			private V currentVertex = getStartVertex();
-			
+
 			@Override
 			public boolean hasNext() {
 				return !currentVertex.equals(getEndVertex());
@@ -223,23 +223,23 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 			@Override
 			public E next() {
 				E nextEdge = null;
-				for(E edge : edgeList){
-					if(edge.getV1().equals(currentVertex)){
-						nextEdge=edge;
+				for (E edge : edgeList) {
+					if (edge.getV1().equals(currentVertex)) {
+						nextEdge = edge;
 						break;
 					}
 				}
-				
-				if(nextEdge==null) throw new IllegalStateException("Discontinuous path");
+
+				if (nextEdge == null) throw new IllegalStateException("Discontinuous path");
 
 				edgeList.remove(nextEdge);
-				currentVertex =nextEdge.getV2();
+				currentVertex = nextEdge.getV2();
 				return nextEdge;
 			}
 
 			@Override
 			public void remove() {
-				 throw new UnsupportedOperationException();
+				throw new UnsupportedOperationException();
 			}
 		};
 		

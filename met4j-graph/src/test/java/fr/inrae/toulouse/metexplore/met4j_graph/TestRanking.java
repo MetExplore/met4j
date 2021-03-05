@@ -86,8 +86,8 @@ public class TestRanking {
 	@Test
 	public void testComputeRank(){
 		CompoundGraph g1 = new CompoundGraph();CompoundGraph g2 = new CompoundGraph();
-		HashMap<String, Integer> expected1 = new HashMap<String, Integer>();
-		HashMap<String, Integer> expected2 = new HashMap<String, Integer>();
+		HashMap<String, Integer> expected1 = new HashMap<>();
+		HashMap<String, Integer> expected2 = new HashMap<>();
 		BioMetabolite a = new BioMetabolite("a");g1.addVertex(a);g2.addVertex(a);
 		BioMetabolite e = new BioMetabolite("e");g1.addVertex(e);g2.addVertex(e);
 		BioMetabolite d = new BioMetabolite("d");g1.addVertex(d);g2.addVertex(d);

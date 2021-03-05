@@ -156,7 +156,7 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 	 */
 	public void addJumpProb(Set<String> roots, double p) {
 
-		double dp = p / (new Integer(roots.size()).doubleValue());
+		double dp = p / (Integer.valueOf(roots.size()).doubleValue());
 		Map<Integer, List<Integer>> nonZero = getNonZeroValues();
 		List<Integer> cols = new ArrayList<>();
 		//get roots index
@@ -186,7 +186,7 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 			else{
 				// by default, if a vertex has no outgoing edge, the probability to
 				// jump to a node of interest is 1
-				double dp2 = 1 / (new Integer(roots.size()).doubleValue());
+				double dp2 = 1 / (Integer.valueOf(roots.size()).doubleValue());
 				for(Integer seed : cols){
 					adjacencyMatrix.set(i, seed, dp2);
 				}

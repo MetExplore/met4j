@@ -131,7 +131,7 @@ public class TestMatrix {
 		
 		for(Class<?> matrixClass : matrixClasses){
 			try {
-				adjacency = (new ComputeAdjacencyMatrix<BioMetabolite,ReactionEdge,CompoundGraph>(graph, matrixClass)).getadjacencyMatrix();
+				adjacency = (new ComputeAdjacencyMatrix<>(graph, matrixClass)).getadjacencyMatrix();
 				//check if matrix is square
 				assertEquals("error in "+ComputeAdjacencyMatrix.class.getCanonicalName()+" using "+matrixClass.getCanonicalName()+": adjacency matrix not square.",adjacency.numCols(), adjacency.numRows());
 				//check matrix size
@@ -158,7 +158,7 @@ public class TestMatrix {
 			//compute adjacency matrix
 			BioMatrix adjacency = null;
 			try {
-				adjacency = (new ComputeAdjacencyMatrix<BioMetabolite,ReactionEdge,CompoundGraph>(graph, matrixClass)).getadjacencyMatrix();
+				adjacency = (new ComputeAdjacencyMatrix<>(graph, matrixClass)).getadjacencyMatrix();
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail();
@@ -281,7 +281,7 @@ public class TestMatrix {
 	 */
 	@Test
 	public void testMatrix2CSV() {
-		ComputeAdjacencyMatrix<BioMetabolite,ReactionEdge,CompoundGraph> adj = new ComputeAdjacencyMatrix<BioMetabolite,ReactionEdge,CompoundGraph>(graph);
+		ComputeAdjacencyMatrix<BioMetabolite,ReactionEdge,CompoundGraph> adj = new ComputeAdjacencyMatrix<>(graph);
 		Path tmpPath = null;
 		try {
 			tmpPath = Files.createTempFile("test_Matrix2Csv", ".csv");

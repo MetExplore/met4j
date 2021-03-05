@@ -164,7 +164,7 @@ public class TestMerger {
 	@Test
 	public void testMergeEdgeComparator() {
 		CompoundGraph g2 = new CompoundGraph(g);
-		Merger.mergeEdgesWithOverride(g2, new Comparator<ReactionEdge>() {
+		Merger.mergeEdgesWithOverride(g2, new Comparator<>() {
 			@Override
 			public int compare(ReactionEdge reactionEdge, ReactionEdge t1) {
 				return reactionEdge.toString().compareTo(t1.toString());

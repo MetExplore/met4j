@@ -36,7 +36,6 @@
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.transform;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.function.DoubleBinaryOperator;
 

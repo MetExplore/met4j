@@ -99,12 +99,12 @@ public class TestSteinerTreeApprox {
 	 */
 	@Test
 	public void testSteinerTreeList(){
-		HashSet<BioMetabolite> noi = new HashSet<BioMetabolite>();
+		HashSet<BioMetabolite> noi = new HashSet<>();
 		noi.add(a);noi.add(b);noi.add(c);noi.add(d);noi.add(e);
 		
 		ReactionEdge[] expectedPath = {ey, yx, ay, ed, cx, xb};
 		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer 
-			= new SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph>(g, true);
+			= new SteinerTreeApprox<>(g, true);
 		List<ReactionEdge> treeList = steinerComputer.getSteinerTreeList(noi, true);
 		
 		assertNotNull("No path found", treeList);
@@ -119,12 +119,12 @@ public class TestSteinerTreeApprox {
 	 */
 	@Test
 	public void testSteinerTreeList2(){
-		HashSet<BioMetabolite> noi = new HashSet<BioMetabolite>();
+		HashSet<BioMetabolite> noi = new HashSet<>();
 		noi.add(a);noi.add(b);noi.add(c);noi.add(d);noi.add(e);
 		
 		ReactionEdge[] expectedPath = {ey, yx, ay, ed, cx, xb};
 		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer 
-			= new SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph>(g);
+			= new SteinerTreeApprox<>(g);
 		List<ReactionEdge> treeList = steinerComputer.getSteinerTreeList(noi,noi, true);
 		
 		assertNotNull("No path found", treeList);

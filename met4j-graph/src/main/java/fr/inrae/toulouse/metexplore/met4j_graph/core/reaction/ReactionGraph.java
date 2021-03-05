@@ -168,12 +168,12 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 	}
 	
 	public static GraphFactory<BioReaction, CompoundEdge, ReactionGraph> getFactory(){
-		return new GraphFactory<BioReaction, CompoundEdge, ReactionGraph>(){
-			@Override
-			public ReactionGraph createGraph() {
-				return new ReactionGraph();
-			}
-		};
+		return new GraphFactory<>() {
+            @Override
+            public ReactionGraph createGraph() {
+                return new ReactionGraph();
+            }
+        };
 	}
 
 	@Override

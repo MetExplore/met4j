@@ -154,9 +154,9 @@ public class TestLoadPoint {
 		linearGraph.addEdge(e, d, ed);
 		
 		
-		toyMeasure = new LoadPoint<BioMetabolite, ReactionEdge, CompoundGraph>(toyGraph);
-		linearMeasure = new LoadPoint<BioMetabolite, ReactionEdge, CompoundGraph>(linearGraph);
-		starMeasure = new LoadPoint<BioMetabolite, ReactionEdge, CompoundGraph>(starGraph);
+		toyMeasure = new LoadPoint<>(toyGraph);
+		linearMeasure = new LoadPoint<>(linearGraph);
+		starMeasure = new LoadPoint<>(starGraph);
 	}
 	
 	@Test

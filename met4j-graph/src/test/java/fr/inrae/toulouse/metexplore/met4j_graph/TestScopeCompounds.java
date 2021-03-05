@@ -129,14 +129,14 @@ public class TestScopeCompounds {
 
 		g = new Bionetwork2BioGraph(bn).getBipartiteGraph();
 
-		in = new BioCollection<BioMetabolite>();
+		in = new BioCollection<>();
 			in.add(v1);
-		bs = new BioCollection<BioMetabolite>();
+		bs = new BioCollection<>();
 			bs.add(side);
-		cpdToReach = new BioCollection<BioMetabolite>();
+		cpdToReach = new BioCollection<>();
 			cpdToReach.add(v5);
 			cpdToReach.add(v6);
-		reactionsToAvoid = new BioCollection<BioReaction>();
+		reactionsToAvoid = new BioCollection<>();
 			reactionsToAvoid.add(r5);
 	}
 
@@ -182,7 +182,7 @@ public class TestScopeCompounds {
 
 	@Test
 	public void testGetScopeNetwork3() {
-		BioCollection<BioMetabolite> toReach = new BioCollection<BioMetabolite>();
+		BioCollection<BioMetabolite> toReach = new BioCollection<>();
 		toReach.add(v5);
 		ScopeCompounds sc = new ScopeCompounds(g, in, bs, toReach, reactionsToAvoid);
 		BipartiteGraph scope = sc.getScopeNetwork();

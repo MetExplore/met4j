@@ -85,8 +85,8 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 */
 	public GraphMeasure(BioGraph<V, E> g) {
 		this.g=g;
-        this.numberOfEdges =new Integer(g.edgeSet().size()).doubleValue();
-        this.numberOfVertex =new Integer(g.vertexSet().size()).doubleValue();
+        this.numberOfEdges = Integer.valueOf(g.edgeSet().size()).doubleValue();
+        this.numberOfVertex = Integer.valueOf(g.vertexSet().size()).doubleValue();
 	}
 	
 	/**

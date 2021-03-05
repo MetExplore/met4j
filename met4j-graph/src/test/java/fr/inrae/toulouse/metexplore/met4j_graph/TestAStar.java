@@ -105,7 +105,7 @@ public class TestAStar {
 	public void testGetBestPath() {
 		
 		ReactionEdge[] expectedPath = {ad,de,ef,fc};
-		List<ReactionEdge> bestPath = (new AStar<BioMetabolite, ReactionEdge, CompoundGraph>(g, new ChemicalSimilarityHeuristic())).findBestPath( g.getVertex("a"), g.getVertex("c"));
+		List<ReactionEdge> bestPath = (new AStar<>(g, new ChemicalSimilarityHeuristic())).findBestPath( g.getVertex("a"), g.getVertex("c"));
 		
 		assertNotNull("No path found", bestPath);
 		System.out.println(bestPath);
@@ -117,21 +117,21 @@ public class TestAStar {
 	public void testGetBestPathUnion() {
 		
 		ReactionEdge[] expectedPath = {ad,de,ef,fc};
-		HashSet<BioMetabolite> sourceSet = new HashSet<BioMetabolite>();
+		HashSet<BioMetabolite> sourceSet = new HashSet<>();
 		sourceSet.add(a);
 		sourceSet.add(c);
-		List<ReactionEdge> bestPath = (new AStar<BioMetabolite, ReactionEdge, CompoundGraph>(g, new ChemicalSimilarityHeuristic())).getBestPathUnionList(g, sourceSet);
+		List<ReactionEdge> bestPath = (new AStar<>(g, new ChemicalSimilarityHeuristic())).getBestPathUnionList(g, sourceSet);
 		
 		assertNotNull("No path found", bestPath);
 		System.out.println(bestPath);
 		
 		assertTrue("wrong path",Arrays.asList(expectedPath).containsAll(bestPath));
 		
-		HashSet<BioMetabolite> targetSet = new HashSet<BioMetabolite>();
+		HashSet<BioMetabolite> targetSet = new HashSet<>();
 		sourceSet.remove(c);
 		targetSet.add(c);
 		
-		bestPath = (new AStar<BioMetabolite, ReactionEdge, CompoundGraph>(g, new ChemicalSimilarityHeuristic())).getBestPathUnionList(g, sourceSet, targetSet);
+		bestPath = (new AStar<>(g, new ChemicalSimilarityHeuristic())).getBestPathUnionList(g, sourceSet, targetSet);
 		
 		assertNotNull("No path found", bestPath);
 		System.out.println(bestPath);

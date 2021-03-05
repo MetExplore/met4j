@@ -309,14 +309,14 @@ public class ExportGraph {
 	 * @param outputPath the output path
 	 */
 	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>>void toGml(G graph, String outputPath){
-		VertexNameProvider<V> vertexLabelprovider = new VertexNameProvider<V>() {
+		VertexNameProvider<V> vertexLabelprovider = new VertexNameProvider<>() {
 			@Override
 			public String getVertexName(V vertex) {
 				return vertex.getId();
 				//return vertex.getName();
 			}
 		};
-		EdgeNameProvider<E> edgeLabelprovider = new EdgeNameProvider<E>() {
+		EdgeNameProvider<E> edgeLabelprovider = new EdgeNameProvider<>() {
 			@Override
 			public String getEdgeName(E edge) {
 				return edge.toString();

@@ -61,7 +61,7 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 	G g;
 
 
-	private BioMatrix matrix;
+	private final BioMatrix matrix;
 
 	/**
 	 * Instantiates a new floyd warshall computor.

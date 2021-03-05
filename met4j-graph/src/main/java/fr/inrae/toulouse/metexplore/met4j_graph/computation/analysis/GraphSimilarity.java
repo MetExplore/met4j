@@ -87,9 +87,9 @@ public class GraphSimilarity<V extends BioEntity, E extends Edge<V>, G extends B
 		G g2 = (G) this.g2.clone();
 		Merger.mergeEdges(g1);
 		Merger.mergeEdges(g2);
-		double a = new Integer(g1.edgeSet().size()).doubleValue();
-		double b = new Integer(g2.edgeSet().size()).doubleValue();
-		double c = new Integer(getNumberOfSharedLinks()).doubleValue();
+		double a = Integer.valueOf(g1.edgeSet().size()).doubleValue();
+		double b = Integer.valueOf(g2.edgeSet().size()).doubleValue();
+		double c = Integer.valueOf(getNumberOfSharedLinks()).doubleValue();
 		double sim = c/(a+b-c);
 		return sim;
 	}

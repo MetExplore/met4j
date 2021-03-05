@@ -227,7 +227,7 @@ public class BioPathUtils {
 	private static <V extends BioEntity, E extends Edge<V>> Map<BioPath<V, E>, Double> getLengthMap(Collection<BioPath<V, E>> paths){
 		Map<BioPath<V,E>,Double> length = new HashMap<>();
 		for(BioPath<V, E> path : paths){
-			Double l = new Integer(path.getLength()).doubleValue();
+			Double l = Integer.valueOf(path.getLength()).doubleValue();
 			length.put(path, l);
 		}
 		return length;

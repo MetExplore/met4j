@@ -79,7 +79,7 @@ public class TestGraphSampler {
 		ac = new ReactionEdge(a,c,new BioReaction("ac"));g.addEdge(a, c, ac);g.setEdgeWeight(ac, 1.0);
 		ae = new ReactionEdge(a,e,new BioReaction("ae"));g.addEdge(a, e, ae);g.setEdgeWeight(ae, 1.0);
 		ad = new ReactionEdge(a,d,new BioReaction("ad"));g.addEdge(a, d, ad);g.setEdgeWeight(ad, 1.0);
-		sampler = new GraphSampler<BioMetabolite, ReactionEdge, CompoundGraph>(g);
+		sampler = new GraphSampler<>(g);
 
 	}
 	

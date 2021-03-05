@@ -57,7 +57,7 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 	}
 
 	public static GraphFactory<BioEntity, BipartiteEdge, BipartiteGraph> getFactory(){
-		return new GraphFactory<BioEntity, BipartiteEdge, BipartiteGraph>() {
+		return new GraphFactory<>() {
 			@Override
 			public BipartiteGraph createGraph() {
 				return new BipartiteGraph();

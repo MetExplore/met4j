@@ -68,7 +68,7 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 	 * @return the factory
 	 */
 	public GraphFactory<V,MetaEdge<V,E>,MergedGraph<V,E>> getFactory(){
-		return new GraphFactory<V, MetaEdge<V,E>, MergedGraph<V,E>>() {
+		return new GraphFactory<>() {
 			@Override
 			public MergedGraph<V, E> createGraph() {
 				return new MergedGraph<>();

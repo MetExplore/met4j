@@ -108,8 +108,6 @@ public class TestAStar {
 		List<ReactionEdge> bestPath = (new AStar<>(g, new ChemicalSimilarityHeuristic())).findBestPath( g.getVertex("a"), g.getVertex("c"));
 		
 		assertNotNull("No path found", bestPath);
-		System.out.println(bestPath);
-		
 		assertTrue("wrong path",Arrays.asList(expectedPath).containsAll(bestPath));
 	}
 	
@@ -123,8 +121,6 @@ public class TestAStar {
 		List<ReactionEdge> bestPath = (new AStar<>(g, new ChemicalSimilarityHeuristic())).getBestPathUnionList(g, sourceSet);
 		
 		assertNotNull("No path found", bestPath);
-		System.out.println(bestPath);
-		
 		assertTrue("wrong path",Arrays.asList(expectedPath).containsAll(bestPath));
 		
 		HashSet<BioMetabolite> targetSet = new HashSet<>();
@@ -134,8 +130,6 @@ public class TestAStar {
 		bestPath = (new AStar<>(g, new ChemicalSimilarityHeuristic())).getBestPathUnionList(g, sourceSet, targetSet);
 		
 		assertNotNull("No path found", bestPath);
-		System.out.println(bestPath);
-		
 		assertTrue("wrong path",Arrays.asList(expectedPath).containsAll(bestPath));
 		
 		

@@ -153,7 +153,6 @@ public class TestEigenVectorCentrality {
 			}
 //			seeds.put(entity.getId(), p);
 		}
-		System.out.println(pg.adjacencyMatrix.getRowIndexMap());
 		pg.adjacencyMatrix.print();
 //		pg.addScalingFactor(0.9);
 		pg.addJumpProb(seeds.keySet(), 0.1);
@@ -233,7 +232,6 @@ public class TestEigenVectorCentrality {
 //			}
 			seeds.put(entity.getId(), p);
 		}
-		System.out.println(pg.adjacencyMatrix.getRowIndexMap());
 		pg.adjacencyMatrix.print();
 //		pg.addScalingFactor(0.9);
 		pg.addJumpProb(roots, 0.7);
@@ -255,7 +253,6 @@ public class TestEigenVectorCentrality {
 		
 		for(int k : pg.adjacencyMatrix.getRowIndexMap().keySet()){
 			observedEC[k] = result.get(pg.adjacencyMatrix.getRowIndexMap().get(k));
-			System.out.println(pg.adjacencyMatrix.getRowIndexMap().get(k)+" "+observedEC[k]+" "+expectedEC[k]);
 		}
 		assertArrayEquals(expectedEC, observedEC, 0.001);
 	}
@@ -297,7 +294,6 @@ public class TestEigenVectorCentrality {
 				weights.put(entity.getId(), 1.0/graph.vertexSet().size());
 //				seeds.put(entity.getId(), p);
 			}
-			System.out.println(pg.adjacencyMatrix.getRowIndexMap());
 			pg.adjacencyMatrix.print();
 //			pg.addScalingFactor(0.9);
 			pg.addJumpProb(weights, 0.1);

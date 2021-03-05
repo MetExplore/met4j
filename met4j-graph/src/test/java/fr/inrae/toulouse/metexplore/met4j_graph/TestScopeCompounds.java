@@ -144,9 +144,6 @@ public class TestScopeCompounds {
 	public void testGetScopeNetwork1() {
 		ScopeCompounds sc = new ScopeCompounds(g, in, bs, cpdToReach, reactionsToAvoid);
 		BipartiteGraph scope = sc.getScopeNetwork();
-
-		System.err.println(scope.vertexSet().toString());
-
 		assertEquals(4, scope.compoundVertexSet().size());
 		assertEquals(2, scope.reactionVertexSet().size());
 
@@ -163,9 +160,6 @@ public class TestScopeCompounds {
 	public void testGetScopeNetwork2() {
 		ScopeCompounds sc = new ScopeCompounds(g, in, bs, reactionsToAvoid);
 		BipartiteGraph scope = sc.getScopeNetwork();
-
-		System.err.println(scope.vertexSet().toString());
-
 		assertEquals(5, scope.compoundVertexSet().size());
 		assertEquals(3, scope.reactionVertexSet().size());
 
@@ -186,9 +180,6 @@ public class TestScopeCompounds {
 		toReach.add(v5);
 		ScopeCompounds sc = new ScopeCompounds(g, in, bs, toReach, reactionsToAvoid);
 		BipartiteGraph scope = sc.getScopeNetwork();
-
-		System.err.println(scope.vertexSet().toString());
-
 		assertEquals(4, scope.compoundVertexSet().size());
 		assertEquals(2, scope.reactionVertexSet().size());
 

@@ -193,9 +193,6 @@ public class TestBionetwork2BioGraph {
 	@Test
 	public void testGetBipartiteGraph(){
 		BipartiteGraph g = builder.getBipartiteGraph();
-		for(BipartiteEdge e : g.edgeSet()){
-			System.out.println(e.getV1().getId()+" -> "+e.getV2().getId());
-		}
 		assertEquals("wrong number of vertices",14, g.vertexSet().size());
 		assertEquals("wrong number of edges",22, g.edgeSet().size());
 		
@@ -233,9 +230,6 @@ public class TestBionetwork2BioGraph {
 	@Test
 	public void testGetPathwayGraph(){
 		PathwayGraph g = builder.getPathwayGraph();
-//		for(PathwayGraphEdge e : g.edgeSet()){
-//			System.out.println(e.getV1().getId()+" >"+e.getConnectingCompounds().toString()+"> "+e.getV2().getId());
-//		}
 		Assert.assertEquals("wrong number of vertices",4, g.vertexSet().size());
 		Assert.assertEquals("wrong number of edges",3, g.edgeSet().size());
 

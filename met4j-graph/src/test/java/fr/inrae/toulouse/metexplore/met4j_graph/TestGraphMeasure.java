@@ -118,12 +118,6 @@ public class TestGraphMeasure {
 		ax = new ReactionEdge(a,x,new BioReaction("ax"));g.addEdge(a, x, ax);g.setEdgeWeight(ax, 7);
 		m = new GraphMeasure<>(g);
 		m.setDirected(false);
-		
-//		ShortestPaths sp = new ShortestPaths(g); 
-//		DirectedWeightedMultigraph<BioMetabolite, ClosureEdge> mc = sp.getMetricClosureGraph(g.vertexSet(), true);
-//		for(ClosureEdge e : mc.edgeSet()){
-//			System.out.println(e.getV1().getId()+e.getV2().getId()+":"+mc.getEdgeWeight(e)+";");
-//		}
 	}
 	
 	/**

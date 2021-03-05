@@ -226,10 +226,8 @@ public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInter
 			g.removeAllEdges(edgesToRemove);
 			
 			DepthFirstIterator<V, E> dfs = new DepthFirstIterator<>(g, start);
-			//System.out.println(start.getId());
 			while (dfs.hasNext()) {
 				V reached = dfs.next();
-				//System.out.println("\t"+reached.getId());
 				if(!colIndexMap.containsKey(reached)){
 					int i = rowIndexMap.get(reached);
 					int j = entry.getValue();
@@ -238,7 +236,6 @@ public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInter
 			}
 			
 			for(E edge : edgesToRemove){
-				//System.out.println(edge.getV1()+"-"+edge.getV2());
 				if(!reversed){
 					g.addEdge(edge.getV1(),edge.getV2(),edge);
 				}else{

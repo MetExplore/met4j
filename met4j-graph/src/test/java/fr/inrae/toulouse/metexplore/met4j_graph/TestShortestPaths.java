@@ -118,10 +118,7 @@ public class TestShortestPaths {
 //		zz2 = new ReactionEdge(z,z2,new BioReaction("zz2"));g.addEdge(z, z2, zz2);g.setEdgeWeight(zz2, 0.0001);
 //		z2z3 = new ReactionEdge(z2,z3,new BioReaction("z2z3"));g.addEdge(z2, z3, z2z3);g.setEdgeWeight(z2z3, 0.0001);
 //		z3y = new ReactionEdge(z3,y,new BioReaction("z3y"));g.addEdge(z3, y, z3y);g.setEdgeWeight(z3y, 0.0001);
-		
-		for(ReactionEdge e : g.edgeSet()){
-			System.out.println(e.getV1().getId()+"-["+e+"]->"+e.getV2().getId());
-		}
+
 	}
 	
 	/**
@@ -200,7 +197,6 @@ public class TestShortestPaths {
 		BioPath<BioMetabolite,ReactionEdge> path2 =pathSearch.getShortestAsUndirected(c, a);
 		assertNotNull(path2);
 		List<ReactionEdge> res = path2.getEdgeList();
-		System.out.println(path2.toString());
 		assertTrue("wrong weighted path", Arrays.asList(expectedLightestPath).containsAll(res));
 		assertTrue("wrong weighted path", res.containsAll(Arrays.asList(expectedLightestPath)));
 	}
@@ -269,13 +265,7 @@ public class TestShortestPaths {
 		for(BioPath<BioMetabolite,ReactionEdge> p : kshort){
 			res.addAll(p.getEdgeList());
 		}
-//		long end = System.nanoTime();
-//		long start2 = System.nanoTime();
-//		List<ReactionEdge> res2 = ShortestPaths.getKShortestII(g, g.getVertex("a"), g.getVertex("c"),3);
-//		long end2 = System.nanoTime();
-//		System.out.println("new : "+(end-start));
-//		System.out.println("old : "+(end2-start2));
-		
+
 		assertTrue("wrong path", Arrays.asList(expectedPath).containsAll(res));
 		assertTrue("wrong path", res.containsAll(Arrays.asList(expectedPath)));
 	}
@@ -398,7 +388,6 @@ public class TestShortestPaths {
 		ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> pathSearch = new ShortestPath<>(g);
 		CompoundGraph g2 = new CompoundGraph();
 		for(BioPath<BioMetabolite, ReactionEdge> p : pathSearch.getShortestPathsUnionList(noi)){
-//			System.out.println(p.toString());
 			g2.addPath(p);
 		}
 		Assert.assertEquals("wrong path",expectedPath,(g2.edgeSet()));

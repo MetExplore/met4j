@@ -99,8 +99,7 @@ public class AStar<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V 
 			
 			//get the nearest predicted Neighbor
 			V bestN = getBestNeighbor(open, end);
-//			System.err.println("best neighbor : "+bestN.getName());
-			
+
 			//if not already visited
 			if(!closed.containsKey(bestN)){
 				closed.put(bestN, open.get(bestN));
@@ -124,14 +123,10 @@ public class AStar<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V 
 						path.add(e);
 					}
 				}
-//				System.err.println("path : "+path);
-				
 			}
-//			System.err.println("-------------------");
 			open.remove(bestN);
 		}
 		if(closed.containsKey(end)){
-//			System.err.println("BACKTRACKING ");
 			return backtracking(path, new ArrayList<>(), start, end);
 		}
 		return null;
@@ -147,7 +142,6 @@ public class AStar<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V 
 	 * @return the list of seen edges
 	 */
 	private ArrayList<E> backtracking(HashSet<E> edges, ArrayList<E> path, V start, V end){
-//		System.err.println("\t"+path+" "+start+" "+end);
 		for(E e: edges){
 			if(e.getV2()==end){
 				boolean checkLoop = true;
@@ -186,7 +180,6 @@ public class AStar<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V 
 		V bestN = null;
 		for(V n : open.keySet()){
 			double cost = open.get(n)+ h.getHeuristicCost(n,end);
-//			System.err.println("\t"+n.getName()+" = "+cost);
 			if(cost<minCost){
 				minCost=cost;
 				bestN=n;

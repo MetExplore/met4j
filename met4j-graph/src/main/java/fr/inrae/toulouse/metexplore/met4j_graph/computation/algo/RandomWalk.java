@@ -193,7 +193,6 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	 * @param g the new adjacency matrix
 	 */
 	public void setAdjacencyMatrix(G g){
-//		System.err.print("computing adjacency matrix...");
 		int index = 0;
 		Set<V> vertexSet = g.vertexSet();
 		
@@ -218,7 +217,6 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 			}
 		}
 		
-//		System.err.println("\tdone.");
     }
 	
 	/**
@@ -227,7 +225,6 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	 * @param p transients states matrix
 	 */
 	public void setConstantPartOfQ(BioMatrix p){
-//		System.err.print("extracting constant part of Q...");
 
         subQindexMap = new HashMap<>();
         subQlabelMap = new HashMap<>();
@@ -259,7 +256,6 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 		//extract transient row and column from original matrix
         subQ = p.getSubMatrix(rowNcol2keepQ, rowNcol2keepQ);
         subR = p.getSubMatrix(rowNcol2keepQ,col2keepR);
-//		System.err.println("\tdone.");
 	}
 	
 	/**
@@ -270,8 +266,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	 * @return the absorbing matrix with x as starting node
 	 */
 	public BioMatrix getXabsorbingMatrix(V x, BioMatrix p){
-//		System.err.print("Transform nodes of interest into absorbing nodes ...");
-		
+
 		//add 1 column and 1 row to the original transient matrix
 		int m = subQ.numCols();
 		int n = subQ.numRows();
@@ -295,7 +290,6 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 			px.set(i, m, p.get(labelMap.get(subQindexMap.get(i)), labelMap.get(x)));
 		}
 		px.set(n, m,  p.get(labelMap.get(x), labelMap.get(x)));
-//		System.err.println("\tdone.");
 		return px;
 	}
 	
@@ -306,8 +300,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	 * @return the fundamental matrix
 	 */
 	public BioMatrix getFundamentalMatrix(BioMatrix q){
-//		System.err.print("Computing fundamental BioMatrix...");
-		
+
 		//create identity matrix
 		BioMatrix i = q.identity();
 		
@@ -466,7 +459,6 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 				
 				//compute fundamental matrix with x as starting state
 				BioMatrix n = getFundamentalMatrix(getXabsorbingMatrix(x, adjacencyMatrix));
-//				System.err.println("\tdone.");
 
 				double[] nwalks = new double[n.numCols()];
 				
@@ -523,7 +515,6 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 		
 		//compute betweenness centrality as the mean expected node passage time for "successful" random walk
 		//i.e walks which reach a node of interest
-//		System.out.println("\n=================\nfinal Centrality:\n=================");
 		for (Map.Entry<Integer, V> e : subQindexMap.entrySet()){
 			double centrality = 0.0;
 			for (Map.Entry<V, double[]> entry : walkList.entrySet()){
@@ -531,12 +522,9 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 				centrality += nwalks[e.getKey()]*(startProb.get(entry.getKey())/tot);
 			}
             numberOfWalks.put(e.getValue(), centrality);
-			
-//			System.out.println(subQindexMap.get(index)+"\t"+centrality);
 		}
 		for(Map.Entry<V, Double> entry : startProb.entrySet()){
             numberOfWalks.put(entry.getKey(), entry.getValue() /tot);
-//			System.out.println(x+"\t"+startProb.get(x)/tot);
 		}
 
         edgeNumberOfWalks = edgeNumberOfWalks.scale(1.0/tot);
@@ -661,7 +649,6 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 					bfs.next();
 					while (bfs.hasNext() && !connected){
 						V next = bfs.next();
-						//System.out.println("\t"+next.getId());
 						if (nodesOfInterest.contains(next)){
 							connected = true;
 						}

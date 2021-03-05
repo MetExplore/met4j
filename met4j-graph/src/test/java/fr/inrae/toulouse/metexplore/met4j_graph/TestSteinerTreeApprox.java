@@ -108,8 +108,7 @@ public class TestSteinerTreeApprox {
 		List<ReactionEdge> treeList = steinerComputer.getSteinerTreeList(noi, true);
 		
 		assertNotNull("No path found", treeList);
-		System.out.println(treeList);
-		
+
 		assertTrue("wrong path",Arrays.asList(expectedPath).containsAll(treeList));
 	}
 	
@@ -128,8 +127,7 @@ public class TestSteinerTreeApprox {
 		List<ReactionEdge> treeList = steinerComputer.getSteinerTreeList(noi,noi, true);
 		
 		assertNotNull("No path found", treeList);
-		System.out.println(treeList);
-		
+
 		assertTrue("wrong path",Arrays.asList(expectedPath).containsAll(treeList));
 	}
 

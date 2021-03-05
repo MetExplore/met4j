@@ -116,7 +116,6 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 							System.err.println("Edge "+lineParts[0]+"-("+lineParts[2]+")-"+lineParts[1]+" already set. line "+n+" skipped.");
 						}
 					}else{
-//						System.err.println("Edge "+lineParts[0]+"-("+lineParts[2]+")-"+lineParts[1]+" not in graph. line "+n+" skipped.");
 						notInGraph++;
 					}
 				}else{

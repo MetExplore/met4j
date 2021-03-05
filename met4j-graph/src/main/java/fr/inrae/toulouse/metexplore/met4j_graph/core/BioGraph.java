@@ -127,8 +127,8 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/**
 	 * Gets the neighbor list of a given vertex.
 	 *
-	 * @param vertex
-	 * @return the neighbor list
+	 * @param vertex the vertex
+	 * @return the vertex neighbor list
 	 */
 	public final Set<V> neighborListOf(V vertex){
 		return new HashSet<>(Graphs.neighborListOf(this, vertex));
@@ -137,8 +137,8 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/**
 	 * Gets the predecessor list of a given vertex.
 	 *
-	 * @param vertex
-	 * @return the predecessor list
+	 * @param vertex the vertex
+	 * @return the vertex predecessor list
 	 */
 	public final Set<V> predecessorListOf(V vertex){
 		return new HashSet<>(Graphs.predecessorListOf(this, vertex));
@@ -147,8 +147,8 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/**
 	 * Gets the successor list of a given vertex.
 	 *
-	 * @param vertex
-	 * @return the successor list
+	 * @param vertex the vertex
+	 * @return the vertex successor list
 	 */
 	public final Set<V> successorListOf(V vertex){
 		return new HashSet<>(Graphs.successorListOf(this, vertex));

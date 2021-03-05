@@ -117,7 +117,7 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 	 * Compute the local clustering coefficient, which is for a vertex the number of edges between vertices of its neighborhood
 	 * divided by the expected maximum number of edges that could exist between them (if the neighborhood was a clique)
 	 * @param v1 the vertex
-	 * @return
+	 * @return the vertex local clustering coefficient
 	 */
 	public double getLocalClusteringCoeff(V v1){
 		ArrayList<V> neighbors = new ArrayList<>(g.neighborListOf(v1));
@@ -138,7 +138,7 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 	 * Compute the local clustering coefficient, which is for a vertex the number of edges between vertices of its neighborhood
 	 * divided by the expected maximum number of edges that could exist between them (if the neighborhood was a clique)
 	 * @param v1 the vertex
-	 * @return
+	 * @return the vertex local clustering coefficient (undirected)
 	 */
 	public double getUndirectedLocalClusteringCoeff(V v1){
 		ArrayList<V> neighbors = new ArrayList<>(g.neighborListOf(v1));
@@ -162,7 +162,7 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 	/**
 	 * Compute the Katz index
 	 * C = ((I_alphaA^T)^-1 - I)
-	 * @param alpha
+	 * @param alpha the alpha value
 	 * @return the Katz index
 	 */
 	public Map<V,Double> getKatzIndex(double alpha){

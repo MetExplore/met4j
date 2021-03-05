@@ -189,8 +189,8 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 	
 	/**
 	 * return all the k-shortest paths in the given graph
-	 * @param k
-	 * @return
+	 * @param k the max rank of paths to return
+	 * @return the k-shortest paths
 	 */
 	public Set<BioPath<V,E>> getAllShortestPaths(int k){
 		HashSet<BioPath<V, E>> paths = new HashSet<>();

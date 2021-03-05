@@ -128,7 +128,7 @@ public class RankUtils {
 	
 	/**
 	 * Computes ranks from hashmap with entity identifier as key and score as value.
-	 * @param <T>
+	 * @param <T> the class of object to be ranked
 	 *
 	 * @param map the score map
 	 * @return the rank map
@@ -146,7 +146,7 @@ public class RankUtils {
 	
 	/**
 	 * Return an ordered list of values, given a map with score associated to each value
-	 * @param <T>
+	 * @param <T> the class of object to be ranked
 	 *
 	 * @param map the score map
 	 * @return the ordered list of keys

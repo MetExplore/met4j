@@ -74,7 +74,7 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 	 * Instantiates a new weights from file.
 	 *
 	 * @param filePath the file path
-	 * @param removeEdgeNotInFile
+	 * @param removeEdgeNotInFile if the edges not in the file should be removed from the graph
 	 */
 	public WeightsFromFile(String filePath, boolean removeEdgeNotInFile) {
 		this.filePath=filePath;

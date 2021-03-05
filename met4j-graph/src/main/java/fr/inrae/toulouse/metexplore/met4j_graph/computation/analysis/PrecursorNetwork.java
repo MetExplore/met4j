@@ -120,8 +120,8 @@ public class PrecursorNetwork {
     /**
      * get precursor set from a precursor network.
      * compounds not produced or only produced by exchange reactions are considered precursors.
-     * @param precusorNetwork
-     * @return
+     * @param precusorNetwork the precursor network
+     * @return the list of precursors
      */
     public static BioCollection<BioMetabolite> getPrecursors(BipartiteGraph precusorNetwork){
         BioCollection<BioMetabolite> precursor = new BioCollection<>();
@@ -140,8 +140,8 @@ public class PrecursorNetwork {
 
     /**
      * get incoming exchange reactions in precursor network. (reaction without substrate)
-     * @param precusorNetwork
-     * @return
+     * @param precusorNetwork the precursor network
+     * @return the list of precursor exchange reactions
      */
     public static BioCollection<BioReaction> getExchangeReactions(BipartiteGraph precusorNetwork){
         BioCollection<BioReaction> precursor = new BioCollection<>();

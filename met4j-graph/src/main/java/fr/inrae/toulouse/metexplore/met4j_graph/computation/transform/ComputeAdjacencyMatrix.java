@@ -90,7 +90,7 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 	 *
 	 * @param g the graph
 	 * @param matrixClass the matrix class
-	 * @throws Exception
+	 * @throws Exception if the matrix class is not a BioMatrix
 	 */
 	@Deprecated
 	public ComputeAdjacencyMatrix(G g, Class<?> matrixClass) throws Exception{
@@ -164,8 +164,8 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 	}
 
 	/**
-	 * lambda expression for resolving weight conflicts in case of parallel edges. Default use weight sum
-	 * @param l
+	 * Define a method for resolving weight conflicts in case of parallel edges. Default use weight sum
+	 * @param l a lambda expression for merging weights
 	 */
 	public void parallelEdgeWeightsHandling(DoubleBinaryOperator l) {
 		this.l = l;

@@ -87,11 +87,6 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
     	return connectingCompounds;
     }
     
-    /**
-     * Gets the reaction.
-     *
-     * @return the reaction
-     */
     public void addConnectingCompounds(BioMetabolite compound){
         connectingCompounds.add(compound);
     }
@@ -100,11 +95,6 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
         connectingCompounds.addAll(compounds);
     }
     
-    /**
-     * Gets the reaction.
-     *
-     * @return the reaction
-     */
     public void removeConnectingCompounds(BioMetabolite e){
         connectingCompounds.remove(e);
     }

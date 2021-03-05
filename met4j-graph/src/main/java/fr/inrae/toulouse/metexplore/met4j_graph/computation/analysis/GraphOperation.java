@@ -137,7 +137,7 @@ public class GraphOperation {
 	
 	/**
 	 * compute the order of the union of two graph.
-	 * @param <G>
+	 * @param <G> the graph class
 	 *
 	 * @param g1 the first graph
 	 * @param g2 the second graph

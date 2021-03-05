@@ -91,8 +91,8 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	
 	/**
 	 * Get list of set of BioMetabolite, each BioMetabolite in a set belong to the same connected component
-	 * @param <V>
-	 * @param <E>
+	 * @param <V> vertex class
+	 * @param <E> edge class
 	 *
 	 * @param g the graph
 	 * @return the connected component
@@ -278,7 +278,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	
 	/**
 	 * set whether or not the graph should be considered as directed
-	 * @param directed
+	 * @param directed if the network should be considered as directed
 	 */
 	public void setDirected(boolean directed) {
 		this.directed = directed;

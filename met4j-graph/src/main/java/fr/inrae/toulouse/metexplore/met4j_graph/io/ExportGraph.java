@@ -78,7 +78,7 @@ public class ExportGraph {
 	 * WARNING: equals sign aren't allowed in node name space
 	 * Use in Cytoscape2:
 	 * File>import>Edge_Attributes...
-	 * @param graph
+	 * @param graph the graph
 	 * @param attName the Name of the attribute represented by weight
 	 * @param outputPath the Path to the output file. Note that standard extension for Cytoscape edge attributes file is .eda
 	 */
@@ -171,7 +171,7 @@ public class ExportGraph {
 	 * WARNING: equals sign aren't allowed in node name space or id
 	 * Use in Cytoscape2:
 	 * File>import>Node_Attributes...
-	 * @param graph
+	 * @param graph the graph
 	 * @param outputPath Path to the output file. Note that standard extension for Cytoscape node attributes file is .noa
 	 */
 	public static void exportNodeName(CompoundGraph graph, String outputPath){
@@ -231,8 +231,8 @@ public class ExportGraph {
 	 * Use in Cytoscape2:
 	 * File>import>Attribute_from_Table
 	 * 	Mapping column and attributes' names have to been set manually
-	 * @param graph
-	 * @param outputPath
+	 * @param graph the graph
+	 * @param outputPath the output path
 	 */
 	public static void exportEdgeTabular(CompoundGraph graph, String outputPath){
 		try {	    	

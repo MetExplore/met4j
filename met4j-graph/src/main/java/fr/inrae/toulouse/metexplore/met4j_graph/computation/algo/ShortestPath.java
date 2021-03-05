@@ -415,8 +415,12 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	
 	/**
 	 * return all the shortest path in the given graph.
+<<<<<<< Updated upstream
 	 * @param k
 	 * @return
+=======
+	 * @return all the shortest path in the given graph.
+>>>>>>> Stashed changes
 	 */
 	public Set<BioPath<V,E>> getAllShortestPaths(){
 		HashSet<BioPath<V, E>> paths = new HashSet<>();

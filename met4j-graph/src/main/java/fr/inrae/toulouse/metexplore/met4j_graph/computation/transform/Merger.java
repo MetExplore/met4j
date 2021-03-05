@@ -51,7 +51,7 @@ public class Merger {
 	
 	/**
 	 * Merge edges sharing same source and target, create new one with concatenated labels
-	 * @param <V>
+	 * @param <V> vertex class
 	 */
 	public static <V extends BioEntity,E extends Edge<V>, G extends BioGraph<V,E>> void mergeEdgesWithOverride(G g){
 		
@@ -140,7 +140,7 @@ public class Merger {
 	
 	/**
 	 * Merge edges sharing same source and target
-	 * @param <V>
+	 * @param <V> the vertex class
 	 */
 	public static <V extends BioEntity,E extends Edge<V>, G extends BioGraph<V,E>> MergedGraph<V,E> mergeEdges(G g){
 		

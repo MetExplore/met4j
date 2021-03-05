@@ -97,7 +97,7 @@ public abstract class GraphFactory<V extends BioEntity, E extends Edge<V>, G ext
 	 * Add each path iteratively, in ascendant order of weight, until all nodes of interest are connected
 	 * @param kShort the K-Shortest path results
 	 * @param nodeOfInterest the set of nodes to connect
-	 * @return
+	 * @return a graph
 	 */
 	public G createGraphFromPathList(List<BioPath<V,E>> kShort, Set<V> nodeOfInterest){
 		ArrayList<BioPath<V,E>> tmpKShort = new ArrayList<>(kShort);
@@ -116,7 +116,7 @@ public abstract class GraphFactory<V extends BioEntity, E extends Edge<V>, G ext
 	/**
 	 * Sub-network extraction from a list of paths
 	 * @param paths the list of path.
-	 * @return
+	 * @return a graph
 	 */
 	public G createGraphFromPathList(Collection<BioPath<V,E>> paths){
 		
@@ -168,8 +168,8 @@ public abstract class GraphFactory<V extends BioEntity, E extends Edge<V>, G ext
 	 * The obtained sub-graph contains all the edges from the main graph linking vertices from the given list
 	 * The obtained sub-graph is not a deep copy of the main graph, any changes to the shared edges attributes will be effective in both graphs
 	 * @param g the main graph
-	 * @param vertices
-	 * @return
+	 * @param vertices the vertex
+	 * @return the subnetwork
 	 */
 	public G createSubGraph(G g, Collection<V> vertices){
 		Collection<E> edges = new HashSet<>();

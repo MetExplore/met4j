@@ -119,7 +119,7 @@ public class BioGraph2XGMML{
 	 * Write xgmml to output.
 	 *
 	 * @param outputPath the output path
-	 * @throws Exception
+	 * @throws Exception if xml configuration is faulty
 	 */
 	public void writeXGMML(String outputPath) throws Exception{
 		if(doc ==null){
@@ -141,7 +141,6 @@ public class BioGraph2XGMML{
 	 * Add mapping
 	 *
 	 * @param mapping the map containing compounds id as key and double score as value
-	 * @throws Exception
 	 */
 	public void addMapping(HashMap<String, Double> mapping){
 		this.mapping = mapping;

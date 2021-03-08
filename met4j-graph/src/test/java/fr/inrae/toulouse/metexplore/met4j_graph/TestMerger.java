@@ -174,54 +174,5 @@ public class TestMerger {
 		Assert.assertEquals("Wrong final number of edges", 8, g2.edgeSet().size());
 
 	}
-	
-//	@Test
-//	public void testMergeCompartment() {
-//		CompoundGraph g2 = Merger.mergeCompartment(g);
-//		assertEquals("Error while creating the initial graph", 4, g.vertexSet().size());
-//		assertEquals("Error while creating the initial graph", 10, g.edgeSet().size());
-//		assertEquals("Wrong final number of nodes", 2, g2.vertexSet().size());
-//		assertEquals("Wrong final number of edges", 6, g2.edgeSet().size());
-//		for(BioMetabolite v : g2.vertexSet()){
-//			assertEquals("Wrong compartment id", "metaComp", v.getCompartment().getId());
-//		}
-//	}
-	
-//	@Test
-//	public void testMergeCompartmentFromId() {
-//		CompoundGraph g2 = Merger.mergeCompartmentFromId(g, "^(.+)_\\w$");
-//		assertEquals("Error while creating the initial graph", 4, g.vertexSet().size());
-//		assertEquals("Error while creating the initial graph", 10, g.edgeSet().size());
-//		assertEquals("Wrong final number of nodes", 2, g2.vertexSet().size());
-//		assertEquals("Wrong final number of edges", 6, g2.edgeSet().size());
-//		assertNotNull("Wrong vertex id in merged graph", g2.getVertex("M_a"));
-//		assertNotNull("Wrong vertex id in merged graph", g2.getVertex("M_b"));
-//		for(BioMetabolite v : g2.vertexSet()){
-//			assertEquals("Wrong compartment id", "metaComp", v.getCompartment().getId());
-//		}
-//	}
-//	
-//	@Test
-//	public void testMergeDuplicatedReation() {
-//		BioNetwork bn2 = new BioNetwork(bn, bn.getReactions(), bn.getMe.keySet());
-//		int removed = Merger.mergeReactions(bn2);
-//		assertEquals("wrong number of removed reaction after merging",1, removed); //ab3 is consider different from ab2 and ab1 as their reversibility are different
-//		assertTrue("duplicated reaction not merged",!bn2.getBiochemicalReactionList().containsKey("ab1") || !bn2.getBiochemicalReactionList().containsKey("ab2"));
-//	}
-//	
-//	@Test
-//	public void testTransportReationRemoving() {
-//		BioNetwork bn2 = Merger.mergeCompartmentFromId(bn, "^(.+)_\\w$");
-//		assertEquals("Error while creating the initial bionetwork", 4, bn.getPhysicalEntityList().size());
-//		assertEquals("Error while creating the initial bionetwork", 7, bn.getBiochemicalReactionList().size());
-//		assertEquals("Wrong final number of compounds", 2,  bn2.getPhysicalEntityList().size());
-//		assertEquals("Wrong final number of reaction", 7, bn2.getBiochemicalReactionList().size());
-//		assertNotNull("Wrong compound id in merged graph", bn2.getBioPhysicalEntityById("M_a"));
-//		assertNotNull("Wrong compound id in merged graph", bn2.getBioPhysicalEntityById("M_b"));
-//		
-//		int removed = Merger.removeTransport(bn2);
-//		assertEquals("wrong number of removed reaction after merging",2, removed);
-//		assertTrue("transport reaction not removed",!bn2.getBiochemicalReactionList().containsKey("aa"));
-//		assertTrue("transport reaction not removed",!bn2.getBiochemicalReactionList().containsKey("bb"));
-//	}
+
 }

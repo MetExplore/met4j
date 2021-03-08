@@ -35,8 +35,10 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core.compressed;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.jgrapht.EdgeFactory;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
@@ -71,6 +73,10 @@ public class CompressedGraph<V extends BioEntity, E extends Edge<V>, G extends B
 	@Override
 	public PathEdge<V, E> copyEdge(PathEdge<V, E> edge) {
 		return new PathEdge<>(edge.getV1(), edge.getV2(), edge.getPath());
+	}
+	@Override
+	public PathEdge<V, E> createEdgeFromModel(V v1, V v2, PathEdge<V, E> edge){
+		return new PathEdge(v1, v2, edge.getPath());
 	}
 
 

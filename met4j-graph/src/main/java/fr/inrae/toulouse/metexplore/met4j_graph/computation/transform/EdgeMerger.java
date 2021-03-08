@@ -44,7 +44,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.parallel.MetaEdge;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
- * Class used to merges nodes or edges
+ * Class used to merges parallel edges.
  * @author clement
  */
 public class Merger {

@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import org.jgrapht.EdgeFactory;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
@@ -203,6 +204,10 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 	@Override
 	public ReactionEdge copyEdge(ReactionEdge edge) {
 		return new ReactionEdge(edge.getV1(), edge.getV2(), edge.getReaction());
+	}
+	@Override
+	public ReactionEdge createEdgeFromModel(BioMetabolite v1, BioMetabolite v2, ReactionEdge edge){
+		return new ReactionEdge(v1, v2, edge.getReaction());
 	}
 	
 	public static GraphFactory<BioMetabolite, ReactionEdge, CompoundGraph> getFactory(){

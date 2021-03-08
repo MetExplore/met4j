@@ -91,6 +91,10 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 	public BipartiteEdge copyEdge(BipartiteEdge edge) {
 		return new BipartiteEdge(edge.getV1(),edge.getV2(),edge.isReversible());
 	}
+	@Override
+	public BipartiteEdge createEdgeFromModel(BioEntity v1, BioEntity v2, BipartiteEdge edge) {
+		return new BipartiteEdge(v1,v2,edge.isReversible());
+	}
 	
 	/**
 	 * Keep only unique edge for reversible reaction in the bipartite graph 

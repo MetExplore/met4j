@@ -35,10 +35,12 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core.parallel;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 
 /**
  * The Class MergedGraph. Type of graph for which each edges contain a collection of sub-edges.
@@ -99,6 +101,10 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 	public MetaEdge<V, E> reverseEdge(MetaEdge<V, E> edge) {
 		MetaEdge<V, E> reversed = new MetaEdge<>(edge.getV2(), edge.getV1(), edge.getEdgeList());
 		return reversed;
+	}
+	@Override
+	public MetaEdge<V, E> createEdgeFromModel(V v1, V v2, MetaEdge<V, E> edge){
+		return new MetaEdge(v1, v2, edge.getEdgeList());
 	}
 
 }

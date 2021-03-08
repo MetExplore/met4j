@@ -452,7 +452,15 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	/**
+	 * Create an edge with extra attributes cloned from an existing edge passed as parameter.
+	 * @param v1 the source vertex
+	 * @param v2 the target vertex
+	 * @param edge the template edge which provides other attributes
+	 * @return
+	 */
+	public abstract E createEdgeFromModel(V v1, V v2, E edge);
 	public abstract E copyEdge(E edge);
 	public abstract EdgeFactory<V, E> getEdgeFactory();
 	

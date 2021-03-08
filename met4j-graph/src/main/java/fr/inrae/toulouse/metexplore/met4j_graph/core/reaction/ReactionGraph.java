@@ -38,8 +38,10 @@ package fr.inrae.toulouse.metexplore.met4j_graph.core.reaction;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraphEdge;
 import org.jgrapht.EdgeFactory;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
@@ -165,6 +167,10 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 	@Override
 	public CompoundEdge copyEdge(CompoundEdge edge) {
 		return new CompoundEdge(edge.getV1(), edge.getV2(), edge.getCompound());
+	}
+	@Override
+	public CompoundEdge createEdgeFromModel(BioReaction v1, BioReaction v2, CompoundEdge edge) {
+		return new CompoundEdge(v1, v2, edge.getCompound());
 	}
 	
 	public static GraphFactory<BioReaction, CompoundEdge, ReactionGraph> getFactory(){

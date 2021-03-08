@@ -38,6 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_graph.core.pathway;
 
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.jgrapht.EdgeFactory;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
@@ -70,6 +71,10 @@ public class PathwayGraph extends BioGraph<BioPathway,PathwayGraphEdge> {
 	public PathwayGraphEdge copyEdge(PathwayGraphEdge edge) {
 		PathwayGraphEdge copy = new PathwayGraphEdge(edge.getV1(), edge.getV2(), edge.getConnectingCompounds());
 		return copy;
+	}
+	@Override
+	public PathwayGraphEdge createEdgeFromModel(BioPathway v1, BioPathway v2, PathwayGraphEdge edge) {
+		return new PathwayGraphEdge(v1, v2, edge.getConnectingCompounds());
 	}
 	
 	@Override

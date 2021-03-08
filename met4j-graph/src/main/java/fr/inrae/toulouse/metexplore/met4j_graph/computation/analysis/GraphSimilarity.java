@@ -35,7 +35,7 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.Merger;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.EdgeMerger;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
@@ -85,8 +85,8 @@ public class GraphSimilarity<V extends BioEntity, E extends Edge<V>, G extends B
 	public double getTanimoto(){
 		G g1 = (G) this.g1.clone();
 		G g2 = (G) this.g2.clone();
-		Merger.mergeEdges(g1);
-		Merger.mergeEdges(g2);
+		EdgeMerger.mergeEdges(g1);
+		EdgeMerger.mergeEdges(g2);
 		double a = Integer.valueOf(g1.edgeSet().size()).doubleValue();
 		double b = Integer.valueOf(g2.edgeSet().size()).doubleValue();
 		double c = Integer.valueOf(getNumberOfSharedLinks()).doubleValue();

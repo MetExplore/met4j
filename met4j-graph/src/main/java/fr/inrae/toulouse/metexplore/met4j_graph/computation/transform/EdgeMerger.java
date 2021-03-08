@@ -47,7 +47,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
  * Class used to merges parallel edges.
  * @author clement
  */
-public class Merger {
+public class EdgeMerger {
 	
 	/**
 	 * Merge edges sharing same source and target, create new one with concatenated labels

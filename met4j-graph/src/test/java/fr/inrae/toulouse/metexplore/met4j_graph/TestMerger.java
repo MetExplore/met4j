@@ -41,7 +41,7 @@ package fr.inrae.toulouse.metexplore.met4j_graph;
 
 import static org.junit.Assert.*;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.Merger;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.EdgeMerger;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.parallel.MergedGraph;
@@ -145,14 +145,14 @@ public class TestMerger {
 	@Test
 	public void testMergeEdgeOverride() {
 		CompoundGraph g2 = new CompoundGraph(g);
-		Merger.mergeEdgesWithOverride(g2);
+		EdgeMerger.mergeEdgesWithOverride(g2);
 		Assert.assertEquals("Error while creating the initial graph", 10, g.edgeSet().size());
 		Assert.assertEquals("Wrong final number of edges", 8, g2.edgeSet().size());
 	}
 
 	@Test
 	public void testMergeEdge() {
-		MergedGraph<BioMetabolite, ReactionEdge> g3 = Merger.mergeEdges(g);
+		MergedGraph<BioMetabolite, ReactionEdge> g3 = EdgeMerger.mergeEdges(g);
 		MetaEdge<BioMetabolite, ReactionEdge> m = g3.getEdge(a1, b1);
 //		assertEquals("wrong number of reaction in merged edge",3,m.getEdgeList().size());
 		assertTrue("wrong edge merged",m.getEdgeList().contains(ab1));
@@ -164,7 +164,7 @@ public class TestMerger {
 	@Test
 	public void testMergeEdgeComparator() {
 		CompoundGraph g2 = new CompoundGraph(g);
-		Merger.mergeEdgesWithOverride(g2, new Comparator<>() {
+		EdgeMerger.mergeEdgesWithOverride(g2, new Comparator<>() {
 			@Override
 			public int compare(ReactionEdge reactionEdge, ReactionEdge t1) {
 				return reactionEdge.toString().compareTo(t1.toString());

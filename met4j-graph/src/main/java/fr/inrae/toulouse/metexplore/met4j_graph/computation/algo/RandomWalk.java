@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.Merger;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.EdgeMerger;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
 
@@ -322,7 +322,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
         computePassageTime();
 		//merge-> several transitions from distinct reaction with same source and target is considered as 1 transitions
 		if(merge){
-			Merger.mergeEdges(g);
+			EdgeMerger.mergeEdges(g);
 			for(E edge : g.edgeSet()){
 				V source=edge.getV1();
 				V target=edge.getV2();

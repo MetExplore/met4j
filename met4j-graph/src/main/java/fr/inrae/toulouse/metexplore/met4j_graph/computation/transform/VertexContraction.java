@@ -42,6 +42,8 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -59,7 +61,7 @@ public class VertexContraction<V extends BioEntity,E extends Edge<V>, G extends 
      * @param g the graph that will be modified
      */
     public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> void contract(Set<V> vertexSet, V v, G g){
-        if(vertexSet.contains(v)) vertexSet.remove(v);
+        vertexSet.remove(v);
         if(!g.containsVertex(v)) g.addVertex(v);
 
         for(V old : vertexSet){
@@ -96,20 +98,76 @@ public class VertexContraction<V extends BioEntity,E extends Edge<V>, G extends 
     }
 
     /**
-     * Remove compartment in a compound graph by contracting all nodes sharing the same name
+     * Remove compartment in a compound graph by contracting all nodes sharing a given attribute provided by the mapper
      * @param g the graph to decompartmentalize
-     * @return a graph with a single node for each set of nodes sharing the same name in g
+     * @param m an instance of a Mapper class that return, for each compound, a String attribute used for grouping prior to merging
+     * @return a graph with a single node for each set of nodes sharing the same attribute in g
      */
-    public CompoundGraph decompartmentalize(CompoundGraph g){
+    public CompoundGraph decompartmentalize(CompoundGraph g, Mapper m){
         CompoundGraph g2 = (CompoundGraph) g.clone();
-        Map<String, List<BioMetabolite>> groupedNodes = g.vertexSet().stream().collect(Collectors.groupingBy(v -> v.getName()));
-
+        Map<String, List<BioMetabolite>> groupedNodes = g.vertexSet().stream().collect(Collectors.groupingBy(m::commonField));
         for(List<BioMetabolite> toContract : groupedNodes.values()){
             BioMetabolite v = toContract.get(0);
             toContract.remove(v);
             VertexContraction.contract(new HashSet<>(toContract), v, g2);
         }
         return g2;
+    }
+
+    /**
+     * Remove compartment in a compound graph by contracting all nodes sharing the same name
+     * @param g the graph to decompartmentalize
+     * @return a graph with a single node for each set of nodes sharing the same name in g
+     */
+    public CompoundGraph decompartmentalize(CompoundGraph g){
+        return  decompartmentalize(g, new MapByName());
+    }
+
+    /**
+     * Class that can provide, for a compound, a String attribute shared between compounds to merge
+     */
+    public interface Mapper{
+        String commonField(BioMetabolite v);
+    }
+
+    /**
+     * Mapper used to decomparmentalize by merging compounds sharing the same name
+     */
+    public static class MapByName implements Mapper{
+        @Override
+        public String commonField(BioMetabolite v) {
+            return v.getName();
+        }
+    }
+    /**
+     * Mapper used to decomparmentalize by merging compounds sharing the same inchi
+     * WARNING: compound without InChI will all be merged into a single node.
+     */
+    public static class MapByInChI implements Mapper{
+        @Override
+        public String commonField(BioMetabolite v) {
+            return v.getInchi();
+        }
+    }
+
+    /**
+     * Mapper used to decomparmentalize by merging compounds sharing part of their identifier.
+     * SBML often use an identifer system with a compartment suffix, for example M_xxx_c where _c refer to a compartment.
+     * This mapper needs a regex to extract the identifier subpart shared between compounds.
+     */
+    public static class MapByIdSubString implements Mapper{
+        final String regex;
+        public MapByIdSubString(String regex){
+            this.regex=regex;
+        }
+
+        @Override
+        public String commonField(BioMetabolite v) {
+            String id = v.getId();
+            Matcher m = Pattern.compile(regex).matcher(id);
+            if(m.matches()) id=m.group(1);
+            return id;
+        }
     }
 
 }

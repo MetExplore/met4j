@@ -42,6 +42,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -87,14 +88,23 @@ public class VertexContraction<V extends BioEntity,E extends Edge<V>, G extends 
     }
 
     /**
-     * Contract an ordered set of vertices, merging them into the first in list
-     * @param vertexList the set of nodes that will be contracted in a single node
-     * @param g the graph that will be modified
+     * Contract all nodes in graph from an aggregation function, which provide a common group id for each member of a set to contract
+     * @param g the graph
+     * @param l the aggregation function
+     * @param <V> the node class
+     * @param <E> the edge class
+     * @param <G> the graph class
+     * @return a graph with contracted vertices
      */
-    public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> void contract(List<V> vertexList, G g){
-        V v = vertexList.get(0);
-        vertexList.remove(0);
-        VertexContraction.contract(new HashSet<>(vertexList), v, g);
+    public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> G contractBy(G g, Function<V,String> l){
+        G g2 = (G) g.clone();
+        Map<String, List<V>> groupedNodes = g.vertexSet().stream().collect(Collectors.groupingBy(l));
+        for(List<V> toContract : groupedNodes.values()){
+            V v = toContract.get(0);
+            toContract.remove(v);
+            VertexContraction.contract(new HashSet<>(toContract), v, g2);
+        }
+        return g2;
     }
 
     /**
@@ -104,14 +114,7 @@ public class VertexContraction<V extends BioEntity,E extends Edge<V>, G extends 
      * @return a graph with a single node for each set of nodes sharing the same attribute in g
      */
     public CompoundGraph decompartmentalize(CompoundGraph g, Mapper m){
-        CompoundGraph g2 = (CompoundGraph) g.clone();
-        Map<String, List<BioMetabolite>> groupedNodes = g.vertexSet().stream().collect(Collectors.groupingBy(m::commonField));
-        for(List<BioMetabolite> toContract : groupedNodes.values()){
-            BioMetabolite v = toContract.get(0);
-            toContract.remove(v);
-            VertexContraction.contract(new HashSet<>(toContract), v, g2);
-        }
-        return g2;
+        return VertexContraction.contractBy(g, m::commonField);
     }
 
     /**

@@ -141,6 +141,16 @@ public class TestVertexContraction {
 	}
 
     @Test
+    public void testDecompartmentalizeByName() {
+        VertexContraction vc = new VertexContraction();
+        CompoundGraph g2 = vc.decompartmentalize(g, new VertexContraction.MapByName());
+        assertEquals("Error in the initial graph", 4, g.vertexSet().size());
+        assertEquals("Error in the initial graph", 10, g.edgeSet().size());
+        assertEquals("Wrong final number of nodes", 2, g2.vertexSet().size());
+        assertEquals("Wrong final number of edges", 6, g2.edgeSet().size());
+    }
+
+    @Test
     public void testDecompartmentalizeByInChI() {
         VertexContraction vc = new VertexContraction();
         CompoundGraph g2 = vc.decompartmentalize(g, new VertexContraction.MapByInChI());

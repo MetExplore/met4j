@@ -100,7 +100,7 @@ public class VertexContraction<V extends BioEntity,E extends Edge<V>, G extends 
     /**
      * Remove compartment in a compound graph by contracting all nodes sharing a given attribute provided by the mapper
      * @param g the graph to decompartmentalize
-     * @param m an instance of a Mapper class that return, for each compound, a String attribute used for grouping prior to merging
+     * @param m a Mapper function that return, for each compound, a String attribute used for grouping prior to merging
      * @return a graph with a single node for each set of nodes sharing the same attribute in g
      */
     public CompoundGraph decompartmentalize(CompoundGraph g, Mapper m){
@@ -120,13 +120,19 @@ public class VertexContraction<V extends BioEntity,E extends Edge<V>, G extends 
      * @return a graph with a single node for each set of nodes sharing the same name in g
      */
     public CompoundGraph decompartmentalize(CompoundGraph g){
-        return  decompartmentalize(g, new MapByName());
+        return  decompartmentalize(g, BioMetabolite::getName);
     }
 
     /**
-     * Class that can provide, for a compound, a String attribute shared between compounds to merge
+     * Provide, for a compound, a String attribute shared between compounds to merge
      */
+    @FunctionalInterface
     public interface Mapper{
+        /**
+         * return a String attribute shared among compounds to merge
+         * @param v a compound
+         * @return a String attribute
+         */
         String commonField(BioMetabolite v);
     }
 

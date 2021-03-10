@@ -4,40 +4,23 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.FloydWarshall;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.ShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjacencyMatrix;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.Merger;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.DefaultWeightPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.DegreeWeightPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.WeightsFromFile;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBCParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.GroupPathwayParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import org.kohsuke.args4j.Option;
-import org.openscience.cdk.graph.matrix.AdjacencyMatrix;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class DistanceMatrix extends AbstractMet4jApplication {
 

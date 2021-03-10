@@ -62,45 +62,50 @@ public class VertexContraction<V extends BioEntity,E extends Edge<V>, G extends 
      * @param g the graph that will be modified
      */
     public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> void contract(Set<V> vertexSet, V v, G g){
-        vertexSet.remove(v);
         if(!g.containsVertex(v)) g.addVertex(v);
 
         for(V old : vertexSet){
-            Set<E> oldEdges = g.edgesOf(old);
-            for(E e : oldEdges){
-                V v1 = e.getV1();
-                V v2 = e.getV2();
-                if(v1!=v && v2!=v){ //skip edges involving the substitute to avoid loop
-                    if(v1==old){ //update edge sources
-                        v1=v;
-                    }else{
-                        v2=v;
+            if(old != v){
+                Set<E> oldEdges = g.edgesOf(old);
+                for(E e : oldEdges){
+                    V v1 = e.getV1();
+                    V v2 = e.getV2();
+                    if(v1!=v && v2!=v){
+                        //skip edges involving nodes to contract to avoid loop
+                        if(!(vertexSet.contains(v1) && vertexSet.contains(v2))){
+                            if (v1 == old) { //update edge sources
+                                v1 = v;
+                            } else {
+                                v2 = v;
+                            }
+                            E e2 = g.createEdgeFromModel(v1, v2, e);
+                            g.addEdge(v1, v2, e2);
+                            g.setEdgeWeight(e2, g.getEdgeWeight(e));
+                        }
                     }
-                    E e2 = g.createEdgeFromModel(v1, v2, e);
-                    g.addEdge(v1, v2, e2);
-                    g.setEdgeWeight(e2, g.getEdgeWeight(e));
                 }
+                g.removeAllEdges(oldEdges);
             }
-            g.removeAllEdges(oldEdges);
         }
         g.removeAllVertices(vertexSet);
 
     }
 
     /**
-     * Contract all nodes in graph from an aggregation function, which provide a common group id for each member of a set to contract
+     * Contract all nodes in graph from an aggregation function, which provide a common group id (key) for each member of a set to contract
      * @param g the graph
-     * @param l the aggregation function
+     * @param groupingFunction the aggregation function
+     * @param pickFunction the function which choose the member of the set that will be the aggregate
      * @param <V> the node class
      * @param <E> the edge class
      * @param <G> the graph class
      * @return a graph with contracted vertices
      */
-    public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> G contractBy(G g, Function<V,String> l){
+    public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> G contractBy(G g, Function<V,String> groupingFunction, Function<List<V>,V> pickFunction){
         G g2 = (G) g.clone();
-        Map<String, List<V>> groupedNodes = g.vertexSet().stream().collect(Collectors.groupingBy(l));
+        Map<String, List<V>> groupedNodes = g.vertexSet().stream().collect(Collectors.groupingBy(groupingFunction));
         for(List<V> toContract : groupedNodes.values()){
-            V v = toContract.get(0);
+            V v = pickFunction.apply(toContract);
             toContract.remove(v);
             VertexContraction.contract(new HashSet<>(toContract), v, g2);
         }
@@ -114,7 +119,7 @@ public class VertexContraction<V extends BioEntity,E extends Edge<V>, G extends 
      * @return a graph with a single node for each set of nodes sharing the same attribute in g
      */
     public CompoundGraph decompartmentalize(CompoundGraph g, Mapper m){
-        return VertexContraction.contractBy(g, m::commonField);
+        return VertexContraction.contractBy(g, m::commonField, (l -> {l.sort(Comparator.comparing(BioMetabolite::getId));return l.get(0);}));
     }
 
     /**

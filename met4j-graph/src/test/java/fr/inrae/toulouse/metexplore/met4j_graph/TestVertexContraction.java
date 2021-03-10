@@ -47,8 +47,8 @@ import static org.junit.Assert.*;
 public class TestVertexContraction {
     public static CompoundGraph g;
     public static BioNetwork bn;
-    public static BioMetabolite a1,b1,a2,b2;
-    public static ReactionEdge ab1,ab2,ab3,ab4,ba1,ba2,aa1,aa2,bb1,bb2;
+    public static BioMetabolite a1,b1,a2,b2,a3;
+    public static ReactionEdge ab1,ab2,ab3,ab4,ba1,ba2,aa1,aa2,bb1,bb2,aa3,aa4;
 
     @BeforeClass
     public static void init(){
@@ -57,8 +57,10 @@ public class TestVertexContraction {
 
         BioCompartment comp1 = new BioCompartment("1", "1");
         BioCompartment comp2 = new BioCompartment("2", "2");
+        BioCompartment comp3 = new BioCompartment("3", "3");
         bn.add(comp1);
         bn.add(comp2);
+        bn.add(comp3);
 
         a1 = new BioMetabolite("M_a_1");  bn.add(a1);
         bn.affectToCompartment(comp1, a1);
@@ -80,6 +82,11 @@ public class TestVertexContraction {
         b2.setName("B");
         b2.setInchi("InChI=1S/C4H10NO6P/c5-3(4(6)7)1-2-11-12(8,9)10/h3H,1-2,5H2,(H,6,7)(H2,8,9,10)/t3-/m0/s1");
         g.addVertex(b2);
+        a3 = new BioMetabolite("M_a_3");  bn.add(a3);
+        bn.affectToCompartment(comp3, a3);
+        a3.setName("A");
+        a3.setInchi("InChI=1S/C4H6O4/c1-2(3(5)6)4(7)8/h2H,1H3,(H,5,6)(H,7,8)");
+        g.addVertex(a3);
 
         BioProtein p1 = new BioProtein("p1");
         bn.add(p1);
@@ -117,6 +124,14 @@ public class TestVertexContraction {
         bn.add(r7);
         bn.affectLeft(r7, 1.0, comp1, b1);
         bn.affectRight(r7, 1.0, comp2, b2);
+        BioReaction r8 = new BioReaction("aa2");r8.setReversible(false);
+        bn.add(r8);
+        bn.affectLeft(r8, 1.0, comp3, a3);
+        bn.affectRight(r8, 1.0, comp1, a1);
+        BioReaction r9 = new BioReaction("aa3");r9.setReversible(false);
+        bn.add(r9);
+        bn.affectLeft(r9, 1.0, comp3, a3);
+        bn.affectRight(r9, 1.0, comp2, a2);
 
         ab1 = new ReactionEdge(a1,b1,r1);g.addEdge(a1, b1, ab1);
         ab2 = new ReactionEdge(a1,b1,r2);g.addEdge(a1, b1, ab2);
@@ -128,14 +143,17 @@ public class TestVertexContraction {
         aa2 = new ReactionEdge(a2,a1,r6);g.addEdge(a2,a1, aa2);
         bb1 = new ReactionEdge(b1,b2,r7);g.addEdge(b1,b2, bb1);
         bb2 = new ReactionEdge(b2,b1,r7);g.addEdge(b2,b1, bb2);
+        aa3 = new ReactionEdge(a3,a1,r8);g.addEdge(a3,a1, aa3);
+        aa4 = new ReactionEdge(a3,a2,r9);g.addEdge(a3,a2, aa4);
+
     }
 
 	@Test
 	public void testDecompartmentalize() {
         VertexContraction vc = new VertexContraction();
 		CompoundGraph g2 = vc.decompartmentalize(g);
-		assertEquals("Error in the initial graph", 4, g.vertexSet().size());
-		assertEquals("Error in the initial graph", 10, g.edgeSet().size());
+		assertEquals("Error in the initial graph", 5, g.vertexSet().size());
+		assertEquals("Error in the initial graph", 12, g.edgeSet().size());
 		assertEquals("Wrong final number of nodes", 2, g2.vertexSet().size());
 		assertEquals("Wrong final number of edges", 6, g2.edgeSet().size());
 	}
@@ -144,8 +162,8 @@ public class TestVertexContraction {
     public void testDecompartmentalizeByName() {
         VertexContraction vc = new VertexContraction();
         CompoundGraph g2 = vc.decompartmentalize(g, new VertexContraction.MapByName());
-        assertEquals("Error in the initial graph", 4, g.vertexSet().size());
-        assertEquals("Error in the initial graph", 10, g.edgeSet().size());
+        assertEquals("Error in the initial graph", 5, g.vertexSet().size());
+        assertEquals("Error in the initial graph", 12, g.edgeSet().size());
         assertEquals("Wrong final number of nodes", 2, g2.vertexSet().size());
         assertEquals("Wrong final number of edges", 6, g2.edgeSet().size());
     }
@@ -154,8 +172,8 @@ public class TestVertexContraction {
     public void testDecompartmentalizeByInChI() {
         VertexContraction vc = new VertexContraction();
         CompoundGraph g2 = vc.decompartmentalize(g, new VertexContraction.MapByInChI());
-        assertEquals("Error in the initial graph", 4, g.vertexSet().size());
-        assertEquals("Error in the initial graph", 10, g.edgeSet().size());
+        assertEquals("Error in the initial graph", 5, g.vertexSet().size());
+        assertEquals("Error in the initial graph", 12, g.edgeSet().size());
         assertEquals("Wrong final number of nodes", 2, g2.vertexSet().size());
         assertEquals("Wrong final number of edges", 6, g2.edgeSet().size());
     }
@@ -164,8 +182,8 @@ public class TestVertexContraction {
     public void testDecompartmentalizeByIdSubString() {
         VertexContraction vc = new VertexContraction();
         CompoundGraph g2 = vc.decompartmentalize(g, new VertexContraction.MapByIdSubString("(M_\\w+)_\\d"));
-        assertEquals("Error in the initial graph", 4, g.vertexSet().size());
-        assertEquals("Error in the initial graph", 10, g.edgeSet().size());
+        assertEquals("Error in the initial graph", 5, g.vertexSet().size());
+        assertEquals("Error in the initial graph", 12, g.edgeSet().size());
         assertEquals("Wrong final number of nodes", 2, g2.vertexSet().size());
         assertEquals("Wrong final number of edges", 6, g2.edgeSet().size());
     }

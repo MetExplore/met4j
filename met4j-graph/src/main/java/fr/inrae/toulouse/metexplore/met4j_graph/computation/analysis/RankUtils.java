@@ -111,17 +111,17 @@ public class RankUtils {
 	 * @param g the graph
 	 * @return the hash map
 	 */
-	public static HashMap<String, Integer> computeRank(CompoundGraph g){
-		HashMap<String, Double> reactionScoreMap = new HashMap<>();
+	public static LinkedHashMap<String, Integer> computeRank(CompoundGraph g){
+		LinkedHashMap<String, Double> scoreMap = new LinkedHashMap<>();
 		for(ReactionEdge e : g.edgeSet()){
 			String reactionId = e.getReaction().getId();
-			if(reactionScoreMap.containsKey(reactionId)){
-				reactionScoreMap.put(reactionId, reactionScoreMap.get(reactionId)+g.getEdgeScore(e));
+			if(scoreMap.containsKey(reactionId)){
+				scoreMap.put(reactionId, scoreMap.get(reactionId)+g.getEdgeScore(e));
 			}else{
-				reactionScoreMap.put(reactionId,g.getEdgeScore(e));
+				scoreMap.put(reactionId,g.getEdgeScore(e));
 			}
 		}
-		return computeRank(reactionScoreMap);
+		return computeRank(scoreMap);
 	}
 	
 	
@@ -133,16 +133,17 @@ public class RankUtils {
 	 * @param map the score map
 	 * @return the rank map
 	 */
-	public static <T> HashMap<T, Integer> computeRank(HashMap<T, Double> map){
-		HashMap<T, Integer> reactionRankMap = new HashMap<>();
+	public static <T> LinkedHashMap<T, Integer> computeRank(Map<T, Double> map){
+		LinkedHashMap<T, Integer> reactionRankMap = new LinkedHashMap<>();
 		
 		List<T> reactions = getOrderedList(map);
-		reactions.sort(new ScoreComparator<>(map));
 		for(T rId : reactions){
 			reactionRankMap.put(rId, reactions.indexOf(rId));
 		}
 		return reactionRankMap;
 	}
+
+
 	
 	/**
 	 * Return an ordered list of values, given a map with score associated to each value
@@ -151,7 +152,7 @@ public class RankUtils {
 	 * @param map the score map
 	 * @return the ordered list of keys
 	 */
-	public static <T> List<T> getOrderedList(HashMap<T, Double> map){
+	public static <T> List<T> getOrderedList(Map<T, Double> map){
 		ArrayList<T> keys = new ArrayList<>(map.keySet());
 		keys.sort(new ScoreComparator<>(map));
 		return keys;
@@ -166,7 +167,7 @@ public class RankUtils {
 	 * @param r2 the second ranking
 	 * @return the kendall Tau coefficient
 	 */
-	public static double kendallTau(HashMap<String, Integer> r1, HashMap<String, Integer> r2){
+	public static double kendallTau(Map<String, Integer> r1, Map<String, Integer> r2){
 		if(!r1.keySet().equals(r2.keySet())){
 			System.err.println("rankings must involve same set of elements");
 			return Double.NaN;
@@ -189,7 +190,7 @@ public class RankUtils {
 	 * @param r2 the second ranking
 	 * @return the Spearman rank coefficient
 	 */
-	public static double SpearmanRankCoeff(HashMap<String, Integer> r1, HashMap<String, Integer> r2){
+	public static double SpearmanRankCoeff(Map<String, Integer> r1, Map<String, Integer> r2){
 		if(!r1.keySet().equals(r2.keySet())){
 			System.err.println("rankings must involve same set of elements");
 			return Double.NaN;
@@ -212,15 +213,15 @@ public class RankUtils {
 	static class ScoreComparator<T> implements Comparator<T>, Serializable {
 		
 		/** The reaction score map. */
-		final HashMap<T, Double> reactionScoreMap;
+		final Map<T, Double> scoreMap;
 		
 		/**
 		 * Instantiates a new score comparator.
 		 *
-		 * @param reactionScoreMap the reaction score map
+		 * @param scoreMap the reaction score map
 		 */
-		public ScoreComparator(HashMap<T, Double> reactionScoreMap){
-			this.reactionScoreMap=reactionScoreMap;
+		public ScoreComparator(Map<T, Double> scoreMap){
+			this.scoreMap=scoreMap;
 		}
 		
 		/* (non-Javadoc)
@@ -228,7 +229,7 @@ public class RankUtils {
 		 */
 		@Override
 		public int compare(T o1, T o2) {
-			return -Double.compare(reactionScoreMap.get(o1), reactionScoreMap.get(o2));
+			return -Double.compare(scoreMap.get(o1), scoreMap.get(o2));
 		}
 		
 	}

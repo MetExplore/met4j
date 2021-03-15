@@ -31,3 +31,14 @@ deploySnapshot:
   only: 
    - develop
 
+deployCentral:
+  stage: deploy
+  before_script:
+    ## Add gpg key to sign
+    - gpg --batch --import <(echo "$GPG_PASSPHRASE")
+  script:
+    - mvn $MAVEN_CLI_OPTS --batch-mode release:prepare -DautoVersionSubmodules=true
+    - mvn release:perform
+  only:
+    - /^release.*$/
+

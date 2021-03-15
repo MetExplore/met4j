@@ -18,6 +18,26 @@ The other modules are for the moment not documented or still in progress.
 
 ### Installation
 
+#### From Maven
+
+Install all modules :
+```
+<dependency>
+<groupId>fr.inrae.toulouse.metexplore</groupId>
+<artifactId>met4j-core</artifactId>
+<version>RELEASE</version>
+</dependency>
+```
+
+or a specific module (example : met4j-core ):
+```
+<dependency>
+<groupId>fr.inrae.toulouse.metexplore</groupId>
+<artifactId>met4j-core</artifactId>
+<version>RELEASE</version>
+</dependency>
+```
+
 #### From gitlab
 
 ```

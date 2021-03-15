@@ -16,7 +16,7 @@ test:
     - mvn test
 
 verify:
-  stage: verify
+  stage: test
   script:
     - mvn verify
 

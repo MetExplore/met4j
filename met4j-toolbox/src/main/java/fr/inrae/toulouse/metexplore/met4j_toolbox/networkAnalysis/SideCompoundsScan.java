@@ -28,11 +28,11 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
     @Option(name = "-o", usage = "output Side-Compounds file", required = true)
     public String outputPath = null;
 
-    @Option(name = "-s", usage = "output side-Compounds only")
+    @Option(name = "-s",aliases = {"--onlySides"}, usage = "output flagged as side-Compounds only")
     public boolean sideOnly = false;
 
-    @Option(name = "-r", usage = "report values in output")
-    public boolean reportValue = true;
+    @Option(name = "-id",aliases = {"--onlyIds"}, usage = "do not report values in output")
+    public boolean noReportValue = false;
 
     @Option(name = "-d", aliases = {"--degree"}, usage = "flag as side compounds any compounds with degree above threshold", forbids={"-dp"})
     public int degree = 400;
@@ -98,6 +98,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
         Pattern regex =  Pattern.compile(".*(R[^a-z]|C\\d).*");
 
         //header
+        Boolean reportValue=(!noReportValue);
         if(reportValue){
             StringBuffer l = new StringBuffer("ID\tNAME");
             l.append("\tDEGREE");

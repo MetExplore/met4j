@@ -6,6 +6,12 @@ cache:
     - target/
 
 build:
-    stage: build
-    script:
-        - mvn compile
+  stage: build
+  script:
+    - mvn compile
+
+test:
+  stage: test
+  script:
+    - mvn test
+

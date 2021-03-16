@@ -61,6 +61,8 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 	final G g;
 
 
+	private boolean undirected = false;
+
 	private final BioMatrix matrix;
 
 	/**
@@ -70,7 +72,7 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 	 */
 	public FloydWarshall(G g) {
 		this.g=g;
-		ComputeAdjacencyMatrix<V,E,G> computor = new ComputeAdjacencyMatrix<>(g);
+		ComputeAdjacencyMatrix<V,E,G> computor = new ComputeAdjacencyMatrix<>(g,this.undirected);
 		computor.parallelEdgeWeightsHandling((a,b)->Math.min(a,b));
 		matrix = computor.getadjacencyMatrix();
 	}
@@ -83,8 +85,8 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 	 */
 	public FloydWarshall(G g, Boolean undirected) {
 		this.g=g;
-		ComputeAdjacencyMatrix<V,E,G> computor = new ComputeAdjacencyMatrix<>(g);
-		if (undirected) { computor.asUndirected(); }
+		this.undirected=undirected;
+		ComputeAdjacencyMatrix<V,E,G> computor = new ComputeAdjacencyMatrix<>(g, undirected);
 		computor.parallelEdgeWeightsHandling((a,b)->Math.min(a,b));
 		matrix = computor.getadjacencyMatrix();
 	}
@@ -97,6 +99,7 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 	 */
 	public FloydWarshall(G g, ComputeAdjacencyMatrix<V,E,G> computor) {
 		this.g=g;
+		this.setUndirected(computor.isUndirected());
 		matrix = computor.getadjacencyMatrix();
 	}
 	
@@ -197,6 +200,9 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 					V v2 = g.getVertex(kLabel);
 					
 					E edge = g.getEdge(v1, v2);
+					if(undirected && edge==null){
+						edge = g.getEdge(v2, v1);
+					}
 					path.add(edge);
 					w+= g.getEdgeWeight(edge);
 				}
@@ -207,6 +213,18 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 		}
 		
 		return res;
+	}
+
+	public boolean isUndirected() {
+		return undirected;
+	}
+
+	public void setUndirected(boolean undirected) {
+		this.undirected = undirected;
+	}
+
+	public void asUndirected() {
+		this.setUndirected(true);
 	}
 	
 }

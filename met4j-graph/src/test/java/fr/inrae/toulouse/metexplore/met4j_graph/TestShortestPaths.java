@@ -483,6 +483,33 @@ public class TestShortestPaths {
 			}
 		}
 	}
+
+	@Test
+	public void testFloydWarshallPathUndirected(){
+		CompoundGraph g2 =new CompoundGraph(g);
+		ReactionEdge ab2 = new ReactionEdge(a,b,new BioReaction("ab"));g2.addEdge(a, b, ab2);g2.setEdgeWeight(ab2, 100000.0);
+		ReactionEdge ba = new ReactionEdge(b,a,new BioReaction("ab"));g2.addEdge(b, a, ba);g2.setEdgeWeight(ba, 100000.0);
+		ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> spComputor = new ShortestPath<>(g);
+		ComputeAdjacencyMatrix builder = new ComputeAdjacencyMatrix(g2);
+		builder.asUndirected();
+		builder.parallelEdgeWeightsHandling((a,b)->Math.min(a,b));
+		FloydWarshall<BioMetabolite,ReactionEdge,CompoundGraph> computor = new FloydWarshall<BioMetabolite,ReactionEdge,CompoundGraph>(g2, builder);
+		computor.asUndirected();
+		HashMap<String, HashMap<String, BioPath<BioMetabolite, ReactionEdge>>> res = computor.getPaths();
+		assertEquals(res.size(),g2.vertexSet().size());
+		for(String a : res.keySet()){
+			for(String b : res.get(a).keySet()){
+				if(a.equals(b)){
+					assertNull(res.get(a).get(b));
+				}else{
+					assertEquals(res.get(a).get(b).getLength(), res.get(b).get(a).getLength());//check if symmetric
+					BioPath<BioMetabolite, ReactionEdge> sp = spComputor.getShortestAsUndirected(g.getVertex(a), g.getVertex(b));
+					double length = (sp==null) ? Double.POSITIVE_INFINITY : sp.getLength();
+					assertEquals(length, res.get(a).get(b).getLength(), Double.MIN_VALUE);
+				}
+			}
+		}
+	}
 	
 	@Test
 	public void testFloydWarshallPath(){

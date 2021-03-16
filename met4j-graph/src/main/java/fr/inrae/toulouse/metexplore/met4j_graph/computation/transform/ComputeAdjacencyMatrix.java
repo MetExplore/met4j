@@ -56,7 +56,8 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 	
 	/** The adjacency matrix. */
 	BioMatrix adjacencyMatrix;
-	
+
+
 	/**consider as undirected */
 	boolean undirected=false;
 
@@ -159,7 +160,15 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 	 * if the graph should be considered as undirected
 	 */
 	public void asUndirected() {
-		this.undirected = true;
+		this.setUndirected(true);
+	}
+
+	public boolean isUndirected() {
+		return undirected;
+	}
+
+	public void setUndirected(boolean undirected) {
+		this.undirected = undirected;
 	}
 
 	/**

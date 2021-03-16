@@ -457,6 +457,14 @@ public class TestShortestPaths {
 	}
 
 	@Test
+	public void testFloydWarshallLazyDist(){
+		FloydWarshall<BioMetabolite,ReactionEdge,CompoundGraph> computor1 = new FloydWarshall<>(g);
+		FloydWarshall<BioMetabolite,ReactionEdge,CompoundGraph> computor2 = new FloydWarshall<>(g);
+		computor2.getPaths();
+		assertEquals(computor1.getDistances().toDoubleArray(),computor2.getDistances().toDoubleArray());
+	}
+
+	@Test
 	public void testFloydWarshallDistUndirected(){
 		CompoundGraph g2 =new CompoundGraph(g);
 		ReactionEdge ab2 = new ReactionEdge(a,b,new BioReaction("ab"));g2.addEdge(a, b, ab2);g2.setEdgeWeight(ab2, 100000.0);

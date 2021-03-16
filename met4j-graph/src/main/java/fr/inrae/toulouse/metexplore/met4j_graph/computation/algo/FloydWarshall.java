@@ -50,7 +50,8 @@ import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 
 /**
  * The Class FloydWarshall. This class is used to compute all shortest paths in a graph.
- *
+ * A light implementation allows to compute only the distance matrix, while another perform node tracking during traversal
+ * and allows to compute both the distance matrix and the shortest paths.
  * @param <V> the node type
  * @param <E> the edge type
  * @param <G> the graph type
@@ -64,6 +65,8 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 	private boolean undirected = false;
 
 	private final BioMatrix matrix;
+
+	private BioMatrix distMatrix;
 
 	/**
 	 * Instantiates a new floyd warshall computor.
@@ -104,16 +107,17 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 	}
 	
 	/**
-	 * Gets shortest paths distance between each nodes (if it exist).
+	 * Gets shortest paths distance between each nodes (if one exists).
 	 *
-	 * @return the distances
+	 * @return the distance matrix
 	 */
 	public BioMatrix getDistances(){
-		BioMatrix matrix = this.matrix.copy();
+		if(distMatrix!=null) return distMatrix;
+		distMatrix = this.matrix.copy();
 		for(int i = 0; i< g.vertexSet().size(); i++){
 			for(int j = 0; j< g.vertexSet().size(); j++){
-				if(i!=j && matrix.get(i, j)==0.0){
-					matrix.set(i, j, Double.POSITIVE_INFINITY);
+				if(i!=j && distMatrix.get(i, j)==0.0){
+					distMatrix.set(i, j, Double.POSITIVE_INFINITY);
 				}
 			}
 		}
@@ -122,23 +126,23 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 			for(int i = 0; i< g.vertexSet().size(); i++){
 				for(int j = 0; j< g.vertexSet().size(); j++){
 					
-					double ab = matrix.get(i, j);
-					double ac = matrix.get(i, k);
-					double cb = matrix.get(k, j);
+					double ab = distMatrix.get(i, j);
+					double ac = distMatrix.get(i, k);
+					double cb = distMatrix.get(k, j);
 					
 					if(ab>(ac+cb)){
-						matrix.set(i, j, (ac+cb));
+						distMatrix.set(i, j, (ac+cb));
 					}
 				}
 			}
 		}
 		
-		return matrix;
+		return distMatrix;
 	}
 	
 	/**
-	 * Gets shortest paths between each nodes (if it exist).
-	 *
+	 * Gets shortest paths between each nodes (if one exists). Build the distance matrix in the process, and should be called
+	 * prior to getDistances() if both are required, in order to avoid redundant computation.
 	 * @return the paths
 	 */
 	public HashMap<String, HashMap<String, BioPath<V, E>>> getPaths(){
@@ -146,13 +150,13 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 
 		HashMap<Integer,HashMap<Integer,Integer>> next = new HashMap<>();
 
-		BioMatrix matrix = this.matrix.copy();
+		this.distMatrix = this.matrix.copy();
 		for(int i = 0; i< g.vertexSet().size(); i++){
 			next.put(i, new HashMap<>());
 			for(int j = 0; j< g.vertexSet().size(); j++){
 				if(i!=j){
-					if(matrix.get(i, j)==0.0){
-						matrix.set(i, j, Double.POSITIVE_INFINITY);
+					if(distMatrix.get(i, j)==0.0){
+						distMatrix.set(i, j, Double.POSITIVE_INFINITY);
 					}else{
 						next.get(i).put(j, j);
 					}
@@ -165,12 +169,12 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 			for(int i = 0; i< g.vertexSet().size(); i++){
 				for(int j = 0; j< g.vertexSet().size(); j++){
 					
-					double ab = matrix.get(i, j);
-					double ac = matrix.get(i, k);
-					double cb = matrix.get(k, j);
+					double ab = distMatrix.get(i, j);
+					double ac = distMatrix.get(i, k);
+					double cb = distMatrix.get(k, j);
 					
 					if(!Double.isInfinite(ac) && !Double.isInfinite(cb) && ab>(ac+cb)){
-						matrix.set(i, j, (ac+cb));
+						distMatrix.set(i, j, (ac+cb));
 						next.get(i).put(j, next.get(i).get(k));
 					}
 				}
@@ -181,22 +185,22 @@ public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends Bio
 		HashMap<String,HashMap<String,BioPath<V,E>>> res = new HashMap<>();
 		for(Map.Entry<Integer, HashMap<Integer, Integer>> entry : next.entrySet()){
 			int i = entry.getKey();
-			String iLabel = matrix.getRowIndexMap().get(i);
+			String iLabel = distMatrix.getRowIndexMap().get(i);
 			HashMap<String,BioPath<V,E>> map = new HashMap<>();
 			
 			for(int j : entry.getValue().keySet()){
 				
-				String jLabel = matrix.getRowIndexMap().get(j);
+				String jLabel = distMatrix.getRowIndexMap().get(j);
 				List<E> path = new ArrayList<>();
 				double w = 0.0;
 				
 				int k = i;
 				while(k!=j){
-					String kLabel = matrix.getRowIndexMap().get(k);
+					String kLabel = distMatrix.getRowIndexMap().get(k);
 					V v1 = g.getVertex(kLabel);
 					
 					k = next.get(k).get(j);
-					kLabel = matrix.getRowIndexMap().get(k);
+					kLabel = distMatrix.getRowIndexMap().get(k);
 					V v2 = g.getVertex(kLabel);
 					
 					E edge = g.getEdge(v1, v2);

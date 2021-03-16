@@ -10,7 +10,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.GraphMeasur
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.RankUtils;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjacencyMatrix;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.DefaultWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -28,7 +27,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 public class NetworkSummary extends AbstractMet4jApplication {
@@ -46,7 +44,7 @@ public class NetworkSummary extends AbstractMet4jApplication {
     public Boolean skipdist = false;
 
     @Option(name = "-d", aliases = {"--directed"}, usage = "use reaction direction for distances")
-    public Boolean undirected = true;
+    public Boolean directed = false;
 
 
 
@@ -65,7 +63,7 @@ public class NetworkSummary extends AbstractMet4jApplication {
             if(sideCompoundFile!=null) fw.write("#\tSide compounds: "+this.sideCompoundFile+"\n");
         Date currentDate = new Date();
             fw.write("#\t"+currentDate.toString()+"\n");
-            fw.write("#"+"-".repeat(10)+"\n");
+            fw.write("#"+"-".repeat(60)+"\n");
 
         //import network
         System.err.println("reading SBML...");
@@ -100,30 +98,30 @@ public class NetworkSummary extends AbstractMet4jApplication {
         analyzer.adjustEdgeCountForMultiGraph();
 
         //basic stats
-            fw.write("Number of nodes:\t"+graph.vertexSet().size());
-            fw.write("Number of edges:\t"+graph.edgeSet().size());
-            fw.write("Number of neighbor pairs (ignore parallel edges):\t"+analyzer.getNumberOfEdges());
+            fw.write("Number of nodes:\t"+graph.vertexSet().size()+"\n");
+            fw.write("Number of edges:\t"+graph.edgeSet().size()+"\n");
+            fw.write("Number of neighbor pairs (ignore parallel edges):\t"+analyzer.getNumberOfEdges()+"\n");
 
         //connectivity
         System.err.println("extract connected component...");
         List<Set<BioMetabolite>> cc = GraphMeasure.getConnectedCompenent(graph);
-            fw.write("Number of connected component:\t"+cc.size());
+            fw.write("Number of connected component:\t"+cc.size()+"\n");
         Map<Integer, Integer> ccSizes = cc.stream().collect(Collectors.groupingBy(Set::size))
                 .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, (e -> e.getValue().size())));
         for(Map.Entry e : ccSizes.entrySet()){
-            fw.write("\t"+e.getKey()+" x"+e.getValue());
+            fw.write("\t"+e.getKey()+" x"+e.getValue()+"\n");
         }
 
         //density
         System.err.println("Compute density...");
-        fw.write("Density (gamma index):\t"+analyzer.getGamma());
+        fw.write("Density (gamma index):\t"+analyzer.getGamma()+"\n");
         DescriptiveStatistics clusterStats = new DescriptiveStatistics();
         System.err.println("Compute local clustering coefficients...");
         GraphLocalMeasure<BioMetabolite,ReactionEdge,CompoundGraph> analyzer2 = new GraphLocalMeasure(graph);
         for(BioMetabolite v : graph.vertexSet()){
             clusterStats.addValue(analyzer2.getLocalClusteringCoeff(v));
         }
-            fw.write("Average local clustering coefficient:\t"+clusterStats.getMean());
+            fw.write("Average local clustering coefficient:\t"+clusterStats.getMean()+"\n");
 
 
         //degree statistics
@@ -132,15 +130,15 @@ public class NetworkSummary extends AbstractMet4jApplication {
         for(BioMetabolite v : graph.vertexSet()){
             degreeStats.addValue(graph.degreeOf(v));
         }
-        fw.write("Max degree:\t"+degreeStats.getMax());
-        fw.write("Average degree:\t"+degreeStats.getMean());
+        fw.write("Max degree:\t"+degreeStats.getMax()+"\n");
+        fw.write("Average degree:\t"+degreeStats.getMean()+"\n");
 
         //distances statistics
         if(!skipdist) {
             System.err.println("Compute distances...");
             //  compute distance matrix
             ComputeAdjacencyMatrix adjBuilder = new ComputeAdjacencyMatrix(graph);
-            if (undirected) adjBuilder.asUndirected();
+            if (!directed) adjBuilder.asUndirected();
             adjBuilder.parallelEdgeWeightsHandling((a, b) -> Math.min(a, b)); //keep lowest weight if parallel edges
             FloydWarshall distComputor = new FloydWarshall<>(graph, adjBuilder);
             BioMatrix distM = distComputor.getDistances();
@@ -161,35 +159,40 @@ public class NetworkSummary extends AbstractMet4jApplication {
             }
 
             int diameter = (int) distStats.getMax();
-                fw.write("Diameter:\t"+diameter);
-                fw.write("Average shortest path length:\t"+distStats.getMean());
+                fw.write("Diameter:\t"+diameter+"\n");
+                fw.write("Average shortest path length:\t"+distStats.getMean()+"\n");
 
             //Centrality analysis
             System.err.println("Compute centrality...");
             GraphCentralityMeasure<BioMetabolite, ReactionEdge, CompoundGraph> cm = new GraphCentralityMeasure(graph);
-            Set<BioPath<BioMetabolite,ReactionEdge>> sp = (Set<BioPath<BioMetabolite, ReactionEdge>>) distComputor.getPaths().values().stream().collect(Collectors.toSet());
-            LinkedHashMap<BioMetabolite, Integer> betweenness = RankUtils.computeRank(cm.getBetweenness(sp).entrySet().stream().collect(
-                    Collectors.toMap(Map.Entry::getKey, e -> e.getValue().doubleValue())
-            ));
-            LinkedHashMap<BioMetabolite, Integer> closeness = RankUtils.computeRank(cm.getCloseness(sp));
+
+//            Set<BioPath<BioMetabolite,ReactionEdge>> sp = new HashSet<>(distComputor.getPaths().values());
+//            LinkedHashMap<BioMetabolite, Integer> betweenness = RankUtils.computeRank(cm.getBetweenness(sp).entrySet().stream().collect(
+//                    Collectors.toMap(Map.Entry::getKey, e -> e.getValue().doubleValue())
+//            ));
+//            System.err.println("\tBetweenness done.");
+
+            Map<BioMetabolite, Double> closenessRaw = cm.getCloseness(distM);
+            LinkedHashMap<BioMetabolite, Integer> closeness = RankUtils.computeRank(closenessRaw);
+            System.err.println("\tCloseness done.");
 
             Iterator<Map.Entry<BioMetabolite, Integer>> it = closeness.entrySet().iterator();
-            fw.write("Top Closeness:");
-            for (int i = 0; i < 5; i++) {
+            fw.write("Top Closeness:\n");
+            for (int i = 0; i < 20; i++) {
                 Map.Entry<BioMetabolite, Integer> e = it.next();
-                fw.write("\t"+e.getValue()+"\t"+e.getKey().getName());
+                fw.write("\t"+(e.getValue()+1)+"\t"+e.getKey().getName()+"\t"+(closenessRaw.get(e.getKey())*graph.vertexSet().size())+"\n");
 
             }
 
-            it = betweenness.entrySet().iterator();
-            fw.write("Top Betweenness:");
-            for (int i = 0; i < 5; i++) {
-                Map.Entry<BioMetabolite, Integer> e = it.next();
-                fw.write("\t"+e.getValue()+"\t"+e.getKey().getName());
-            }
+//            it = betweenness.entrySet().iterator();
+//            fw.write("Top Betweenness:");
+//            for (int i = 0; i < 5; i++) {
+//                Map.Entry<BioMetabolite, Integer> e = it.next();
+//                fw.write("\t"+e.getValue()+"\t"+e.getKey().getName());
+//            }
         }
         System.err.println("Done.");
-
+        fw.close();
     }
     @Override
     public String getLabel() {return this.getClass().getSimpleName();}

@@ -461,7 +461,7 @@ public class TestShortestPaths {
 		FloydWarshall<BioMetabolite,ReactionEdge,CompoundGraph> computor1 = new FloydWarshall<>(g);
 		FloydWarshall<BioMetabolite,ReactionEdge,CompoundGraph> computor2 = new FloydWarshall<>(g);
 		computor2.getPaths();
-		assertEquals(computor1.getDistances().toDoubleArray(),computor2.getDistances().toDoubleArray());
+		assertArrayEquals(computor1.getDistances().toDoubleArray(),computor2.getDistances().toDoubleArray());
 	}
 
 	@Test

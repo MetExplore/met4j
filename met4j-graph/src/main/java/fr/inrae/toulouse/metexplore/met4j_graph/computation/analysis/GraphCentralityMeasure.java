@@ -45,6 +45,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 
 /**
  * The Class used to compute several centrality measure and other classical vertex' global measures
@@ -202,6 +203,37 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 //		for(V vertex : farness.keySet()){
 //			closeness.put(vertex, 1.0/farness.get(vertex));
 //		}
+		return closeness;
+	}
+
+	/**
+	 * Gets the closeness.
+	 * The closeness of a node is the sum of reciprocal of its distances from all other nodes.
+	 * By convention, in a graph that is not strongly connected, the reciprocal of distance between unconnected nodes is 0.
+	 *
+	 * @param distanceMatrix the distance matrix
+	 * @return the closeness
+	 */
+	public Map<V, Double> getCloseness(BioMatrix distanceMatrix){
+		if(distanceMatrix.numRows()!=g.vertexSet().size()) throw new IllegalArgumentException("distance matrix size does not fit graph order");
+		if(distanceMatrix.numCols()!=g.vertexSet().size()) throw new IllegalArgumentException("distance matrix size does not fit graph order");
+		Map<V, Double>  closeness = new HashMap<>();
+		//Instantiate the map;
+		for(V vertex : g.vertexSet()){
+			double cc = 0.0;
+			for(Double d : distanceMatrix.getRow(distanceMatrix.getRowFromLabel(vertex.getId()))){
+				if(Double.isFinite(d)){
+					cc+=d;
+				}
+			}
+			for(Double d : distanceMatrix.getCol(distanceMatrix.getColumnFromLabel(vertex.getId()))){
+				if(Double.isFinite(d)){
+					cc+=d;
+				}
+			}
+			closeness.put(vertex, 1.0/cc);
+		}
+
 		return closeness;
 	}
 	

@@ -40,6 +40,7 @@ import static org.junit.Assert.*;
 
 import java.util.Map;
 
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.FloydWarshall;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.GraphCentralityMeasure;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.GraphMeasure;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -263,6 +264,13 @@ public class TestGraphCentrality {
 		assertEquals((0.56/5)/2, starCloseness.get(d), 0.01);
 		assertEquals((0.56/5)/2, starCloseness.get(e), 0.01);
 		assertEquals((0.56/5)/2, starCloseness.get(f), 0.01);
+
+		assertArrayEquals(linearCloseness.values().toArray(),
+				linearMeasure.getCloseness((new FloydWarshall<BioMetabolite, ReactionEdge, CompoundGraph>(linearGraph,false)).getDistances()).values().toArray());
+		assertArrayEquals(starCloseness.values().toArray(),
+				starMeasure.getCloseness((new FloydWarshall<BioMetabolite, ReactionEdge, CompoundGraph>(starGraph)).getDistances()).values().toArray());
+		assertArrayEquals(toyCloseness.values().toArray(),
+				toyMeasure.getCloseness((new FloydWarshall<BioMetabolite, ReactionEdge, CompoundGraph>(toyGraph)).getDistances()).values().toArray());
 		
 	}
 

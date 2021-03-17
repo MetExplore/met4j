@@ -35,17 +35,11 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.jgrapht.EdgeFactory;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import java.util.*;
 
 /**
  * The Class BioGraph.
@@ -55,13 +49,11 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	
 	private static final long serialVersionUID = 1L;
 	private String name = "MetabolicGraph";
-	
-	public BioGraph(Class<? extends E> edgeClass){
-		super(edgeClass);
-	}
-	
-	public BioGraph(EdgeFactory<V, E> factory){
-		super(factory);
+
+	public BioGraph(){
+		super(null, null);
+		super.setEdgeSupplier(this::createEdge);
+		super.setVertexSupplier(this::createNode);
 	}
 	
 	/**
@@ -159,7 +151,9 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 */
 	@Override
 	public E addEdge(V arg0, V arg1) {
-		return super.addEdge(arg0, arg1);
+		E e = this.createEdge(arg0, arg1);
+		if(this.addEdge(arg0, arg1,e)) return e;
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -168,6 +162,10 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	@Override
 	public boolean addEdge(V sourceVertex, V targetVertex, E e) {
 		return super.addEdge(sourceVertex, targetVertex, e);
+	}
+
+	public boolean addEdge(E e) {
+		return super.addEdge(e.getV1(), e.getV2(), e);
 	}
 
 	/* (non-Javadoc)
@@ -462,17 +460,12 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 */
 	public abstract E createEdgeFromModel(V v1, V v2, E edge);
 	public abstract E copyEdge(E edge);
-	public abstract EdgeFactory<V, E> getEdgeFactory();
-	
-//	public abstract GraphFactory<V, E, ? extends BioGraph<V,E>> getGraphFactory();
-	
+	public abstract V createNode();
+	public abstract E createEdge(V v1, V v2);
+	public E createEdge(){
+		return createEdge(createNode(),createNode());
+	}
 
-	
-//	/**
-//	 * create a graph g' from this graph g where for each edge e(x,y) in g their exist an edge e'(y,x) in g'
-//	 * @return the edge-reversed graph
-//	 */
-//	public abstract Graph<V,E> reverse();
 	
 	/**
 	 * create an edge e'(x,y) from an existing edge e(y,x)

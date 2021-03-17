@@ -37,11 +37,13 @@ package fr.inrae.toulouse.metexplore.met4j_graph.core.pathway;
 
 
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import org.jgrapht.EdgeFactory;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
+
+import java.util.UUID;
 
 /**
  * The Class PathwayGraph allow to build a directed graph representing connections between pathways in a bionetwork.
@@ -63,7 +65,7 @@ public class PathwayGraph extends BioGraph<BioPathway,PathwayGraphEdge> {
 	 * Instantiates a new pathway graph.
 	 */
 	public PathwayGraph() {
-		super(new PathwayGraphEdgeFactory());
+		super();
 	}
 	
 	
@@ -72,16 +74,21 @@ public class PathwayGraph extends BioGraph<BioPathway,PathwayGraphEdge> {
 		PathwayGraphEdge copy = new PathwayGraphEdge(edge.getV1(), edge.getV2(), edge.getConnectingCompounds());
 		return copy;
 	}
+
+	@Override
+	public BioPathway createNode() {
+		return new BioPathway(UUID.randomUUID().toString());
+	}
+
+	@Override
+	public PathwayGraphEdge createEdge(BioPathway v1, BioPathway v2) {
+		return new PathwayGraphEdge(v1,v2,new BioCollection<BioMetabolite>());
+	}
+
 	@Override
 	public PathwayGraphEdge createEdgeFromModel(BioPathway v1, BioPathway v2, PathwayGraphEdge edge) {
 		return new PathwayGraphEdge(v1, v2, edge.getConnectingCompounds());
 	}
-	
-	@Override
-	public EdgeFactory<BioPathway, PathwayGraphEdge> getEdgeFactory() {
-		return new PathwayGraphEdgeFactory();
-	}
-
 
 	@Override
 	public PathwayGraphEdge reverseEdge(PathwayGraphEdge edge) {

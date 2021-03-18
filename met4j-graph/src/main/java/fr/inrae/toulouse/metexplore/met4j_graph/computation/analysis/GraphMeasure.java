@@ -129,7 +129,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	
 	/**
 	 * Gets the diameter of the graph, i.e. the maximum length of a shortest path between two node in the graph
-	 *
+	 * If the graph is disconnected, return the longest distance found in any connected component
 	 * @return the diameter
 	 */
 	public double getDiameter(){

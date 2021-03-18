@@ -41,15 +41,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Map;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import org.jgrapht.ext.EdgeNameProvider;
-import org.jgrapht.ext.GmlExporter;
-import org.jgrapht.ext.IntegerEdgeNameProvider;
-import org.jgrapht.ext.IntegerNameProvider;
-import org.jgrapht.ext.VertexNameProvider;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
@@ -61,6 +57,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollections;
+import org.jgrapht.nio.Attribute;
+import org.jgrapht.nio.AttributeType;
+import org.jgrapht.nio.DefaultAttribute;
+import org.jgrapht.nio.gml.GmlExporter;
 
 /**
  * Export informations from graphs generated from {@link Bionetwork2BioGraph} into Cytoscape-readable files
@@ -309,25 +309,51 @@ public class ExportGraph {
 	 * @param outputPath the output path
 	 */
 	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>>void toGml(G graph, String outputPath){
-		VertexNameProvider<V> vertexLabelprovider = new VertexNameProvider<>() {
-			@Override
-			public String getVertexName(V vertex) {
-				return vertex.getId();
-				//return vertex.getName();
-			}
-		};
-		EdgeNameProvider<E> edgeLabelprovider = new EdgeNameProvider<>() {
-			@Override
-			public String getEdgeName(E edge) {
-				return edge.toString();
-			}
-		};
-		
+
 		try {
 			GmlExporter<V, E> gml
-				= new GmlExporter<>(new IntegerNameProvider<>(), vertexLabelprovider, new IntegerEdgeNameProvider<>(), edgeLabelprovider);
+				= new GmlExporter<>(V::getId);
 			gml.setParameter(GmlExporter.Parameter.EXPORT_EDGE_LABELS, true);
 			gml.setParameter(GmlExporter.Parameter.EXPORT_VERTEX_LABELS, true);
+			FileWriter fw = new FileWriter(new File(outputPath).getAbsoluteFile());
+			PrintWriter pw = new PrintWriter(fw);
+			gml.exportGraph(graph, pw);
+			System.out.println(outputPath+" created.");
+		} catch (IOException e) {
+			System.err.println("Error in file export!");
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Export jgrapht graph into gml format
+	 *
+	 * @param graph the graph
+	 * @param outputPath the output path
+	 */
+	public static <EdgeNameProvider> void toGmlWithAttributes(CompoundGraph graph, String outputPath){
+		try {
+			GmlExporter<BioMetabolite, ReactionEdge> gml
+					= new GmlExporter<>();
+			gml.setParameter(GmlExporter.Parameter.EXPORT_EDGE_LABELS, true);
+			gml.setParameter(GmlExporter.Parameter.EXPORT_VERTEX_LABELS, true);
+			gml.setParameter(GmlExporter.Parameter.EXPORT_CUSTOM_EDGE_ATTRIBUTES, true);
+			gml.setParameter(GmlExporter.Parameter.EXPORT_CUSTOM_VERTEX_ATTRIBUTES, true);
+			gml.setVertexAttributeProvider(v -> {
+				Map<String, Attribute> att = new HashMap<String, Attribute>();
+				att.put("Name", DefaultAttribute.createAttribute(v.getName()));
+				att.put("Formula", DefaultAttribute.createAttribute(v.getChemicalFormula()));
+				att.put("Mass", DefaultAttribute.createAttribute(v.getMolecularWeight()));
+				return att;
+			});
+			gml.setEdgeAttributeProvider(e -> {
+				Map<String, Attribute> att = new HashMap<String, Attribute>();
+				att.put("Rid", DefaultAttribute.createAttribute(e.getReaction().getId()));
+				att.put("Name", DefaultAttribute.createAttribute(e.getReaction().getName()));
+				att.put("Reversible", DefaultAttribute.createAttribute(e.getReaction().isReversible()));
+				att.put("EC", DefaultAttribute.createAttribute(e.getReaction().getEcNumber()));
+				return att;
+			});
 			FileWriter fw = new FileWriter(new File(outputPath).getAbsoluteFile());
 			PrintWriter pw = new PrintWriter(fw);
 			gml.exportGraph(graph, pw);

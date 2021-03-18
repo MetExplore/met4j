@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Set;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
-import org.jgrapht.alg.KruskalMinimumSpanningTree;
+import org.jgrapht.alg.spanning.KruskalMinimumSpanningTree;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
@@ -102,7 +102,7 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 		ArrayList<E> list = new ArrayList<>();
 		CompressedGraph<V, E, G> cg = (new ShortestPath<>(g)).getMetricClosureGraph(terminal, terminal, weighted);
 		KruskalMinimumSpanningTree<V, PathEdge<V,E>> kruskal = new KruskalMinimumSpanningTree<>(cg);
-		Set<PathEdge<V,E>> mst = kruskal.getMinimumSpanningTreeEdgeSet();
+		Set<PathEdge<V,E>> mst = kruskal.getSpanningTree().getEdges();
 		for(PathEdge<V,E> edge : mst){
 			list.addAll(edge.getPath().getEdgeList());
 		}
@@ -137,7 +137,7 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 		ArrayList<E> list = new ArrayList<>();
 		DirectedWeightedMultigraph<V, PathEdge<V,E>> cg = (new ShortestPath<>(g)).getMetricClosureGraph(startNodes, endNodes, weighted);
 		KruskalMinimumSpanningTree<V, PathEdge<V,E>> kruskal = new KruskalMinimumSpanningTree<>(cg);
-		Set<PathEdge<V,E>> mst = kruskal.getMinimumSpanningTreeEdgeSet();
+		Set<PathEdge<V,E>> mst = kruskal.getSpanningTree().getEdges();
 		for(PathEdge<V,E> edge : mst){
 			list.addAll(edge.getPath().getEdgeList());
 		}

@@ -45,7 +45,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 
@@ -53,6 +52,7 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 
 	public BipartiteGraph() {
 		super();
+		this.setVertexSupplier(null);
 	}
 
 	public static GraphFactory<BioEntity, BipartiteEdge, BipartiteGraph> getFactory(){
@@ -86,8 +86,8 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 	}
 
 	@Override
-	public BioEntity createNode() {
-		return new BioMetabolite(UUID.randomUUID().toString());
+	public BioEntity createVertex() {
+		return null;
 	}
 
 	@Override

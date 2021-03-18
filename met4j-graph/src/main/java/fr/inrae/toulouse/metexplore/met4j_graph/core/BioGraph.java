@@ -53,7 +53,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	public BioGraph(){
 		super(null, null);
 		super.setEdgeSupplier(this::createEdge);
-		super.setVertexSupplier(this::createNode);
+		super.setVertexSupplier(this::createVertex);
 	}
 	
 	/**
@@ -460,10 +460,10 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 */
 	public abstract E createEdgeFromModel(V v1, V v2, E edge);
 	public abstract E copyEdge(E edge);
-	public abstract V createNode();
+	public abstract V createVertex();
 	public abstract E createEdge(V v1, V v2);
 	public E createEdge(){
-		return createEdge(createNode(),createNode());
+		return createEdge(createVertex(), createVertex());
 	}
 
 	

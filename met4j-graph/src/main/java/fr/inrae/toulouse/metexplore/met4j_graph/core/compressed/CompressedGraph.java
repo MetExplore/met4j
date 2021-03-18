@@ -73,7 +73,7 @@ public class CompressedGraph<V extends BioEntity, E extends Edge<V>, G extends B
 	}
 
 	@Override
-	public V createNode() {
+	public V createVertex() {
 		V v = null;
 		try {
 			Constructor<? extends BioEntity> declaredConstructor = null;

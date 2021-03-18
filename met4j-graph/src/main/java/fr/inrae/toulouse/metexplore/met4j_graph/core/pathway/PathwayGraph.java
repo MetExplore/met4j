@@ -76,7 +76,7 @@ public class PathwayGraph extends BioGraph<BioPathway,PathwayGraphEdge> {
 	}
 
 	@Override
-	public BioPathway createNode() {
+	public BioPathway createVertex() {
 		return new BioPathway(UUID.randomUUID().toString());
 	}
 

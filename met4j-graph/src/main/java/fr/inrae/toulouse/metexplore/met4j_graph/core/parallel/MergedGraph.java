@@ -92,7 +92,7 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 	}
 
 	@Override
-	public V createNode() {
+	public V createVertex() {
 		V v = null;
 		try {
 			Constructor<? extends BioEntity> declaredConstructor = null;

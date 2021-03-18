@@ -200,7 +200,7 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 	}
 
 	@Override
-	public BioMetabolite createNode() {
+	public BioMetabolite createVertex() {
 		return new BioMetabolite(UUID.randomUUID().toString());
 	}
 

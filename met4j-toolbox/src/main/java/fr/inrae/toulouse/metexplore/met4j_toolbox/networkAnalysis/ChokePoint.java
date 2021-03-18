@@ -54,7 +54,6 @@ public class ChokePoint  extends AbstractMet4jApplication {
         System.err.println("Creating network...");
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
         CompoundGraph graph = builder.getCompoundGraph();
-        network = null;
 
         //Graph processing: side compound removal [optional]
         if (sideCompoundFile != null) {

@@ -63,7 +63,6 @@ public class DistanceMatrix extends AbstractMet4jApplication {
         //Create compound graph
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
         CompoundGraph graph = builder.getCompoundGraph();
-        network=null;
 
         //Graph processing: side compound removal [optional]
         if(sideCompoundFile!=null){

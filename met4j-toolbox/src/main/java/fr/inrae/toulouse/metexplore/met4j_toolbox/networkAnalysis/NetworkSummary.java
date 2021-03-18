@@ -80,16 +80,22 @@ public class NetworkSummary extends AbstractMet4jApplication {
 
         //Graph processing: side compound removal
         if(sideCompoundFile!=null){
-            System.err.println("Remove side compounds...");
+            System.err.println("removing side compounds...");
             BioCollection<BioMetabolite> sideCpds=new BioCollection<>();
             BufferedReader fr = new BufferedReader(new FileReader(sideCompoundFile));
             String line;
             while ((line = fr.readLine()) != null) {
-                BioMetabolite s = network.getMetabolitesView().get(line.trim());
-                sideCpds.add(s);
+                String sId = line.trim().split("\t")[0];
+                BioMetabolite s = network.getMetabolitesView().get(sId);
+                if(s!=null){
+                    sideCpds.add(s);
+                }else{
+                    System.err.println(sId+" side compound not found in network.");
+                }
             }
             fr.close();
-            graph.removeAllVertices(sideCpds);
+            boolean removed = graph.removeAllVertices(sideCpds);
+            if (removed) System.err.println(sideCpds.size()+" compounds removed.");
         }
 
         //Start Anlysis

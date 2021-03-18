@@ -341,17 +341,16 @@ public class ExportGraph {
 			gml.setParameter(GmlExporter.Parameter.EXPORT_CUSTOM_VERTEX_ATTRIBUTES, true);
 			gml.setVertexAttributeProvider(v -> {
 				Map<String, Attribute> att = new HashMap<String, Attribute>();
-				att.put("Name", DefaultAttribute.createAttribute(v.getName()));
-				att.put("Formula", DefaultAttribute.createAttribute(v.getChemicalFormula()));
-				att.put("Mass", DefaultAttribute.createAttribute(v.getMolecularWeight()));
+				if(v.getName()!=null) att.put("Name", DefaultAttribute.createAttribute(v.getName()));
+				if(v.getChemicalFormula()!=null) att.put("Formula", DefaultAttribute.createAttribute(v.getChemicalFormula()));
+				if(v.getMolecularWeight()!=null) att.put("Mass", DefaultAttribute.createAttribute(v.getMolecularWeight()));
 				return att;
 			});
 			gml.setEdgeAttributeProvider(e -> {
 				Map<String, Attribute> att = new HashMap<String, Attribute>();
-				att.put("Rid", DefaultAttribute.createAttribute(e.getReaction().getId()));
-				att.put("Name", DefaultAttribute.createAttribute(e.getReaction().getName()));
-				att.put("Reversible", DefaultAttribute.createAttribute(e.getReaction().isReversible()));
-				att.put("EC", DefaultAttribute.createAttribute(e.getReaction().getEcNumber()));
+				if(e.getReaction()!=null && e.getReaction().getName()!=null) att.put("Name", DefaultAttribute.createAttribute(e.getReaction().getName()));
+				if(e.getReaction()!=null && e.getReaction().isReversible()!=null) att.put("Reversible", DefaultAttribute.createAttribute(e.getReaction().isReversible()));
+				if(e.getReaction()!=null && e.getReaction().getEcNumber()!=null) att.put("EC", DefaultAttribute.createAttribute(e.getReaction().getEcNumber()));
 				return att;
 			});
 			FileWriter fw = new FileWriter(new File(outputPath).getAbsoluteFile());

@@ -35,16 +35,16 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.transform;
 
-import java.util.*;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
-import org.jgrapht.DirectedGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DirectedWeightedMultigraph;
 import org.jgrapht.graph.EdgeReversedGraph;
 import org.jgrapht.traverse.DepthFirstIterator;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import java.util.*;
 
 /**
  * Class to remove all nodes not connecting a given set of nodes of interest.
@@ -206,7 +206,7 @@ public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInter
 	 * @param reversed if the graph has inverted edges
 	 * @return the reach matrix
 	 */
-	protected Integer[][] getReachMatrix(DirectedGraph<V, E> g, HashMap<V,Integer> colIndexMap, HashMap<V,Integer> rowIndexMap, boolean reversed){
+	protected Integer[][] getReachMatrix(Graph<V, E> g, HashMap<V,Integer> colIndexMap, HashMap<V,Integer> rowIndexMap, boolean reversed){
 		
 		Integer[][] reach = new Integer[rowIndexMap.size()][colIndexMap.size()];
 		for(int i =0; i< rowIndexMap.size();i++){

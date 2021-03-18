@@ -91,7 +91,7 @@ public class EdgeMerger {
 					}
 							
 					//create new edge
-					E newEdge = g.getEdgeFactory().createEdge(source, target);
+					E newEdge = g.createEdge(source, target);
 					g.addEdge(source, target, newEdge);
 					g.setEdgeWeight(newEdge, mergedWeight);
 					g.setEdgeScore(newEdge, mergedScore);

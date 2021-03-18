@@ -35,18 +35,21 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.FloydWarshall;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjacencyMatrix;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.jgrapht.alg.connectivity.ConnectivityInspector;
+import org.jgrapht.alg.shortestpath.GraphMeasurer;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
-import org.jgrapht.alg.ConnectivityInspector;
-import org.jgrapht.alg.FloydWarshallShortestPaths;
-
-import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * compute several measures of the level or connectivity, size or shape of a given graph using lazy builder to avoid redundant calculus
@@ -131,7 +134,24 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 */
 	public double getDiameter(){
 		if(diameter !=null) return diameter;
-        diameter = (new FloydWarshallShortestPaths<>(g)).getDiameter();
+		FloydWarshall distComputor = new FloydWarshall(this.g);
+		BioMatrix distM = distComputor.getDistances();
+
+		//  compute distance stats
+		DescriptiveStatistics distStats = new DescriptiveStatistics();
+		//  gather all elements in matrix, remove infinity
+		for(int i=0; i<distM.numRows(); i++){
+			for(int j=0; j<distM.numCols(); j++){
+				if(i!=j){
+					Double d=distM.get(i,j);
+					if(!d.equals(Double.POSITIVE_INFINITY)){
+						distStats.addValue(d);
+					}
+				}
+			}
+		}
+
+		int diameter = (int) distStats.getMax();
 		return diameter;
 	}
 	

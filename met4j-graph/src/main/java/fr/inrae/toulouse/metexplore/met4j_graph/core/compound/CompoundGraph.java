@@ -35,20 +35,18 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core.compound;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.stream.Collectors;
-
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
-import org.jgrapht.EdgeFactory;
-
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * The Class CompoundGraph.
@@ -69,7 +67,7 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 	 * Instantiates a new bio graph.
 	 */
 	public CompoundGraph() {
-		super(new ReactionEdgeFactory());
+		super();
 	}
 	
 	/**
@@ -78,7 +76,7 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 	 * @param g the graph
 	 */
 	public CompoundGraph(CompoundGraph g) {
-		super(edgeFactory);
+		super();
 		for(BioMetabolite vertex : g.vertexSet()){
 			this.addVertex(vertex);
 		}
@@ -195,16 +193,22 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 		}
 		return null;
 	}
-	
-	@Override
-	public EdgeFactory<BioMetabolite, ReactionEdge> getEdgeFactory() {
-		return new ReactionEdgeFactory();
-	}
 
 	@Override
 	public ReactionEdge copyEdge(ReactionEdge edge) {
 		return new ReactionEdge(edge.getV1(), edge.getV2(), edge.getReaction());
 	}
+
+	@Override
+	public BioMetabolite createVertex() {
+		return new BioMetabolite(UUID.randomUUID().toString());
+	}
+
+	@Override
+	public ReactionEdge createEdge(BioMetabolite v1, BioMetabolite v2) {
+		return new ReactionEdge(v1,v2,new BioReaction(UUID.randomUUID().toString()));
+	}
+
 	@Override
 	public ReactionEdge createEdgeFromModel(BioMetabolite v1, BioMetabolite v2, ReactionEdge edge){
 		return new ReactionEdge(v1, v2, edge.getReaction());

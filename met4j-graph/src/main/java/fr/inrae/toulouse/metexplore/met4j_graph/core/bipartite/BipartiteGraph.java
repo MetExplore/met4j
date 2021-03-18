@@ -35,25 +35,24 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
-import org.jgrapht.EdgeFactory;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 
 	private static final long serialVersionUID = -8285420874595144901L;
 
 	public BipartiteGraph() {
-		super(new BipartiteEdgeFactory());
+		super();
+		this.setVertexSupplier(null);
 	}
 
 	public static GraphFactory<BioEntity, BipartiteEdge, BipartiteGraph> getFactory(){
@@ -81,16 +80,21 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 		}
 		return vertexSet;
 	}
-
-	@Override
-	public EdgeFactory<BioEntity, BipartiteEdge> getEdgeFactory() {
-		return new BipartiteEdgeFactory();
-	}
-
 	@Override
 	public BipartiteEdge copyEdge(BipartiteEdge edge) {
 		return new BipartiteEdge(edge.getV1(),edge.getV2(),edge.isReversible());
 	}
+
+	@Override
+	public BioEntity createVertex() {
+		return null;
+	}
+
+	@Override
+	public BipartiteEdge createEdge(BioEntity v1, BioEntity v2) {
+		return new BipartiteEdge(v1,v2,false);
+	}
+
 	@Override
 	public BipartiteEdge createEdgeFromModel(BioEntity v1, BioEntity v2, BipartiteEdge edge) {
 		return new BipartiteEdge(v1,v2,edge.isReversible());

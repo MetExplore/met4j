@@ -35,12 +35,15 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core.parallel;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
+import java.util.UUID;
 
 /**
  * The Class MergedGraph. Type of graph for which each edges contain a collection of sub-edges.
@@ -60,7 +63,7 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 	 * Instantiates a new merged graph.
 	 */
 	public MergedGraph() {
-		super(new MetaEdgeFactory<>());
+		super();
 	}
 	
 	
@@ -80,20 +83,36 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 
 
 	/* (non-Javadoc)
-	 * @see parsebionet.computation.graphe.BioGraph#getEdgeFactory()
-	 */
-	@Override
-	public MetaEdgeFactory<V, E> getEdgeFactory() {
-		return new MetaEdgeFactory<>();
-	}
-
-	/* (non-Javadoc)
 	 * @see parsebionet.computation.graphe.BioGraph#copyEdge(parsebionet.computation.graphe.Edge)
 	 */
 	@Override
 	public MetaEdge<V, E> copyEdge(MetaEdge<V, E> edge) {
 		MetaEdge<V, E> newEdge = new MetaEdge<>(edge.getV1(), edge.getV2(), edge.getEdgeList());
 		return newEdge;
+	}
+
+	@Override
+	public V createVertex() {
+		V v = null;
+		try {
+			Constructor<? extends BioEntity> declaredConstructor = null;
+			declaredConstructor = this.vertexSet().iterator().next().getClass().getDeclaredConstructor(String.class);
+			v = (V) declaredConstructor.newInstance(UUID.randomUUID().toString());
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return v;
+	}
+
+	@Override
+	public MetaEdge<V, E> createEdge(V v1, V v2) {
+		return new MetaEdge<V, E>(v1,v2, new HashSet<>());
 	}
 
 

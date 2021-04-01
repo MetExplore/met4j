@@ -34,6 +34,8 @@ deploySnapshot:
 deployCentral:
   stage: deploy
   script:
+    - git config --global user.email "$env:GITLAB_USER_EMAIL"
+    - git config --global user.name "$env:GITLAB_USER_NAME"
     - mvn $MAVEN_CLI_OPTS --batch-mode release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true
     - mvn release:perform
   only:

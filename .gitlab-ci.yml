@@ -35,8 +35,8 @@ deployCentral:
   stage: deploy
   before_script:
     ## Add gpg key to sign
-    - echo "$GPG_PASSPHRASE"
-    - gpg --batch --import <(echo "$GPG_PASSPHRASE")
+    - gpg --export-secret-keys -a $GPG_PASSPHRASE > secret.txt
+    - gpg --batch --import < secret.txt
   script:
     - mvn $MAVEN_CLI_OPTS --batch-mode release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true
     - mvn release:perform

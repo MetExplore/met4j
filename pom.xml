@@ -4,7 +4,7 @@
 
     <groupId>fr.inrae.toulouse.metexplore</groupId>
     <artifactId>met4j</artifactId>
-    <version>0.3.0</version>
+    <version>0.3.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>met4j</name>
@@ -46,7 +46,7 @@
 
     <scm>
         <developerConnection>scm:git:ssh://git@forgemia.inra.fr/metexplore/met4j.git</developerConnection>
-        <tag>met4j-0.3.0</tag>
+        <tag>met4j-0.1.2</tag>
         <url>https://forgemia.inra.fr/metexplore/met4j/-/tree/master</url>
     </scm>
 

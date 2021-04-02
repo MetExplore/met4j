@@ -33,13 +33,19 @@ deploySnapshot:
 
 deployCentral:
   stage: deploy
+  before_script:
+    - 'which ssh-agent || ( apt-get update -qy && apt-get install openssh-client -qqy )'
+    - eval `ssh-agent -s`
+    - echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add - > /dev/null # add ssh ke
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_PUBLIC_KEY" >> ~/.ssh/id_rsa.pub
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
     - git config --global user.email "$env:GITLAB_USER_EMAIL"
     - git config --global user.name "$env:GITLAB_USER_NAME"
-    - mvn $MAVEN_CLI_OPTS --batch-mode release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true  -DpushChanges=false
-    - git push --tags
-    - mvn release:perform -DpushChanges=false
-    - git push --tags
+    - mvn $MAVEN_CLI_OPTS --batch-mode release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true
+    - mvn release:perform
   only:
     - /^release.*$/
 

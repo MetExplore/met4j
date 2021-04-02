@@ -5,7 +5,7 @@
     <parent>
         <groupId>fr.inrae.toulouse.metexplore</groupId>
         <artifactId>met4j</artifactId>
-        <version>0.3.5</version>
+        <version>0.3.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>met4j-io</artifactId>
@@ -65,7 +65,7 @@
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-core</artifactId>
-            <version>0.3.5</version>
+            <version>0.3.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.sbml.jsbml</groupId>

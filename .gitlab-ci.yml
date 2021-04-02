@@ -34,7 +34,10 @@ deploySnapshot:
 deployCentral:
   stage: deploy
   before_script:
-    - which ssh-agent || ( apt-get update -qy && apt-get install openssh-client -qqy )
+    - yum update -y
+    - yum install -y which && \
+    - yum clean all
+    - which ssh-agent || ( yum update -y && yum install -y  openssh-client )
     - eval `ssh-agent -s`
     - echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add - > /dev/null # add ssh ke
     - mkdir -p ~/.ssh

@@ -37,6 +37,7 @@ deployCentral:
     - git config --global user.email "$env:GITLAB_USER_EMAIL"
     - git config --global user.name "$env:GITLAB_USER_NAME"
     - mvn $MAVEN_CLI_OPTS --batch-mode release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true  -DpushChanges=false
+    - git push --tags
     - mvn release:perform -DpushChanges=false
     - git push --tags
   only:

@@ -46,7 +46,7 @@ deployCentral:
     - git config --global user.email "$env:GITLAB_USER_EMAIL"
     - git config --global user.name "$env:GITLAB_USER_NAME"
     - git checkout -B "$CI_BUILD_REF_NAME"
-    - mvn $MAVEN_CLI_OPTS --batch-mode release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true -DscmCommentPrefix="[skip ci]"
+    - mvn $MAVEN_CLI_OPTS --batch-mode release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true -DscmCommentPrefix="[skip ci]" -Darguments=-Dgpg.passphrase=${GPG_PASSPHRASE}
     - mvn release:perform
   only:
     - /^release.*$/

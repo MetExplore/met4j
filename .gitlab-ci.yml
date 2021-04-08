@@ -45,9 +45,8 @@ deployCentral:
     - git config --global user.email "$env:GITLAB_USER_EMAIL"
     - git config --global user.name "$env:GITLAB_USER_NAME"
     - git checkout -B "$CI_BUILD_REF_NAME"
-    # provoque des push à l'infini
-    #- mvn $MAVEN_CLI_OPTS --batch-mode release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true
-    #- mvn release:perform
+    - mvn $MAVEN_CLI_OPTS --batch-mode release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true -DscmCommentPrefix="[skip ci]"
+    - mvn release:perform
   only:
     - /^release.*$/
 

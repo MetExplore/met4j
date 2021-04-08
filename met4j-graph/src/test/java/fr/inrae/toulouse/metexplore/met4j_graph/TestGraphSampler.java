@@ -40,7 +40,7 @@ import static org.junit.Assert.*;
 
 import java.util.Set;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.GraphSampler;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.GraphSampler;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.junit.BeforeClass;

@@ -33,7 +33,7 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  */
-package fr.inrae.toulouse.metexplore.met4j_graph.computation.transform;
+package fr.inrae.toulouse.metexplore.met4j_graph.computation.utils;
 
 import java.util.Arrays;
 import java.util.Set;

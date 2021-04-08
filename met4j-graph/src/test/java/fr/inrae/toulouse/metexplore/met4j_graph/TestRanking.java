@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
 
 import java.util.HashMap;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.RankUtils;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.RankUtils;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.junit.Test;

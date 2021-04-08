@@ -48,7 +48,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.FloydWarshall;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.KShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.ShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.GraphCentralityMeasure;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjacencyMatrix;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;

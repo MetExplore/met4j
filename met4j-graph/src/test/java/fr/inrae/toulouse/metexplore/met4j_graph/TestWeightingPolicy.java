@@ -41,10 +41,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.DegreeWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.ProbabilityWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.SimilarityWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.StochasticWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.weighting.DegreeWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.weighting.ProbabilityWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.weighting.SimilarityWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.weighting.StochasticWeightPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -55,10 +55,10 @@ import org.junit.Test;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.DefaultWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.ReactionProbabilityWeight;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.WeightUtils;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.WeightsFromFile;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.weighting.DefaultWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.weighting.ReactionProbabilityWeight;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.weighting.WeightUtils;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.weighting.WeightsFromFile;
 
 /**
  * Test {@link fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph} with {@link WeightingPolicy <BioMetabolite, ReactionEdge , CompoundGraph >}

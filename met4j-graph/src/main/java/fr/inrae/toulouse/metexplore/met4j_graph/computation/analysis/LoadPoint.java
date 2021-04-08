@@ -47,6 +47,7 @@ import java.util.Set;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.KShortestPath;
 
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.centrality.GraphCentralityMeasure;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;

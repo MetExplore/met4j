@@ -41,7 +41,7 @@ import static org.junit.Assert.*;
 import java.util.Map;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.FloydWarshall;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.GraphCentralityMeasure;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.centrality.GraphCentralityMeasure;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.GraphMeasure;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;

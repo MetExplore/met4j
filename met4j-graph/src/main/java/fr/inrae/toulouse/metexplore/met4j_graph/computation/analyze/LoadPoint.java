@@ -47,7 +47,7 @@ import java.util.Set;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.KShortestPath;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.GraphCentralityMeasure;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.PathBasedCentrality;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
@@ -88,7 +88,7 @@ public class LoadPoint<V extends BioEntity, E extends Edge<V>, G extends BioGrap
 		HashMap<V, Double> loadsMap = new HashMap<>();
 		
 		Set<BioPath<V,E>> paths = (new KShortestPath<>(g)).getAllShortestPaths(k);
-		Map<V, Integer> numberOfPathPassingThrough = (new GraphCentralityMeasure<>(g)).getBetweenness(paths);
+		Map<V, Integer> numberOfPathPassingThrough = (new PathBasedCentrality<>(g)).getBetweenness(paths);
 		double degreeSum = getDegreeSum();
 		double totalNbOfSp = paths.size();
 		

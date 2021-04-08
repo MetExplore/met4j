@@ -47,7 +47,7 @@ import java.util.Map;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.FloydWarshall;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.KShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.ShortestPath;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.GraphCentralityMeasure;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.PathBasedCentrality;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -542,8 +542,8 @@ public class TestShortestPaths {
 	
 	@Test
 	public void testNeighboorhoodCentrality(){
-		GraphCentralityMeasure<BioMetabolite, ReactionEdge, CompoundGraph> measure =
-				new GraphCentralityMeasure<>(g);
+		PathBasedCentrality<BioMetabolite, ReactionEdge, CompoundGraph> measure =
+				new PathBasedCentrality<>(g);
 		Map<BioMetabolite, Integer> nc = measure.getGeodesicNeighborhoodCentrality();
 		assertEquals(6, nc.get(a).intValue());
 		assertEquals(2, nc.get(b).intValue());

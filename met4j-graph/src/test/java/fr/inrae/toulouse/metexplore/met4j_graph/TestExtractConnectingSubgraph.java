@@ -38,7 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_graph;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.ExtractConnectingSubgraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.GraphPruning;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.CompoundEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
 import org.junit.BeforeClass;
@@ -110,7 +110,7 @@ public class TestExtractConnectingSubgraph {
         BioCollection<BioReaction> noi = new BioCollection<>();
         noi.add(r1);
         noi.add(r3);
-        ExtractConnectingSubgraph<BioReaction, CompoundEdge> extractor = new ExtractConnectingSubgraph<>(rg, noi);
+        GraphPruning<BioReaction, CompoundEdge> extractor = new GraphPruning<>(rg, noi);
         extractor.cleanGraph();
 
         assertEquals(3, rg.vertexSet().size());

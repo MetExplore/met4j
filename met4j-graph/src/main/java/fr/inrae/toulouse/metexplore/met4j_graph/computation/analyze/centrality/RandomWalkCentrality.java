@@ -44,7 +44,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.EdgeMerger
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.ExtractConnectingSubgraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.GraphPruning;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
@@ -54,7 +54,7 @@ import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
  * Class to compute RandomWalk betweenness.
  * @author clement
  */
-public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>>{
+public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>>{
 	
 	/** The adjacency matrix. */
 	private final BioMatrix adjacencyMatrix;
@@ -113,7 +113,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	 * @param g the graph
 	 * @param nodesOfInterest the node of interest list
 	 */
-	public RandomWalk(G g, BioCollection<V> nodesOfInterest) {
+	public RandomWalkCentrality(G g, BioCollection<V> nodesOfInterest) {
 		
 		this.nodesOfInterest=nodesOfInterest;
         labelMap = new HashMap<>();
@@ -129,7 +129,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 		System.err.println("cleaning input graph... ");
 		System.err.println("input graph size: "+g.vertexSet().size());
 		
-		ExtractConnectingSubgraph<V,E> rm = new ExtractConnectingSubgraph<>(g, nodesOfInterest);
+		GraphPruning<V,E> rm = new GraphPruning<>(g, nodesOfInterest);
 		rm.cleanGraph();
 //		rm.remove3();
 
@@ -155,7 +155,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 	 * @param g the graph
 	 * @param nodeWeight the node weight map
 	 */
-	public RandomWalk(G g, HashMap<V, Double> nodeWeight) {
+	public RandomWalkCentrality(G g, HashMap<V, Double> nodeWeight) {
 		this.nodeWeight=nodeWeight;
         this.nodesOfInterest =new BioCollection<>(nodeWeight.keySet());
 
@@ -167,7 +167,7 @@ public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGra
 		System.err.println("cleaning input graph... ");
 		System.err.println("input graph size: "+g.vertexSet().size());
 		
-		ExtractConnectingSubgraph<V,E> rm = new ExtractConnectingSubgraph<>(g, nodesOfInterest);
+		GraphPruning<V,E> rm = new GraphPruning<>(g, nodesOfInterest);
 		rm.cleanGraph();
 
 		System.err.println("cleaned graph size: "+g.vertexSet().size()+"\n");

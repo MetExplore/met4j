@@ -41,7 +41,7 @@ import static org.junit.Assert.*;
 import java.util.Map;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.FloydWarshall;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.GraphCentralityMeasure;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.PathBasedCentrality;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.GraphMeasure;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -57,9 +57,9 @@ public class TestGraphCentrality {
 	public static CompoundGraph linearGraph;
 	public static CompoundGraph starGraph;
 	public static BioMetabolite a,b,c,d,e,f,h,g;
-	public static GraphCentralityMeasure<BioMetabolite, ReactionEdge, CompoundGraph> toyMeasure;
-	public static GraphCentralityMeasure<BioMetabolite, ReactionEdge, CompoundGraph> linearMeasure;
-	public static GraphCentralityMeasure<BioMetabolite, ReactionEdge, CompoundGraph> starMeasure;
+	public static PathBasedCentrality<BioMetabolite, ReactionEdge, CompoundGraph> toyMeasure;
+	public static PathBasedCentrality<BioMetabolite, ReactionEdge, CompoundGraph> linearMeasure;
+	public static PathBasedCentrality<BioMetabolite, ReactionEdge, CompoundGraph> starMeasure;
 	
 	@BeforeClass
 	public static void init(){
@@ -155,9 +155,9 @@ public class TestGraphCentrality {
 		linearGraph.addEdge(e, d, ed);
 		
 		
-		toyMeasure = new GraphCentralityMeasure<>(toyGraph);
-		linearMeasure = new GraphCentralityMeasure<>(linearGraph);
-		starMeasure = new GraphCentralityMeasure<>(starGraph);
+		toyMeasure = new PathBasedCentrality<>(toyGraph);
+		linearMeasure = new PathBasedCentrality<>(linearGraph);
+		starMeasure = new PathBasedCentrality<>(starGraph);
 	}
 	@Test
 	public void testBetweenness() {

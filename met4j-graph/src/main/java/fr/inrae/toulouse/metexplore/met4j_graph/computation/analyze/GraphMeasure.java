@@ -37,7 +37,7 @@ package fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.FloydWarshall;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.GraphCentralityMeasure;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.PathBasedCentrality;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
@@ -227,7 +227,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 * @return the OCCI
 	 */
 	public double getOCCI(){
-		GraphCentralityMeasure<V, E, BioGraph<V, E>> centralityComputor = new GraphCentralityMeasure<>(g);
+		PathBasedCentrality<V, E, BioGraph<V, E>> centralityComputor = new PathBasedCentrality<>(g);
 		Set<BioPath<V, E>> paths = centralityComputor.getAllShortestPaths();
 		Map<V, Double> closenessIndex = centralityComputor.getInCloseness(paths);
 		
@@ -257,7 +257,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 * @return the OCCI
 	 */
 	public double getOCCI(Set<BioPath<V, E>> validPaths){
-		GraphCentralityMeasure<V, E, BioGraph<V, E>> centralityComputor = new GraphCentralityMeasure<>(g);
+		PathBasedCentrality<V, E, BioGraph<V, E>> centralityComputor = new PathBasedCentrality<>(g);
 		Map<V, Double> closenessIndex = centralityComputor.getCloseness(validPaths);
 		
 		double max = 0.0;

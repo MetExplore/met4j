@@ -4,7 +4,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.FloydWarshall;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.GraphCentralityMeasure;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.PathBasedCentrality;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.GraphLocalMeasure;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.GraphMeasure;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.RankUtils;
@@ -170,7 +170,7 @@ public class NetworkSummary extends AbstractMet4jApplication {
 
             //Centrality analysis
             System.err.println("Compute centrality...");
-            GraphCentralityMeasure<BioMetabolite, ReactionEdge, CompoundGraph> cm = new GraphCentralityMeasure(graph);
+            PathBasedCentrality<BioMetabolite, ReactionEdge, CompoundGraph> cm = new PathBasedCentrality(graph);
 
 //            Set<BioPath<BioMetabolite,ReactionEdge>> sp = new HashSet<>(distComputor.getPaths().values());
 //            LinkedHashMap<BioMetabolite, Integer> betweenness = RankUtils.computeRank(cm.getBetweenness(sp).entrySet().stream().collect(

@@ -54,7 +54,7 @@ import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
  * @param <E> the edge type
  * @param <G> the graph type
  */
-public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G extends BioGraph<V, E>> {
+public class PathBasedCentrality<V extends BioEntity,E extends Edge<V>, G extends BioGraph<V, E>> {
 
 	/** The graph. */
 	final G g;
@@ -68,7 +68,7 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 	 *
 	 * @param g the graph
 	 */
-	public GraphCentralityMeasure(G g) {
+	public PathBasedCentrality(G g) {
 		this.g=g;
 	}
 	

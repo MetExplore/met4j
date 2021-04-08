@@ -53,7 +53,7 @@ import java.util.*;
  * @param <V>
  * @param <E>
  */
-public class ExtractConnectingSubgraph<V extends BioEntity, E extends Edge<V>> {
+public class GraphPruning<V extends BioEntity, E extends Edge<V>> {
 
 	/** The graph. */
 	public final BioGraph<V, E> g;
@@ -80,7 +80,7 @@ public class ExtractConnectingSubgraph<V extends BioEntity, E extends Edge<V>> {
  * @param g the graph
  * @param nodesOfInterest the nodes of interest
  */
-public ExtractConnectingSubgraph(BioGraph<V, E> g, BioCollection<V> nodesOfInterest) {
+public GraphPruning(BioGraph<V, E> g, BioCollection<V> nodesOfInterest) {
 		this.g=g;
 		this.nodesOfInterest=nodesOfInterest.getIds();
 	init();

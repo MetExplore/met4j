@@ -33,7 +33,7 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  */
-package fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.heuristic;
+package fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.heuristic;
 
 import java.util.BitSet;
 import java.util.HashMap;

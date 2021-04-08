@@ -51,8 +51,8 @@ import org.junit.Test;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.weighting.WeightUtils;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.weighting.WeightsFromFile;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightUtils;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightsFromFile;
 
 
 public class TestWeightUtils {

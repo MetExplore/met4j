@@ -44,10 +44,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.FloydWarshall;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.KShortestPath;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.ShortestPath;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.centrality.GraphCentralityMeasure;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.FloydWarshall;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.KShortestPath;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.ShortestPath;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.GraphCentralityMeasure;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;

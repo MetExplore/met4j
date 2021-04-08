@@ -40,7 +40,7 @@ import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.centrality.EigenVectorCentrality;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.EigenVectorCentrality;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;

@@ -41,7 +41,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.SteinerTreeApprox;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.SteinerTreeApprox;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.junit.BeforeClass;

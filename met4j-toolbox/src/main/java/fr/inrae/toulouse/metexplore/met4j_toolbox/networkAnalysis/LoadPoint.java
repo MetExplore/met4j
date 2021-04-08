@@ -3,7 +3,7 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.weighting.DefaultWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DefaultWeightPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -84,7 +84,7 @@ public class LoadPoint  extends AbstractMet4jApplication {
 
         //compute loads
         System.err.println("Computing load points...");
-        fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.LoadPoint computor = new fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.LoadPoint<BioMetabolite, ReactionEdge,CompoundGraph>(graph);
+        fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.LoadPoint computor = new fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.LoadPoint<BioMetabolite, ReactionEdge,CompoundGraph>(graph);
         HashMap<BioMetabolite, Double> loads = computor.getLoads(k);
 
         //export results

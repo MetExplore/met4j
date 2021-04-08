@@ -1,4 +1,4 @@
-package fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis;
+package fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;

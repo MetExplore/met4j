@@ -33,13 +33,13 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  */
-package fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.centrality;
+package fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.ShortestPath;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.ShortestPath;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;

@@ -41,9 +41,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.AStar;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.heuristic.ChemicalSimilarityHeuristic;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.weighting.SimilarityWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.AStar;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.heuristic.ChemicalSimilarityHeuristic;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.SimilarityWeightPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.junit.BeforeClass;

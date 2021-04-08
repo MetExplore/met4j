@@ -33,46 +33,33 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  */
-package fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.weighting;
+package fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting;
 
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
- * The Class DegreeWeightPolicy which set as edge weight the target node's degree to the power of n.
+ * The default Weighting policy (each weight is set to 1.0).
  * @author clement
  */
-public class DegreeWeightPolicy extends WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> {
-	
-	/** The exponent. */
-	double pow = 2;
-	
+public class DefaultWeightPolicy<V extends BioEntity, E extends Edge<V>,G extends BioGraph<V,E>>
+	extends WeightingPolicy<V,E,G> {
+
 	/**
-	 * Instantiates a new degree weight policy, which set as edge weight the square of the target node's degree
+	 * Instantiates a new default weight policy.
 	 */
-	public DegreeWeightPolicy() {}
-	
-	/**
-	 * Instantiates a new degree weight policy, which set as edge weight the target node's degree to the power of n
-	 *
-	 * @param n the exponent
-	 */
-	public DegreeWeightPolicy(double n) {
-        this.pow =n;
-	}
+	public DefaultWeightPolicy() {}
 
 	/* (non-Javadoc)
-	 * @see parsebionet.computation.graphe.WeightingPolicy#setWeight(parsebionet.computation.graphe.CompoundGraph)
+	 * @see parsebionet.applications.graphe.WeightingPolicy#setWeight(parsebionet.applications.graphe.BioGraph)
 	 */
 	@Override
-	public void setWeight(CompoundGraph g) {
-		for(ReactionEdge e : g.edgeSet()){
-			double weight = g.outDegreeOf(e.getV2());
-			weight += g.inDegreeOf(e.getV2());
-			g.setEdgeWeight(e, StrictMath.pow(weight, this.pow));
+	public void setWeight(G g) {
+		for(E e:g.edgeSet()){
+			g.setEdgeWeight(e, 1.0);
 		}
 	}
-
+	
 }

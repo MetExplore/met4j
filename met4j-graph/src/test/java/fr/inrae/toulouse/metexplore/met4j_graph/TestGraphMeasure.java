@@ -37,7 +37,7 @@ package fr.inrae.toulouse.metexplore.met4j_graph;
 
 import static org.junit.Assert.*;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.GraphMeasure;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.GraphMeasure;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.junit.BeforeClass;

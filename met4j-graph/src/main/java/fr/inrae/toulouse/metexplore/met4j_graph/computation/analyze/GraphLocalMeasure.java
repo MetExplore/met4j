@@ -33,7 +33,7 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  */
-package fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis;
+package fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze;
 
 import java.util.ArrayList;
 import java.util.HashMap;

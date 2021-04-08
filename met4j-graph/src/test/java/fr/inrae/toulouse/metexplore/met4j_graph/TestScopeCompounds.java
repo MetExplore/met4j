@@ -44,7 +44,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.ScopeCompounds;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.ScopeCompounds;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

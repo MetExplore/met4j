@@ -33,7 +33,7 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  */
-package fr.inrae.toulouse.metexplore.met4j_graph.computation.algo;
+package fr.inrae.toulouse.metexplore.met4j_graph.computation.connect;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +41,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.heuristic.AStarHeuristic;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.heuristic.AStarHeuristic;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;

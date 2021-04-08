@@ -40,7 +40,7 @@ import static org.junit.Assert.*;
 
 import java.util.HashSet;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.ChokePoint;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.ChokePoint;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.junit.BeforeClass;

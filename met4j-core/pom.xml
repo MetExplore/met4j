@@ -4,12 +4,12 @@
   <parent>
     <groupId>fr.inrae.toulouse.metexplore</groupId>
     <artifactId>met4j</artifactId>
-    <version>0.3.68</version>
+    <version>0.3.69-SNAPSHOT</version>
   </parent>
 
   <scm>
     <developerConnection>scm:git:ssh://git@forgemia.inra.fr/metexplore/met4j.git</developerConnection>
-    <tag>met4j-0.3.68</tag>
+    <tag>met4j-0.1.2</tag>
     <url>https://forgemia.inra.fr/metexplore/met4j/-/tree/master</url>
   </scm>
 

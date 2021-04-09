@@ -360,9 +360,8 @@ public class StringUtils {
 			id=id.replace("_IN_NIL", "");
 		return id;
 	}
-	
-	/**
-	 * Remove
+	/*
+	 * HTML marks removed :
 	 * - every thing between &lt; and &gt; (included)
 	 * - \&something;
 	 * - #something;
@@ -370,6 +369,9 @@ public class StringUtils {
 	 * - prime;
 	 * - mdash;
 	 * - ;
+	 */
+	/**
+	 * Remove Html marks
 	 *
 	 * @param id a {@link java.lang.String} object.
 	 * @return a {@link java.lang.String} object.

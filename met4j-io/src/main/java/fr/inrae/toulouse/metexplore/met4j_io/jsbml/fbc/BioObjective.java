@@ -42,12 +42,12 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 /**
  * This represents a complete flux objectives present in the model. A Flux
  * objective is a linear combination of reactions of the model that need their fluxes to be
- * maximized or minimised to attain a particular biological objective.<br /> e.g.
+ * maximized or minimised to attain a particular biological objective. e.g.
  * <ul>
  * <li>Maximize the biomass
  * <li>Minimize the virulence
  * </ul>
- * <br /><br /> Each Flux objective has an id and a name.
+ *  Each Flux objective has an id and a name.
  *
  * @author Benjamin
  * @since 3.0

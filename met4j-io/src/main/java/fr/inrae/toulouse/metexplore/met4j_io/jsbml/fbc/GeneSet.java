@@ -44,7 +44,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene;
 
 /**
  * This class represents a unique "AND" gene association
- * <br />
+ * 
  * it is composed of a set of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene} that all need to be active for
  * this association to be active
  *

@@ -42,8 +42,8 @@ import java.util.stream.Collectors;
 
 /**
  * This class represents the full gene association as they are described in SBML
- * files. <br />
- * <br />
+ * files. 
+ * 
  * This class consists of a list of {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneSet}s. Each of them being one
  * possible "AND" gene association that can activate a given reaction
  *

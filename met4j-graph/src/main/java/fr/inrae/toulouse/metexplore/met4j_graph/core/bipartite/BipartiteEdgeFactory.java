@@ -39,8 +39,15 @@ import org.jgrapht.EdgeFactory;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
+/**
+ * <p>BipartiteEdgeFactory class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class BipartiteEdgeFactory implements EdgeFactory<BioEntity, BipartiteEdge> {
 
+	/** {@inheritDoc} */
 	@Override
 	public BipartiteEdge createEdge(BioEntity arg0, BioEntity arg1) {
 		return new BipartiteEdge(arg0, arg1,false);

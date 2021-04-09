@@ -44,11 +44,12 @@ import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.Flux;
 
 /**
  * This Class represents a new type of network that handles the SBML fbc
- * package. It uses the {@link BioNetwork} class to handle classical network
+ * package. It uses the {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} class to handle classical network
  * data.</br> It also adds new types of 'ListOf' to store the new flux data.
- * 
+ *
  * @author Benjamin
  * @since 3.0
+ * @version $Id: $Id
  */
 public class FluxNetwork {
 	/**
@@ -86,10 +87,10 @@ public class FluxNetwork {
 	private HashMap<String, FluxReaction> listOfFluxReactions = new HashMap<String, FluxReaction>();
 
 	/**
-	 * Constructor using a {@link BioNetwork}
-	 * 
+	 * Constructor using a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
+	 *
 	 * @param bionet
-	 *            The underlying {@link BioNetwork}
+	 *            The underlying {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
 	 */
 	public FluxNetwork(BioNetwork bionet) {
 		this.underlyingBionet = bionet;
@@ -97,7 +98,7 @@ public class FluxNetwork {
 
 	/**
 	 * retrieves the {@link #underlyingBionet}
-	 * 
+	 *
 	 * @return the {@link #underlyingBionet}
 	 */
 	public BioNetwork getUnderlyingBionet() {
@@ -106,7 +107,7 @@ public class FluxNetwork {
 
 	/**
 	 * Set the {@link #underlyingBionet}
-	 * 
+	 *
 	 * @param underlyingBionet
 	 *            the new {@link #underlyingBionet}
 	 */
@@ -116,9 +117,8 @@ public class FluxNetwork {
 
 	/**
 	 * Retrieves the {@link #listOfObjectives}
-	 * 
+	 *
 	 * @return the {@link #listOfObjectives}
-	 * 
 	 */
 	public HashMap<String, BioObjective> getListOfObjectives() {
 		return this.listOfObjectives;
@@ -126,7 +126,7 @@ public class FluxNetwork {
 
 	/**
 	 * Set the {@link #listOfObjectives}
-	 * 
+	 *
 	 * @param listOfObjectives
 	 *            the new {@link #listOfObjectives}
 	 */
@@ -135,10 +135,10 @@ public class FluxNetwork {
 	}
 
 	/**
-	 * Add an {@link BioObjective} to the list
-	 * 
+	 * Add an {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjective} to the list
+	 *
 	 * @param objective
-	 *            the {@link BioObjective} to add
+	 *            the {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjective} to add
 	 */
 	public void addObjective(BioObjective objective) {
 		this.listOfObjectives.put(objective.getId(), objective);
@@ -146,7 +146,7 @@ public class FluxNetwork {
 
 	/**
 	 * Get the Active objective, {@link #activeObjective}
-	 * 
+	 *
 	 * @return the {@link #activeObjective}
 	 */
 	public BioObjective getActiveObjective() {
@@ -157,9 +157,9 @@ public class FluxNetwork {
 	 * Sets the active (ie primary) flux objective of this flux network. if this
 	 * objectives is not present in the network's list of objectives, this
 	 * method also adds it to the list.
-	 * 
+	 *
 	 * @param activeObjective
-	 *            the {@link BioObjective} to set as Active
+	 *            the {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjective} to set as Active
 	 */
 	public void setActiveObjective(BioObjective activeObjective) {
 		if (!this.getListOfObjectives().containsKey(activeObjective.getId())) {
@@ -169,11 +169,11 @@ public class FluxNetwork {
 	}
 
 	/**
-	 * Set the {@link #activeObjective} to the {@link BioObjective} which has the
+	 * Set the {@link #activeObjective} to the {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjective} which has the
 	 * given Id
-	 * 
+	 *
 	 * @param objectiveID
-	 *            the ID of the {@link BioObjective} to set as active
+	 *            the ID of the {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjective} to set as active
 	 */
 	public void setActiveObjective(String objectiveID) {
 		if (this.getListOfObjectives().containsKey(objectiveID)) {
@@ -185,7 +185,7 @@ public class FluxNetwork {
 
 	/**
 	 * Get the value of {@link #fbcStrict}
-	 * 
+	 *
 	 * @return {@link #fbcStrict}
 	 */
 	public boolean getFbcStrict() {
@@ -194,7 +194,7 @@ public class FluxNetwork {
 
 	/**
 	 * Set the value of {@link #fbcStrict}
-	 * 
+	 *
 	 * @param fbcStrict
 	 *            The new value
 	 */
@@ -204,7 +204,7 @@ public class FluxNetwork {
 
 	/**
 	 * get the list of flux bounds, {@link #listOfFluxBounds}
-	 * 
+	 *
 	 * @return {@link #listOfFluxBounds}
 	 */
 	public HashMap<String, Flux> getListOfFluxBounds() {
@@ -213,7 +213,7 @@ public class FluxNetwork {
 
 	/**
 	 * Set the {@link #listOfFluxBounds} to a new value
-	 * 
+	 *
 	 * @param listOfFluxBounds
 	 *            the new {@link #listOfFluxBounds}
 	 */
@@ -223,7 +223,7 @@ public class FluxNetwork {
 
 	/**
 	 * Add a new flux bound to {@link #listOfFluxBounds}
-	 * 
+	 *
 	 * @param flx
 	 *            the flux to add
 	 */
@@ -233,7 +233,7 @@ public class FluxNetwork {
 
 	/**
 	 * Get the {@link #listOfFluxReactions}
-	 * 
+	 *
 	 * @return the {@link #listOfFluxReactions}
 	 */
 	public HashMap<String, FluxReaction> getListOfFluxReactions() {
@@ -242,7 +242,7 @@ public class FluxNetwork {
 
 	/**
 	 * Set the {@link #listOfFluxReactions} to a new value
-	 * 
+	 *
 	 * @param listOfFluxReactions
 	 *            the new {@link #listOfFluxReactions}
 	 */

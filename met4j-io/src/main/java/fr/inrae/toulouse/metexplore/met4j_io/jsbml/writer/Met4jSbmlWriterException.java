@@ -36,6 +36,12 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer;
 
+/**
+ * <p>Met4jSbmlWriterException class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class Met4jSbmlWriterException extends Exception {
 
 	/**
@@ -44,10 +50,20 @@ public class Met4jSbmlWriterException extends Exception {
 	private static final long serialVersionUID = 1L;
 	String message;
 	
+	/**
+	 * <p>Constructor for Met4jSbmlWriterException.</p>
+	 *
+	 * @param m a {@link java.lang.String} object.
+	 */
 	public Met4jSbmlWriterException(String m) {
 		this.message = m;
 	}
 	
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString() {
 	      return this.getClass().getSimpleName()+ "[" + message + "]";
 	   }

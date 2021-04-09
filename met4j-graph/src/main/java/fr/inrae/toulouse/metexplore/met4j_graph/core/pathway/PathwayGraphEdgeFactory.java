@@ -44,12 +44,15 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
 /**
  * A factory for creating PathwayGraph edges objects.
  *
+ * @author lcottret
+ * @version $Id: $Id
  */
 public class PathwayGraphEdgeFactory implements EdgeFactory<BioPathway, PathwayGraphEdge> {
 	
 	/* (non-Javadoc)
 	 * @see org.jgrapht.EdgeFactory#createEdge(java.lang.Object, java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public PathwayGraphEdge createEdge(BioPathway arg0, BioPathway arg1) {
 		return new PathwayGraphEdge(arg0, arg1, new BioCollection<>());

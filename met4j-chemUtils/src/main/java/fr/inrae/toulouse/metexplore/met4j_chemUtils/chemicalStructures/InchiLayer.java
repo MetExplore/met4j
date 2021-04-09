@@ -41,9 +41,10 @@ import java.util.HashMap;
 /**
  * This class represents the different inchi layers that can contain a unique
  * InChI object
- * 
+ *
  * @author Benjamin
  * @since 2.0
+ * @version $Id: $Id
  */
 public class InchiLayer {
 
@@ -64,7 +65,7 @@ public class InchiLayer {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param name
 	 *            {@link #name}
 	 * @param value
@@ -77,7 +78,7 @@ public class InchiLayer {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param name
 	 *            {@link #name}
 	 * @param value
@@ -92,6 +93,11 @@ public class InchiLayer {
 		this.subLayer = subLayer;
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString() {
 
 		String output = this.name + ": " + this.value;
@@ -100,6 +106,7 @@ public class InchiLayer {
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 
@@ -124,6 +131,8 @@ public class InchiLayer {
 	}
 
 	/**
+	 * <p>Getter for the field <code>name</code>.</p>
+	 *
 	 * @return the name
 	 */
 	public char getName() {
@@ -131,6 +140,8 @@ public class InchiLayer {
 	}
 
 	/**
+	 * <p>Setter for the field <code>name</code>.</p>
+	 *
 	 * @param name
 	 *            the name to set
 	 */
@@ -139,6 +150,8 @@ public class InchiLayer {
 	}
 
 	/**
+	 * <p>Getter for the field <code>value</code>.</p>
+	 *
 	 * @return the value
 	 */
 	public String getValue() {
@@ -146,6 +159,8 @@ public class InchiLayer {
 	}
 
 	/**
+	 * <p>Setter for the field <code>value</code>.</p>
+	 *
 	 * @param value
 	 *            the value to set
 	 */
@@ -154,6 +169,8 @@ public class InchiLayer {
 	}
 
 	/**
+	 * <p>Getter for the field <code>subLayer</code>.</p>
+	 *
 	 * @return the subLayer
 	 */
 	public HashMap<Character, InchiLayer> getSubLayer() {
@@ -161,6 +178,8 @@ public class InchiLayer {
 	}
 
 	/**
+	 * <p>Setter for the field <code>subLayer</code>.</p>
+	 *
 	 * @param subLayer
 	 *            the subLayer to set
 	 */

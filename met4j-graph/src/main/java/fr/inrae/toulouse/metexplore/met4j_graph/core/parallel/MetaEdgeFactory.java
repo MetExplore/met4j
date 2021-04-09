@@ -46,12 +46,15 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
  *
  * @param <V> the value type
  * @param <E> the element type
+ * @author lcottret
+ * @version $Id: $Id
  */
 public class MetaEdgeFactory<V extends BioEntity,E extends Edge<V>> implements EdgeFactory<V, MetaEdge<V,E>> {
 	
 	/* (non-Javadoc)
 	 * @see org.jgrapht.EdgeFactory#createEdge(java.lang.Object, java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public MetaEdge<V, E> createEdge(V arg0, V arg1) {
 		MetaEdge<V, E> edge = new MetaEdge<>(arg0, arg1);

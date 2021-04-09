@@ -41,9 +41,10 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors;
  * {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser} class when the gene
  * association read in the reaction notes does not have a correct syntax. In
  * most case it is a missing parenthesis.
- * 
+ *
  * @author Benjamin
  * @since 3.0
+ * @version $Id: $Id
  */
 public class MalformedGeneAssociationStringException extends Exception {
 
@@ -54,7 +55,7 @@ public class MalformedGeneAssociationStringException extends Exception {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param message
 	 *            the error message
 	 */

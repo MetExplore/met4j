@@ -42,7 +42,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * The Class BipartiteEdge.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class BipartiteEdge extends Edge<BioEntity> {
 	
@@ -65,19 +67,46 @@ public class BipartiteEdge extends Edge<BioEntity> {
 		super(v1,v2);
         this.reversible =v2.isReversible();
 	}
+	/**
+	 * <p>Constructor for BipartiteEdge.</p>
+	 *
+	 * @param v1 a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+	 * @param v2 a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 */
 	public BipartiteEdge(BioReaction v1, BioMetabolite v2){
 		super(v1,v2);
         this.reversible =v1.isReversible();
 	}
+	/**
+	 * <p>Constructor for BipartiteEdge.</p>
+	 *
+	 * @param v1 a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 * @param v2 a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+	 * @param reversible a boolean.
+	 */
 	public BipartiteEdge(BioMetabolite v1, BioReaction v2, boolean reversible){
 		super(v1,v2);
 		this.reversible=reversible;
 		
 	}
+	/**
+	 * <p>Constructor for BipartiteEdge.</p>
+	 *
+	 * @param v1 a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+	 * @param v2 a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 * @param reversible a boolean.
+	 */
 	public BipartiteEdge(BioReaction v1, BioMetabolite v2, boolean reversible){
 		super(v1,v2);
 		this.reversible=reversible;
 	}
+	/**
+	 * <p>Constructor for BipartiteEdge.</p>
+	 *
+	 * @param v1 a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+	 * @param v2 a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+	 * @param reversible a boolean.
+	 */
 	public BipartiteEdge(BioEntity v1, BioEntity v2, boolean reversible){
 		super(v1,v2);
 		if(!(v1 instanceof BioMetabolite && v2 instanceof BioReaction)
@@ -90,7 +119,7 @@ public class BipartiteEdge extends Edge<BioEntity> {
 	/**
 	 * Sets the reversibility.
 	 *
-	 * @param reversible
+	 * @param reversible a boolean.
 	 */
 	public void setReversible(boolean reversible) {
 		this.reversible = reversible;
@@ -108,7 +137,7 @@ public class BipartiteEdge extends Edge<BioEntity> {
 	/**
 	 * Sets if involve side compound.
 	 *
-	 * @param side
+	 * @param side a boolean.
 	 */
 	public void setSide(boolean side) {
 		this.side = side;

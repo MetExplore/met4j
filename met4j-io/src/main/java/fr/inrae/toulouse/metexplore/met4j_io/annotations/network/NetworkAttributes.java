@@ -42,16 +42,24 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjectiveCollection;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
 
+/**
+ * <p>NetworkAttributes class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class NetworkAttributes extends GenericAttributes {
 
+	/** Constant <code>UNIT_DEFINITIONS="unit_definitions"</code> */
 	public static final String UNIT_DEFINITIONS = "unit_definitions";
+	/** Constant <code>OBJECTIVES="objectives"</code> */
 	public static final String OBJECTIVES = "objectives";
 
 	/**
 	 * Get BioUnitDefinitions of a network
-	 * 
-	 * @param network
-	 * @return
+	 *
+	 * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection} object.
 	 */
 	public static BioUnitDefinitionCollection getUnitDefinitions(BioNetwork network) {
 
@@ -61,10 +69,10 @@ public class NetworkAttributes extends GenericAttributes {
 
 	/**
 	 * Get a unit definition of a network from its id
-	 * 
-	 * @param network
-	 * @param unitId
-	 * @return
+	 *
+	 * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+	 * @param unitId a {@link java.lang.String} object.
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition} object.
 	 */
 	public static BioUnitDefinition getUnitDefinition(BioNetwork network, String unitId) {
 
@@ -78,9 +86,9 @@ public class NetworkAttributes extends GenericAttributes {
 
 	/**
 	 * Add unit definitions to a network
-	 * 
-	 * @param network
-	 * @param c
+	 *
+	 * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+	 * @param c a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection} object.
 	 */
 	public static void addUnitDefinitions(BioNetwork network, BioUnitDefinitionCollection c) {
 		network.setAttribute(UNIT_DEFINITIONS, c);
@@ -88,9 +96,9 @@ public class NetworkAttributes extends GenericAttributes {
 
 	/**
 	 * Test if unit definitions have been set for a network
-	 * 
-	 * @param network
-	 * @return
+	 *
+	 * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+	 * @return a {@link java.lang.Boolean} object.
 	 */
 	public static Boolean containsUnitDefinitions(BioNetwork network) {
 		return network.getAttribute(UNIT_DEFINITIONS) != null;
@@ -98,9 +106,9 @@ public class NetworkAttributes extends GenericAttributes {
 
 	/**
 	 * Add unit definitions to a network
-	 * 
-	 * @param network
-	 * @param c
+	 *
+	 * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+	 * @param unit a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition} object.
 	 */
 	public static void addUnitDefinition(BioNetwork network, BioUnitDefinition unit) {
 
@@ -114,8 +122,9 @@ public class NetworkAttributes extends GenericAttributes {
 
 	/**
 	 * Set list of objectives
-	 * @param network
-	 * @param objectives
+	 *
+	 * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+	 * @param objectives a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjectiveCollection} object.
 	 */
 	public static void setObjectives(BioNetwork network, BioObjectiveCollection objectives) {
 		network.setAttribute(OBJECTIVES, objectives);
@@ -123,8 +132,9 @@ public class NetworkAttributes extends GenericAttributes {
 
 	/**
 	 * Get list of objectives
-	 * @param network
-	 * @return
+	 *
+	 * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjectiveCollection} object.
 	 */
 	public static BioObjectiveCollection getObjectives(BioNetwork network) {
 		return (BioObjectiveCollection) network.getAttribute(OBJECTIVES);

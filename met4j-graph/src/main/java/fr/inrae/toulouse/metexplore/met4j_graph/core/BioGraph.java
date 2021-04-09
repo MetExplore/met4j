@@ -49,17 +49,29 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * The Class BioGraph.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends DirectedWeightedMultigraph<V, E>{
 	
 	private static final long serialVersionUID = 1L;
 	private String name = "MetabolicGraph";
 	
+	/**
+	 * <p>Constructor for BioGraph.</p>
+	 *
+	 * @param edgeClass a {@link java.lang.Class} object.
+	 */
 	public BioGraph(Class<? extends E> edgeClass){
 		super(edgeClass);
 	}
 	
+	/**
+	 * <p>Constructor for BioGraph.</p>
+	 *
+	 * @param factory a {@link org.jgrapht.EdgeFactory} object.
+	 */
 	public BioGraph(EdgeFactory<V, E> factory){
 		super(factory);
 	}
@@ -127,7 +139,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/**
 	 * Gets the neighbor list of a given vertex.
 	 *
-	 * @param vertex
+	 * @param vertex a V object.
 	 * @return the neighbor list
 	 */
 	public final Set<V> neighborListOf(V vertex){
@@ -137,7 +149,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/**
 	 * Gets the predecessor list of a given vertex.
 	 *
-	 * @param vertex
+	 * @param vertex a V object.
 	 * @return the predecessor list
 	 */
 	public final Set<V> predecessorListOf(V vertex){
@@ -147,7 +159,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/**
 	 * Gets the successor list of a given vertex.
 	 *
-	 * @param vertex
+	 * @param vertex a V object.
 	 * @return the successor list
 	 */
 	public final Set<V> successorListOf(V vertex){
@@ -157,6 +169,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#addEdge(java.lang.Object, java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public E addEdge(V arg0, V arg1) {
 		return super.addEdge(arg0, arg1);
@@ -165,6 +178,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#addEdge(java.lang.Object, java.lang.Object, java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean addEdge(V sourceVertex, V targetVertex, E e) {
 		return super.addEdge(sourceVertex, targetVertex, e);
@@ -173,6 +187,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#addVertex(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public boolean addVertex(V v) {
 		return super.addVertex(v);
@@ -180,6 +195,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	
 	/**
 	 * add a path to the graph
+	 *
 	 * @param path the path to add
 	 */
 	public void addPath(BioPath<V,E> path){
@@ -193,6 +209,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#containsEdge(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public  final boolean containsEdge(E e1) {
 		for(E e2 : this.edgeSet()){
@@ -205,6 +222,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	
 	/**
 	 * Return true if their exist an edge with the first vertex as source and the second one as target, false otherwise
+	 *
 	 * @param v1 the first vertex
 	 * @param v2 the second vertex
 	 * @return if v1 and v2 are connected
@@ -217,6 +235,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#containsVertex(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final boolean containsVertex(V v) {
 		return super.containsVertex(v);
@@ -225,6 +244,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#degreeOf(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final int degreeOf(V vertex) {
 		return super.inDegreeOf(vertex)+super.outDegreeOf(vertex);
@@ -233,6 +253,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#edgeSet()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final Set<E> edgeSet() {
 		return super.edgeSet();
@@ -241,6 +262,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#edgesOf(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final Set<E> edgesOf(V vertex) {
 		return super.edgesOf(vertex);
@@ -249,6 +271,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#getAllEdges(java.lang.Object, java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final Set<E> getAllEdges(V sourceVertex, V targetVertex) {
 		return super.getAllEdges(sourceVertex, targetVertex);
@@ -257,6 +280,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#getAllEdges(java.lang.Object, java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final E getEdge(V sourceVertex, V targetVertex) {
 		Set<E> allEdges = getAllEdges(sourceVertex, targetVertex);
@@ -284,6 +308,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 * @param sourceVertex the source vertex
 	 * @param targetVertex the target vertex
 	 * @return the edge
+	 * @param label a {@link java.lang.String} object.
 	 */
 	public E getEdge(String sourceVertex, String targetVertex, String label) {
 		for(E e : this.edgeSet()){
@@ -297,6 +322,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#getEdgeSource(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final V getEdgeSource(E e) {
 		return super.getEdgeSource(e);
@@ -305,6 +331,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#getEdgeTarget(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final V getEdgeTarget(E e) {
 		return super.getEdgeTarget(e);
@@ -313,6 +340,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#getEdgeWeight(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final double getEdgeWeight(E e) {
 		return super.getEdgeWeight(e);
@@ -320,7 +348,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	
 	/**
 	 * Get the edge weights map
-	 * 
+	 *
 	 * @return the map
 	 */
 	public final HashMap<E, Double> getEdgeWeightMap() {
@@ -333,7 +361,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	
 	/**
 	 * Get the edge score map
-	 * 
+	 *
 	 * @return the map
 	 */
 	public final HashMap<E, Double> getEdgeScoreMap() {
@@ -357,6 +385,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#inDegreeOf(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final int inDegreeOf(V vertex) {
 		return super.inDegreeOf(vertex);
@@ -365,6 +394,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#incomingEdgesOf(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final Set<E> incomingEdgesOf(V vertex) {
 		return super.incomingEdgesOf(vertex);
@@ -374,6 +404,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#outDegreeOf(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final int outDegreeOf(V vertex) {
 		return super.outDegreeOf(vertex);
@@ -382,6 +413,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#outgoingEdgesOf(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final Set<E> outgoingEdgesOf(V vertex) {
 		return super.outgoingEdgesOf(vertex);
@@ -390,6 +422,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#removeEdge(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final boolean removeEdge(E e) {
 		return super.removeEdge(e);
@@ -398,6 +431,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#removeVertex(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final boolean removeVertex(V arg0) {
 		return super.removeVertex(arg0);
@@ -406,6 +440,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#setEdgeWeight(java.lang.Object, double)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final void setEdgeWeight(E e, double weight) {
 		super.setEdgeWeight(e, weight);
@@ -424,6 +459,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#vertexSet()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final Set<V> vertexSet() {
 		return super.vertexSet();
@@ -432,6 +468,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractGraph#removeAllEdges(java.lang.Object, java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final Set<E> removeAllEdges(V sourceVertex, V targetVertex) {
 		return super.removeAllEdges(sourceVertex, targetVertex);
@@ -440,20 +477,42 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractGraph#removeAllVertices(java.util.Collection)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public final boolean removeAllVertices(Collection<? extends V> arg0) {
 		return super.removeAllVertices(arg0);
 	}
 
+	/**
+	 * <p>Getter for the field <code>name</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * <p>Setter for the field <code>name</code>.</p>
+	 *
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 	
+	/**
+	 * <p>copyEdge.</p>
+	 *
+	 * @param edge a E object.
+	 * @return a E object.
+	 */
 	public abstract E copyEdge(E edge);
+	/**
+	 * <p>getEdgeFactory.</p>
+	 *
+	 * @return a {@link org.jgrapht.EdgeFactory} object.
+	 */
 	public abstract EdgeFactory<V, E> getEdgeFactory();
 	
 //	public abstract GraphFactory<V, E, ? extends BioGraph<V,E>> getGraphFactory();
@@ -468,6 +527,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	
 	/**
 	 * create an edge e'(x,y) from an existing edge e(y,x)
+	 *
 	 * @param edge the edge to reverse
 	 * @return the reverse edge
 	 */

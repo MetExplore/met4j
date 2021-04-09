@@ -52,7 +52,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
  * Handled format :
  * tab separated
  * source vertex id,target vertex id,reaction id,weight
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends BioGraph<V,E>>
 	extends WeightingPolicy<V,E,G> {
@@ -74,7 +76,7 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 	 * Instantiates a new weights from file.
 	 *
 	 * @param filePath the file path
-	 * @param removeEdgeNotInFile
+	 * @param removeEdgeNotInFile a boolean.
 	 */
 	public WeightsFromFile(String filePath, boolean removeEdgeNotInFile) {
 		this.filePath=filePath;
@@ -84,6 +86,7 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.WeightingPolicy#setWeight(parsebionet.applications.graphe.BioGraph)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void setWeight(G g) {
 		HashSet<E> seenEdges = new HashSet<>();

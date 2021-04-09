@@ -38,6 +38,12 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import org.kohsuke.args4j.Option;
 
+/**
+ * <p>Abstract AbstractSbmlSetAny class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public abstract class AbstractSbmlSetAny extends AbstractSbmlSet {
 
     @Option(name="-ci", usage="[1] number of the column where are the object ids")
@@ -52,6 +58,9 @@ public abstract class AbstractSbmlSetAny extends AbstractSbmlSet {
     @Option(name="-o", usage="[R] Object type in the column id. R:reaction;M:metabolite;P:protein;G:gene")
     protected String o="R";
 
+    /**
+     * <p>Constructor for AbstractSbmlSetAny.</p>
+     */
     public AbstractSbmlSetAny() {
     }
 

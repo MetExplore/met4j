@@ -54,8 +54,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
  * A subgraph can be extracted from this class by filtering nodes using their centrality
  * PageRank can also be computed by adding a scale factor : from each node, a small probabilty to "jump" to any other node is added
  * This kind of measure can be computed relatively to a given set of nodes.
- * @author clement
  *
+ * @author clement
+ * @version $Id: $Id
  */
 public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V ,E>> {
 	
@@ -78,7 +79,7 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 	 * Instantiates a new eigen vector centrality computor.
 	 *
 	 * @param adjacencyMatrix the adjacency matrix
-	 * @throws Exception
+	 * @throws java.lang.Exception if any.
 	 */
 	public EigenVectorCentrality(BioMatrix adjacencyMatrix) throws Exception{
 		if(adjacencyMatrix.numRows()!=adjacencyMatrix.numCols()) throw new IllegalArgumentException("adjacency matrix must be square");
@@ -273,13 +274,11 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 	 * Extract a subnetwork by removing all node with a eigen vector centrality below a given threshold
 	 *
 	 * @param g the graph
-	 * @param threshold
-	 * @param seeds
+	 * @param threshold a double.
+	 * @param seeds a {@link java.util.HashMap} object.
 	 * @param JumpProba the jump probability
 	 * @param maxIter the maximum number of iteration
-	 * @param tolerance
-	 * @return
-	 * @return the bio graph
+	 * @param tolerance a double.
 	 */
 	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> void extractEigenVectorCentralitySubNet(G g, double threshold, HashMap<V,Double> seeds, double JumpProba, int maxIter, double tolerance){
 
@@ -317,8 +316,6 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 	 * @param g the graph
 	 * @param threshold the threshold
 	 * @param seeds the seeds
-	 * @return
-	 * @return the bio graph
 	 */
 	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> void extractEigenVectorCentralitySubNet(G g, double threshold, HashMap<V,Double> seeds){
 		extractEigenVectorCentralitySubNet(g,threshold,seeds,0.02,100,0.000001);

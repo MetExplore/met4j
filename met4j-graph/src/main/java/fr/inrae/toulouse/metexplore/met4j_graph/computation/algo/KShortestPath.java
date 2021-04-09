@@ -49,6 +49,12 @@ import org.jgrapht.GraphPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
+/**
+ * <p>KShortestPath class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V ,E>>{
 	
 	/** The graph. */
@@ -186,8 +192,9 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 	
 	/**
 	 * return all the k-shortest paths in the given graph
-	 * @param k
-	 * @return
+	 *
+	 * @param k a int.
+	 * @return a {@link java.util.Set} object.
 	 */
 	public Set<BioPath<V,E>> getAllShortestPaths(int k){
 		HashSet<BioPath<V, E>> paths = new HashSet<>();

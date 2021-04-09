@@ -38,6 +38,12 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.units;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
+/**
+ * <p>BioUnitDefinitionCollection class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class BioUnitDefinitionCollection extends BioCollection<BioUnitDefinition> {
 
 	

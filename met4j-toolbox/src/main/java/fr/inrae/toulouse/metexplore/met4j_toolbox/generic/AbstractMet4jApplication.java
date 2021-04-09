@@ -40,14 +40,24 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
+/**
+ * <p>Abstract AbstractMet4jApplication class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public abstract class AbstractMet4jApplication {
 
     /**
+     * <p>getLabel.</p>
+     *
      * @return the label
      */
     public abstract String getLabel();
 
     /**
+     * <p>getDescription.</p>
+     *
      * @return the description
      */
     public abstract String getDescription();
@@ -55,17 +65,28 @@ public abstract class AbstractMet4jApplication {
     @Option(name = "-h", usage = "prints the help", required = false)
     private Boolean h = false;
 
+    /**
+     * <p>printHeader.</p>
+     */
     public void printHeader()
     {
         System.out.println(this.getLabel());
         System.out.println(this.getDescription());
     }
 
+    /**
+     * <p>printUsage.</p>
+     */
     public void printUsage() {
         CmdLineParser parser = new CmdLineParser(this);
         parser.printUsage(System.out);
     }
 
+    /**
+     * <p>parseArguments.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     */
     protected void parseArguments(String[] args) {
         CmdLineParser parser = new CmdLineParser(this);
 

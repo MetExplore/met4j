@@ -68,13 +68,14 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
 
 
 /**
- * The main writer class. It uses the correct {@link BionetworkToJsbml} class
+ * The main writer class. It uses the correct {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.BionetworkToJsbml} class
  * depending on the SBML level defined by the user
  *
  * To launch with -Dlog4j.configuration="log4jmet4j.properties"
  *
  * @author Benjamin
  * @since 3.0
+ * @version $Id: $Id
  */
 public class JsbmlWriter {
 
@@ -124,6 +125,7 @@ public class JsbmlWriter {
      * @param bionet       the bionetwork to convert
      * @param lvl          the level of the SBML
      * @param useValidator whether or not to use the validator
+     * @param version a int.
      */
     public JsbmlWriter(String outputFile, BioNetwork bionet,
                        int lvl, int version, boolean useValidator) {
@@ -140,6 +142,12 @@ public class JsbmlWriter {
         model.setMetaId(bionet.getId());
     }
 
+    /**
+     * <p>Constructor for JsbmlWriter.</p>
+     *
+     * @param outputFile a {@link java.lang.String} object.
+     * @param bionet a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     */
     public JsbmlWriter(String outputFile, BioNetwork bionet) {
 
         this.filename = outputFile;
@@ -154,6 +162,11 @@ public class JsbmlWriter {
         model.setMetaId(bionet.getId());
     }
 
+    /**
+     * <p>write.</p>
+     *
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException if any.
+     */
     public void write() throws Met4jSbmlWriterException {
 
         HashSet<PackageWriter> pkgs = new HashSet<>();
@@ -166,6 +179,11 @@ public class JsbmlWriter {
 
     }
 
+    /**
+     * <p>writeWithoutNotes.</p>
+     *
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException if any.
+     */
     public void writeWithoutNotes() throws Met4jSbmlWriterException {
 
         HashSet<PackageWriter> pkgs = new HashSet<>();
@@ -182,6 +200,7 @@ public class JsbmlWriter {
      * additional data to output SBML
      *
      * @param pkgs Set of writer package to use
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException if any.
      */
     public void write(HashSet<PackageWriter> pkgs) throws Met4jSbmlWriterException {
         // System.err.println("Verifying packages...");
@@ -323,11 +342,12 @@ public class JsbmlWriter {
      * Method that effectively writes the SBML document once the model was
      * completed.
      *
-     * @throws SBMLException      if any SBML problems prevent to write the SBMLDocument.
-     * @throws XMLStreamException if any problems prevent to write the SBMLDocument as XML.
-     * @throws IOException        if the file is not writable
-     * @throws ParsingException   if the error was found while parsing the XML string
-     * @throws ValidityException  if the xml is not valid
+     * @throws org.sbml.jsbml.SBMLException      if any SBML problems prevent to write the SBMLDocument.
+     * @throws org.sbml.jsbml.SBMLException if any.
+     * @throws javax.xml.stream.XMLStreamException if any.
+     * @throws java.io.IOException if any.
+     * @throws nu.xom.ValidityException if any.
+     * @throws nu.xom.ParsingException if any.
      */
     protected void writeDocument() throws SBMLException, XMLStreamException,
             IOException, ValidityException, ParsingException {
@@ -350,9 +370,9 @@ public class JsbmlWriter {
      * Used to correct the XML indentation
      *
      * @param sbmlFile The sbml file as a String
-     * @throws ValidityException if the xml is not valid
-     * @throws IOException       if the file is not writable
-     * @throws ParsingException  if the error was found while parsing the XML string
+     * @throws nu.xom.ValidityException if any.
+     * @throws java.io.IOException if any.
+     * @throws nu.xom.ParsingException if any.
      */
     protected void prettifyXML(String sbmlFile) throws ValidityException,
             IOException, ParsingException {
@@ -371,6 +391,8 @@ public class JsbmlWriter {
     }
 
     /**
+     * <p>Getter for the field <code>filename</code>.</p>
+     *
      * @return the filename
      */
     public String getFilename() {
@@ -378,6 +400,8 @@ public class JsbmlWriter {
     }
 
     /**
+     * <p>Setter for the field <code>filename</code>.</p>
+     *
      * @param filename the filename to set
      */
     public void setFilename(String filename) {
@@ -385,6 +409,8 @@ public class JsbmlWriter {
     }
 
     /**
+     * <p>Getter for the field <code>net</code>.</p>
+     *
      * @return the net
      */
     public BioNetwork getNet() {
@@ -392,6 +418,8 @@ public class JsbmlWriter {
     }
 
     /**
+     * <p>Setter for the field <code>net</code>.</p>
+     *
      * @param net the net to set
      */
     public void setNet(BioNetwork net) {
@@ -399,6 +427,8 @@ public class JsbmlWriter {
     }
 
     /**
+     * <p>Getter for the field <code>doc</code>.</p>
+     *
      * @return the doc
      */
     public SBMLDocument getDoc() {
@@ -406,6 +436,8 @@ public class JsbmlWriter {
     }
 
     /**
+     * <p>Setter for the field <code>doc</code>.</p>
+     *
      * @param doc the doc to set
      */
     public void setDoc(SBMLDocument doc) {
@@ -413,6 +445,8 @@ public class JsbmlWriter {
     }
 
     /**
+     * <p>Getter for the field <code>model</code>.</p>
+     *
      * @return the model
      */
     public Model getModel() {
@@ -420,6 +454,8 @@ public class JsbmlWriter {
     }
 
     /**
+     * <p>Setter for the field <code>model</code>.</p>
+     *
      * @param model the model to set
      */
     public void setModel(Model model) {
@@ -427,6 +463,8 @@ public class JsbmlWriter {
     }
 
     /**
+     * <p>Getter for the field <code>converter</code>.</p>
+     *
      * @return the converter
      */
     public BionetworkToJsbml getConverter() {
@@ -434,6 +472,8 @@ public class JsbmlWriter {
     }
 
     /**
+     * <p>Setter for the field <code>converter</code>.</p>
+     *
      * @param converter the converter to set
      */
     public void setConverter(BionetworkToJsbml converter) {
@@ -441,6 +481,8 @@ public class JsbmlWriter {
     }
 
     /**
+     * <p>Getter for the field <code>level</code>.</p>
+     *
      * @return the level
      */
     public int getLevel() {
@@ -448,6 +490,8 @@ public class JsbmlWriter {
     }
 
     /**
+     * <p>Setter for the field <code>level</code>.</p>
+     *
      * @param level the level to set
      */
     public void setLevel(int level) {
@@ -455,6 +499,8 @@ public class JsbmlWriter {
     }
 
     /**
+     * <p>isUseValidator.</p>
+     *
      * @return the useValidator
      */
     public boolean isUseValidator() {
@@ -462,6 +508,8 @@ public class JsbmlWriter {
     }
 
     /**
+     * <p>Setter for the field <code>useValidator</code>.</p>
+     *
      * @param useValidator the useValidator to set
      */
     public void setUseValidator(boolean useValidator) {
@@ -469,6 +517,8 @@ public class JsbmlWriter {
     }
 
     /**
+     * <p>Getter for the field <code>errorsAndWarnings</code>.</p>
+     *
      * @return the errorsAndWarnings
      */
     public ArrayList<String> getErrorsAndWarnings() {
@@ -476,6 +526,8 @@ public class JsbmlWriter {
     }
 
     /**
+     * <p>Setter for the field <code>errorsAndWarnings</code>.</p>
+     *
      * @param errorsAndWarnings the errorsAndWarnings to set
      */
     public void setErrorsAndWarnings(ArrayList<String> errorsAndWarnings) {

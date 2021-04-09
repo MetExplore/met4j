@@ -38,6 +38,12 @@ package fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalSimilarity;
 
 import java.util.BitSet;
 
+/**
+ * <p>SimilarityComputor class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class SimilarityComputor {
 
     /**
@@ -53,7 +59,8 @@ public class SimilarityComputor {
      * @param fingerprint1 the first chemical fingerprint
      * @param fingerprint2 the second chemical fingerprint
      * @return the tanimoto coefficient
-     * @throws IllegalArgumentException
+     * @throws java.lang.IllegalArgumentException
+     * @throws java.lang.IllegalArgumentException if any.
      */
     public static double getTanimoto(BitSet fingerprint1, BitSet fingerprint2) throws IllegalArgumentException{
         if(fingerprint1.size()!=fingerprint2.size()) throw new IllegalArgumentException("bitSets must have the same size");
@@ -74,7 +81,8 @@ public class SimilarityComputor {
      * @param fingerprint1 the first chemical fingerprint
      * @param fingerprint2 the second chemical fingerprint
      * @return the dice coefficient
-     * @throws IllegalArgumentException
+     * @throws java.lang.IllegalArgumentException
+     * @throws java.lang.IllegalArgumentException if any.
      */
     public static double getDiceCoeff(BitSet fingerprint1, BitSet fingerprint2) throws IllegalArgumentException{
         if(fingerprint1.size()!=fingerprint2.size()) throw new IllegalArgumentException("bitSets must have the same size");
@@ -95,7 +103,8 @@ public class SimilarityComputor {
      * @param fingerprint1 the first chemical fingerprint
      * @param fingerprint2 the second chemical fingerprint
      * @return the cosine coefficient
-     * @throws IllegalArgumentException
+     * @throws java.lang.IllegalArgumentException
+     * @throws java.lang.IllegalArgumentException if any.
      */
     public static double getCosineCoeff(BitSet fingerprint1, BitSet fingerprint2) throws IllegalArgumentException{
         if(fingerprint1.size()!=fingerprint2.size()) throw new IllegalArgumentException("bitSets must have the same size");
@@ -116,7 +125,8 @@ public class SimilarityComputor {
      * @param fingerprint1 the first chemical fingerprint
      * @param fingerprint2 the second chemical fingerprint
      * @return the manhattan distance
-     * @throws IllegalArgumentException
+     * @throws java.lang.IllegalArgumentException
+     * @throws java.lang.IllegalArgumentException if any.
      */
     public static double getManhattanDist(BitSet fingerprint1, BitSet fingerprint2) throws IllegalArgumentException{
         if(fingerprint1.size()!=fingerprint2.size()) throw new IllegalArgumentException("bitSets must have the same size");
@@ -136,7 +146,8 @@ public class SimilarityComputor {
      * @param fingerprint1 the first chemical fingerprint
      * @param fingerprint2 the second chemical fingerprint
      * @return the euclidean distance
-     * @throws IllegalArgumentException
+     * @throws java.lang.IllegalArgumentException
+     * @throws java.lang.IllegalArgumentException if any.
      */
     public static double getEuclideanDist(BitSet fingerprint1, BitSet fingerprint2) throws IllegalArgumentException{
         if(fingerprint1.size()!=fingerprint2.size()) throw new IllegalArgumentException("bitSets must have the same size");
@@ -158,7 +169,8 @@ public class SimilarityComputor {
      * @param fingerprint1 the first chemical fingerprint
      * @param fingerprint2 the second chemical fingerprint
      * @return the soergel distance
-     * @throws IllegalArgumentException
+     * @throws java.lang.IllegalArgumentException
+     * @throws java.lang.IllegalArgumentException if any.
      */
     public static double getSoergelDist(BitSet fingerprint1, BitSet fingerprint2) throws IllegalArgumentException{
         if(fingerprint1.size()!=fingerprint2.size()) throw new IllegalArgumentException("bitSets must have the same size");
@@ -178,7 +190,8 @@ public class SimilarityComputor {
      * @param fingerprint1 the first chemical fingerprint
      * @param fingerprint2 the second chemical fingerprint
      * @return the xor distance
-     * @throws IllegalArgumentException
+     * @throws java.lang.IllegalArgumentException
+     * @throws java.lang.IllegalArgumentException if any.
      */
     public static double getXorDist(BitSet fingerprint1, BitSet fingerprint2) throws IllegalArgumentException{
         if(fingerprint1.size()!=fingerprint2.size()) throw new IllegalArgumentException("bitSets must have the same size");

@@ -71,6 +71,7 @@ import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
  *
  * @author Benjamin
  * @since 3.0
+ * @version $Id: $Id
  */
 public class NotesWriter implements PackageWriter, AdditionalDataTag {
 
@@ -99,17 +100,21 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
         this.updateValue = doUpdates;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getAssociatedPackageName() {
         return "note";
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isPackageUseableOnLvl(int lvl) {
         return true;
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Create the model's Notes then launch methods on the different HashMaps
      * present in the {@link BioNetwork} to create the Notes of the SBML
      * elements
@@ -377,6 +382,8 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
     }
 
     /**
+     * <p>Getter for the field <code>model</code>.</p>
+     *
      * @return the model
      */
     public Model getModel() {
@@ -384,6 +391,8 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
     }
 
     /**
+     * <p>Setter for the field <code>model</code>.</p>
+     *
      * @param model the model to set
      */
     public void setModel(Model model) {
@@ -391,6 +400,8 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
     }
 
     /**
+     * <p>Getter for the field <code>bionetwork</code>.</p>
+     *
      * @return the bionetwork
      */
     public BioNetwork getBionetwork() {
@@ -398,6 +409,8 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
     }
 
     /**
+     * <p>Setter for the field <code>bionetwork</code>.</p>
+     *
      * @param bionetwork the bionetwork to set
      */
     public void setBionetwork(BioNetwork bionetwork) {
@@ -405,6 +418,8 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
     }
 
     /**
+     * <p>isUpdateValue.</p>
+     *
      * @return the updateValue
      */
     public boolean isUpdateValue() {
@@ -412,6 +427,8 @@ public class NotesWriter implements PackageWriter, AdditionalDataTag {
     }
 
     /**
+     * <p>Setter for the field <code>updateValue</code>.</p>
+     *
      * @param updateValue the updateValue to set
      */
     public void setUpdateValue(boolean updateValue) {

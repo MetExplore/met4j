@@ -73,6 +73,12 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 
 
 
+/**
+ * <p>Kegg2BioNetwork class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class Kegg2BioNetwork {
 
 
@@ -88,6 +94,11 @@ public class Kegg2BioNetwork {
     private WebResource webResource;
 
 
+    /**
+     * <p>Constructor for Kegg2BioNetwork.</p>
+     *
+     * @param idOrg a {@link java.lang.String} object.
+     */
     public Kegg2BioNetwork(String idOrg){
         this.keggOrgId=idOrg;
 
@@ -98,6 +109,12 @@ public class Kegg2BioNetwork {
         this.webResource = this.getClient().resource(this.getBaseURI());
     }
 
+    /**
+     * <p>Constructor for Kegg2BioNetwork.</p>
+     *
+     * @param idOrg a {@link java.lang.String} object.
+     * @param ori a {@link java.lang.String} object.
+     */
     public Kegg2BioNetwork(String idOrg, String ori) {
         this.keggOrgId = idOrg;
 
@@ -111,7 +128,8 @@ public class Kegg2BioNetwork {
 
     /**
      * Main for testing class
-     * @param args
+     *
+     * @param args an array of {@link java.lang.String} objects.
      */
     public static void main(String[] args) {
         Kegg2BioNetwork ktbn = new Kegg2BioNetwork("hsa", "map");
@@ -125,7 +143,7 @@ public class Kegg2BioNetwork {
     }
 
     /**
-     *
+     * <p>createBionetworkFromKegg.</p>
      */
     public void createBionetworkFromKegg()  {
         try {
@@ -174,6 +192,11 @@ public class Kegg2BioNetwork {
     }
 
 
+    /**
+     * <p>retrieveGPR.</p>
+     *
+     * @throws java.lang.Exception if any.
+     */
     public void retrieveGPR() throws Exception {
         String[] genes= null;
 
@@ -198,7 +221,8 @@ public class Kegg2BioNetwork {
 
     /**
      * Retrieves all pathways associated to the organism using the Kegg API.
-     * @throws Exception
+     *
+     * @throws java.lang.Exception if any.
      */
     public void getPathways() throws Exception{
         String[] pathList= null;
@@ -221,6 +245,12 @@ public class Kegg2BioNetwork {
     }
 
 
+    /**
+     * <p>getPathwayComponents.</p>
+     *
+     * @param pathway a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway} object.
+     * @throws java.lang.Exception if any.
+     */
     public void getPathwayComponents(BioPathway pathway) throws Exception {
 
         String xml=null;
@@ -554,9 +584,10 @@ public class Kegg2BioNetwork {
     }
 
     /**
+     * <p>getEntityDataHasHash.</p>
      *
-     * @param id
-     * @return
+     * @param id a {@link java.lang.String} object.
+     * @return a {@link java.util.HashMap} object.
      */
     public HashMap<String, ArrayList<String>> getEntityDataHasHash(String id) {
 
@@ -600,6 +631,12 @@ public class Kegg2BioNetwork {
         return output;
     }
 
+    /**
+     * <p>checkKeggOrgId.</p>
+     *
+     * @param keggId a {@link java.lang.String} object.
+     * @return a boolean.
+     */
     public boolean checkKeggOrgId(String keggId){
 
         String[] Data=this.webResource.path("list").path("genome").get(String.class).split("\\n");
@@ -614,53 +651,113 @@ public class Kegg2BioNetwork {
 
     }
 
+    /**
+     * <p>Getter for the field <code>network</code>.</p>
+     *
+     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     */
     public BioNetwork getNetwork() {
         return network;
     }
 
 
+    /**
+     * <p>Getter for the field <code>keggOrgId</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getKeggOrgId() {
         return keggOrgId;
     }
 
 
+    /**
+     * <p>Setter for the field <code>network</code>.</p>
+     *
+     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     */
     public void setNetwork(BioNetwork network) {
         this.network = network;
     }
 
 
+    /**
+     * <p>Setter for the field <code>keggOrgId</code>.</p>
+     *
+     * @param keggOrgId a {@link java.lang.String} object.
+     */
     public void setKeggOrgId(String keggOrgId) {
         this.keggOrgId = keggOrgId;
     }
 
+    /**
+     * <p>Getter for the field <code>config</code>.</p>
+     *
+     * @return a {@link com.sun.jersey.api.client.config.ClientConfig} object.
+     */
     public ClientConfig getConfig() {
         return config;
     }
 
+    /**
+     * <p>Getter for the field <code>client</code>.</p>
+     *
+     * @return a {@link com.sun.jersey.api.client.Client} object.
+     */
     public Client getClient() {
         return client;
     }
 
+    /**
+     * <p>Getter for the field <code>webResource</code>.</p>
+     *
+     * @return a {@link com.sun.jersey.api.client.WebResource} object.
+     */
     public WebResource getWebResource() {
         return webResource;
     }
 
+    /**
+     * <p>Setter for the field <code>config</code>.</p>
+     *
+     * @param config a {@link com.sun.jersey.api.client.config.ClientConfig} object.
+     */
     public void setConfig(ClientConfig config) {
         this.config = config;
     }
 
+    /**
+     * <p>Setter for the field <code>client</code>.</p>
+     *
+     * @param client a {@link com.sun.jersey.api.client.Client} object.
+     */
     public void setClient(Client client) {
         this.client = client;
     }
 
+    /**
+     * <p>Setter for the field <code>webResource</code>.</p>
+     *
+     * @param webResource a {@link com.sun.jersey.api.client.WebResource} object.
+     */
     public void setWebResource(WebResource webResource) {
         this.webResource = webResource;
     }
 
+    /**
+     * <p>Getter for the field <code>linkECGene</code>.</p>
+     *
+     * @return a {@link java.util.HashMap} object.
+     */
     public HashMap<String,String> getLinkECGene() {
         return linkECGene;
     }
 
+    /**
+     * <p>Setter for the field <code>linkECGene</code>.</p>
+     *
+     * @param id a {@link java.lang.String} object.
+     */
     public void setLinkECGene(String id) {
         String[] Data=this.webResource.path("link").path("ec").path(id).get(String.class).split("\\n");
 

@@ -39,13 +39,21 @@ package fr.inrae.toulouse.metexplore.met4j_io.annotations.reactant;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 
+/**
+ * <p>ReactantAttributes class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class ReactantAttributes extends GenericAttributes {
+	/** Constant <code>IS_COFACTOR="is_cofactor"</code> */
 	public static final String IS_COFACTOR = "is_cofactor";
 	
 	/**
 	 * get is cofactor attribute
-	 * @param reactant
-	 * @return
+	 *
+	 * @param reactant a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant} object.
+	 * @return a {@link java.lang.Boolean} object.
 	 */
 	public static Boolean getIsCofactor(BioReactant reactant) {
 		if(reactant.getAttribute(IS_COFACTOR) == null) {
@@ -57,8 +65,9 @@ public class ReactantAttributes extends GenericAttributes {
 	
 	/**
 	 * Set IsCofactor value
-	 * @param reactant
-	 * @param b
+	 *
+	 * @param reactant a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant} object.
+	 * @param b a boolean.
 	 */
 	public static void setIsCofactor(BioReactant reactant, boolean b) {
 		reactant.setAttribute(IS_COFACTOR, b);

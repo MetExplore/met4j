@@ -45,9 +45,11 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 /**
  * Edges that represent a set of sub-edges
  * It can be used to store the merging of edges sharing same source and target
+ *
  * @author clement
  * @param <V> the vertex Type
  * @param <E> the sub-edges Type
+ * @version $Id: $Id
  */
 public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 
@@ -59,6 +61,7 @@ public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 	
 	/**
 	 * Instantiates a new merged edge.
+	 *
 	 * @param v1 the first vertex
 	 * @param v2 the second vertex
 	 * @param mergedEdges the set of mergedEdges
@@ -70,6 +73,7 @@ public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 	
 	/**
 	 * Instantiates a new merged edge.
+	 *
 	 * @param v1 the first vertex
 	 * @param v2 the second vertex
 	 */
@@ -80,6 +84,7 @@ public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 	
 	/**
 	 * Gets the reaction list.
+	 *
 	 * @return the merged edges list
 	 */
 	public Set<E> getEdgeList(){
@@ -88,6 +93,7 @@ public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 	
 	/**
 	 * Adds reactions.
+	 *
 	 * @param edges the merged edges list
 	 */
 	public void addEdges(Collection<E> edges){
@@ -98,6 +104,7 @@ public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 	
 	/**
 	 * Adds one merged edge.
+	 *
 	 * @param e the edges
 	 */
 	public void addEdge(E e){
@@ -106,7 +113,9 @@ public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 	
 	/**
 	 * Removes reactions.
-     */
+	 *
+	 * @param edges a {@link java.util.Collection} object.
+	 */
 	public void removeEdges(Collection<E> edges){
 		for(E e : edges){
             this.removeEdge(e);
@@ -115,6 +124,7 @@ public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 	
 	/**
 	 * Removes one merged edge.
+	 *
 	 * @param e the edge
 	 */
 	public void removeEdge(E e){

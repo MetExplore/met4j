@@ -42,7 +42,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * The Class ProbabilityWeightPolicy use to set probability as edge weight (resulting in stochastic network)
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class ProbabilityWeightPolicy<V extends BioEntity, E extends Edge<V>,G extends BioGraph<V,E>>
 	extends WeightingPolicy<V,E,G> {
@@ -69,6 +71,7 @@ public class ProbabilityWeightPolicy<V extends BioEntity, E extends Edge<V>,G ex
 	/* (non-Javadoc)
 	 * @see parsebionet.computation.graphe.WeightingPolicy#setWeight(parsebionet.computation.graphe.G)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void setWeight(G g) {
         wp.setWeight(g);

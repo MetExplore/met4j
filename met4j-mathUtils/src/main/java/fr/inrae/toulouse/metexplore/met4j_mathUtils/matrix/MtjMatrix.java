@@ -50,7 +50,9 @@ import no.uib.cipr.matrix.NotConvergedException;
 
 /**
  * The Matrix Class from Mtj.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class MtjMatrix implements BioMatrix{
 	
@@ -105,6 +107,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#get(int, int)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public double get(int row, int col) {
 		 return mat.get(row,col);
@@ -113,6 +116,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#set(int, int, double)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void set(int row, int col, double value) {
 		mat.set(row,col,value);
@@ -121,6 +125,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#numRows()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public int numRows() {
 		 return mat.numRows();
@@ -129,6 +134,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#numCols()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public int numCols() {
 		return mat.numColumns();
@@ -137,6 +143,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#plus(parsebionet.applications.graphe.randomWalk.matrix.BioMatrix)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public BioMatrix plus(BioMatrix m) {
 		DenseMatrix result = new DenseMatrix(m.numRows(),m.numCols());
@@ -148,6 +155,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#mult(parsebionet.applications.graphe.randomWalk.matrix.BioMatrix)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public BioMatrix mult(BioMatrix m) {
 		DenseMatrix result = new DenseMatrix(m.numRows(),m.numCols());
@@ -159,6 +167,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#add(double)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public BioMatrix add(double value) {
 		DenseMatrix result = new DenseMatrix(mat.numRows(),mat.numColumns());
@@ -169,6 +178,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#minus(parsebionet.applications.graphe.randomWalk.matrix.BioMatrix)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public BioMatrix minus(BioMatrix m) {
 		return plus(m.scale(-1));
@@ -178,6 +188,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#scale(double)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public BioMatrix scale(double value) {
 		DenseMatrix result = new DenseMatrix(mat);
@@ -188,6 +199,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#invert()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public BioMatrix invert() {
 		DenseMatrix I = Matrices.identity(mat.numColumns());
@@ -199,6 +211,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#getOriginal()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public <T> T getOriginal() {
 		return (T)mat;
@@ -207,6 +220,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#identity()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public BioMatrix identity() {
 		DenseMatrix i = Matrices.identity(mat.numRows());
@@ -216,6 +230,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#getSubMatrix(int[], int[])
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public BioMatrix getSubMatrix(int[] rows, int[] cols) {
 		Matrix sub = Matrices.getSubMatrix(mat, rows, cols);
@@ -225,6 +240,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#transpose()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public BioMatrix transpose() {
 		return new MtjMatrix(mat.transpose());
@@ -233,6 +249,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#toDoubleArray()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public double[][] toDoubleArray(){
 		double[][] doubleArray = new double[mat.numRows()][mat.numColumns()];
@@ -247,6 +264,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#getPrincipalEigenVector()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public BioMatrix getPrincipalEigenVector() {
 		EVD evd = new EVD(mat.numColumns());
@@ -262,6 +280,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#getColSum(int)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public double getColSum(int j) {
 		double sum = 0;
@@ -274,6 +293,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#getRowSum(int)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public double getRowSum(int i) {
 		double sum = 0;
@@ -286,6 +306,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#getRow(int)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public double[] getRow(int i) {
 		double[] row = new double[mat.numColumns()];
@@ -298,6 +319,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#getCol(int)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public double[] getCol(int j) {
 		double[] col = new double[mat.numRows()];
@@ -310,6 +332,7 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#print()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void print(){	
 		for (int i=0; i<mat.numRows(); i++){
@@ -328,12 +351,14 @@ public class MtjMatrix implements BioMatrix{
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.matrix.BioMatrix#copy()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public BioMatrix copy() {
 		BioMatrix copy = new MtjMatrix(this);
 		return copy;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public void setRowLabel(int i, String label) {
 		//checking :
@@ -348,6 +373,7 @@ public class MtjMatrix implements BioMatrix{
 		rowIndexMap.put(i, label);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setColumnLabel(int j, String label) {
 		//checking :
@@ -362,36 +388,43 @@ public class MtjMatrix implements BioMatrix{
 		columnIndexMap.put(j, label);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getRowLabel(int i) {
 		return rowIndexMap.get(i);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getColumnLabel(int j) {
 		return columnIndexMap.get(j);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getRowFromLabel(String rowLabel) {
 		return rowLabelMap.get(rowLabel);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int getColumnFromLabel(String columnLabel) {
 		return columnLabelMap.get(columnLabel);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public HashMap<String, Integer> getRowLabelMap() {
 		return new HashMap<String, Integer>(rowLabelMap);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public HashMap<Integer, String> getRowIndexMap() {
 		return new HashMap<Integer, String>(rowIndexMap);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setRowLabelMap(HashMap<String, Integer> rowLabelMap) {
 		//check no duplicate in values
@@ -406,6 +439,7 @@ public class MtjMatrix implements BioMatrix{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setRowIndexMap(HashMap<Integer, String> rowIndexMap) {
 		//check no duplicate in values
@@ -420,16 +454,19 @@ public class MtjMatrix implements BioMatrix{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public HashMap<String, Integer> getColumnLabelMap() {
 		return new HashMap<String, Integer>(this.columnLabelMap);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public HashMap<Integer, String> getColumnIndexMap() {
 		return new HashMap<Integer, String>(this.columnIndexMap);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setColumnLabelMap(HashMap<String, Integer> colLabelMap) {
 		//check no duplicate in values
@@ -444,6 +481,7 @@ public class MtjMatrix implements BioMatrix{
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setColumnIndexMap(HashMap<Integer, String> colIndexMap) {
 		//check no duplicate in values

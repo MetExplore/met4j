@@ -44,9 +44,10 @@ package fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalStructures;
  * <li>Reflexivity: { a = b & b = c } => a = c
  * </ul> </br>This could be turned into
  * one or more JUnit Test Cases
- * 
+ *
  * @author Benjamin
  * @since 2.0
+ * @version $Id: $Id
  */
 public class InChITester {
 
@@ -57,6 +58,7 @@ public class InChITester {
 
 	/**
 	 * The main method used to launch the tests
+	 *
 	 * @param args
 	 * args (null)
 	 */

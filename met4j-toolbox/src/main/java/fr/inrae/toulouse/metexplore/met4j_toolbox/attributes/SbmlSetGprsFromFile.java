@@ -42,22 +42,36 @@ import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 
+/**
+ * <p>SbmlSetGprsFromFile class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class SbmlSetGprsFromFile  extends AbstractSbmlSetReaction {
 
 
     @Option(name="-cgpr", usage="[2] number of the column where are the gprs")
     private int colgpr=2;
 
+    /** {@inheritDoc} */
     @Override
     public String getLabel() {
         return this.getClass().getSimpleName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDescription() {
         return "Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and gprs written in a cobra way";
     }
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     * @throws java.io.IOException if any.
+     */
     public static void main(String[] args) throws IOException {
 
         SbmlSetGprsFromFile s = new SbmlSetGprsFromFile();

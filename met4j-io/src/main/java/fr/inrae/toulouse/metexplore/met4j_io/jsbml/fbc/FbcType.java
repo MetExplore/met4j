@@ -37,9 +37,11 @@
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc;
 
 /**
- * Simple Enumeration to fix the possible values for the types of {@link BioObjective} present in the model
+ * Simple Enumeration to fix the possible values for the types of {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.BioObjective} present in the model
+ *
  * @author Benjamin
  * @since 3.0
+ * @version $Id: $Id
  */
 public enum FbcType {
 	/**

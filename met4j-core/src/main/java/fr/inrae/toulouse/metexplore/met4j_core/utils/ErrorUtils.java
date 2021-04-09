@@ -38,8 +38,9 @@ package fr.inrae.toulouse.metexplore.met4j_core.utils;
 
 /**
  * Facilitates the message errors
- * @author lcottret
  *
+ * @author lcottret
+ * @version $Id: $Id
  */
 public class ErrorUtils {
 
@@ -48,6 +49,7 @@ public class ErrorUtils {
 
 	/**
 	 * Prints a Warning message in stderr
+	 *
 	 * @param message a String
 	 */
 	public static void warning(String message) {
@@ -58,6 +60,7 @@ public class ErrorUtils {
 
 	/**
 	 * Prints an Error message in stderr
+	 *
 	 * @param message a String
 	 */
 	public static void error(String message) {

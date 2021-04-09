@@ -49,9 +49,10 @@ import java.util.regex.Pattern;
 /**
  * This Class is used to keep track of the annotations present in the imported
  * file in the BioNetwork object
- * 
+ *
  * @author Benjamin
  * @since 2.0
+ * @version $Id: $Id
  */
 public class SbmlAnnotation extends BioEntity {
 
@@ -63,7 +64,7 @@ public class SbmlAnnotation extends BioEntity {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param metaId      the metaID
 	 * @param xmlasString the XML string
 	 */
@@ -85,6 +86,8 @@ public class SbmlAnnotation extends BioEntity {
 	}
 
 	/**
+	 * <p>getXMLasString.</p>
+	 *
 	 * @return the xMLasString
 	 */
 	public String getXMLasString() {

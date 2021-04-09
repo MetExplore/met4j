@@ -39,29 +39,48 @@ package fr.inrae.toulouse.metexplore.met4j_io.annotations.metabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 
+/**
+ * <p>MetaboliteAttributes class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class MetaboliteAttributes extends GenericAttributes {
 
+	/** Constant <code>NOTES="notes"</code> */
 	public static final String NOTES = "notes";
+	/** Constant <code>COMMENT="comment"</code> */
 	public static final String COMMENT = "comment";
+	/** Constant <code>CHARGE="charge"</code> */
 	public static final String CHARGE = "charge";
+	/** Constant <code>FORMULA="formula"</code> */
 	public static final String FORMULA = "formula";
+	/** Constant <code>INCHIKEY="inchikey"</code> */
 	public static final String INCHIKEY = "inchikey";
+	/** Constant <code>INCHI="inchi"</code> */
 	public static final String INCHI = "inchi";
+	/** Constant <code>BOUNDARY_CONDITION="boundary_condition"</code> */
 	public static final String BOUNDARY_CONDITION = "boundary_condition";
+	/** Constant <code>SUBSTANCE_UNITS="substance_units"</code> */
 	public static final String SUBSTANCE_UNITS = "substance_units";
+	/** Constant <code>INITIAL_AMOUNT="initial_quantity_amount"</code> */
 	public static final String INITIAL_AMOUNT = "initial_quantity_amount";
+	/** Constant <code>INITIAL_CONCENTRATION="initial_quantity_concentration"</code> */
 	public static final String INITIAL_CONCENTRATION = "initial_quantity_concentration";
+	/** Constant <code>PUBCHEM="pubchem.compound"</code> */
 	public static final String PUBCHEM = "pubchem.compound";
+	/** Constant <code>HAS_ONLY_SUBSTANCE_UNITS="has_only_substance_units"</code> */
 	public static final String HAS_ONLY_SUBSTANCE_UNITS = "has_only_substance_units";
 
 
+	/** Constant <code>IS_COFACTOR="is_cofactor"</code> */
 	public static final String IS_COFACTOR = "is_cofactor";
 
 	/**
 	 * get Boundary condition of a metabolite
 	 *
-	 * @param m
-	 * @return
+	 * @param m a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 * @return a {@link java.lang.Boolean} object.
 	 */
 	public static Boolean getBoundaryCondition(BioMetabolite m) {
 
@@ -77,7 +96,8 @@ public class MetaboliteAttributes extends GenericAttributes {
 	/**
 	 * Set boundary condition
 	 *
-	 * @param m
+	 * @param m a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 * @param flag a {@link java.lang.Boolean} object.
 	 */
 	public static void setBoundaryCondition(BioMetabolite m, Boolean flag) {
 		m.setAttribute(BOUNDARY_CONDITION, flag);
@@ -86,8 +106,8 @@ public class MetaboliteAttributes extends GenericAttributes {
 	/**
 	 * Get Metabolite units
 	 *
-	 * @param m
-	 * @return
+	 * @param m a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 * @return a {@link java.lang.String} object.
 	 */
 	public static String getSubtanceUnits(BioMetabolite m) {
 
@@ -97,8 +117,8 @@ public class MetaboliteAttributes extends GenericAttributes {
 	/**
 	 * Set subtance units
 	 *
-	 * @param metabolite
-	 * @param u
+	 * @param u a {@link java.lang.String} object.
+	 * @param m a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
 	 */
 	public static void setSubstanceUnits(BioMetabolite m, String u) {
 
@@ -109,8 +129,8 @@ public class MetaboliteAttributes extends GenericAttributes {
 	/**
 	 * get Initial Amount
 	 *
-	 * @param metabolite
-	 * @return
+	 * @param metabolite a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 * @return a {@link java.lang.Double} object.
 	 */
 	public static Double getInitialAmount(BioMetabolite metabolite) {
 
@@ -125,8 +145,9 @@ public class MetaboliteAttributes extends GenericAttributes {
 
 	/**
 	 * Set initial amount
-	 * @param metabolite
-	 * @param val
+	 *
+	 * @param metabolite a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 * @param val a {@link java.lang.Double} object.
 	 */
 	public static void setInitialAmount(BioMetabolite metabolite, Double val) {
 		metabolite.setAttribute(INITIAL_AMOUNT, val);
@@ -135,8 +156,9 @@ public class MetaboliteAttributes extends GenericAttributes {
 
 	/**
 	 * Get initial concentration
-	 * @param metabolite
-	 * @return
+	 *
+	 * @param metabolite a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 * @return a {@link java.lang.Double} object.
 	 */
 	public static Double getInitialConcentration(BioMetabolite metabolite) {
 		Double val = (Double) metabolite.getAttribute(INITIAL_CONCENTRATION);
@@ -146,8 +168,9 @@ public class MetaboliteAttributes extends GenericAttributes {
 
 	/**
 	 * Set initial concentration
-	 * @param metabolite
-	 * @param val
+	 *
+	 * @param metabolite a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 * @param val a {@link java.lang.Double} object.
 	 */
 	public static void setInitialConcentration(BioMetabolite metabolite, Double val) {
 		metabolite.setAttribute(INITIAL_CONCENTRATION, val);
@@ -156,8 +179,9 @@ public class MetaboliteAttributes extends GenericAttributes {
 
 	/**
 	 * Get pubchem
-	 * @param metabolite
-	 * @return
+	 *
+	 * @param metabolite a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 * @return a {@link java.lang.String} object.
 	 */
 	public static String getPubchem(BioMetabolite metabolite) {
 		return (String)metabolite.getAttribute(PUBCHEM);
@@ -165,8 +189,9 @@ public class MetaboliteAttributes extends GenericAttributes {
 
 	/**
 	 * Set pubchem
-	 * @param metabolite
-	 * @param val
+	 *
+	 * @param metabolite a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 * @param val a {@link java.lang.String} object.
 	 */
 	public static void setPubchem(BioMetabolite metabolite, String val) {
 		metabolite.setAttribute(PUBCHEM, val);
@@ -174,8 +199,9 @@ public class MetaboliteAttributes extends GenericAttributes {
 
 	/**
 	 * Get hasOnlySubstanceUnit value
-	 * @param metabolite
-	 * @return
+	 *
+	 * @param metabolite a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 * @return a {@link java.lang.Boolean} object.
 	 */
 	public static Boolean getHasOnlySubstanceUnits(BioMetabolite metabolite) {
 		return (Boolean) metabolite.getAttribute(HAS_ONLY_SUBSTANCE_UNITS);
@@ -183,8 +209,9 @@ public class MetaboliteAttributes extends GenericAttributes {
 
 	/**
 	 * Set hasOnlySubstanceUnit value
-	 * @param metabolite
-	 * @param b
+	 *
+	 * @param metabolite a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 * @param b a boolean.
 	 */
 	public static void setHasOnlySubstanceUnits(BioMetabolite metabolite, boolean b) {
 		metabolite.setAttribute(HAS_ONLY_SUBSTANCE_UNITS, b);
@@ -192,8 +219,9 @@ public class MetaboliteAttributes extends GenericAttributes {
 
 	/**
 	 * get is cofactor attribute
-	 * @param metabolite
-	 * @return
+	 *
+	 * @param metabolite a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 * @return a {@link java.lang.Boolean} object.
 	 */
 	public static Boolean getIsCofactor(BioMetabolite metabolite) {
 		if(metabolite.getAttribute(IS_COFACTOR) == null) {
@@ -205,8 +233,9 @@ public class MetaboliteAttributes extends GenericAttributes {
 
 	/**
 	 * Set IsCofactor value
-	 * @param metabolite
-	 * @param b
+	 *
+	 * @param metabolite a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 * @param b a boolean.
 	 */
 	public static void setIsCofactor(BioMetabolite metabolite, boolean b) {
 		metabolite.setAttribute(IS_COFACTOR, b);

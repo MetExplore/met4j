@@ -76,9 +76,10 @@ import org.sbml.jsbml.Unit.Kind;
 
 /**
  * Abstract class that defines the different 'ListOf' parsing method.
- * 
+ *
  * @author bmerlet
  * @since 3.0
+ * @version $Id: $Id
  */
 public class JsbmlToBioNetwork {
 
@@ -94,6 +95,11 @@ public class JsbmlToBioNetwork {
 	 */
 	public ArrayList<PackageParser> packages = new ArrayList<PackageParser>();
 
+	/**
+	 * <p>Constructor for JsbmlToBioNetwork.</p>
+	 *
+	 * @param model a {@link org.sbml.jsbml.Model} object.
+	 */
 	public JsbmlToBioNetwork(Model model) {
 		this.model = model;
 	}
@@ -101,8 +107,8 @@ public class JsbmlToBioNetwork {
 	/**
 	 * Main method of the parser. It should call the different list parser defined
 	 * in the inheriting classes
-	 * 
-	 * @throws Met4jSbmlReaderException
+	 *
+	 * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
 	 */
 	protected void parseModel() throws Met4jSbmlReaderException {
 
@@ -612,6 +618,8 @@ public class JsbmlToBioNetwork {
 	}
 
 	/**
+	 * <p>Getter for the field <code>network</code>.</p>
+	 *
 	 * @return the bionet
 	 */
 	public BioNetwork getNetwork() {
@@ -619,6 +627,8 @@ public class JsbmlToBioNetwork {
 	}
 
 	/**
+	 * <p>Setter for the field <code>network</code>.</p>
+	 *
 	 * @param bionet the bionet to set
 	 */
 	public void setNetwork(BioNetwork bionet) {
@@ -626,6 +636,8 @@ public class JsbmlToBioNetwork {
 	}
 
 	/**
+	 * <p>getSetOfPackage.</p>
+	 *
 	 * @return the setOfPackage
 	 */
 	public ArrayList<PackageParser> getSetOfPackage() {
@@ -634,10 +646,9 @@ public class JsbmlToBioNetwork {
 
 	/**
 	 * Add a package to this parser
-	 * 
+	 *
 	 * @param pkg the package to add
-	 * @throws JSBMLPackageReaderException if the package is not compatible with the
-	 *                                     the current SBML level
+	 * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageReaderException if any.
 	 */
 	public void addPackage(PackageParser pkg) throws JSBMLPackageReaderException {
 
@@ -652,10 +663,9 @@ public class JsbmlToBioNetwork {
 
 	/**
 	 * Set the {@link #packages} to a new list
-	 * 
+	 *
 	 * @param packages the ordered list of packages to set
-	 * @throws JSBMLPackageReaderException if one of the package in the list is not
-	 *                                     compatible with the current SBML level
+	 * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageReaderException if any.
 	 */
 	public void setPackages(ArrayList<PackageParser> packages) throws JSBMLPackageReaderException {
 		for (PackageParser pkg : packages) {
@@ -665,7 +675,8 @@ public class JsbmlToBioNetwork {
 
 	/**
 	 * Launch the parsing of the jsbml model by the different packages
-	 * 
+	 *
+	 * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
 	 */
 	public void parsePackageAdditionalData() throws Met4jSbmlReaderException {
 		for (PackageParser parser : this.getSetOfPackage()) {
@@ -673,6 +684,11 @@ public class JsbmlToBioNetwork {
 		}
 	}
 
+	/**
+	 * <p>Getter for the field <code>model</code>.</p>
+	 *
+	 * @return a {@link org.sbml.jsbml.Model} object.
+	 */
 	public Model getModel() {
 		return model;
 	}

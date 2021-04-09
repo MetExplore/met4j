@@ -45,13 +45,17 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * Class used to merges nodes or edges
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class Merger {
 	
 	/**
 	 * Merge edges sharing same source and target, create new one with concatenated labels
-	 * @param <V>
+	 *
+	 * @param g a G object.
+	 * @param <V> a V object.
 	 */
 	public static <V extends BioEntity,E extends Edge<V>, G extends BioGraph<V,E>> void mergeEdgesWithOverride(G g){
 		
@@ -103,6 +107,12 @@ public class Merger {
 
 	/**
 	 * Merge edges sharing same source and target, keeping only one. Use comparator to select the one to keep  (first once sorted).
+	 *
+	 * @param g a G object.
+	 * @param comparator a {@link java.util.Comparator} object.
+	 * @param <V> a V object.
+	 * @param <E> a E object.
+	 * @param <G> a G object.
 	 */
 	public static <V extends BioEntity,E extends Edge<V>, G extends BioGraph<V,E>> void mergeEdgesWithOverride(G g, Comparator<E> comparator){
 
@@ -140,7 +150,10 @@ public class Merger {
 	
 	/**
 	 * Merge edges sharing same source and target
-	 * @param <V>
+	 *
+	 * @param g a G object.
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.parallel.MergedGraph} object.
+	 * @param <V> a V object.
 	 */
 	public static <V extends BioEntity,E extends Edge<V>, G extends BioGraph<V,E>> MergedGraph<V,E> mergeEdges(G g){
 		

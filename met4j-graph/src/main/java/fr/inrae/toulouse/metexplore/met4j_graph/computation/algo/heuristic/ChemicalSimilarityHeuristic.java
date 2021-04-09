@@ -44,7 +44,9 @@ import fr.inrae.toulouse.metexplore.met4j_mathUtils.similarity.SimilarityComputo
 
 /**
  * The A* heuristic using chemical similarity
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class ChemicalSimilarityHeuristic implements AStarHeuristic<BioMetabolite> {
 	
@@ -62,6 +64,7 @@ public class ChemicalSimilarityHeuristic implements AStarHeuristic<BioMetabolite
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.algo.AStarHeuristic#getHeuristicCost(parsebionet.biodata.BioMetabolite, parsebionet.biodata.BioMetabolite)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public double getHeuristicCost(BioMetabolite node, BioMetabolite end) {
 		

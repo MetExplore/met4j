@@ -44,23 +44,27 @@ import java.util.stream.Collectors;
  * This class represents the full gene association as they are described in SBML
  * files. </br>
  * </br>
- * This class consists of a list of {@link GeneSet}s. Each of them being one
+ * This class consists of a list of {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneSet}s. Each of them being one
  * possible "AND" gene association that can activate a given reaction
  *
- * 
  * @author Benjamin mainly modified by LC
  * @since 3.0
- * 
+ * @version $Id: $Id
  */
 public class GeneAssociation implements Set<GeneSet> {
 
 	public ArrayList<GeneSet> geneSets;
 
+	/**
+	 * <p>Constructor for GeneAssociation.</p>
+	 */
 	public GeneAssociation() {
 		geneSets = new ArrayList<GeneSet>();
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Returns the string representation of this GPR as a fully developed AND/OR
 	 * logical expression.
 	 */
@@ -72,16 +76,19 @@ public class GeneAssociation implements Set<GeneSet> {
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int size() {
 		return geneSets.size();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
 		return geneSets.isEmpty();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean contains(Object o) {
 
@@ -94,21 +101,25 @@ public class GeneAssociation implements Set<GeneSet> {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<GeneSet> iterator() {
 		return geneSets.iterator();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object[] toArray() {
 		return geneSets.toArray();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <T> T[] toArray(T[] a) {
 		return geneSets.toArray(a);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean add(GeneSet e) {
 
@@ -122,6 +133,7 @@ public class GeneAssociation implements Set<GeneSet> {
 		return geneSets.add(e);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean remove(Object o) {
 
@@ -137,6 +149,7 @@ public class GeneAssociation implements Set<GeneSet> {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean containsAll(Collection<?> c) {
 
@@ -149,6 +162,7 @@ public class GeneAssociation implements Set<GeneSet> {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean addAll(Collection<? extends GeneSet> c) {
 
@@ -164,6 +178,7 @@ public class GeneAssociation implements Set<GeneSet> {
 		return flag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean retainAll(Collection<?> c) {
 
@@ -181,6 +196,7 @@ public class GeneAssociation implements Set<GeneSet> {
 		return flag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean removeAll(Collection<?> c) {
 
@@ -198,11 +214,13 @@ public class GeneAssociation implements Set<GeneSet> {
 		return flag;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void clear() {
 		geneSets.clear();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -211,6 +229,7 @@ public class GeneAssociation implements Set<GeneSet> {
 		return Objects.equals(geneSets, geneSets1.geneSets);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return Objects.hash(geneSets);

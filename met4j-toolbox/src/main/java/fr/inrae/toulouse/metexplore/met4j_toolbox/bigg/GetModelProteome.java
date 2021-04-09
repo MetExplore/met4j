@@ -56,6 +56,12 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
+/**
+ * <p>GetModelProteome class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class GetModelProteome extends AbstractMet4jApplication {
 
     public String description = "Get proteome in fasta format of a model present in BIGG";
@@ -65,6 +71,12 @@ public class GetModelProteome extends AbstractMet4jApplication {
     public String outputFile = "proteome.fas";
     private String baseUrl = "http://bigg.ucsd.edu/api/v2/models/";
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     * @throws java.net.ProtocolException if any.
+     */
     public static void main(String[] args) throws ProtocolException {
         GetModelProteome f = new GetModelProteome();
         CmdLineParser parser = new CmdLineParser(f);
@@ -83,6 +95,8 @@ public class GetModelProteome extends AbstractMet4jApplication {
 
     /**
      * Run application
+     *
+     * @throws java.net.ProtocolException if any.
      */
     public void run() throws ProtocolException {
 
@@ -304,11 +318,13 @@ public class GetModelProteome extends AbstractMet4jApplication {
     }
 
 
+    /** {@inheritDoc} */
     @Override
     public String getLabel() {
         return this.getClass().getSimpleName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDescription() {
         return description;

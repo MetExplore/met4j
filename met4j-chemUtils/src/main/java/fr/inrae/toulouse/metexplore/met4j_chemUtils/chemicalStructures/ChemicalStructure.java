@@ -38,8 +38,10 @@ package fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalStructures;
 
 /**
  * Abstract Class that defines common methods for Chemical Structures
+ *
  * @author Benjamin
  * @since 2.0
+ * @version $Id: $Id
  */
 public abstract class ChemicalStructure {
 	
@@ -51,12 +53,15 @@ public abstract class ChemicalStructure {
 	
 	/**
 	 * Return the validity of the structure
+	 *
 	 * @return {@link #validity}
 	 */
 	public abstract boolean isValid();
 	
 	
 	/**
+	 * <p>Setter for the field <code>validity</code>.</p>
+	 *
 	 * @param validity the validity to set
 	 */
 	public void setValidity(boolean validity) {
@@ -64,5 +69,10 @@ public abstract class ChemicalStructure {
 	}
 
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public abstract String toString();
 }

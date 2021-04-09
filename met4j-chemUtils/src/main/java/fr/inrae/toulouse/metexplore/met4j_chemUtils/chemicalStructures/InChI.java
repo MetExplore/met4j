@@ -52,6 +52,7 @@ import java.util.regex.Pattern;
  *
  * @author Benjamin
  * @since 2.0
+ * @version $Id: $Id
  */
 public class InChI extends ChemicalStructure {
 
@@ -142,7 +143,7 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
-     * Parse the {@link #inchiString} to create the different {@link InchiLayer}
+     * Parse the {@link #inchiString} to create the different {@link fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalStructures.InchiLayer}
      * . If any of the created layer is invalid, the all InChI is set as invalid
      * </br>Use an algorithm described in the InChI specifications
      */
@@ -476,7 +477,7 @@ public class InChI extends ChemicalStructure {
 
     /**
      * Display in System.out the description of all the layer contained in this
-     * {@link InChI}
+     * {@link fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalStructures.InChI}
      */
     public void displayLayers() {
         System.out.println("initial String: " + this.inchiString);
@@ -538,7 +539,7 @@ public class InChI extends ChemicalStructure {
      * </ul>
      *
      * @param compared the compared Inchi
-     * @return true if the two {@link InChI} are the same considering their
+     * @return true if the two {@link fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalStructures.InChI} are the same considering their
      * {@link #dbStereoLayer} and {@link #tetraStereoLayer}
      */
     public boolean equals(InChI compared) {
@@ -546,7 +547,7 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
-     * Test if two {@link InChI} are equals, considering the passed layer
+     * Test if two {@link fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalStructures.InChI} are equals, considering the passed layer
      * identifier
      *
      * @param compared the compared Inchi
@@ -698,18 +699,22 @@ public class InChI extends ChemicalStructure {
      * Getters
      */
 
+    /** {@inheritDoc} */
     @Override
     public boolean isValid() {
 
         return this.validity;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return this.inchiString;
     }
 
     /**
+     * <p>Getter for the field <code>inchiString</code>.</p>
+     *
      * @return the inchiString
      */
     public String getInchiString() {
@@ -717,6 +722,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Setter for the field <code>inchiString</code>.</p>
+     *
      * @param inchiString the inchiString to set
      */
     public void setInchiString(String inchiString) {
@@ -724,6 +731,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Getter for the field <code>version</code>.</p>
+     *
      * @return the version
      */
     public int getVersion() {
@@ -731,6 +740,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Setter for the field <code>version</code>.</p>
+     *
      * @param version the version to set
      */
     public void setVersion(int version) {
@@ -738,6 +749,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>isStandard.</p>
+     *
      * @return the standard
      */
     public boolean isStandard() {
@@ -745,6 +758,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Setter for the field <code>standard</code>.</p>
+     *
      * @param standard the standard to set
      */
     public void setStandard(boolean standard) {
@@ -752,6 +767,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Getter for the field <code>formulaLayer</code>.</p>
+     *
      * @return the formulaLayer
      */
     public String getFormulaLayer() {
@@ -759,6 +776,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Setter for the field <code>formulaLayer</code>.</p>
+     *
      * @param formulaLayer the formulaLayer to set
      */
     public void setFormulaLayer(String formulaLayer) {
@@ -766,6 +785,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Getter for the field <code>connectivity</code>.</p>
+     *
      * @return the connectivity
      */
     public InchiLayer getConnectivity() {
@@ -773,6 +794,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Setter for the field <code>connectivity</code>.</p>
+     *
      * @param connectivity the connectivity to set
      */
     public void setConnectivity(InchiLayer connectivity) {
@@ -780,6 +803,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Getter for the field <code>hLayer</code>.</p>
+     *
      * @return the hLayer
      */
     public InchiLayer gethLayer() {
@@ -787,6 +812,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Setter for the field <code>hLayer</code>.</p>
+     *
      * @param hLayer the hLayer to set
      */
     public void sethLayer(InchiLayer hLayer) {
@@ -794,6 +821,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Getter for the field <code>chargeLayer</code>.</p>
+     *
      * @return the chargeLayer
      */
     public InchiLayer getChargeLayer() {
@@ -801,6 +830,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Setter for the field <code>chargeLayer</code>.</p>
+     *
      * @param chargeLayer the chargeLayer to set
      */
     public void setChargeLayer(InchiLayer chargeLayer) {
@@ -808,6 +839,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Getter for the field <code>protonationLayer</code>.</p>
+     *
      * @return the protonationLayer
      */
     public InchiLayer getProtonationLayer() {
@@ -815,6 +848,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Setter for the field <code>protonationLayer</code>.</p>
+     *
      * @param protonationLayer the protonationLayer to set
      */
     public void setProtonationLayer(InchiLayer protonationLayer) {
@@ -822,6 +857,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Getter for the field <code>dbStereoLayer</code>.</p>
+     *
      * @return the dbStereoLayer
      */
     public InchiLayer getDbStereoLayer() {
@@ -829,6 +866,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Setter for the field <code>dbStereoLayer</code>.</p>
+     *
      * @param dbStereoLayer the dbStereoLayer to set
      */
     public void setDbStereoLayer(InchiLayer dbStereoLayer) {
@@ -836,6 +875,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Getter for the field <code>tetraStereoLayer</code>.</p>
+     *
      * @return the tetraStereoLayer
      */
     public InchiLayer getTetraStereoLayer() {
@@ -843,6 +884,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Setter for the field <code>tetraStereoLayer</code>.</p>
+     *
      * @param tetraStereoLayer the tetraStereoLayer to set
      */
     public void setTetraStereoLayer(InchiLayer tetraStereoLayer) {
@@ -850,6 +893,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Getter for the field <code>isotopicLayer</code>.</p>
+     *
      * @return the isotopicLayer
      */
     public InchiLayer getIsotopicLayer() {
@@ -857,6 +902,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Setter for the field <code>isotopicLayer</code>.</p>
+     *
      * @param isotopicLayer the isotopicLayer to set
      */
     public void setIsotopicLayer(InchiLayer isotopicLayer) {
@@ -864,6 +911,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Getter for the field <code>fixedLayer</code>.</p>
+     *
      * @return the fixedLayer
      */
     public InchiLayer getFixedLayer() {
@@ -871,6 +920,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Setter for the field <code>fixedLayer</code>.</p>
+     *
      * @param fixedLayer the fixedLayer to set
      */
     public void setFixedLayer(InchiLayer fixedLayer) {
@@ -878,6 +929,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Getter for the field <code>reconnectedLayer</code>.</p>
+     *
      * @return the reconnectedLayer
      */
     public InchiLayer getReconnectedLayer() {
@@ -885,6 +938,8 @@ public class InChI extends ChemicalStructure {
     }
 
     /**
+     * <p>Setter for the field <code>reconnectedLayer</code>.</p>
+     *
      * @param reconnectedLayer the reconnectedLayer to set
      */
     public void setReconnectedLayer(InchiLayer reconnectedLayer) {

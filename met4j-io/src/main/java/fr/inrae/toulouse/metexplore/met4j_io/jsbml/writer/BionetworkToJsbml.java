@@ -84,6 +84,7 @@ import org.sbml.jsbml.Unit.Kind;
  *
  * @author Benjamin
  * @since 3.0
+ * @version $Id: $Id
  */
 public class BionetworkToJsbml {
 
@@ -111,18 +112,32 @@ public class BionetworkToJsbml {
      */
     public List<PackageWriter> setOfPackage = new ArrayList<PackageWriter>();
 
+    /**
+     * <p>Constructor for BionetworkToJsbml.</p>
+     *
+     * @param doc a {@link org.sbml.jsbml.SBMLDocument} object.
+     */
     public BionetworkToJsbml(SBMLDocument doc) {
         this.doc = doc;
         this.level = doc.getLevel();
         this.vs = doc.getVersion();
     }
 
+    /**
+     * <p>Constructor for BionetworkToJsbml.</p>
+     *
+     * @param level a int.
+     * @param vs a int.
+     */
     public BionetworkToJsbml(int level, int vs) {
         this.vs = vs;
         this.level = level;
         this.doc = new SBMLDocument(level, vs);
     }
 
+    /**
+     * <p>Constructor for BionetworkToJsbml.</p>
+     */
     public BionetworkToJsbml() {
         this.level = 3;
         this.vs = 2;
@@ -133,8 +148,9 @@ public class BionetworkToJsbml {
      * Launches the parsing of the BioNetwork and create all the SBML components
      * from it
      *
-     * @param net the input {@link BioNetwork}
+     * @param net the input {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
      * @return The completed SBML Model
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException if any.
      */
     public Model parseBioNetwork(BioNetwork net) throws Met4jSbmlWriterException {
         this.setModel(this.createModel(net));
@@ -150,10 +166,10 @@ public class BionetworkToJsbml {
     }
 
     /**
-     * Abstract method to create the top {@link Model} object that will contain all
+     * Abstract method to create the top {@link org.sbml.jsbml.Model} object that will contain all
      * the other SBMl components
      *
-     * @param net the input {@link BioNetwork}
+     * @param net the input {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
      * @return a simple model created from the attribute of the Bionetwork
      */
     protected Model createModel(BioNetwork net) {
@@ -184,6 +200,11 @@ public class BionetworkToJsbml {
         }
     }
 
+    /**
+     * <p>createModelUnitDefinition.</p>
+     *
+     * @param bioUD a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition} object.
+     */
     protected void createModelUnitDefinition(BioUnitDefinition bioUD) {
 
         String id = StringUtils.convertToSID(bioUD.getId());
@@ -223,7 +244,7 @@ public class BionetworkToJsbml {
 
     /**
      * Abstract method to create SBML Comparments in {@link #model} from the
-     * {@link BioNetwork}
+     * {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
      *
      * @param net The Bionetwork
      */
@@ -266,9 +287,10 @@ public class BionetworkToJsbml {
 
     /**
      * Common Method to create SBML Species in {@link #model} from the
-     * {@link BioNetwork}
+     * {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
      *
      * @param net The Bionetwork
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException if any.
      */
     protected void createSpecies(BioNetwork net) throws Met4jSbmlWriterException {
 
@@ -322,7 +344,7 @@ public class BionetworkToJsbml {
 
     /**
      * Abstract method to create SBML Reactions in {@link #model} from the
-     * {@link BioNetwork}
+     * {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
      *
      * @param net The Bionetwork
      */
@@ -455,7 +477,7 @@ public class BionetworkToJsbml {
     }
 
     /**
-     * Launches the set writer Package on the Input {@link BioNetwork}
+     * Launches the set writer Package on the Input {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
      *
      * @param net The Bionetwork
      */
@@ -466,6 +488,8 @@ public class BionetworkToJsbml {
     }
 
     /**
+     * <p>Getter for the field <code>model</code>.</p>
+     *
      * @return the model
      */
     public Model getModel() {
@@ -473,6 +497,8 @@ public class BionetworkToJsbml {
     }
 
     /**
+     * <p>Setter for the field <code>model</code>.</p>
+     *
      * @param model the model to set
      */
     public void setModel(Model model) {
@@ -480,6 +506,8 @@ public class BionetworkToJsbml {
     }
 
     /**
+     * <p>Getter for the field <code>setOfPackage</code>.</p>
+     *
      * @return the set of package
      */
     public List<PackageWriter> getSetOfPackage() {
@@ -490,8 +518,7 @@ public class BionetworkToJsbml {
      * add a package to the list
      *
      * @param pkg the package to add
-     * @throws JSBMLPackageWriterException when the added package is incompatible
-     *                                     with the current SBML level
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageWriterException if any.
      */
     public void addPackage(PackageWriter pkg) throws JSBMLPackageWriterException {
         this.getSetOfPackage().add(pkg);
@@ -501,8 +528,7 @@ public class BionetworkToJsbml {
      * Set the {@link #setOfPackage} to a new list
      *
      * @param packages the ordered list of packages to set
-     * @throws JSBMLPackageWriterException if one of the package in the list is not
-     *                                     compatible with the current SBML level
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageWriterException if any.
      */
     public void setPackages(ArrayList<PackageWriter> packages) throws JSBMLPackageWriterException {
         for (PackageWriter pkg : packages) {
@@ -510,10 +536,20 @@ public class BionetworkToJsbml {
         }
     }
 
+    /**
+     * <p>Getter for the field <code>doc</code>.</p>
+     *
+     * @return a {@link org.sbml.jsbml.SBMLDocument} object.
+     */
     public SBMLDocument getDoc() {
         return doc;
     }
 
+    /**
+     * <p>Setter for the field <code>doc</code>.</p>
+     *
+     * @param doc a {@link org.sbml.jsbml.SBMLDocument} object.
+     */
     public void setDoc(SBMLDocument doc) {
         this.doc = doc;
     }

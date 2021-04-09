@@ -48,10 +48,12 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * The Class used to compute several centrality measure and other classical vertex' global measures
+ *
  * @author clement
  * @param <V> the vertex type
  * @param <E> the edge type
  * @param <G> the graph type
+ * @version $Id: $Id
  */
 public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G extends BioGraph<V, E>> {
 
@@ -114,6 +116,7 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 	/**
 	 * Gets the neighborhood centrality.
 	 * This reflect the number of nodes that can be reached by a given node.
+	 *
 	 * @param allPaths the paths set
 	 * @return the neighborhood centrality
 	 */
@@ -205,6 +208,12 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 		return closeness;
 	}
 	
+	/**
+	 * <p>getInCloseness.</p>
+	 *
+	 * @param allPaths a {@link java.util.Set} object.
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<V, Double> getInCloseness(Set<BioPath<V,E>> allPaths){
 		Map<V, Double>  closeness = new HashMap<>();
 		//Instantiate the map;
@@ -223,6 +232,12 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 		return closeness;
 	}
 	
+	/**
+	 * <p>getOutCloseness.</p>
+	 *
+	 * @param allPaths a {@link java.util.Set} object.
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<V, Double> getOutCloseness(Set<BioPath<V,E>> allPaths){
 		Map<V, Double>  closeness = new HashMap<>();
 		//Instantiate the map;
@@ -243,6 +258,11 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 	
 	
 	
+	/**
+	 * <p>getGeodesicCloseness.</p>
+	 *
+	 * @return a {@link java.util.Map} object.
+	 */
 	public Map<V, Double> getGeodesicCloseness(){
 		if(this.allShortestPaths ==null){
 			ShortestPath<V, E, G> pathComputor = new ShortestPath<>(g);
@@ -282,6 +302,8 @@ public class GraphCentralityMeasure<V extends BioEntity,E extends Edge<V>, G ext
 	}
 
 	/**
+	 * <p>Getter for the field <code>allShortestPaths</code>.</p>
+	 *
 	 * @return the allShortestPaths
 	 */
 	public Set<BioPath<V, E>> getAllShortestPaths() {

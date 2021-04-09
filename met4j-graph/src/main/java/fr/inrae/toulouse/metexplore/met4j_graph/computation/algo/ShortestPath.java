@@ -52,7 +52,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * Class to use the shortest paths in a graph
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGraph<V ,E>>{
 	
@@ -74,6 +76,8 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @param start the start vertex
 	 * @param end the end vertex
 	 * @return the list of edges involved in the shortest path
+	 * @throws java.lang.IllegalArgumentException if any.
+	 * @throws java.lang.IllegalArgumentException if any.
 	 */
 	public BioPath<V, E> getShortest(V start, V end) throws IllegalArgumentException{
 		if(!g.containsVertex(start)){
@@ -163,6 +167,8 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @param start the start vertex
 	 * @param end the end vertex
 	 * @return the list of edges involved in the shortest path
+	 * @throws java.lang.IllegalArgumentException if any.
+	 * @throws java.lang.IllegalArgumentException if any.
 	 */
 	public BioPath<V, E> getShortestAsUndirected(V start, V end) throws IllegalArgumentException{
 		if(!g.containsVertex(start)){
@@ -409,7 +415,8 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	
 	/**
 	 * return all the shortest path in the given graph.
-	 * @return
+	 *
+	 * @return a {@link java.util.Set} object.
 	 */
 	public Set<BioPath<V,E>> getAllShortestPaths(){
 		HashSet<BioPath<V, E>> paths = new HashSet<>();

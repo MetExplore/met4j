@@ -48,7 +48,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * The Class CompoundGraph.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 
@@ -91,6 +93,7 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 	 * Gets the edges from reaction.
 	 *
 	 * @return the edges from reaction
+	 * @param compoundId a {@link java.lang.String} object.
 	 */
 	public HashSet<CompoundEdge> getEdgesFromCompound(String compoundId){
 		HashSet<CompoundEdge> edgeList = new HashSet<>();
@@ -140,12 +143,9 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 	
 	
 	/**
-	 * Gets edge from source, target and associated reaction.
+	 * {@inheritDoc}
 	 *
-	 * @param sourceVertex the source vertex
-	 * @param targetVertex the target vertex
-	 * @param reaction the reaction
-	 * @return the edge
+	 * Gets edge from source, target and associated reaction.
 	 */
 	public CompoundEdge getEdge(String sourceVertex, String targetVertex, String reaction) {
 		for(CompoundEdge e : this.edgeSet()){
@@ -156,16 +156,23 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 		return null;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public EdgeFactory<BioReaction, CompoundEdge> getEdgeFactory() {
 		return new CompoundEdgeFactory();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public CompoundEdge copyEdge(CompoundEdge edge) {
 		return new CompoundEdge(edge.getV1(), edge.getV2(), edge.getCompound());
 	}
 	
+	/**
+	 * <p>getFactory.</p>
+	 *
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory} object.
+	 */
 	public static GraphFactory<BioReaction, CompoundEdge, ReactionGraph> getFactory(){
 		return new GraphFactory<BioReaction, CompoundEdge, ReactionGraph>(){
 			@Override
@@ -175,6 +182,7 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public CompoundEdge reverseEdge(CompoundEdge edge) {
 		CompoundEdge reversed = new CompoundEdge(edge.getV2(), edge.getV1(), edge.getCompound());

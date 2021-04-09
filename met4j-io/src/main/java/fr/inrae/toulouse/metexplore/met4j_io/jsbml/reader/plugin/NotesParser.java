@@ -73,6 +73,7 @@ import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
  *
  * @author Benjamin
  * @since 3.0
+ * @version $Id: $Id
  */
 public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML1Compatible, ReaderSBML2Compatible,
         ReaderSBML3Compatible {
@@ -117,7 +118,9 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
      * The default pattern used to retrieve element external identifiers
      */
     public static final String defaultextDBidsPAttern = "[>]+([a-zA-Z\\._0-9 ]+):\\s*([^<]+)<";
+    /** Constant <code>defaultInchiPattern="(?i:>\\s*INCHI:\\s*([^<]+)<)"</code> */
     public static final String defaultInchiPattern = "(?i:>\\s*INCHI:\\s*([^<]+)<)";
+    /** Constant <code>defaultSmilesPattern="(?i:>\\s*SMILES:\\s*([^<]+)<)"</code> */
     public static final String defaultSmilesPattern = "(?i:>\\s*SMILES:\\s*([^<]+)<)";
     /**
      * The default separator in Notes values.
@@ -204,17 +207,14 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     /**
      * Recursive function that parse gene association logical expression strings.
      * </br>
-     * Internally this uses {@link StringUtils#findClosingParen(char[], int)} to
+     * Internally this uses {@link fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils#findClosingParen(char[], int)} to
      * split the GPR according to the outer most parenthesis
      *
      * @param assosString The full GPR String in the first recursion, an inner part
      *                    of the initial GPR on the following recursions
-     * @return a list of {@link GeneSet}
-     * @throws MalformedGeneAssociationStringException when the GPR is malformed, ie
-     *                                                 when there is a missing
-     *                                                 parenthesis in the string
-     *                                                 that creates a confusions on
-     *                                                 the AND/OR associations
+     * @return a list of {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneSet}
+     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.MalformedGeneAssociationStringException if any.
      */
     public static GeneAssociation computeGeneAssociation(String assosString, BioNetwork network)
             throws MalformedGeneAssociationStringException {
@@ -294,6 +294,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Launch the parsing of Notes.
      * {@link BioCompartment} has a different method because it does not extends the
      * {@link BioEntity} class
@@ -313,11 +315,13 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getAssociatedPackageName() {
         return "note";
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isPackageUseableOnModel(Model model) {
         return true;
@@ -676,6 +680,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Getter for the field <code>model</code>.</p>
+     *
      * @return the model
      */
     public Model getModel() {
@@ -683,6 +689,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Setter for the field <code>model</code>.</p>
+     *
      * @param model the model to set
      */
     public void setModel(Model model) {
@@ -690,6 +698,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Getter for the field <code>network</code>.</p>
+     *
      * @return the bionetwork
      */
     public BioNetwork getNetwork() {
@@ -697,6 +707,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Setter for the field <code>network</code>.</p>
+     *
      * @param network the bionetwork to set
      */
     public void setNetwork(BioNetwork network) {
@@ -704,6 +716,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Getter for the field <code>pathwaySep</code>.</p>
+     *
      * @return the pathwaySep
      */
     public String getPathwaySep() {
@@ -711,6 +725,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Setter for the field <code>pathwaySep</code>.</p>
+     *
      * @param pathwaySep the pathwaySep to set
      */
     public void setPathwaySep(String pathwaySep) {
@@ -718,6 +734,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Getter for the field <code>pathwayPattern</code>.</p>
+     *
      * @return the pathwayPattern
      */
     public String getPathwayPattern() {
@@ -725,6 +743,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Setter for the field <code>pathwayPattern</code>.</p>
+     *
      * @param pathwayPattern the pathwayPattern to set
      */
     public void setPathwayPattern(String pathwayPattern) {
@@ -732,6 +752,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>getECPattern.</p>
+     *
      * @return the eCPattern
      */
     public String getECPattern() {
@@ -739,6 +761,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>setECPattern.</p>
+     *
      * @param eCPattern the eCPattern to set
      */
     public void setECPattern(String eCPattern) {
@@ -746,6 +770,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>getGPRPattern.</p>
+     *
      * @return the gPRPattern
      */
     public String getGPRPattern() {
@@ -753,6 +779,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>setGPRPattern.</p>
+     *
      * @param gPRPattern the gPRPattern to set
      */
     public void setGPRPattern(String gPRPattern) {
@@ -760,6 +788,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Getter for the field <code>scorePattern</code>.</p>
+     *
      * @return the scorePattern
      */
     public String getScorePattern() {
@@ -767,6 +797,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Setter for the field <code>scorePattern</code>.</p>
+     *
      * @param scorePattern the scorePattern to set
      */
     public void setScorePattern(String scorePattern) {
@@ -774,6 +806,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Getter for the field <code>statusPattern</code>.</p>
+     *
      * @return the statusPattern
      */
     public String getStatusPattern() {
@@ -781,6 +815,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Setter for the field <code>statusPattern</code>.</p>
+     *
      * @param statusPattern the statusPattern to set
      */
     public void setStatusPattern(String statusPattern) {
@@ -788,6 +824,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Getter for the field <code>commentPattern</code>.</p>
+     *
      * @return the commentPattern
      */
     public String getCommentPattern() {
@@ -795,6 +833,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Setter for the field <code>commentPattern</code>.</p>
+     *
      * @param commentPattern the commentPattern to set
      */
     public void setCommentPattern(String commentPattern) {
@@ -802,6 +842,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Getter for the field <code>pmidPattern</code>.</p>
+     *
      * @return the pmidPattern
      */
     public String getPmidPattern() {
@@ -809,6 +851,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Setter for the field <code>pmidPattern</code>.</p>
+     *
      * @param pmidPattern the pmidPattern to set
      */
     public void setPmidPattern(String pmidPattern) {
@@ -816,6 +860,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Getter for the field <code>chargePattern</code>.</p>
+     *
      * @return the chargePattern
      */
     public String getChargePattern() {
@@ -823,6 +869,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Setter for the field <code>chargePattern</code>.</p>
+     *
      * @param chargePattern the chargePattern to set
      */
     public void setChargePattern(String chargePattern) {
@@ -830,6 +878,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Getter for the field <code>formulaPattern</code>.</p>
+     *
      * @return the formulaPattern
      */
     public String getFormulaPattern() {
@@ -837,6 +887,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Setter for the field <code>formulaPattern</code>.</p>
+     *
      * @param formulaPattern the formulaPattern to set
      */
     public void setFormulaPattern(String formulaPattern) {
@@ -844,6 +896,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Getter for the field <code>separator</code>.</p>
+     *
      * @return the separator
      */
     public String getSeparator() {
@@ -851,6 +905,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Setter for the field <code>separator</code>.</p>
+     *
      * @param separator the separator to set
      */
     public void setSeparator(String separator) {
@@ -858,6 +914,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>isOthersAsRefs.</p>
+     *
      * @return the othersAsRefs
      */
     public boolean isOthersAsRefs() {
@@ -865,24 +923,46 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
+     * <p>Setter for the field <code>othersAsRefs</code>.</p>
+     *
      * @param othersAsRefs the othersAsRefs to set
      */
     public void setOthersAsRefs(boolean othersAsRefs) {
         this.othersAsRefs = othersAsRefs;
     }
 
+    /**
+     * <p>Getter for the field <code>inchiPattern</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getInchiPattern() {
         return inchiPattern;
     }
 
+    /**
+     * <p>Setter for the field <code>inchiPattern</code>.</p>
+     *
+     * @param inchiPattern a {@link java.lang.String} object.
+     */
     public void setInchiPattern(String inchiPattern) {
         this.inchiPattern = inchiPattern;
     }
 
+    /**
+     * <p>Getter for the field <code>smilesPattern</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String getSmilesPattern() {
         return smilesPattern;
     }
 
+    /**
+     * <p>Setter for the field <code>smilesPattern</code>.</p>
+     *
+     * @param smilesPattern a {@link java.lang.String} object.
+     */
     public void setSmilesPattern(String smilesPattern) {
         this.smilesPattern = smilesPattern;
     }

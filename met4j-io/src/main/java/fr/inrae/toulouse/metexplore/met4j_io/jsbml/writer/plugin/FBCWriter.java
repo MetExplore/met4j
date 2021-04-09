@@ -78,6 +78,7 @@ import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
  *
  * @author Benjamin
  * @since 3.0
+ * @version $Id: $Id
  */
 public class FBCWriter implements PackageWriter, PrimaryDataTag {
 
@@ -95,11 +96,13 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
      */
     public FluxNetwork flxNet;
 
+    /** {@inheritDoc} */
     @Override
     public String getAssociatedPackageName() {
         return "fbc";
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isPackageUseableOnLvl(int lvl) {
         if (lvl >= 3) {
@@ -110,6 +113,8 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Activate the fbc2 package on the SBML model object and create all the fbc
      * entities from the {@link BioNetwork}
      */
@@ -367,6 +372,8 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
     }
 
     /**
+     * <p>Getter for the field <code>fbcModel</code>.</p>
+     *
      * @return the fbcModel
      */
     public FBCModelPlugin getFbcModel() {
@@ -374,6 +381,8 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
     }
 
     /**
+     * <p>Setter for the field <code>fbcModel</code>.</p>
+     *
      * @param fbcModel the fbcModel to set
      */
     public void setFbcModel(FBCModelPlugin fbcModel) {
@@ -381,6 +390,8 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
     }
 
     /**
+     * <p>Getter for the field <code>flxNet</code>.</p>
+     *
      * @return the flxNet
      */
     public FluxNetwork getFlxNet() {
@@ -388,6 +399,8 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
     }
 
     /**
+     * <p>Setter for the field <code>flxNet</code>.</p>
+     *
      * @param flxNet the flxNet to set
      */
     public void setFlxNet(FluxNetwork flxNet) {

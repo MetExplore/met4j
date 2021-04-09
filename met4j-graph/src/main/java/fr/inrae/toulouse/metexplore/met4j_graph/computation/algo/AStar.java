@@ -48,10 +48,12 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
-* implementation of the A* algorithm (shortest path with estimated remaining distance computed at each step)
+ * implementation of the A* algorithm (shortest path with estimated remaining distance computed at each step)
  * The estimated remaining distance has to be computed by a class implementing the AstarHeuristic interface
  * An heuristic function using chemical similarity is available in ChemicalSimilarityHeuristic class
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class AStar<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V ,E>>{
 	

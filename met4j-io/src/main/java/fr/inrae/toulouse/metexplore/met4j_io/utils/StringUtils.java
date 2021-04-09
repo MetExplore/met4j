@@ -46,8 +46,20 @@ import org.apache.xerces.util.XMLChar;
 
 
 
+/**
+ * <p>StringUtils class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class StringUtils {
 	
+	/**
+	 * <p>htmlEncode.</p>
+	 *
+	 * @param in a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String htmlEncode(String in) {
 		String out;
 		
@@ -71,6 +83,12 @@ public class StringUtils {
 		
 	}
 	
+	/**
+	 * <p>finalDecode.</p>
+	 *
+	 * @param in a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static  String finalDecode(String in)
 	{
 		String out;
@@ -99,6 +117,12 @@ public class StringUtils {
 		return out;
 	}
 	
+	/**
+	 * <p>htmlDecode.</p>
+	 *
+	 * @param in a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String htmlDecode(String in) {
 		String out;
 		
@@ -118,6 +142,12 @@ public class StringUtils {
 		
 	}
 	
+	/**
+	 * <p>forXML.</p>
+	 *
+	 * @param aText a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String forXML(String aText){
 	    final StringBuilder result = new StringBuilder();
 	    final StringCharacterIterator iterator = new StringCharacterIterator(aText);
@@ -153,6 +183,12 @@ public class StringUtils {
 	  }
 
 	
+	/**
+	 * <p>sbmlEncode.</p>
+	 *
+	 * @param in a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String sbmlEncode(String in) {
 		
 		String out;
@@ -184,6 +220,12 @@ public class StringUtils {
 		return out;
 	}
 	
+	/**
+	 * <p>sbmlDecode.</p>
+	 *
+	 * @param in a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String sbmlDecode(String in) {
 		
 		in =  htmlDecode(in);
@@ -235,8 +277,10 @@ public class StringUtils {
 	/**
 	 * Transforms a stoechiometric coefficient to be compatible with the
 	 * SBML annotations
+	 *
+	 * @param st a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
 	 */
-	
 	public static String transformStoi (String st) {
 		
 		if(st == null) {
@@ -263,13 +307,13 @@ public class StringUtils {
 	
 	
 	/**
-	 * 
+	 *
 	 * Join array elements with a string
-	 * 
-	 * @param ary : the array of strings  to implode 
-	 * @param delim : 
+	 *
+	 * @param ary : the array of strings  to implode
+	 * @param delim :
 	 * @return  Returns a string containing a string representation
-	 *  of all the array elements in the same order, with the delim string between each element. 
+	 *  of all the array elements in the same order, with the delim string between each element.
 	 */
 	public static String implode(String[] ary, String delim) {
 	    String out = "";
@@ -284,8 +328,9 @@ public class StringUtils {
 	/**
 	 * Return true if str does not contain any illegal character
 	 * false otherwise
-	 * @param str
-	 * @return
+	 *
+	 * @param str a {@link java.lang.String} object.
+	 * @return a {@link java.lang.Boolean} object.
 	 */
 	public static Boolean validString(String str) {
 		boolean valid = true;  
@@ -305,8 +350,9 @@ public class StringUtils {
 	
 	/**
 	 * remove _IN_NIL
-	 * @param id
-	 * @return
+	 *
+	 * @param id a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
 	 */
 	public static String removeDefaultBioCycSuffix(String id)
 	{
@@ -317,15 +363,16 @@ public class StringUtils {
 	
 	/**
 	 * Remove
-	 * - every thing between &lt; and &gt; (included) 
-	 * - &something; 
+	 * - every thing between &lt; and &gt; (included)
+	 * - &something;
 	 * - #something;
 	 * - amp;
 	 * - prime;
 	 * - mdash;
 	 * - ;
-	 * @param id
-	 * @return
+	 *
+	 * @param id a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
 	 */
 	public static String removeHtmlMarks(String id)
 	{
@@ -392,10 +439,10 @@ public class StringUtils {
 	
 	/**
 	 * Remove any SBML or HTML marks or transformation
-	 * @param id
-	 * @return
+	 *
+	 * @param id a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
 	 */
-	
 	public static String getNotFormattedString(String id) {
 		
 		String id2 = id;
@@ -409,9 +456,10 @@ public class StringUtils {
 	
 	/**
 	 * Returns the length of the longest substring of the string f in the string se
-	 * @param first
-	 * @param second
-	 * @return
+	 *
+	 * @param f a {@link java.lang.String} object.
+	 * @param s a {@link java.lang.String} object.
+	 * @return a int.
 	 */
 	public static int longestSubstr(String f, String s) {
 		
@@ -448,9 +496,10 @@ public class StringUtils {
 	/**
 	 * Returns the score of the longest common subsequence between two strings
 	 * i.e the max between the length(lcs)/length(first) and length(lcs)/length(first)
-	 * @param first
-	 * @param second
-	 * @return
+	 *
+	 * @param first a {@link java.lang.String} object.
+	 * @param second a {@link java.lang.String} object.
+	 * @return a double.
 	 */
 	public static double scoreLcs(String first, String second) {
 		
@@ -477,9 +526,10 @@ public class StringUtils {
 	
 	/**
 	 * Returns the longest common substring between s1 and s2
-	 * @param S1
-	 * @param S2
-	 * @return
+	 *
+	 * @param S1 a {@link java.lang.String} object.
+	 * @param S2 a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
 	 */
 	public static String longestCommonSubstring(String S1, String S2)
 	{
@@ -513,6 +563,12 @@ public class StringUtils {
 	static Pattern SPECIAL_REGEX_CHARS = Pattern.compile("[{}()\\[\\].+*?^$\\\\|]");
 
 
+	/**
+	 * <p>escapeSpecialRegexChars.</p>
+	 *
+	 * @param str a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String escapeSpecialRegexChars(String str) {
 
 		return SPECIAL_REGEX_CHARS.matcher(str).replaceAll("\\\\$0");
@@ -521,14 +577,15 @@ public class StringUtils {
 	/**
 	 * Find the closing parenthesis in a text given the position of the matching
 	 * opening one
-	 * 
+	 *
 	 * @param text
 	 *            The text
 	 * @param openPos
 	 *            the position of the opening parenthesis
 	 * @return the position of the matching closing parenthesis
-	 * @throws ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *             when the matching closing parenthesis is not found
+	 * @throws java.lang.ArrayIndexOutOfBoundsException if any.
 	 */
 	public static int findClosingParen(char[] text, int openPos)
 			throws ArrayIndexOutOfBoundsException {
@@ -548,13 +605,13 @@ public class StringUtils {
 	/**
 	 * Find the opening parenthesis in a text given the position of the matching
 	 * closing one
-	 * 
+	 *
 	 * @param text
 	 *            The text
 	 * @param closePos
 	 *            the position of the closing parenthesis
 	 * @return the position of the matching opening parenthesis
-	 * @throws ArrayIndexOutOfBoundsException
+	 * @throws java.lang.ArrayIndexOutOfBoundsException
 	 *             when the matching opening parenthesis is not found
 	 */
 	public static int findOpenParen(char[] text, int closePos) {
@@ -575,9 +632,9 @@ public class StringUtils {
 	/**
 	 * Add to list1 all elements of list2 that are not empty or only space
 	 * characters
-	 * 
-	 * @param list1
-	 * @param list2
+	 *
+	 * @param list1 a {@link java.util.ArrayList} object.
+	 * @param list2 a {@link java.util.List} object.
 	 */
 	public static void addAllNonEmpty(ArrayList<String> list1,
 			List<String> list2) {
@@ -591,7 +648,7 @@ public class StringUtils {
 	
 	/**
 	 * Convert an ID to a valid SBML SID
-	 * 
+	 *
 	 * @param id
 	 *            the Id to convert to SID
 	 * @return the converted SID
@@ -618,8 +675,9 @@ public class StringUtils {
 	 * sbo:1234567
 	 * SBO : 1234567
 	 * 1234567
-	 * @param sboTerm
-	 * @return
+	 *
+	 * @param sboTerm a {@link java.lang.String} object.
+	 * @return a {@link java.lang.Boolean} object.
 	 */
 	public static Boolean isValidSboTerm(String sboTerm) {
 		Pattern p = Pattern.compile("^SBO\\s*:\\s*\\d{7}$", Pattern.CASE_INSENSITIVE);
@@ -633,6 +691,7 @@ public class StringUtils {
 
 	/**
 	 * Format a reaction id to the format R_reactionId (Cobra format)
+	 *
 	 * @param id the original id
 	 * @return the id cobra formatted
 	 */
@@ -650,6 +709,7 @@ public class StringUtils {
 
 	/**
 	 * Format a metabolite id in the cobra way (M_metaboliteId_compartmentId)
+	 *
 	 * @param metaboliteId the original metabolite id
 	 * @param compartmentId  the compartment id
 	 * @return the metaboliteId formatted

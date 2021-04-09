@@ -46,7 +46,9 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 
 /**
  * Class used to perform mathematical operation and IO methods on weights in graph
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class WeightUtils {
 
@@ -98,10 +100,11 @@ public class WeightUtils {
 	}
 	
 	/**
-	 * Invert weights (weights have to be between 0 and 1, which can be done using the {@link WeightUtils#scale(BioGraph)})
+	 * Invert weights (weights have to be between 0 and 1, which can be done using the {@link fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.WeightUtils#scale(BioGraph)})
 	 *
 	 * @param g the graph
-	 * @throws IllegalArgumentException the illegal argument exception
+	 * @throws java.lang.IllegalArgumentException the illegal argument exception
+	 * @throws java.lang.IllegalArgumentException if any.
 	 */
 	public static <E extends Edge<?>, G extends BioGraph<?,E>> void invert(G g) throws IllegalArgumentException{
 		for(E e : g.edgeSet()){
@@ -117,7 +120,8 @@ public class WeightUtils {
 	 *
 	 * @param g the graph
 	 * @param n the number to add
-	 * @throws IllegalArgumentException the illegal argument exception
+	 * @throws java.lang.IllegalArgumentException the illegal argument exception
+	 * @throws java.lang.IllegalArgumentException if any.
 	 */
 	public static <E extends Edge<?>, G extends BioGraph<?,E>> void add(G g, double n) throws IllegalArgumentException{
 		for(E e : g.edgeSet()){
@@ -150,9 +154,10 @@ public class WeightUtils {
 	 * Format :
 	 * tab separated
 	 * source vertex id,target vertex id,reaction id,weight
+	 *
 	 * @param g the graph
 	 * @param outputPath the output path
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws java.io.IOException if any.
 	 */
 	public static <E extends Edge<?>, G extends BioGraph<?,E>> void export(G g, String outputPath) throws IOException {
 		BufferedWriter out = new BufferedWriter(new FileWriter(outputPath));

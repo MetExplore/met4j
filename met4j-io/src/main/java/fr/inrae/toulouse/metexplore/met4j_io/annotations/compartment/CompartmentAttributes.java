@@ -40,19 +40,30 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 
+/**
+ * <p>CompartmentAttributes class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class CompartmentAttributes extends GenericAttributes {
 
+	/** Constant <code>OUTSIDE_COMPARTMENT="outside_compartment"</code> */
 	public static final String OUTSIDE_COMPARTMENT = "outside_compartment";
+	/** Constant <code>TYPE="type"</code> */
 	public static final String TYPE = "type";
+	/** Constant <code>SIZE="size"</code> */
 	public static final String SIZE = "size";
+	/** Constant <code>SPATIAL_DIMENSIONS="spatial_dimensions"</code> */
 	public static final String SPATIAL_DIMENSIONS = "spatial_dimensions";
+	/** Constant <code>UNIT_DEFINITION="unit_definition"</code> */
 	public static final String UNIT_DEFINITION = "unit_definition";
 
 	/**
 	 * Set outside compartment
-	 * 
-	 * @param c
-	 * @param outside
+	 *
+	 * @param c a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} object.
+	 * @param outside a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} object.
 	 */
 	public static void setOutsideCompartment(BioCompartment c, BioCompartment outside) {
 
@@ -65,9 +76,9 @@ public class CompartmentAttributes extends GenericAttributes {
 
 	/**
 	 * get outside compartment
-	 * 
-	 * @param c
-	 * @return
+	 *
+	 * @param c a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} object.
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} object.
 	 */
 	public static BioCompartment getOutsideCompartment(BioCompartment c) {
 		return (BioCompartment) c.getAttribute(OUTSIDE_COMPARTMENT);
@@ -75,9 +86,9 @@ public class CompartmentAttributes extends GenericAttributes {
 
 	/**
 	 * Set type
-	 * 
-	 * @param c
-	 * @param type
+	 *
+	 * @param c a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} object.
+	 * @param type a {@link fr.inrae.toulouse.metexplore.met4j_io.annotations.compartment.BioCompartmentType} object.
 	 */
 	public static void setType(BioCompartment c, BioCompartmentType type) {
 
@@ -87,9 +98,9 @@ public class CompartmentAttributes extends GenericAttributes {
 
 	/**
 	 * Get Type
-	 * 
-	 * @param c
-	 * @return
+	 *
+	 * @param c a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} object.
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_io.annotations.compartment.BioCompartmentType} object.
 	 */
 	public static BioCompartmentType getType(BioCompartment c) {
 		return (BioCompartmentType) c.getAttribute(TYPE);
@@ -97,9 +108,9 @@ public class CompartmentAttributes extends GenericAttributes {
 
 	/**
 	 * Add a unit definition
-	 * 
-	 * @param e
-	 * @param unitDefinition
+	 *
+	 * @param unitDefinition a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition} object.
+	 * @param c a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} object.
 	 */
 	public static void setUnitDefinition(BioCompartment c, BioUnitDefinition unitDefinition) {
 
@@ -109,10 +120,9 @@ public class CompartmentAttributes extends GenericAttributes {
 
 	/**
 	 * Get a Unit definition from its id
-	 * 
-	 * @param e
-	 * @param id
-	 * @return
+	 *
+	 * @param c a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} object.
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition} object.
 	 */
 	public static BioUnitDefinition getUnitDefinition(BioCompartment c) {
 
@@ -122,9 +132,9 @@ public class CompartmentAttributes extends GenericAttributes {
 
 	/**
 	 * get size
-	 * 
-	 * @param c
-	 * @return
+	 *
+	 * @param c a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} object.
+	 * @return a {@link java.lang.Double} object.
 	 */
 	public static Double getSize(BioCompartment c) {
 
@@ -136,9 +146,9 @@ public class CompartmentAttributes extends GenericAttributes {
 
 	/**
 	 * Set size
-	 * 
-	 * @param c
-	 * @param s
+	 *
+	 * @param c a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} object.
+	 * @param s a {@link java.lang.Double} object.
 	 */
 	public static void setSize(BioCompartment c, Double s) {
 
@@ -148,9 +158,9 @@ public class CompartmentAttributes extends GenericAttributes {
 
 	/**
 	 * get spatial dimensions
-	 * 
-	 * @param c
-	 * @return
+	 *
+	 * @param c a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} object.
+	 * @return a {@link java.lang.Integer} object.
 	 */
 	public static Integer getSpatialDimensions(BioCompartment c) {
 		return (Integer) c.getAttribute(SPATIAL_DIMENSIONS);
@@ -158,9 +168,9 @@ public class CompartmentAttributes extends GenericAttributes {
 
 	/**
 	 * Set spatial dimensions
-	 * 
-	 * @param c
-	 * @param s
+	 *
+	 * @param c a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} object.
+	 * @param s a {@link java.lang.Integer} object.
 	 */
 	public static void setSpatialDimensions(BioCompartment c, Integer s) {
 

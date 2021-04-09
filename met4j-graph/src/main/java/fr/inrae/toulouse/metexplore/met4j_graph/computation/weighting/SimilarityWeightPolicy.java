@@ -50,7 +50,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollections
 
 /**
  * The Chemical Similarity weighting policy.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> {
 	
@@ -58,6 +60,7 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,Reacti
 	private boolean weightByMassContribution;
 	private boolean useDist;
 	private BioMetabolite global;
+	/** Constant <code>DEFAULT_FINGERPRINT=FingerprintBuilder.EXTENDED</code> */
 	public static final int DEFAULT_FINGERPRINT = FingerprintBuilder.EXTENDED;
 	
 	/**
@@ -69,12 +72,21 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,Reacti
 	
 	/**
 	 * Instantiates a new similarity weight policy using specified fingerprint type
+	 *
 	 * @see FingerprintBuilder
+	 * @param fingerprintType a int.
 	 */
 	public SimilarityWeightPolicy(int fingerprintType) {
 		this.fingerprintType=fingerprintType;
 	}
 	
+	/**
+	 * <p>Constructor for SimilarityWeightPolicy.</p>
+	 *
+	 * @param fingerprintType a int.
+	 * @param weightByMassContribution a boolean.
+	 * @param useDist a boolean.
+	 */
 	public SimilarityWeightPolicy(int fingerprintType, boolean weightByMassContribution, boolean useDist) {
 		this.fingerprintType=fingerprintType;
 		this.weightByMassContribution=weightByMassContribution;
@@ -84,6 +96,7 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,Reacti
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.WeightingPolicy#setWeight(parsebionet.applications.graphe.BioGraph)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void setWeight(CompoundGraph g) {
 //		noStructFilter(g);
@@ -198,6 +211,8 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,Reacti
 	
 	/**
 	 * set weight as the product of chemical similarity and percentage atomic mass contribution (PAMC)
+	 *
+	 * @param weightByMassContribution a boolean.
 	 */
 	public void weightByMassContribution(boolean weightByMassContribution) {
 		this.weightByMassContribution = weightByMassContribution;
@@ -205,27 +220,54 @@ public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,Reacti
 	
 	/**
 	 * Convert similarity as a distance (invert of the similarity)
+	 *
+	 * @param useDist a boolean.
 	 */
 	public void useDistance(boolean useDist) {
 		this.useDist = useDist;
 	}
 	
+	/**
+	 * <p>useGlobalSimilarity.</p>
+	 *
+	 * @param start a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+	 */
 	public void useGlobalSimilarity(BioMetabolite start) {
         this.global = start;
 	}
 
+	/**
+	 * <p>Setter for the field <code>fingerprintType</code>.</p>
+	 *
+	 * @param fingerprintType a int.
+	 */
 	public void setFingerprintType(int fingerprintType) {
 		this.fingerprintType = fingerprintType;
 	}
 
+	/**
+	 * <p>Getter for the field <code>fingerprintType</code>.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getFingerprintType() {
 		return fingerprintType;
 	}
 
+	/**
+	 * <p>isWeightByMassContribution.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isWeightByMassContribution() {
 		return weightByMassContribution;
 	}
 
+	/**
+	 * <p>isUseDist.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isUseDist() {
 		return useDist;
 	}

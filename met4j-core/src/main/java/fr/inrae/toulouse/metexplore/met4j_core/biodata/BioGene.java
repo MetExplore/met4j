@@ -35,10 +35,17 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
+/**
+ * <p>BioGene class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class BioGene extends BioEntity {
 
 	/**
 	 * Constructor
+	 *
 	 * @param id the id of the BioGene
 	 */
 	public BioGene(String id) {
@@ -47,6 +54,7 @@ public class BioGene extends BioEntity {
 
 	/**
 	 * Constructor
+	 *
 	 * @param id the id of the BioGene
 	 * @param name the name of the BioGene
 	 */
@@ -56,6 +64,7 @@ public class BioGene extends BioEntity {
 
 	/**
 	 * Copy of a gene
+	 *
 	 * @param gene the original gene
 	 */
 	public BioGene(BioGene gene) {

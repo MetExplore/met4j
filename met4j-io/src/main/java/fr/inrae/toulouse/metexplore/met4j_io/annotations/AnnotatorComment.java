@@ -36,11 +36,23 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.annotations;
 
+/**
+ * <p>AnnotatorComment class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class AnnotatorComment {
 	
 	public String comment;
 	public String annotator;
 	
+	/**
+	 * <p>Constructor for AnnotatorComment.</p>
+	 *
+	 * @param comment a {@link java.lang.String} object.
+	 * @param annotator a {@link java.lang.String} object.
+	 */
 	public AnnotatorComment(String comment, String annotator) {
 		super();
 		this.comment = comment;

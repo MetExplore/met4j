@@ -45,15 +45,24 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 //import net.sf.saxon.functions.Unordered;
 
 /**
- * @author ludo
+ * <p>BioUnitDefinition class.</p>
  *
+ * @author ludo
+ * @version $Id: $Id
  */
 public class BioUnitDefinition extends BioEntity {
 	
+	/** Constant <code>DEFAULT_UNIT="mmol_per_gDW_per_hr"</code> */
 	public static String DEFAULT_UNIT = "mmol_per_gDW_per_hr";
 	
 	HashMap<String, UnitSbml> units;
 	
+	/**
+	 * <p>Constructor for BioUnitDefinition.</p>
+	 *
+	 * @param id a {@link java.lang.String} object.
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public BioUnitDefinition(String id, String name) {
 		super(id, name);
 		
@@ -75,14 +84,29 @@ public class BioUnitDefinition extends BioEntity {
 		
 	}
 	
+	/**
+	 * <p>Getter for the field <code>units</code>.</p>
+	 *
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	public HashMap<String, UnitSbml> getUnits() {
 		return units;
 	}
 
+	/**
+	 * <p>Setter for the field <code>units</code>.</p>
+	 *
+	 * @param units a {@link java.util.HashMap} object.
+	 */
 	public void setUnits(HashMap<String, UnitSbml> units) {
 		this.units = units;
 	}
 	
+	/**
+	 * <p>addUnit.</p>
+	 *
+	 * @param unit a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.UnitSbml} object.
+	 */
 	public void addUnit(UnitSbml unit) {
 		this.units.put(unit.getKind(), unit);
 	}

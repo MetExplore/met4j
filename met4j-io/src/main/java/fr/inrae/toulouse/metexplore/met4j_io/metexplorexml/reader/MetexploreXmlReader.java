@@ -67,6 +67,12 @@ import fr.inrae.toulouse.metexplore.met4j_io.utils.XmlUtils;
 
 import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
 
+/**
+ * <p>MetexploreXmlReader class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class MetexploreXmlReader {
 
     private BioNetwork network;
@@ -75,6 +81,11 @@ public class MetexploreXmlReader {
 
     private HashMap<String, String> compartmentMetabolites;
 
+    /**
+     * <p>Constructor for MetexploreXmlReader.</p>
+     *
+     * @param xmlFile a {@link java.lang.String} object.
+     */
     public MetexploreXmlReader(String xmlFile) {
         this.xmlFile = xmlFile;
         compartmentMetabolites = new HashMap<String, String>();
@@ -83,7 +94,7 @@ public class MetexploreXmlReader {
     /**
      * Read the xml file and create the network
      *
-     * @throws ParseException
+     * @throws org.sbml.jsbml.text.parser.ParseException if any.
      */
     public void read() throws ParseException {
 
@@ -112,7 +123,7 @@ public class MetexploreXmlReader {
     /**
      * Read unit definitions
      *
-     * @throws ParseException
+     * @throws org.sbml.jsbml.text.parser.ParseException if any.
      */
     public void readUnitDefinitions() throws ParseException {
         NodeList listOfUnitDefinitions = document.getElementsByTagName("listOfUnitDefinitions");
@@ -250,8 +261,10 @@ public class MetexploreXmlReader {
     }
 
     /**
-     * @throws ParseException
+     * <p>readMetabolites.</p>
+     *
      * @author LC from Paulo Milreu Read metabolites
+     * @throws org.sbml.jsbml.text.parser.ParseException if any.
      */
     public void readMetabolites() throws ParseException {
         // get the element "listOfSpecies"
@@ -386,7 +399,9 @@ public class MetexploreXmlReader {
     }
 
     /**
-     * @throws ParseException
+     * <p>readReactions.</p>
+     *
+     * @throws org.sbml.jsbml.text.parser.ParseException if any.
      */
     public void readReactions() throws ParseException {
         // get the element "listOfReactions"
@@ -476,9 +491,9 @@ public class MetexploreXmlReader {
     /**
      * Parse a reaction
      *
-     * @param reaction
-     * @param rxn
-     * @throws ParseException
+     * @param reaction a {@link org.w3c.dom.Element} object.
+     * @param rxn a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+     * @throws org.sbml.jsbml.text.parser.ParseException if any.
      */
     public void readReaction(Element reaction, BioReaction rxn) throws ParseException {
         NodeList enzymeNodes = reaction.getElementsByTagName("enzyme");
@@ -823,6 +838,11 @@ public class MetexploreXmlReader {
         }
     }
 
+    /**
+     * <p>Getter for the field <code>network</code>.</p>
+     *
+     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     */
     public BioNetwork getNetwork() {
         return network;
     }

@@ -47,15 +47,23 @@ import org.sbml.jsbml.ext.groups.Group;
 import org.sbml.jsbml.ext.groups.GroupsModelPlugin;
 import org.sbml.jsbml.ext.groups.Member;
 
+/**
+ * <p>GroupPathwayWriter class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class GroupPathwayWriter implements PackageWriter, PrimaryDataTag {
 
     private String PackageNamespace = "http://www.sbml.org/sbml/level3/version1/groups/version1";
 
+    /** {@inheritDoc} */
     @Override
     public String getAssociatedPackageName() {
         return "groups";
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isPackageUseableOnLvl(int lvl) {
         if (lvl >= 3) {
@@ -65,6 +73,7 @@ public class GroupPathwayWriter implements PackageWriter, PrimaryDataTag {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void parseBionetwork(Model model, BioNetwork bionetwork) {
         System.err.println("Generating Pathways...");

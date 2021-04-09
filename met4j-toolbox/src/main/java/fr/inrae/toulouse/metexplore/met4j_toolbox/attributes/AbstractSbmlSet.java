@@ -45,6 +45,12 @@ import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 
+/**
+ * <p>Abstract AbstractSbmlSet class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public abstract class AbstractSbmlSet extends AbstractMet4jApplication {
 
     @Option(name="-n", usage="[0] Number of lines to skip at the beginning of the tabulated file")
@@ -62,9 +68,17 @@ public abstract class AbstractSbmlSet extends AbstractMet4jApplication {
     @Option(name="-c", usage="[#] Comment String in the tabulated file. The lines beginning by this string won't be read")
     protected String c="#";
 
+    /**
+     * <p>Constructor for AbstractSbmlSet.</p>
+     */
     public AbstractSbmlSet() {
     }
 
+    /**
+     * <p>readSbml.</p>
+     *
+     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     */
     protected BioNetwork readSbml() {
         JsbmlReader reader = null;
         try {
@@ -88,6 +102,11 @@ public abstract class AbstractSbmlSet extends AbstractMet4jApplication {
 
     }
 
+    /**
+     * <p>writeSbml.</p>
+     *
+     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     */
     protected void writeSbml(BioNetwork network) {
         JsbmlWriter writer = new JsbmlWriter(this.out, network);
 

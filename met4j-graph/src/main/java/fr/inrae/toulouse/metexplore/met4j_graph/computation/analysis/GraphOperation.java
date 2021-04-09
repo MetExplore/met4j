@@ -42,8 +42,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * Provide static method to compute some basic set operation on graph such as union or interesct.
- * Result can be returned as sub-network or just the size/order of the expected sub-network 
+ * Result can be returned as sub-network or just the size/order of the expected sub-network
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class GraphOperation {
 
@@ -58,6 +60,10 @@ public class GraphOperation {
 	 * @param g1 the first graph
 	 * @param g2 the second graph
 	 * @return the interest
+	 * @param factory a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory} object.
+	 * @param <V> a V object.
+	 * @param <E> a E object.
+	 * @param <G> a G object.
 	 */
 	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> G intersect(G g1, G g2, GraphFactory<V,E,G> factory){
 		G i = factory.createGraph();
@@ -76,6 +82,10 @@ public class GraphOperation {
 	 * @param g1 the first graph
 	 * @param g2 the second graph
 	 * @return the union
+	 * @param factory a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory} object.
+	 * @param <V> a V object.
+	 * @param <E> a E object.
+	 * @param <G> a G object.
 	 */
 	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> G union(G g1, G g2, GraphFactory<V,E,G> factory){
 		G u = factory.createGraph();
@@ -100,6 +110,9 @@ public class GraphOperation {
 	 * @param g1 the first graph
 	 * @param g2 the second graph
 	 * @return the size
+	 * @param <V> a V object.
+	 * @param <E> a E object.
+	 * @param <G> a G object.
 	 */
 	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> int intersectSize(G g1, G g2){
 		int size=0;
@@ -115,6 +128,9 @@ public class GraphOperation {
 	 * @param g1 the first graph
 	 * @param g2 the second graph
 	 * @return the size
+	 * @param <V> a V object.
+	 * @param <E> a E object.
+	 * @param <G> a G object.
 	 */
 	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> int unionSize(G g1, G g2){
 		return g1.edgeSet().size()+g2.edgeSet().size()- intersectSize(g1, g2);
@@ -126,6 +142,7 @@ public class GraphOperation {
 	 * @param g1 the first graph
 	 * @param g2 the second graph
 	 * @return the order
+	 * @param <G> a G object.
 	 */
 	public static <G extends BioGraph<? extends BioEntity, ? extends Edge<?>>> int intersectOrder(G g1, G g2){
 		int order=0;
@@ -137,7 +154,6 @@ public class GraphOperation {
 	
 	/**
 	 * compute the order of the union of two graph.
-	 * @param <G>
 	 *
 	 * @param g1 the first graph
 	 * @param g2 the second graph

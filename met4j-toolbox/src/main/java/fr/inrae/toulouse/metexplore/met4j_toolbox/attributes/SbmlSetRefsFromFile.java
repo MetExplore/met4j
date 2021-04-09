@@ -41,6 +41,12 @@ import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetChargesFrom
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetRefsFromFile;
 import org.kohsuke.args4j.Option;
 
+/**
+ * <p>SbmlSetRefsFromFile class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class SbmlSetRefsFromFile extends AbstractSbmlSetAny {
 
     @Option(name="-cr", usage="[2] number of the column where are the references")
@@ -49,16 +55,23 @@ public class SbmlSetRefsFromFile extends AbstractSbmlSetAny {
     @Option(name="-ref", usage="Name of the ref. Must exist in identifiers.org", required = true)
     private String ref=null;
 
+    /** {@inheritDoc} */
     @Override
     public String getLabel() {
         return this.getClass().getSimpleName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDescription() {
         return "Add refs to network objects from a tabulated file containing the metabolite ids and the formulas";
     }
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     */
     public static void main(String[] args) {
 
         SbmlSetRefsFromFile app = new SbmlSetRefsFromFile();

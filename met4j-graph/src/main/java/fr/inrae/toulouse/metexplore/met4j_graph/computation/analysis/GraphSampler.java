@@ -49,7 +49,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 /**
  * Provide graph random sampling method on edges or vertex (with or without scope or defined compartment)
  * also provide method to build random transition matrix, keeping graph structure
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V, E>> {
 	
@@ -69,6 +71,8 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 	 * Gets a random vertex.
 	 *
 	 * @return the random vertex
+	 * @throws java.lang.IllegalArgumentException if any.
+	 * @throws java.lang.IllegalArgumentException if any.
 	 */
 	public V getRandomVertex() throws IllegalArgumentException{
 		if(g.vertexSet().size()<1){
@@ -106,6 +110,8 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 	 *
 	 * @param n the size of the sample
 	 * @return the random vertex list
+	 * @throws java.lang.IllegalArgumentException if any.
+	 * @throws java.lang.IllegalArgumentException if any.
 	 */
 	public HashSet<V> getRandomVertexList(int n) throws IllegalArgumentException{
 		if(g.vertexSet().size()<n){
@@ -132,6 +138,8 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 	 * @param n the size of the sample
 	 * @param scope the scope
 	 * @return the random vertex list in scope
+	 * @throws java.lang.IllegalArgumentException if any.
+	 * @throws java.lang.IllegalArgumentException if any.
 	 */
 	public HashSet<V> getRandomVertexListinScope(int n, int scope) throws IllegalArgumentException{
 		if(g.vertexSet().size()<n){
@@ -202,6 +210,8 @@ public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioG
 	 *
 	 * @param n the size of the sample
 	 * @return the random edge list
+	 * @throws java.lang.IllegalArgumentException if any.
+	 * @throws java.lang.IllegalArgumentException if any.
 	 */
 	public HashSet<E> getRandomEdgeList(int n) throws IllegalArgumentException{
 		if(g.edgeSet().size()<n){

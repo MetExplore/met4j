@@ -70,10 +70,10 @@ import java.util.ArrayList;
 
 /**
  * This class is used to parse SBML level 3 FBC version 2 package.
- * 
+ *
  * @author lcottret from bmerlet
  * @since 3.0
- *
+ * @version $Id: $Id
  */
 public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Compatible {
 
@@ -94,17 +94,21 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 	 */
 	public FBCModelPlugin fbcModel;
 
+	/** {@inheritDoc} */
 	@Override
 	public String getAssociatedPackageName() {
 		return "fbc";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isPackageUseableOnModel(Model model) {
 		return model.isPackageURIEnabled(PackageNamespace);
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Parse the new object introduced by the SBML FBC version 2 package and
 	 * some of the objects introduced by the FBC version 1 package:
 	 * <ul>
@@ -398,6 +402,8 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 	}
 
 	/**
+	 * <p>Getter for the field <code>flxNet</code>.</p>
+	 *
 	 * @return the flxNet
 	 */
 	public FluxNetwork getFlxNet() {
@@ -405,6 +411,8 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 	}
 
 	/**
+	 * <p>Setter for the field <code>flxNet</code>.</p>
+	 *
 	 * @param flxNet
 	 *            the flxNet to set
 	 */
@@ -413,6 +421,8 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 	}
 
 	/**
+	 * <p>Getter for the field <code>fbcModel</code>.</p>
+	 *
 	 * @return the fbcModel
 	 */
 	public FBCModelPlugin getFbcModel() {
@@ -420,6 +430,8 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 	}
 
 	/**
+	 * <p>Setter for the field <code>fbcModel</code>.</p>
+	 *
 	 * @param fbcModel
 	 *            the fbcModel to set
 	 */

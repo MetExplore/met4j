@@ -49,9 +49,10 @@ import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
 /**
  * This Class is used to keep track of the notes present in the imported file in
  * the BioNetwork object
- * 
+ *
  * @author Benjamin
  * @since 2.0
+ * @version $Id: $Id
  */
 public class Notes {
 
@@ -75,7 +76,7 @@ public class Notes {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param xhtmlasString
 	 *            the XML of the Notes
 	 */
@@ -86,14 +87,13 @@ public class Notes {
 	/**
 	 * Add an attribute to the notes. If the key already exists and updateValue
 	 * is set to true, updates its value
-	 * 
+	 *
 	 * @param key
 	 *            the key to add or update
 	 * @param value
 	 *            the value of the key attribute
 	 * @param updateValue
 	 *            true to update the value if key already exists
-	 * 
 	 */
 	public void addAttributeToNotes(String key, String value,
 			boolean updateValue) {
@@ -131,7 +131,7 @@ public class Notes {
 
 	/**
 	 * test if the notes are empty or not
-	 * 
+	 *
 	 * @return true if the note are empty or equal to {@link #emptyNoteString}
 	 */
 	public boolean isEmpty() {
@@ -143,6 +143,8 @@ public class Notes {
 	}
 
 	/**
+	 * <p>getXHTMLasString.</p>
+	 *
 	 * @return the xHTMLasString
 	 */
 	public String getXHTMLasString() {

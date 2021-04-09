@@ -42,8 +42,15 @@ import org.jgrapht.EdgeFactory;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 
+/**
+ * <p>ReactionEdgeFactory class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class ReactionEdgeFactory implements EdgeFactory<BioMetabolite, ReactionEdge> {
 
+	/** {@inheritDoc} */
 	@Override
 	public ReactionEdge createEdge(BioMetabolite arg0,
                                    BioMetabolite arg1) {

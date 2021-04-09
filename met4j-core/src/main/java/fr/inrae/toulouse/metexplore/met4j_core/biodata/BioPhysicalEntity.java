@@ -36,14 +36,16 @@
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 /**
- * @author Ludo Cottret and Clement Frainay
- * 
+ * <p>Abstract BioPhysicalEntity class.</p>
  *
+ * @author Ludo Cottret and Clement Frainay
+ * @version $Id: $Id
  */
 public abstract class BioPhysicalEntity extends BioEntity {
 
 	/**
 	 * Constructor
+	 *
 	 * @param id the id of the BioPhysicalEntity
 	 */
 	public BioPhysicalEntity(String id) {
@@ -52,6 +54,7 @@ public abstract class BioPhysicalEntity extends BioEntity {
 
 	/**
 	 * Constructor
+	 *
 	 * @param id the id of the BioPhysicalEntity
 	 * @param name the name of the BioPhysicalEntity
 	 */
@@ -62,7 +65,8 @@ public abstract class BioPhysicalEntity extends BioEntity {
 
 	/**
 	 * Deep copy
-	 * @param p the original {@link BioPhysicalEntity}
+	 *
+	 * @param p the original {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity}
 	 */
 	public BioPhysicalEntity(BioPhysicalEntity p)
 	{

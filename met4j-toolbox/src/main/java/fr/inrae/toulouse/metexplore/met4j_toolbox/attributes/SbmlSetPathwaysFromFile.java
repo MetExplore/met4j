@@ -40,6 +40,12 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetPathwaysFromFile;
 import org.kohsuke.args4j.Option;
 
+/**
+ * <p>SbmlSetPathwaysFromFile class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class SbmlSetPathwaysFromFile extends AbstractSbmlSetReaction {
 
     @Option(name="-cp", usage="[2] number of the column where are the pathways")
@@ -49,16 +55,23 @@ public class SbmlSetPathwaysFromFile extends AbstractSbmlSetReaction {
     private String sep = "|";
 
 
+    /** {@inheritDoc} */
     @Override
     public String getLabel() {
         return this.getClass().getSimpleName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDescription() {
         return "Set pathway to reactions in a network from a tabulated file containing the reaction ids and the pathways";
     }
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     */
     public static void main(String[] args) {
 
         SbmlSetPathwaysFromFile app = new SbmlSetPathwaysFromFile();

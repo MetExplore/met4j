@@ -66,8 +66,8 @@ import java.util.regex.Pattern;
 import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
 
 /**
- * This class is used to parse the Notes of SBML element. <br></br>
- * <br></br>
+ * This class is used to parse the Notes of SBML element. <br>
+ * <br>
  * As Notes don't have a fixed syntax, users can define their own patterns to
  * extract information contained in the Notes of their SBMLs
  *
@@ -135,8 +135,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
      */
     public BioNetwork network;
     /**
-     * The separator for multiple pathways present in a single pathway key. <br></br>
-     * <br></br>
+     * The separator for multiple pathways present in a single pathway key. <br>
+     * <br>
      * Most of the time, {@link #separator} is equal to "," and because this
      * character is very often used in pathway names, a second separator had to be
      * defined
@@ -206,7 +206,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
     /**
      * Recursive function that parse gene association logical expression strings.
-     * <br></br>
+     * <br>
      * Internally this uses {@link fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils#findClosingParen(char[], int)} to
      * split the GPR according to the outer most parenthesis
      *

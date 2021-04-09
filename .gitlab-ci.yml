@@ -36,12 +36,13 @@ deployCentral:
   before_script:
     - 'which ssh-agent || ( apt-get update -qy && apt-get install openssh-client -qqy )'
     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
-    - 'which gpg || ( apt-get update -qy && apt-get install gnupg -qqy )'
     - eval $(ssh-agent -s)
     - echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - 'which gpg || ( apt-get update -qy && apt-get install gnupg -qqy )'
+    - gpg -v --batch --import <(echo "${GPG_PRIVATE_KEY}")
   script:
     - git config --global user.email "$env:GITLAB_USER_EMAIL"
     - git config --global user.name "$env:GITLAB_USER_NAME"

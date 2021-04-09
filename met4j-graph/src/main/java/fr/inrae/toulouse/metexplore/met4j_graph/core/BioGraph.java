@@ -283,7 +283,6 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 *
 	 * @param sourceVertex the source vertex
 	 * @param targetVertex the target vertex
-	 * @param reaction the reaction
 	 * @return the edge
 	 */
 	public E getEdge(String sourceVertex, String targetVertex, String label) {

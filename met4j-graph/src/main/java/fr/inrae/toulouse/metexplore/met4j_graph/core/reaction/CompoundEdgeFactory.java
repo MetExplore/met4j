@@ -45,8 +45,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 /**
  * A factory for creating Compound edge objects.
  *
- * @param <V> the value type
- * @param <E> the element type
  */
 public class CompoundEdgeFactory implements EdgeFactory<BioReaction, CompoundEdge> {
 	

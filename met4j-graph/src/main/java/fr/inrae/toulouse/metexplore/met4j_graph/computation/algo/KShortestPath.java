@@ -66,7 +66,6 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 	/**
 	 * compute the list of edges from the union of all K-shortest paths between all nodes in a given set
 	 *
-	 * @param graph the graph
 	 * @param nodeOfInterest the node of interest list
 	 * @param k the maximum ranked path to consider
 	 * @return the list of edges involved in the k-shortest path union
@@ -78,7 +77,6 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 	/**
 	 * compute the list of edges from the union of all K-shortest paths between sources and target nodes
 	 *
-	 * @param graph the graph
 	 * @param startNodes the start vertex nodes
 	 * @param targetNodes the target nodes
 	 * @param k the maximum ranked path to consider
@@ -99,7 +97,6 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 	/**
 	 * compute the K-shortest paths (or lightest paths if the graph is weighted) between 2 nodes
 	 *
-	 * @param graph the graph
 	 * @param start the start vertex
 	 * @param end the end vertex
 	 * @param k the maximum ranked path to consider

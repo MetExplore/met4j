@@ -44,8 +44,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
 /**
  * A factory for creating PathwayGraph edges objects.
  *
- * @param <V> the value type
- * @param <E> the element type
  */
 public class PathwayGraphEdgeFactory implements EdgeFactory<BioPathway, PathwayGraphEdge> {
 	

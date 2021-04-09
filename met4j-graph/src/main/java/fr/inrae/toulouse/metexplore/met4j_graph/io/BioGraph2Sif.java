@@ -58,7 +58,6 @@ public class BioGraph2Sif<V extends BioEntity, E extends Edge<V>, G extends BioG
 	 * @author ludo + clement
 	 * 
 	 * @param filename
-	 * @param sbmlEncode
 	 * @throws IOException
 	 */
 	public void writeSif(String filename) throws IOException {

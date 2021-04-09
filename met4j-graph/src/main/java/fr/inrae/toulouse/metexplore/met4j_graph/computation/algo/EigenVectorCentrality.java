@@ -78,8 +78,6 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 	 * Instantiates a new eigen vector centrality computor.
 	 *
 	 * @param adjacencyMatrix the adjacency matrix
-	 * @param labelMap the label map
-	 * @param indexMap the index map
 	 * @throws Exception
 	 */
 	public EigenVectorCentrality(BioMatrix adjacencyMatrix) throws Exception{

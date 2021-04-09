@@ -106,8 +106,7 @@ public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 	
 	/**
 	 * Removes reactions.
-	 * @param rList the merged edges list
-	 */
+     */
 	public void removeEdges(Collection<E> edges){
 		for(E e : edges){
             this.removeEdge(e);

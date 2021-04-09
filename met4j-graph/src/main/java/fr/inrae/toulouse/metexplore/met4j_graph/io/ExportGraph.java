@@ -63,7 +63,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollections;
 
 /**
- * Export informations from graphs generated from {@link Bionetwork2Graph} into Cytoscape-readable files
+ * Export informations from graphs generated from {@link Bionetwork2BioGraph} into Cytoscape-readable files
  * @author clement
  */
 public class ExportGraph {
@@ -378,7 +378,6 @@ public class ExportGraph {
 	/**
 	 * Export bipartite graph node in tabular format.
 	 *
-	 * @param graph the graph
 	 * @param outputPath the output path
 	 */
 	public static void exportBipNodeTabular(BipartiteGraph bip, String outputPath ){

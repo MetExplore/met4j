@@ -108,7 +108,6 @@ public class BioGraph2XGMML{
 	 * Instantiates a new xgmml exporter.
 	 *
 	 * @param g the graph
-	 * @param name the name of the graph
 	 */
 	public BioGraph2XGMML(BipartiteGraph g, String Name){
 		this.g=g;
@@ -297,7 +296,6 @@ public class BioGraph2XGMML{
 	 * Creates an attribute from string list.
 	 *
 	 * @param name the attribute's name
-	 * @param value the attribute's value
 	 * @return the xml element
 	 */
 	private Element createAttribute(String name, Collection<String> valueList){

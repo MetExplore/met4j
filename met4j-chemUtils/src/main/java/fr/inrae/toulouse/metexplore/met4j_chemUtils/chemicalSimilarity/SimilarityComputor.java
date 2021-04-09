@@ -59,7 +59,6 @@ public class SimilarityComputor {
      * @param fingerprint1 the first chemical fingerprint
      * @param fingerprint2 the second chemical fingerprint
      * @return the tanimoto coefficient
-     * @throws java.lang.IllegalArgumentException
      * @throws java.lang.IllegalArgumentException if any.
      */
     public static double getTanimoto(BitSet fingerprint1, BitSet fingerprint2) throws IllegalArgumentException{
@@ -81,7 +80,6 @@ public class SimilarityComputor {
      * @param fingerprint1 the first chemical fingerprint
      * @param fingerprint2 the second chemical fingerprint
      * @return the dice coefficient
-     * @throws java.lang.IllegalArgumentException
      * @throws java.lang.IllegalArgumentException if any.
      */
     public static double getDiceCoeff(BitSet fingerprint1, BitSet fingerprint2) throws IllegalArgumentException{
@@ -103,7 +101,6 @@ public class SimilarityComputor {
      * @param fingerprint1 the first chemical fingerprint
      * @param fingerprint2 the second chemical fingerprint
      * @return the cosine coefficient
-     * @throws java.lang.IllegalArgumentException
      * @throws java.lang.IllegalArgumentException if any.
      */
     public static double getCosineCoeff(BitSet fingerprint1, BitSet fingerprint2) throws IllegalArgumentException{
@@ -125,7 +122,6 @@ public class SimilarityComputor {
      * @param fingerprint1 the first chemical fingerprint
      * @param fingerprint2 the second chemical fingerprint
      * @return the manhattan distance
-     * @throws java.lang.IllegalArgumentException
      * @throws java.lang.IllegalArgumentException if any.
      */
     public static double getManhattanDist(BitSet fingerprint1, BitSet fingerprint2) throws IllegalArgumentException{
@@ -146,7 +142,6 @@ public class SimilarityComputor {
      * @param fingerprint1 the first chemical fingerprint
      * @param fingerprint2 the second chemical fingerprint
      * @return the euclidean distance
-     * @throws java.lang.IllegalArgumentException
      * @throws java.lang.IllegalArgumentException if any.
      */
     public static double getEuclideanDist(BitSet fingerprint1, BitSet fingerprint2) throws IllegalArgumentException{
@@ -169,7 +164,6 @@ public class SimilarityComputor {
      * @param fingerprint1 the first chemical fingerprint
      * @param fingerprint2 the second chemical fingerprint
      * @return the soergel distance
-     * @throws java.lang.IllegalArgumentException
      * @throws java.lang.IllegalArgumentException if any.
      */
     public static double getSoergelDist(BitSet fingerprint1, BitSet fingerprint2) throws IllegalArgumentException{
@@ -190,7 +184,6 @@ public class SimilarityComputor {
      * @param fingerprint1 the first chemical fingerprint
      * @param fingerprint2 the second chemical fingerprint
      * @return the xor distance
-     * @throws java.lang.IllegalArgumentException
      * @throws java.lang.IllegalArgumentException if any.
      */
     public static double getXorDist(BitSet fingerprint1, BitSet fingerprint2) throws IllegalArgumentException{

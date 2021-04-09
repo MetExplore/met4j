@@ -364,7 +364,7 @@ public class StringUtils {
 	/**
 	 * Remove
 	 * - every thing between &lt; and &gt; (included)
-	 * - &something;
+	 * - \&something;
 	 * - #something;
 	 * - amp;
 	 * - prime;

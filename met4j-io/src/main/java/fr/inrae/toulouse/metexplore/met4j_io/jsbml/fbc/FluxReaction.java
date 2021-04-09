@@ -86,7 +86,7 @@ public class FluxReaction extends BioEntity {
 	/**
 	 * Convert the reaction's {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} to a set of
 	 * enzymes and add them to the {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} given in
-	 * parameter.</br>It also add them to the reaction as enzymes
+	 * parameter.<br />It also add them to the reaction as enzymes
 	 *
 	 * @param bn
 	 *            The {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} where the enzymes will be

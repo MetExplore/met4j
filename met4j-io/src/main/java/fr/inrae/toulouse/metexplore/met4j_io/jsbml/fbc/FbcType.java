@@ -45,11 +45,11 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc;
  */
 public enum FbcType {
 	/**
-	 * The Maximize FBC type. This means that the fluxes of the set of reactions present in the {@link Objectives} needs to be maximized
+	 * The Maximize FBC type. This means that the fluxes of the set of reactions present in the {@link org.sbml.jsbml.ext.fbc.ListOfObjectives} needs to be maximized
 	 */
 	maximize,
 	/**
-	 * The minimize FBC type. This means that the fluxes of the set of reactions present in the {@link Objectives} needs to be minimized
+	 * The minimize FBC type. This means that the fluxes of the set of reactions present in the {@link org.sbml.jsbml.ext.fbc.ListOfObjectives} needs to be minimized
 	 */
 	minimize
 }

@@ -38,7 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors;
 
 /**
  * This Error is thrown by the
- * {@link parsebionet.io.jsbml.writer.BionetworkToJsbml} class when it checks
+ * {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.BionetworkToJsbml} class when it checks
  * the compatibility between the SBML level and the packages used to write the
  * file
  *

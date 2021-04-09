@@ -45,7 +45,7 @@ import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.Flux;
 /**
  * This Class represents a new type of network that handles the SBML fbc
  * package. It uses the {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} class to handle classical network
- * data.</br> It also adds new types of 'ListOf' to store the new flux data.
+ * data.<br /> It also adds new types of 'ListOf' to store the new flux data.
  *
  * @author Benjamin
  * @since 3.0
@@ -67,14 +67,14 @@ public class FluxNetwork {
 	 * This required attribute exists so that when multiple {@link BioObjective}
 	 * are included in a single model, the model will always be well described
 	 * i.e., there is a single, primary objective function which defines a
-	 * single optimum and its associated solution space. </br></br>From the SBML
+	 * single optimum and its associated solution space. <br /><br />From the SBML
 	 * FBC2 specification
 	 */
 	private BioObjective activeObjective;
 	/**
 	 * A strict model is fully described and mathematically consistent, for
 	 * example, it ensures that all fluxes have a valid upper or lower bound.
-	 * </br></br>From the SBML FBC2 specification
+	 * <br /><br />From the SBML FBC2 specification
 	 */
 	private boolean fbcStrict = true;
 	/**

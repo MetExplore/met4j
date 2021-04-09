@@ -66,8 +66,8 @@ import java.util.regex.Pattern;
 import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
 
 /**
- * This class is used to parse the Notes of SBML element. </br>
- * </br>
+ * This class is used to parse the Notes of SBML element. <br />
+ * <br />
  * As Notes don't have a fixed syntax, users can define their own patterns to
  * extract information contained in the Notes of their SBMLs
  *
@@ -118,9 +118,9 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
      * The default pattern used to retrieve element external identifiers
      */
     public static final String defaultextDBidsPAttern = "[>]+([a-zA-Z\\._0-9 ]+):\\s*([^<]+)<";
-    /** Constant <code>defaultInchiPattern="(?i:>\\s*INCHI:\\s*([^<]+)<)"</code> */
+    /** Constant <code>defaultInchiPattern</code> */
     public static final String defaultInchiPattern = "(?i:>\\s*INCHI:\\s*([^<]+)<)";
-    /** Constant <code>defaultSmilesPattern="(?i:>\\s*SMILES:\\s*([^<]+)<)"</code> */
+    /** Constant <code>defaultSmilesPattern</code> */
     public static final String defaultSmilesPattern = "(?i:>\\s*SMILES:\\s*([^<]+)<)";
     /**
      * The default separator in Notes values.
@@ -135,8 +135,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
      */
     public BioNetwork network;
     /**
-     * The separator for multiple pathways present in a single pathway key. </br>
-     * </br>
+     * The separator for multiple pathways present in a single pathway key. <br />
+     * <br />
      * Most of the time, {@link #separator} is equal to "," and because this
      * character is very often used in pathway names, a second separator had to be
      * defined
@@ -206,7 +206,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
     /**
      * Recursive function that parse gene association logical expression strings.
-     * </br>
+     * <br />
      * Internally this uses {@link fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils#findClosingParen(char[], int)} to
      * split the GPR according to the outer most parenthesis
      *

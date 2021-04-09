@@ -43,9 +43,8 @@ import java.util.stream.Collectors;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene;
 
 /**
- * This class represents a unique "AND" gene association required to activate a
- * given {@link BioReaction}.</br>
- * </br>
+ * This class represents a unique "AND" gene association
+ * <br />
  * it is composed of a set of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene} that all need to be active for
  * this association to be active
  *

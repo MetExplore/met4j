@@ -42,6 +42,7 @@ deployCentral:
     - chmod 700 ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
     - 'which gpg || ( apt-get update -qy && apt-get install gnupg -qqy )'
+    - export GPG_TTY=$(tty)
     - gpg -v --batch --import <(echo "${GPG_PRIVATE_KEY}")
   script:
     - git config --global user.email "$env:GITLAB_USER_EMAIL"

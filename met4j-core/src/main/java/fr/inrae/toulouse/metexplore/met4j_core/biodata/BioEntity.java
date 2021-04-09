@@ -95,7 +95,7 @@ public abstract class BioEntity {
 	 *
 	 * The refs and attributes are not deeply copied
 	 *
-	 * @param e
+	 * @param e the original bioentity
 	 */
 	public BioEntity(BioEntity e)
 	{

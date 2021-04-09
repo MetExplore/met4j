@@ -79,7 +79,7 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Copy only the id, the refs and the attributes
-     * @param network
+     * @param network Original BioNetwork
      */
     public BioNetwork(BioNetwork network) {
         super(network);
@@ -765,7 +765,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Add a subunit to an enzyme
      * @param enzyme a {@link BioEnzyme}
-     * @param unit a {@link BioEnzymeParticipant}
+     * @param units several {@link BioEnzymeParticipant}
      *
      * @throws IllegalArgumentException of the enzyme of the unit is not present in the network
      */

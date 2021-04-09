@@ -35,7 +35,7 @@
  */
 
 /**
- * This package contains the different developed plugins that allow to write different SMBL lvl 3 packages or some other non required SBML objects.<br />
+ * This package contains the different developed plugins that allow to write different SMBL lvl 3 packages or some other non required SBML objects.<br></br>
  * Here is the complete list of plugin-writer classes:
  * <ul>
  * <li>AnnotationWriter : Write MIRIAM compliant SBML annotations 

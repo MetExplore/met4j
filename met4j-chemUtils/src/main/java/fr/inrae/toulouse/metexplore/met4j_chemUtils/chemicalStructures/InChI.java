@@ -113,7 +113,7 @@ public class InChI extends ChemicalStructure {
     public InchiLayer isotopicLayer;
     /**
      * The fixed atoms Layer. Indicates the position of non mobile atoms in the
-     * molecule.<br />This layer can contains any of the above layer as sub-layer
+     * molecule.<br></br>This layer can contains any of the above layer as sub-layer
      */
     public InchiLayer fixedLayer;
     /**
@@ -145,7 +145,7 @@ public class InChI extends ChemicalStructure {
     /**
      * Parse the {@link #inchiString} to create the different {@link fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalStructures.InchiLayer}
      * . If any of the created layer is invalid, the all InChI is set as invalid
-     * <br />Use an algorithm described in the InChI specifications
+     * <br></br>Use an algorithm described in the InChI specifications
      */
     public void setLayers() {
         String trunckedInchi = this.getInchiString();

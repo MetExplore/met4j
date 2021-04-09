@@ -42,7 +42,7 @@ package fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalStructures;
  * <li>Self equality: a = a
  * <li>Reversability: a = b <=> b = a
  * <li>Reflexivity: { a = b & b = c } => a = c
- * </ul> <br />This could be turned into
+ * </ul> <br></br>This could be turned into
  * one or more JUnit Test Cases
  *
  * @author Benjamin

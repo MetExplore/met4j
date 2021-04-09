@@ -81,7 +81,7 @@ public interface PackageParser {
 	 * This method tests if the package can be used on the specified JSBML Model.
 	 * If the package is dependent on a SBML package, it should test if this package's namespace is present
 	 * in the model element by using the model.isPackageURIEnabled() method.
-	 * <br />Otherwise, custom testing can be performed on the model. This method can also always return true if you want it
+	 * <br></br>Otherwise, custom testing can be performed on the model. This method can also always return true if you want it
 	 * to be used in every model conversion
 	 *
 	 * @param model

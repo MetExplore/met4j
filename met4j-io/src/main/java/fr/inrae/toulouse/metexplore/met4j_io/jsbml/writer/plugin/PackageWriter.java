@@ -67,7 +67,7 @@ public interface PackageWriter {
 
 	/**
 	 * This method tests if the package can be used on the specified SBML Level.
-	 * <br /> <br />Custom testing can be performed or this method can also always
+	 * <br></br> <br></br>Custom testing can be performed or this method can also always
 	 * return true if you want it to be used in every model conversion
 	 *
 	 * @param lvl

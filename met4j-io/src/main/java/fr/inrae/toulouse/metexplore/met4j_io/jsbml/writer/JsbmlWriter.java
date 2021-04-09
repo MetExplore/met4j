@@ -93,7 +93,7 @@ public class JsbmlWriter {
      */
     private String filename;
     /**
-     * The output directory:<br /> Default to "/tmp/"
+     * The output directory:<br></br> Default to "/tmp/"
      */
     private String outoutDir = "/tmp/";
     /**
@@ -196,7 +196,7 @@ public class JsbmlWriter {
 
     /**
      * One of the main methods. converts the {@link #net} to a jsbml object and
-     * write it as a file.<br /> Use the user defined set of package to add
+     * write it as a file.<br></br> Use the user defined set of package to add
      * additional data to output SBML
      *
      * @param pkgs Set of writer package to use

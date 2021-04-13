@@ -175,6 +175,11 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	public boolean addVertex(V v) {
 		return super.addVertex(v);
 	}
+
+	public boolean addVertex(String id) {
+		return super.addVertex(this.createVertex(id));
+	}
+
 	
 	/**
 	 * add a path to the graph
@@ -460,7 +465,10 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 */
 	public abstract E createEdgeFromModel(V v1, V v2, E edge);
 	public abstract E copyEdge(E edge);
-	public abstract V createVertex();
+	public abstract V createVertex(String id);
+	public V createVertex(){
+		return this.createVertex(UUID.randomUUID().toString());
+	}
 	public abstract E createEdge(V v1, V v2);
 	public E createEdge(){
 		return createEdge(createVertex(), createVertex());

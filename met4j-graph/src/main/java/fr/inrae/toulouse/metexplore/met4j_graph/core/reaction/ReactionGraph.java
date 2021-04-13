@@ -162,8 +162,8 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 	}
 
 	@Override
-	public BioReaction createVertex() {
-		return new BioReaction(UUID.randomUUID().toString());
+	public BioReaction createVertex(String id) {
+		return new BioReaction(id);
 	}
 
 	@Override

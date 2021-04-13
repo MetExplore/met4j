@@ -86,8 +86,8 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 	}
 
 	@Override
-	public BioEntity createVertex() {
-		return null;
+	public BioEntity createVertex(String id) {
+		throw new UnsupportedOperationException("Node creation in bipartite graph forbidden");
 	}
 
 	@Override

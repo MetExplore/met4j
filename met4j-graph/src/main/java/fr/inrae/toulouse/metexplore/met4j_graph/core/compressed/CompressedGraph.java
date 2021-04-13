@@ -73,12 +73,12 @@ public class CompressedGraph<V extends BioEntity, E extends Edge<V>, G extends B
 	}
 
 	@Override
-	public V createVertex() {
+	public V createVertex(String id) {
 		V v = null;
 		try {
 			Constructor<? extends BioEntity> declaredConstructor = null;
 			declaredConstructor = this.vertexSet().iterator().next().getClass().getDeclaredConstructor(String.class);
-			v = (V) declaredConstructor.newInstance(UUID.randomUUID().toString());
+			v = (V) declaredConstructor.newInstance(id);
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {

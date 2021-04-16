@@ -45,6 +45,12 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
+/**
+ * <p>Abstract Edge class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public abstract class Edge<T extends BioEntity> extends DefaultWeightedEdge{
 	
 	private static final long serialVersionUID = -8321862744429021818L;
@@ -56,12 +62,12 @@ public abstract class Edge<T extends BioEntity> extends DefaultWeightedEdge{
     /** The attributes map. */
     private HashMap<String,Object> attributes;
 	
-	 /**
-     * Instantiates a new edge.
-     *
-     * @param v1 the source vertex
-     * @param v2 the target vertex
-     **/
+	/**
+	 * Instantiates a new edge.
+	 *
+	 * @param v1 the source vertex
+	 * @param v2 the target vertex
+	 */
 	public Edge(T v1, T v2) {
 	       this.v1 = v1;
 	       this.v2 = v2;
@@ -69,12 +75,12 @@ public abstract class Edge<T extends BioEntity> extends DefaultWeightedEdge{
 	}
 	
 	/**
-     * Instantiates a new edge.
-     *
-     * @param v1 the source vertex
-     * @param v2 the target vertex
-     * @param l the edge label
-     **/
+	 * Instantiates a new edge.
+	 *
+	 * @param v1 the source vertex
+	 * @param v2 the target vertex
+	 * @param l the edge label
+	 */
 	public Edge(T v1, T v2, String l) {
 	       this.v1 = v1;
 	       this.v2 = v2;
@@ -82,7 +88,7 @@ public abstract class Edge<T extends BioEntity> extends DefaultWeightedEdge{
         this.attributes = new HashMap<>();
 	}
 	
-	/**
+    /**
      * Gets the source vertex.
      *
      * @return the source vertex
@@ -119,6 +125,8 @@ public abstract class Edge<T extends BioEntity> extends DefaultWeightedEdge{
 	}
 
 	/**
+	 * <p>Getter for the field <code>attributes</code>.</p>
+	 *
 	 * @return the attributs
 	 */
 	public HashMap<String,Object> getAttributes() {
@@ -126,6 +134,8 @@ public abstract class Edge<T extends BioEntity> extends DefaultWeightedEdge{
 	}
 
 	/**
+	 * <p>Setter for the field <code>attributes</code>.</p>
+	 *
 	 * @param attributs the attributs to set
 	 */
 	public void setAttributes(HashMap<String,Object> attributs) {
@@ -133,6 +143,8 @@ public abstract class Edge<T extends BioEntity> extends DefaultWeightedEdge{
 	}
 
 	/**
+	 * <p>Getter for the field <code>label</code>.</p>
+	 *
 	 * @return the label
 	 */
 	public String getLabel() {
@@ -140,6 +152,8 @@ public abstract class Edge<T extends BioEntity> extends DefaultWeightedEdge{
 	}
 
 	/**
+	 * <p>Setter for the field <code>label</code>.</p>
+	 *
 	 * @param label the label to set
 	 */
 	public void setLabel(String label) {

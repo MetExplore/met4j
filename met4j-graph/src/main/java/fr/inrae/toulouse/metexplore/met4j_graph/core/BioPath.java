@@ -48,7 +48,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * The Class used to store path
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,E> implements Comparable<BioPath<V,E>>, Iterable<E>{
 	
@@ -89,6 +91,7 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public int compareTo(BioPath<V,E> o) {
 		return (int)Math.signum(this.getWeight()-o.getWeight());
@@ -98,6 +101,7 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
     public boolean equals(Object obj) {
 		
@@ -127,6 +131,7 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
+	/** {@inheritDoc} */
 	@Override
     public int hashCode() {
 		//return Objects.hash(this.getEdgeList().toArray(),this.getGraph(),this.getStartVertex(),this.getEndVertex(),this.getWeight());
@@ -185,6 +190,7 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 		return this.getEdgeList().size();
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		String currentNode = this.getStartVertex().getId();
@@ -208,6 +214,7 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 		return label;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<E> iterator() {
 		Iterator<E> it = new Iterator<E>() {

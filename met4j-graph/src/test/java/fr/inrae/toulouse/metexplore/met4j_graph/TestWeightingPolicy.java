@@ -61,7 +61,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.WeightUtil
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.WeightsFromFile;
 
 /**
- * Test {@link Bionetwork2CompoundGraph} with {@link WeightingPolicy <BioMetabolite, ReactionEdge , CompoundGraph >}
+ * Test {@link fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph} with {@link WeightingPolicy <BioMetabolite, ReactionEdge , CompoundGraph >}
  * @author clement
  */
 public class TestWeightingPolicy {

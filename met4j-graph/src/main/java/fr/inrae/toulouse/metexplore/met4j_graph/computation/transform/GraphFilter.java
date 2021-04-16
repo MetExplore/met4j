@@ -51,7 +51,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * Graph Filtering utils.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class GraphFilter {
 
@@ -198,7 +200,7 @@ public class GraphFilter {
 	
 	/**
 	 * Filter graph's edges according to a weight rank (in decreasing order) and a given operator.
-	 * 
+	 *
 	 * @param g the graph
 	 * @param n the rank used for filtering
 	 * @param operator the operator
@@ -214,7 +216,7 @@ public class GraphFilter {
 	
 	/**
 	 *  Filter graph's edges according to a weight percentile and a given operator.
-	 *  
+	 *
 	 * @param g the graph
 	 * @param p the percentile used for filtering
 	 * @param operator the operator
@@ -232,7 +234,7 @@ public class GraphFilter {
 	
 	/**
 	 * Filter graph's edges according to a score rank (in decreasing order) and a given operator.
-	 * 
+	 *
 	 * @param g the graph
 	 * @param n the rank used for filtering
 	 * @param operator the operator
@@ -247,7 +249,7 @@ public class GraphFilter {
 	
 	/**
 	 *  Filter graph's edges according to a score percentile and a given operator.
-	 *  
+	 *
 	 * @param g the graph
 	 * @param p the percentile used for filtering
 	 * @param operator the operator

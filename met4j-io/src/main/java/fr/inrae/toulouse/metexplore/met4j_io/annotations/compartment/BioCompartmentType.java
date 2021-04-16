@@ -38,6 +38,8 @@ package fr.inrae.toulouse.metexplore.met4j_io.annotations.compartment;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
+ * <p>BioCompartmentType class.</p>
+ *
  * @author Fabien
  *	Definition from SBML v2 Version4 release1
  *	A compartment type in SBML is a grouping construct used to establish a relationship between multiple compartments.
@@ -48,9 +50,16 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
  *	Simulators and other numerical analysis software may ignore Compartment-Type objects and references to them in a model.
  *	There is no mechanism in SBML for representing hierarchies of compartment types.
  *	One CompartmentType	object instance cannot be the subtype of another CompartmentType object; SBML provides no means of defining such relationships.
+ * @version $Id: $Id
  */
 public class BioCompartmentType extends BioEntity {
 	
+	/**
+	 * <p>Constructor for BioCompartmentType.</p>
+	 *
+	 * @param i a {@link java.lang.String} object.
+	 * @param n a {@link java.lang.String} object.
+	 */
 	public BioCompartmentType(String i, String n)
 	{
 		super(i, n);

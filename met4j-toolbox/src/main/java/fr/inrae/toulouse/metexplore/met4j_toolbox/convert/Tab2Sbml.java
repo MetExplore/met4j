@@ -45,6 +45,12 @@ import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 
+/**
+ * <p>Tab2Sbml class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class Tab2Sbml extends AbstractMet4jApplication {
 
     @Option(name="-ci", usage="[1] number of the column where are the reaction ids")
@@ -86,19 +92,24 @@ public class Tab2Sbml extends AbstractMet4jApplication {
     @Option(name="-n", usage="[0] Number of lines to skip at the beginning of the tabulated file")
     public int nSkip = 0;
 
+    /** {@inheritDoc} */
     @Override
     public String getLabel() {
         return this.getClass().getSimpleName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDescription() {
         return "Create a Sbml File from a tabulated file that contains the reaction ids and the formulas";
     }
 
     /**
-     * @param args
-     * @throws IOException
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     * @throws java.io.IOException
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException if any.
      */
     public static void main(String[] args) throws IOException, Met4jSbmlWriterException {
 

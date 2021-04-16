@@ -56,7 +56,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 /**
  * The Class to convert Bionetwork to BioGraph.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class Bionetwork2BioGraph {
 
@@ -73,6 +75,8 @@ public class Bionetwork2BioGraph {
 	
 	/**
 	 * Builds the graph.
+	 *
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph} object.
 	 */
 	public CompoundGraph getCompoundGraph(){
 		CompoundGraph g = new CompoundGraph();
@@ -105,12 +109,20 @@ public class Bionetwork2BioGraph {
 	}
 	
 	
+	/**
+	 * <p>getReactionGraph.</p>
+	 *
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph} object.
+	 */
 	public ReactionGraph getReactionGraph(){
 		return getReactionGraph(new BioCollection<>());
 	}
 	
 	/**
 	 * Builds the graph.
+	 *
+	 * @param cofactors a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} object.
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph} object.
 	 */
 	public ReactionGraph getReactionGraph(BioCollection<BioMetabolite> cofactors){
 		ReactionGraph g = new ReactionGraph();
@@ -144,6 +156,11 @@ public class Bionetwork2BioGraph {
 	
 	
 	
+	/**
+	 * <p>getBipartiteGraph.</p>
+	 *
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph} object.
+	 */
 	public BipartiteGraph getBipartiteGraph(){
 		BipartiteGraph g = new BipartiteGraph();
 		for(BioMetabolite v : bn.getMetabolitesView()){

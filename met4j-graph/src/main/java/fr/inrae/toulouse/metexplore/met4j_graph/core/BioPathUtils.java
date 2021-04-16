@@ -50,8 +50,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * A utility class used to filter list of paths, according to various criterion such as length, weight, presence/absence of a given vertex or edges ...
- * @author clement
  *
+ * @author clement
+ * @version $Id: $Id
  */
 public class BioPathUtils {
 	/** The "EQUALITY" operator. */
@@ -72,15 +73,21 @@ public class BioPathUtils {
 	/** The "LESS OR EQUAL" operator. */
 	public static final String LESSOREQUAL = "<=";
 	
+	/**
+	 * <p>Constructor for BioPathUtils.</p>
+	 */
 	public BioPathUtils() {
 	}
 	
 	/**
 	 * Return paths from the input path set that contains all nodes contained in the input node set.
 	 * Returned path can contains nodes not present in the input node set.
+	 *
 	 * @param paths the input path set
 	 * @param nodes the input node set
 	 * @return paths that contains all nodes given as parameter
+	 * @param <V> a V object.
+	 * @param <E> a E object.
 	 */
 	public static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> getPathsContainingAllNodes(Collection<BioPath<V,E>> paths, Collection<V> nodes){
 		List<BioPath<V,E>> filtered = new ArrayList<>();
@@ -94,9 +101,12 @@ public class BioPathUtils {
 	
 	/**
 	 * Return paths from the input path set that contains at least one node contained in the input node set.
+	 *
 	 * @param paths the input path set
 	 * @param nodes the input node set
 	 * @return paths that contains at least one of the nodes given as parameter
+	 * @param <V> a V object.
+	 * @param <E> a E object.
 	 */
 	public static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> getPathsContainingNodes(Collection<BioPath<V,E>> paths, Collection<V> nodes){
 		List<BioPath<V,E>> filtered = new ArrayList<>();
@@ -112,9 +122,12 @@ public class BioPathUtils {
 	/**
 	 * Return paths from the input path set that contains all edges contained in the input edge set.
 	 * Returned path can contains edges not present in the input edge set.
+	 *
 	 * @param paths the input path set
 	 * @param edges the input edge set
 	 * @return paths that contains all edges given as parameter
+	 * @param <V> a V object.
+	 * @param <E> a E object.
 	 */
 	public static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> getPathsContainingAllEdges(Collection<BioPath<V,E>> paths, Collection<E> edges){
 		List<BioPath<V,E>> filtered = new ArrayList<>();
@@ -128,9 +141,12 @@ public class BioPathUtils {
 	
 	/**
 	 * Return paths from the input path set that contains at least one edge contained in the input edge set.
+	 *
 	 * @param paths the input path set
 	 * @param edges the input edge set
 	 * @return paths that contains at least one of the edge given as parameter
+	 * @param <V> a V object.
+	 * @param <E> a E object.
 	 */
 	public static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> getPathsContainingEdges(Collection<BioPath<V,E>> paths, Collection<E> edges){
 		List<BioPath<V,E>> filtered = new ArrayList<>();
@@ -145,11 +161,13 @@ public class BioPathUtils {
 	
 	/**
 	 * Filter path set according to a weight rank (in decreasing order) and a given operator.
-	 * 
+	 *
 	 * @param paths the path set
 	 * @param n the rank used for filtering
 	 * @param operator the operator
 	 * @return the filtered list of paths
+	 * @param <V> a V object.
+	 * @param <E> a E object.
 	 */
 	public static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> weightRankFilter(Collection<BioPath<V,E>> paths, int n, String operator){
 		if(n<1) throw new IllegalArgumentException();
@@ -161,12 +179,14 @@ public class BioPathUtils {
 
 	/**
 	 *  Filter path set according to a weight percentile and a given operator.
-	 *  
+	 *
 	 * @param paths the path set
 	 * @param p the percentile used for filtering
 	 * @param operator the operator
 	 * @return the filtered list of paths
-	 */	
+	 * @param <V> a V object.
+	 * @param <E> a E object.
+	 */
 	public static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> weightPercentileFilter(Collection<BioPath<V,E>> paths, double p, String operator){
 		DescriptiveStatistics stat = new DescriptiveStatistics();
 		for(BioPath<V, E> path : paths){
@@ -179,12 +199,14 @@ public class BioPathUtils {
 	
 	/**
 	 * Filter path set according to a length rank (in decreasing order) and a given operator.
-	 * 
+	 *
 	 * @param paths the path set
 	 * @param n the rank used for filtering
 	 * @param operator the operator
 	 * @return the filtered list of paths
-	 */	
+	 * @param <V> a V object.
+	 * @param <E> a E object.
+	 */
 	public static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> lengthRankFilter(Collection<BioPath<V,E>> paths, int n, String operator){
 		List<Double> lengths = new ArrayList<>(new HashSet<>(getLengthMap(paths).values()));
 		Collections.sort(lengths);
@@ -194,12 +216,14 @@ public class BioPathUtils {
 	
 	/**
 	 *  Filter path set according to a length percentile and a given operator.
-	 *  
+	 *
 	 * @param paths the path set
 	 * @param p the percentile used for filtering
 	 * @param operator the operator
 	 * @return the filtered list of paths
-	 */		
+	 * @param <V> a V object.
+	 * @param <E> a E object.
+	 */
 	public static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> lengthPercentileFilter(Collection<BioPath<V,E>> paths, double p, String operator){
 		DescriptiveStatistics stat = new DescriptiveStatistics();
 		for(BioPath<V, E> path : paths){
@@ -234,11 +258,13 @@ public class BioPathUtils {
 	}
 	
 	/**
-	 * Filter any may containing Double as values, given a threshold and an operator 
+	 * Filter any may containing Double as values, given a threshold and an operator
+	 *
 	 * @param map the map
 	 * @param value the threshold
 	 * @param operator the operator
 	 * @return a collection of keys that fit the constraint given by the threshold and the operator
+	 * @param <T> a T object.
 	 */
 	public static <T> Collection<T> filter(Map<T,Double> map, double value, String operator){
 		List<T> filtered = new ArrayList<>();
@@ -296,10 +322,12 @@ public class BioPathUtils {
 	/**
 	 * Filter path set according to a length value and a comparison operator.
 	 *
-	 * @param path the set of paths
 	 * @param value the value used for filtering
 	 * @param operator the operator
 	 * @return the filtered set
+	 * @param paths a {@link java.util.Collection} object.
+	 * @param <V> a V object.
+	 * @param <E> a E object.
 	 */
 	public static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> lengthFilter(Collection<BioPath<V,E>> paths, double value, String operator){
 		return filter(paths,value,operator,false);
@@ -308,10 +336,12 @@ public class BioPathUtils {
 	/**
 	 * Filter path set according to a weight value and a comparison operator.
 	 *
-	 * @param path the set of paths
 	 * @param value the value used for filtering
 	 * @param operator the operator
 	 * @return the filtered set
+	 * @param paths a {@link java.util.Collection} object.
+	 * @param <V> a V object.
+	 * @param <E> a E object.
 	 */
 	public static <V extends BioEntity, E extends Edge<V>> Collection<BioPath<V,E>> weightFilter(Collection<BioPath<V,E>> paths, double value, String operator){
 		return filter(paths,value,operator,true);

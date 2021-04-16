@@ -50,6 +50,12 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 
+/**
+ * <p>Resources class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class Resources {
     private static void collectURL(ResourceURLFilter f, Set<URL> s, URL u) {
         if (f == null || f.accept(u)) {
@@ -92,16 +98,39 @@ public class Resources {
         }
     }
 
+    /**
+     * <p>getResourceURLs.</p>
+     *
+     * @return a {@link java.util.Set} object.
+     * @throws java.io.IOException if any.
+     * @throws java.net.URISyntaxException if any.
+     */
     public static Set<URL> getResourceURLs() throws IOException,
             URISyntaxException {
         return getResourceURLs((ResourceURLFilter) null);
     }
 
+    /**
+     * <p>getResourceURLs.</p>
+     *
+     * @param rootClass a {@link java.lang.Class} object.
+     * @return a {@link java.util.Set} object.
+     * @throws java.io.IOException if any.
+     * @throws java.net.URISyntaxException if any.
+     */
     public static Set<URL> getResourceURLs(Class<?> rootClass) throws IOException,
             URISyntaxException {
         return getResourceURLs(rootClass, (ResourceURLFilter) null);
     }
 
+    /**
+     * <p>getResourceURLs.</p>
+     *
+     * @param filter a {@link fr.inrae.toulouse.metexplore.met4j_toolbox.utils.ResourceURLFilter} object.
+     * @return a {@link java.util.Set} object.
+     * @throws java.io.IOException if any.
+     * @throws java.net.URISyntaxException if any.
+     */
     public static Set<URL> getResourceURLs(ResourceURLFilter filter)
             throws IOException, URISyntaxException {
         Set<URL> collectedURLs = new HashSet<URL>();
@@ -112,6 +141,15 @@ public class Resources {
         return collectedURLs;
     }
 
+    /**
+     * <p>getResourceURLs.</p>
+     *
+     * @param rootClass a {@link java.lang.Class} object.
+     * @param filter a {@link fr.inrae.toulouse.metexplore.met4j_toolbox.utils.ResourceURLFilter} object.
+     * @return a {@link java.util.Set} object.
+     * @throws java.io.IOException if any.
+     * @throws java.net.URISyntaxException if any.
+     */
     public static Set<URL> getResourceURLs(Class<?> rootClass,
                                            ResourceURLFilter filter) throws IOException, URISyntaxException {
         Set<URL> collectedURLs = new HashSet<URL>();

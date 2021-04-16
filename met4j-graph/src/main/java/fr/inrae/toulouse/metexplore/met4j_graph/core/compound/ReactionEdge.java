@@ -42,8 +42,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 
 /**
- * The edge Class linking two {@link BioMetabolite}, associated with a {@link BioReaction}
+ * The edge Class linking two {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}, associated with a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class ReactionEdge extends Edge<BioMetabolite>{
 	
@@ -68,6 +70,11 @@ public class ReactionEdge extends Edge<BioMetabolite>{
     /* (non-Javadoc)
      * @see org.jgrapht.graph.DefaultEdge#toString()
      */
+    /**
+     * <p>toString.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String toString() {
         return r.getId();
     }
@@ -85,6 +92,7 @@ public class ReactionEdge extends Edge<BioMetabolite>{
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
     public boolean equals(Object obj) {
         // Vérification de l'égalité des références
@@ -106,6 +114,7 @@ public class ReactionEdge extends Edge<BioMetabolite>{
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode(java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
     public int hashCode() {
 		return Objects.hash(this.getV1().getId(), this.getV2().getId(), this.r.getId());

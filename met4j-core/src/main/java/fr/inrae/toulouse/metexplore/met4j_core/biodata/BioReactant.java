@@ -42,7 +42,10 @@ import java.util.Locale;
 import java.util.Objects;
 
 /**
+ * <p>BioReactant class.</p>
  *
+ * @author lcottret
+ * @version $Id: $Id
  */
 public class BioReactant extends BioParticipant {
 
@@ -50,9 +53,10 @@ public class BioReactant extends BioParticipant {
 
 	/**
 	 * Constructor
-	 * @param metabolite a {@link BioMetabolite}
+	 *
+	 * @param metabolite a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
 	 * @param stoichiometry stoichiometric coefficient
-	 * @param location a {@link BioCompartment}
+	 * @param location a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
 	 */
 	public BioReactant(BioMetabolite metabolite, Double stoichiometry, BioCompartment location) {
 		super(metabolite, stoichiometry);
@@ -61,7 +65,8 @@ public class BioReactant extends BioParticipant {
 
 	/**
 	 * Get location of the reactant
-	 * @return a {@link BioCompartment}
+	 *
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
 	 */
 	public BioCompartment getLocation() {
 		return location;
@@ -69,7 +74,8 @@ public class BioReactant extends BioParticipant {
 
 	/**
 	 * Set location
-	 * @param location a {@link BioCompartment}
+	 *
+	 * @param location a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
 	 */
 	protected void setLocation(BioCompartment location) {
 		this.location = location;
@@ -77,12 +83,14 @@ public class BioReactant extends BioParticipant {
 
 	/**
 	 * Get the associated metabolite
-	 * @return a {@link BioMetabolite}
+	 *
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
 	 */
 	public BioMetabolite getMetabolite() {
 		return (BioMetabolite) this.getPhysicalEntity();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 
@@ -117,6 +125,7 @@ public class BioReactant extends BioParticipant {
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -126,6 +135,7 @@ public class BioReactant extends BioParticipant {
 		return location.equals(that.location);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return Objects.hash(super.hashCode(), location);

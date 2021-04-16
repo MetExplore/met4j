@@ -49,7 +49,9 @@ import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
 
 /**
  * compute several measures of the proximity or relatedness of two nodes
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> {
 	
@@ -67,6 +69,7 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 	
 	/**
 	 * Compute the number of common neighbors of two nodes
+	 *
 	 * @param v1 the first vertex
 	 * @param v2 the second vertex
 	 * @return the number of common neighbors
@@ -84,6 +87,7 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 	/**
 	 * Compute the Adamic-Adar index for two nodes.
 	 * The Adamic-Adar index is a measure of proximity of nodes, it correspond to the number of common neighbor lowered by the degree of each neighbor
+	 *
 	 * @param v1 the first vertex
 	 * @param v2 the second vertex
 	 * @return the Adamic-Adar index
@@ -102,6 +106,7 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 	
 	/**
 	 * Compute the Salton index
+	 *
 	 * @param v1 the first vertex
 	 * @param v2 the second vertex
 	 * @return the Salton index
@@ -116,8 +121,9 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 	/**
 	 * Compute the local clustering coefficient, which is for a vertex the number of edges between vertices of its neighborhood
 	 * divided by the expected maximum number of edges that could exist between them (if the neighborhood was a clique)
+	 *
 	 * @param v1 the vertex
-	 * @return
+	 * @return a double.
 	 */
 	public double getLocalClusteringCoeff(V v1){
 		ArrayList<V> neighbors = new ArrayList<>(g.neighborListOf(v1));
@@ -137,8 +143,9 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 	/**
 	 * Compute the local clustering coefficient, which is for a vertex the number of edges between vertices of its neighborhood
 	 * divided by the expected maximum number of edges that could exist between them (if the neighborhood was a clique)
+	 *
 	 * @param v1 the vertex
-	 * @return
+	 * @return a double.
 	 */
 	public double getUndirectedLocalClusteringCoeff(V v1){
 		ArrayList<V> neighbors = new ArrayList<>(g.neighborListOf(v1));
@@ -162,7 +169,8 @@ public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends
 	/**
 	 * Compute the Katz index
 	 * C = ((I_alphaA^T)^-1 - I)
-	 * @param alpha
+	 *
+	 * @param alpha a double.
 	 * @return the Katz index
 	 */
 	public Map<V,Double> getKatzIndex(double alpha){

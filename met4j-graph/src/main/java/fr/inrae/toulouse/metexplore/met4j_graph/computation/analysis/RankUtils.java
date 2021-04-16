@@ -44,7 +44,9 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 
 /**
  * provide static method to build reaction ranking from graph edges' score, and measure distance/dissimilarity between two ranking
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class RankUtils {
 	
@@ -128,10 +130,10 @@ public class RankUtils {
 	
 	/**
 	 * Computes ranks from hashmap with entity identifier as key and score as value.
-	 * @param <T>
 	 *
 	 * @param map the score map
 	 * @return the rank map
+	 * @param <T> a T object.
 	 */
 	public static <T> HashMap<T, Integer> computeRank(HashMap<T, Double> map){
 		HashMap<T, Integer> reactionRankMap = new HashMap<>();
@@ -146,10 +148,10 @@ public class RankUtils {
 	
 	/**
 	 * Return an ordered list of values, given a map with score associated to each value
-	 * @param <T>
 	 *
 	 * @param map the score map
 	 * @return the ordered list of keys
+	 * @param <T> a T object.
 	 */
 	public static <T> List<T> getOrderedList(HashMap<T, Double> map){
 		ArrayList<T> keys = new ArrayList<>(map.keySet());

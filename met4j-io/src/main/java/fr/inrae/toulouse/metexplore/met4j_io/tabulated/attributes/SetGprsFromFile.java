@@ -44,9 +44,16 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.MalformedGeneAssociati
 
 import java.io.IOException;
 
+/**
+ * <p>SetGprsFromFile class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class SetGprsFromFile extends AbstractSetAttributesFromFile {
 
     /**
+     * <p>Constructor for SetGprsFromFile.</p>
      *
      * @param colId number of the column where are the reaction ids
      * @param colAttr number of the column where are the gpr
@@ -55,6 +62,7 @@ public class SetGprsFromFile extends AbstractSetAttributesFromFile {
      * @param c comment string
      * @param nSkip number of lines to skip at the beginning of the file
      * @param p if true, to match the reactions in the sbml file, the reaction ids in the tabulated file are formatted in the palsson way
+     * @param s a {@link java.lang.Boolean} object.
      */
     public SetGprsFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s) {
 
@@ -64,6 +72,8 @@ public class SetGprsFromFile extends AbstractSetAttributesFromFile {
 
 
     /**
+     * {@inheritDoc}
+     *
      * Test the gpr
      * TODO : to complete
      */
@@ -73,8 +83,9 @@ public class SetGprsFromFile extends AbstractSetAttributesFromFile {
 
     /**
      * Reads the file and sets the attributes
-     * @return
-     * @throws IOException
+     *
+     * @return a {@link java.lang.Boolean} object.
+     * @throws java.io.IOException if any.
      */
     public Boolean setAttributes() throws IOException {
 

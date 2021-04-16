@@ -44,12 +44,19 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
+/**
+ * <p>SetPathwaysFromFile class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
 
     private String sep = "|";
 
 
     /**
+     * <p>Constructor for SetPathwaysFromFile.</p>
      *
      * @param colId
      *            number of the column where are the reaction ids
@@ -66,6 +73,8 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
      * @param p
      *            if true, to match the reactions in the sbml file, the reaction
      *            ids in the tabulated file are formatted in the palsson way
+     * @param s a {@link java.lang.Boolean} object.
+     * @param sep a {@link java.lang.String} object.
      */
     public SetPathwaysFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s, String sep) {
 
@@ -75,6 +84,8 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Test the pathway
      */
     public Boolean testAttribute(String pathway) {
@@ -84,9 +95,8 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
     /**
      * Reads the file and sets the attributes
      *
-     * @return
-     * @throws IOException
-     *             TODO : deal with several pathways
+     * @return a {@link java.lang.Boolean} object.
+     * @throws java.io.IOException if any.
      */
     public Boolean setAttributes() throws IOException {
 

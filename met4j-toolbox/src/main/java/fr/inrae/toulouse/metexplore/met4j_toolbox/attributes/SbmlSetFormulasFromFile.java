@@ -40,21 +40,34 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetFormulasFromFile;
 import org.kohsuke.args4j.Option;
 
+/**
+ * <p>SbmlSetFormulasFromFile class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class SbmlSetFormulasFromFile extends AbstractSbmlSetMetabolite {
 
     @Option(name="-cf", usage="[2] number of the column where are the formulas")
     private int colformula=2;
 
+    /** {@inheritDoc} */
     @Override
     public String getLabel() {
         return this.getClass().getSimpleName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDescription() {
         return "Set Formula to network metabolites from a tabulated file containing the metabolite ids and the formulas";
     }
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     */
     public static void main(String[] args) {
 
         SbmlSetFormulasFromFile app = new SbmlSetFormulasFromFile();

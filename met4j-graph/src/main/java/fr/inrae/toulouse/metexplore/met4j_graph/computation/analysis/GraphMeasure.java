@@ -50,9 +50,11 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * compute several measures of the level or connectivity, size or shape of a given graph using lazy builder to avoid redundant calculus
+ *
  * @author clement
  * @param <V>
  * @param <E>
+ * @version $Id: $Id
  */
 public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	
@@ -91,8 +93,6 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	
 	/**
 	 * Get list of set of BioMetabolite, each BioMetabolite in a set belong to the same connected component
-	 * @param <V>
-	 * @param <E>
 	 *
 	 * @param g the graph
 	 * @return the connected component
@@ -150,6 +150,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 * Gets the alpha index of the graph, i.e. the ratio between the observed number of cycle and the expected maximal number of possible cycle, as measure of the level of connectivity
 	 * cannot be computed on directed graph
 	 * alpha = (e-(v-1))/((v(v-1)/2)-(v-1))
+	 *
 	 * @return the alpha
 	 */
 	public double getAlpha(){
@@ -201,10 +202,10 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	
 	/**
 	 * get the overall closeness centralization index (OCCI), according to Freeman,L.C. (1979) Centrality in social networks: Conceptual clarification. Social Networks, 1, 215–239.
-	 * 
+	 *
 	 * OCCI = [ (2n-3) sum_x(C*-Cx) ] / [(n-1)(n-2)]
 	 * where n is the number of nodes in the network, C∗ is the highest value of closeness centrality and Cx the closeness centrality for the node x
-	 * 
+	 *
 	 * @return the OCCI
 	 */
 	public double getOCCI(){
@@ -231,11 +232,12 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	
 	/**
 	 * get the overall closeness centralization index (OCCI), according to Freeman,L.C. (1979) Centrality in social networks: Conceptual clarification. Social Networks, 1, 215–239.
-	 * 
+	 *
 	 * OCCI = [ (2n-3) sum_x(C*-Cx) ] / [(n-1)(n-2)]
 	 * where n is the number of nodes in the network, C∗ is the highest value of closeness centrality and Cx the closeness centrality for the node x
-	 * 
+	 *
 	 * @return the OCCI
+	 * @param validPaths a {@link java.util.Set} object.
 	 */
 	public double getOCCI(Set<BioPath<V, E>> validPaths){
 		GraphCentralityMeasure<V, E, BioGraph<V, E>> centralityComputor = new GraphCentralityMeasure<>(g);
@@ -270,6 +272,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	
 	/**
 	 * get whether or not the graph is considered as directed
+	 *
 	 * @return true if the graph is considered as directed, false otherwise
 	 */
 	public boolean isDirected() {
@@ -278,13 +281,16 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	
 	/**
 	 * set whether or not the graph should be considered as directed
-	 * @param directed
+	 *
+	 * @param directed a boolean.
 	 */
 	public void setDirected(boolean directed) {
 		this.directed = directed;
 	}
 
 	/**
+	 * <p>Getter for the field <code>numberOfEdges</code>.</p>
+	 *
 	 * @return the number of edges
 	 */
 	public double getNumberOfEdges() {
@@ -292,6 +298,8 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	}
 
 	/**
+	 * <p>Getter for the field <code>numberOfVertex</code>.</p>
+	 *
 	 * @return the number of vertices
 	 */
 	public double getNumberOfVertex() {

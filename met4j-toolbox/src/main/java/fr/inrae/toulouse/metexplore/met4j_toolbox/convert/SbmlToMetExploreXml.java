@@ -45,6 +45,12 @@ import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 
+/**
+ * <p>SbmlToMetExploreXml class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class SbmlToMetExploreXml extends AbstractMet4jApplication {
 
 
@@ -55,6 +61,13 @@ public class SbmlToMetExploreXml extends AbstractMet4jApplication {
     public String outputPath = null;
 
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     * @throws java.io.IOException if any.
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
+     */
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
 
         SbmlToMetExploreXml app = new SbmlToMetExploreXml();
@@ -66,6 +79,12 @@ public class SbmlToMetExploreXml extends AbstractMet4jApplication {
     }
 
 
+    /**
+     * <p>run.</p>
+     *
+     * @throws java.io.IOException if any.
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
+     */
     public void run() throws IOException, Met4jSbmlReaderException {
         JsbmlReader reader = new JsbmlReader(this.inputPath);
 
@@ -77,11 +96,13 @@ public class SbmlToMetExploreXml extends AbstractMet4jApplication {
 
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getLabel() {
         return this.getClass().getSimpleName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDescription() {
         return "Converts a SBML file to a MetExploreXml file";

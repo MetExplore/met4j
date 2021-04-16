@@ -36,9 +36,16 @@
 
 package fr.inrae.toulouse.metexplore.met4j_core.utils;
 
+/**
+ * <p>StringUtils class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class StringUtils {
 
 	/**
+	 * <p>isVoid.</p>
 	 *
 	 * @param in a String
 	 * @return true if in is null or empty or equals to NA, na, multiple spaces, NULL, or null
@@ -53,6 +60,7 @@ public class StringUtils {
 
 	/**
 	 * From https://stackoverflow.com/questions/5439529/determine-if-a-string-is-an-integer-in-java/5439632#5439632
+	 *
 	 * @param s a String
 	 * @return true if s corresponds to an integer
 	 */
@@ -68,6 +76,7 @@ public class StringUtils {
 
 	/**
 	 * From https://stackoverflow.com/questions/5439529/determine-if-a-string-is-an-integer-in-java/5439632#5439632
+	 *
 	 * @param s a String
 	 * @return true if s corresponds to a double
 	 */

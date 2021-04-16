@@ -47,6 +47,12 @@ import org.apache.commons.lang3.Validate;
 
 
 
+/**
+ * <p>BioRef class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 	
 	public String origin; 	//source of the annotation, automatically inferred or get from model
@@ -58,6 +64,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 
 	/**
 	 * Constructor
+	 *
 	 * @param origin source of the annotation
 	 * @param dbName name of the database
 	 * @param id reference id
@@ -77,6 +84,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 	}
 
 	/**
+	 * <p>getUri.</p>
 	 *
 	 * @return an url with the base url + dbName + refId
 	 */
@@ -85,6 +93,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 	}
 
 	/**
+	 * <p>Getter for the field <code>origin</code>.</p>
 	 *
 	 * @return the origin of the ref
 	 */
@@ -93,6 +102,8 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 	}
 
 	/**
+	 * <p>Setter for the field <code>origin</code>.</p>
+	 *
 	 * @param origin the origin of the ref
 	 */
 	public void setOrigin(String origin) {
@@ -100,6 +111,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 	}
 
 	/**
+	 * <p>Getter for the field <code>dbName</code>.</p>
 	 *
 	 * @return the database name
 	 */
@@ -108,6 +120,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 	}
 
 	/**
+	 * <p>Setter for the field <code>dbName</code>.</p>
 	 *
 	 * @param dbName the database name
 	 */
@@ -116,6 +129,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 	}
 
 	/**
+	 * <p>Getter for the field <code>id</code>.</p>
 	 *
 	 * @return the id of the reference
 	 */
@@ -124,6 +138,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 	}
 
 	/**
+	 * <p>Setter for the field <code>id</code>.</p>
 	 *
 	 * @param id the id of the reference
 	 */
@@ -132,6 +147,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 	}
 
 	/**
+	 * <p>Getter for the field <code>confidenceLevel</code>.</p>
 	 *
 	 * @return the confidence level
 	 */
@@ -140,6 +156,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 	}
 
 	/**
+	 * <p>Setter for the field <code>confidenceLevel</code>.</p>
 	 *
 	 * @param confidenceLevel the confidence level
 	 */
@@ -149,6 +166,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 
 
 	/**
+	 * <p>Getter for the field <code>logicallink</code>.</p>
 	 *
 	 * @return the logical link of the reference
 	 */
@@ -157,6 +175,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 	}
 
 	/**
+	 * <p>Setter for the field <code>logicallink</code>.</p>
 	 *
 	 * @param logicallink the logical link of the reference
 	 */
@@ -164,16 +183,19 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 		this.logicallink = logicallink;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compare(BioRef arg0, BioRef arg1) {		
 		return arg0.getConfidenceLevel()-arg1.getConfidenceLevel();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int compareTo(BioRef o) {
 		return compare(this,o);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj){
         if (obj==this) {
@@ -190,12 +212,15 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
         return false;
 	}
 	
+    /** {@inheritDoc} */
 	@Override
     public int hashCode() {
 		return Objects.hash(this.getDbName().toUpperCase(),this.getId(),this.getLogicallink());
 	}
 
 	/**
+	 * <p>Getter for the field <code>baseURI</code>.</p>
+	 *
 	 * @return the base url
 	 */
 	public String getBaseURI() {
@@ -203,6 +228,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 	}
 
 	/**
+	 * <p>Setter for the field <code>baseURI</code>.</p>
 	 *
 	 * @param baseURI the base url
 	 */
@@ -210,6 +236,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 		this.baseURI = baseURI;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return "BioRef [origin=" + origin + ", dbName=" + dbName + ", logicallink=" + logicallink + ", id=" + id

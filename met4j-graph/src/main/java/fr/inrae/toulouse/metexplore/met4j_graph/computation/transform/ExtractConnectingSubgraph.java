@@ -49,9 +49,11 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 /**
  * Class to remove all nodes not connecting a given set of nodes of interest.
  * 'Loops' of nodes that only connects a node of interest to itself are also be removed.
+ *
  * @author clement
  * @param <V>
  * @param <E>
+ * @version $Id: $Id
  */
 public class ExtractConnectingSubgraph<V extends BioEntity, E extends Edge<V>> {
 
@@ -74,7 +76,7 @@ public class ExtractConnectingSubgraph<V extends BioEntity, E extends Edge<V>> {
 	/** The row index map. */
 	HashMap<V,Integer> rowIndexMap;
 //	
-	/**
+/**
  * Instantiates a new removes the unconnected nodes class.
  *
  * @param g the graph

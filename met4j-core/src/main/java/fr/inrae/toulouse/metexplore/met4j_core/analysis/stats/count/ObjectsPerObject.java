@@ -44,6 +44,12 @@ import java.util.HashMap;
 import java.util.TreeMap;
 
 
+/**
+ * <p>Abstract ObjectsPerObject class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public abstract class ObjectsPerObject {
 
     public BioNetwork network;
@@ -54,17 +60,26 @@ public abstract class ObjectsPerObject {
 
     public Double mean;
 
+    /**
+     * <p>Constructor for ObjectsPerObject.</p>
+     *
+     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     */
     public ObjectsPerObject(BioNetwork network) {
         this.network = network;
     }
 
+    /**
+     * <p>compute.</p>
+     */
     public abstract void compute();
 
 
     /**
      * Write distribution in file
+     *
      * @param fileName path of the output file
-     * @throws IOException if problem while writing in the file
+     * @throws java.io.IOException if any.
      */
     public void writeDistributions(String fileName) throws IOException {
 
@@ -81,8 +96,9 @@ public abstract class ObjectsPerObject {
 
     /**
      * Write the number of objects per object in a file
+     *
      * @param fileName the path of the output file
-     * @throws IOException if problem while writing in the file
+     * @throws java.io.IOException if any.
      */
     public void writeNumberOfObjectsPerObject(String fileName) throws IOException {
 

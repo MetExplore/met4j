@@ -54,10 +54,11 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * Class to compute load points, i.e. hotspot in metabolic networks.
- * Load points constitute an indicator of lethality and can help identifying drug target 
+ * Load points constitute an indicator of lethality and can help identifying drug target
  * See : Syed Asad Rahman, Dietmar Schomburg; Observing local and global properties of metabolic pathways: ‘load points’ and ‘choke points’ in the metabolic networks. Bioinformatics 2006; 22 (14): 1767-1774. doi: 10.1093/bioinformatics/btl181
- * @author clement
  *
+ * @author clement
+ * @version $Id: $Id
  */
 public class LoadPoint<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V, E>> {
 	
@@ -65,6 +66,7 @@ public class LoadPoint<V extends BioEntity, E extends Edge<V>, G extends BioGrap
 	
 	/**
 	 * Instantiate load points computor
+	 *
 	 * @param g the network
 	 */
 	public LoadPoint(G g) {
@@ -80,6 +82,7 @@ public class LoadPoint<V extends BioEntity, E extends Edge<V>, G extends BioGrap
 	 * P is the total number of shortest paths;
 	 * K is the sum of links in the metabolic network of M metabolites (where M is the number of metabolites in the network).
 	 * Use of the logarithm makes the relevant values more distinguishable.
+	 *
 	 * @param k number of shortest paths to consider
 	 * @return loads values map
 	 */

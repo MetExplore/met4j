@@ -44,9 +44,11 @@ import org.sbml.jsbml.Model;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 
 /**
- * An interface that declares common methods for the parser plugins 
+ * An interface that declares common methods for the parser plugins
+ *
  * @author Benjamin
  * @since 3.0
+ * @version $Id: $Id
  */
 public interface PackageParser {
 	
@@ -57,16 +59,19 @@ public interface PackageParser {
 
 	/**
 	 * Parse the model and add the converted data to the bionetwork
+	 *
 	 * @param model
 	 * 	The SBML model
 	 * @param bionetwork
 	 * The BioNetwork
+	 * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
 	 */
 	void parseModel(Model model, BioNetwork bionetwork) throws Met4jSbmlReaderException;
 	
 	/**
-	 * If this package plugin uses an official SBML package, this method must return the key name of your package 
+	 * If this package plugin uses an official SBML package, this method must return the key name of your package
 	 * in the HashMap returned by the model getExtensionPackages() method, a custom name otherwise
+	 *
 	 * @return the name of the plugin
 	 */
 	String getAssociatedPackageName();
@@ -75,9 +80,10 @@ public interface PackageParser {
 	/**
 	 * This method tests if the package can be used on the specified JSBML Model.
 	 * If the package is dependent on a SBML package, it should test if this package's namespace is present
-	 * in the model element by using the model.isPackageURIEnabled() method. 
-	 * </br>Otherwise, custom testing can be performed on the model. This method can also always return true if you want it 
+	 * in the model element by using the model.isPackageURIEnabled() method.
+	 * <br>Otherwise, custom testing can be performed on the model. This method can also always return true if you want it
 	 * to be used in every model conversion
+	 *
 	 * @param model
 	 * the SBML model
 	 * @return true if this package plugin can be used on the model, false otherwise

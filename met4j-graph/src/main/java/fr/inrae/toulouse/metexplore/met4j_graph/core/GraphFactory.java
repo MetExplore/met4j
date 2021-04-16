@@ -45,19 +45,27 @@ import java.util.Set;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
- * 
+ * <p>Abstract GraphFactory class.</p>
+ *
  * @author clement
- * An abstract factory class for {@link BioGraph}
+ * An abstract factory class for {@link fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph}
  * @param <V> the vertex type
  * @param <E> the edge type
  * @param <G> the graph type
+ * @version $Id: $Id
  */
 public abstract class GraphFactory<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> {
+	/**
+	 * <p>createGraph.</p>
+	 *
+	 * @return a G object.
+	 */
 	public abstract G createGraph();
 	
 	/**
 	 * Create a graph from a list of edges and a list of vertices.
 	 * Vertex connected by the edges from the list should be present in the given vertex collection
+	 *
 	 * @param vertexList a collection of vertex
 	 * @param edgeList a collection of edges
 	 * @return a graph
@@ -77,6 +85,7 @@ public abstract class GraphFactory<V extends BioEntity, E extends Edge<V>, G ext
 	
 	/**
 	 * Create a graph from a list of edges. Source and target vertices are automatically added to the graph.
+	 *
 	 * @param edgeList a collection of edges
 	 * @return a graph
 	 */
@@ -95,9 +104,10 @@ public abstract class GraphFactory<V extends BioEntity, E extends Edge<V>, G ext
 	/**
 	 * Sub-network extraction from a list of paths :
 	 * Add each path iteratively, in ascendant order of weight, until all nodes of interest are connected
+	 *
 	 * @param kShort the K-Shortest path results
 	 * @param nodeOfInterest the set of nodes to connect
-	 * @return
+	 * @return a G object.
 	 */
 	public G createGraphFromPathList(List<BioPath<V,E>> kShort, Set<V> nodeOfInterest){
 		ArrayList<BioPath<V,E>> tmpKShort = new ArrayList<>(kShort);
@@ -115,8 +125,9 @@ public abstract class GraphFactory<V extends BioEntity, E extends Edge<V>, G ext
 	
 	/**
 	 * Sub-network extraction from a list of paths
+	 *
 	 * @param paths the list of path.
-	 * @return
+	 * @return a G object.
 	 */
 	public G createGraphFromPathList(Collection<BioPath<V,E>> paths){
 		
@@ -130,6 +141,7 @@ public abstract class GraphFactory<V extends BioEntity, E extends Edge<V>, G ext
 	/**
 	 * Create a copy of a graph given as parameter.
 	 * Both graph share the same vertex objects, but have their own set of edges.
+	 *
 	 * @param g1 the graph to copy
 	 * @return a copy of the graph
 	 */
@@ -148,7 +160,9 @@ public abstract class GraphFactory<V extends BioEntity, E extends Edge<V>, G ext
 	
 	/**
 	 * create a graph g' from this graph g where for each edge e(x,y) in g their exist an edge e'(y,x) in g'
+	 *
 	 * @return the edge-reversed graph
+	 * @param g a G object.
 	 */
 	public G reverse(G g){
 		G reversed = createGraph();
@@ -167,9 +181,10 @@ public abstract class GraphFactory<V extends BioEntity, E extends Edge<V>, G ext
 	 * Extract sub-graph of a main graph given a list of vertex.
 	 * The obtained sub-graph contains all the edges from the main graph linking vertices from the given list
 	 * The obtained sub-graph is not a deep copy of the main graph, any changes to the shared edges attributes will be effective in both graphs
+	 *
 	 * @param g the main graph
-	 * @param vertices
-	 * @return
+	 * @param vertices a {@link java.util.Collection} object.
+	 * @return a G object.
 	 */
 	public G createSubGraph(G g, Collection<V> vertices){
 		Collection<E> edges = new HashSet<>();

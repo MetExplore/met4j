@@ -47,6 +47,8 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
  *
  * @param <V> the value type
  * @param <E> the element type
+ * @author lcottret
+ * @version $Id: $Id
  */
 public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGraph<V,MetaEdge<V,E>> {
 
@@ -80,6 +82,7 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 	/* (non-Javadoc)
 	 * @see parsebionet.computation.graphe.BioGraph#getEdgeFactory()
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public MetaEdgeFactory<V, E> getEdgeFactory() {
 		return new MetaEdgeFactory<>();
@@ -88,6 +91,7 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 	/* (non-Javadoc)
 	 * @see parsebionet.computation.graphe.BioGraph#copyEdge(parsebionet.computation.graphe.Edge)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public MetaEdge<V, E> copyEdge(MetaEdge<V, E> edge) {
 		MetaEdge<V, E> newEdge = new MetaEdge<>(edge.getV1(), edge.getV2(), edge.getEdgeList());
@@ -95,6 +99,7 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public MetaEdge<V, E> reverseEdge(MetaEdge<V, E> edge) {
 		MetaEdge<V, E> reversed = new MetaEdge<>(edge.getV2(), edge.getV1(), edge.getEdgeList());

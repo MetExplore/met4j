@@ -51,7 +51,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 /**
  * The Class CompoundGraph.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 
@@ -125,6 +127,7 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 	 * Adds the edges from reaction. If a substrate or a product is not present in the network it will be ignored
 	 *
 	 * @param r the reaction
+	 * @param model a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
 	 */
 	public void addEdgesFromReaction(BioNetwork model, BioReaction r){
 		for(BioMetabolite sub : model.getLefts(r)){
@@ -143,6 +146,13 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 		}
 	}
 
+	/**
+	 * <p>getEdgesFromCompartment.</p>
+	 *
+	 * @param bn a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+	 * @param comp a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} object.
+	 * @return a {@link java.util.HashSet} object.
+	 */
 	public HashSet<ReactionEdge> getEdgesFromCompartment(BioNetwork bn, BioCompartment comp){
 		return this.edgeSet().stream()
 			.filter(e -> e.getReaction().getReactantsView()
@@ -154,6 +164,7 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 	 * Adds the edges from reaction. If a substrate or a product is not present in the network it will be ignored
 	 *
 	 * @param rCollection the reactions
+	 * @param model a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
 	 */
 	public void addEdgesFromReactions(BioNetwork model, BioCollection<BioReaction> rCollection){
 		for(BioReaction r : rCollection){
@@ -162,12 +173,9 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 	}
 	
 	/**
-	 * Gets edge from source, target and associated reaction.
+	 * {@inheritDoc}
 	 *
-	 * @param sourceVertex the source vertex
-	 * @param targetVertex the target vertex
-	 * @param reaction the reaction
-	 * @return the edge
+	 * Gets edge from source, target and associated reaction.
 	 */
 	public ReactionEdge getEdge(String sourceVertex, String targetVertex, String reaction) {
 		for(ReactionEdge e : this.edgeSet()){
@@ -195,16 +203,23 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 		return null;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public EdgeFactory<BioMetabolite, ReactionEdge> getEdgeFactory() {
 		return new ReactionEdgeFactory();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ReactionEdge copyEdge(ReactionEdge edge) {
 		return new ReactionEdge(edge.getV1(), edge.getV2(), edge.getReaction());
 	}
 	
+	/**
+	 * <p>getFactory.</p>
+	 *
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory} object.
+	 */
 	public static GraphFactory<BioMetabolite, ReactionEdge, CompoundGraph> getFactory(){
 		return new GraphFactory<BioMetabolite, ReactionEdge, CompoundGraph>(){
 			@Override
@@ -214,6 +229,7 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ReactionEdge reverseEdge(ReactionEdge edge) {
 		ReactionEdge reverse = new ReactionEdge(edge.getV2(), edge.getV1(), edge.getReaction());

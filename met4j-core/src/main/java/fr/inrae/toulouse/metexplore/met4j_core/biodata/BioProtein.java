@@ -35,6 +35,12 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
+/**
+ * <p>BioProtein class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class BioProtein extends BioPhysicalEntity {
 
 	private BioGene gene;
@@ -42,6 +48,7 @@ public class BioProtein extends BioPhysicalEntity {
 
 	/**
 	 * Constructor
+	 *
 	 * @param id the id of the BioProtein
 	 */
 	public BioProtein(String id) {
@@ -50,6 +57,7 @@ public class BioProtein extends BioPhysicalEntity {
 
 	/**
 	 * Constructor
+	 *
 	 * @param id the id of the BioProtein
 	 * @param name the name of the BioProtein
 	 */
@@ -61,6 +69,7 @@ public class BioProtein extends BioPhysicalEntity {
 	/**
 	 * Copy of a protein
 	 * Be careful, the gene information is not copied
+	 *
 	 * @param protein Original protein
 	 */
 	public BioProtein(BioProtein protein) {
@@ -69,7 +78,8 @@ public class BioProtein extends BioPhysicalEntity {
 
 	/**
 	 * Set gene
-	 * @param g a {@link BioGene}
+	 *
+	 * @param g a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}
 	 */
 	protected  void setGene(BioGene g) {
 		this.gene = g;
@@ -77,7 +87,8 @@ public class BioProtein extends BioPhysicalEntity {
 
 	/**
 	 * Get gene
-	 * @return a {@link BioGene}
+	 *
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}
 	 */
 	public BioGene getGene() {
 		return this.gene;

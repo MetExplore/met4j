@@ -49,7 +49,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
  * An inner compounds is any compound that can be produced by a reaction of the pathways.
  * Two pathways are connected by an edge if they as an inner compound that is a source of the other.
  * Side compounds have to be defined to avoid erroneous connections.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class PathwayGraph extends BioGraph<BioPathway,PathwayGraphEdge> {
 
@@ -66,18 +68,21 @@ public class PathwayGraph extends BioGraph<BioPathway,PathwayGraphEdge> {
 	}
 	
 	
+	/** {@inheritDoc} */
 	@Override
 	public PathwayGraphEdge copyEdge(PathwayGraphEdge edge) {
 		PathwayGraphEdge copy = new PathwayGraphEdge(edge.getV1(), edge.getV2(), edge.getConnectingCompounds());
 		return copy;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public EdgeFactory<BioPathway, PathwayGraphEdge> getEdgeFactory() {
 		return new PathwayGraphEdgeFactory();
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public PathwayGraphEdge reverseEdge(PathwayGraphEdge edge) {
 		PathwayGraphEdge reversed = new PathwayGraphEdge(edge.getV2(), edge.getV1(), edge.getConnectingCompounds());

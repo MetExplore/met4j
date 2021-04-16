@@ -63,8 +63,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollections;
 
 /**
- * Export informations from graphs generated from {@link Bionetwork2Graph} into Cytoscape-readable files
+ * Export informations from graphs generated from {@link fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph} into Cytoscape-readable files
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class ExportGraph {
 
@@ -78,7 +80,8 @@ public class ExportGraph {
 	 * WARNING: equals sign aren't allowed in node name space
 	 * Use in Cytoscape2:
 	 * File>import>Edge_Attributes...
-	 * @param graph
+	 *
+	 * @param graph a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph} object.
 	 * @param attName the Name of the attribute represented by weight
 	 * @param outputPath the Path to the output file. Note that standard extension for Cytoscape edge attributes file is .eda
 	 */
@@ -171,7 +174,8 @@ public class ExportGraph {
 	 * WARNING: equals sign aren't allowed in node name space or id
 	 * Use in Cytoscape2:
 	 * File>import>Node_Attributes...
-	 * @param graph
+	 *
+	 * @param graph a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph} object.
 	 * @param outputPath Path to the output file. Note that standard extension for Cytoscape node attributes file is .noa
 	 */
 	public static void exportNodeName(CompoundGraph graph, String outputPath){
@@ -231,8 +235,9 @@ public class ExportGraph {
 	 * Use in Cytoscape2:
 	 * File>import>Attribute_from_Table
 	 * 	Mapping column and attributes' names have to been set manually
-	 * @param graph
-	 * @param outputPath
+	 *
+	 * @param graph a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph} object.
+	 * @param outputPath a {@link java.lang.String} object.
 	 */
 	public static void exportEdgeTabular(CompoundGraph graph, String outputPath){
 		try {	    	
@@ -307,6 +312,9 @@ public class ExportGraph {
 	 *
 	 * @param graph the graph
 	 * @param outputPath the output path
+	 * @param <V> a V object.
+	 * @param <E> a E object.
+	 * @param <G> a G object.
 	 */
 	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>>void toGml(G graph, String outputPath){
 		VertexNameProvider<V> vertexLabelprovider = new VertexNameProvider<V>() {
@@ -378,8 +386,8 @@ public class ExportGraph {
 	/**
 	 * Export bipartite graph node in tabular format.
 	 *
-	 * @param graph the graph
 	 * @param outputPath the output path
+	 * @param bip a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph} object.
 	 */
 	public static void exportBipNodeTabular(BipartiteGraph bip, String outputPath ){
 		

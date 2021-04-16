@@ -52,7 +52,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * Class to compute approximation of Steiner Tree (minimum cost tree between nodes of interest), using minimum spanning tree
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V ,E>>{
 	
@@ -64,7 +66,7 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 
 	/**
 	 * Instantiates a new steiner tree computor.
-	 * 
+	 *
 	 * @param g the graph
 	 */
 	public SteinerTreeApprox(G g) {
@@ -73,7 +75,7 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 	
 	/**
 	 * Instantiates a new steiner tree computor.
-	 * 
+	 *
 	 * @param g the graph
 	 * @param weighted if the graph should be treated as weighted
 	 */
@@ -85,7 +87,6 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 	/**
 	 * Gets the steiner tree list.
 	 *
-	 * @param g the graph
 	 * @param terminal the targets list
 	 * @param weighted if the graph is weighted
 	 * @return the steiner tree list
@@ -113,7 +114,6 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 	/**
 	 * Gets the steiner tree list.
 	 *
-	 * @param g the graph
 	 * @param startNodes the targets list
 	 * @param endNodes the targets list
 	 * @param weighted if the graph is weighted

@@ -46,7 +46,9 @@ import java.util.Map.Entry;
 
 /**
  * provide method to export Matrix to CSV file
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public final class ExportMatrix {
 
@@ -60,8 +62,6 @@ public final class ExportMatrix {
 	 *
 	 * @param output the output
 	 * @param m the matrix
-	 * @param rowMap the row map
-	 * @param colMap the column map
 	 */
 	public static void toCSV(String output, BioMatrix m){
 		try {
@@ -99,8 +99,9 @@ public final class ExportMatrix {
 	
 	/**
 	 * Convert a matrix into a map with row label as key and a second map as value.
-	 * The second map has column label as key and matrix element as value, 
+	 * The second map has column label as key and matrix element as value,
 	 * such as map.get(rowLabel).get(colLabel) return the element (row,col) in the matrix.
+	 *
 	 * @param m the matrix to convert
 	 * @return the corresponding map
 	 */

@@ -41,13 +41,20 @@ import java.util.HashSet;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
+/**
+ * <p>BioCollections class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class BioCollections{
 
 	/**
+	 * <p>intersect.</p>
 	 *
-	 * @param collections 0 or several {@link BioCollection}
-	 * @param <E> {@link BioEntity}
-	 * @return a {@link BioCollection} containing the entities formed by the intersection of the entities in collections
+	 * @param collections 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection}
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} containing the entities formed by the intersection of the entities in collections
+	 * @param <E> a E object.
 	 */
 	public static <E extends BioEntity> BioCollection<E> intersect(BioCollection<E>... collections){
 		
@@ -60,10 +67,11 @@ public class BioCollections{
 	}
 
 	/**
+	 * <p>union.</p>
 	 *
-	 * @param collections 0 or several {@link BioCollection}
-	 * @param <E> {@link BioEntity}
-	 * @return a {@link BioCollection} containing the entities formed by the union of the entities in collections
+	 * @param collections 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection}
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} containing the entities formed by the union of the entities in collections
+	 * @param <E> a E object.
 	 */
 	public static <E extends BioEntity> BioCollection<E> union(BioCollection<E>... collections){
 		

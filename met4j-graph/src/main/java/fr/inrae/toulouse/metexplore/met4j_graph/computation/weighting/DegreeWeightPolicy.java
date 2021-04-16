@@ -42,7 +42,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * The Class DegreeWeightPolicy which set as edge weight the target node's degree to the power of n.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class DegreeWeightPolicy extends WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> {
 	
@@ -66,6 +68,7 @@ public class DegreeWeightPolicy extends WeightingPolicy<BioMetabolite,ReactionEd
 	/* (non-Javadoc)
 	 * @see parsebionet.computation.graphe.WeightingPolicy#setWeight(parsebionet.computation.graphe.CompoundGraph)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void setWeight(CompoundGraph g) {
 		for(ReactionEdge e : g.edgeSet()){

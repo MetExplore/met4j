@@ -42,8 +42,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 
 /**
- * @author ludo 1 juin 2011
+ * <p>Flux class.</p>
  *
+ * @author ludo 1 juin 2011
+ * @version $Id: $Id
  */
 public class Flux extends BioEntity {
 
@@ -52,9 +54,18 @@ public class Flux extends BioEntity {
 	public BioUnitDefinition unitDefinition = null;
 	private boolean constant = false;
 
+	/** Constant <code>FLUXMAX</code> */
 	public static Double FLUXMAX = 99999.0;
+	/** Constant <code>FLUXMIN</code> */
 	public static Double FLUXMIN = -99999.0;
 
+	/**
+	 * <p>Constructor for Flux.</p>
+	 *
+	 * @param id a {@link java.lang.String} object.
+	 * @param value a {@link java.lang.Double} object.
+	 * @param unitDefinition a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition} object.
+	 */
 	public Flux(String id, Double value, BioUnitDefinition unitDefinition) {
 
 		super(id);
@@ -64,6 +75,11 @@ public class Flux extends BioEntity {
 
 	}
 
+	/**
+	 * <p>Constructor for Flux.</p>
+	 *
+	 * @param value a {@link java.lang.Double} object.
+	 */
 	public Flux(Double value) {
 
 		super(value + "_" + BioUnitDefinition.DEFAULT_UNIT);
@@ -75,17 +91,28 @@ public class Flux extends BioEntity {
 
 	}
 
+	/**
+	 * <p>Constructor for Flux.</p>
+	 *
+	 * @param id a {@link java.lang.String} object.
+	 */
 	public Flux(String id) {
 		super(id);
 	}
 
+	/**
+	 * <p>Getter for the field <code>constant</code>.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean getConstant() {
 		return this.constant;
 	}
 
 	/**
-	 * 
-	 * @param constant
+	 * <p>Setter for the field <code>constant</code>.</p>
+	 *
+	 * @param constant a boolean.
 	 */
 	public void setConstant(boolean constant) {
 		this.constant = constant;

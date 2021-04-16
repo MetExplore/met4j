@@ -52,7 +52,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * Class to use the shortest paths in a graph
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGraph<V ,E>>{
 	
@@ -71,10 +73,11 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	/**
 	 * compute the shortest paths (or lightest paths if the graph is weighted) between 2 nodes
 	 *
-	 * @param graph the graph
 	 * @param start the start vertex
 	 * @param end the end vertex
 	 * @return the list of edges involved in the shortest path
+	 * @throws java.lang.IllegalArgumentException if any.
+	 * @throws java.lang.IllegalArgumentException if any.
 	 */
 	public BioPath<V, E> getShortest(V start, V end) throws IllegalArgumentException{
 		if(!g.containsVertex(start)){
@@ -161,10 +164,11 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	/**
 	 * compute the shortest paths (or lightest paths if the graph is weighted) between 2 nodes as if the graph was undirected
 	 *
-	 * @param graph the graph
 	 * @param start the start vertex
 	 * @param end the end vertex
 	 * @return the list of edges involved in the shortest path
+	 * @throws java.lang.IllegalArgumentException if any.
+	 * @throws java.lang.IllegalArgumentException if any.
 	 */
 	public BioPath<V, E> getShortestAsUndirected(V start, V end) throws IllegalArgumentException{
 		if(!g.containsVertex(start)){
@@ -278,7 +282,6 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	/**
 	 * compute the list of edges from the union of all shortest paths between all nodes in a given set
 	 *
-	 * @param graph the graph
 	 * @param nodeOfInterest the node of interest list
 	 * @return the list of edges involved in the shortest path union
 	 */
@@ -290,7 +293,6 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	/**
 	 * compute the list of edges from the union of all shortest paths between sources and target nodes
 	 *
-	 * @param graph the graph
 	 * @param startNodes the start nodes
 	 * @param targetNodes the target nodes
 	 * @return the list of edges involved in the shortest path union
@@ -357,7 +359,6 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	/**
 	 * compute for each node in the first list, the minimum path length to be reached by nodes in the second set
 	 *
-	 * @param g the graph
 	 * @param sources the sources
 	 * @param targets the targets
 	 * @param weighted if the graph is weighted
@@ -387,7 +388,6 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	/**
 	 * compute for each node in the first list, the average minimum path length to be reached by nodes in the second set
 	 *
-	 * @param g the graph
 	 * @param sources the sources
 	 * @param targets the targets
 	 * @param weighted if the graph is weighted
@@ -415,8 +415,8 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	
 	/**
 	 * return all the shortest path in the given graph.
-	 * @param k
-	 * @return
+	 *
+	 * @return a {@link java.util.Set} object.
 	 */
 	public Set<BioPath<V,E>> getAllShortestPaths(){
 		HashSet<BioPath<V, E>> paths = new HashSet<>();

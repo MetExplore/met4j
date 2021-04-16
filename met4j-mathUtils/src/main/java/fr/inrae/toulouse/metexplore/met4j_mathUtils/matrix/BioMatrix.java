@@ -44,90 +44,114 @@ import java.util.HashMap;
  */
 /**
  * The Interface BioMatrix.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public interface BioMatrix {
 	
 	/**
 	 * Sets the row label. Label has to be unique for each row
-	 * @param the row index
-	 * @param the label
+	 *
+	 * @param i a int.
+	 * @param label a {@link java.lang.String} object.
 	 */
 	public void setRowLabel(int i, String label);
 	
 	/**
 	 * Sets the column label. Label has to be unique for each column
-	 * @param the column index
-	 * @param the label
+	 *
+	 * @param j a int.
+	 * @param label a {@link java.lang.String} object.
 	 */
 	public void setColumnLabel(int j, String label);
 	
 	/**
 	 * Gets the label from corresponding row index
-	 * @param the row index
+	 *
 	 * @return the label
+	 * @param i a int.
 	 */
 	public String getRowLabel(int i);
 	
 	/**
 	 * Gets the label from corresponding column index
-	 * @param the column index
+	 *
 	 * @return the label
+	 * @param j a int.
 	 */
 	public String getColumnLabel(int j);
 	
 	/**
 	 * Gets the row index from corresponding label
-	 * @param the row label
+	 *
 	 * @return the index
+	 * @param rowLabel a {@link java.lang.String} object.
 	 */
 	public int getRowFromLabel(String rowLabel);
 	
 	/**
 	 * Gets the column index from corresponding label
-	 * @param the column label
+	 *
 	 * @return the index
+	 * @param columnLabel a {@link java.lang.String} object.
 	 */
 	public int getColumnFromLabel(String columnLabel);
 	
-	/** Gets a copy of the label to row map. 
+	/**
+	 * Gets a copy of the label to row map.
+	 *
 	 * @return the row label map
-	 * */
+	 */
 	public HashMap<String, Integer> getRowLabelMap();
 	
-	/** Gets a copy of the row index to label map. 
+	/**
+	 * Gets a copy of the row index to label map.
+	 *
 	 * @return the row index map
-	 * */
+	 */
 	public HashMap<Integer, String> getRowIndexMap();
 	
-	/** Sets the label to row index map. Automatically update row index to label map.
-	 * @param the row label map
-	 * */
+	/**
+	 * Sets the label to row index map. Automatically update row index to label map.
+	 *
+	 * @param rowLabelMap a {@link java.util.HashMap} object.
+	 */
 	public void setRowLabelMap(HashMap<String, Integer> rowLabelMap);
 	
-	/** Sets the row index to label map. Automatically update label to row index map.
-	 * @param the row index map
-	 * */
+	/**
+	 * Sets the row index to label map. Automatically update label to row index map.
+	 *
+	 * @param rowIndexMap a {@link java.util.HashMap} object.
+	 */
 	public void setRowIndexMap(HashMap<Integer, String> rowIndexMap);
 	
-	/** Gets a copy of the label to column index map.
+	/**
+	 * Gets a copy of the label to column index map.
+	 *
 	 * @return the column label map
-	 * */
+	 */
 	public HashMap<String, Integer> getColumnLabelMap();
 	
-	/** Gets a copy of the column index to label map.
+	/**
+	 * Gets a copy of the column index to label map.
+	 *
 	 * @return the column index map
-	 * */
+	 */
 	public HashMap<Integer, String> getColumnIndexMap();
 	
-	/** Sets the label to column index map. Automatically update column index to label map. 
-	 * @param the column label map
-	 * */
+	/**
+	 * Sets the label to column index map. Automatically update column index to label map.
+	 *
+	 * @param colLabelMap a {@link java.util.HashMap} object.
+	 */
 	public void setColumnLabelMap(HashMap<String, Integer> colLabelMap);
 	
-	/** Sets the column index to label map. Automatically update label to column index map.
-	 * @param the column index map
-	 * */
+	/**
+	 * Sets the column index to label map. Automatically update label to column index map.
+	 *
+	 * @param colIndexMap a {@link java.util.HashMap} object.
+	 */
 	public void setColumnIndexMap(HashMap<Integer, String> colIndexMap);
 	
     /**

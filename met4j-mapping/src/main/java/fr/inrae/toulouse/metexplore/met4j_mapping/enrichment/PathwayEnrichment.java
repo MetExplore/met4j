@@ -51,7 +51,9 @@ import java.util.Set;
 
 /**
  * compute Pathway enrichment statistic using one-tailed exact Fisher Test
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class PathwayEnrichment {
 
@@ -74,7 +76,7 @@ public class PathwayEnrichment {
      * Instantiates a new pathway enrichment.
      *
      * @param bn the bioNetwork
-     * @param entities 
+     * @param entities a {@link java.util.Set} object.
      */
     public PathwayEnrichment(BioNetwork bn, Set<? extends BioEntity> entities) {
         this.bn=bn;
@@ -142,7 +144,7 @@ public class PathwayEnrichment {
      *
      * @param pathway the pathway
      * @return the enrichment p-value
-     * @throws IllegalArgumentException if pathway not found in network
+     * @throws java.lang.IllegalArgumentException if pathway not found in network
      */
     public double getPvalue(BioPathway pathway) throws IllegalArgumentException{
         if(!bn.getPathwaysView().contains(pathway)){
@@ -202,6 +204,7 @@ public class PathwayEnrichment {
      * the fisher exact test compute the probability p to randomly get the given set of value
      * this version compute the probability to get at least the given overlap between the given set and the given modality :
      * sum the hypergeometric probability with increasing target/query intersection cardinality
+     *
      * @param a the number of elements in target set also found in query set
      * @param b the number of elements in target set not found in query set
      * @param c the number of elements in query set not found in target set

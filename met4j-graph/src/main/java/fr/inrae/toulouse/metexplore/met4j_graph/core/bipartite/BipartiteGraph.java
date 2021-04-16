@@ -48,14 +48,28 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
+/**
+ * <p>BipartiteGraph class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 
 	private static final long serialVersionUID = -8285420874595144901L;
 
+	/**
+	 * <p>Constructor for BipartiteGraph.</p>
+	 */
 	public BipartiteGraph() {
 		super(new BipartiteEdgeFactory());
 	}
 
+	/**
+	 * <p>getFactory.</p>
+	 *
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory} object.
+	 */
 	public static GraphFactory<BioEntity, BipartiteEdge, BipartiteGraph> getFactory(){
 		return new GraphFactory<BioEntity, BipartiteEdge, BipartiteGraph>() {
 			@Override
@@ -66,6 +80,11 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 		
 	}
 	
+	/**
+	 * <p>compoundVertexSet.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<BioMetabolite> compoundVertexSet(){
 		HashSet<BioMetabolite> vertexSet = new HashSet<>();
 		for(BioEntity v : this.vertexSet()){
@@ -74,6 +93,11 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 		return vertexSet;
 	}
 	
+	/**
+	 * <p>reactionVertexSet.</p>
+	 *
+	 * @return a {@link java.util.Set} object.
+	 */
 	public Set<BioReaction> reactionVertexSet(){
 		HashSet<BioReaction> vertexSet = new HashSet<>();
 		for(BioEntity v : this.vertexSet()){
@@ -82,18 +106,20 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 		return vertexSet;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public EdgeFactory<BioEntity, BipartiteEdge> getEdgeFactory() {
 		return new BipartiteEdgeFactory();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BipartiteEdge copyEdge(BipartiteEdge edge) {
 		return new BipartiteEdge(edge.getV1(),edge.getV2(),edge.isReversible());
 	}
 	
 	/**
-	 * Keep only unique edge for reversible reaction in the bipartite graph 
+	 * Keep only unique edge for reversible reaction in the bipartite graph
 	 *
 	 * @param bn the bionetwork
 	 */
@@ -125,6 +151,8 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 	 *  Add compound that are referred in reaction's reactant list but missing in the reaction graph.
 	 *  Add edge if a compound is referred in reaction's reactant list but the edge between this compound and the reaction is missing
 	 *  Newly added elements will be flagged as "side" compounds.
+	 *
+	 * @param bn a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
 	 */
 	public void addMissingCompoundAsSide(BioNetwork bn){
 		HashSet<BioMetabolite> sideCompoundToAdd = new HashSet<>();
@@ -190,6 +218,7 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public BipartiteEdge reverseEdge(BipartiteEdge edge) {
 		BipartiteEdge reverse = new BipartiteEdge(edge.getV2(), edge.getV1(), edge.isReversible());
@@ -198,6 +227,7 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 
 	/**
 	 * check if the connections in the network are coherent with the reactants pairs referenced in the reactions nodes
+	 *
 	 * @return true if all reaction's predecessor/successors match their substrats/products
 	 */
 	public boolean isConsistent(){

@@ -38,6 +38,12 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import org.kohsuke.args4j.Option;
 
+/**
+ * <p>Abstract AbstractSbmlSetMetabolite class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public abstract class AbstractSbmlSetMetabolite  extends AbstractSbmlSet{
 
     @Option(name="-ci", usage="[1] number of the column where are the metabolite ids")
@@ -49,6 +55,9 @@ public abstract class AbstractSbmlSetMetabolite  extends AbstractSbmlSet{
     @Option(name="-s", usage="[deactivated] To match the objects in the sbml file, adds the suffix _comparmentID to metabolites")
     protected Boolean s=false;
 
+    /**
+     * <p>Constructor for AbstractSbmlSetMetabolite.</p>
+     */
     public AbstractSbmlSetMetabolite()  {
 
         super();

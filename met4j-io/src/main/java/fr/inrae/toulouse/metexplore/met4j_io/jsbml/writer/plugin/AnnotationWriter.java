@@ -65,6 +65,7 @@ import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
  *
  * @author Benjamin
  * @since 3.0
+ * @version $Id: $Id
  */
 public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 
@@ -123,17 +124,21 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
         this.setSeparator(separator);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getAssociatedPackageName() {
         return "annot";
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isPackageUseableOnLvl(int lvl) {
         return true;
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Parse the different HashMaps present in the BioNetwork and create annotations
      */
     @Override
@@ -409,6 +414,8 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
     }
 
     /**
+     * <p>Getter for the field <code>model</code>.</p>
+     *
      * @return the model
      */
     public Model getModel() {
@@ -416,6 +423,8 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
     }
 
     /**
+     * <p>Setter for the field <code>model</code>.</p>
+     *
      * @param model the model to set
      */
     public void setModel(Model model) {
@@ -423,6 +432,8 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
     }
 
     /**
+     * <p>Getter for the field <code>bionetwork</code>.</p>
+     *
      * @return the bionetwork
      */
     public BioNetwork getBionetwork() {
@@ -430,6 +441,8 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
     }
 
     /**
+     * <p>Setter for the field <code>bionetwork</code>.</p>
+     *
      * @param bionetwork the bionetwork to set
      */
     public void setBionetwork(BioNetwork bionetwork) {
@@ -437,6 +450,8 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
     }
 
     /**
+     * <p>Getter for the field <code>usedPattern</code>.</p>
+     *
      * @return the usedPattern
      */
     public String getUsedPattern() {
@@ -444,6 +459,8 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
     }
 
     /**
+     * <p>Setter for the field <code>usedPattern</code>.</p>
+     *
      * @param usedPattern the usedPattern to set
      */
     public void setUsedPattern(String usedPattern) {
@@ -451,6 +468,8 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
     }
 
     /**
+     * <p>Getter for the field <code>separator</code>.</p>
+     *
      * @return the separator
      */
     public char getSeparator() {
@@ -458,6 +477,8 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
     }
 
     /**
+     * <p>Setter for the field <code>separator</code>.</p>
+     *
      * @param separator the separator to set
      */
     public void setSeparator(char separator) {

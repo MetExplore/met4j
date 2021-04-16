@@ -38,12 +38,13 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors;
 
 /**
  * This Error is thrown by the
- * {@link parsebionet.io.jsbml.reader.JsbmlToBioNetwork} class when it checks
+ * {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlToBioNetwork} class when it checks
  * the compatibility between the SBML level and the packages used for the
  * parsing
- * 
+ *
  * @author Benjamin
  * @since 3.0
+ * @version $Id: $Id
  */
 public class JSBMLPackageReaderException extends Exception {
 
@@ -54,7 +55,7 @@ public class JSBMLPackageReaderException extends Exception {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param message
 	 *            the error message
 	 */

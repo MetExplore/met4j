@@ -43,14 +43,14 @@ import java.util.stream.Collectors;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene;
 
 /**
- * This class represents a unique "AND" gene association required to activate a
- * given {@link BioReaction}.</br>
- * </br>
- * it is composed of a set of {@link BioGene} that all need to be active for
- * this association to be active
+ * This class represents a unique "AND" gene association
  * 
+ * it is composed of a set of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene} that all need to be active for
+ * this association to be active
+ *
  * @author Benjamin mainly modified by LC
  * @since 3.0
+ * @version $Id: $Id
  */
 public class GeneSet extends HashSet<BioGene> {
 
@@ -61,10 +61,10 @@ public class GeneSet extends HashSet<BioGene> {
 	private String id;
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * This method outputs the PAlson's representation of an "AND" gene
 	 * association
-	 * 
-	 * @return the string representation of this {@link GeneSet}
 	 */
 	@Override
 	public String toString() {
@@ -73,14 +73,25 @@ public class GeneSet extends HashSet<BioGene> {
 
 	}
 
+	/**
+	 * <p>Getter for the field <code>id</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * <p>Setter for the field <code>id</code>.</p>
+	 *
+	 * @param id a {@link java.lang.String} object.
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 
@@ -93,6 +104,7 @@ public class GeneSet extends HashSet<BioGene> {
 		return result;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {
 

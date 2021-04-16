@@ -36,6 +36,12 @@
 
 package fr.inrae.toulouse.metexplore.met4j_toolbox.bigg;
 
+/**
+ * <p>Sequence class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class Sequence {
 
     public String id="NA";
@@ -44,6 +50,11 @@ public class Sequence {
     public String description;
 
 
+    /**
+     * <p>toFasta.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
     public String toFasta() {
 
         String str = "";

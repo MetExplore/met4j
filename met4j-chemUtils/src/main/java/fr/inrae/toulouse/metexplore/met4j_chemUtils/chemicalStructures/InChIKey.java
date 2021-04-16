@@ -39,9 +39,10 @@ package fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalStructures;
 /**
  * This class converts an InchiKey Strings into objects that can be manipulated
  * and compared between them with a custom logic
- * 
+ *
  * @author Benjamin
  * @since 2.0
+ * @version $Id: $Id
  */
 public class InChIKey extends ChemicalStructure {
 	/**
@@ -82,7 +83,7 @@ public class InChIKey extends ChemicalStructure {
 	/**
 	 * Constructor. Uses {@link #setBlocks()} to create the different blocks and
 	 * character flags
-	 * 
+	 *
 	 * @param keyString
 	 *            the inchiKey string
 	 */
@@ -120,6 +121,11 @@ public class InChIKey extends ChemicalStructure {
 		}
 	}
 
+	/**
+	 * <p>toString.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String toString() {
 		if (this.isValid()) {
 			return this.getFirstBlock() + "-" + this.getSecondBlock()
@@ -135,9 +141,9 @@ public class InChIKey extends ChemicalStructure {
 	 * <ul>
 	 * <li>{@link #firstBlock}
 	 * </ul>
-	 * 
+	 *
 	 * @param compared
-	 *            the compared {@link InChIKey}
+	 *            the compared {@link fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalStructures.InChIKey}
 	 * @return true if the first block of the two InChIKeys are equals, false
 	 *         otherwise
 	 */
@@ -146,11 +152,11 @@ public class InChIKey extends ChemicalStructure {
 	}
 
 	/**
-	 * Test if two {@link InChIKey} are equals, considering the passed blocks
+	 * Test if two {@link fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalStructures.InChIKey} are equals, considering the passed blocks
 	 * identifier
-	 * 
+	 *
 	 * @param compared
-	 *            the compared {@link InChIKey}
+	 *            the compared {@link fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalStructures.InChIKey}
 	 * @param comparedBlocks
 	 *            the blocks to compare. Can be a combination of these block
 	 *            identifiers:
@@ -190,15 +196,23 @@ public class InChIKey extends ChemicalStructure {
 		return (result & second & third);
 	}
 
+	/**
+	 * <p>isValid.</p>
+	 *
+	 * @return a boolean.
+	 */
 	public boolean isValid() {
 		return validity;
 	}
 
+	/** {@inheritDoc} */
 	public void setValidity(boolean validity) {
 		this.validity = validity;
 	}
 
 	/**
+	 * <p>Getter for the field <code>inchikeyString</code>.</p>
+	 *
 	 * @return the inchikeyString
 	 */
 	public String getInchikeyString() {
@@ -206,6 +220,8 @@ public class InChIKey extends ChemicalStructure {
 	}
 
 	/**
+	 * <p>Setter for the field <code>inchikeyString</code>.</p>
+	 *
 	 * @param inchikeyString
 	 *            the inchikeyString to set
 	 */
@@ -214,6 +230,8 @@ public class InChIKey extends ChemicalStructure {
 	}
 
 	/**
+	 * <p>Getter for the field <code>firstBlock</code>.</p>
+	 *
 	 * @return the firstBlock
 	 */
 	public String getFirstBlock() {
@@ -221,6 +239,8 @@ public class InChIKey extends ChemicalStructure {
 	}
 
 	/**
+	 * <p>Setter for the field <code>firstBlock</code>.</p>
+	 *
 	 * @param firstBlock
 	 *            the firstBlock to set
 	 */
@@ -229,6 +249,8 @@ public class InChIKey extends ChemicalStructure {
 	}
 
 	/**
+	 * <p>Getter for the field <code>secondBlock</code>.</p>
+	 *
 	 * @return the secondBlock
 	 */
 	public String getSecondBlock() {
@@ -236,6 +258,8 @@ public class InChIKey extends ChemicalStructure {
 	}
 
 	/**
+	 * <p>Setter for the field <code>secondBlock</code>.</p>
+	 *
 	 * @param secondBlock
 	 *            the secondBlock to set
 	 */
@@ -244,6 +268,8 @@ public class InChIKey extends ChemicalStructure {
 	}
 
 	/**
+	 * <p>Getter for the field <code>standardFlag</code>.</p>
+	 *
 	 * @return the standardFlag
 	 */
 	public char getStandardFlag() {
@@ -251,6 +277,8 @@ public class InChIKey extends ChemicalStructure {
 	}
 
 	/**
+	 * <p>Setter for the field <code>standardFlag</code>.</p>
+	 *
 	 * @param standardFlag
 	 *            the standardFlag to set
 	 */
@@ -259,6 +287,8 @@ public class InChIKey extends ChemicalStructure {
 	}
 
 	/**
+	 * <p>Getter for the field <code>versionFlag</code>.</p>
+	 *
 	 * @return the versionFlag
 	 */
 	public char getVersionFlag() {
@@ -266,6 +296,8 @@ public class InChIKey extends ChemicalStructure {
 	}
 
 	/**
+	 * <p>Setter for the field <code>versionFlag</code>.</p>
+	 *
 	 * @param versionFlag
 	 *            the versionFlag to set
 	 */
@@ -274,6 +306,8 @@ public class InChIKey extends ChemicalStructure {
 	}
 
 	/**
+	 * <p>Getter for the field <code>protonationFlag</code>.</p>
+	 *
 	 * @return the protonationFlag
 	 */
 	public char getProtonationFlag() {
@@ -281,6 +315,8 @@ public class InChIKey extends ChemicalStructure {
 	}
 
 	/**
+	 * <p>Setter for the field <code>protonationFlag</code>.</p>
+	 *
 	 * @param protonationFlag
 	 *            the protonationFlag to set
 	 */

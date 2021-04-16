@@ -3,8 +3,15 @@ package fr.inrae.toulouse.metexplore.met4j_io.refs;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * <p>IdentifiersOrg class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class IdentifiersOrg {
 
+    /** Constant <code>validIdentifiers</code> */
     public static ArrayList<String> validIdentifiers = new ArrayList<String>(Arrays.asList(
             "3dmet",
             "abs",

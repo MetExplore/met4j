@@ -38,6 +38,12 @@ package fr.inrae.toulouse.metexplore.met4j_io.annotations.protein;
 
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 
+/**
+ * <p>ProteinAttributes class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class ProteinAttributes extends GenericAttributes {
 
 }

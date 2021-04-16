@@ -47,7 +47,9 @@ import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
 
 /**
  * The adjacency Matrix computor.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V, E>> {
 	
@@ -63,6 +65,7 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 	/**
 	 * Instantiates a new adjacency matrix computor.
 	 * The adjacency matrix can be constructed considering the graph as undirected, resulting in a symmetric matrix
+	 *
 	 * @param g the graph
 	 * @param undirected if the graph should be consider as undirected
 	 */
@@ -90,7 +93,7 @@ public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G ex
 	 *
 	 * @param g the graph
 	 * @param matrixClass the matrix class
-	 * @throws Exception
+	 * @throws java.lang.Exception if any.
 	 */
 	public ComputeAdjacencyMatrix(G g, Class<?> matrixClass) throws Exception{
 		this.g=g;

@@ -36,13 +36,20 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc;
 
+/**
+ * <p>GeneAssociations class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class GeneAssociations {
 
     /**
      * Merge two gene associations (AND relation)
-     * @param ga1
-     * @param ga2
-     * @return
+     *
+     * @param ga1 a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} object.
+     * @param ga2 a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} object.
+     * @return a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} object.
      */
     public static GeneAssociation merge(GeneAssociation ga1, GeneAssociation ga2)
     {
@@ -63,8 +70,9 @@ public class GeneAssociations {
 
     /**
      * Merge several gene assocations
-     * @param geneAssociations
-     * @return
+     *
+     * @param geneAssociations a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} object.
+     * @return a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} object.
      */
     public static GeneAssociation merge(GeneAssociation... geneAssociations)
     {

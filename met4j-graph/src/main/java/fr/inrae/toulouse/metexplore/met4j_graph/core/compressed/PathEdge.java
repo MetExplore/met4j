@@ -39,6 +39,12 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
+/**
+ * <p>PathEdge class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class PathEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V>{
 
 	private BioPath<V, E> path;
@@ -46,11 +52,24 @@ public class PathEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V>{
 	public boolean reversible;
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * <p>Constructor for PathEdge.</p>
+	 *
+	 * @param v1 a V object.
+	 * @param v2 a V object.
+	 */
 	public PathEdge(V v1, V v2) {
 		super(v1,v2);
         this.path =null;
 	}
 	
+	/**
+	 * <p>Constructor for PathEdge.</p>
+	 *
+	 * @param v1 a V object.
+	 * @param v2 a V object.
+	 * @param path a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath} object.
+	 */
 	public PathEdge(V v1, V v2, BioPath<V, E> path) {
 		super(v1,v2);
 		this.path=path;
@@ -59,7 +78,7 @@ public class PathEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V>{
 	/**
 	 * Sets the path edges.
 	 *
-	 * @param l the new path edges
+	 * @param sp a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath} object.
 	 */
 	public void setPath(BioPath<V, E> sp){
         path =sp;
@@ -74,6 +93,7 @@ public class PathEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V>{
 		return path;
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public String toString(){
 		return this.path.toString();

@@ -46,8 +46,22 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser;
 
 import java.util.regex.Pattern;
 
+/**
+ * <p>GPR class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class GPR {
 
+    /**
+     * <p>createGPRfromString.</p>
+     *
+     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+     * @param gpr a {@link java.lang.String} object.
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.MalformedGeneAssociationStringException if any.
+     */
     public static void createGPRfromString(BioNetwork network, BioReaction reaction, String gpr) throws MalformedGeneAssociationStringException {
         for (BioEnzyme e : reaction.getEnzymesView()) {
             network.removeEnzymeFromReaction(e, reaction);

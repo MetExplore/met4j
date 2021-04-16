@@ -42,18 +42,34 @@ import org.jgrapht.EdgeFactory;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
+/**
+ * <p>CompressedGraph class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class CompressedGraph<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> extends BioGraph<V,PathEdge<V,E>> {
 
 	private static final long serialVersionUID = 1L;
 	private final G originalGraph;
 	
 	
+	/**
+	 * <p>Constructor for CompressedGraph.</p>
+	 *
+	 * @param originalGraph a G object.
+	 */
 	public CompressedGraph(G originalGraph) {
 		super(new PathEdgeFactory<>(originalGraph));
 		this.originalGraph=originalGraph;
 	}	
 
 	
+	/**
+	 * <p>getFactory.</p>
+	 *
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory} object.
+	 */
 	public GraphFactory<V, PathEdge<V,E>, CompressedGraph<V,E,G>> getFactory(){
 		return new GraphFactory<V, PathEdge<V,E>, CompressedGraph<V,E,G>>() {
 			@Override
@@ -63,17 +79,20 @@ public class CompressedGraph<V extends BioEntity, E extends Edge<V>, G extends B
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public EdgeFactory<V, PathEdge<V, E>> getEdgeFactory() {
 		return new PathEdgeFactory<>(originalGraph);
 	}
 	
+	/** {@inheritDoc} */
 	@Override
 	public PathEdge<V, E> copyEdge(PathEdge<V, E> edge) {
 		return new PathEdge<>(edge.getV1(), edge.getV2(), edge.getPath());
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public PathEdge<V, E> reverseEdge(PathEdge<V, E> edge) {
 		PathEdge<V, E> reversed = new PathEdge<>(edge.getV2(), edge.getV1(), edge.getPath());

@@ -42,6 +42,8 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
  *
  *	Biological cellular compartment, e.g. mitochondria, cytoplasm
  *
+ * @author lcottret
+ * @version $Id: $Id
  */
 public class BioCompartment extends BioPhysicalEntity{
 
@@ -75,6 +77,7 @@ public class BioCompartment extends BioPhysicalEntity{
 	/**
 	 * Copy of a compartment
 	 * Do not copy the list of components
+	 *
 	 * @param compartment the original compartment
 	 */
 	public BioCompartment(BioCompartment compartment) {
@@ -85,13 +88,17 @@ public class BioCompartment extends BioPhysicalEntity{
 
 
 	/**
-	 * @return an unmodifiable {@link BioCollection} of the components
+	 * <p>getComponentsView.</p>
+	 *
+	 * @return an unmodifiable {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of the components
 	 */
 	public BioCollection<BioEntity> getComponentsView() {
 		return components.getView();
 	}
 	
 	/**
+	 * <p>Getter for the field <code>components</code>.</p>
+	 *
 	 * @return the components
 	 */
 	protected BioCollection<BioEntity> getComponents() {
@@ -102,7 +109,7 @@ public class BioCompartment extends BioPhysicalEntity{
 	 *
 	 * set the components
 	 *
-	 * @param components a {@link BioCollection} of {@link BioEntity} to set
+	 * @param components a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} to set
 	 */
 	protected void setComponents(BioCollection<BioEntity> components) {
 		this.components = components;
@@ -112,7 +119,7 @@ public class BioCompartment extends BioPhysicalEntity{
 	 *
 	 * Add a component
 	 *
-	 * @param e : the {@link BioEntity} to add
+	 * @param e : the {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} to add
 	 */
 	protected void addComponent(BioEntity e)
 	{

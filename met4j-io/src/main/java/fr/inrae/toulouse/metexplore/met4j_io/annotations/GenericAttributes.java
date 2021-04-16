@@ -47,26 +47,43 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
 import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 
+/**
+ * <p>GenericAttributes class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class GenericAttributes {
 
+    /** Constant <code>SBML_UNIT_DEFINITIONS="unit_definitions"</code> */
     public static final String SBML_UNIT_DEFINITIONS = "unit_definitions";
+    /** Constant <code>SBML_NOTES="notes"</code> */
     public static final String SBML_NOTES = "notes";
+    /** Constant <code>PMIDS="pmids"</code> */
     public static final String PMIDS = "pmids";
+    /** Constant <code>COMMENT="comment"</code> */
     public static final String COMMENT = "comment";
+    /** Constant <code>SBO_TERM="sbo_term"</code> */
     public static final String SBO_TERM = "sbo_term";
+    /** Constant <code>CONSTANT="constant"</code> */
     public static final String CONSTANT = "constant";
+    /** Constant <code>SBML_ANNOTATION="annotation"</code> */
     public static final String SBML_ANNOTATION = "annotation";
+    /** Constant <code>GENERIC="generic"</code> */
     public static final String GENERIC = "generic";
+    /** Constant <code>TYPE="type"</code> */
     public static final String TYPE = "type";
+    /** Constant <code>ANNOTATOR_COMMENTS="annotator_comments"</code> */
     public static final String ANNOTATOR_COMMENTS = "annotator_comments";
+    /** Constant <code>AUTHORS="AUTHORS"</code> */
     public static final String AUTHORS = "AUTHORS";
 
 
     /**
      * get Constant condition
      *
-     * @param e
-     * @return
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @return a {@link java.lang.Boolean} object.
      */
     public static Boolean getConstant(BioEntity e) {
 
@@ -86,7 +103,8 @@ public class GenericAttributes {
     /**
      * Set constant condition
      *
-     * @param m
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @param flag a {@link java.lang.Boolean} object.
      */
     public static void setConstant(BioEntity e, Boolean flag) {
 
@@ -101,8 +119,8 @@ public class GenericAttributes {
     /**
      * get notes
      *
-     * @param e
-     * @return
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @return a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.attributes.Notes} object.
      */
     public static Notes getNotes(BioEntity e) {
 
@@ -113,8 +131,8 @@ public class GenericAttributes {
     /**
      * set notes
      *
-     * @param e
-     * @return
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @param notes a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.attributes.Notes} object.
      */
     public static void setNotes(BioEntity e, Notes notes) {
 
@@ -127,8 +145,8 @@ public class GenericAttributes {
      * <p>
      * TODO : see if it useful since there is BioRef...
      *
-     * @param e
-     * @param pmids
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @param pmids a {@link java.util.Set} object.
      */
     public static void setPmids(BioEntity e, Set<Integer> pmids) {
 
@@ -139,8 +157,8 @@ public class GenericAttributes {
     /**
      * add pmid
      *
-     * @param e
-     * @param pmids
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @param pmid a {@link java.lang.Integer} object.
      */
     public static void addPmid(BioEntity e, Integer pmid) {
 
@@ -155,8 +173,8 @@ public class GenericAttributes {
     /**
      * get pmids
      *
-     * @param e
-     * @return
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @return a {@link java.util.Set} object.
      */
     @SuppressWarnings("unchecked")
     public static Set<Integer> getPmids(BioEntity e) {
@@ -168,8 +186,8 @@ public class GenericAttributes {
     /**
      * get comment
      *
-     * @param e
-     * @return
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @return a {@link java.lang.String} object.
      */
     public static String getComment(BioEntity e) {
         return (String) e.getAttribute(COMMENT);
@@ -178,8 +196,8 @@ public class GenericAttributes {
     /**
      * set comment
      *
-     * @param e
-     * @return
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @param comment a {@link java.lang.String} object.
      */
     public static void setComment(BioEntity e, String comment) {
         e.setAttribute(COMMENT, comment);
@@ -188,8 +206,8 @@ public class GenericAttributes {
     /**
      * set Sbo term
      *
-     * @param e
-     * @param sboTerm
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @param sboTerm a {@link java.lang.String} object.
      */
     public static void setSboTerm(BioEntity e, String sboTerm) {
         if (!StringUtils.isValidSboTerm(sboTerm)) {
@@ -203,8 +221,8 @@ public class GenericAttributes {
     /**
      * Get SBO term
      *
-     * @param e
-     * @return
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @return a {@link java.lang.String} object.
      */
     public static String getSboTerm(BioEntity e) {
         return (String) e.getAttribute(SBO_TERM);
@@ -213,8 +231,8 @@ public class GenericAttributes {
     /**
      * Get annotation
      *
-     * @param e
-     * @return
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @return a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation} object.
      */
     public static SbmlAnnotation getAnnotation(BioEntity e) {
         return (SbmlAnnotation) e.getAttribute(SBML_ANNOTATION);
@@ -223,8 +241,8 @@ public class GenericAttributes {
     /**
      * set annotation
      *
-     * @param e
-     * @param sboTerm
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @param val a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation} object.
      */
     public static void setAnnotation(BioEntity e, SbmlAnnotation val) {
         e.setAttribute(SBML_ANNOTATION, val);
@@ -234,8 +252,8 @@ public class GenericAttributes {
     /**
      * get the generic attribute of an entity
      *
-     * @param m
-     * @return
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @return a {@link java.lang.Boolean} object.
      */
     public static Boolean getGeneric(BioEntity e) {
 
@@ -251,7 +269,8 @@ public class GenericAttributes {
     /**
      * Set generic attribute
      *
-     * @param m
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @param flag a {@link java.lang.Boolean} object.
      */
     public static void setGeneric(BioEntity e, Boolean flag) {
         e.setAttribute(GENERIC, flag);
@@ -260,8 +279,8 @@ public class GenericAttributes {
     /**
      * get type
      *
-     * @param e
-     * @return
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @return a {@link java.lang.String} object.
      */
     public static String getType(BioEntity e) {
         return (String) e.getAttribute(TYPE);
@@ -270,8 +289,8 @@ public class GenericAttributes {
     /**
      * set comment
      *
-     * @param e
-     * @return
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @param type a {@link java.lang.String} object.
      */
     public static void setType(BioEntity e, String type) {
         e.setAttribute(TYPE, type);
@@ -280,8 +299,8 @@ public class GenericAttributes {
     /**
      * set annotator comments
      *
-     * @param e
-     * @param comments
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @param comments a {@link java.util.Set} object.
      */
     public static void setAnnotatorComments(BioEntity e, Set<AnnotatorComment> comments) {
 
@@ -292,8 +311,8 @@ public class GenericAttributes {
     /**
      * add comment
      *
-     * @param e
-     * @param comment
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @param comment a {@link fr.inrae.toulouse.metexplore.met4j_io.annotations.AnnotatorComment} object.
      */
     public static void addAnnotatorComment(BioEntity e, AnnotatorComment comment) {
 
@@ -308,8 +327,8 @@ public class GenericAttributes {
     /**
      * get comments
      *
-     * @param e
-     * @return
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} object.
+     * @return a {@link java.util.Set} object.
      */
     @SuppressWarnings("unchecked")
     public static Set<AnnotatorComment> getAnnotatorComments(BioEntity e) {

@@ -38,6 +38,18 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.utils;
 
 import java.net.URL;
 
+/**
+ * <p>ResourceURLFilter interface.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public interface ResourceURLFilter {
+    /**
+     * <p>accept.</p>
+     *
+     * @param resourceUrl a {@link java.net.URL} object.
+     * @return a boolean.
+     */
     public boolean accept(URL resourceUrl);
 }

@@ -42,8 +42,27 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 
 import java.io.IOException;
 
+/**
+ * <p>SetNamesFromFile class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class SetNamesFromFile extends AbstractSetAttributesFromFile {
 
+    /**
+     * <p>Constructor for SetNamesFromFile.</p>
+     *
+     * @param colId a int.
+     * @param colAttr a int.
+     * @param bn a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     * @param fileIn a {@link java.lang.String} object.
+     * @param c a {@link java.lang.String} object.
+     * @param nSkip a int.
+     * @param p a {@link java.lang.Boolean} object.
+     * @param s a {@link java.lang.Boolean} object.
+     * @param object a {@link java.lang.String} object.
+     */
     public SetNamesFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s, String object) {
 
         super(colId, colAttr, bn, fileIn, c, nSkip, object, p, s);
@@ -51,6 +70,8 @@ public class SetNamesFromFile extends AbstractSetAttributesFromFile {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Test the name
      */
     public Boolean testAttribute(String name) {
@@ -59,8 +80,9 @@ public class SetNamesFromFile extends AbstractSetAttributesFromFile {
 
     /**
      * Reads the file and sets the attributes
-     * @return
-     * @throws IOException
+     *
+     * @return a {@link java.lang.Boolean} object.
+     * @throws java.io.IOException if any.
      */
     public Boolean setAttributes() throws IOException {
 

@@ -39,16 +39,18 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * The Interface for A* Heuristic.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public interface AStarHeuristic<V extends BioEntity> {
 	
-	/**
-	 * Gets the heuristic cost.
-	 *
-	 * @param node the current node
-	 * @param end the target vertex
-	 * @return the heuristic cost
-	 */
+    /**
+     * Gets the heuristic cost.
+     *
+     * @param node the current node
+     * @param end the target vertex
+     * @return the heuristic cost
+     */
     double getHeuristicCost(V node, V end);
 }

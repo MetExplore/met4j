@@ -40,8 +40,15 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 
 import java.io.IOException;
 
+/**
+ * <p>SetEcsFromFile class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class SetEcsFromFile extends AbstractSetAttributesFromFile {
     /**
+     * <p>Constructor for SetEcsFromFile.</p>
      *
      * @param colId number of the column where are the reaction ids
      * @param colAttr number of the column where are the gpr
@@ -50,6 +57,7 @@ public class SetEcsFromFile extends AbstractSetAttributesFromFile {
      * @param c comment string
      * @param nSkip number of lines to skip at the beginning of the file
      * @param p if true, to match the reactions in the sbml file, the reaction ids in the tabulated file are formatted in the palsson way
+     * @param s a {@link java.lang.Boolean} object.
      */
     public SetEcsFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s) {
 
@@ -58,6 +66,8 @@ public class SetEcsFromFile extends AbstractSetAttributesFromFile {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Test the ec
      * TODO : to complete
      */
@@ -67,8 +77,9 @@ public class SetEcsFromFile extends AbstractSetAttributesFromFile {
 
     /**
      * Reads the file and sets the attributes
-     * @return
-     * @throws IOException
+     *
+     * @return a {@link java.lang.Boolean} object.
+     * @throws java.io.IOException if any.
      */
     public Boolean setAttributes() throws IOException {
 

@@ -62,16 +62,18 @@ import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.*;
 
 /**
  * This class is used to parse the annotation of every SBML element.
- * {@link BioReaction} are treated separately because they have specific
- * of annotations linked to them. {@link BioCompartment} are also separated
- * because they do not extend the {@link BioPhysicalEntity} class
- * 
+ * {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} are treated separately because they have specific
+ * of annotations linked to them. {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} are also separated
+ * because they do not extend the {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity} class
+ *
  * @author Benjamin
  * @since 3.0
+ * @version $Id: $Id
  */
 public class AnnotationParser implements PackageParser, AdditionalDataTag, ReaderSBML1Compatible, ReaderSBML2Compatible,
 		ReaderSBML3Compatible {
 
+	/** Constant <code>ORIGIN="SBML"</code> */
 	public static final String ORIGIN = "SBML";
 
 	/**
@@ -100,7 +102,7 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param useDefault
 	 *            true to use the {@link #defaultAnnotationPattern}
 	 */
@@ -111,7 +113,7 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param pattern
 	 *            the user defined pattern
 	 */
@@ -119,15 +121,23 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 		this.annotationPattern = pattern;
 	}
 
+	/**
+	 * <p>getAssociatedPackageName.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getAssociatedPackageName() {
 		return "annot";
 	}
 
+	/** {@inheritDoc} */
 	public boolean isPackageUseableOnModel(Model model) {
 		return true;
 	}
 
 	/**
+	 * {@inheritDoc}
+	 *
 	 * Parse all model entities to retrieve their annotations and extract the
 	 * desired information
 	 */
@@ -233,6 +243,8 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 	}
 
 	/**
+	 * <p>Getter for the field <code>model</code>.</p>
+	 *
 	 * @return the model
 	 */
 	public Model getModel() {
@@ -240,6 +252,8 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 	}
 
 	/**
+	 * <p>Setter for the field <code>model</code>.</p>
+	 *
 	 * @param model
 	 *            the model to set
 	 */
@@ -248,6 +262,8 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 	}
 
 	/**
+	 * <p>Getter for the field <code>bionetwork</code>.</p>
+	 *
 	 * @return the bionetwork
 	 */
 	public BioNetwork getBionetwork() {
@@ -255,6 +271,8 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 	}
 
 	/**
+	 * <p>Setter for the field <code>bionetwork</code>.</p>
+	 *
 	 * @param bionetwork
 	 *            the bionetwork to set
 	 */
@@ -263,6 +281,8 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 	}
 
 	/**
+	 * <p>Getter for the field <code>annotationPattern</code>.</p>
+	 *
 	 * @return the annotationPattern
 	 */
 	public String getAnnotationPattern() {
@@ -270,6 +290,8 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 	}
 
 	/**
+	 * <p>Setter for the field <code>annotationPattern</code>.</p>
+	 *
 	 * @param annotationPattern
 	 *            the annotationPattern to set
 	 */

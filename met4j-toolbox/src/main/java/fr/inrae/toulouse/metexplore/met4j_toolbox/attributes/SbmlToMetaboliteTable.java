@@ -47,6 +47,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * <p>SbmlToMetaboliteTable class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class SbmlToMetaboliteTable extends AbstractMet4jApplication {
 
     @Option(name = "-s", usage = "Sbml file", required = true)
@@ -55,6 +61,11 @@ public class SbmlToMetaboliteTable extends AbstractMet4jApplication {
     @Option(name = "-o", usage = "Output file", required=true)
     protected String outputFile;
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     */
     public static void main(String[] args) {
         SbmlToMetaboliteTable app = new SbmlToMetaboliteTable();
 
@@ -63,6 +74,9 @@ public class SbmlToMetaboliteTable extends AbstractMet4jApplication {
         app.run();
     }
 
+    /**
+     * <p>run.</p>
+     */
     public void run() {
 
         BioNetwork network = this.readSbml();
@@ -106,11 +120,13 @@ public class SbmlToMetaboliteTable extends AbstractMet4jApplication {
     }
 
 
+    /** {@inheritDoc} */
     @Override
     public String getLabel() {
         return this.getClass().getSimpleName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDescription() {
         return "Returns a tabulated file with metabolite attributes from a SBML file";

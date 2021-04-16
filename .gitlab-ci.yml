@@ -1,8 +1,8 @@
-image: maven:latest
+image: maven:3.6-adoptopenjdk-14
 
 variables:
-   MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
-   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
 cache:
   paths:
@@ -27,7 +27,28 @@ verify:
 deploySnapshot:
   stage: deploy
   script:
-    - mvn $MAVEN_CLI_OPTS deploy -Dmaven.test.skip=true 
-  only: 
-   - develop
+    - mvn $MAVEN_CLI_OPTS deploy -Dmaven.test.skip=true
+  only:
+    - develop
 
+deployCentral:
+  stage: deploy
+  before_script:
+    - 'which ssh-agent || ( apt-get update -qy && apt-get install openssh-client -qqy )'
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - 'which gpg || ( apt-get update -qy && apt-get install gnupg -qqy )'
+    - export GPG_TTY=$(tty)
+    - gpg -v --batch --import <(echo "${GPG_PRIVATE_KEY}")
+  script:
+    - git config --global user.email "$env:GITLAB_USER_EMAIL"
+    - git config --global user.name "$env:GITLAB_USER_NAME"
+    - git checkout -B "$CI_BUILD_REF_NAME"
+    - mvn $MAVEN_CLI_OPTS release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true -DscmCommentPrefix="[skip ci]" -DpushChanges=false
+    - mvn $MAVEN_CLI_OPTS release:perform -Darguments=-Dgpg.passphrase=${GPG_PASSPHRASE}
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" && ($CI_COMMIT_MESSAGE =~ /hotfix/ || $CI_COMMIT_MESSAGE =~ /release/)'

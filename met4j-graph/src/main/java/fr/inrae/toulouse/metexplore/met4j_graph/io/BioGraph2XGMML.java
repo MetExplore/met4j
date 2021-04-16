@@ -61,7 +61,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
  
 /**
  * The Class BioGraph2XGMML.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class BioGraph2XGMML{
 	
@@ -108,7 +110,7 @@ public class BioGraph2XGMML{
 	 * Instantiates a new xgmml exporter.
 	 *
 	 * @param g the graph
-	 * @param name the name of the graph
+	 * @param Name a {@link java.lang.String} object.
 	 */
 	public BioGraph2XGMML(BipartiteGraph g, String Name){
 		this.g=g;
@@ -119,7 +121,7 @@ public class BioGraph2XGMML{
 	 * Write xgmml to output.
 	 *
 	 * @param outputPath the output path
-	 * @throws Exception
+	 * @throws java.lang.Exception
 	 */
 	public void writeXGMML(String outputPath) throws Exception{
 		if(doc ==null){
@@ -141,7 +143,6 @@ public class BioGraph2XGMML{
 	 * Add mapping
 	 *
 	 * @param mapping the map containing compounds id as key and double score as value
-	 * @throws Exception
 	 */
 	public void addMapping(HashMap<String, Double> mapping){
 		this.mapping = mapping;
@@ -297,7 +298,6 @@ public class BioGraph2XGMML{
 	 * Creates an attribute from string list.
 	 *
 	 * @param name the attribute's name
-	 * @param value the attribute's value
 	 * @return the xml element
 	 */
 	private Element createAttribute(String name, Collection<String> valueList){

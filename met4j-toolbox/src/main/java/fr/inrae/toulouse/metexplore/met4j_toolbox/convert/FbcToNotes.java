@@ -53,6 +53,12 @@ import org.kohsuke.args4j.Option;
 import java.io.IOException;
 import java.util.HashSet;
 
+/**
+ * <p>FbcToNotes class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class FbcToNotes extends AbstractMet4jApplication {
 
     @Option(name = "-i", usage = "input file", required = true)
@@ -61,6 +67,14 @@ public class FbcToNotes extends AbstractMet4jApplication {
     @Option(name = "-o", usage = "output file", required = true)
     public String outputPath = null;
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     * @throws java.io.IOException if any.
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException if any.
+     */
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException, Met4jSbmlWriterException {
 
         FbcToNotes f = new FbcToNotes();
@@ -97,11 +111,13 @@ public class FbcToNotes extends AbstractMet4jApplication {
     }
 
 
+    /** {@inheritDoc} */
     @Override
     public String getLabel() {
         return this.getClass().getSimpleName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDescription() {
         return "Converts FBC package annotations to sbml notes";

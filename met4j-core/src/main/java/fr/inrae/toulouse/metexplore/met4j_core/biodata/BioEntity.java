@@ -41,8 +41,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 /**
  * The root class
+ *
+ * @author lcottret
+ * @version $Id: $Id
  */
-
 public abstract class BioEntity {
 
 	private final String id;
@@ -56,6 +58,7 @@ public abstract class BioEntity {
 
 	/**
 	 * Constructor from an id and a name
+	 *
 	 * @param id String not null
 	 * @param name String
 	 */
@@ -75,6 +78,7 @@ public abstract class BioEntity {
 
 	/**
 	 * Constructor from an id
+	 *
 	 * @param id String not null
 	 */
 	public BioEntity(String id) {
@@ -95,7 +99,7 @@ public abstract class BioEntity {
 	 *
 	 * The refs and attributes are not deeply copied
 	 *
-	 * @param e
+	 * @param e the original bioentity
 	 */
 	public BioEntity(BioEntity e)
 	{
@@ -108,6 +112,7 @@ public abstract class BioEntity {
 	}
 
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -116,6 +121,7 @@ public abstract class BioEntity {
 		return id.equals(bioEntity.id);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(id);
@@ -123,9 +129,8 @@ public abstract class BioEntity {
 
 	/**
 	 * Set the name of the entity
-	 * 
-	 * @param n String
 	 *
+	 * @param n String
 	 */
 	public void setName(String n) {
 		this.name = n;
@@ -133,7 +138,7 @@ public abstract class BioEntity {
 
 	/**
 	 * Get the name of the entity
-	 * 
+	 *
 	 * @return the name of the entity
 	 */
 	public String getName() {
@@ -142,7 +147,7 @@ public abstract class BioEntity {
 
 	/**
 	 * Get the list of the synonyms
-	 * 
+	 *
 	 * @return an ArrayList of the synonyms of the entity
 	 */
 	public ArrayList<String> getSynonyms() {
@@ -151,7 +156,7 @@ public abstract class BioEntity {
 
 	/**
 	 * Add a synonym in the list
-	 * 
+	 *
 	 * @param s synonym to add
 	 */
 	public void addSynonym(String s) {
@@ -160,7 +165,7 @@ public abstract class BioEntity {
 
 	/**
 	 * Set the comment on the entity
-	 * 
+	 *
 	 * @param c String
 	 */
 	public void setComment(String c) {
@@ -169,7 +174,7 @@ public abstract class BioEntity {
 
 	/**
 	 * Get the comment on the entity
-	 * 
+	 *
 	 * @return the comment on the entity
 	 */
 	public String getComment() {
@@ -177,12 +182,19 @@ public abstract class BioEntity {
 	}
 
 	/**
+	 * <p>Getter for the field <code>id</code>.</p>
+	 *
 	 * @return Returns the id.
 	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * <p>Setter for the field <code>synonyms</code>.</p>
+	 *
+	 * @param synonyms a {@link java.util.ArrayList} object.
+	 */
 	public void setSynonyms(ArrayList<String> synonyms) {
 		this.synonyms = synonyms;
 	}
@@ -190,7 +202,7 @@ public abstract class BioEntity {
 	/**
 	 * TODO : voir la coherence du code entre les deux methodes addRef. Celle ci
 	 * devrait se terminer par un this.addRef(ref)
-	 * 
+	 *
 	 * @param dbName name of the database
 	 * @param dbId id of the database
 	 * @param confidenceLevel confidence level
@@ -206,7 +218,8 @@ public abstract class BioEntity {
 	/**
 	 *
 	 * Add a reference
-	 * @param ref a {@link BioRef}
+	 *
+	 * @param ref a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioRef}
 	 */
 	public void addRef(BioRef ref) {
 		String dbName = ref.getDbName();
@@ -223,7 +236,8 @@ public abstract class BioEntity {
 
 	/**
 	 * Get all refs
-	 * @return a {@link HashMap} for which the key is the database name and the values the set of {@link BioRef}
+	 *
+	 * @return a {@link java.util.HashMap} for which the key is the database name and the values the set of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioRef}
 	 * associated to this database
 	 */
 	public HashMap<String, Set<BioRef>> getRefs() {
@@ -234,8 +248,7 @@ public abstract class BioEntity {
 	 * Get all refs associated to a database
 	 *
 	 * @param dbName  the database name
-	 *
-	 * @return a {@link Set} of {@link BioRef}
+	 * @return a {@link java.util.Set} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioRef}
 	 */
 	public Set<BioRef> getRefs(String dbName) {
 		return this.refs.getOrDefault(dbName, null);
@@ -244,6 +257,7 @@ public abstract class BioEntity {
 	/**
 	 * Check if the entity has a reference whose the database name is dbName and that contains a refence
 	 * whose the id is refId
+	 *
 	 * @param dbName the database name
 	 * @param refId the reference id
 	 * @return true if the entity has the reference
@@ -262,7 +276,8 @@ public abstract class BioEntity {
 
 	/**
 	 * Check if the entity contains a reference
-	 * @param unkRef a {@link BioRef}
+	 *
+	 * @param unkRef a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioRef}
 	 * @return true if the entity has the reference
 	 */
 	public boolean hasRef(BioRef unkRef) {
@@ -278,27 +293,56 @@ public abstract class BioEntity {
 		return false;
 	}
 
+	/**
+	 * <p>Setter for the field <code>refs</code>.</p>
+	 *
+	 * @param refs a {@link java.util.HashMap} object.
+	 */
 	public void setRefs(HashMap<String, Set<BioRef>> refs) {
 		this.refs = refs;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return this.getId();
 	}
 
+	/**
+	 * <p>Getter for the field <code>attributes</code>.</p>
+	 *
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	public HashMap<String, Object> getAttributes() {
 		return attributes;
 	}
 
+	/**
+	 * <p>Setter for the field <code>attributes</code>.</p>
+	 *
+	 * @param attributes a {@link java.util.HashMap} object.
+	 */
 	public void setAttributes(HashMap<String, Object> attributes) {
 		this.attributes = attributes;
 	}
 
+	/**
+	 * <p>setAttribute.</p>
+	 *
+	 * @param key a {@link java.lang.String} object.
+	 * @param value a {@link java.lang.Object} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object setAttribute(String key, Object value) {
 		return attributes.put(key, value);
 	}
 
+	/**
+	 * <p>getAttribute.</p>
+	 *
+	 * @param key a {@link java.lang.String} object.
+	 * @return a {@link java.lang.Object} object.
+	 */
 	public Object getAttribute(String key) {
 		return attributes.get(key);
 	}

@@ -37,12 +37,19 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
+/**
+ * <p>BioEnzyme class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class BioEnzyme extends BioPhysicalEntity {
 
 	private BioCollection<BioEnzymeParticipant> participants;
 
 	/**
 	 * Constructor
+	 *
 	 * @param id the id of the BioEnzyme
 	 */
 	public BioEnzyme(String id) {
@@ -53,6 +60,7 @@ public class BioEnzyme extends BioPhysicalEntity {
 
 	/**
 	 * Constructor
+	 *
 	 * @param id the id of the BioEnzyme
 	 * @param name the name of the BioEnzyme
 	 */
@@ -65,6 +73,7 @@ public class BioEnzyme extends BioPhysicalEntity {
 	/**
 	 * Copy of an enzyme
 	 * Don't copy the participants
+	 *
 	 * @param e Original enzyme
 	 */
 	public BioEnzyme(BioEnzyme e) {
@@ -74,23 +83,37 @@ public class BioEnzyme extends BioPhysicalEntity {
 	}
 
 	/**
+	 * <p>Getter for the field <code>participants</code>.</p>
+	 *
 	 * @return the participants
 	 */
 	protected BioCollection<BioEnzymeParticipant> getParticipants() {
 		return participants;
 	}
 	
+	/**
+	 * <p>getParticipantsView.</p>
+	 *
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} object.
+	 */
 	public BioCollection<BioEnzymeParticipant> getParticipantsView() {
 		return participants.getView();
 	}
 
 	/**
+	 * <p>Setter for the field <code>participants</code>.</p>
+	 *
 	 * @param participants the participants to set
 	 */
 	protected void setParticipants(BioCollection<BioEnzymeParticipant> participants) {
 		this.participants = participants;
 	}
 
+	/**
+	 * <p>addParticipant.</p>
+	 *
+	 * @param participant a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant} object.
+	 */
 	protected void addParticipant(BioEnzymeParticipant participant)
 	{
 		this.participants.add(participant);
@@ -98,7 +121,8 @@ public class BioEnzyme extends BioPhysicalEntity {
 
 	/**
 	 * Remove a participant from ifs physical entity
-	 * @param e a {@link BioPhysicalEntity}
+	 *
+	 * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity}
 	 */
 	protected void removeParticipant(BioPhysicalEntity e) 
 	{

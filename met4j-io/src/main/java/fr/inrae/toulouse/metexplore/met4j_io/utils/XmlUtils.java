@@ -42,6 +42,12 @@ import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+/**
+ * <p>XmlUtils class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class XmlUtils {
 	// feature ids
 	/** Namespaces feature id (http://xml.org/sax/features/namespaces). */
@@ -91,6 +97,14 @@ public class XmlUtils {
 
 	static Boolean debug = false;
 
+	/**
+	 * <p>open.</p>
+	 *
+	 * @param inputFile a {@link java.lang.String} object.
+	 * @return a {@link org.w3c.dom.Document} object.
+	 * @throws java.io.IOException if any.
+	 * @throws org.xml.sax.SAXException if any.
+	 */
 	static public Document open(String inputFile) throws IOException, SAXException {
 		// Opens the XML file and parses it
 		Document document;

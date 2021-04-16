@@ -48,13 +48,16 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
  
  
-/** 
+/**
  * The Class used to compute the scope network of a given set of compounds
  * See DOI:10.1007/s00239-005-0027-1 for more information.
  *
  * The class use a bipartite graph traversal that use reaction informations to ensure reactions availability.
  * Consequently, the bipartite graph structure should not conflict with reactions informations.
- */ 
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class ScopeCompounds{ 
    
   /** The graph */ 
@@ -72,15 +75,15 @@ public class ScopeCompounds{
   /** The reactions to avoid. */ 
   private final BioCollection<BioReaction> reactionToAvoid;
    
-  /** 
-   * Instantiates a new scope class 
-   * 
-   * @param bipartiteGraph the bipartite graph 
-   * @param inCpds the available compounds. 
-   * @param bootstrapCpds The bootstrap compounds, i.e. side compounds. 
-   * @param cpdToReach The compounds to reach (optional) 
-   * @param reactionToAvoid the reactions to avoid 
-   */ 
+  /**
+   * Instantiates a new scope class
+   *
+   * @param bipartiteGraph the bipartite graph
+   * @param inCpds the available compounds.
+   * @param bootstrapCpds The bootstrap compounds, i.e. side compounds.
+   * @param cpdToReach The compounds to reach (optional)
+   * @param reactionToAvoid the reactions to avoid
+   */
   public ScopeCompounds(BipartiteGraph bipartiteGraph, BioCollection<BioMetabolite> inCpds, BioCollection<BioMetabolite> bootstrapCpds, BioCollection<BioMetabolite> cpdToReach, BioCollection<BioReaction> reactionToAvoid){
       this.g =bipartiteGraph;
     this.inCpds=inCpds; 
@@ -89,14 +92,14 @@ public class ScopeCompounds{
     this.reactionToAvoid=reactionToAvoid; 
   } 
    
-  /** 
-   * Instantiates a new scope class. 
-   * 
-   * @param bipartiteGraph the bipartite graph 
-   * @param inCpds the available compounds. 
-   * @param bootstrapCpds The bootstrap compounds, i.e. side compounds. 
-   * @param reactionToAvoid the reactions to avoid 
-   */ 
+  /**
+   * Instantiates a new scope class.
+   *
+   * @param bipartiteGraph the bipartite graph
+   * @param inCpds the available compounds.
+   * @param bootstrapCpds The bootstrap compounds, i.e. side compounds.
+   * @param reactionToAvoid the reactions to avoid
+   */
   public ScopeCompounds(BipartiteGraph bipartiteGraph, BioCollection <BioMetabolite> inCpds, BioCollection<BioMetabolite> bootstrapCpds, BioCollection<BioReaction> reactionToAvoid){
       this.g =bipartiteGraph;
     this.inCpds=inCpds; 
@@ -105,11 +108,12 @@ public class ScopeCompounds{
     this.reactionToAvoid=reactionToAvoid; 
   } 
    
-  /** 
-   * Gets the scope network. 
-   * 
-   * @return the scope network 
-   */ 
+  /**
+   * Gets the scope network.
+   *
+   * @return the scope network
+   * @throws java.lang.IllegalArgumentException if any.
+   */
   public BipartiteGraph getScopeNetwork() throws IllegalArgumentException{
 
     //check network consistency

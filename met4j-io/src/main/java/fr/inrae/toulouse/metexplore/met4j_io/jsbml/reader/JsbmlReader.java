@@ -62,13 +62,14 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 
 /**
- * The main reader class. It uses the correct {@link JsbmlToBioNetwork} class
+ * The main reader class. It uses the correct {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlToBioNetwork} class
  * depending on the SBML level defined in the file
  *
  * To launch with -Dlog4j.configuration="log4jmet4j.properties"
  *
  * @author Benjamin
  * @since 3.0
+ * @version $Id: $Id
  */
 public class JsbmlReader {
 
@@ -105,6 +106,7 @@ public class JsbmlReader {
      * Constructor
      *
      * @param filename the filename
+     * @throws java.io.IOException if any.
      */
     public JsbmlReader(String filename) throws IOException {
         this.filename = filename;
@@ -116,18 +118,32 @@ public class JsbmlReader {
      *
      * @param filename     the filename
      * @param useValidator set the {@link #useValidator} attribute
+     * @throws java.io.IOException if any.
      */
     public JsbmlReader(String filename, boolean useValidator) throws IOException {
         this.filename = filename;
         this.useValidator = useValidator;
     }
 
+    /**
+     * <p>Constructor for JsbmlReader.</p>
+     *
+     * @param inputStream a {@link java.io.InputStream} object.
+     * @throws java.io.IOException if any.
+     */
     public JsbmlReader(InputStream inputStream) throws IOException {
         this.xml = this.inputStreamToString(inputStream);
         this.useValidator = false;
 
     }
 
+    /**
+     * <p>Constructor for JsbmlReader.</p>
+     *
+     * @param inputStream a {@link java.io.InputStream} object.
+     * @param useValidator a boolean.
+     * @throws java.io.IOException if any.
+     */
     public JsbmlReader(InputStream inputStream, boolean useValidator) throws IOException {
         this.xml = this.inputStreamToString(inputStream);
         this.useValidator = useValidator;
@@ -149,7 +165,8 @@ public class JsbmlReader {
      * A test main method
      *
      * @param args the arguments
-     * @throws Met4jSbmlReaderException
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
+     * @throws java.io.IOException if any.
      */
     public static void main(String[] args) throws Met4jSbmlReaderException, IOException {
         // String
@@ -193,12 +210,14 @@ public class JsbmlReader {
     }
 
     /**
+     * <p>read.</p>
+     *
      * @param userEnabledPackages A set of user defined packages to use on this sbml file.
      *                            However, if the a package requested by a user is not supported
      *                            by the sbml level and/or version of the file, it will not be
      *                            used.
      * @return the created Bionetwork
-     * @throws Met4jSbmlReaderException
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
      */
     public BioNetwork read(HashSet<PackageParser> userEnabledPackages) throws Met4jSbmlReaderException {
         try {
@@ -243,8 +262,8 @@ public class JsbmlReader {
     /**
      * Read with all the parsers enabled
      *
-     * @return
-     * @throws Met4jSbmlReaderException
+     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
      */
     public BioNetwork read() throws Met4jSbmlReaderException {
         HashSet<PackageParser> pkgs = new HashSet<PackageParser>(Arrays.asList(
@@ -254,6 +273,12 @@ public class JsbmlReader {
         return this.read(pkgs);
     }
 
+    /**
+     * <p>readWithoutNotes.</p>
+     *
+     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
+     */
     public BioNetwork readWithoutNotes() throws Met4jSbmlReaderException {
         HashSet<PackageParser> pkgs = new HashSet<PackageParser>(Arrays.asList( new FBCParser(), new GroupPathwayParser(), new AnnotationParser(
                         true)));
@@ -394,6 +419,8 @@ public class JsbmlReader {
     }
 
     /**
+     * <p>Getter for the field <code>filename</code>.</p>
+     *
      * @return the filename
      */
     public String getFilename() {
@@ -401,6 +428,8 @@ public class JsbmlReader {
     }
 
     /**
+     * <p>Setter for the field <code>filename</code>.</p>
+     *
      * @param filename the filename to set
      */
     public void setFilename(String filename) {
@@ -408,6 +437,8 @@ public class JsbmlReader {
     }
 
     /**
+     * <p>Getter for the field <code>model</code>.</p>
+     *
      * @return the model
      */
     public Model getModel() {
@@ -415,6 +446,8 @@ public class JsbmlReader {
     }
 
     /**
+     * <p>Setter for the field <code>model</code>.</p>
+     *
      * @param model the model to set
      */
     public void setModel(Model model) {
@@ -422,6 +455,8 @@ public class JsbmlReader {
     }
 
     /**
+     * <p>Getter for the field <code>converter</code>.</p>
+     *
      * @return the converter
      */
     public JsbmlToBioNetwork getConverter() {
@@ -429,6 +464,8 @@ public class JsbmlReader {
     }
 
     /**
+     * <p>Setter for the field <code>converter</code>.</p>
+     *
      * @param converter the converter to set
      */
     public void setConverter(JsbmlToBioNetwork converter) {
@@ -436,6 +473,8 @@ public class JsbmlReader {
     }
 
     /**
+     * <p>isValidSBML.</p>
+     *
      * @return the validSBML
      */
     public boolean isValidSBML() {
@@ -443,6 +482,8 @@ public class JsbmlReader {
     }
 
     /**
+     * <p>Setter for the field <code>validSBML</code>.</p>
+     *
      * @param validSBML the validSBML to set
      */
     public void setValidSBML(boolean validSBML) {
@@ -450,6 +491,8 @@ public class JsbmlReader {
     }
 
     /**
+     * <p>Getter for the field <code>errorsAndWarnings</code>.</p>
+     *
      * @return the errorsAndWarnings
      */
     public ArrayList<String> getErrorsAndWarnings() {
@@ -457,6 +500,8 @@ public class JsbmlReader {
     }
 
     /**
+     * <p>Setter for the field <code>errorsAndWarnings</code>.</p>
+     *
      * @param errorsAndWarnings the errorsAndWarnings to set
      */
     public void setErrorsAndWarnings(ArrayList<String> errorsAndWarnings) {
@@ -464,6 +509,8 @@ public class JsbmlReader {
     }
 
     /**
+     * <p>isUseValidator.</p>
+     *
      * @return the useValidator
      */
     public boolean isUseValidator() {
@@ -471,6 +518,8 @@ public class JsbmlReader {
     }
 
     /**
+     * <p>Setter for the field <code>useValidator</code>.</p>
+     *
      * @param useValidator the useValidator to set
      */
     public void setUseValidator(boolean useValidator) {

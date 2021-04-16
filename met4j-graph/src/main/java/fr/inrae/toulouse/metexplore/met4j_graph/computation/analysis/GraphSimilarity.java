@@ -44,7 +44,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * Compute similarity measure for two graph.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class GraphSimilarity<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V, E>> {
 	
@@ -54,6 +56,9 @@ public class GraphSimilarity<V extends BioEntity, E extends Edge<V>, G extends B
 	
 	/**
 	 * Instantiates a new graph similarity.
+	 *
+	 * @param g1 a G object.
+	 * @param g2 a G object.
 	 */
 	public GraphSimilarity(G g1, G g2) {
 		this.g1=g1;
@@ -63,6 +68,7 @@ public class GraphSimilarity<V extends BioEntity, E extends Edge<V>, G extends B
 	/**
 	 * get the number of shared links between the two graph,
 	 * meaning the number of shared edges without taking edge label nor associated reaction into account
+	 *
 	 * @return the number of sharedLink
 	 */
 	public int getNumberOfSharedLinks(){
@@ -80,6 +86,7 @@ public class GraphSimilarity<V extends BioEntity, E extends Edge<V>, G extends B
 	 * sim(A,B) = c/(a+b-c) = |A n B|/|A u B|
 	 * with a and b the number of edges in graph A and B, and c the number of shared links.
 	 * Consider edges with same source and target as a single edge.
+	 *
 	 * @return the Tanimoto coefficient
 	 */
 	public double getTanimoto(){

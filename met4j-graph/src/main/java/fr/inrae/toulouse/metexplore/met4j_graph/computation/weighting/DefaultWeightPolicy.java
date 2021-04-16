@@ -42,7 +42,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * The default Weighting policy (each weight is set to 1.0).
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class DefaultWeightPolicy<V extends BioEntity, E extends Edge<V>,G extends BioGraph<V,E>>
 	extends WeightingPolicy<V,E,G> {
@@ -55,6 +57,7 @@ public class DefaultWeightPolicy<V extends BioEntity, E extends Edge<V>,G extend
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.WeightingPolicy#setWeight(parsebionet.applications.graphe.BioGraph)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void setWeight(G g) {
 		for(E e:g.edgeSet()){

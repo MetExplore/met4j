@@ -38,6 +38,12 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
+/**
+ * <p>BioObjectiveCollection class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class BioObjectiveCollection extends BioCollection<BioObjective> {
 
 }

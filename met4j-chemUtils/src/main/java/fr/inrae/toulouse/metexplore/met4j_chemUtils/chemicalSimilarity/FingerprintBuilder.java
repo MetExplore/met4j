@@ -61,19 +61,29 @@ import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 /**
  * provide static methods to compute chemical fingerprints
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class FingerprintBuilder {
 	
+	/** Constant <code>MACCS=0</code> */
 	public static final int MACCS = 0;
+	/** Constant <code>EXTENDED=1</code> */
 	public static final int EXTENDED = 1;
+	/** Constant <code>KLEKOTAROTH=2</code> */
 	public static final int KLEKOTAROTH = 2;
+	/** Constant <code>PUBCHEM=3</code> */
 	public static final int PUBCHEM = 3;
+	/** Constant <code>ESTATE=4</code> */
 	public static final int ESTATE = 4;
+	/** Constant <code>SUBSTRUCTURE=5</code> */
 	public static final int SUBSTRUCTURE = 5;
 	private IFingerprinter fingerprinter;
 	/**
 	 * Instantiates a new fingerprint builder.
+	 *
+	 * @param fingerprintType a int.
 	 */
 	public FingerprintBuilder(int fingerprintType) {
 		switch (fingerprintType) {
@@ -107,8 +117,8 @@ public class FingerprintBuilder {
 	 * - the inchi of the metabolite if set
 	 * - the smiles if the inchi is not set
 	 *
-	 * @param e a {@link BioMetabolite}
-	 * @return
+	 * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
+	 * @return a {@link java.util.BitSet} object.
 	 */
 	public BitSet getFingerprint(BioMetabolite e){
 		String inchi = e.getInchi();
@@ -120,6 +130,12 @@ public class FingerprintBuilder {
 		return null;
 	}
 	
+	/**
+	 * <p>getFingerprintFromInChi.</p>
+	 *
+	 * @param inchi a {@link java.lang.String} object.
+	 * @return a {@link java.util.BitSet} object.
+	 */
 	public BitSet getFingerprintFromInChi(String inchi){
 		try {
 			InChIToStructure struct = InChIGeneratorFactory.getInstance().getInChIToStructure(inchi, DefaultChemObjectBuilder.getInstance());
@@ -134,6 +150,12 @@ public class FingerprintBuilder {
 		}
 	}
 	
+	/**
+	 * <p>getFingerprintFromSmiles.</p>
+	 *
+	 * @param smiles a {@link java.lang.String} object.
+	 * @return a {@link java.util.BitSet} object.
+	 */
 	public BitSet getFingerprintFromSmiles(String smiles){
 		try {
 			SmilesParser   sp  = new SmilesParser(SilentChemObjectBuilder.getInstance());

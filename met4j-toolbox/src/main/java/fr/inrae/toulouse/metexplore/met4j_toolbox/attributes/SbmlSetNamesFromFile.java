@@ -41,21 +41,34 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetNamesFromFile;
 import org.kohsuke.args4j.Option;
 
+/**
+ * <p>SbmlSetNamesFromFile class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class SbmlSetNamesFromFile extends AbstractSbmlSetAny {
 
     @Option(name="-cname", usage="[2] number of the column where are the names")
     private int colname=2;
 
+    /** {@inheritDoc} */
     @Override
     public String getLabel() {
         return this.getClass().getSimpleName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDescription() {
         return "Set Names to network objects from a tabulated file containing the object ids and the names";
     }
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     */
     public static void main(String[] args) {
 
         SbmlSetNamesFromFile app = new SbmlSetNamesFromFile();

@@ -42,8 +42,10 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 /**
- * @author ludo
+ * <p>UnitSbml class.</p>
  *
+ * @author ludo
+ * @version $Id: $Id
  */
 public class UnitSbml {
 
@@ -99,6 +101,14 @@ public class UnitSbml {
 	private Integer scale = 0;
 	private Double multiplier = 1.0;
 
+	/**
+	 * <p>Constructor for UnitSbml.</p>
+	 *
+	 * @param kind a {@link java.lang.String} object.
+	 * @param exponent a {@link java.lang.Double} object.
+	 * @param scale a {@link java.lang.Integer} object.
+	 * @param multiplier a {@link java.lang.Double} object.
+	 */
 	public UnitSbml(String kind, Double exponent, Integer scale, Double multiplier) {
 		super();
 		this.kind = kind;
@@ -113,42 +123,92 @@ public class UnitSbml {
 			this.multiplier = multiplier;
 	}
 
+	/**
+	 * <p>Getter for the field <code>kind</code>.</p>
+	 *
+	 * @return a {@link java.lang.String} object.
+	 */
 	public String getKind() {
 		return kind;
 	}
 
+	/**
+	 * <p>Setter for the field <code>kind</code>.</p>
+	 *
+	 * @param kind a {@link java.lang.String} object.
+	 */
 	public void setKind(String kind) {
 		this.kind = kind.toUpperCase();
 	}
 
+	/**
+	 * <p>Getter for the field <code>exponent</code>.</p>
+	 *
+	 * @return a {@link java.lang.Double} object.
+	 */
 	public Double getExponent() {
 		return exponent;
 	}
 
+	/**
+	 * <p>Setter for the field <code>exponent</code>.</p>
+	 *
+	 * @param exponent a {@link java.lang.Double} object.
+	 */
 	public void setExponent(Double exponent) {
 		this.exponent = exponent;
 	}
 
+	/**
+	 * <p>Getter for the field <code>scale</code>.</p>
+	 *
+	 * @return a {@link java.lang.Integer} object.
+	 */
 	public Integer getScale() {
 		return scale;
 	}
 
+	/**
+	 * <p>Setter for the field <code>scale</code>.</p>
+	 *
+	 * @param scale a {@link java.lang.Integer} object.
+	 */
 	public void setScale(Integer scale) {
 		this.scale = scale;
 	}
 
+	/**
+	 * <p>Getter for the field <code>multiplier</code>.</p>
+	 *
+	 * @return a {@link java.lang.Double} object.
+	 */
 	public Double getMultiplier() {
 		return multiplier;
 	}
 
+	/**
+	 * <p>Setter for the field <code>multiplier</code>.</p>
+	 *
+	 * @param multiplier a {@link java.lang.Double} object.
+	 */
 	public void setMultiplier(Double multiplier) {
 		this.multiplier = multiplier;
 	}
 
+	/**
+	 * <p>getSbmlkindconverter.</p>
+	 *
+	 * @return a {@link java.util.HashMap} object.
+	 */
 	public static HashMap<String, Integer> getSbmlkindconverter() {
 		return SbmlKindConverter;
 	}
 
+	/**
+	 * <p>convertKindtoString.</p>
+	 *
+	 * @param sbmlKindAsInt a int.
+	 */
 	public void convertKindtoString(int sbmlKindAsInt) {
 		for (Entry<String, Integer> kindEntry : UnitSbml.getSbmlkindconverter().entrySet()) {
 			if (kindEntry.getValue() == sbmlKindAsInt) {
@@ -158,6 +218,11 @@ public class UnitSbml {
 		}
 	}
 
+	/**
+	 * <p>getSBMLKindCode.</p>
+	 *
+	 * @return a int.
+	 */
 	public int getSBMLKindCode() {
 		return UnitSbml.getSbmlkindconverter().get(this.kind);
 	}

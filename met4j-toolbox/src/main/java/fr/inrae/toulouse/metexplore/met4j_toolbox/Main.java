@@ -45,15 +45,20 @@ import java.net.URL;
 //import fr.inra.toulouse.metexplore.met4j_core.utils.Resources;
 
 /**
- * 
+ *
  * Main class for parsebionet List all the main classes in applications with
  * their description if available
- * 
+ *
  * @author lcottret
- * 
+ * @version $Id: $Id
  */
 public class Main {
 
+	/**
+	 * <p>main.</p>
+	 *
+	 * @param args an array of {@link java.lang.String} objects.
+	 */
 	public static void main(String[] args) {
 
 		try {

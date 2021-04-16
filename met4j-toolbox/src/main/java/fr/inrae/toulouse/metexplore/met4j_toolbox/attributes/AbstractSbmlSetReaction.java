@@ -38,6 +38,12 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import org.kohsuke.args4j.Option;
 
+/**
+ * <p>Abstract AbstractSbmlSetReaction class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public abstract class AbstractSbmlSetReaction extends AbstractSbmlSet {
 
     @Option(name="-ci", usage="[1] number of the column where are the reaction ids")
@@ -46,6 +52,9 @@ public abstract class AbstractSbmlSetReaction extends AbstractSbmlSet {
     @Option(name="-p", usage="[deactivated] To match the objects in the sbml file, adds the prefix R_ to reactions")
     protected Boolean p=false;
 
+    /**
+     * <p>Constructor for AbstractSbmlSetReaction.</p>
+     */
     public AbstractSbmlSetReaction() {
         super();
     }

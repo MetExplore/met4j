@@ -54,6 +54,8 @@ import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
  * @param <V> the node type
  * @param <E> the edge type
  * @param <G> the graph type
+ * @author lcottret
+ * @version $Id: $Id
  */
 public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> {
 	

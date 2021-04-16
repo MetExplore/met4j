@@ -55,6 +55,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+/**
+ * <p>Tab2BioNetwork class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class Tab2BioNetwork {
 
     public int colId = 0;
@@ -73,6 +79,21 @@ public class Tab2BioNetwork {
     private BioCompartment defaultCompartment;
 
 
+    /**
+     * <p>Constructor for Tab2BioNetwork.</p>
+     *
+     * @param networkId a {@link java.lang.String} object.
+     * @param colId a int.
+     * @param colFormula a int.
+     * @param formatReactionCobra a {@link java.lang.Boolean} object.
+     * @param formatMetaboliteCobra a {@link java.lang.Boolean} object.
+     * @param flagExternal a {@link java.lang.String} object.
+     * @param irrReaction a {@link java.lang.String} object.
+     * @param revReaction a {@link java.lang.String} object.
+     * @param addCompartmentFromMetaboliteSuffix a {@link java.lang.Boolean} object.
+     * @param defaultCompartment a {@link java.lang.String} object.
+     * @param nSkip a int.
+     */
     public Tab2BioNetwork(String networkId, int colId, int colFormula, Boolean formatReactionCobra, Boolean formatMetaboliteCobra,
                           String flagExternal, String irrReaction, String revReaction,
                           Boolean addCompartmentFromMetaboliteSuffix, String defaultCompartment, int nSkip) {
@@ -97,9 +118,9 @@ public class Tab2BioNetwork {
     /**
      * Test the input file
      *
-     * @param fileIn
-     * @return
-     * @throws IOException
+     * @param fileIn a {@link java.lang.String} object.
+     * @return a {@link java.lang.Boolean} object.
+     * @throws java.io.IOException if any.
      */
     public Boolean testFile(String fileIn) throws IOException {
 
@@ -256,8 +277,9 @@ public class Tab2BioNetwork {
     /**
      * Fill the network from formulas in the file
      *
-     * @param fileIn
-     * @throws IOException
+     * @param fileIn a {@link java.lang.String} object.
+     * @return a {@link java.lang.Boolean} object.
+     * @throws java.io.IOException if any.
      */
     public Boolean createReactionsFromFile(String fileIn) throws IOException {
 
@@ -563,6 +585,11 @@ public class Tab2BioNetwork {
 
     }
 
+    /**
+     * <p>Getter for the field <code>bioNetwork</code>.</p>
+     *
+     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     */
     public BioNetwork getBioNetwork() {
         return bioNetwork;
     }

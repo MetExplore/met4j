@@ -52,7 +52,9 @@ import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
 
 /**
  * Class to compute RandomWalk betweenness.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class RandomWalk<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>>{
 	

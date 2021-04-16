@@ -50,12 +50,13 @@ import java.util.stream.Collectors;
 
 /**
  * This Class represents a new type of reactions that handles the SBML fbc
- * package. It uses the classical {@link BioReaction} to handle reaction
- * participants and the new {@link GeneAssociation} to handle complex gene
+ * package. It uses the classical {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} to handle reaction
+ * participants and the new {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} to handle complex gene
  * associations
- * 
+ *
  * @author Benjamin
  * @since 3.0
+ * @version $Id: $Id
  */
 public class FluxReaction extends BioEntity {
 
@@ -72,8 +73,8 @@ public class FluxReaction extends BioEntity {
 	private GeneAssociation reactionGeneAssociation;
 
 	/**
-	 * Constructor using a {@link BioReaction}
-	 * 
+	 * Constructor using a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+	 *
 	 * @param reaction
 	 *            the {@link #underlyingReaction}
 	 */
@@ -83,12 +84,12 @@ public class FluxReaction extends BioEntity {
 	}
 
 	/**
-	 * Convert the reaction's {@link GeneAssociation} to a set of
-	 * enzymes and add them to the {@link BioNetwork} given in
-	 * parameter.</br>It also add them to the reaction as enzymes
-	 * 
+	 * Convert the reaction's {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} to a set of
+	 * enzymes and add them to the {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} given in
+	 * parameter.It also add them to the reaction as enzymes
+	 *
 	 * @param bn
-	 *            The {@link BioNetwork} where the enzymes will be
+	 *            The {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} where the enzymes will be
 	 *            added
 	 */
 	public void convertGeneAssociationstoComplexes(BioNetwork bn) {
@@ -171,6 +172,12 @@ public class FluxReaction extends BioEntity {
 
 	}
 
+	/**
+	 * <p>createIdFromProteins.</p>
+	 *
+	 * @param proteins a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String createIdFromProteins(BioCollection<BioProtein> proteins)
 	{
 		return proteins.getIds().stream().sorted().collect(Collectors.joining("_AND_"));
@@ -178,7 +185,7 @@ public class FluxReaction extends BioEntity {
 
 	/**
 	 * Get the {@link #underlyingReaction}
-	 * 
+	 *
 	 * @return the {@link #underlyingReaction}
 	 */
 	public BioReaction getUnderlyingReaction() {
@@ -186,8 +193,8 @@ public class FluxReaction extends BioEntity {
 	}
 
 	/**
-	 * Get the {@link GeneAssociation} of the reaction
-	 * 
+	 * Get the {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} of the reaction
+	 *
 	 * @return {@link #reactionGeneAssociation}
 	 */
 	public GeneAssociation getReactionGeneAssociation() {
@@ -196,7 +203,7 @@ public class FluxReaction extends BioEntity {
 
 	/**
 	 * Set {@link #reactionGeneAssociation} to a new value
-	 * 
+	 *
 	 * @param reactionGAs
 	 *            the new value of {@link #reactionGeneAssociation}
 	 */

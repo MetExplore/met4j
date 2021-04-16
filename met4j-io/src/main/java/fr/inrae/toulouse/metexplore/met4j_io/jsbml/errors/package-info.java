@@ -35,8 +35,7 @@
  */
 
 /**
- * This package holds custom errors that can be thrown by the {@link parsebionet.io.jsbml.reader.JsbmlReader} and {@link parsebionet.io.jsbml.writer.JsbmlWriter} classes
- * @author Benjamin
+ * @author Benjamin Merlet
  * @since 3.0
  */
 

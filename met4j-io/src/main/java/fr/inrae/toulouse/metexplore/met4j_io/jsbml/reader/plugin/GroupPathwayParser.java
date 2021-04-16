@@ -49,6 +49,12 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 
+/**
+ * <p>GroupPathwayParser class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class GroupPathwayParser implements PackageParser, PrimaryDataTag, ReaderSBML3Compatible {
 
 	private String PackageNamespace = "http://www.sbml.org/sbml/level3/version1/groups/version1";
@@ -59,6 +65,7 @@ public class GroupPathwayParser implements PackageParser, PrimaryDataTag, Reader
 
 	private GroupsModelPlugin plugin;
 
+	/** {@inheritDoc} */
 	@Override
 	public void parseModel(Model model, BioNetwork network) {
 
@@ -73,11 +80,13 @@ public class GroupPathwayParser implements PackageParser, PrimaryDataTag, Reader
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getAssociatedPackageName() {
 		return "groups";
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isPackageUseableOnModel(Model model) {
 		return model.isPackageURIEnabled(PackageNamespace);

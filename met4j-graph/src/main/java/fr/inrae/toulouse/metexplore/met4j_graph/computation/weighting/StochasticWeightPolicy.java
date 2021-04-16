@@ -48,7 +48,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * The Stochastic weighting policy based on chemical similarity.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 	
@@ -66,6 +68,7 @@ public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.randomWalk.similarity.SimilarityWeightPolicy#setWeight(parsebionet.applications.graphe.CompoundGraph)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void setWeight(CompoundGraph g){
 		super.setWeight(g);

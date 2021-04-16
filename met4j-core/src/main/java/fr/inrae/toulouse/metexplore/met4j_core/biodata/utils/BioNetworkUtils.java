@@ -42,6 +42,12 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * <p>BioNetworkUtils class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class BioNetworkUtils {
 
     /**
@@ -49,8 +55,8 @@ public class BioNetworkUtils {
      * A choke reaction involves metabolites
      * that are consumed or produced only by this reaction
      *
-     * @param network a {@link BioNetwork}
-     * @return a {@link BioCollection} of {@link BioReaction}
+     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
+     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      */
     public static BioCollection<BioReaction> getChokeReactions(BioNetwork network) {
 
@@ -84,7 +90,7 @@ public class BioNetworkUtils {
     /**
      * Remove from a network all the metabolites not connected to any reaction
      *
-     * @param network a {@link BioNetwork}
+     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
      */
     public static void removeNotConnectedMetabolites(BioNetwork network) {
         BioCollection<BioMetabolite> metabolites = network.getMetabolitesView();
@@ -99,7 +105,7 @@ public class BioNetworkUtils {
      * Copy a BioNetwork. Be careful, only the references are copied, the objects themselves (metabolites, reactions) are not duplicated.
      *
      * @param network the original network
-     * @return a {@link BioNetwork}
+     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
      */
     public static BioNetwork copy(BioNetwork network) {
 
@@ -117,6 +123,12 @@ public class BioNetworkUtils {
 
     }
 
+    /**
+     * <p>deepCopy.</p>
+     *
+     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     */
     public static BioNetwork deepCopy(BioNetwork network) {
 
         BioNetwork newNetwork = new BioNetwork(network);

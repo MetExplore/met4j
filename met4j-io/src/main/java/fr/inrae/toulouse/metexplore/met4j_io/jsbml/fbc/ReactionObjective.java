@@ -40,14 +40,22 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * This class represents a part of one of the flux objectives present in the model
+ *
  * @author Benjamin
  * @since 3.0
+ * @version $Id: $Id
  */
 public class ReactionObjective extends BioEntity {
 
 	
 	
 	
+	/**
+	 * <p>Constructor for ReactionObjective.</p>
+	 *
+	 * @param id a {@link java.lang.String} object.
+	 * @param name a {@link java.lang.String} object.
+	 */
 	public ReactionObjective(String id, String name) {
 		super(id, name);
 	}
@@ -62,7 +70,8 @@ public class ReactionObjective extends BioEntity {
 	private double coefficient;
 
 	/**
-	 * Retrieves the {@link FluxReaction}
+	 * Retrieves the {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.FluxReaction}
+	 *
 	 * @return the {@link #flxReaction}
 	 */
 	public FluxReaction getFlxReaction() {
@@ -71,8 +80,9 @@ public class ReactionObjective extends BioEntity {
 
 	/**
 	 * Set the {@link #flxReaction}
+	 *
 	 * @param reaction
-	 * 		the new {@link FluxReaction}
+	 * 		the new {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.FluxReaction}
 	 */
 	public void setFlxReaction(FluxReaction reaction) {
 		this.flxReaction=reaction;
@@ -80,6 +90,7 @@ public class ReactionObjective extends BioEntity {
 
 	/**
 	 * Retrieves the {@link #coefficient}
+	 *
 	 * @return the {@link #coefficient}
 	 */
 	public double getCoefficient() {
@@ -88,6 +99,7 @@ public class ReactionObjective extends BioEntity {
 
 	/**
 	 * Set the {@link #coefficient}
+	 *
 	 * @param coefficient
 	 * 		the new {@link #coefficient}
 	 */

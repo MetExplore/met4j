@@ -38,6 +38,12 @@ package fr.inrae.toulouse.metexplore.met4j_io.annotations.gene;
 
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 
+/**
+ * <p>GeneAttributes class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class GeneAttributes extends GenericAttributes {
 
 }

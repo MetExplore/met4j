@@ -40,6 +40,12 @@ import fr.inrae.toulouse.metexplore.met4j_core.utils.ErrorUtils;
 
 import java.util.Objects;
 
+/**
+ * <p>Abstract BioParticipant class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public abstract class BioParticipant extends BioEntity {
 
 	private BioPhysicalEntity physicalEntity;
@@ -48,7 +54,8 @@ public abstract class BioParticipant extends BioEntity {
 
 	/**
 	 * Constructor
-	 * @param physicalEntity a {@link BioPhysicalEntity}
+	 *
+	 * @param physicalEntity a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity}
 	 * @param quantity number of units of physicalEntity
 	 */
 	public BioParticipant(BioPhysicalEntity physicalEntity, Double quantity) {
@@ -59,6 +66,8 @@ public abstract class BioParticipant extends BioEntity {
 	
 	
 	/**
+	 * <p>Getter for the field <code>physicalEntity</code>.</p>
+	 *
 	 * @return Returns the physicalEntity.
 	 */
 	public BioPhysicalEntity getPhysicalEntity() {
@@ -67,6 +76,8 @@ public abstract class BioParticipant extends BioEntity {
 	
 
 	/**
+	 * <p>Setter for the field <code>physicalEntity</code>.</p>
+	 *
 	 * @param physicalEntity the physicalEntity to set
 	 */
 	public void setPhysicalEntity(BioPhysicalEntity physicalEntity) {
@@ -77,6 +88,8 @@ public abstract class BioParticipant extends BioEntity {
 
 
 	/**
+	 * <p>Getter for the field <code>quantity</code>.</p>
+	 *
 	 * @return the quantity
 	 */
 	public Double getQuantity() {
@@ -85,6 +98,8 @@ public abstract class BioParticipant extends BioEntity {
 
 
 	/**
+	 * <p>Setter for the field <code>quantity</code>.</p>
+	 *
 	 * @param quantity the quantity to set
 	 */
 	public void setQuantity(Double quantity) {
@@ -98,6 +113,7 @@ public abstract class BioParticipant extends BioEntity {
 		this.quantity = quantity;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -108,6 +124,7 @@ public abstract class BioParticipant extends BioEntity {
 				Objects.equals(quantity, that.quantity);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		return Objects.hash(super.hashCode(), physicalEntity, quantity);

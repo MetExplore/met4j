@@ -45,14 +45,15 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 /**
  * A factory for creating Compound edge objects.
  *
- * @param <V> the value type
- * @param <E> the element type
+ * @author lcottret
+ * @version $Id: $Id
  */
 public class CompoundEdgeFactory implements EdgeFactory<BioReaction, CompoundEdge> {
 	
 	/* (non-Javadoc)
 	 * @see org.jgrapht.EdgeFactory#createEdge(java.lang.Object, java.lang.Object)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public CompoundEdge createEdge(BioReaction arg0,
                                    BioReaction arg1) {

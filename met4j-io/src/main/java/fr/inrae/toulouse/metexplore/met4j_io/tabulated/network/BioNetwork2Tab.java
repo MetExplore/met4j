@@ -46,6 +46,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.TreeMap;
 
+/**
+ * <p>BioNetwork2Tab class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class BioNetwork2Tab {
 
     BioNetwork network;
@@ -53,6 +59,14 @@ public class BioNetwork2Tab {
     String revSep = "<==>";
     String irrevSep = "-->";
 
+    /**
+     * <p>Constructor for BioNetwork2Tab.</p>
+     *
+     * @param bioNetwork a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     * @param outputFile a {@link java.lang.String} object.
+     * @param revSep a {@link java.lang.String} object.
+     * @param irrevSep a {@link java.lang.String} object.
+     */
     public BioNetwork2Tab(BioNetwork bioNetwork, String outputFile, String revSep, String irrevSep) {
 
         this.network = bioNetwork;
@@ -62,6 +76,11 @@ public class BioNetwork2Tab {
         this.irrevSep = irrevSep;
     }
 
+    /**
+     * <p>write.</p>
+     *
+     * @throws java.io.IOException if any.
+     */
     public void write() throws IOException {
 
         FileWriter fw = new FileWriter(this.outputFile);

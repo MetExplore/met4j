@@ -49,6 +49,12 @@ import org.sbml.jsbml.text.parser.ParseException;
 
 import java.io.IOException;
 
+/**
+ * <p>MetExploreXmlToSbml class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class MetExploreXmlToSbml extends AbstractMet4jApplication {
 
     @Option(name = "-i", usage = "input file", required = true)
@@ -58,6 +64,15 @@ public class MetExploreXmlToSbml extends AbstractMet4jApplication {
     public String outputPath = null;
 
 
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     * @throws java.io.IOException if any.
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
+     * @throws org.sbml.jsbml.text.parser.ParseException if any.
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException if any.
+     */
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException, ParseException, Met4jSbmlWriterException {
 
         MetExploreXmlToSbml app = new MetExploreXmlToSbml();
@@ -69,6 +84,14 @@ public class MetExploreXmlToSbml extends AbstractMet4jApplication {
     }
 
 
+    /**
+     * <p>run.</p>
+     *
+     * @throws java.io.IOException if any.
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
+     * @throws org.sbml.jsbml.text.parser.ParseException if any.
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException if any.
+     */
     public void run() throws IOException, Met4jSbmlReaderException, ParseException, Met4jSbmlWriterException {
 
         MetexploreXmlReader reader = new MetexploreXmlReader(this.inputPath);
@@ -82,11 +105,13 @@ public class MetExploreXmlToSbml extends AbstractMet4jApplication {
 
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getLabel() {
         return this.getClass().getSimpleName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDescription() {
         return "Converts a MetExploreXml file to a SBML file";

@@ -40,7 +40,10 @@ import java.util.HashMap;
 import java.util.Set;
 
 /**
+ * <p>BioMetabolite class.</p>
  *
+ * @author lcottret
+ * @version $Id: $Id
  */
 public class BioMetabolite extends BioPhysicalEntity {
 
@@ -72,6 +75,7 @@ public class BioMetabolite extends BioPhysicalEntity {
     /**
      * Copy a BioMetabolite.
      * The refs and attributes are not deeply copied
+     *
      * @param metabolite the original metabolite
      */
     public BioMetabolite(BioMetabolite metabolite) {
@@ -87,6 +91,8 @@ public class BioMetabolite extends BioPhysicalEntity {
 
 
     /**
+     * <p>Getter for the field <code>inchi</code>.</p>
+     *
      * @return the inchi
      */
     public String getInchi() {
@@ -94,6 +100,8 @@ public class BioMetabolite extends BioPhysicalEntity {
     }
 
     /**
+     * <p>Setter for the field <code>inchi</code>.</p>
+     *
      * @param inchi the inchi to set
      */
     public void setInchi(String inchi) {
@@ -102,6 +110,8 @@ public class BioMetabolite extends BioPhysicalEntity {
 
 
     /**
+     * <p>Getter for the field <code>smiles</code>.</p>
+     *
      * @return the smile
      */
     public String getSmiles() {
@@ -110,6 +120,8 @@ public class BioMetabolite extends BioPhysicalEntity {
 
 
     /**
+     * <p>Setter for the field <code>smiles</code>.</p>
+     *
      * @param smile the smile to set
      */
     public void setSmiles(String smile) {
@@ -118,6 +130,8 @@ public class BioMetabolite extends BioPhysicalEntity {
 
 
     /**
+     * <p>Setter for the field <code>molecularWeight</code>.</p>
+     *
      * @param molecularWeight the molecularWeight to set
      */
     public void setMolecularWeight(double molecularWeight) {
@@ -126,6 +140,8 @@ public class BioMetabolite extends BioPhysicalEntity {
 
 
     /**
+     * <p>Getter for the field <code>chemicalFormula</code>.</p>
+     *
      * @return the chemical formula of the metabolite
      */
     public String getChemicalFormula() {
@@ -134,6 +150,8 @@ public class BioMetabolite extends BioPhysicalEntity {
 
 
     /**
+     * <p>Setter for the field <code>chemicalFormula</code>.</p>
+     *
      * @param chemicalFormula : a String like C6H12O6
      */
     public void setChemicalFormula(String chemicalFormula) {
@@ -142,6 +160,8 @@ public class BioMetabolite extends BioPhysicalEntity {
 
 
     /**
+     * <p>Getter for the field <code>molecularWeight</code>.</p>
+     *
      * @return the molecularWeight
      */
     public Double getMolecularWeight() {
@@ -150,6 +170,8 @@ public class BioMetabolite extends BioPhysicalEntity {
 
 
     /**
+     * <p>Getter for the field <code>charge</code>.</p>
+     *
      * @return the charge
      */
     public Integer getCharge() {
@@ -158,6 +180,8 @@ public class BioMetabolite extends BioPhysicalEntity {
 
 
     /**
+     * <p>Setter for the field <code>charge</code>.</p>
+     *
      * @param charge the charge to set
      */
     public void setCharge(Integer charge) {

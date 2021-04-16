@@ -41,13 +41,17 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
+ * <p>BioEnzymeParticipant class.</p>
  *
+ * @author lcottret
+ * @version $Id: $Id
  */
 public class BioEnzymeParticipant extends BioParticipant {
 
 
 	/**
 	 * Constructor
+	 *
 	 * @param physicalEntity the physical entity that is contained in the enzyme
 	 * @param stoichiometry the number of unities of the physical entity
 	 */
@@ -57,6 +61,7 @@ public class BioEnzymeParticipant extends BioParticipant {
 
 	/**
 	 * Constructor
+	 *
 	 * @param physicalEntity the physical entity that is contained in the enzyme
 	 * The stoichiometry is put to 1.
 	 */
@@ -64,6 +69,7 @@ public class BioEnzymeParticipant extends BioParticipant {
 		super(physicalEntity, 1.0);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 

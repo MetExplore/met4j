@@ -47,15 +47,17 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * Class to compute choke points, i.e. reaction that are required to consume or produce one compound.
- * Targeting of choke point can lead to the accumulation or the loss of some metabolites, thus choke points constitute an indicator of lethality and can help identifying drug target 
+ * Targeting of choke point can lead to the accumulation or the loss of some metabolites, thus choke points constitute an indicator of lethality and can help identifying drug target
  * See : Syed Asad Rahman, Dietmar Schomburg; Observing local and global properties of metabolic pathways: ‘load points’ and ‘choke points’ in the metabolic networks. Bioinformatics 2006; 22 (14): 1767-1774. doi: 10.1093/bioinformatics/btl181
- * @author clement
  *
+ * @author clement
+ * @version $Id: $Id
  */
 public class ChokePoint {
 
 	/**
 	 * Compute choke points from compound graph
+	 *
 	 * @param g the graph
 	 * @return set of choke points
 	 */
@@ -78,6 +80,7 @@ public class ChokePoint {
 	
 	/**
 	 * Compute choke points from bipartite graph
+	 *
 	 * @param g the graph
 	 * @return set of choke points
 	 */

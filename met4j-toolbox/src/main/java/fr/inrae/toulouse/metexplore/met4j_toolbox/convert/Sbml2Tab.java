@@ -47,6 +47,12 @@ import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 
+/**
+ * <p>Sbml2Tab class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class Sbml2Tab extends AbstractMet4jApplication {
 
     @Option(name="-i", usage="[-->] String for irreversible reaction")
@@ -63,8 +69,11 @@ public class Sbml2Tab extends AbstractMet4jApplication {
 
 
     /**
-     * @param args
-     * @throws IOException
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     * @throws java.io.IOException
+     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
      */
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
 
@@ -91,11 +100,13 @@ public class Sbml2Tab extends AbstractMet4jApplication {
 
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getLabel() {
         return this.getClass().getSimpleName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getDescription() {
         return "Create a tabulated File from a SBML file";

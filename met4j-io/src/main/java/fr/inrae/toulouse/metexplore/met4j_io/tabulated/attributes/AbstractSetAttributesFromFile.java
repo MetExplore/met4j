@@ -50,6 +50,12 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * <p>Abstract AbstractSetAttributesFromFile class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public abstract class AbstractSetAttributesFromFile {
 
     private int colId = 0;
@@ -62,10 +68,15 @@ public abstract class AbstractSetAttributesFromFile {
     private Boolean addPrefix = false;
     private Boolean addSuffix = false;
 
+    /** Constant <code>REACTION="R"</code> */
     public static final String REACTION = "R";
+    /** Constant <code>METABOLITE="M"</code> */
     public static final String METABOLITE = "M";
+    /** Constant <code>PROTEIN="P"</code> */
     public static final String PROTEIN = "P";
+    /** Constant <code>GENE="G"</code> */
     public static final String GENE = "G";
+    /** Constant <code>PATHWAY="Pa"</code> */
     public static final String PATHWAY = "Pa";
 
     private Set<String> objectIds;
@@ -73,20 +84,23 @@ public abstract class AbstractSetAttributesFromFile {
     private HashMap<String, String> idAttributeMap;
 
     /**
-     *  @param colId
-     *            : number of the id column
+     * <p>Constructor for AbstractSetAttributesFromFile.</p>
+     *
      * @param colAttr
      *            : number of the attribute column
      * @param bn
- *            : BioNetwork
+     *            : BioNetwork
      * @param fileIn
-*            : tabulated file containing the ids and the attributes
+     *            : tabulated file containing the ids and the attributes
      * @param c
-*            : comment character
+     *            : comment character
      * @param o
-*            : object to set ("R" : reaction, "M" : metabolite, "G" : gene,
-*            "P" : protein, "PA" : pathway)
-     * @param p
+     *            : object to set ("R" : reaction, "M" : metabolite, "G" : gene,
+     *            "P" : protein, "PA" : pathway)
+     * @param p a {@link java.lang.Boolean} object.
+     * @param nSkip a int.
+     * @param s a {@link java.lang.Boolean} object.
+     * @param colId a int.
      */
     public AbstractSetAttributesFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, String o,
                                      Boolean p, Boolean s) {
@@ -136,8 +150,8 @@ public abstract class AbstractSetAttributesFromFile {
     /**
      * Test the attribute file and other things
      *
-     * @return
-     * @throws IOException
+     * @return a {@link java.lang.Boolean} object.
+     * @throws java.io.IOException if any.
      */
     public Boolean test() throws IOException {
 
@@ -309,17 +323,21 @@ public abstract class AbstractSetAttributesFromFile {
      * Abstract function to validate the attribute
      *
      * @return true if attribute well formatted
+     * @param attribute a {@link java.lang.String} object.
      */
     public abstract Boolean testAttribute(String attribute);
 
     /**
      * Reads the file and sets the attributes
      *
-     * @return
+     * @return a {@link java.lang.Boolean} object.
+     * @throws java.io.IOException if any.
      */
     public abstract Boolean setAttributes() throws IOException;
 
     /**
+     * <p>Getter for the field <code>colId</code>.</p>
+     *
      * @return the colId
      */
     public int getColId() {
@@ -327,6 +345,8 @@ public abstract class AbstractSetAttributesFromFile {
     }
 
     /**
+     * <p>Setter for the field <code>colId</code>.</p>
+     *
      * @param colId
      *            the colId to set
      */
@@ -335,6 +355,8 @@ public abstract class AbstractSetAttributesFromFile {
     }
 
     /**
+     * <p>Getter for the field <code>colAttr</code>.</p>
+     *
      * @return the colAttr
      */
     public int getColAttr() {
@@ -342,6 +364,8 @@ public abstract class AbstractSetAttributesFromFile {
     }
 
     /**
+     * <p>Setter for the field <code>colAttr</code>.</p>
+     *
      * @param colAttr
      *            the colAttr to set
      */
@@ -350,6 +374,8 @@ public abstract class AbstractSetAttributesFromFile {
     }
 
     /**
+     * <p>getNetwork.</p>
+     *
      * @return the network
      */
     public BioNetwork getNetwork() {
@@ -357,6 +383,8 @@ public abstract class AbstractSetAttributesFromFile {
     }
 
     /**
+     * <p>setNetwork.</p>
+     *
      * @param bn
      *            the network to set
      */
@@ -365,6 +393,8 @@ public abstract class AbstractSetAttributesFromFile {
     }
 
     /**
+     * <p>Getter for the field <code>fileIn</code>.</p>
+     *
      * @return the fileIn
      */
     public String getFileIn() {
@@ -372,6 +402,8 @@ public abstract class AbstractSetAttributesFromFile {
     }
 
     /**
+     * <p>Setter for the field <code>fileIn</code>.</p>
+     *
      * @param fileIn
      *            the fileIn to set
      */
@@ -380,6 +412,8 @@ public abstract class AbstractSetAttributesFromFile {
     }
 
     /**
+     * <p>Getter for the field <code>commentCharacter</code>.</p>
+     *
      * @return the commentCharacter
      */
     public String getCommentCharacter() {
@@ -387,6 +421,8 @@ public abstract class AbstractSetAttributesFromFile {
     }
 
     /**
+     * <p>Setter for the field <code>commentCharacter</code>.</p>
+     *
      * @param commentCharacter
      *            the commentCharacter to set
      */
@@ -395,6 +431,8 @@ public abstract class AbstractSetAttributesFromFile {
     }
 
     /**
+     * <p>Getter for the field <code>nSkip</code>.</p>
+     *
      * @return the nSkip
      */
     public int getnSkip() {
@@ -402,6 +440,8 @@ public abstract class AbstractSetAttributesFromFile {
     }
 
     /**
+     * <p>Setter for the field <code>nSkip</code>.</p>
+     *
      * @param nSkip
      *            the nSkip to set
      */
@@ -410,6 +450,8 @@ public abstract class AbstractSetAttributesFromFile {
     }
 
     /**
+     * <p>Getter for the field <code>object</code>.</p>
+     *
      * @return the object
      */
     public String getObject() {
@@ -417,6 +459,8 @@ public abstract class AbstractSetAttributesFromFile {
     }
 
     /**
+     * <p>Setter for the field <code>object</code>.</p>
+     *
      * @param object
      *            the object to set
      */
@@ -425,20 +469,26 @@ public abstract class AbstractSetAttributesFromFile {
     }
 
     /**
-     * @param p
+     * <p>Setter for the field <code>addPrefix</code>.</p>
+     *
+     * @param p a {@link java.lang.Boolean} object.
      */
     public void setAddPrefix(Boolean p) {
         this.addPrefix = p;
     }
 
     /**
-     * @param s
+     * <p>Setter for the field <code>addSuffix</code>.</p>
+     *
+     * @param s a {@link java.lang.Boolean} object.
      */
     public void setAddSuffix(Boolean s) {
         this.addSuffix = s;
     }
 
     /**
+     * <p>Getter for the field <code>idAttributeMap</code>.</p>
+     *
      * @return the idAttributeMap
      */
     public HashMap<String, String> getIdAttributeMap() {
@@ -446,6 +496,8 @@ public abstract class AbstractSetAttributesFromFile {
     }
 
     /**
+     * <p>Setter for the field <code>idAttributeMap</code>.</p>
+     *
      * @param idAttributeMap
      *            the idAttributeMap to set
      */
@@ -453,10 +505,20 @@ public abstract class AbstractSetAttributesFromFile {
         this.idAttributeMap = idAttributeMap;
     }
 
+    /**
+     * <p>Getter for the field <code>addPrefix</code>.</p>
+     *
+     * @return a {@link java.lang.Boolean} object.
+     */
     public Boolean getAddPrefix() {
         return addPrefix;
     }
 
+    /**
+     * <p>Getter for the field <code>addSuffix</code>.</p>
+     *
+     * @return a {@link java.lang.Boolean} object.
+     */
     public Boolean getAddSuffix() {
         return addSuffix;
     }

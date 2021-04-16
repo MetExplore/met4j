@@ -42,13 +42,22 @@ package fr.inrae.toulouse.metexplore.met4j_graph.core;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
- * @author clement
+ * <p>BioEdge class.</p>
  *
+ * @author clement
+ * @version $Id: $Id
  */
 public class BioEdge<T extends BioEntity,M  extends BioEntity> extends Edge<T> {
 
 private static final long serialVersionUID = 4129743061750652400L;
 
+	/**
+	 * <p>Constructor for BioEdge.</p>
+	 *
+	 * @param v1 a T object.
+	 * @param v2 a T object.
+	 * @param modifier a M object.
+	 */
 	public BioEdge(T v1, T v2, M modifier) {
 		super(v1, v2);
 	}

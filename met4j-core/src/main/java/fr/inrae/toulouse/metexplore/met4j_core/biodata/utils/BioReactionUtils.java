@@ -47,18 +47,22 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * <p>BioReactionUtils class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class BioReactionUtils {
 	
 	/**
 	 * Comparison of two reactions
 	 *
-	 * @param network a {@link BioNetwork}
-	 * @param r1 a first {@link BioReaction}
-	 * @param r2 a second {@link BioReaction}
+	 * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
+	 * @param r1 a first {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+	 * @param r2 a second {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
 	 * @return true if the substrates and the products have the same id
-	 *
-	 * @throws IllegalArgumentException if one of the reaction is not in the network
-	 *
+	 * @throws java.lang.IllegalArgumentException if one of the reaction is not in the network
 	 */
 	public static Boolean areRedundant(BioNetwork network, BioReaction r1, BioReaction r2) {
 
@@ -110,7 +114,8 @@ public class BioReactionUtils {
 	
 	/**
 	 * get Gene association of a reaction in string format
-	 * @param network a {@link BioNetwork}
+	 *
+	 * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
 	 * @param r a BioReaction
 	 * @param getGeneNames if true returns the gene names instead of the gene ids
 	 * @return a String like "G1 OR (G2 AND G3)
@@ -176,7 +181,8 @@ public class BioReactionUtils {
 
 	/**
 	 * get Gene association of a reaction in string format
-	 * @param network a {@link BioNetwork}
+	 *
+	 * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
 	 * @param r a BioReaction
 	 * @return a String like "G1 OR (G2 AND G3)
 	 */
@@ -184,6 +190,16 @@ public class BioReactionUtils {
 		return getGPR(network, r, false);
 	}
 
+	/**
+	 * <p>getEquation.</p>
+	 *
+	 * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+	 * @param getNames a {@link java.lang.Boolean} object.
+	 * @param revSep a {@link java.lang.String} object.
+	 * @param irrevSep a {@link java.lang.String} object.
+	 * @param getCompartment a {@link java.lang.Boolean} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String getEquation(BioReaction r, Boolean getNames, String revSep, String irrevSep, Boolean getCompartment) {
 
 		BioCollection<BioReactant> lefts = r.getLeftReactantsView();
@@ -195,6 +211,14 @@ public class BioReactionUtils {
 		return reactantsToString(lefts, getNames, getCompartment) + eq + reactantsToString(rights,getNames, getCompartment);
 	}
 
+	/**
+	 * <p>getEquation.</p>
+	 *
+	 * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+	 * @param getNames a {@link java.lang.Boolean} object.
+	 * @param getCompartment a {@link java.lang.Boolean} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String getEquation(BioReaction r, Boolean getNames, Boolean getCompartment) {
 
 		BioCollection<BioReactant> lefts = r.getLeftReactantsView();
@@ -227,6 +251,15 @@ public class BioReactionUtils {
 
 	}
 
+	/**
+	 * <p>getPathwaysString.</p>
+	 *
+	 * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+	 * @param n a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+	 * @param getNames a {@link java.lang.Boolean} object.
+	 * @param delim a {@link java.lang.String} object.
+	 * @return a {@link java.lang.String} object.
+	 */
 	public static String getPathwaysString(BioReaction r, BioNetwork n, Boolean getNames, String delim) {
 
 		BioCollection<BioPathway> pathways = n.getPathwaysFromReaction(r);

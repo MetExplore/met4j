@@ -46,26 +46,47 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 
 /**
- * This class extends the {@link ProbabilityWeightPolicy} used to normalize weights into probabilities.
+ * This class extends the {@link fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.ProbabilityWeightPolicy} used to normalize weights into probabilities.
  * This class holds a special case for compound graphs, by adding a reaction-probability level.
- * Using the {@link ProbabilityWeightPolicy} on compound graphs tends to over-weighting reactions that have many products
+ * Using the {@link fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.ProbabilityWeightPolicy} on compound graphs tends to over-weighting reactions that have many products
  * The method provided by this class allow to reduce this bias, by considering all reactions equally.
  * Custom reaction probabilities can be used by setting reactions weights.
+ *
  * @author clement
+ * @version $Id: $Id
  */
 public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioMetabolite, ReactionEdge, CompoundGraph>{
 	
 	
 	Map<BioReaction,Double> reactionWeights;
 	
+	/**
+	 * <p>Constructor for ReactionProbabilityWeight.</p>
+	 */
 	public ReactionProbabilityWeight() {
     }
+	/**
+	 * <p>Constructor for ReactionProbabilityWeight.</p>
+	 *
+	 * @param wp a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy} object.
+	 */
 	public ReactionProbabilityWeight(WeightingPolicy<BioMetabolite, ReactionEdge, CompoundGraph> wp) {
 		super(wp);
 	}
+	/**
+	 * <p>Constructor for ReactionProbabilityWeight.</p>
+	 *
+	 * @param reactionWeights a {@link java.util.Map} object.
+	 */
 	public ReactionProbabilityWeight(Map<BioReaction,Double> reactionWeights) {
         this.reactionWeights=reactionWeights;
 	}
+	/**
+	 * <p>Constructor for ReactionProbabilityWeight.</p>
+	 *
+	 * @param wp a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy} object.
+	 * @param reactionWeights a {@link java.util.Map} object.
+	 */
 	public ReactionProbabilityWeight(WeightingPolicy<BioMetabolite, ReactionEdge, CompoundGraph> wp, Map<BioReaction,Double> reactionWeights) {
 		super(wp);
 		this.reactionWeights=reactionWeights;
@@ -75,6 +96,7 @@ public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioMetabo
 	/* (non-Javadoc)
 	 * @see parsebionet.computation.graphe.weighting.ProbabilityWeightPolicy#computeProba(parsebionet.computation.graphe.BioGraph)
 	 */
+	/** {@inheritDoc} */
 	@Override
 	public void computeProba(CompoundGraph g){
 		
@@ -131,6 +153,8 @@ public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioMetabo
 
 
 	/**
+	 * <p>Getter for the field <code>reactionWeights</code>.</p>
+	 *
 	 * @return the reaction-weight map
 	 */
 	public Map<BioReaction, Double> getReactionWeights() {
@@ -139,6 +163,8 @@ public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioMetabo
 
 
 	/**
+	 * <p>Setter for the field <code>reactionWeights</code>.</p>
+	 *
 	 * @param reactionWeights the reaction-weight map to set
 	 */
 	public void setReactionWeights(Map<BioReaction, Double> reactionWeights) {

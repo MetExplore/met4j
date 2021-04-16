@@ -55,12 +55,24 @@ import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Set;
 
+/**
+ * <p>BioNetworkToMetexploreXml class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
 public class BioNetworkToMetexploreXml {
 
     private BioNetwork network;
     private String path;
     private OutputStreamWriter writer;
 
+    /**
+     * <p>Constructor for BioNetworkToMetexploreXml.</p>
+     *
+     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     * @param path a {@link java.lang.String} object.
+     */
     public BioNetworkToMetexploreXml(BioNetwork network, String path) {
 
         this.network = network;
@@ -68,6 +80,11 @@ public class BioNetworkToMetexploreXml {
 
     }
 
+    /**
+     * <p>write.</p>
+     *
+     * @throws java.io.IOException if any.
+     */
     public void write() throws IOException {
 
         writer = new OutputStreamWriter(new FileOutputStream(this.path), "ascii");

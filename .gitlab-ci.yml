@@ -48,7 +48,7 @@ deployCentral:
     - git config --global user.email "$env:GITLAB_USER_EMAIL"
     - git config --global user.name "$env:GITLAB_USER_NAME"
     - git checkout -B "$CI_BUILD_REF_NAME"
-    - mvn $MAVEN_CLI_OPTS release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true -DscmCommentPrefix="[skip ci]" -DupdateWorkingCopyVersions=false -DpushChanges=false
+    - mvn $MAVEN_CLI_OPTS release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true -DscmCommentPrefix="[skip ci]" -DupdateWorkingCopyVersions=false -DpushChanges=true
     - mvn $MAVEN_CLI_OPTS release:perform -Darguments=-Dgpg.passphrase=${GPG_PASSPHRASE}
   rules:
     - if: '$CI_COMMIT_BRANCH == "master" && ($CI_COMMIT_MESSAGE =~ /hotfix/ || $CI_COMMIT_MESSAGE =~ /release/)'

@@ -9,8 +9,6 @@ Met4j is composed by several maven modules:
 classes for handling metabolic networks
 - [met4j-io](met4j-io/README.md): for importing/exporting metabolic networks in several 
 formats (SBML, MetExploreXml, KEGG)
-- [met4j-flux](met4j-flux/README.md): for performing flux balance analysis, requires CPLEX
-or GLPK installed on your computer.
 
 The other modules are for the moment not documented or still in progress.
 
@@ -24,8 +22,8 @@ Install all modules :
 ```
 <dependency>
 <groupId>fr.inrae.toulouse.metexplore</groupId>
-<artifactId>met4j-core</artifactId>
-<version>RELEASE</version>
+<artifactId>met4j-toolbox</artifactId>
+<version>0.5.2</version>
 </dependency>
 ```
 
@@ -34,16 +32,18 @@ or a specific module (example : met4j-core ):
 <dependency>
 <groupId>fr.inrae.toulouse.metexplore</groupId>
 <artifactId>met4j-core</artifactId>
-<version>RELEASE</version>
+<version>0.5.2</version>
 </dependency>
 ```
+
+Replace the version number by the last version of met4j.
 
 #### From gitlab
 
 ```
 git clone https://forgemia.inra.fr/metexplore/met4j.git;
 cd met4j;
-mvn clean install  -DskipTests;
+mvn clean install 
 ```
 
 ### Tutorial

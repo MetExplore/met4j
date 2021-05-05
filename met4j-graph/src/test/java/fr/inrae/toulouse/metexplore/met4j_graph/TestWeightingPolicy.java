@@ -339,15 +339,67 @@ public class TestWeightingPolicy {
 		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp = new WeightsFromFile<>(filePath);
 		wp.setWeight(g);
 		
-		assertEquals("wrong weight after export", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
-		assertEquals("wrong weight after export", adWeight, g.getEdgeWeight(ad),Double.MIN_VALUE);
-		assertEquals("wrong weight after export", bcWeight, g.getEdgeWeight(bc),Double.MIN_VALUE);
-		assertEquals("wrong weight after export", bxWeight, g.getEdgeWeight(bx),Double.MIN_VALUE);
-		assertEquals("wrong weight after export", deWeight, g.getEdgeWeight(de),Double.MIN_VALUE);
-		assertEquals("wrong weight after export", ebWeight, g.getEdgeWeight(eb),Double.MIN_VALUE);
-		assertEquals("wrong weight after export", efWeight, g.getEdgeWeight(ef),Double.MIN_VALUE);
-		assertEquals("wrong weight after export", fcWeight, g.getEdgeWeight(fc),Double.MIN_VALUE);
-		assertEquals("wrong weight after export", ycWeight, g.getEdgeWeight(yc),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", adWeight, g.getEdgeWeight(ad),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", bcWeight, g.getEdgeWeight(bc),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", bxWeight, g.getEdgeWeight(bx),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", deWeight, g.getEdgeWeight(de),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", ebWeight, g.getEdgeWeight(eb),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", efWeight, g.getEdgeWeight(ef),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", fcWeight, g.getEdgeWeight(fc),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", ycWeight, g.getEdgeWeight(yc),Double.MIN_VALUE);
+
+	}
+
+	/**
+	 * Test the weights Import
+	 */
+	@Test
+	public void testWeightsFromFileImportII() {
+		Path tmpPath = null;
+		try {
+			tmpPath = Files.createTempFile("test_edgeWeightmport", ".tmp");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			Assert.fail("Creation of the temporary directory");
+		}
+		String filePath = "EdgeWeightTestFileII.tab";
+		try {
+			filePath = TestUtils.copyProjectResource(filePath, tmpPath.toFile());
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("problem while reading edge weight file");
+		}
+
+		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
+		abWeight=0.1;
+		bcWeight=0.2;
+		adWeight=0.3;
+		efWeight=0.4;
+		bxWeight=0.5;
+		ebWeight=0.6;
+		deWeight=0.7;
+		fcWeight=0.8;
+		ycWeight=0.9;
+
+		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp =
+				new WeightsFromFile<>(filePath)
+						.sep(",")
+						.sourceCol(0)
+						.targetCol(1)
+						.edgeLabelCol(2)
+						.weightCol(4);				;
+		wp.setWeight(g);
+
+		assertEquals("wrong weight after import", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", adWeight, g.getEdgeWeight(ad),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", bcWeight, g.getEdgeWeight(bc),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", bxWeight, g.getEdgeWeight(bx),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", deWeight, g.getEdgeWeight(de),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", ebWeight, g.getEdgeWeight(eb),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", efWeight, g.getEdgeWeight(ef),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", fcWeight, g.getEdgeWeight(fc),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", ycWeight, g.getEdgeWeight(yc),Double.MIN_VALUE);
 
 	}
 	

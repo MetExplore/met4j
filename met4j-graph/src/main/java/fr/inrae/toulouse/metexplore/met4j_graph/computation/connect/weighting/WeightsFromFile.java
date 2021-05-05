@@ -38,6 +38,8 @@ package fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -51,7 +53,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
  * Weighting policy using weights in file
  * Handled format :
  * tab separated
- * source vertex id,target vertex id,reaction id,weight
+ * source vertex id,target vertex id,edge label,weight
  * @author clement
  */
 public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends BioGraph<V,E>>
@@ -60,7 +62,43 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 	/** The file path. */
 	final String filePath;
 	boolean removeEdgeNotInFile=false;
-	
+
+	private String sep = "\t";
+	private int sourceCol = 0;
+	private int targetCol = 1;
+	private int edgeLabelCol = 2;
+	private int weightCol = 3;
+	private boolean skipHeader = false;
+
+	public WeightsFromFile removeEdgeNotInFile() {
+		this.removeEdgeNotInFile = true;
+		return this;
+	}
+	public WeightsFromFile sep(String sep) {
+		this.sep = sep;
+		return this;
+	}
+	public WeightsFromFile sourceCol(int sourceCol) {
+		this.sourceCol = sourceCol;
+		return this;
+	}
+	public WeightsFromFile targetCol(int targetCol) {
+		this.targetCol = targetCol;
+		return this;
+	}
+	public WeightsFromFile edgeLabelCol(int edgeLabelCol) {
+		this.edgeLabelCol = edgeLabelCol;
+		return this;
+	}
+	public WeightsFromFile weightCol(int weightCol) {
+		this.weightCol = weightCol;
+		return this;
+	}
+	public WeightsFromFile skipHeader() {
+		this.skipHeader = true;
+		return this;
+	}
+
 	/**
 	 * Instantiates a new weights from file.
 	 *
@@ -81,9 +119,6 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 		this.removeEdgeNotInFile=removeEdgeNotInFile;
 	}
 
-	/* (non-Javadoc)
-	 * @see parsebionet.applications.graphe.WeightingPolicy#setWeight(parsebionet.applications.graphe.BioGraph)
-	 */
 	@Override
 	public void setWeight(G g) {
 		HashSet<E> seenEdges = new HashSet<>();
@@ -92,28 +127,32 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 			BufferedReader in = new BufferedReader(new FileReader(filePath));
 			String inputLine;
 			int n = 0;
+			if(skipHeader){
+				in.readLine();
+				n++;
+			}
 			while ((inputLine = in.readLine()) != null){
 				n++;
-				if(inputLine.matches("\\S+\t\\S+\t\\S+\t\\S+")){
-					String[] lineParts = inputLine.split("\t");
-					E e = g.getEdge(lineParts[0], lineParts[1], lineParts[2]);
+				String[] lineParts = inputLine.split(sep);
+				if(lineParts.length > Collections.max(Arrays.asList(sourceCol,targetCol,edgeLabelCol,weightCol))){
+					E e = g.getEdge(lineParts[sourceCol], lineParts[targetCol], lineParts[edgeLabelCol]);
 					if(e!=null){
 						if(!seenEdges.contains(e)){
 							try{
-								double w = Double.parseDouble(lineParts[3]);
+								double w = Double.parseDouble(lineParts[weightCol]);
 								if(!Double.isNaN(w)){
 									g.setEdgeWeight(e, w);
 									seenEdges.add(e);
 								}else{
-									System.err.println("Edge "+lineParts[0]+"-("+lineParts[2]+")-"+lineParts[1]+" has NaN weight. line "+n+" skipped.");
+									System.err.println("Edge "+lineParts[sourceCol]+"-("+lineParts[edgeLabelCol]+")-"+lineParts[targetCol]+" has NaN weight. line "+n+" skipped.");
 								}
 								
 							}catch (NumberFormatException enf){
-								System.err.println("bad weight format line "+n+" : "+lineParts[3]);
+								System.err.println("bad weight format line "+n+" : "+lineParts[weightCol]);
 							}
 							
 						}else{
-							System.err.println("Edge "+lineParts[0]+"-("+lineParts[2]+")-"+lineParts[1]+" already set. line "+n+" skipped.");
+							System.err.println("Edge "+lineParts[sourceCol]+"-("+lineParts[edgeLabelCol]+")-"+lineParts[targetCol]+" already set. line "+n+" skipped.");
 						}
 					}else{
 						notInGraph++;
@@ -135,5 +174,4 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 			g.removeAllEdges(edgesToRemove);
 		}
 	}
-
 }

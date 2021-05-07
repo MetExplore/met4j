@@ -2,6 +2,7 @@ package fr.inrae.toulouse.metexplore.met4j_graph.io;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 
@@ -9,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 public class NodeMapping<V extends BioEntity,E extends Edge<V>, G extends BioGraph<V ,E>> {
 
@@ -39,9 +41,15 @@ public class NodeMapping<V extends BioEntity,E extends Edge<V>, G extends BioGra
                     System.err.println("Node " + id + " not found in graph");
                     return null;
                 case ADD:
-                    v = graph.createVertex(id);
-                    graph.addVertex(v);
-                    return v;
+                    if(!StringUtils.isVoid(id)){
+                        v = graph.createVertex(id);
+                        graph.addVertex(v);
+                        return v;
+                    }else{
+                        System.err.println("Id \"" + id + "\" is not valid");
+                        return null;
+                    }
+
             }
         }
         return null;
@@ -95,7 +103,7 @@ public class NodeMapping<V extends BioEntity,E extends Edge<V>, G extends BioGra
         return this;
     }
     public NodeMapping<V,E,G> columnSeparator(String sep){
-        this.sep=sep;
+        this.sep= Pattern.quote(sep);
         return this;
     }
 

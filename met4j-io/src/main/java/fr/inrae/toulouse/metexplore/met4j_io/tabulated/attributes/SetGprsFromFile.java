@@ -102,14 +102,12 @@ public class SetGprsFromFile extends AbstractSetAttributesFromFile {
             return false;
         }
 
-        int n = 0;
 
         BioCollection<BioReaction> reactionsView = this.getNetwork().getReactionsView();
 
         for(String id : this.getIdAttributeMap().keySet()) {
 
             BioReaction reaction = reactionsView.get(id);
-            n++;
 
             String gpr = this.getIdAttributeMap().get(id);
 
@@ -117,11 +115,11 @@ public class SetGprsFromFile extends AbstractSetAttributesFromFile {
                 GPR.createGPRfromString(this.getNetwork(), reaction, gpr);
             } catch (Exception e) {
                 e.printStackTrace();
-                System.err.println("GPR badly formatted line "+n);
+                System.err.println("GPR badly formatted for reaction "+reaction.getId());
             }
         }
 
-        System.err.println(n+" gene associations created");
+        System.err.println(this.getIdAttributeMap().size()+" gene associations created");
 
         return flag;
 

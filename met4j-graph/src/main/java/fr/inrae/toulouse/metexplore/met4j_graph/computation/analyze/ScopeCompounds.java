@@ -35,10 +35,8 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze;
 
-import java.util.Iterator; 
-import java.util.LinkedList; 
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
@@ -71,6 +69,19 @@ public class ScopeCompounds{
    
   /** The reactions to avoid. */ 
   private final BioCollection<BioReaction> reactionToAvoid;
+
+  /** define if the history of scope expansion should be stored*/
+  public void trace() {
+    traceExpansion=true;
+    trace.putAll(cpdToReach.stream().collect(Collectors.toMap(x -> x, x -> 0)));
+    trace.putAll(bootstrapCpds.stream().collect(Collectors.toMap(x -> x, x -> 0)));
+  }
+  public HashMap<BioEntity, Integer> getExpansionSteps() {
+    return trace;
+  }
+
+  private boolean traceExpansion=false;
+  private HashMap<BioEntity,Integer> trace = new LinkedHashMap<>();
    
   /** 
    * Instantiates a new scope class 
@@ -86,7 +97,7 @@ public class ScopeCompounds{
     this.inCpds=inCpds; 
     this.bootstrapCpds=bootstrapCpds; 
     this.cpdToReach=cpdToReach; 
-    this.reactionToAvoid=reactionToAvoid; 
+    this.reactionToAvoid=reactionToAvoid;
   } 
    
   /** 
@@ -102,7 +113,7 @@ public class ScopeCompounds{
     this.inCpds=inCpds; 
     this.bootstrapCpds=bootstrapCpds;
       this.cpdToReach = new BioCollection<>();
-    this.reactionToAvoid=reactionToAvoid; 
+    this.reactionToAvoid=reactionToAvoid;
   } 
    
   /** 
@@ -111,6 +122,8 @@ public class ScopeCompounds{
    * @return the scope network 
    */ 
   public BipartiteGraph getScopeNetwork() throws IllegalArgumentException{
+
+    int step = 1;
 
     //check network consistency
     if(!this.g.isConsistent()) throw new IllegalArgumentException("The network structure must be consistent with reaction reactant lists") ;
@@ -122,18 +135,21 @@ public class ScopeCompounds{
     //Go until their is no reaction with all its substrate available. 
     while(traversal.hasNext()){   
       BioReaction r = traversal.next();
+      if(traceExpansion) trace.put(r,step);
        
       //if a reaction is visited, all its reactants are available, consequently we add to the scope network the reaction and its neighborhood from the original graph 
       for(BipartiteEdge e : g.edgesOf(r)){
         if(!bootstrapCpds.contains(e.getV1()) && !bootstrapCpds.contains(e.getV2())){ //bootstrap compounds are not added to the scope network
           if(!scopeNetwork.containsVertex(e.getV1())){ 
-            scopeNetwork.addVertex(e.getV1()); 
+            scopeNetwork.addVertex(e.getV1());
+            if(traceExpansion) trace.put(e.getV1(),step);
           } 
           if(!scopeNetwork.containsVertex(e.getV2())){ 
-            scopeNetwork.addVertex(e.getV2()); 
+            scopeNetwork.addVertex(e.getV2());
+            if(traceExpansion) trace.put(e.getV2(),step);
           } 
           scopeNetwork.addEdge(e.getV1(), e.getV2(), e); 
-        } 
+        }
       } 
     } 
      

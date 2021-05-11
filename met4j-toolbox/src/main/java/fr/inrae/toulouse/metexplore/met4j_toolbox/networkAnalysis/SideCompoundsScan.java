@@ -28,10 +28,10 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
     @Option(name = "-o", usage = "output Side-Compounds file", required = true)
     public String outputPath = null;
 
-    @Option(name = "-s",aliases = {"--onlySides"}, usage = "output flagged as side-Compounds only")
+    @Option(name = "-s",aliases = {"--onlySides"}, usage = "output compounds flagged as side-Compounds only")
     public boolean sideOnly = false;
 
-    @Option(name = "-id",aliases = {"--onlyIds"}, usage = "do not report values in output")
+    @Option(name = "-id",aliases = {"--onlyIds"}, usage = "do not report values in output, export ids list of compounds flagged as side-Compounds, allowing piping results")
     public boolean noReportValue = false;
 
     @Option(name = "-d", aliases = {"--degree"}, usage = "flag as side compounds any compounds with degree above threshold", forbids={"-dp"})
@@ -43,7 +43,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
     @Option(name = "-cc", aliases = {"--noCarbonSkeleton"}, usage = "flag as side compound any compounds with less than 2 carbons in formula")
     public Boolean flagInorganic = false;
 
-    @Option(name = "-pe", aliases = {"--paralleledge"}, usage = "flag as side compound any compound with a number of incident parallel edge above the given threshold")
+    @Option(name = "-er", aliases = {"--edgeRedundancy"}, usage = "flag as side compound any compound with a number of redundancy in incident edges (parallel edges connecting to the same neighbor) above the given threshold")
     public double parallelEdge = Double.NaN;
 
 
@@ -107,6 +107,9 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
             l.append("\tIS_SIDE\n");
             fw.write(l.toString());
         }
+
+        //if ids only, report side only
+        if(noReportValue) sideOnly=true;
 
         int count = 0;
         for(BioMetabolite v : graph.vertexSet()){
@@ -175,9 +178,9 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
                 "This tool attempts to propose a list of side compounds according to specific criteria:  \n" +
                 "- *Degree*: Compounds with an uncommonly high number of neighbors can betray a lack of process specificity.  \n" +
                 "High degree compounds typically include water and most main cofactors (CoA, ATP, NADPH...) but can also include central compounds such as pyruvate or acetyl-CoA  \n" +
-                "- *Incident Parallel Edges*: Similar to degree, this criteria assume that side compounds are involved in many reactions, but in pairs with other side compounds.\n" +
-                "Therefore, the transition from ATP to ADP will appear multiple time in the network, creating 'parallel edges' between these two neighbors.\n" +
-                "Having a high number of edges that don't extends one's neighborhood can point out cofactors while keeping converging pathways' products like pyruvate aside.  \n" +
+                "- *Edge Redundancy*: Similar to degree, this criteria assume that side compounds are involved in many reactions, but in pairs with other side compounds.\n" +
+                "Therefore, the transition from ATP to ADP will appear multiple time in the network, creating redundant 'parallel edges' between these two neighbors.\n" +
+                "Having a high number of redundancy, i.e. edges that don't extends one's neighborhood, can point out cofactors while keeping converging pathways' products like pyruvate aside.  \n" +
                 "- *Carbon Count*: Metabolic \"waste\", or degradation end-product such as ammonia or carbon dioxide are usually considered as side compounds.\n" +
                 "Most of them are inorganic compound, another ill-defined concept, sometimes defined as compound lacking C-C or C-H bonds. Since chemical structure is rarely available " +
                 "in SBML model beyond chemical formula, we use a less restrictive criterion by flagging compound with one or no carbons. This cover most inorganic compounds, but include few compounds" +

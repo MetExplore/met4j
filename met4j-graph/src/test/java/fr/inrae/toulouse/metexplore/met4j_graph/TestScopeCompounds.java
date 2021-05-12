@@ -207,4 +207,81 @@ public class TestScopeCompounds {
 
 	}
 
+	@Test
+	public void testGetScopeNetwork5() {
+		ScopeCompounds sc = new ScopeCompounds(g, in, bs, reactionsToAvoid);
+		sc.includeBootstrapsInScope();
+		BipartiteGraph scope = sc.getScopeNetwork();
+		assertEquals(6, scope.compoundVertexSet().size());
+		assertEquals(3, scope.reactionVertexSet().size());
+
+		assertTrue(scope.compoundVertexSet().contains(v1));
+		assertTrue(scope.compoundVertexSet().contains(v3));
+		assertTrue(scope.compoundVertexSet().contains(v4));
+		assertTrue(scope.compoundVertexSet().contains(v5));
+		assertTrue(scope.compoundVertexSet().contains(v7));
+		assertTrue(scope.compoundVertexSet().contains(side));
+
+		assertTrue(scope.reactionVertexSet().contains(r1));
+		assertTrue(scope.reactionVertexSet().contains(r3));
+		assertTrue(scope.reactionVertexSet().contains(r6));
+	}
+
+	@Test
+	public void testGetScopeNetwork6() {
+		BioCollection<BioMetabolite> seeds = new BioCollection<>();
+		seeds.add(v1,v5);
+		ScopeCompounds sc = new ScopeCompounds(g, seeds, bs, reactionsToAvoid);
+		sc.expandThroughBootstraps();
+		BipartiteGraph scope = sc.getScopeNetwork();
+		System.out.println(scope.vertexSet());
+		assertEquals(7, scope.compoundVertexSet().size());
+		assertEquals(4, scope.reactionVertexSet().size());
+
+		assertTrue(scope.compoundVertexSet().contains(v1));
+		assertTrue(scope.compoundVertexSet().contains(v3));
+		assertTrue(scope.compoundVertexSet().contains(v4));
+		assertTrue(scope.compoundVertexSet().contains(v5));
+		assertTrue(scope.compoundVertexSet().contains(v7));
+		assertTrue(scope.compoundVertexSet().contains(side));
+		assertTrue(scope.compoundVertexSet().contains(side2));
+
+		assertTrue(scope.reactionVertexSet().contains(r1));
+		assertTrue(scope.reactionVertexSet().contains(r3));
+		assertTrue(scope.reactionVertexSet().contains(r6));
+		assertTrue(scope.reactionVertexSet().contains(r4));
+	}
+
+	@Test
+	public void testGetScopeNetwork7() {
+		try{
+			ScopeCompounds sc = new ScopeCompounds(g, in, in, reactionsToAvoid);
+			fail("non disjoint seeds and bootstrap should throw illegal args exception");
+		}catch (IllegalArgumentException e){
+
+		}catch (Exception e2){
+			fail("non disjoint seeds and bootstrap should throw illegal args exception");
+		}
+	}
+
+	@Test
+	public void testGetScopeNetwork8() {
+		ScopeCompounds sc = new ScopeCompounds(g, in, bs, reactionsToAvoid);
+		sc.expandThroughBootstraps();
+		BipartiteGraph scope = sc.getScopeNetwork();
+		assertEquals(6, scope.compoundVertexSet().size());
+		assertEquals(3, scope.reactionVertexSet().size());
+
+		assertTrue(scope.compoundVertexSet().contains(v1));
+		assertTrue(scope.compoundVertexSet().contains(v3));
+		assertTrue(scope.compoundVertexSet().contains(v4));
+		assertTrue(scope.compoundVertexSet().contains(v5));
+		assertTrue(scope.compoundVertexSet().contains(v7));
+		assertTrue(scope.compoundVertexSet().contains(side));
+
+		assertTrue(scope.reactionVertexSet().contains(r1));
+		assertTrue(scope.reactionVertexSet().contains(r3));
+		assertTrue(scope.reactionVertexSet().contains(r6));
+	}
+
 }

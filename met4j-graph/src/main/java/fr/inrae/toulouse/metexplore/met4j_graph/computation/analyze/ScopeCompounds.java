@@ -59,7 +59,7 @@ public class ScopeCompounds{
   private final BipartiteGraph g;
    
   /** The available compounds. */ 
-  private final BioCollection <BioMetabolite> inCpds;
+  private final BioCollection <BioMetabolite> seedCpds;
    
   /** The bootstrap compounds, i.e. side compounds. */ 
   private final BioCollection<BioMetabolite> bootstrapCpds;
@@ -82,19 +82,32 @@ public class ScopeCompounds{
 
   private boolean traceExpansion=false;
   private HashMap<BioEntity,Integer> trace = new LinkedHashMap<>();
+
+  public void expandThroughBootstraps() {
+    this.expandThroughBootstraps = true;
+    this.includeBootstraps = true;
+  }
+
+  public void includeBootstrapsInScope() {
+    this.includeBootstraps = true;
+  }
+
+  private boolean expandThroughBootstraps = false;
+  private boolean includeBootstraps = false;
    
   /** 
    * Instantiates a new scope class 
    * 
    * @param bipartiteGraph the bipartite graph 
-   * @param inCpds the available compounds. 
+   * @param seedCpds the available compounds. 
    * @param bootstrapCpds The bootstrap compounds, i.e. side compounds. 
    * @param cpdToReach The compounds to reach (optional) 
    * @param reactionToAvoid the reactions to avoid 
    */ 
-  public ScopeCompounds(BipartiteGraph bipartiteGraph, BioCollection<BioMetabolite> inCpds, BioCollection<BioMetabolite> bootstrapCpds, BioCollection<BioMetabolite> cpdToReach, BioCollection<BioReaction> reactionToAvoid){
-      this.g =bipartiteGraph;
-    this.inCpds=inCpds; 
+  public ScopeCompounds(BipartiteGraph bipartiteGraph, BioCollection<BioMetabolite> seedCpds, BioCollection<BioMetabolite> bootstrapCpds, BioCollection<BioMetabolite> cpdToReach, BioCollection<BioReaction> reactionToAvoid){
+    if(!Collections.disjoint(seedCpds,bootstrapCpds)) throw new IllegalArgumentException("A compound can not be simultaneously seed and bootstrap");
+    this.g =bipartiteGraph;
+    this.seedCpds =seedCpds;
     this.bootstrapCpds=bootstrapCpds; 
     this.cpdToReach=cpdToReach; 
     this.reactionToAvoid=reactionToAvoid;
@@ -104,15 +117,16 @@ public class ScopeCompounds{
    * Instantiates a new scope class. 
    * 
    * @param bipartiteGraph the bipartite graph 
-   * @param inCpds the available compounds. 
+   * @param seedCpds the available compounds.
    * @param bootstrapCpds The bootstrap compounds, i.e. side compounds. 
    * @param reactionToAvoid the reactions to avoid 
    */ 
-  public ScopeCompounds(BipartiteGraph bipartiteGraph, BioCollection <BioMetabolite> inCpds, BioCollection<BioMetabolite> bootstrapCpds, BioCollection<BioReaction> reactionToAvoid){
-      this.g =bipartiteGraph;
-    this.inCpds=inCpds; 
+  public ScopeCompounds(BipartiteGraph bipartiteGraph, BioCollection <BioMetabolite> seedCpds, BioCollection<BioMetabolite> bootstrapCpds, BioCollection<BioReaction> reactionToAvoid){
+    if(!Collections.disjoint(seedCpds,bootstrapCpds)) throw new IllegalArgumentException("A compound can not be simultaneously seed and bootstrap");
+    this.g =bipartiteGraph;
+    this.seedCpds =seedCpds;
     this.bootstrapCpds=bootstrapCpds;
-      this.cpdToReach = new BioCollection<>();
+    this.cpdToReach = new BioCollection<>();
     this.reactionToAvoid=reactionToAvoid;
   } 
    
@@ -139,7 +153,7 @@ public class ScopeCompounds{
        
       //if a reaction is visited, all its reactants are available, consequently we add to the scope network the reaction and its neighborhood from the original graph 
       for(BipartiteEdge e : g.edgesOf(r)){
-        if(!bootstrapCpds.contains(e.getV1()) && !bootstrapCpds.contains(e.getV2())){ //bootstrap compounds are not added to the scope network
+        if(includeBootstraps || (!bootstrapCpds.contains(e.getV1()) && !bootstrapCpds.contains(e.getV2()))){ //bootstrap compounds are not added to the scope network
           if(!scopeNetwork.containsVertex(e.getV1())){ 
             scopeNetwork.addVertex(e.getV1());
             if(traceExpansion) trace.put(e.getV1(),step);
@@ -205,9 +219,9 @@ public class ScopeCompounds{
        * Instantiates a new traversal. 
        */
       Traversal() {
-          this.visitedCompounds.addAll(inCpds);
+          this.visitedCompounds.addAll(seedCpds);
           this.visitedCompounds.addAll(bootstrapCpds);
-          for(BioMetabolite cpd : inCpds){
+          for(BioMetabolite cpd : seedCpds){
               visit(cpd);
           } 
       } 
@@ -236,7 +250,7 @@ public class ScopeCompounds{
        * @param entity the entity 
        */ 
       private void visit(BioMetabolite entity){
-        if(!bootstrapCpds.contains(entity)){ //skip bootstrap compounds
+        if(!includeBootstraps || !bootstrapCpds.contains(entity) || expandThroughBootstraps){ //skip bootstrap compounds
           Set<BioEntity> successor = g.successorListOf(entity);
           for (BioEntity neighbor : g.neighborListOf(entity)) {
               BioReaction r = null; 
@@ -259,8 +273,7 @@ public class ScopeCompounds{
        */ 
       @Override 
       public BioReaction next() { 
-           
-          //removes from front of queue 
+          //removes from front of queue
         BioReaction nextReaction = reactionQueue.remove();
         boolean available = false; 
         boolean reverse = false; 
@@ -285,24 +298,31 @@ public class ScopeCompounds{
             reverse=true; 
           } 
         } 
-        if(!available && reactionQueue.isEmpty()) return null; //no available reaction
+        if(!available) return null; //no available reaction
 
         visitedReactions.add(nextReaction); //mark visited reaction
          
         //mark products as visited and add products' consuming reactions to the queue 
-        if(!reverse){ 
-          for(BioMetabolite neighbor : nextReaction.getRightsView()){
-            if(!visitedCompounds.contains(neighbor)){
-                visit(neighbor);
-            } 
-          } 
-        }else{ 
-          for(BioMetabolite neighbor : nextReaction.getLeftsView()){
-              this.visitedCompounds.add(neighbor);
+        if(!reverse){
+          for(BioMetabolite neighbor : nextReaction.getRightsView()) {
+            if (!visitedCompounds.contains(neighbor)) {
               visit(neighbor);
-          } 
-        } 
-         
+            } else if (expandThroughBootstraps && bootstrapCpds.contains(neighbor)) {
+              visit(neighbor);
+            }
+          }
+        }else{
+          for(BioMetabolite neighbor : nextReaction.getLeftsView()) {
+//              this.visitedCompounds.add(neighbor);
+//              visit(neighbor);
+//        }
+            if (!visitedCompounds.contains(neighbor)) {
+              visit(neighbor);
+            } else if (expandThroughBootstraps && bootstrapCpds.contains(neighbor)) {
+              visit(neighbor);
+            }
+          }
+        }
         //return the available reaction 
         return nextReaction; 
       } 

@@ -325,6 +325,29 @@ public class ExportGraph {
 		}
 	}
 
+	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> void toGmlWithAttributes(G graph, String outputPath, Map<V,? extends Object> att, String attName){
+		try {
+			GmlExporter<V, E> gml
+					= new GmlExporter<>(V::getId);
+			gml.setParameter(GmlExporter.Parameter.EXPORT_EDGE_LABELS, true);
+			gml.setParameter(GmlExporter.Parameter.EXPORT_VERTEX_LABELS, true);
+			gml.setParameter(GmlExporter.Parameter.EXPORT_CUSTOM_VERTEX_ATTRIBUTES, true);
+			gml.setVertexAttributeProvider(v -> {
+				Map<String, Attribute> att2 = new HashMap<String, Attribute>();
+				att2.put(attName, DefaultAttribute.createAttribute(att.get(v).toString()));
+				return att2;
+			});
+
+			FileWriter fw = new FileWriter(new File(outputPath).getAbsoluteFile());
+			PrintWriter pw = new PrintWriter(fw);
+			gml.exportGraph(graph, pw);
+			System.out.println(outputPath+" created.");
+		} catch (IOException e) {
+			System.err.println("Error in file export!");
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Export jgrapht graph into gml format
 	 *

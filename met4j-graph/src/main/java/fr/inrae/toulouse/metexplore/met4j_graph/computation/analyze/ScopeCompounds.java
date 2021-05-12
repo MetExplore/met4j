@@ -73,8 +73,13 @@ public class ScopeCompounds{
   /** define if the history of scope expansion should be stored*/
   public void trace() {
     traceExpansion=true;
-    trace.putAll(cpdToReach.stream().collect(Collectors.toMap(x -> x, x -> 0)));
-    trace.putAll(bootstrapCpds.stream().collect(Collectors.toMap(x -> x, x -> 0)));
+
+    for(BioMetabolite v : seedCpds){
+      trace.put(v,0);
+    }
+    for(BioMetabolite v : bootstrapCpds){
+      trace.put(v,0);
+    }
   }
   public HashMap<BioEntity, Integer> getExpansionSteps() {
     return trace;
@@ -153,18 +158,21 @@ public class ScopeCompounds{
        
       //if a reaction is visited, all its reactants are available, consequently we add to the scope network the reaction and its neighborhood from the original graph 
       for(BipartiteEdge e : g.edgesOf(r)){
-        if(includeBootstraps || (!bootstrapCpds.contains(e.getV1()) && !bootstrapCpds.contains(e.getV2()))){ //bootstrap compounds are not added to the scope network
-          if(!scopeNetwork.containsVertex(e.getV1())){ 
-            scopeNetwork.addVertex(e.getV1());
-            if(traceExpansion) trace.put(e.getV1(),step);
+        BioEntity v1 = e.getV1();
+        BioEntity v2 = e.getV2();
+        if(includeBootstraps || (!bootstrapCpds.contains(v1) && !bootstrapCpds.contains(v2))){ //bootstrap compounds are not added to the scope network
+          if(!scopeNetwork.containsVertex(v1)){
+            scopeNetwork.addVertex(v1);
+            if(traceExpansion && !trace.containsKey(v1)) trace.put(v1,step);
           } 
-          if(!scopeNetwork.containsVertex(e.getV2())){ 
-            scopeNetwork.addVertex(e.getV2());
-            if(traceExpansion) trace.put(e.getV2(),step);
+          if(!scopeNetwork.containsVertex(v2)){
+            scopeNetwork.addVertex(v2);
+            if(traceExpansion && !trace.containsKey(v2)) trace.put(v2,step);
           } 
-          scopeNetwork.addEdge(e.getV1(), e.getV2(), e); 
+          scopeNetwork.addEdge(v1, v2, e);
         }
-      } 
+      }
+      step=step+1;
     } 
      
     //If there is some targets compounds, a pruning step is necessary to iteratively remove reactions available but that do not lead to any target compoudns 

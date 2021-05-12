@@ -27,11 +27,15 @@ public class ScopeNetwork extends AbstractMet4jApplication {
     @Option(name = "-o", usage="output file: path to the .gml file where the results scope network will be exported", required = true)
     String output;
 
-    //oprtions
-    @Option(name = "-sc", aliases = {"--sides"}, usage = "an optional file containing list of side compounds to ignore")
+    //options
+    @Option(name = "-sc", aliases = {"--sides"}, usage = "an optional file containing list of ubiquitous side compounds to be considered available by default but ignored during expansion")
     public String sideCompoundFile = null;
+    @Option(name = "-ssc", aliases = {"--showsides"}, usage = "show side compounds in output network", depends={"-sc"})
+    public boolean includeSides = false;
     @Option(name = "-ir", aliases = {"--ignore"}, usage = "an optional file containing list of reaction to ignore (forbid inclusion in scope")
     public String reactionToIgnoreFile = null;
+    @Option(name = "-t", aliases = {"--trace"}, usage = "trace inclusion step index for each node in output")
+    public boolean trace = false;
 
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
         ScopeNetwork app = new ScopeNetwork();
@@ -61,8 +65,15 @@ public class ScopeNetwork extends AbstractMet4jApplication {
         }
 
         ScopeCompounds scopeComp = new ScopeCompounds(graph, seeds, bootstraps,forbidden);
+        if(includeSides) scopeComp.includeBootstrapsInScope();
+        if(trace) scopeComp.trace();
         BipartiteGraph scope = scopeComp.getScopeNetwork();
-        ExportGraph.toGml(scope,output);
+        if(trace){
+            ExportGraph.toGmlWithAttributes(scope,output,scopeComp.getExpansionSteps(),"step");
+        }else{
+            ExportGraph.toGml(scope,output);
+        }
+
     }
 
     @Override

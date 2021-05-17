@@ -59,7 +59,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein;
 
 import java.util.Comparator;
 
-public class TestMerger {
+public class TestEdgeMerger {
 	
 	public static CompoundGraph g;
 	public static BioNetwork bn;

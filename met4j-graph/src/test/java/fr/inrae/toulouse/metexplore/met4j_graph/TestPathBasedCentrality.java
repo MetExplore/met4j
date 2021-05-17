@@ -51,7 +51,7 @@ import org.junit.Test;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
-public class TestGraphCentrality {
+public class TestPathBasedCentrality {
 	
 	public static CompoundGraph toyGraph;
 	public static CompoundGraph linearGraph;

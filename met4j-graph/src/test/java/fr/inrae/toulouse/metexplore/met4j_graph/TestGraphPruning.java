@@ -46,7 +46,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class TestExtractConnectingSubgraph {
+public class TestGraphPruning {
 
     public static ReactionGraph rg;
     public static BioMetabolite v1,v2,v3;

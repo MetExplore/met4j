@@ -99,85 +99,16 @@ public class Bionetwork2BioGraph {
 		
 		return g;
 	}
-	
-	
+
+
 	public ReactionGraph getReactionGraph(){
 		return getReactionGraph(new BioCollection<>());
 	}
-	
+
 	/**
 	 * Builds the graph.
 	 */
 	public ReactionGraph getReactionGraph(BioCollection<BioMetabolite> cofactors){
-		ReactionGraph g = new ReactionGraph();
-		
-		for(BioReaction r : bn.getReactionsView()){
-			if(!bn.getLefts(r).isEmpty() && !bn.getRights(r).isEmpty()){
-				g.addVertex(r);
-			}
-		}
-		
-		for(BioMetabolite c : bn.getMetabolitesView()){
-			if(!cofactors.contains(c)){
-				Collection<BioReaction> left = bn.getReactionsFromSubstrate(c);
-				Collection<BioReaction> right = bn.getReactionsFromProduct(c);
-				
-				if(!left.isEmpty() && !right.isEmpty()){
-					for(BioReaction v1 : left){
-						if(!bn.getLefts(v1).isEmpty() && !bn.getRights(v1).isEmpty()){
-							for(BioReaction v2 : right){
-								if(v1 != v2 && !bn.getLefts(v2).isEmpty() && !bn.getRights(v2).isEmpty()){
-									g.addEdge(v2, v1, new CompoundEdge(v2,v1,c));
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		return g;
-	}
-
-	public ReactionGraph getReactionGraph2(BioCollection<BioMetabolite> cofactors){
-
-
-		ReactionGraph g = new ReactionGraph();
-		HashSet<BioReaction> reactionsToIgnore = new HashSet<>();
-
-		for(BioReaction r : bn.getReactionsView()){
-			if(!r.getLeftsView().isEmpty() && !r.getRightsView().isEmpty()){
-				g.addVertex(r);
-			}else{
-				reactionsToIgnore.add(r);
-			}
-		}
-
-		BioCollection<BioMetabolite> metabolites = 	new BioCollection<>(bn.getMetabolitesView());
-		metabolites.removeAll(cofactors);
-
-		for(BioMetabolite c : metabolites){
-			Collection<BioReaction> left = bn.getReactionsFromSubstrate(c);
-			left.removeAll(reactionsToIgnore);
-
-			if(!left.isEmpty()){
-				Collection<BioReaction> right = bn.getReactionsFromProduct(c);
-				right.removeAll(reactionsToIgnore);
-
-				if(!right.isEmpty()){
-					for(BioReaction v1 : left){
-						for(BioReaction v2 : right){
-							if(v1 != v2){
-								g.addEdge(v2, v1, new CompoundEdge(v2,v1,c));
-							}
-						}
-					}
-				}
-			}
-		}
-		return g;
-	}
-
-	public ReactionGraph getReactionGraph3(BioCollection<BioMetabolite> cofactors){
 
 		ReactionGraph g = new ReactionGraph();
 		HashMap<BioMetabolite,BioCollection<BioReaction>> consumingReaction = new HashMap<>();
@@ -202,9 +133,11 @@ public class Bionetwork2BioGraph {
 						});
 			}
 		}
-		Set<BioMetabolite> toRemove = consumingReaction.keySet();
-		toRemove.retainAll(productingReaction.keySet());
-		consumingReaction.remove(toRemove);
+
+		consumingReaction.keySet().removeAll(cofactors);
+		productingReaction.keySet().removeAll(cofactors);
+
+		consumingReaction.keySet().retainAll(productingReaction.keySet());
 
 		consumingReaction.forEach((c, sources) -> sources.forEach((r1) -> {
 			productingReaction.get(c).forEach(r2 -> {

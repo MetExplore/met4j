@@ -140,16 +140,16 @@ public class Bionetwork2BioGraph {
 
 	public ReactionGraph getReactionGraph2(BioCollection<BioMetabolite> cofactors){
 
+
 		ReactionGraph g = new ReactionGraph();
 		HashSet<BioReaction> reactionsToIgnore = new HashSet<>();
 
-			for(BioReaction r : bn.getReactionsView()){
-			if(!r.getLeftsView().isEmpty() && !r.getLeftsView().isEmpty()){
+		for(BioReaction r : bn.getReactionsView()){
+			if(!r.getLeftsView().isEmpty() && !r.getRightsView().isEmpty()){
 				g.addVertex(r);
 			}else{
 				reactionsToIgnore.add(r);
 			}
-
 		}
 
 		BioCollection<BioMetabolite> metabolites = 	new BioCollection<>(bn.getMetabolitesView());
@@ -157,15 +157,18 @@ public class Bionetwork2BioGraph {
 
 		for(BioMetabolite c : metabolites){
 			Collection<BioReaction> left = bn.getReactionsFromSubstrate(c);
-			Collection<BioReaction> right = bn.getReactionsFromProduct(c);
 			left.removeAll(reactionsToIgnore);
-			right.removeAll(reactionsToIgnore);
 
-			if(!left.isEmpty() && !right.isEmpty()){
-				for(BioReaction v1 : left){
-					for(BioReaction v2 : right){
-						if(v1 != v2){
-							g.addEdge(v2, v1, new CompoundEdge(v2,v1,c));
+			if(!left.isEmpty()){
+				Collection<BioReaction> right = bn.getReactionsFromProduct(c);
+				right.removeAll(reactionsToIgnore);
+
+				if(!right.isEmpty()){
+					for(BioReaction v1 : left){
+						for(BioReaction v2 : right){
+							if(v1 != v2){
+								g.addEdge(v2, v1, new CompoundEdge(v2,v1,c));
+							}
 						}
 					}
 				}
@@ -181,84 +184,38 @@ public class Bionetwork2BioGraph {
 		HashMap<BioMetabolite,BioCollection<BioReaction>> productingReaction = new HashMap<>();
 
 		for(BioReaction r : bn.getReactionsView()){
-			if(!r.getLeftsView().isEmpty() && !r.getLeftsView().isEmpty()) {
+			if(!r.getLeftsView().isEmpty() && !r.getRightsView().isEmpty()) {
 				g.addVertex(r);
 				r.getLeftsView()
 						.forEach(s -> {
-							consumingReaction.computeIfAbsent(s, k -> new BioCollection<>());
-							consumingReaction.get(s).add(r);
+							consumingReaction.computeIfAbsent(s, k -> new BioCollection<>()).add(r);
 							if (r.isReversible()) {
-								productingReaction.computeIfAbsent(s, k -> new BioCollection<>());
-								productingReaction.get(s).add(r);
+								productingReaction.computeIfAbsent(s, k -> new BioCollection<>()).add(r);
 							}
 						});
 				r.getRightsView()
 						.forEach(p -> {
-							productingReaction.computeIfAbsent(p, k -> new BioCollection<>());
-							productingReaction.get(p).add(r);
+							productingReaction.computeIfAbsent(p, k -> new BioCollection<>()).add(r);
 							if (r.isReversible()) {
-								consumingReaction.computeIfAbsent(p, k -> new BioCollection<>());
-								consumingReaction.get(p).add(r);
+								consumingReaction.computeIfAbsent(p, k -> new BioCollection<>()).add(r);
 							}
 						});
 			}
 		}
+		Set<BioMetabolite> toRemove = consumingReaction.keySet();
+		toRemove.retainAll(productingReaction.keySet());
+		consumingReaction.remove(toRemove);
 
-		consumingReaction.remove(consumingReaction.keySet().retainAll(productingReaction.keySet()));
+		consumingReaction.forEach((c, sources) -> sources.forEach((r1) -> {
+			productingReaction.get(c).forEach(r2 -> {
 
-		consumingReaction.forEach((c, sources) -> {
-			sources.forEach((r1) -> {
-				productingReaction.get(c).forEach(r2 -> {
+				if(r1!=r2) g.addEdge(r2,r1,new CompoundEdge(r2,r1,c));
 
-					if(r1!=r2) g.addEdge(r1,r2,new CompoundEdge(r1,r2,c));
-
-				});
 			});
-		});
-
-
+		}));
 		return g;
 	}
 
-	public ReactionGraph getReactionGraph4(BioCollection<BioMetabolite> cofactors){
-
-		ReactionGraph g = new ReactionGraph();
-		HashMap<BioMetabolite,BioCollection<BioReaction>> consumingReaction = new HashMap<>();
-		HashMap<BioMetabolite,BioCollection<BioReaction>> productingReaction = new HashMap<>();
-
-		for(BioReaction r : bn.getReactionsView()){
-			if(!r.getLeftsView().isEmpty() && !r.getLeftsView().isEmpty()) {
-				g.addVertex(r);
-				for (BioMetabolite s : r.getLeftsView()) {
-					consumingReaction.computeIfAbsent(s, k -> new BioCollection<>());
-					consumingReaction.get(s).add(r);
-					if (r.isReversible()) {
-						productingReaction.computeIfAbsent(s, k -> new BioCollection<>());
-						productingReaction.get(s).add(r);
-					}
-				}
-				for (BioMetabolite p : r.getRightsView()) {
-					productingReaction.computeIfAbsent(p, k -> new BioCollection<>());
-					productingReaction.get(p).add(r);
-					if (r.isReversible()) {
-						consumingReaction.computeIfAbsent(p, k -> new BioCollection<>());
-						consumingReaction.get(p).add(r);
-					}
-				}
-			}
-		}
-
-		consumingReaction.remove(consumingReaction.keySet().retainAll(productingReaction.keySet()));
-
-		//todo
-
-
-
-		return g;
-	}
-
-
-	
 	
 	public BipartiteGraph getBipartiteGraph(){
 		BipartiteGraph g = new BipartiteGraph();

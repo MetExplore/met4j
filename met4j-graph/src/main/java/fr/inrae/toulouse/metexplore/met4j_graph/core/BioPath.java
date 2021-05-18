@@ -188,24 +188,24 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 	@Override
 	public String toString(){
 		String currentNode = this.getStartVertex().getId();
-		String label = currentNode;
+		StringBuilder label = new StringBuilder(currentNode);
 		
 		for(E edge : this.getEdgeList()){
 			
 			if(!edge.getV1().getId().equals(currentNode)){
 				//undirected case
 				String nextNode = edge.getV1().getId();
-				label+="<-["+ edge +"]->"+nextNode;
+				label.append("<-[").append(edge).append("]->").append(nextNode);
 				currentNode=nextNode;
 			}else{
 				//directed case
 				String nextNode = edge.getV2().getId();
-				label+="-["+ edge +"]->"+nextNode;
+				label.append("-[").append(edge).append("]->").append(nextNode);
 				currentNode=nextNode;
 			}
 			
 		}
-		return label;
+		return label.toString();
 	}
 
 	@Override

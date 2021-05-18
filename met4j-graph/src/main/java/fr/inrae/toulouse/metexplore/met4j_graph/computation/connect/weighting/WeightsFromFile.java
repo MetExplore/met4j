@@ -70,31 +70,31 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 	private int weightCol = 3;
 	private boolean skipHeader = false;
 
-	public WeightsFromFile removeEdgeNotInFile() {
+	public WeightsFromFile<V,E,G> removeEdgeNotInFile() {
 		this.removeEdgeNotInFile = true;
 		return this;
 	}
-	public WeightsFromFile sep(String sep) {
+	public WeightsFromFile<V,E,G> sep(String sep) {
 		this.sep = sep;
 		return this;
 	}
-	public WeightsFromFile sourceCol(int sourceCol) {
+	public WeightsFromFile<V,E,G> sourceCol(int sourceCol) {
 		this.sourceCol = sourceCol;
 		return this;
 	}
-	public WeightsFromFile targetCol(int targetCol) {
+	public WeightsFromFile<V,E,G> targetCol(int targetCol) {
 		this.targetCol = targetCol;
 		return this;
 	}
-	public WeightsFromFile edgeLabelCol(int edgeLabelCol) {
+	public WeightsFromFile<V,E,G> edgeLabelCol(int edgeLabelCol) {
 		this.edgeLabelCol = edgeLabelCol;
 		return this;
 	}
-	public WeightsFromFile weightCol(int weightCol) {
+	public WeightsFromFile<V,E,G> weightCol(int weightCol) {
 		this.weightCol = weightCol;
 		return this;
 	}
-	public WeightsFromFile skipHeader() {
+	public WeightsFromFile<V,E,G> skipHeader() {
 		this.skipHeader = true;
 		return this;
 	}

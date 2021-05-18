@@ -43,7 +43,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
-import java.util.UUID;
 
 /**
  * The Class MergedGraph. Type of graph for which each edges contain a collection of sub-edges.
@@ -98,13 +97,7 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 			Constructor<? extends BioEntity> declaredConstructor = null;
 			declaredConstructor = this.vertexSet().iterator().next().getClass().getDeclaredConstructor(String.class);
 			v = (V) declaredConstructor.newInstance(id);
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
+		} catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		return v;
@@ -112,7 +105,7 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 
 	@Override
 	public MetaEdge<V, E> createEdge(V v1, V v2) {
-		return new MetaEdge<V, E>(v1,v2, new HashSet<>());
+		return new MetaEdge<>(v1, v2, new HashSet<>());
 	}
 
 
@@ -123,7 +116,7 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 	}
 	@Override
 	public MetaEdge<V, E> createEdgeFromModel(V v1, V v2, MetaEdge<V, E> edge){
-		return new MetaEdge(v1, v2, edge.getEdgeList());
+		return new MetaEdge<V, E>(v1, v2, edge.getEdgeList());
 	}
 
 }

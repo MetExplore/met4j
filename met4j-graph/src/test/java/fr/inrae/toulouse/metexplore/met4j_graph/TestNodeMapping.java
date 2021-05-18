@@ -9,8 +9,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.openscience.cdk.tools.SystemOutLoggingTool;
 
 import java.io.IOException;
 import java.nio.file.Files;

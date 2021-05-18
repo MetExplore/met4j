@@ -43,8 +43,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
 
-import java.util.UUID;
-
 /**
  * The Class PathwayGraph allow to build a directed graph representing connections between pathways in a bionetwork.
  * It first identify the sources and inner compounds of a pathways.
@@ -82,7 +80,7 @@ public class PathwayGraph extends BioGraph<BioPathway,PathwayGraphEdge> {
 
 	@Override
 	public PathwayGraphEdge createEdge(BioPathway v1, BioPathway v2) {
-		return new PathwayGraphEdge(v1,v2,new BioCollection<BioMetabolite>());
+		return new PathwayGraphEdge(v1,v2, new BioCollection<>());
 	}
 
 	@Override

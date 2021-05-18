@@ -79,14 +79,14 @@ public class EdgeMerger {
 					//compute new label and new weight
 					double mergedWeight=0.0;
 					double mergedScore=0.0;
-					String label="";
+					StringBuilder label= new StringBuilder();
 					for(E edge : edgeList){
 						mergedWeight+=g.getEdgeWeight(edge);
 						mergedScore+=g.getEdgeScore(edge);
-						if(label.isEmpty()){
-							label=edge.toString();
+						if(label.length() == 0){
+							label = new StringBuilder(edge.toString());
 						}else{
-							label=label+"_"+ edge;
+							label.append("_").append(edge);
 						}
 					}
 							
@@ -173,14 +173,14 @@ public class EdgeMerger {
 				//compute new label and new weight
 				double mergedWeight=0.0;
 				double mergedScore=0.0;
-				String label="";
+				StringBuilder label= new StringBuilder();
 				for(E edge : edgeList){
 					mergedWeight+=g.getEdgeWeight(edge);
 					mergedScore+=g.getEdgeScore(edge);
-					if(label.isEmpty()){
-						label=edge.toString();
+					if(label.length() == 0){
+						label = new StringBuilder(edge.toString());
 					}else{
-						label=label+"_"+ edge;
+						label.append("_").append(edge);
 					}
 				}
 						

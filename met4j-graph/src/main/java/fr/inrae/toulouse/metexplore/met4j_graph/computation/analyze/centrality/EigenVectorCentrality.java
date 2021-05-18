@@ -227,7 +227,7 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 
 				//for columns corresponding to seeds, add the probability of coming from a jump
 				for(Map.Entry<String,Double> seedEntry : roots.entrySet()){
-					Integer seedCol = adjacencyMatrix.getColumnFromLabel(seedEntry.getKey());
+					int seedCol = adjacencyMatrix.getColumnFromLabel(seedEntry.getKey());
 					double dp = p * seedEntry.getValue();
 					double initialProba = adjacencyMatrix.get(i,seedCol);
 					adjacencyMatrix.set(i, seedCol, initialProba + dp);
@@ -238,7 +238,7 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 				// by default, if a vertex has no outgoing edge, the probability to
 				// jump to a node of interest is 1
 				for(Map.Entry<String,Double> seedEntry : roots.entrySet()){
-					Integer seedCol = adjacencyMatrix.getColumnFromLabel(seedEntry.getKey());
+					int seedCol = adjacencyMatrix.getColumnFromLabel(seedEntry.getKey());
 					double dp = 1 * seedEntry.getValue();
 					double initialProba = adjacencyMatrix.get(i,seedCol);
 					adjacencyMatrix.set(i, seedCol, initialProba + dp);

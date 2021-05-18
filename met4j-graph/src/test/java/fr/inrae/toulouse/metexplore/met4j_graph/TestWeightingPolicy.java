@@ -383,13 +383,13 @@ public class TestWeightingPolicy {
 		ycWeight=0.9;
 
 		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp =
-				new WeightsFromFile<>(filePath)
+				new WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph>(filePath)
 						.sep(",")
 						.sourceCol(0)
 						.targetCol(1)
 						.edgeLabelCol(2)
-						.weightCol(4);				;
-		wp.setWeight(g);
+						.weightCol(4);
+        wp.setWeight(g);
 
 		assertEquals("wrong weight after import", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
 		assertEquals("wrong weight after import", adWeight, g.getEdgeWeight(ad),Double.MIN_VALUE);

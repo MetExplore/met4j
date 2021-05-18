@@ -266,11 +266,11 @@ public class TestPathBasedCentrality {
 		assertEquals((0.56/5)/2, starCloseness.get(f), 0.01);
 
 		assertArrayEquals(linearCloseness.values().toArray(),
-				linearMeasure.getCloseness((new FloydWarshall<BioMetabolite, ReactionEdge, CompoundGraph>(linearGraph,false)).getDistances()).values().toArray());
+				linearMeasure.getCloseness((new FloydWarshall<>(linearGraph, false)).getDistances()).values().toArray());
 		assertArrayEquals(starCloseness.values().toArray(),
-				starMeasure.getCloseness((new FloydWarshall<BioMetabolite, ReactionEdge, CompoundGraph>(starGraph)).getDistances()).values().toArray());
+				starMeasure.getCloseness((new FloydWarshall<>(starGraph)).getDistances()).values().toArray());
 		assertArrayEquals(toyCloseness.values().toArray(),
-				toyMeasure.getCloseness((new FloydWarshall<BioMetabolite, ReactionEdge, CompoundGraph>(toyGraph)).getDistances()).values().toArray());
+				toyMeasure.getCloseness((new FloydWarshall<>(toyGraph)).getDistances()).values().toArray());
 		
 	}
 

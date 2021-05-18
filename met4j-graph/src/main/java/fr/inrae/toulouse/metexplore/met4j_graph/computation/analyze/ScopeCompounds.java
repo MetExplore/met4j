@@ -36,7 +36,6 @@
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;

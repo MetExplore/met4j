@@ -461,7 +461,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 * @param v1 the source vertex
 	 * @param v2 the target vertex
 	 * @param edge the template edge which provides other attributes
-	 * @return
+	 * @return an edge
 	 */
 	public abstract E createEdgeFromModel(V v1, V v2, E edge);
 	public abstract E copyEdge(E edge);

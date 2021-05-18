@@ -44,7 +44,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class CompressedGraph<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> extends BioGraph<V,PathEdge<V,E>> {
 
@@ -79,13 +78,7 @@ public class CompressedGraph<V extends BioEntity, E extends Edge<V>, G extends B
 			Constructor<? extends BioEntity> declaredConstructor = null;
 			declaredConstructor = this.vertexSet().iterator().next().getClass().getDeclaredConstructor(String.class);
 			v = (V) declaredConstructor.newInstance(id);
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
+		} catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		return v;
@@ -100,7 +93,7 @@ public class CompressedGraph<V extends BioEntity, E extends Edge<V>, G extends B
 
 	@Override
 	public PathEdge<V, E> createEdgeFromModel(V v1, V v2, PathEdge<V, E> edge){
-		return new PathEdge(v1, v2, edge.getPath());
+		return new PathEdge<V, E>(v1, v2, edge.getPath());
 	}
 
 

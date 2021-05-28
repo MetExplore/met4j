@@ -35,20 +35,19 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.EdgeMerger;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.GraphPruning;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
+import org.jgrapht.traverse.BreadthFirstIterator;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.EdgeMerger;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
-import org.jgrapht.traverse.BreadthFirstIterator;
-
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.GraphPruning;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
-import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
 
 /**
  * Class to compute RandomWalk betweenness.
@@ -57,7 +56,7 @@ import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
 public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>>{
 	
 	/** The adjacency matrix. */
-	private final BioMatrix adjacencyMatrix;
+	private BioMatrix adjacencyMatrix;
 	
 	/** The label map. */
 	private final HashMap<V,Integer> labelMap;
@@ -96,8 +95,13 @@ public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G exte
 	private HashMap<V,Double> nodeWeight;
 	
 	/** The target nodes of interest. */
-	private final BioCollection<V> targetNodesOfInterest;
-	
+	private BioCollection<V> targetNodesOfInterest;
+
+	public HashMap<V, Double> getCentrality() {
+		if(numberOfWalks==null) computePassageTime();
+		return numberOfWalks;
+	}
+
 	/** The number of walks. */
 	private HashMap<V, Double> numberOfWalks;
 	
@@ -106,6 +110,8 @@ public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G exte
 	
 	/** The outgoing probability matrix. */
 	private BioMatrix outprob;
+
+	private G g;
 	
 	/**
 	 * Instantiates a new random walk.
@@ -114,41 +120,18 @@ public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G exte
 	 * @param nodesOfInterest the node of interest list
 	 */
 	public RandomWalkCentrality(G g, BioCollection<V> nodesOfInterest) {
-		
-		this.nodesOfInterest=nodesOfInterest;
-        labelMap = new HashMap<>();
-        indexMap = new HashMap<>();
-		
+		this.g =g;
 		//set node weight
-        nodeWeight = new HashMap<>();
-		for(V noi : this.nodesOfInterest){
-            nodeWeight.put(noi, 1.0);
+		nodeWeight = new HashMap<>();
+		for(V noi : nodesOfInterest){
+			nodeWeight.put(noi, 1.0);
 		}
-		
-		//remove nodes that can't be in a path between 2 nodes of interest
-		System.err.println("cleaning input graph... ");
-		System.err.println("input graph size: "+g.vertexSet().size());
-		
-		GraphPruning<V,E> rm = new GraphPruning<>(g, nodesOfInterest);
-		rm.cleanGraph();
-//		rm.remove3();
+		this.nodesOfInterest =new BioCollection<>(nodesOfInterest);
 
-		System.err.println("cleaned graph size: "+g.vertexSet().size()+"\n");
-		
-		//compute list of starting states to skip i.e paths from "target" nodes of interest
-		// and remove nodes of interest not found in graph
-        cleanNodeOfInterestList(g, this.nodesOfInterest);
-        this.targetNodesOfInterest = getTargetNodesOfInterest(g, this.nodesOfInterest);
-		
-		//compute adjacency matrix
-		int n = g.vertexSet().size();
-        adjacencyMatrix = new EjmlMatrix(n, n);
-        setAdjacencyMatrix(g);
-		
-		//compute transients states matrix (without starting state)
-        setConstantPartOfQ(adjacencyMatrix);
+		labelMap = new HashMap<>();
+		indexMap = new HashMap<>();
+		init();
 	}
-	
 	/**
 	 * Instantiates a new random walk.
 	 *
@@ -156,12 +139,19 @@ public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G exte
 	 * @param nodeWeight the node weight map
 	 */
 	public RandomWalkCentrality(G g, HashMap<V, Double> nodeWeight) {
+		this.g =g;
 		this.nodeWeight=nodeWeight;
-        this.nodesOfInterest =new BioCollection<>(nodeWeight.keySet());
+		this.nodesOfInterest =new BioCollection<>(nodeWeight.keySet());
 
-        labelMap = new HashMap<>();
-        indexMap = new HashMap<>();
-		
+		labelMap = new HashMap<>();
+		indexMap = new HashMap<>();
+		init();
+	}
+	
+	/**
+	 * Instantiates a new random walk.
+	 */
+	private void init() {
 //		//remove nodes that can't be in a path between 2 nodes of interest
 //		Bionetwork2similarityGraph.exportGraph("/home/clement/Documents/raw_graph.gml", g);
 		System.err.println("cleaning input graph... ");
@@ -173,14 +163,12 @@ public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G exte
 		System.err.println("cleaned graph size: "+g.vertexSet().size()+"\n");
 		
 		//compute list of starting states to skip i.e paths from "target" nodes of interest
-		// and remove nodes of interest not found in graph
-        cleanNodeOfInterestList(g, this.nodesOfInterest);
         this.targetNodesOfInterest = getTargetNodesOfInterest(g, this.nodesOfInterest);
 		
 		//compute adjacency matrix
 		int n = g.vertexSet().size();
         adjacencyMatrix = new EjmlMatrix(n, n);
-        setAdjacencyMatrix(g);
+        setAdjacencyMatrix();
 		
 		//compute transients states matrix (without starting state)
         setConstantPartOfQ(adjacencyMatrix);
@@ -189,10 +177,8 @@ public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G exte
 
 	/**
 	 * compute adjacency matrix from graph input
-	 *
-	 * @param g the new adjacency matrix
 	 */
-	public void setAdjacencyMatrix(G g){
+	private void setAdjacencyMatrix(){
 		int index = 0;
 		Set<V> vertexSet = g.vertexSet();
 		
@@ -224,13 +210,13 @@ public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G exte
 	 *
 	 * @param p transients states matrix
 	 */
-	public void setConstantPartOfQ(BioMatrix p){
+	private void setConstantPartOfQ(BioMatrix p){
 
         subQindexMap = new HashMap<>();
         subQlabelMap = new HashMap<>();
         subRindexMap = new HashMap<>();
         subRlabelMap = new HashMap<>();
-		assert p.numCols()- nodesOfInterest.size()>0;
+		assert p.numCols()- nodesOfInterest.size()>=0;
 		int[] rowNcol2keepQ = new int[p.numCols()- nodesOfInterest.size()];
 		int[] col2keepR = new int[nodesOfInterest.size()];
 		
@@ -265,7 +251,7 @@ public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G exte
 	 * @param p transients states matrix
 	 * @return the absorbing matrix with x as starting node
 	 */
-	public BioMatrix getXabsorbingMatrix(V x, BioMatrix p){
+	private BioMatrix getXabsorbingMatrix(V x, BioMatrix p){
 
 		//add 1 column and 1 row to the original transient matrix
 		int m = subQ.numCols();
@@ -299,7 +285,7 @@ public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G exte
 	 * @param q the transient matrix
 	 * @return the fundamental matrix
 	 */
-	public BioMatrix getFundamentalMatrix(BioMatrix q){
+	private BioMatrix getFundamentalMatrix(BioMatrix q){
 
 		//create identity matrix
 		BioMatrix i = q.identity();
@@ -313,13 +299,13 @@ public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G exte
 	
 	/**
 	 * set edge betweenness centrality as edge weight
-	 *
-	 * @param g the graph
-	 * @param merge the merge
+	 * @return
 	 */
-	public void setEdgesPassageTime(G g, boolean merge){
+	public HashMap<E, Double> getEdgesPassageTime(boolean merge, boolean asUndirected){
 
-        computePassageTime();
+		HashMap<E,Double> edgePT = new HashMap<>();
+
+		if(numberOfWalks==null) computePassageTime();
 		//merge-> several transitions from distinct reaction with same source and target is considered as 1 transitions
 		if(merge){
 			EdgeMerger.mergeEdges(g);
@@ -328,7 +314,9 @@ public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G exte
 				V target=edge.getV2();
 				int sourceIndex= labelMap.get(source);
 				int targetIndex= labelMap.get(target);
-				g.setEdgeScore(edge, edgeNumberOfWalks.get(sourceIndex, targetIndex));
+				Double centrality = edgeNumberOfWalks.get(sourceIndex, targetIndex);
+				if(asUndirected) centrality+= edgeNumberOfWalks.get(targetIndex,sourceIndex);
+				edgePT.put(edge, centrality);
 			}
 		}else{
 //<<<<<<<<<<<<<<<<<<UNDER TEST
@@ -342,9 +330,12 @@ public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G exte
 				int sourceIndex= labelMap.get(source);
 				int targetIndex= labelMap.get(target);
 				//the transitions probability is split between the reactions using the initial probability
-				g.setEdgeScore(edge, g.getEdgeWeight(edge)* edgeNumberOfWalks.get(sourceIndex, targetIndex));
+				Double centrality = g.getEdgeWeight(edge)* edgeNumberOfWalks.get(sourceIndex, targetIndex);
+				if(asUndirected) centrality+= g.getEdgeWeight(g.getEdge(edge.getV2().getId(),edge.getV1().getId(),edge.getLabel()))* edgeNumberOfWalks.get(targetIndex, sourceIndex);
+				edgePT.put(edge, g.getEdgeWeight(edge)* edgeNumberOfWalks.get(sourceIndex, targetIndex));
 			}
 		}
+		return edgePT;
     }
 	
 	/**
@@ -356,7 +347,7 @@ public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G exte
 	 * @param outProbabilityVector the out-going probability vector
 	 * @return the bio matrix
 	 */
-	public BioMatrix computeEdgesPassageTime(V x, double[] nwalk, BioMatrix fundamentalMatrix, BioMatrix outProbabilityVector){
+	private BioMatrix computeEdgesPassageTime(V x, double[] nwalk, BioMatrix fundamentalMatrix, BioMatrix outProbabilityVector){
 		BioMatrix nwalkEdges = new EjmlMatrix(adjacencyMatrix.numCols(), adjacencyMatrix.numRows());
 		for(int i = 0; i< adjacencyMatrix.numRows(); i++){
 			
@@ -483,7 +474,7 @@ public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G exte
 					//nwalks[i]=n.get(row, i);
 					
 					//walks count without "out" state reached
-					//nwalks[i]=n.get(row, i) * (1-outprob.get(i, 0));
+//					nwalks[i]=n.get(row, i) * (1-outprob.get(i, 0));
 					
 					//walks count without "out" state reached nor "repass"
 					nwalks[i]=n.get(row, i) * (1- outprob.get(i, 0)) * ((1-(n.get(i, i)-1)/n.get(i, i)));
@@ -491,7 +482,8 @@ public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G exte
 				
 				//compute the probabilty for a walk starting from a node of interest to reach another one 
 				//weight by the input noi weights
-//<<<<<<<<<<<<<<UNDER_TEST				
+//<<<<<<<<<<<<<<UNDER_TEST
+//				startProb.put(x, 1.0);
                 startProb.put(x, nodeWeight.get(x));
 //				startProb.put(x, (1-outprob.get(row, 0))*nodeWeight.get(x));
 //>>>>>>>>>>>>>>>UNDERTEST
@@ -585,39 +577,6 @@ public class RandomWalkCentrality<V extends BioEntity, E extends Edge<V>, G exte
 	 */
 	public HashMap<Integer, V > getsubQindexMap() {
 		return subQindexMap;
-	}	
-	
-	/**
-	 * Clean node of interest list.
-	 *
-	 * @param g the graph
-	 * @param nodesOfInterest the nodes of interest list
-	 * @return the number of removed vertex
-	 */
-	public int cleanNodeOfInterestList(G g, BioCollection<V> nodesOfInterest){
-		BioCollection<V> toRemove = new BioCollection<>();
-		for (V noi : nodesOfInterest){
-			//assert that this nodes is in graph
-			boolean isInGraph=false;
-			for (V e : g.vertexSet()){
-				if (e.equals(noi)) {
-					isInGraph = true;
-					break;
-				}
-			}
-			//removing node of interest not in graph
-			if (!isInGraph){
-				System.err.println("Error: node of interest "+noi+" not found in graph!");
-				System.err.println("\tRemoving "+noi+"...");
-				toRemove.add(noi);
-			}
-		}
-		if (!toRemove.isEmpty()){
-			for (V n2r : toRemove){
-				nodesOfInterest.remove(n2r);
-			}
-		}
-		return toRemove.size();
 	}
 	
 	/**

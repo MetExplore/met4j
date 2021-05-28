@@ -34,7 +34,7 @@ public class NetworkSummary extends AbstractMet4jApplication {
     @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
-    @Option(name = "-o", usage = "output Matrix file", required = true)
+    @Option(name = "-o", usage = "output report file", required = true)
     public String outputPath = null;
 
     @Option(name = "-s", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore (recommended)")
@@ -106,7 +106,7 @@ public class NetworkSummary extends AbstractMet4jApplication {
         //basic stats
             fw.write("Number of nodes:\t"+graph.vertexSet().size()+"\n");
             fw.write("Number of edges:\t"+graph.edgeSet().size()+"\n");
-            fw.write("Number of neighbor pairs (ignore parallel edges):\t"+analyzer.getNumberOfEdges()+"\n");
+            fw.write("Number of neighbor pairs (ignore parallel edges):\t"+(int)analyzer.getNumberOfEdges()+"\n");
 
         //connectivity
         System.err.println("extract connected component...");
@@ -204,6 +204,8 @@ public class NetworkSummary extends AbstractMet4jApplication {
     public String getLabel() {return this.getClass().getSimpleName();}
 
     @Override
-    public String getDescription() {return "";}
+    public String getDescription() {return "Use a metabolic network in SBML file and an optional list of side compounds, " +
+            "and produce a report summarizing several graph measures characterising the structure of the network." +
+            "This includes (non-exhaustive list): size and order, connectivity, density, degree distribution, shortest paths length, top centrality nodes...";}
 
 }

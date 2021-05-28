@@ -46,9 +46,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 
 /**
- * This class extends the {@link fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.ProbabilityWeightPolicy} used to normalize weights into probabilities.
+ * This class extends the {@link ProbabilityWeightPolicy} used to normalize weights into probabilities.
  * This class holds a special case for compound graphs, by adding a reaction-probability level.
- * Using the {@link fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.ProbabilityWeightPolicy} on compound graphs tends to over-weighting reactions that have many products
+ * Using the {@link ProbabilityWeightPolicy} on compound graphs tends to over-weighting reactions that have many products
  * The method provided by this class allow to reduce this bias, by considering all reactions equally.
  * Custom reaction probabilities can be used by setting reactions weights.
  *

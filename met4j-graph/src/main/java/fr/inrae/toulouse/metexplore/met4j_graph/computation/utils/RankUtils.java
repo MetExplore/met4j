@@ -134,7 +134,6 @@ public class RankUtils {
 	 *
 	 * @param map the score map
 	 * @return the rank map
-	 * @param <T> a T object.
 	 */
 	public static <T> LinkedHashMap<T, Integer> computeRank(Map<T, Double> map){
 		LinkedHashMap<T, Integer> reactionRankMap = new LinkedHashMap<>();
@@ -154,7 +153,6 @@ public class RankUtils {
 	 *
 	 * @param map the score map
 	 * @return the ordered list of keys
-	 * @param <T> a T object.
 	 */
 	public static <T> List<T> getOrderedList(Map<T, Double> map){
 		ArrayList<T> keys = new ArrayList<>(map.keySet());

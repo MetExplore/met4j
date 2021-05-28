@@ -98,7 +98,7 @@ public class WeightUtils {
     }
 	
 	/**
-	 * Invert weights (weights have to be between 0 and 1, which can be done using the {@link fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.WeightUtils#scale(BioGraph)})
+	 * Invert weights (weights have to be between 0 and 1, which can be done using the {@link WeightUtils#scale(BioGraph)})
 	 *
 	 * @param g the graph
 	 * @throws java.lang.IllegalArgumentException the illegal argument exception

@@ -110,7 +110,7 @@ public class BioGraph2XGMML{
 	 * Instantiates a new xgmml exporter.
 	 *
 	 * @param g the graph
-	 * @param Name a {@link java.lang.String} object.
+	 * @param name a {@link java.lang.String} object.
 	 */
 	public BioGraph2XGMML(BipartiteGraph g, String name){
 		this.g=g;

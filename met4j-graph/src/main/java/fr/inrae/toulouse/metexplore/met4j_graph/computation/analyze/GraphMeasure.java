@@ -302,12 +302,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	
 	/**
 	 * set whether or not the graph should be considered as directed
-<<<<<<< HEAD:met4j-graph/src/main/java/fr/inrae/toulouse/metexplore/met4j_graph/computation/analysis/GraphMeasure.java
-	 *
-	 * @param directed a boolean.
-=======
 	 * @param directed if the network should be considered as directed
->>>>>>> origin/feature/GraphMilestone:met4j-graph/src/main/java/fr/inrae/toulouse/metexplore/met4j_graph/computation/analyze/GraphMeasure.java
 	 */
 	public void setDirected(boolean directed) {
 		this.directed = directed;

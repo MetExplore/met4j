@@ -37,7 +37,6 @@ package fr.inrae.toulouse.metexplore.met4j_graph.core.pathway;
 
 
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 

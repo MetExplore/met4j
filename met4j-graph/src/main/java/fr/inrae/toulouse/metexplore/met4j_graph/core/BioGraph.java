@@ -480,6 +480,19 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 * @param edge the edge to reverse
 	 * @return the reverse edge
 	 */
-	public abstract E reverseEdge(E edge);
+	public E reverseEdge(E edge){
+		return createEdgeFromModel(edge.getV2(),edge.getV1(),edge);
+	}
+
+	/**
+	 * For each edges in the graph, create a copy with reversed source and target.
+	 * This makes this directed graph effectively undirected, but with twice the number of edges
+	 */
+	public void asUndirected(){
+
+		for(E e : new HashSet<>(this.edgeSet())){
+			this.addEdge(reverseEdge(e));
+		}
+	}
 
 }

@@ -51,7 +51,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
  */
 public class BioGraph2Sif<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V, E>> {
 	
-	G graph;
+	final G graph;
 	
 	/**
 	 * <p>Constructor for BioGraph2Sif.</p>
@@ -68,8 +68,9 @@ public class BioGraph2Sif<V extends BioEntity, E extends Edge<V>, G extends BioG
 	 * write Sif file
 	 *
 	 * @author ludo + clement
-	 * @param filename a {@link java.lang.String} object.
-	 * @throws java.io.IOException
+	 * 
+	 * @param filename the output file path
+	 * @throws IOException if file doesn't exist
 	 */
 	public void writeSif(String filename) throws IOException {
 		

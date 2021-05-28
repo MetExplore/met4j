@@ -112,16 +112,16 @@ public class BioGraph2XGMML{
 	 * @param g the graph
 	 * @param Name a {@link java.lang.String} object.
 	 */
-	public BioGraph2XGMML(BipartiteGraph g, String Name){
+	public BioGraph2XGMML(BipartiteGraph g, String name){
 		this.g=g;
-		this.graphName =Name;
+		this.graphName =name;
 	}
 	
 	/**
 	 * Write xgmml to output.
 	 *
 	 * @param outputPath the output path
-	 * @throws java.lang.Exception
+	 * @throws Exception if xml configuration is faulty
 	 */
 	public void writeXGMML(String outputPath) throws Exception{
 		if(doc ==null){
@@ -298,6 +298,7 @@ public class BioGraph2XGMML{
 	 * Creates an attribute from string list.
 	 *
 	 * @param name the attribute's name
+	 * @param valueList the attribute's values
 	 * @return the xml element
 	 */
 	private Element createAttribute(String name, Collection<String> valueList){

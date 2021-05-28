@@ -35,10 +35,14 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core.parallel;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
 
 /**
  * The Class MergedGraph. Type of graph for which each edges contain a collection of sub-edges.
@@ -60,7 +64,7 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 	 * Instantiates a new merged graph.
 	 */
 	public MergedGraph() {
-		super(new MetaEdgeFactory<>());
+		super();
 	}
 	
 	
@@ -70,7 +74,7 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 	 * @return the factory
 	 */
 	public GraphFactory<V,MetaEdge<V,E>,MergedGraph<V,E>> getFactory(){
-		return new GraphFactory<V, MetaEdge<V,E>, MergedGraph<V,E>>() {
+		return new GraphFactory<>() {
 			@Override
 			public MergedGraph<V, E> createGraph() {
 				return new MergedGraph<>();
@@ -78,15 +82,6 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 		};
 	}
 
-
-	/* (non-Javadoc)
-	 * @see parsebionet.computation.graphe.BioGraph#getEdgeFactory()
-	 */
-	/** {@inheritDoc} */
-	@Override
-	public MetaEdgeFactory<V, E> getEdgeFactory() {
-		return new MetaEdgeFactory<>();
-	}
 
 	/* (non-Javadoc)
 	 * @see parsebionet.computation.graphe.BioGraph#copyEdge(parsebionet.computation.graphe.Edge)
@@ -98,12 +93,34 @@ public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGrap
 		return newEdge;
 	}
 
+	@Override
+	public V createVertex(String id) {
+		V v = null;
+		try {
+			Constructor<? extends BioEntity> declaredConstructor = null;
+			declaredConstructor = this.vertexSet().iterator().next().getClass().getDeclaredConstructor(String.class);
+			v = (V) declaredConstructor.newInstance(id);
+		} catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return v;
+	}
+
+	@Override
+	public MetaEdge<V, E> createEdge(V v1, V v2) {
+		return new MetaEdge<>(v1, v2, new HashSet<>());
+	}
+
 
 	/** {@inheritDoc} */
 	@Override
 	public MetaEdge<V, E> reverseEdge(MetaEdge<V, E> edge) {
 		MetaEdge<V, E> reversed = new MetaEdge<>(edge.getV2(), edge.getV1(), edge.getEdgeList());
 		return reversed;
+	}
+	@Override
+	public MetaEdge<V, E> createEdgeFromModel(V v1, V v2, MetaEdge<V, E> edge){
+		return new MetaEdge<V, E>(v1, v2, edge.getEdgeList());
 	}
 
 }

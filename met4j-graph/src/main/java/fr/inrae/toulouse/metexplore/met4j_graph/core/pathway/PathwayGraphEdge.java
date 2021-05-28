@@ -92,7 +92,7 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
     /**
      * Gets the reaction.
      *
-     * @param compound a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+     * @param compound a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} connecting compound.
      */
     public void addConnectingCompounds(BioMetabolite compound){
         connectingCompounds.add(compound);
@@ -106,11 +106,11 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
     public void addConnectingCompounds(BioCollection<BioMetabolite> compounds){
         connectingCompounds.addAll(compounds);
     }
-    
+
     /**
-     * Gets the reaction.
+     * Removes a connecting compound
      *
-     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} object.
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} connecting compound.
      */
     public void removeConnectingCompounds(BioMetabolite e){
         connectingCompounds.remove(e);

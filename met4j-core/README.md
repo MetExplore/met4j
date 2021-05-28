@@ -24,7 +24,7 @@ Put this in the pom.xml file of your project:
 </dependencies>
 ```
 
-The version number will vary in the feature.
+The version number will vary in the future.
 
 
 ### Documentation

@@ -1,0 +1,16 @@
+src,trg,lbl,bar,wgh
+a,b,abd,bar,0.1
+b,c,bxc,bar,0.2
+a,d,abd,bar,0.3
+d,e,de,bar,0.7
+e,f,efb,bar,0.4
+f,c,fc,bar,0.8
+b,x,bxc,bar,0.5
+e,b,efb,bar,0.6
+y,c,fyc,bar,foo
+y,c,fyc,bar,0.9
+foo
+foo,c,fyc,bar,0.9
+y,foo,fyc,bar,0.9
+y,c,foo,bar,0.9
+y,c,fyc,bar,1.0

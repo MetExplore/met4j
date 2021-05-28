@@ -116,12 +116,12 @@ public class TestBioPath {
 		z2z3 = new ReactionEdge(z2,z3,new BioReaction("z2z3"));g.addEdge(z2, z3, z2z3);g.setEdgeWeight(z2z3, 0.0001);
 		z3y = new ReactionEdge(z3,y,new BioReaction("z3y"));g.addEdge(z3, y, z3y);g.setEdgeWeight(z3y, 0.0001);
 	
-		List<ReactionEdge> pathList = new ArrayList<ReactionEdge>();
+		List<ReactionEdge> pathList = new ArrayList<>();
 		pathList.add(ad);
 		pathList.add(de);
 		pathList.add(ef);
 		try{
-			p = new BioPath<BioMetabolite,ReactionEdge>(g, a, f, pathList, 4.0);
+			p = new BioPath<>(g, a, f, pathList, 4.0);
 		}catch(Exception e){
 			fail("error while creating BioPath");
 		}
@@ -141,15 +141,15 @@ public class TestBioPath {
 	 */
 	@Test
 	public void testAppendPath() {
-		List<ReactionEdge> pathList = new ArrayList<ReactionEdge>();
+		List<ReactionEdge> pathList = new ArrayList<>();
 		pathList.add(ad);
 		pathList.add(de);
 		pathList.add(ef);
 		pathList.add(fc);
 		
-		List<ReactionEdge> pathListToAppend = new ArrayList<ReactionEdge>();
+		List<ReactionEdge> pathListToAppend = new ArrayList<>();
 		pathListToAppend.add(fc);
-		BioPath<BioMetabolite,ReactionEdge> p2 = new BioPath<BioMetabolite,ReactionEdge>(g, f, c, pathListToAppend, 1.0);
+		BioPath<BioMetabolite,ReactionEdge> p2 = new BioPath<>(g, f, c, pathListToAppend, 1.0);
 		BioPath<BioMetabolite,ReactionEdge> p3 = p.appendPath(p2);
 		
 		assertEquals("error in edge list after appendPath",pathList,p3.getEdgeList());
@@ -165,7 +165,7 @@ public class TestBioPath {
 	@Test
 	public void testSubPath() {
 		BioPath<BioMetabolite,ReactionEdge> p4 = p.getSubPath(d, f);
-		List<ReactionEdge> pathList = new ArrayList<ReactionEdge>();
+		List<ReactionEdge> pathList = new ArrayList<>();
 		pathList.add(de);
 		pathList.add(ef);
 		

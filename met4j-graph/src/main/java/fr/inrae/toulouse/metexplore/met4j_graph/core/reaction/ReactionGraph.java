@@ -35,16 +35,15 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core.reaction;
 
-import java.util.HashMap;
-import java.util.HashSet;
-
-import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
-import org.jgrapht.EdgeFactory;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.UUID;
 
 /**
  * The Class CompoundGraph.
@@ -67,7 +66,7 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 	 * Instantiates a new bio graph.
 	 */
 	public ReactionGraph() {
-		super(new CompoundEdgeFactory());
+		super();
 	}
 	
 	/**
@@ -76,7 +75,7 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 	 * @param g the graph
 	 */
 	public ReactionGraph(ReactionGraph g) {
-		super(edgeFactory);
+		super();
 		for(BioReaction vertex : g.vertexSet()){
             this.addVertex(vertex);
 		}
@@ -92,8 +91,8 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 	/**
 	 * Gets the edges from reaction.
 	 *
+	 * @param compoundId the compound id
 	 * @return the edges from reaction
-	 * @param compoundId a {@link java.lang.String} object.
 	 */
 	public HashSet<CompoundEdge> getEdgesFromCompound(String compoundId){
 		HashSet<CompoundEdge> edgeList = new HashSet<>();
@@ -158,14 +157,24 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 
 	/** {@inheritDoc} */
 	@Override
-	public EdgeFactory<BioReaction, CompoundEdge> getEdgeFactory() {
-		return new CompoundEdgeFactory();
+	public CompoundEdge copyEdge(CompoundEdge edge) {
+		return new CompoundEdge(edge.getV1(), edge.getV2(), edge.getCompound());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public CompoundEdge copyEdge(CompoundEdge edge) {
-		return new CompoundEdge(edge.getV1(), edge.getV2(), edge.getCompound());
+	public BioReaction createVertex(String id) {
+		return new BioReaction(id);
+	}
+
+	@Override
+	public CompoundEdge createEdge(BioReaction v1, BioReaction v2) {
+		return new CompoundEdge(v1,v2,new BioMetabolite(UUID.randomUUID().toString()));
+	}
+
+	@Override
+	public CompoundEdge createEdgeFromModel(BioReaction v1, BioReaction v2, CompoundEdge edge) {
+		return new CompoundEdge(v1, v2, edge.getCompound());
 	}
 	
 	/**
@@ -174,12 +183,12 @@ public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory} object.
 	 */
 	public static GraphFactory<BioReaction, CompoundEdge, ReactionGraph> getFactory(){
-		return new GraphFactory<BioReaction, CompoundEdge, ReactionGraph>(){
-			@Override
-			public ReactionGraph createGraph() {
-				return new ReactionGraph();
-			}
-		};
+		return new GraphFactory<>() {
+            @Override
+            public ReactionGraph createGraph() {
+                return new ReactionGraph();
+            }
+        };
 	}
 
 	/** {@inheritDoc} */

@@ -41,10 +41,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.DegreeWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.ProbabilityWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.SimilarityWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.StochasticWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DegreeWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.ProbabilityWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.SimilarityWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.StochasticWeightPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -55,10 +55,10 @@ import org.junit.Test;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.DefaultWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.ReactionProbabilityWeight;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.WeightUtils;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.WeightsFromFile;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DefaultWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.ReactionProbabilityWeight;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightUtils;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightsFromFile;
 
 /**
  * Test {@link fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph} with {@link WeightingPolicy <BioMetabolite, ReactionEdge , CompoundGraph >}
@@ -121,7 +121,7 @@ public class TestWeightingPolicy {
 	 */
 	@Test
 	public void testDefaultWeightPolicy() {
-		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new DefaultWeightPolicy<BioMetabolite,ReactionEdge,CompoundGraph>();
+		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new DefaultWeightPolicy<>();
 		wp.setWeight(g);
 		double defautValue = 1.0;
 		for(ReactionEdge e : g.edgeSet()){
@@ -134,7 +134,7 @@ public class TestWeightingPolicy {
 	 */
 	@Test
 	public void testProbabilityWeightPolicy() {
-		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new ProbabilityWeightPolicy<BioMetabolite,ReactionEdge,CompoundGraph>();
+		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new ProbabilityWeightPolicy<>();
 		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
 		abWeight=bcWeight=adWeight=efWeight=bxWeight=ebWeight = 0.5;
 		deWeight=fcWeight=ycWeight = 1.0;
@@ -181,15 +181,6 @@ public class TestWeightingPolicy {
 		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new SimilarityWeightPolicy();
 		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
 		wp.setWeight(g);
-//		System.out.println("abWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(ab.getV1()),FingerprintBuilder.getExtendedFingerprint(ab.getV2())));
-//		System.out.println("bcWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(bc.getV1()),FingerprintBuilder.getExtendedFingerprint(bc.getV2())));
-//		System.out.println("adWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(ad.getV1()),FingerprintBuilder.getExtendedFingerprint(ad.getV2())));
-//		System.out.println("efWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(ef.getV1()),FingerprintBuilder.getExtendedFingerprint(ef.getV2())));
-//		System.out.println("bxWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(bx.getV1()),FingerprintBuilder.getExtendedFingerprint(bx.getV2())));
-//		System.out.println("ebWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(eb.getV1()),FingerprintBuilder.getExtendedFingerprint(eb.getV2())));
-//		System.out.println("deWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(de.getV1()),FingerprintBuilder.getExtendedFingerprint(de.getV2())));
-//		System.out.println("fcWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(fc.getV1()),FingerprintBuilder.getExtendedFingerprint(fc.getV2())));
-//		System.out.println("ycWeight="+SimilarityComputor.getTanimoto(FingerprintBuilder.getExtendedFingerprint(yc.getV1()),FingerprintBuilder.getExtendedFingerprint(yc.getV2())));
 		abWeight=0.15566037735849056;
 		bcWeight=0.0661764705882353;
 		adWeight=0.5751633986928104;
@@ -299,7 +290,7 @@ public class TestWeightingPolicy {
 		}
 		
 		resetWeight();
-		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp = new WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph>(tmpPath.toString());
+		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp = new WeightsFromFile<>(tmpPath.toString());
 		wp.setWeight(g);
 		
 		assertEquals("wrong weight after export", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
@@ -345,18 +336,70 @@ public class TestWeightingPolicy {
 		fcWeight=0.8;
 		ycWeight=0.9;
 		
-		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp = new WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph>(filePath);
+		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp = new WeightsFromFile<>(filePath);
 		wp.setWeight(g);
 		
-		assertEquals("wrong weight after export", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
-		assertEquals("wrong weight after export", adWeight, g.getEdgeWeight(ad),Double.MIN_VALUE);
-		assertEquals("wrong weight after export", bcWeight, g.getEdgeWeight(bc),Double.MIN_VALUE);
-		assertEquals("wrong weight after export", bxWeight, g.getEdgeWeight(bx),Double.MIN_VALUE);
-		assertEquals("wrong weight after export", deWeight, g.getEdgeWeight(de),Double.MIN_VALUE);
-		assertEquals("wrong weight after export", ebWeight, g.getEdgeWeight(eb),Double.MIN_VALUE);
-		assertEquals("wrong weight after export", efWeight, g.getEdgeWeight(ef),Double.MIN_VALUE);
-		assertEquals("wrong weight after export", fcWeight, g.getEdgeWeight(fc),Double.MIN_VALUE);
-		assertEquals("wrong weight after export", ycWeight, g.getEdgeWeight(yc),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", adWeight, g.getEdgeWeight(ad),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", bcWeight, g.getEdgeWeight(bc),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", bxWeight, g.getEdgeWeight(bx),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", deWeight, g.getEdgeWeight(de),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", ebWeight, g.getEdgeWeight(eb),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", efWeight, g.getEdgeWeight(ef),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", fcWeight, g.getEdgeWeight(fc),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", ycWeight, g.getEdgeWeight(yc),Double.MIN_VALUE);
+
+	}
+
+	/**
+	 * Test the weights Import
+	 */
+	@Test
+	public void testWeightsFromFileImportII() {
+		Path tmpPath = null;
+		try {
+			tmpPath = Files.createTempFile("test_edgeWeightmport", ".tmp");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			Assert.fail("Creation of the temporary directory");
+		}
+		String filePath = "EdgeWeightTestFileII.tab";
+		try {
+			filePath = TestUtils.copyProjectResource(filePath, tmpPath.toFile());
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("problem while reading edge weight file");
+		}
+
+		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
+		abWeight=0.1;
+		bcWeight=0.2;
+		adWeight=0.3;
+		efWeight=0.4;
+		bxWeight=0.5;
+		ebWeight=0.6;
+		deWeight=0.7;
+		fcWeight=0.8;
+		ycWeight=0.9;
+
+		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp =
+				new WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph>(filePath)
+						.sep(",")
+						.sourceCol(0)
+						.targetCol(1)
+						.edgeLabelCol(2)
+						.weightCol(4);
+        wp.setWeight(g);
+
+		assertEquals("wrong weight after import", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", adWeight, g.getEdgeWeight(ad),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", bcWeight, g.getEdgeWeight(bc),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", bxWeight, g.getEdgeWeight(bx),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", deWeight, g.getEdgeWeight(de),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", ebWeight, g.getEdgeWeight(eb),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", efWeight, g.getEdgeWeight(ef),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", fcWeight, g.getEdgeWeight(fc),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", ycWeight, g.getEdgeWeight(yc),Double.MIN_VALUE);
 
 	}
 	

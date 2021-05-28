@@ -35,12 +35,15 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core.compressed;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
-import org.jgrapht.EdgeFactory;
-
-import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 
 /**
  * <p>CompressedGraph class.</p>
@@ -60,7 +63,7 @@ public class CompressedGraph<V extends BioEntity, E extends Edge<V>, G extends B
 	 * @param originalGraph a G object.
 	 */
 	public CompressedGraph(G originalGraph) {
-		super(new PathEdgeFactory<>(originalGraph));
+		super();
 		this.originalGraph=originalGraph;
 	}	
 
@@ -71,24 +74,43 @@ public class CompressedGraph<V extends BioEntity, E extends Edge<V>, G extends B
 	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory} object.
 	 */
 	public GraphFactory<V, PathEdge<V,E>, CompressedGraph<V,E,G>> getFactory(){
-		return new GraphFactory<V, PathEdge<V,E>, CompressedGraph<V,E,G>>() {
-			@Override
-			public CompressedGraph<V, E,G> createGraph() {
-				return new CompressedGraph<>(originalGraph);
-			}
-		};
+		return new GraphFactory<>() {
+            @Override
+            public CompressedGraph<V, E, G> createGraph() {
+                return new CompressedGraph<>(originalGraph);
+            }
+        };
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public EdgeFactory<V, PathEdge<V, E>> getEdgeFactory() {
-		return new PathEdgeFactory<>(originalGraph);
-	}
-	
-	/** {@inheritDoc} */
-	@Override
 	public PathEdge<V, E> copyEdge(PathEdge<V, E> edge) {
 		return new PathEdge<>(edge.getV1(), edge.getV2(), edge.getPath());
+	}
+
+	@Override
+	public V createVertex(String id) {
+		V v = null;
+		try {
+			Constructor<? extends BioEntity> declaredConstructor = null;
+			declaredConstructor = this.vertexSet().iterator().next().getClass().getDeclaredConstructor(String.class);
+			v = (V) declaredConstructor.newInstance(id);
+		} catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return v;
+	}
+
+	@Override
+	public PathEdge<V, E> createEdge(V arg0, V arg1) {
+		BioPath<V, E> path = new BioPath<>(this.originalGraph, arg0, arg1, new ArrayList<>(), 0.0);
+		PathEdge<V, E> edge = new PathEdge<>(arg0, arg1, path);
+		return edge;
+	}
+
+	@Override
+	public PathEdge<V, E> createEdgeFromModel(V v1, V v2, PathEdge<V, E> edge){
+		return new PathEdge<V, E>(v1, v2, edge.getPath());
 	}
 
 

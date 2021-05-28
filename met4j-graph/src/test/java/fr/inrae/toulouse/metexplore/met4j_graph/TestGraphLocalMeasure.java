@@ -38,7 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_graph;
 
 import static org.junit.Assert.*;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.GraphLocalMeasure;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.GraphLocalMeasure;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.junit.BeforeClass;
@@ -71,7 +71,7 @@ public class TestGraphLocalMeasure {
 		ea = new ReactionEdge(e,a,new BioReaction("ea"));g.addEdge(e, a, ea);g.setEdgeWeight(ea, 1.0);
 		ec = new ReactionEdge(e,c,new BioReaction("ec"));g.addEdge(e, c, ec);g.setEdgeWeight(ec, 1.0);
 		ed = new ReactionEdge(e,d,new BioReaction("ed"));g.addEdge(e, d, ed);g.setEdgeWeight(ed, 1.0);
-		measure = new GraphLocalMeasure<BioMetabolite, ReactionEdge, CompoundGraph>(g);
+		measure = new GraphLocalMeasure<>(g);
 
 	}
 	

@@ -9,6 +9,7 @@ Met4j is composed by several maven modules:
 classes for handling metabolic networks
 - [met4j-io](met4j-io/README.md): for importing/exporting metabolic networks in several 
 formats (SBML, MetExploreXml, KEGG)
+- [met4j-graph](met4j-graph/README.md): for performing graph-based topological analysis of metabolic networks.
 
 The other modules are for the moment not documented or still in progress.
 

@@ -87,15 +87,15 @@ public class TestMergedGraph {
 		cg.addEdge(v1, v2, e1);
 		cg.addEdge(v1, v2, e2);
 		
-		HashSet<ReactionEdge> reactionList = new HashSet<ReactionEdge>();
+		HashSet<ReactionEdge> reactionList = new HashSet<>();
 		reactionList.add(e1);
 		reactionList.add(e2);
 		
-		cg2 = new MergedGraph<BioMetabolite,ReactionEdge>();
+		cg2 = new MergedGraph<>();
 		cg2.addVertex(v1);
 		cg2.addVertex(v2);
 		
-		e = new MetaEdge<BioMetabolite, ReactionEdge>(v1, v2, reactionList);
+		e = new MetaEdge<>(v1, v2, reactionList);
 		cg2.addEdge(v1, v2, e);
 		
 		assertEquals(2, cg2.vertexSet().size());

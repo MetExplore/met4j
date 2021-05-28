@@ -3,6 +3,7 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.convert;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
@@ -23,11 +24,14 @@ public class Sbml2Graph extends AbstractMet4jApplication {
     @Option(name = "-o", usage = "output Graph file", required = true)
     public String outputPath = null;
 
-    @Option(name = "-b", aliases = {"--bipartite"},usage = "create bipartite graph", forbids={"-c"})
+    @Option(name = "-b", aliases = {"--bipartite"},usage = "create bipartite graph", forbids={"-c","-r"})
     public Boolean bipartite = false;
 
-    @Option(name = "-c", aliases = {"--compound"}, usage = "create compound graph", forbids={"-b"})
+    @Option(name = "-c", aliases = {"--compound"}, usage = "create compound graph", forbids={"-b","-r"})
     public Boolean compound = true;
+
+    @Option(name = "-r", aliases = {"--reaction"},usage = "create reaction graph", forbids={"-c","-b"})
+    public Boolean reaction = false;
 
     @Option(name = "-tab", usage = "export in tabulated file", forbids={"-gml"})
     public Boolean tab = false;
@@ -53,7 +57,9 @@ public class Sbml2Graph extends AbstractMet4jApplication {
         BioNetwork network = reader.read(pkgs);
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
 
-        if(bipartite) compound = false;
+        if(bipartite || reaction){
+            compound = false;
+        }
         if(tab) gml = false;
 
         if(compound){
@@ -63,8 +69,15 @@ public class Sbml2Graph extends AbstractMet4jApplication {
             }else{
                 ExportGraph.toTab(graph, this.outputPath);
             }
-        }else{
+        }else if(bipartite){
             BipartiteGraph graph = builder.getBipartiteGraph();
+            if(gml){
+                ExportGraph.toGml(graph, this.outputPath);
+            }else{
+                ExportGraph.toTab(graph, this.outputPath);
+            }
+        }else{
+            ReactionGraph graph = builder.getReactionGraph();
             if(gml){
                 ExportGraph.toGml(graph, this.outputPath);
             }else{

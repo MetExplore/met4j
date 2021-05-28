@@ -57,6 +57,8 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollections;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.CompoundEdge;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
 import org.jgrapht.nio.Attribute;
 import org.jgrapht.nio.DefaultAttribute;
 import org.jgrapht.nio.gml.GmlExporter;
@@ -481,6 +483,28 @@ public class ExportGraph {
 				bw.write(entry);
 	    		bw.newLine();
 	    	}
+			bw.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	/**
+	 * export graph in tabulated format : [source-label]\t[edge-label]\t[target_label]
+	 *
+	 * @param rxnGraph the reaction graph
+	 * @param outputPath the output path
+	 */
+	public static void toTab(ReactionGraph rxnGraph, String outputPath){
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(outputPath, true));
+			bw.write("source\tinteraction\ttarget");
+			bw.newLine();
+			for(CompoundEdge e:rxnGraph.edgeSet()){
+				String entry=e.getV1().getId()+"\t"+e.getCompound().getId()+"\t"+e.getV2().getId();
+				bw.write(entry);
+				bw.newLine();
+			}
 			bw.close();
 		} catch (IOException e1) {
 			e1.printStackTrace();

@@ -18,7 +18,6 @@ public class AtomMappingWeightPolicy extends WeightingPolicy<BioMetabolite, Reac
     Boolean removeNotFound = false;
     Boolean binarize = false;
     Boolean removeNoCC = false;
-//TODO add option to binarize filter instead
 
     public AtomMappingWeightPolicy removeEdgeWithoutMapping() {
         this.removeNotFound = true;
@@ -56,13 +55,13 @@ public class AtomMappingWeightPolicy extends WeightingPolicy<BioMetabolite, Reac
         ArrayList<String> atomLabels1 = new ArrayList<>();
         ArrayList<String> atomLabels2 = new ArrayList<>();
         //separate atoms
-        Pattern p = Pattern.compile(".*\\[C[^lardonsfume]H?\\d*[+-]?:(\\d+)\\].*");
+        Pattern p = Pattern.compile("\\[C[^lardonsfume]?H?\\d*[+-]?:(\\d+)\\]");
         Matcher m1 = p.matcher(split[0]);
-        while(m1.matches()){
+        while(m1.find()){
             atomLabels1.add(m1.group(1));
         }
         Matcher m2 = p.matcher(split[1]);
-        while(m2.matches()){
+        while(m2.find()){
             atomLabels2.add(m2.group(1));
         }
 
@@ -89,13 +88,14 @@ public class AtomMappingWeightPolicy extends WeightingPolicy<BioMetabolite, Reac
 
     @Override
     public void setWeight(CompoundGraph compoundGraph) {
+        if(conservedCarbons==null) throw new IllegalArgumentException("an atom mapping must be provided");
         ArrayList<ReactionEdge> toRemove = new ArrayList<>();
         for(ReactionEdge e : compoundGraph.edgeSet()){
             Map<BioMetabolite,Integer> mapping = conservedCarbons.get(e.getV1());
             if(mapping!=null){
                 Integer cc = conservedCarbons.get(e.getV1()).get(e.getV2());
                 if(cc != null){
-                    if(binarize && cc>0) cc=1;
+                    if(binarize && cc>0) cc=1 ;
                     if(removeNoCC && cc==0) toRemove.add(e);
                     compoundGraph.setEdgeWeight(e, Double.valueOf(cc));
                 }else{

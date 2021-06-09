@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 public class AtomMappingWeightPolicy extends WeightingPolicy<BioMetabolite, ReactionEdge, CompoundGraph> {
     private Map<BioMetabolite,Map<BioMetabolite, Integer>> conservedCarbons;
+    private WeightsFromFile importer;
     Boolean removeNotFound = false;
     Boolean binarize = false;
     Boolean removeNoCC = false;
@@ -85,27 +86,47 @@ public class AtomMappingWeightPolicy extends WeightingPolicy<BioMetabolite, Reac
         return this;
     }
 
+    public AtomMappingWeightPolicy fromNumberOfConservedCarbons(WeightsFromFile importer){
+        this.conservedCarbons = new HashMap<>();
+        this.importer = importer;
+        return this;
+    }
+
+    public AtomMappingWeightPolicy fromNumberOfConservedCarbons(String GSAMoutputFile){
+        this.conservedCarbons = new HashMap<>();
+        this.importer = new WeightsFromFile(GSAMoutputFile, false)
+                .weightCol(8)
+                .edgeLabelCol(6)
+                .sourceCol(0)
+                .targetCol(3)
+                .sep("\t");
+        return this;
+    }
 
     @Override
     public void setWeight(CompoundGraph compoundGraph) {
         if(conservedCarbons==null) throw new IllegalArgumentException("an atom mapping must be provided");
+        if(importer !=null) importer.setWeight(compoundGraph);
+
         ArrayList<ReactionEdge> toRemove = new ArrayList<>();
         for(ReactionEdge e : compoundGraph.edgeSet()){
-            Map<BioMetabolite,Integer> mapping = conservedCarbons.get(e.getV1());
-            if(mapping!=null){
-                Integer cc = conservedCarbons.get(e.getV1()).get(e.getV2());
-                if(cc != null){
-                    if(binarize && cc>0) cc=1 ;
-                    if(removeNoCC && cc==0) toRemove.add(e);
-                    compoundGraph.setEdgeWeight(e, Double.valueOf(cc));
-                }else{
-                    compoundGraph.setEdgeWeight(e, Double.NaN);
-                    if(removeNotFound) toRemove.add(e);
-                }
+            Integer cc = null;
+            if(importer !=null){
+                cc=(int) compoundGraph.getEdgeWeight(e);
+            }else{
+                Map<BioMetabolite,Integer> mapping = conservedCarbons.get(e.getV1());
+                if(mapping!=null) cc = conservedCarbons.get(e.getV1()).get(e.getV2());
+            }
+
+            if(cc != null){
+                if(binarize && cc>0) cc=1 ;
+                if(removeNoCC && cc==0) toRemove.add(e);
+                compoundGraph.setEdgeWeight(e, Double.valueOf(cc));
             }else{
                 compoundGraph.setEdgeWeight(e, Double.NaN);
                 if(removeNotFound) toRemove.add(e);
             }
+
         }
         if(removeNotFound || removeNoCC) compoundGraph.removeAllEdges(toRemove);
     }

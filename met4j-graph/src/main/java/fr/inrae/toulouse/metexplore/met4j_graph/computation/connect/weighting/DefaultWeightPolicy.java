@@ -49,10 +49,16 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 public class DefaultWeightPolicy<V extends BioEntity, E extends Edge<V>,G extends BioGraph<V,E>>
 	extends WeightingPolicy<V,E,G> {
 
+	private Double defValue = 1.0;
+
 	/**
 	 * Instantiates a new default weight policy.
 	 */
 	public DefaultWeightPolicy() {}
+
+	public DefaultWeightPolicy(Double defaultValue) {
+		this.defValue=defaultValue;
+	}
 
 	/* (non-Javadoc)
 	 * @see parsebionet.applications.graphe.WeightingPolicy#setWeight(parsebionet.applications.graphe.BioGraph)
@@ -61,7 +67,7 @@ public class DefaultWeightPolicy<V extends BioEntity, E extends Edge<V>,G extend
 	@Override
 	public void setWeight(G g) {
 		for(E e:g.edgeSet()){
-			g.setEdgeWeight(e, 1.0);
+			g.setEdgeWeight(e, defValue);
 		}
 	}
 	

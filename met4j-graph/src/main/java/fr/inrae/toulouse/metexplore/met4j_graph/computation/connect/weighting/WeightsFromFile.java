@@ -70,6 +70,7 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 	private int edgeLabelCol = 2;
 	private int weightCol = 3;
 	private boolean skipHeader = false;
+	private boolean missingAsNaN = true;
 
 	public WeightsFromFile<V,E,G> removeEdgeNotInFile() {
 		this.removeEdgeNotInFile = true;
@@ -100,6 +101,11 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 		return this;
 	}
 
+	public WeightsFromFile<V,E,G> notFoundAsNaN(boolean notFoundAsNaN) {
+		this.missingAsNaN = notFoundAsNaN;
+		return this;
+	}
+
 	/**
 	 * Instantiates a new weights from file.
 	 *
@@ -122,6 +128,11 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 
 	@Override
 	public void setWeight(G g) {
+		if(missingAsNaN){
+			DefaultWeightPolicy wp = new DefaultWeightPolicy(Double.NaN);
+			wp.setWeight(g);
+		}
+
 		HashSet<E> seenEdges = new HashSet<>();
 		int notInGraph = 0;
 		try {

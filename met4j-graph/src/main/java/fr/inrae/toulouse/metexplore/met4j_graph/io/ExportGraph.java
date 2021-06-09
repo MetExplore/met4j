@@ -360,6 +360,10 @@ public class ExportGraph {
 	 * @param outputPath the output path
 	 */
 	public static <EdgeNameProvider> void toGmlWithAttributes(CompoundGraph graph, String outputPath){
+		ExportGraph.toGmlWithAttributes(graph, outputPath,false);
+	}
+
+	public static <EdgeNameProvider> void toGmlWithAttributes(CompoundGraph graph, String outputPath, Boolean weight){
 		try {
 			GmlExporter<BioMetabolite, ReactionEdge> gml
 					= new GmlExporter<>();
@@ -379,6 +383,7 @@ public class ExportGraph {
 				if(e.getReaction()!=null && e.getReaction().getName()!=null) att.put("Name", DefaultAttribute.createAttribute(e.getReaction().getName()));
 				if(e.getReaction()!=null && e.getReaction().isReversible()!=null) att.put("Reversible", DefaultAttribute.createAttribute(e.getReaction().isReversible()));
 				if(e.getReaction()!=null && e.getReaction().getEcNumber()!=null) att.put("EC", DefaultAttribute.createAttribute(e.getReaction().getEcNumber()));
+				if(weight) att.put("Weight", DefaultAttribute.createAttribute(graph.getEdgeWeight(e)));
 				return att;
 			});
 			FileWriter fw = new FileWriter(new File(outputPath).getAbsoluteFile());

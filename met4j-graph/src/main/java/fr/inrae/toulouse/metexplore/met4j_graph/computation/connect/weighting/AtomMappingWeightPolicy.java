@@ -93,14 +93,12 @@ public class AtomMappingWeightPolicy extends WeightingPolicy<BioMetabolite, Reac
     }
 
     public AtomMappingWeightPolicy fromNumberOfConservedCarbons(String GSAMoutputFile){
-        this.conservedCarbons = new HashMap<>();
-        this.importer = new WeightsFromFile(GSAMoutputFile, false)
+        return this.fromNumberOfConservedCarbons(new WeightsFromFile(GSAMoutputFile, false)
                 .weightCol(8)
                 .edgeLabelCol(6)
                 .sourceCol(0)
                 .targetCol(3)
-                .sep("\t");
-        return this;
+                .sep("\t"));
     }
 
     @Override

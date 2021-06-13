@@ -40,11 +40,9 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.*;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DegreeWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.ProbabilityWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.SimilarityWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.StochasticWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.*;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -55,10 +53,6 @@ import org.junit.Test;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DefaultWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.ReactionProbabilityWeight;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightUtils;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightsFromFile;
 
 /**
  * Test {@link fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph} with {@link WeightingPolicy <BioMetabolite, ReactionEdge , CompoundGraph >}
@@ -400,6 +394,153 @@ public class TestWeightingPolicy {
 		assertEquals("wrong weight after import", efWeight, g.getEdgeWeight(ef),Double.MIN_VALUE);
 		assertEquals("wrong weight after import", fcWeight, g.getEdgeWeight(fc),Double.MIN_VALUE);
 		assertEquals("wrong weight after import", ycWeight, g.getEdgeWeight(yc),Double.MIN_VALUE);
+
+	}
+
+	@Test
+	public void testAtomMappingWeightPolicyI() {
+
+		String RxnSmiles1 = "[O:1]=[C:2]([NH2:3])[C:4]1=[CH:5][CH:6]=[CH:7][N:8](=[CH:9]1)[CH:10]2[O:11][CH:12]([CH2:13][O:14][P:15](=[O:16])([OH:17])[O:18][P:19](=[O:20])([OH:21])[O:22][CH2:23][CH:24]3[O:25][CH:26]([N:27]4[CH:28]=[N:29][C:30]=5[C:31](=[N:32][CH:33]=[N:34][C:35]45)[NH2:36])[CH:37]([O:38][P:39](=[O:40])([OH:41])[OH:42])[CH:43]3[OH:44])[CH:45]([OH:46])[CH:47]2[OH:48]>>[O:1]=[C:2]([NH2:3])[C:4]=1[CH2:5][CH:6]=[CH:7][N:8]([CH:9]1)[CH:10]2[O:11][CH:12]([CH2:13][O:14][P:15](=[O:16])([OH:17])[O:18][P:19](=[O:20])([OH:21])[O:22][CH2:23][CH:24]3[O:25][CH:26]([N:27]4[CH:28]=[N:29][C:30]=5[C:31](=[N:32][CH:33]=[N:34][C:35]45)[NH2:36])[CH:37]([O:38][P:39](=[O:40])([OH:41])[OH:42])[CH:43]3[OH:44])[CH:45]([OH:46])[CH:47]2[OH:48]";
+		String RxnSmiles2 = "[O:1]=[C:2]([NH2:3])[C:4]1=[CH:5][CH:6]=[CH:7][N:8](=[CH:9]1)[CH:10]2[O:11][CH:12]([CH2:13][O:14][P:15](=[O:16])([OH:17])[O:18][P:19](=[O:20])([OH:21])[O:22][CH2:23][CH:24]3[O:25][CH:26]([N:27]4[CH:28]=[N:29][C:30]=5[C:31](=[N:32][CH:33]=[N:34][C:35]45)[NH2:36])[CH:37]([O:38][P:39](=[O:40])([OH:41])[OH:42])[CH:43]3[OH:44])[CH:45]([OH:46])[CH:47]2[OH:48]>>[O:49]=[C:50]([OH:51])[CH2:52][CH2:53][C:57](=[O:58])[C:59](=[O:60])[OH:61]";
+		String RxnSmiles3 = "[O:1]=[C:2]([NH2:3])[C:4]1=[CH:5][CH:6]=[CH:7][N:8](=[CH:9]1)[CH:10]2[O:11][CH:12]([CH2:13][O:14][P:15](=[O:16])([OH:17])[O:18][P:19](=[O:20])([OH:21])[O:22][CH2:23][CH:24]3[O:25][CH:26]([N:27]4[CH:28]=[N:29][C:30]=5[C:31](=[N:32][CH:33]=[N:34][C:35]45)[NH2:36])[CH:37]([O:38][P:39](=[O:40])([OH:41])[OH:42])[CH:43]3[OH:44])[CH:45]([OH:46])[CH:47]2[OH:48]>>[C:54](=[O:55])=[O:56]";
+		String RxnSmiles4 = "[O:49]=[C:50]([OH:51])[CH2:52][CH:53]([C:54](=[O:55])[OH:56])[CH:57]([OH:58])[C:59](=[O:60])[OH:61]>>[O:1]=[C:2]([NH2:3])[C:4]=1[CH2:5][CH:6]=[CH:7][N:8]([CH:9]1)[CH:10]2[O:11][CH:12]([CH2:13][O:14][P:15](=[O:16])([OH:17])[O:18][P:19](=[O:20])([OH:21])[O:22][CH2:23][CH:24]3[O:25][CH:26]([N:27]4[CH:28]=[N:29][C:30]=5[C:31](=[N:32][CH:33]=[N:34][C:35]45)[NH2:36])[CH:37]([O:38][P:39](=[O:40])([OH:41])[OH:42])[CH:43]3[OH:44])[CH:45]([OH:46])[CH:47]2[OH:48]";
+		String RxnSmiles5 = "[O:49]=[C:50]([OH:51])[CH2:52][CH:53]([C:54](=[O:55])[OH:56])[CH:57]([OH:58])[C:59](=[O:60])[OH:61]>>[O:49]=[C:50]([OH:51])[CH2:52][CH2:53][C:57](=[O:58])[C:59](=[O:60])[OH:61]";
+		String RxnSmiles6 = "[O:49]=[C:50]([OH:51])[CH2:52][CH:53]([C:54](=[O:55])[OH:56])[CH:57]([OH:58])[C:59](=[O:60])[OH:61]>>[C:54](=[O:55])=[O:56]";
+		int CCnb1 =21;
+		int CCnb2 =0;
+		int CCnb3 =0;
+		int CCnb4 =0;
+		int CCnb5 =5;
+		int CCnb6 =1;
+
+		HashMap<BioMetabolite, Map<BioMetabolite,String>> RxnMap = new HashMap<>();
+		HashMap<BioMetabolite,String> ar = new HashMap<>();
+		ar.put(d,RxnSmiles1);
+		ar.put(b,RxnSmiles2);
+		RxnMap.put(a,ar);
+		HashMap<BioMetabolite,String> br = new HashMap<>();
+		br.put(c,RxnSmiles3);
+		br.put(x,RxnSmiles4);
+		RxnMap.put(b,br);
+		HashMap<BioMetabolite,String> er = new HashMap<>();
+		er.put(b,RxnSmiles5);
+		er.put(f,RxnSmiles6);
+		RxnMap.put(e,er);
+
+
+		AtomMappingWeightPolicy wp1 = new AtomMappingWeightPolicy().fromAAMRxnSmiles(RxnMap);
+		wp1.setWeight(g);
+		assertEquals("wrong weight for AAM weight", CCnb1, g.getEdgeWeight(ad),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", CCnb2, g.getEdgeWeight(ab),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", CCnb3, g.getEdgeWeight(bc),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", CCnb4, g.getEdgeWeight(bx),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", CCnb5, g.getEdgeWeight(eb),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", CCnb6, g.getEdgeWeight(ef),Double.MIN_VALUE);
+		assertTrue("wrong weight for AAM weight", Double.isNaN(g.getEdgeWeight(yc)));
+
+	}
+
+	@Test
+	public void testAtomMappingWeightPolicyII() {
+		ArrayList<Integer> CCList1 = new ArrayList<Integer>(Arrays.asList(2,4,5,6,7,9,10,12,13,23,24,26,28,30,31,33,35,37,43,45,47));
+		ArrayList<Integer> CCList2 = new ArrayList<Integer>();
+		ArrayList<Integer> CCList3 = new ArrayList<Integer>();
+		ArrayList<Integer> CCList4 = new ArrayList<Integer>();
+		ArrayList<Integer> CCList5 = new ArrayList<Integer>(Arrays.asList(50,52,53,57,59));
+		ArrayList<Integer> CCList6 = new ArrayList<Integer>(Arrays.asList(54));
+		int CCnb1 =21;
+		int CCnb2 =0;
+		int CCnb3 =0;
+		int CCnb4 =0;
+		int CCnb5 =5;
+		int CCnb6 =1;
+
+		HashMap<BioMetabolite, Map<BioMetabolite, Collection<Integer>>> labelMap = new HashMap<>();
+		HashMap<BioMetabolite,Collection<Integer>> al = new HashMap<>();
+		al.put(d,CCList1);
+		al.put(b,CCList2);
+		labelMap.put(a,al);
+		HashMap<BioMetabolite,Collection<Integer>> bl = new HashMap<>();
+		bl.put(c,CCList3);
+		bl.put(x,CCList4);
+		labelMap.put(b,bl);
+		HashMap<BioMetabolite,Collection<Integer>> el = new HashMap<>();
+		el.put(b,CCList5);
+		el.put(f,CCList6);
+		labelMap.put(e,el);
+
+
+		AtomMappingWeightPolicy wp2 = new AtomMappingWeightPolicy().fromConservedCarbonIndexes(labelMap);
+		wp2.setWeight(g);
+		assertEquals("wrong weight for AAM weight", CCnb1, g.getEdgeWeight(ad),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", CCnb2, g.getEdgeWeight(ab),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", CCnb3, g.getEdgeWeight(bc),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", CCnb4, g.getEdgeWeight(bx),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", CCnb5, g.getEdgeWeight(eb),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", CCnb6, g.getEdgeWeight(ef),Double.MIN_VALUE);
+		assertTrue("wrong weight for AAM weight", Double.isNaN(g.getEdgeWeight(yc)));
+
+	}
+
+	@Test
+	public void testAtomMappingWeightPolicyIII() {
+		int CCnb1 =21;
+		int CCnb2 =0;
+		int CCnb3 =0;
+		int CCnb4 =0;
+		int CCnb5 =5;
+		int CCnb6 =1;
+
+
+		HashMap<BioMetabolite, Map<BioMetabolite,Integer>> nMap = new HashMap<>();
+		HashMap<BioMetabolite,Integer> an = new HashMap<>();
+		an.put(d,CCnb1);
+		an.put(b,CCnb2);
+		nMap.put(a,an);
+		HashMap<BioMetabolite,Integer> bn = new HashMap<>();
+		bn.put(c,CCnb3);
+		bn.put(x,CCnb4);
+		nMap.put(b,bn);
+		HashMap<BioMetabolite,Integer> en = new HashMap<>();
+		en.put(b,CCnb5);
+		en.put(f,CCnb6);
+		nMap.put(e,en);
+
+		AtomMappingWeightPolicy wp3 = new AtomMappingWeightPolicy().fromNumberOfConservedCarbons(nMap);
+		wp3.setWeight(g);
+		assertEquals("wrong weight for AAM weight", CCnb1, g.getEdgeWeight(ad),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", CCnb2, g.getEdgeWeight(ab),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", CCnb3, g.getEdgeWeight(bc),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", CCnb4, g.getEdgeWeight(bx),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", CCnb5, g.getEdgeWeight(eb),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", CCnb6, g.getEdgeWeight(ef),Double.MIN_VALUE);
+		assertTrue("wrong weight for AAM weight", Double.isNaN(g.getEdgeWeight(yc)));
+
+		AtomMappingWeightPolicy wp4 = new AtomMappingWeightPolicy().fromNumberOfConservedCarbons(nMap).binarize();
+		CompoundGraph g4 = new CompoundGraph(g);
+		wp4.setWeight(g4);
+		assertEquals("wrong weight for AAM weight", 1, g4.getEdgeWeight(g4.getEdge(a,d)),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", 0, g4.getEdgeWeight(g4.getEdge(a,b)),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", 0, g4.getEdgeWeight(g4.getEdge(b,c)),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", 0, g4.getEdgeWeight(g4.getEdge(b,x)),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", 1, g4.getEdgeWeight(g4.getEdge(e,b)),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", 1, g4.getEdgeWeight(g4.getEdge(e,f)),Double.MIN_VALUE);
+		assertTrue("wrong weight for AAM weight", Double.isNaN(g.getEdgeWeight(yc)));
+
+		AtomMappingWeightPolicy wp5 = new AtomMappingWeightPolicy().fromNumberOfConservedCarbons(nMap).removeEdgesWithoutConservedCarbon();
+		CompoundGraph g5 = new CompoundGraph(g);
+		wp5.setWeight(g5);
+		assertEquals("wrong filtering for AAM weight",6, g5.edgeSet().size());
+		assertTrue("wrong filtering for AAM weight",g5.areConnected(y,c));
+		assertFalse("wrong filtering for AAM weight",g5.areConnected(a,b));
+
+		AtomMappingWeightPolicy wp6 = new AtomMappingWeightPolicy().fromNumberOfConservedCarbons(nMap).removeEdgeWithoutMapping();
+		CompoundGraph g6 = new CompoundGraph(g);
+		wp6.setWeight(g6);
+		assertEquals("wrong filtering for AAM weight",6, g6.edgeSet().size());
+		assertFalse("wrong filtering for AAM weight",g6.areConnected(y,c));
+		assertTrue("wrong filtering for AAM weight",g6.areConnected(a,b));
+
 
 	}
 	

@@ -72,8 +72,8 @@ import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
  * extract information contained in the Notes of their SBMLs
  *
  * @author Benjamin
- * @since 3.0
  * @version $Id: $Id
+ * @since 3.0
  */
 public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML1Compatible, ReaderSBML2Compatible,
         ReaderSBML3Compatible {
@@ -118,9 +118,13 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
      * The default pattern used to retrieve element external identifiers
      */
     public static final String defaultextDBidsPAttern = "[>]+([a-zA-Z\\._0-9 ]+):\\s*([^<]+)<";
-    /** Constant <code>defaultInchiPattern</code> */
+    /**
+     * Constant <code>defaultInchiPattern</code>
+     */
     public static final String defaultInchiPattern = "(?i:>\\s*INCHI:\\s*([^<]+)<)";
-    /** Constant <code>defaultSmilesPattern</code> */
+    /**
+     * Constant <code>defaultSmilesPattern</code>
+     */
     public static final String defaultSmilesPattern = "(?i:>\\s*SMILES:\\s*([^<]+)<)";
     /**
      * The default separator in Notes values.
@@ -212,8 +216,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
      *
      * @param assosString The full GPR String in the first recursion, an inner part
      *                    of the initial GPR on the following recursions
+     * @param network     a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
      * @return a list of {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneSet}
-     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
      * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.MalformedGeneAssociationStringException if any.
      */
     public static GeneAssociation computeGeneAssociation(String assosString, BioNetwork network)
@@ -295,7 +299,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
     /**
      * {@inheritDoc}
-     *
+     * <p>
      * Launch the parsing of Notes.
      * {@link BioCompartment} has a different method because it does not extends the
      * {@link BioEntity} class
@@ -315,13 +319,17 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getAssociatedPackageName() {
         return "note";
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isPackageUseableOnModel(Model model) {
         return true;
@@ -561,7 +569,14 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
             if (!isVoid(value)) {
 
-                metabolite.setCharge(Integer.parseInt(value));
+                try {
+                    metabolite.setCharge((int) Double.parseDouble(value));
+                } catch (NumberFormatException e) {
+                    System.err.println("[WARNING][met4j-io] Be careful, charge is not in good format for the metabolite "
+                            + metabolite.getId() +
+                            "and won't be set");
+                }
+
 
                 metaboNotes = metaboNotes.replaceAll(this.getChargePattern(), "");
             }

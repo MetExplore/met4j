@@ -4,7 +4,7 @@
     <parent>
         <groupId>fr.inrae.toulouse.metexplore</groupId>
         <artifactId>met4j</artifactId>
-        <version>0.5.3-SNAPSHOT</version>
+        <version>0.5.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>met4j-graph</artifactId>
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-core</artifactId>
-            <version>0.5.3-SNAPSHOT</version>
+            <version>0.5.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -49,12 +49,12 @@
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-mathUtils</artifactId>
-            <version>0.5.3-SNAPSHOT</version>
+            <version>0.5.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-chemUtils</artifactId>
-            <version>0.5.3-SNAPSHOT</version>
+            <version>0.5.4-SNAPSHOT</version>
         </dependency>
     </dependencies>
 <!--    <build>

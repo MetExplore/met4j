@@ -167,7 +167,11 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 			bioParam.setConstant(gParam.getConstant());
 			bioParam.value = gParam.getValue();
 
-			bioParam.unitDefinition = (BioUnitDefinition) (udList.get(gParam.getUnits()));
+			String unit = gParam.getUnits();
+
+			if(unit != "") {
+				bioParam.unitDefinition = (BioUnitDefinition) (udList.get(gParam.getUnits()));
+			}
 
 			this.flxNet.addFluxBound(bioParam);
 		}

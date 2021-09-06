@@ -40,7 +40,7 @@ import static org.junit.Assert.*;
 
 import java.util.Map;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.LoadPoint;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.LoadPoint;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.junit.BeforeClass;
@@ -154,9 +154,9 @@ public class TestLoadPoint {
 		linearGraph.addEdge(e, d, ed);
 		
 		
-		toyMeasure = new LoadPoint<BioMetabolite, ReactionEdge, CompoundGraph>(toyGraph);
-		linearMeasure = new LoadPoint<BioMetabolite, ReactionEdge, CompoundGraph>(linearGraph);
-		starMeasure = new LoadPoint<BioMetabolite, ReactionEdge, CompoundGraph>(starGraph);
+		toyMeasure = new LoadPoint<>(toyGraph);
+		linearMeasure = new LoadPoint<>(linearGraph);
+		starMeasure = new LoadPoint<>(starGraph);
 	}
 	
 	@Test

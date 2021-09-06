@@ -41,7 +41,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.algo.SteinerTreeApprox;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.SteinerTreeApprox;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.junit.BeforeClass;
@@ -99,17 +99,16 @@ public class TestSteinerTreeApprox {
 	 */
 	@Test
 	public void testSteinerTreeList(){
-		HashSet<BioMetabolite> noi = new HashSet<BioMetabolite>();
+		HashSet<BioMetabolite> noi = new HashSet<>();
 		noi.add(a);noi.add(b);noi.add(c);noi.add(d);noi.add(e);
 		
 		ReactionEdge[] expectedPath = {ey, yx, ay, ed, cx, xb};
 		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer 
-			= new SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph>(g, true);
+			= new SteinerTreeApprox<>(g, true);
 		List<ReactionEdge> treeList = steinerComputer.getSteinerTreeList(noi, true);
 		
 		assertNotNull("No path found", treeList);
-		System.out.println(treeList);
-		
+
 		assertTrue("wrong path",Arrays.asList(expectedPath).containsAll(treeList));
 	}
 	
@@ -119,17 +118,16 @@ public class TestSteinerTreeApprox {
 	 */
 	@Test
 	public void testSteinerTreeList2(){
-		HashSet<BioMetabolite> noi = new HashSet<BioMetabolite>();
+		HashSet<BioMetabolite> noi = new HashSet<>();
 		noi.add(a);noi.add(b);noi.add(c);noi.add(d);noi.add(e);
 		
 		ReactionEdge[] expectedPath = {ey, yx, ay, ed, cx, xb};
 		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer 
-			= new SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph>(g);
+			= new SteinerTreeApprox<>(g);
 		List<ReactionEdge> treeList = steinerComputer.getSteinerTreeList(noi,noi, true);
 		
 		assertNotNull("No path found", treeList);
-		System.out.println(treeList);
-		
+
 		assertTrue("wrong path",Arrays.asList(expectedPath).containsAll(treeList));
 	}
 

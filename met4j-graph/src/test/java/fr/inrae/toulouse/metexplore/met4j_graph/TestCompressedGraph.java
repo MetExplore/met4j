@@ -91,16 +91,16 @@ public class TestCompressedGraph {
 		cg.addEdge(v1, v2, e1);
 		cg.addEdge(v2, v3, e2);
 		
-		ArrayList<ReactionEdge> reactionList = new ArrayList<ReactionEdge>();
+		ArrayList<ReactionEdge> reactionList = new ArrayList<>();
 		reactionList.add(e1);
 		reactionList.add(e2);
-		path = new BioPath<BioMetabolite, ReactionEdge>(cg, v1, v3, reactionList, 2.0);
+		path = new BioPath<>(cg, v1, v3, reactionList, 2.0);
 		
-		cg2 = new CompressedGraph<BioMetabolite, ReactionEdge, CompoundGraph>(cg);
+		cg2 = new CompressedGraph<>(cg);
 		cg2.addVertex(v1);
 		cg2.addVertex(v3);
 		
-		e = new PathEdge<BioMetabolite, ReactionEdge>(v1, v3, path);
+		e = new PathEdge<>(v1, v3, path);
 		cg2.addEdge(v1, v3, e);
 		
 		assertEquals(2, cg2.vertexSet().size());

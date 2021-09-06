@@ -38,6 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_graph;
 
 import static org.junit.Assert.*;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraph;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -46,7 +47,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 
@@ -167,7 +167,31 @@ public class TestBionetwork2BioGraph {
 		assertEquals("wrong in-degree of reaction "+r7.getId(), 0, g.inDegreeOf(r7));
 		assertEquals("wrong out-degree of reaction "+r7.getId(), 0, g.outDegreeOf(r7));
 	}
-	
+
+	@Test
+	public void testGetReactionGraph2() {
+		BioCollection<BioMetabolite> cofactors = new BioCollection<>();
+		cofactors.add(a,h);
+		ReactionGraph g = builder.getReactionGraph(cofactors);
+		assertEquals("wrong number of vertices",7, g.vertexSet().size());
+		assertEquals("wrong number of edges",7, g.edgeSet().size());
+
+		assertEquals("wrong in-degree of reaction "+r1.getId(), 0,g.inDegreeOf(r1));
+		assertEquals("wrong out-degree of reaction "+r1.getId(), 2, g.outDegreeOf(r1));
+		assertEquals("wrong in-degree of reaction "+r2.getId(), 2, g.inDegreeOf(r2));
+		assertEquals("wrong out-degree of reaction "+r2.getId(), 0, g.outDegreeOf(r2));
+		assertEquals("wrong in-degree of reaction "+r3.getId(), 2, g.inDegreeOf(r3));
+		assertEquals("wrong out-degree of reaction "+r3.getId(), 3, g.outDegreeOf(r3));
+		assertEquals("wrong in-degree of reaction "+r4.getId(), 2, g.inDegreeOf(r4));
+		assertEquals("wrong out-degree of reaction "+r4.getId(), 0, g.outDegreeOf(r4));
+		assertEquals("wrong in-degree of reaction "+r5.getId(), 1, g.inDegreeOf(r5));
+		assertEquals("wrong out-degree of reaction "+r5.getId(), 2, g.outDegreeOf(r5));
+		assertEquals("wrong in-degree of reaction "+r6.getId(), 0, g.inDegreeOf(r6));
+		assertEquals("wrong out-degree of reaction "+r6.getId(), 0, g.outDegreeOf(r6));
+		assertEquals("wrong in-degree of reaction "+r7.getId(), 0, g.inDegreeOf(r7));
+		assertEquals("wrong out-degree of reaction "+r7.getId(), 0, g.outDegreeOf(r7));
+	}
+
 	@Test
 	public void testGetCompoundGraph(){
 		CompoundGraph g = builder.getCompoundGraph();
@@ -193,9 +217,6 @@ public class TestBionetwork2BioGraph {
 	@Test
 	public void testGetBipartiteGraph(){
 		BipartiteGraph g = builder.getBipartiteGraph();
-		for(BipartiteEdge e : g.edgeSet()){
-			System.out.println(e.getV1().getId()+" -> "+e.getV2().getId());
-		}
 		assertEquals("wrong number of vertices",14, g.vertexSet().size());
 		assertEquals("wrong number of edges",22, g.edgeSet().size());
 		
@@ -233,9 +254,6 @@ public class TestBionetwork2BioGraph {
 	@Test
 	public void testGetPathwayGraph(){
 		PathwayGraph g = builder.getPathwayGraph();
-//		for(PathwayGraphEdge e : g.edgeSet()){
-//			System.out.println(e.getV1().getId()+" >"+e.getConnectingCompounds().toString()+"> "+e.getV2().getId());
-//		}
 		Assert.assertEquals("wrong number of vertices",4, g.vertexSet().size());
 		Assert.assertEquals("wrong number of edges",3, g.edgeSet().size());
 

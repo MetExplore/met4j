@@ -33,9 +33,6 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  */
-/**
- * 10 déc. 2013 
- */
 package fr.inrae.toulouse.metexplore.met4j_graph;
 
 import java.io.BufferedOutputStream;

@@ -83,10 +83,11 @@ public class SbmlToMetaboliteTable extends AbstractMet4jApplication {
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(this.outputFile, false))) {
 
-            writer.println("id\tname");
+            writer.println("id\tname\tformula\tcharge\tsmiles\tinchi");
 
             for (BioMetabolite metabolite : network.getMetabolitesView()) {
-                writer.println(metabolite.getId() + "\t" + metabolite.getName());
+                writer.println(metabolite.getId() + "\t" + metabolite.getName() + "\t"
+                        +metabolite.getChemicalFormula() + "\t"+metabolite.getCharge()+"\t"+metabolite.getSmiles()+"\t"+metabolite.getInchi());
             }
 
         } catch (IOException e) {

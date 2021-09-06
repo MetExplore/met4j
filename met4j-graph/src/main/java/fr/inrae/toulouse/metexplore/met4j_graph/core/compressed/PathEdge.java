@@ -78,7 +78,7 @@ public class PathEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V>{
 	/**
 	 * Sets the path edges.
 	 *
-	 * @param sp a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath} object.
+	 * @param sp the new path edges
 	 */
 	public void setPath(BioPath<V, E> sp){
         path =sp;

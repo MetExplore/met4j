@@ -35,17 +35,11 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.jgrapht.EdgeFactory;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import java.util.*;
 
 /**
  * The Class BioGraph.
@@ -57,23 +51,11 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	
 	private static final long serialVersionUID = 1L;
 	private String name = "MetabolicGraph";
-	
-	/**
-	 * <p>Constructor for BioGraph.</p>
-	 *
-	 * @param edgeClass a {@link java.lang.Class} object.
-	 */
-	public BioGraph(Class<? extends E> edgeClass){
-		super(edgeClass);
-	}
-	
-	/**
-	 * <p>Constructor for BioGraph.</p>
-	 *
-	 * @param factory a {@link org.jgrapht.EdgeFactory} object.
-	 */
-	public BioGraph(EdgeFactory<V, E> factory){
-		super(factory);
+
+	public BioGraph(){
+		super(null, null);
+		super.setEdgeSupplier(this::createEdge);
+		super.setVertexSupplier(this::createVertex);
 	}
 	
 	/**
@@ -139,8 +121,8 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/**
 	 * Gets the neighbor list of a given vertex.
 	 *
-	 * @param vertex a V object.
-	 * @return the neighbor list
+	 * @param vertex the vertex
+	 * @return the vertex neighbor list
 	 */
 	public final Set<V> neighborListOf(V vertex){
 		return new HashSet<>(Graphs.neighborListOf(this, vertex));
@@ -149,8 +131,8 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/**
 	 * Gets the predecessor list of a given vertex.
 	 *
-	 * @param vertex a V object.
-	 * @return the predecessor list
+	 * @param vertex the vertex
+	 * @return the vertex predecessor list
 	 */
 	public final Set<V> predecessorListOf(V vertex){
 		return new HashSet<>(Graphs.predecessorListOf(this, vertex));
@@ -159,8 +141,8 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/**
 	 * Gets the successor list of a given vertex.
 	 *
-	 * @param vertex a V object.
-	 * @return the successor list
+	 * @param vertex the vertex
+	 * @return the vertex successor list
 	 */
 	public final Set<V> successorListOf(V vertex){
 		return new HashSet<>(Graphs.successorListOf(this, vertex));
@@ -172,7 +154,9 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	/** {@inheritDoc} */
 	@Override
 	public E addEdge(V arg0, V arg1) {
-		return super.addEdge(arg0, arg1);
+		E e = this.createEdge(arg0, arg1);
+		if(this.addEdge(arg0, arg1,e)) return e;
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -184,6 +168,10 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 		return super.addEdge(sourceVertex, targetVertex, e);
 	}
 
+	public boolean addEdge(E e) {
+		return super.addEdge(e.getV1(), e.getV2(), e);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.jgrapht.graph.AbstractBaseGraph#addVertex(java.lang.Object)
 	 */
@@ -192,6 +180,11 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	public boolean addVertex(V v) {
 		return super.addVertex(v);
 	}
+
+	public boolean addVertex(String id) {
+		return super.addVertex(this.createVertex(id));
+	}
+
 	
 	/**
 	 * add a path to the graph
@@ -500,30 +493,26 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	/**
-	 * <p>copyEdge.</p>
-	 *
-	 * @param edge a E object.
-	 * @return a E object.
-	 */
-	public abstract E copyEdge(E edge);
-	/**
-	 * <p>getEdgeFactory.</p>
-	 *
-	 * @return a {@link org.jgrapht.EdgeFactory} object.
-	 */
-	public abstract EdgeFactory<V, E> getEdgeFactory();
-	
-//	public abstract GraphFactory<V, E, ? extends BioGraph<V,E>> getGraphFactory();
-	
 
-	
-//	/**
-//	 * create a graph g' from this graph g where for each edge e(x,y) in g their exist an edge e'(y,x) in g'
-//	 * @return the edge-reversed graph
-//	 */
-//	public abstract Graph<V,E> reverse();
+
+	/**
+	 * Create an edge with extra attributes cloned from an existing edge passed as parameter.
+	 * @param v1 the source vertex
+	 * @param v2 the target vertex
+	 * @param edge the template edge which provides other attributes
+	 * @return an edge
+	 */
+	public abstract E createEdgeFromModel(V v1, V v2, E edge);
+	public abstract E copyEdge(E edge);
+	public abstract V createVertex(String id);
+	public V createVertex(){
+		return this.createVertex(UUID.randomUUID().toString());
+	}
+	public abstract E createEdge(V v1, V v2);
+	public E createEdge(){
+		return createEdge(createVertex(), createVertex());
+	}
+
 	
 	/**
 	 * create an edge e'(x,y) from an existing edge e(y,x)
@@ -531,6 +520,19 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 * @param edge the edge to reverse
 	 * @return the reverse edge
 	 */
-	public abstract E reverseEdge(E edge);
+	public E reverseEdge(E edge){
+		return createEdgeFromModel(edge.getV2(),edge.getV1(),edge);
+	}
+
+	/**
+	 * For each edges in the graph, create a copy with reversed source and target.
+	 * This makes this directed graph effectively undirected, but with twice the number of edges
+	 */
+	public void asUndirected(){
+
+		for(E e : new HashSet<>(this.edgeSet())){
+			this.addEdge(reverseEdge(e));
+		}
+	}
 
 }

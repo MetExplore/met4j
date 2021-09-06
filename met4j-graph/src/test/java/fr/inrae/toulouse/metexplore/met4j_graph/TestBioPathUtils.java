@@ -97,18 +97,18 @@ public class TestBioPathUtils {
 		bh = new ReactionEdge(b,h,new BioReaction("bh"));g.addEdge(b, h, bh);g.setEdgeWeight(bh, 0);
 		hc = new ReactionEdge(h,c,new BioReaction("hc"));g.addEdge(h, c, hc);g.setEdgeWeight(hc, 10);
 		
-		List<ReactionEdge> abcList = new ArrayList<ReactionEdge>();
+		List<ReactionEdge> abcList = new ArrayList<>();
 			abcList.add(ab);abcList.add(bc);
-		List<ReactionEdge> abhcList = new ArrayList<ReactionEdge>();
+		List<ReactionEdge> abhcList = new ArrayList<>();
 			abhcList.add(ab);abhcList.add(bh);abhcList.add(hc);
-		List<ReactionEdge> adefcList = new ArrayList<ReactionEdge>();
+		List<ReactionEdge> adefcList = new ArrayList<>();
 			adefcList.add(ad);adefcList.add(de);adefcList.add(ef);adefcList.add(fc);
 			
-		abc = new BioPath<BioMetabolite, ReactionEdge>(g, a, c, abcList, 100);
-		abhc = new BioPath<BioMetabolite, ReactionEdge>(g, a, c, abhcList, 10);
-		adefc = new BioPath<BioMetabolite, ReactionEdge>(g, a, c, adefcList, 1);
+		abc = new BioPath<>(g, a, c, abcList, 100);
+		abhc = new BioPath<>(g, a, c, abhcList, 10);
+		adefc = new BioPath<>(g, a, c, adefcList, 1);
 		
-		testSet = new HashSet<BioPath<BioMetabolite, ReactionEdge>>();
+		testSet = new HashSet<>();
 		testSet.add(abc);
 		testSet.add(abhc);
 		testSet.add(adefc);
@@ -116,14 +116,14 @@ public class TestBioPathUtils {
 	
 	@Test
 	public void getPathsContainingAllEdges() {
-		Collection<ReactionEdge> edges = new HashSet<ReactionEdge>();
+		Collection<ReactionEdge> edges = new HashSet<>();
 		edges.add(ab);
 		edges.add(hc);
 		
-		ArrayList<BioPath<BioMetabolite, ReactionEdge>> expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		ArrayList<BioPath<BioMetabolite, ReactionEdge>> expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
 		
-		ArrayList<BioPath<BioMetabolite, ReactionEdge>> filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.getPathsContainingAllEdges(testSet, edges));
+		ArrayList<BioPath<BioMetabolite, ReactionEdge>> filteredSet = new ArrayList<>(BioPathUtils.getPathsContainingAllEdges(testSet, edges));
 		
 		Collections.sort(expectedSet);
 		Collections.sort(filteredSet);
@@ -133,15 +133,15 @@ public class TestBioPathUtils {
 	
 	@Test
 	public void getPathsContainingAllNodes() {
-		Collection<BioMetabolite> nodes = new HashSet<BioMetabolite>();
+		Collection<BioMetabolite> nodes = new HashSet<>();
 		nodes.add(a);
 		nodes.add(b);
 		
-		ArrayList<BioPath<BioMetabolite, ReactionEdge>> expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		ArrayList<BioPath<BioMetabolite, ReactionEdge>> expectedSet = new ArrayList<>();
 		expectedSet.add(abc);
 		expectedSet.add(abhc);
 		
-		ArrayList<BioPath<BioMetabolite, ReactionEdge>> filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.getPathsContainingAllNodes(testSet, nodes));
+		ArrayList<BioPath<BioMetabolite, ReactionEdge>> filteredSet = new ArrayList<>(BioPathUtils.getPathsContainingAllNodes(testSet, nodes));
 		
 		Collections.sort(expectedSet);
 		Collections.sort(filteredSet);
@@ -151,15 +151,15 @@ public class TestBioPathUtils {
 	
 	@Test
 	public void getPathsContainingEdges() {
-		Collection<ReactionEdge> edges = new HashSet<ReactionEdge>();
+		Collection<ReactionEdge> edges = new HashSet<>();
 		edges.add(ab);
 		edges.add(hc);
 		
-		ArrayList<BioPath<BioMetabolite, ReactionEdge>> expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		ArrayList<BioPath<BioMetabolite, ReactionEdge>> expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
 		expectedSet.add(abc);
 		
-		ArrayList<BioPath<BioMetabolite, ReactionEdge>> filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.getPathsContainingEdges(testSet, edges));
+		ArrayList<BioPath<BioMetabolite, ReactionEdge>> filteredSet = new ArrayList<>(BioPathUtils.getPathsContainingEdges(testSet, edges));
 		
 		Collections.sort(expectedSet);
 		Collections.sort(filteredSet);
@@ -169,15 +169,15 @@ public class TestBioPathUtils {
 	
 	@Test
 	public void getPathsContainingNodes() {
-		Collection<BioMetabolite> nodes = new HashSet<BioMetabolite>();
+		Collection<BioMetabolite> nodes = new HashSet<>();
 		nodes.add(h);
 		nodes.add(f);
 		
-		ArrayList<BioPath<BioMetabolite, ReactionEdge>> expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		ArrayList<BioPath<BioMetabolite, ReactionEdge>> expectedSet = new ArrayList<>();
 		expectedSet.add(adefc);
 		expectedSet.add(abhc);
 		
-		ArrayList<BioPath<BioMetabolite, ReactionEdge>> filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.getPathsContainingNodes(testSet, nodes));
+		ArrayList<BioPath<BioMetabolite, ReactionEdge>> filteredSet = new ArrayList<>(BioPathUtils.getPathsContainingNodes(testSet, nodes));
 		
 		Collections.sort(expectedSet);
 		Collections.sort(filteredSet);
@@ -194,47 +194,47 @@ public class TestBioPathUtils {
 		String operator;
 		
 		operator = BioPathUtils.EQUALITY;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.GREATER;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(adefc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.GREATEROREQUAL;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
 		expectedSet.add(adefc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.INEQUALITY;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abc);
 		expectedSet.add(adefc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.LESS;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.LESSOREQUAL;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
 		expectedSet.add(abc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 	}
@@ -247,47 +247,47 @@ public class TestBioPathUtils {
 		String operator;
 		
 		operator = BioPathUtils.EQUALITY;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthPercentileFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthPercentileFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.GREATER;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(adefc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthPercentileFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthPercentileFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.GREATEROREQUAL;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
 		expectedSet.add(adefc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthPercentileFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthPercentileFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.INEQUALITY;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abc);
 		expectedSet.add(adefc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthPercentileFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthPercentileFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.LESS;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthPercentileFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthPercentileFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.LESSOREQUAL;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
 		expectedSet.add(abc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthPercentileFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthPercentileFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 	}
@@ -300,47 +300,47 @@ public class TestBioPathUtils {
 		String operator;
 		
 		operator = BioPathUtils.EQUALITY;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthRankFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthRankFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.GREATER;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(adefc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthRankFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthRankFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.GREATEROREQUAL;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
 		expectedSet.add(adefc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthRankFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthRankFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.INEQUALITY;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abc);
 		expectedSet.add(adefc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthRankFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthRankFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.LESS;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthRankFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthRankFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.LESSOREQUAL;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
 		expectedSet.add(abc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.lengthRankFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.lengthRankFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 	}
@@ -354,47 +354,47 @@ public class TestBioPathUtils {
 		String operator;
 		
 		operator = BioPathUtils.EQUALITY;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.weightFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.GREATER;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.weightFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.GREATEROREQUAL;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
 		expectedSet.add(abc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.weightFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.INEQUALITY;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abc);
 		expectedSet.add(adefc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.weightFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.LESS;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(adefc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.weightFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.LESSOREQUAL;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
 		expectedSet.add(adefc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.weightFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 	}
@@ -407,47 +407,47 @@ public class TestBioPathUtils {
 			String operator;
 			
 			operator = BioPathUtils.EQUALITY;
-			expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+			expectedSet = new ArrayList<>();
 			expectedSet.add(abhc);
-			filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightPercentileFilter(testSet, threshold, operator));
+			filteredSet = new ArrayList<>(BioPathUtils.weightPercentileFilter(testSet, threshold, operator));
 			Collections.sort(expectedSet);Collections.sort(filteredSet);
 			assertEquals(expectedSet, filteredSet);
 			
 			operator = BioPathUtils.GREATER;
-			expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+			expectedSet = new ArrayList<>();
 			expectedSet.add(abc);
-			filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightPercentileFilter(testSet, threshold, operator));
+			filteredSet = new ArrayList<>(BioPathUtils.weightPercentileFilter(testSet, threshold, operator));
 			Collections.sort(expectedSet);Collections.sort(filteredSet);
 			assertEquals(expectedSet, filteredSet);
 			
 			operator = BioPathUtils.GREATEROREQUAL;
-			expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+			expectedSet = new ArrayList<>();
 			expectedSet.add(abhc);
 			expectedSet.add(abc);
-			filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightPercentileFilter(testSet, threshold, operator));
+			filteredSet = new ArrayList<>(BioPathUtils.weightPercentileFilter(testSet, threshold, operator));
 			Collections.sort(expectedSet);Collections.sort(filteredSet);
 			assertEquals(expectedSet, filteredSet);
 			
 			operator = BioPathUtils.INEQUALITY;
-			expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+			expectedSet = new ArrayList<>();
 			expectedSet.add(abc);
 			expectedSet.add(adefc);
-			filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightPercentileFilter(testSet, threshold, operator));
+			filteredSet = new ArrayList<>(BioPathUtils.weightPercentileFilter(testSet, threshold, operator));
 			Collections.sort(expectedSet);Collections.sort(filteredSet);
 			assertEquals(expectedSet, filteredSet);
 			
 			operator = BioPathUtils.LESS;
-			expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+			expectedSet = new ArrayList<>();
 			expectedSet.add(adefc);
-			filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightPercentileFilter(testSet, threshold, operator));
+			filteredSet = new ArrayList<>(BioPathUtils.weightPercentileFilter(testSet, threshold, operator));
 			Collections.sort(expectedSet);Collections.sort(filteredSet);
 			assertEquals(expectedSet, filteredSet);
 			
 			operator = BioPathUtils.LESSOREQUAL;
-			expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+			expectedSet = new ArrayList<>();
 			expectedSet.add(abhc);
 			expectedSet.add(adefc);
-			filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightPercentileFilter(testSet, threshold, operator));
+			filteredSet = new ArrayList<>(BioPathUtils.weightPercentileFilter(testSet, threshold, operator));
 			Collections.sort(expectedSet);Collections.sort(filteredSet);
 			assertEquals(expectedSet, filteredSet);
 	}
@@ -460,47 +460,47 @@ public class TestBioPathUtils {
 		String operator;
 		
 		operator = BioPathUtils.EQUALITY;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightRankFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.weightRankFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.GREATER;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightRankFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.weightRankFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.GREATEROREQUAL;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
 		expectedSet.add(abc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightRankFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.weightRankFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.INEQUALITY;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abc);
 		expectedSet.add(adefc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightRankFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.weightRankFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.LESS;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(adefc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightRankFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.weightRankFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 		
 		operator = BioPathUtils.LESSOREQUAL;
-		expectedSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>();
+		expectedSet = new ArrayList<>();
 		expectedSet.add(abhc);
 		expectedSet.add(adefc);
-		filteredSet = new ArrayList<BioPath<BioMetabolite, ReactionEdge>>(BioPathUtils.weightRankFilter(testSet, threshold, operator));
+		filteredSet = new ArrayList<>(BioPathUtils.weightRankFilter(testSet, threshold, operator));
 		Collections.sort(expectedSet);Collections.sort(filteredSet);
 		assertEquals(expectedSet, filteredSet);
 	}

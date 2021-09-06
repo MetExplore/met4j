@@ -100,10 +100,10 @@ public class TestGraphFactory {
 	
 	@Test
 	public void testCreateGraphFromElements() {
-		HashSet<ReactionEdge> edges = new HashSet<ReactionEdge>();
+		HashSet<ReactionEdge> edges = new HashSet<>();
 		edges.add(e1);
 		edges.add(e2);
-		HashSet<BioMetabolite> vertexSet1 = new HashSet<BioMetabolite>();
+		HashSet<BioMetabolite> vertexSet1 = new HashSet<>();
 		vertexSet1.add(v1);
 		vertexSet1.add(v2);
 		vertexSet1.add(v3);
@@ -117,10 +117,10 @@ public class TestGraphFactory {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testEsceptionCreateGraphFromElements() {
-		HashSet<ReactionEdge> edges = new HashSet<ReactionEdge>();
+		HashSet<ReactionEdge> edges = new HashSet<>();
 		edges.add(e1);
 		edges.add(e2);
-		HashSet<BioMetabolite> vertexSet1 = new HashSet<BioMetabolite>();
+		HashSet<BioMetabolite> vertexSet1 = new HashSet<>();
 		vertexSet1.add(v1);
 		vertexSet1.add(v2);
 		
@@ -130,7 +130,7 @@ public class TestGraphFactory {
 	
 	@Test
 	public void testCreateGraphFromEdgeList() {
-		HashSet<ReactionEdge> edges = new HashSet<ReactionEdge>();
+		HashSet<ReactionEdge> edges = new HashSet<>();
 		edges.add(e1);
 		edges.add(e2);
 		
@@ -142,12 +142,12 @@ public class TestGraphFactory {
 
 	@Test
 	public void testCreateGraphFromPathList() {
-		ArrayList<ReactionEdge> edges = new ArrayList<ReactionEdge>();
+		ArrayList<ReactionEdge> edges = new ArrayList<>();
 		edges.add(e1);
 		edges.add(e2);
 		BioPath<BioMetabolite, ReactionEdge> path =
-				new BioPath<BioMetabolite, ReactionEdge>(cg, v1, v3, edges, 2.0);
-		HashSet<BioPath<BioMetabolite, ReactionEdge>> paths = new HashSet<BioPath<BioMetabolite,ReactionEdge>>();
+                new BioPath<>(cg, v1, v3, edges, 2.0);
+		HashSet<BioPath<BioMetabolite, ReactionEdge>> paths = new HashSet<>();
 		paths.add(path);
 		CompoundGraph g2 = f.createGraphFromPathList(paths);
 		
@@ -173,7 +173,7 @@ public class TestGraphFactory {
 	
 	@Test
 	public void testCreateSubgraph(){
-		HashSet<BioMetabolite> vertexSet1 = new HashSet<BioMetabolite>();
+		HashSet<BioMetabolite> vertexSet1 = new HashSet<>();
 		vertexSet1.add(v1);
 		vertexSet1.add(v2);
 		CompoundGraph g2 = f.createSubGraph(cg, vertexSet1);

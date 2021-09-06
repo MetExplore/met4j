@@ -251,7 +251,7 @@ public class BioPathUtils {
 	private static <V extends BioEntity, E extends Edge<V>> Map<BioPath<V, E>, Double> getLengthMap(Collection<BioPath<V, E>> paths){
 		Map<BioPath<V,E>,Double> length = new HashMap<>();
 		for(BioPath<V, E> path : paths){
-			Double l = new Integer(path.getLength()).doubleValue();
+			Double l = Integer.valueOf(path.getLength()).doubleValue();
 			length.put(path, l);
 		}
 		return length;
@@ -322,10 +322,10 @@ public class BioPathUtils {
 	/**
 	 * Filter path set according to a length value and a comparison operator.
 	 *
+	 * @param paths the set of paths
 	 * @param value the value used for filtering
 	 * @param operator the operator
 	 * @return the filtered set
-	 * @param paths a {@link java.util.Collection} object.
 	 * @param <V> a V object.
 	 * @param <E> a E object.
 	 */
@@ -336,10 +336,10 @@ public class BioPathUtils {
 	/**
 	 * Filter path set according to a weight value and a comparison operator.
 	 *
+	 * @param paths the set of paths
 	 * @param value the value used for filtering
 	 * @param operator the operator
 	 * @return the filtered set
-	 * @param paths a {@link java.util.Collection} object.
 	 * @param <V> a V object.
 	 * @param <E> a E object.
 	 */

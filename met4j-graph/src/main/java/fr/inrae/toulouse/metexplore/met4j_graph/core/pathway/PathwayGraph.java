@@ -37,8 +37,8 @@ package fr.inrae.toulouse.metexplore.met4j_graph.core.pathway;
 
 
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
-import org.jgrapht.EdgeFactory;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
 
@@ -64,7 +64,7 @@ public class PathwayGraph extends BioGraph<BioPathway,PathwayGraphEdge> {
 	 * Instantiates a new pathway graph.
 	 */
 	public PathwayGraph() {
-		super(new PathwayGraphEdgeFactory());
+		super();
 	}
 	
 	
@@ -75,12 +75,20 @@ public class PathwayGraph extends BioGraph<BioPathway,PathwayGraphEdge> {
 		return copy;
 	}
 	
-	/** {@inheritDoc} */
 	@Override
-	public EdgeFactory<BioPathway, PathwayGraphEdge> getEdgeFactory() {
-		return new PathwayGraphEdgeFactory();
+	public BioPathway createVertex(String id) {
+		return new BioPathway(id);
 	}
 
+	@Override
+	public PathwayGraphEdge createEdge(BioPathway v1, BioPathway v2) {
+		return new PathwayGraphEdge(v1,v2, new BioCollection<>());
+	}
+
+	@Override
+	public PathwayGraphEdge createEdgeFromModel(BioPathway v1, BioPathway v2, PathwayGraphEdge edge) {
+		return new PathwayGraphEdge(v1, v2, edge.getConnectingCompounds());
+	}
 
 	/** {@inheritDoc} */
 	@Override

@@ -194,34 +194,34 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 	@Override
 	public String toString(){
 		String currentNode = this.getStartVertex().getId();
-		String label = currentNode;
+		StringBuilder label = new StringBuilder(currentNode);
 		
 		for(E edge : this.getEdgeList()){
 			
 			if(!edge.getV1().getId().equals(currentNode)){
 				//undirected case
 				String nextNode = edge.getV1().getId();
-				label+="<-["+ edge +"]->"+nextNode;
+				label.append("<-[").append(edge).append("]->").append(nextNode);
 				currentNode=nextNode;
 			}else{
 				//directed case
 				String nextNode = edge.getV2().getId();
-				label+="-["+ edge +"]->"+nextNode;
+				label.append("-[").append(edge).append("]->").append(nextNode);
 				currentNode=nextNode;
 			}
 			
 		}
-		return label;
+		return label.toString();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Iterator<E> iterator() {
-		Iterator<E> it = new Iterator<E>() {
-			
+		Iterator<E> it = new Iterator<>() {
+
 			private final ArrayList<E> edgeList = new ArrayList<>(getEdgeList());
 			private V currentVertex = getStartVertex();
-			
+
 			@Override
 			public boolean hasNext() {
 				return !currentVertex.equals(getEndVertex());
@@ -230,23 +230,23 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 			@Override
 			public E next() {
 				E nextEdge = null;
-				for(E edge : edgeList){
-					if(edge.getV1().equals(currentVertex)){
-						nextEdge=edge;
+				for (E edge : edgeList) {
+					if (edge.getV1().equals(currentVertex)) {
+						nextEdge = edge;
 						break;
 					}
 				}
-				
-				if(nextEdge==null) throw new IllegalStateException("Discontinuous path");
+
+				if (nextEdge == null) throw new IllegalStateException("Discontinuous path");
 
 				edgeList.remove(nextEdge);
-				currentVertex =nextEdge.getV2();
+				currentVertex = nextEdge.getV2();
 				return nextEdge;
 			}
 
 			@Override
 			public void remove() {
-				 throw new UnsupportedOperationException();
+				throw new UnsupportedOperationException();
 			}
 		};
 		

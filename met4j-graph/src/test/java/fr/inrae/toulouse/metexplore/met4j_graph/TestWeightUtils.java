@@ -51,8 +51,8 @@ import org.junit.Test;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.WeightUtils;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.weighting.WeightsFromFile;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightUtils;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightsFromFile;
 
 
 public class TestWeightUtils {
@@ -225,7 +225,7 @@ public class TestWeightUtils {
 		}
 		
 		resetWeight();
-		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp = new WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph>(tmpPath.toString());
+		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp = new WeightsFromFile<>(tmpPath.toString());
 		wp.setWeight(g);
 		
 		assertEquals("wrong weight after export", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);

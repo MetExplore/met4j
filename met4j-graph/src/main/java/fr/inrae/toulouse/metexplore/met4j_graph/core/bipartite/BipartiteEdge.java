@@ -119,7 +119,7 @@ public class BipartiteEdge extends Edge<BioEntity> {
 	/**
 	 * Sets the reversibility.
 	 *
-	 * @param reversible a boolean.
+	 * @param reversible if the edge belong to a reversible reaction
 	 */
 	public void setReversible(boolean reversible) {
 		this.reversible = reversible;
@@ -137,7 +137,7 @@ public class BipartiteEdge extends Edge<BioEntity> {
 	/**
 	 * Sets if involve side compound.
 	 *
-	 * @param side a boolean.
+	 * @param side if the edge involve a side transition (involving a side compound for example)
 	 */
 	public void setSide(boolean side) {
 		this.side = side;

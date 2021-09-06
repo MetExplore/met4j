@@ -57,7 +57,7 @@ public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 	private static final long serialVersionUID = -4274083588408838186L;
 
 	/** The reaction map. */
-	Set<E> mergedEdges;
+	final Set<E> mergedEdges;
 	
 	/**
 	 * Instantiates a new merged edge.
@@ -113,8 +113,7 @@ public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 	
 	/**
 	 * Removes reactions.
-	 *
-	 * @param edges a {@link java.util.Collection} object.
+	 * @param edges the merged edges list
 	 */
 	public void removeEdges(Collection<E> edges){
 		for(E e : edges){

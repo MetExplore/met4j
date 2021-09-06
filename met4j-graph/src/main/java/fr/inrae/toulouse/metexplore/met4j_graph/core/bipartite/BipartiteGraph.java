@@ -35,18 +35,16 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
-import org.jgrapht.EdgeFactory;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <p>BipartiteGraph class.</p>
@@ -62,7 +60,8 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 	 * <p>Constructor for BipartiteGraph.</p>
 	 */
 	public BipartiteGraph() {
-		super(new BipartiteEdgeFactory());
+		super();
+		this.setVertexSupplier(null);
 	}
 
 	/**
@@ -71,7 +70,7 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory} object.
 	 */
 	public static GraphFactory<BioEntity, BipartiteEdge, BipartiteGraph> getFactory(){
-		return new GraphFactory<BioEntity, BipartiteEdge, BipartiteGraph>() {
+		return new GraphFactory<>() {
 			@Override
 			public BipartiteGraph createGraph() {
 				return new BipartiteGraph();
@@ -105,17 +104,26 @@ public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 		}
 		return vertexSet;
 	}
-
-	/** {@inheritDoc} */
 	@Override
-	public EdgeFactory<BioEntity, BipartiteEdge> getEdgeFactory() {
-		return new BipartiteEdgeFactory();
+	public BipartiteEdge copyEdge(BipartiteEdge edge) {
+		return new BipartiteEdge(edge.getV1(),edge.getV2(),edge.isReversible());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public BipartiteEdge copyEdge(BipartiteEdge edge) {
-		return new BipartiteEdge(edge.getV1(),edge.getV2(),edge.isReversible());
+	public BioEntity createVertex(String id) {
+		throw new UnsupportedOperationException("Node creation in bipartite graph forbidden");
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public BipartiteEdge createEdge(BioEntity v1, BioEntity v2) {
+		return new BipartiteEdge(v1,v2,false);
+	}
+
+	@Override
+	public BipartiteEdge createEdgeFromModel(BioEntity v1, BioEntity v2, BipartiteEdge edge) {
+		return new BipartiteEdge(v1,v2,edge.isReversible());
 	}
 	
 	/**

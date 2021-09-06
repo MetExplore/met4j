@@ -4,7 +4,7 @@
     <parent>
         <groupId>fr.inrae.toulouse.metexplore</groupId>
         <artifactId>met4j</artifactId>
-        <version>0.5.4-SNAPSHOT</version>
+        <version>0.6.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>met4j-graph</artifactId>
@@ -28,13 +28,18 @@
         </dependency>
         <dependency>
             <groupId>org.jgrapht</groupId>
-            <artifactId>jgrapht-ext</artifactId>
-            <version>1.0.0</version>
+            <artifactId>jgrapht-core</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jgrapht</groupId>
+            <artifactId>jgrapht-io</artifactId>
+            <version>1.5.0</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-core</artifactId>
-            <version>0.5.4-SNAPSHOT</version>
+            <version>0.6.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -44,12 +49,12 @@
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-mathUtils</artifactId>
-            <version>0.5.4-SNAPSHOT</version>
+            <version>0.6.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-chemUtils</artifactId>
-            <version>0.5.4-SNAPSHOT</version>
+            <version>0.6.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 <!--    <build>

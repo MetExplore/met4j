@@ -35,19 +35,18 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core.compound;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.stream.Collectors;
-
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
-import org.jgrapht.EdgeFactory;
-
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * The Class CompoundGraph.
@@ -70,7 +69,7 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 	 * Instantiates a new bio graph.
 	 */
 	public CompoundGraph() {
-		super(new ReactionEdgeFactory());
+		super();
 	}
 	
 	/**
@@ -79,7 +78,7 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 	 * @param g the graph
 	 */
 	public CompoundGraph(CompoundGraph g) {
-		super(edgeFactory);
+		super();
 		for(BioMetabolite vertex : g.vertexSet()){
 			this.addVertex(vertex);
 		}
@@ -202,17 +201,43 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 		}
 		return null;
 	}
-	
-	/** {@inheritDoc} */
+
 	@Override
-	public EdgeFactory<BioMetabolite, ReactionEdge> getEdgeFactory() {
-		return new ReactionEdgeFactory();
+	/**
+	 * Handle graph as undirected by creating reverse edges for each existing edge. Do not duplicated edges for reversible reactions
+	 */
+	public void asUndirected(){
+		for(ReactionEdge e : new HashSet<>(this.edgeSet())){
+			if(e.getReaction()==null){
+				this.addEdge(reverseEdge(e));
+			}else if(!e.getReaction().isReversible()){
+				this.addEdge(reverseEdge(e));
+			}else if(this.getEdge(e.getV2(),e.getV1(),e.getReaction())==null){
+				this.addEdge(reverseEdge(e));
+			}
+		}
 	}
+	
 
 	/** {@inheritDoc} */
 	@Override
 	public ReactionEdge copyEdge(ReactionEdge edge) {
 		return new ReactionEdge(edge.getV1(), edge.getV2(), edge.getReaction());
+	}
+
+	@Override
+	public BioMetabolite createVertex(String id) {
+		return new BioMetabolite(id);
+	}
+
+	@Override
+	public ReactionEdge createEdge(BioMetabolite v1, BioMetabolite v2) {
+		return new ReactionEdge(v1,v2,new BioReaction(UUID.randomUUID().toString()));
+	}
+
+	@Override
+	public ReactionEdge createEdgeFromModel(BioMetabolite v1, BioMetabolite v2, ReactionEdge edge){
+		return new ReactionEdge(v1, v2, edge.getReaction());
 	}
 	
 	/**
@@ -221,12 +246,12 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory} object.
 	 */
 	public static GraphFactory<BioMetabolite, ReactionEdge, CompoundGraph> getFactory(){
-		return new GraphFactory<BioMetabolite, ReactionEdge, CompoundGraph>(){
-			@Override
-			public CompoundGraph createGraph() {
-				return new CompoundGraph();
-			}
-		};
+		return new GraphFactory<>() {
+            @Override
+            public CompoundGraph createGraph() {
+                return new CompoundGraph();
+            }
+        };
 	}
 
 	/** {@inheritDoc} */

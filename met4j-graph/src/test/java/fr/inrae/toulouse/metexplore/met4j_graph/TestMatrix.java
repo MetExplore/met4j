@@ -39,14 +39,13 @@ import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.ComputeAdjacencyMatrix;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.junit.Assert;
@@ -68,7 +67,7 @@ public class TestMatrix {
 	
 	public static CompoundGraph graph;
 	
-	public static Class<?>[] matrixClasses = {EjmlMatrix.class, MtjMatrix.class};
+	public static final Class<?>[] matrixClasses = {EjmlMatrix.class, MtjMatrix.class};
 	
 	@BeforeClass
 	public static void init(){
@@ -131,7 +130,7 @@ public class TestMatrix {
 		
 		for(Class<?> matrixClass : matrixClasses){
 			try {
-				adjacency = (new ComputeAdjacencyMatrix<BioMetabolite,ReactionEdge,CompoundGraph>(graph, matrixClass)).getadjacencyMatrix();
+				adjacency = (new ComputeAdjacencyMatrix<>(graph, matrixClass)).getadjacencyMatrix();
 				//check if matrix is square
 				assertEquals("error in "+ComputeAdjacencyMatrix.class.getCanonicalName()+" using "+matrixClass.getCanonicalName()+": adjacency matrix not square.",adjacency.numCols(), adjacency.numRows());
 				//check matrix size
@@ -158,7 +157,7 @@ public class TestMatrix {
 			//compute adjacency matrix
 			BioMatrix adjacency = null;
 			try {
-				adjacency = (new ComputeAdjacencyMatrix<BioMetabolite,ReactionEdge,CompoundGraph>(graph, matrixClass)).getadjacencyMatrix();
+				adjacency = (new ComputeAdjacencyMatrix<>(graph, matrixClass)).getadjacencyMatrix();
 			} catch (Exception e) {
 				e.printStackTrace();
 				fail();
@@ -281,7 +280,7 @@ public class TestMatrix {
 	 */
 	@Test
 	public void testMatrix2CSV() {
-		ComputeAdjacencyMatrix<BioMetabolite,ReactionEdge,CompoundGraph> adj = new ComputeAdjacencyMatrix<BioMetabolite,ReactionEdge,CompoundGraph>(graph);
+		ComputeAdjacencyMatrix<BioMetabolite,ReactionEdge,CompoundGraph> adj = new ComputeAdjacencyMatrix<>(graph);
 		Path tmpPath = null;
 		try {
 			tmpPath = Files.createTempFile("test_Matrix2Csv", ".csv");
@@ -304,9 +303,6 @@ public class TestMatrix {
 				assertEquals("Error in Matrix export : wrong number of columns", graph.vertexSet().size()+1,array.length);
 			}
 			assertEquals("Error in Matrix export : wrong number of rows", graph.vertexSet().size()+1,nbLine);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			fail();
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail();

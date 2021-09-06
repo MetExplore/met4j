@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analysis.GraphOperation;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.GraphOperation;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.junit.BeforeClass;

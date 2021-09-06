@@ -126,7 +126,7 @@ public class FbcToNotes extends AbstractMet4jApplication {
     /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Converts FBC package annotations to sbml notes";
+        return "Convert FBC package annotations to sbml notes";
     }
 
 

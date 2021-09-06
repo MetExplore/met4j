@@ -136,7 +136,7 @@ public class SbmlToMetaboliteTable extends AbstractMet4jApplication {
     /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Returns a tabulated file with metabolite attributes from a SBML file";
+        return "Create a tabulated file with metabolite attributes from a SBML file";
     }
 
 }

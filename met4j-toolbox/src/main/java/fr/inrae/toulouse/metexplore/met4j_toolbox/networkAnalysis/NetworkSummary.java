@@ -210,7 +210,7 @@ public class NetworkSummary extends AbstractMet4jApplication {
 
     @Override
     public String getShortDescription() {
-        return "Creates a report summarizing several graph measures characterising the structure of the network.";
+        return "Create a report summarizing several graph measures characterising the structure of the network.";
     }
 
 }

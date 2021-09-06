@@ -38,8 +38,13 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.ResourceURLFilter;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Resources;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 //import fr.inra.toulouse.metexplore.met4j_core.utils.ResourceURLFilter;
 //import fr.inra.toulouse.metexplore.met4j_core.utils.Resources;
@@ -75,6 +80,8 @@ public class Main {
             };
 
             String path = Main.class.getPackage().getName().replace(".", "/");
+            HashMap<String, Set<String>> packages = new HashMap<>();
+            HashMap<String, String> descs = new HashMap<>();
 
             for (URL u : Resources.getResourceURLs(Resources.class, filter)) {
 
@@ -87,21 +94,28 @@ public class Main {
 
                 Class<?> myClass = Class.forName(entry.replace('/', '.'));
 
+
                 try {
                     myClass.getMethod("main", String[].class);
                     Constructor<?> ctor = myClass.getConstructor();
 
                     Object obj = ctor.newInstance();
 
-                    System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#\n# "
-                            + myClass.getCanonicalName()
-                            + "\n#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#\n");
+                    String packageName = myClass.getPackageName();
+                    String id = myClass.getCanonicalName();
 
+                    if (!packages.containsKey(packageName)) {
+                        packages.put(packageName, new HashSet<>());
+                    }
+                    String desc = "";
                     try {
-                        myClass.getMethod("printShortHeader").invoke(obj);
-                        System.out.println("");
+                        desc += myClass.getMethod("getLabel").invoke(obj) + "\n"
+                                + myClass.getMethod("getShortDescription").invoke(obj);
+
+                        descs.put(id, desc);
+                        packages.get(packageName).add(id);
                     } catch (Exception e) {
-                        System.out.println("No field message !\n");
+                        desc += "No description !\n";
                     }
 
 
@@ -109,6 +123,25 @@ public class Main {
                 }
 
             }
+
+            System.out.println("# Met4j-Toolbox\n" +
+                    "The applications are classified by package.\n"+
+                    "The complete class name must be provided " +
+                    "(e.g. fr.inrae.toulouse.metexplore.met4j_toolbox.attributes.SbmlSetChargesFromFile) to launch the app\n" +
+                    "Launch the application with the -h parameter to get the list of the parameters and a complete description.\n");
+            packages.keySet().stream().sorted().forEach(packageName -> {
+                Set<String> classes = packages.get(packageName);
+                if (classes.size() > 0) {
+                    System.out.println("## Package " + packageName + "\n");
+
+                    classes.stream().sorted().forEach(className -> {
+                        String desc = descs.get(className);
+                        System.out.println("### " + desc + "\n");
+                    });
+                    System.out.println("------------------------------------------");
+                }
+
+            });
 
         } catch (Exception e) {
             e.printStackTrace();

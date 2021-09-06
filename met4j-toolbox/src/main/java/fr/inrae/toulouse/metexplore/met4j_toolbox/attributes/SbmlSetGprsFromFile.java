@@ -80,7 +80,7 @@ public class SbmlSetGprsFromFile  extends AbstractSbmlSetReaction {
     /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Creates a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way";
+        return "Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way";
     }
 
     /**

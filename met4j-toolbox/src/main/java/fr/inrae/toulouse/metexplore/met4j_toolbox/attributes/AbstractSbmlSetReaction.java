@@ -46,6 +46,9 @@ import org.kohsuke.args4j.Option;
  */
 public abstract class AbstractSbmlSetReaction extends AbstractSbmlSet {
 
+    public final String setDescription = "The ids must correspond between the tabulated file and the SBML file.\n" +
+            "If prefix R_ is present in the ids in the SBML file and not in the tabulated file, use the -p option.";
+
     @Option(name="-ci", usage="[1] number of the column where are the reaction ids")
     protected int colid=1;
 

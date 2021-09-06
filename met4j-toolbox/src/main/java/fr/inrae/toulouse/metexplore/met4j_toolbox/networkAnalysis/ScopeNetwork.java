@@ -24,13 +24,13 @@ public class ScopeNetwork extends AbstractMet4jApplication {
     String sbmlFilePath;
     @Option(name = "-s", aliases = {"--seeds"}, usage = "input seeds file: tabulated file containing node of interest ids", required = true)
     String seedsFilePath;
-    @Option(name = "-o", usage="output file: path to the .gml file where the results scope network will be exported", required = true)
+    @Option(name = "-o", usage = "output file: path to the .gml file where the results scope network will be exported", required = true)
     String output;
 
     //options
     @Option(name = "-sc", aliases = {"--sides"}, usage = "an optional file containing list of ubiquitous side compounds to be considered available by default but ignored during expansion")
     public String sideCompoundFile = null;
-    @Option(name = "-ssc", aliases = {"--showsides"}, usage = "show side compounds in output network", depends={"-sc"})
+    @Option(name = "-ssc", aliases = {"--showsides"}, usage = "show side compounds in output network", depends = {"-sc"})
     public boolean includeSides = false;
     @Option(name = "-ir", aliases = {"--ignore"}, usage = "an optional file containing list of reaction to ignore (forbid inclusion in scope")
     public String reactionToIgnoreFile = null;
@@ -47,14 +47,14 @@ public class ScopeNetwork extends AbstractMet4jApplication {
     public void run() throws IOException, Met4jSbmlReaderException {
         JsbmlReader in = new JsbmlReader(sbmlFilePath);
         BipartiteGraph graph = (new Bionetwork2BioGraph(in.read())).getBipartiteGraph();
-        NodeMapping<BioEntity, BipartiteEdge,BipartiteGraph> mapper =  new NodeMapping<>(graph).skipIfNotFound();
+        NodeMapping<BioEntity, BipartiteEdge, BipartiteGraph> mapper = new NodeMapping<>(graph).skipIfNotFound();
 
         BioCollection<BioMetabolite> seeds = mapper.map(seedsFilePath).stream()
                 .map(BioMetabolite.class::cast)
-                .collect(BioCollection::new,BioCollection::add,BioCollection::addAll);
+                .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
         BioCollection<BioMetabolite> bootstraps = mapper.map(sideCompoundFile).stream()
                 .map(BioMetabolite.class::cast)
-                .collect(BioCollection::new,BioCollection::add,BioCollection::addAll);
+                .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
 
         BioCollection<BioReaction> forbidden = new BioCollection<>();
 
@@ -64,14 +64,14 @@ public class ScopeNetwork extends AbstractMet4jApplication {
                     .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
         }
 
-        ScopeCompounds scopeComp = new ScopeCompounds(graph, seeds, bootstraps,forbidden);
-        if(includeSides) scopeComp.includeBootstrapsInScope();
-        if(trace) scopeComp.trace();
+        ScopeCompounds scopeComp = new ScopeCompounds(graph, seeds, bootstraps, forbidden);
+        if (includeSides) scopeComp.includeBootstrapsInScope();
+        if (trace) scopeComp.trace();
         BipartiteGraph scope = scopeComp.getScopeNetwork();
-        if(trace){
-            ExportGraph.toGmlWithAttributes(scope,output,scopeComp.getExpansionSteps(),"step");
-        }else{
-            ExportGraph.toGml(scope,output);
+        if (trace) {
+            ExportGraph.toGmlWithAttributes(scope, output, scopeComp.getExpansionSteps(), "step");
+        } else {
+            ExportGraph.toGml(scope, output);
         }
 
     }
@@ -82,11 +82,16 @@ public class ScopeNetwork extends AbstractMet4jApplication {
     }
 
     @Override
-    public String getDescription() {
-        return "Perform a network expansion from a set of compound seeds to create a scope network.\n" +
+    public String getLongDescription() {
+        return this.getShortDescription() + "\n" +
                 "The scope of a set of compounds (seed) refer to the maximal metabolic network that can be extended from them," +
                 "where the extension process consist of adding a reaction to the network if and only if all of its substrates " +
                 "are either a seed or a product of a previously added reaction\n" +
                 "For more information, see Handorf, Ebenhöh and Heinrich (2005). *Expanding metabolic networks: scopes of compounds, robustness, and evolution.* Journal of molecular evolution, 61(4), 498-512. (https://doi.org/10.1007/s00239-005-0027-1)";
+    }
+
+    @Override
+    public String getShortDescription() {
+        return "Perform a network expansion from a set of compound seeds to create a scope network";
     }
 }

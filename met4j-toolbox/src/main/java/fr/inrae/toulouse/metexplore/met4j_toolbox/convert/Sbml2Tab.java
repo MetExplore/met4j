@@ -55,16 +55,16 @@ import java.io.IOException;
  */
 public class Sbml2Tab extends AbstractMet4jApplication {
 
-    @Option(name="-i", usage="[-->] String for irreversible reaction")
-    public String i="-->";
+    @Option(name = "-i", usage = "[-->] String for irreversible reaction")
+    public String i = "-->";
 
-    @Option(name="-r", usage="[<==>] String for reversible reaction")
-    public String r="<==>";
+    @Option(name = "-r", usage = "[<==>] String for reversible reaction")
+    public String r = "<==>";
 
-    @Option(name="-out", usage="[out.tsv] Tabulated file")
+    @Option(name = "-out", usage = "[out.tsv] Tabulated file")
     public String out = "out.tsv";
 
-    @Option(name="-in", usage="Sbml file", required = true)
+    @Option(name = "-in", usage = "Sbml file", required = true)
     public String in;
 
 
@@ -100,15 +100,27 @@ public class Sbml2Tab extends AbstractMet4jApplication {
 
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getLabel() {
         return this.getClass().getSimpleName();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getDescription() {
-        return "Create a tabulated File from a SBML file";
+    public String getLongDescription() {
+        return this.getShortDescription();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getShortDescription() {
+        return "Create a tabulated file from a SBML file";
     }
 }

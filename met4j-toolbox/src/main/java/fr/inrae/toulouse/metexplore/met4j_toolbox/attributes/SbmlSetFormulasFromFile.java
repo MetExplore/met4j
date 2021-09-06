@@ -59,7 +59,16 @@ public class SbmlSetFormulasFromFile extends AbstractSbmlSetMetabolite {
 
     /** {@inheritDoc} */
     @Override
-    public String getDescription() {
+    public String getLongDescription() {
+        return this.getShortDescription()+"\n"+this.setDescription+"\n" +
+                "The formula will be written in the SBML file in two locations:+\n" +
+                "- in the metabolite notes (e.g. <p>formula: C16H29O2</p>\n\n" +
+                "- as a fbc attribute (e.g. fbc:chemicalFormula=\"C16H29O2\")";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getShortDescription() {
         return "Set Formula to network metabolites from a tabulated file containing the metabolite ids and the formulas";
     }
 

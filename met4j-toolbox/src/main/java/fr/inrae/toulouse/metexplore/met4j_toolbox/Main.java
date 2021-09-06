@@ -45,7 +45,6 @@ import java.net.URL;
 //import fr.inra.toulouse.metexplore.met4j_core.utils.Resources;
 
 /**
- *
  * Main class for parsebionet List all the main classes in applications with
  * their description if available
  *
@@ -54,73 +53,66 @@ import java.net.URL;
  */
 public class Main {
 
-	/**
-	 * <p>main.</p>
-	 *
-	 * @param args an array of {@link java.lang.String} objects.
-	 */
-	public static void main(String[] args) {
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     */
+    public static void main(String[] args) {
 
-		try {
-			ResourceURLFilter filter = new ResourceURLFilter() {
+        try {
+            ResourceURLFilter filter = new ResourceURLFilter() {
 
-				public
-				boolean accept(URL u) {
+                public boolean accept(URL u) {
 
-					String path = Main.class.getPackage().getName()
-							.replace(".", "/");
+                    String path = Main.class.getPackage().getName()
+                            .replace(".", "/");
 
-					String s = u.getFile();
-					return s.endsWith(".class") && !s.contains("$")
-							&& s.contains(path);
-				}
-			};
+                    String s = u.getFile();
+                    return s.endsWith(".class") && !s.contains("$")
+                            && s.contains(path);
+                }
+            };
 
-			String path = Main.class.getPackage().getName().replace(".", "/");
+            String path = Main.class.getPackage().getName().replace(".", "/");
 
-			for (URL u : Resources.getResourceURLs(Resources.class, filter)) {
+            for (URL u : Resources.getResourceURLs(Resources.class, filter)) {
 
-				String entry = u.getFile();
+                String entry = u.getFile();
 
-				int idx = entry.indexOf(path);
+                int idx = entry.indexOf(path);
 
-				entry = entry
-						.substring(idx, entry.length() - ".class".length());
+                entry = entry
+                        .substring(idx, entry.length() - ".class".length());
 
-				Class<?> myClass = Class.forName(entry.replace('/', '.'));
+                Class<?> myClass = Class.forName(entry.replace('/', '.'));
 
-				try {
-					myClass.getMethod("main", String[].class);
-					Constructor<?> ctor = myClass.getConstructor();
+                try {
+                    myClass.getMethod("main", String[].class);
+                    Constructor<?> ctor = myClass.getConstructor();
 
-					Object obj = ctor.newInstance();
+                    Object obj = ctor.newInstance();
 
-					System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#\n# "
-							+ myClass.getCanonicalName()
-							+ "\n#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#\n");
+                    System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#\n# "
+                            + myClass.getCanonicalName()
+                            + "\n#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#\n");
 
-					try {
-						myClass.getMethod("printHeader").invoke(obj);
-						System.out.println("");
-					} catch (Exception e) {
-						System.out.println("No field message !\n");
-					}
+                    try {
+                        myClass.getMethod("printShortHeader").invoke(obj);
+                        System.out.println("");
+                    } catch (Exception e) {
+                        System.out.println("No field message !\n");
+                    }
 
-					try {
-						myClass.getMethod("printUsage").invoke(obj);
-						System.out.println("");
-					} catch (Exception e) {
-						System.out.println("No usage !\n");
-					}
 
-				} catch (Exception e1) {
-				}
+                } catch (Exception e1) {
+                }
 
-			}
+            }
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

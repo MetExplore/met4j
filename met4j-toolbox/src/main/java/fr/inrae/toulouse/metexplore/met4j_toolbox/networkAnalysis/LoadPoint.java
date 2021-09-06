@@ -104,9 +104,9 @@ public class LoadPoint  extends AbstractMet4jApplication {
     }
 
     @Override
-    public String getDescription() {
-        return "Compute the Load points of a metabolic network. Load points constitute an indicator of lethality and can help identifying drug target " +
-                "From Rahman et al. Observing local and global properties of metabolic pathways: ‘load points’ and ‘choke points’ in the metabolic networks. Bioinf. (2006):\n" +
+    public String getLongDescription() {
+        return this.getShortDescription() +
+                "\nFrom Rahman et al. Observing local and global properties of metabolic pathways: ‘load points’ and ‘choke points’ in the metabolic networks. Bioinf. (2006):\n" +
                 "For a given metabolic network, the load L on metabolite m can be defined as :\n" +
                 "ln [(pm/km)/(∑Mi=1Pi)/(∑Mi=1Ki)]\n" +
                 "p is the number of shortest paths passing through a metabolite m;\n" +
@@ -114,5 +114,10 @@ public class LoadPoint  extends AbstractMet4jApplication {
                 "P is the total number of shortest paths;\n" +
                 "K is the sum of links in the metabolic network of M metabolites (where M is the number of metabolites in the network).\n" +
                 "Use of the logarithm makes the relevant values more distinguishable.";
+    }
+
+    @Override
+    public String getShortDescription() {
+        return "Compute the Load points of a metabolic network. Load points constitute an indicator of lethality and can help identifying drug target.";
     }
 }

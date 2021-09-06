@@ -60,8 +60,15 @@ public class SbmlSetNamesFromFile extends AbstractSbmlSetAny {
 
     /** {@inheritDoc} */
     @Override
-    public String getDescription() {
-        return "Set Names to network objects from a tabulated file containing the object ids and the names";
+    public String getLongDescription() {
+        return this.getShortDescription()+"\n" +
+                this.setDescription+"\n";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getShortDescription() {
+        return "Set names to network objects from a tabulated file containing the object ids and the names";
     }
 
     /**

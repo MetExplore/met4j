@@ -59,8 +59,19 @@ public class SbmlSetChargesFromFile extends AbstractSbmlSetMetabolite {
 
     /** {@inheritDoc} */
     @Override
-    public String getDescription() {
-        return "Set Formula to network metabolites from a tabulated file containing the metabolite ids and the formulas";
+    public String getLongDescription() {
+        return this.getShortDescription()+"\n"+
+                "The charge must be a number. "+ this.setDescription+"\n" +
+                "The charge will be written in the SBML file in two locations:+\n" +
+                "- in the reaction notes (e.g. <p>charge: -1</p>\n" +
+                "- as fbc attribute (e.g. fbc:charge=\"1\")";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getShortDescription() {
+        return "Set charge to network metabolites from a tabulated file " +
+                "containing the metabolite ids and the formulas";
     }
 
     /**

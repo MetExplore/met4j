@@ -43,19 +43,19 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
     @Option(name = "-sc", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore")
     public String sideCompoundFile = null;
 
-    @Option(name = "-dw", aliases = {"--degreeWeights"}, usage = "penalize traversal of hubs by using degree square weighting", forbids={"-cw","-sw"})
+    @Option(name = "-dw", aliases = {"--degreeWeights"}, usage = "penalize traversal of hubs by using degree square weighting", forbids = {"-cw", "-sw"})
     public Boolean degree = false;
-    @Option(name = "-cw", aliases = {"--customWeights"}, usage = "an optional file containing weights for compound pairs", forbids={"-dw","-sw"})
+    @Option(name = "-cw", aliases = {"--customWeights"}, usage = "an optional file containing weights for compound pairs", forbids = {"-dw", "-sw"})
     public String weightFile = null;
-    @Option(name = "-sw", aliases = {"--chemSimWeights"}, usage = "penalize traversal of non-relevant edges by using chemical similarity weighting", forbids={"-dw","-cw"})
+    @Option(name = "-sw", aliases = {"--chemSimWeights"}, usage = "penalize traversal of non-relevant edges by using chemical similarity weighting", forbids = {"-dw", "-cw"})
     public Boolean chemicalSim = false;
 
     //@Option(name = "-u", aliases = {"--undirected"}, usage = "Ignore reaction direction")
     //public Boolean undirected = false;
 
-    @Option(name = "-k", usage = "Extract k-shortest paths", forbids={"-st"})
+    @Option(name = "-k", usage = "Extract k-shortest paths", forbids = {"-st"})
     public int k = 1;
-    @Option(name = "-st", aliases = {"--steinertree"}, usage = "Extract Steiner Tree", forbids={"-k"})
+    @Option(name = "-st", aliases = {"--steinertree"}, usage = "Extract Steiner Tree", forbids = {"-k"})
     public boolean st = false;
 
 
@@ -69,58 +69,58 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
         CompoundGraph graph = builder.getCompoundGraph();
 
         //Graph processing: side compound removal [optional]
-        if(sideCompoundFile!=null){
+        if (sideCompoundFile != null) {
             System.err.println("removing side compounds...");
-            NodeMapping<BioMetabolite, ReactionEdge, CompoundGraph> mapper =  new NodeMapping<>(graph).skipIfNotFound();
+            NodeMapping<BioMetabolite, ReactionEdge, CompoundGraph> mapper = new NodeMapping<>(graph).skipIfNotFound();
             BioCollection<BioMetabolite> sideCpds = mapper.map(sideCompoundFile);
             boolean removed = graph.removeAllVertices(sideCpds);
-            if (removed) System.err.println(sideCpds.size()+" compounds removed.");
+            if (removed) System.err.println(sideCpds.size() + " compounds removed.");
         }
 
         //get sources and targets
         System.err.println("extracting sources and targets");
-        NodeMapping<BioMetabolite, ReactionEdge, CompoundGraph> mapper =  new NodeMapping<>(graph).throwErrorIfNotFound();
+        NodeMapping<BioMetabolite, ReactionEdge, CompoundGraph> mapper = new NodeMapping<>(graph).throwErrorIfNotFound();
         HashSet<BioMetabolite> sources = new HashSet<>(mapper.map(sourcePath));
         HashSet<BioMetabolite> targets = new HashSet<>(mapper.map(targetPath));
 
         //Graph processing: set weights [optional]
-        WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new DefaultWeightPolicy<>();
-        if(weightFile!=null){
+        WeightingPolicy<BioMetabolite, ReactionEdge, CompoundGraph> wp = new DefaultWeightPolicy<>();
+        if (weightFile != null) {
             wp = new WeightsFromFile(weightFile, true);
-        }else if(degree){
+        } else if (degree) {
             int pow = 2;
             wp = new DegreeWeightPolicy(pow);
-        }else if(chemicalSim){
-            SimilarityWeightPolicy sp = new SimilarityWeightPolicy(FingerprintBuilder.EXTENDED,false,true);
+        } else if (chemicalSim) {
+            SimilarityWeightPolicy sp = new SimilarityWeightPolicy(FingerprintBuilder.EXTENDED, false, true);
             sp.noStructFilter(graph);
             wp = sp;
         }
         wp.setWeight(graph);
 
         //extract sub-network
-        GraphFactory<BioMetabolite,ReactionEdge,CompoundGraph> factory = new GraphFactory<>() {
+        GraphFactory<BioMetabolite, ReactionEdge, CompoundGraph> factory = new GraphFactory<>() {
             @Override
             public CompoundGraph createGraph() {
                 return new CompoundGraph();
             }
         };
         CompoundGraph subnet;
-        if(st){
-            SteinerTreeApprox<BioMetabolite,ReactionEdge,CompoundGraph> stComp = new SteinerTreeApprox<>(graph);
-            List<ReactionEdge> stEdges = stComp.getSteinerTreeList(sources,targets,(degree||weightFile!=null));
+        if (st) {
+            SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> stComp = new SteinerTreeApprox<>(graph);
+            List<ReactionEdge> stEdges = stComp.getSteinerTreeList(sources, targets, (degree || weightFile != null));
             subnet = factory.createGraphFromEdgeList(stEdges);
-        }else if(k>1){
-            KShortestPath<BioMetabolite,ReactionEdge,CompoundGraph> kspComp = new KShortestPath<>(graph);
-            List<BioPath<BioMetabolite, ReactionEdge>> kspPath = kspComp.getKShortestPathsUnionList(sources,targets,k);
+        } else if (k > 1) {
+            KShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> kspComp = new KShortestPath<>(graph);
+            List<BioPath<BioMetabolite, ReactionEdge>> kspPath = kspComp.getKShortestPathsUnionList(sources, targets, k);
             subnet = factory.createGraphFromPathList(kspPath);
-        }else{
-            ShortestPath<BioMetabolite,ReactionEdge,CompoundGraph> spComp = new ShortestPath<>(graph);
-            List<BioPath<BioMetabolite, ReactionEdge>> spPath = spComp.getShortestPathsUnionList(sources,targets);
+        } else {
+            ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> spComp = new ShortestPath<>(graph);
+            List<BioPath<BioMetabolite, ReactionEdge>> spPath = spComp.getShortestPathsUnionList(sources, targets);
             subnet = factory.createGraphFromPathList(spPath);
         }
 
         //export sub-network
-        ExportGraph.toGmlWithAttributes(subnet,outputPath);
+        ExportGraph.toGmlWithAttributes(subnet, outputPath);
 
     }
 
@@ -129,12 +129,15 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
         app.parseArguments(args);
         app.run();
     }
-    @Override
-    public String getLabel() {return this.getClass().getSimpleName();}
 
     @Override
-    public String getDescription() {
-        return "Create a subnetwork from a GSMN in SBML format, and two files containing lists of compounds of interests ids, one per row.\n" +
+    public String getLabel() {
+        return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public String getLongDescription() {
+        return this.getShortDescription() + "\n" +
                 "The subnetwork correspond to part of the network that connects compounds from the first list to compounds from the second list.\n" +
                 "Sources and targets list can have elements in common. The connecting part can be defined as the union of shortest or k-shortest paths between sources and targets, " +
                 "or the Steiner tree connecting them. The relevance of considered path can be increased by weighting the edges using degree squared, chemical similarity (require InChI or SMILES annotations) or any provided weighting.\n" +
@@ -146,5 +149,10 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
                 "Rahman SA, Advani P, Schunk R, et al. Metabolic pathway analysis web service (Pathway Hunter Tool at CUBIC). Bioinformatics 2005;21:1189–93.\n" +
                 "Pertusi DA, Stine AE, Broadbelt LJ, et al. Efficient searching and annotation of metabolic networks using chemical similarity. Bioinformatics 2014;1–9.\n" +
                 "McShan DC, Rao S, Shah I. PathMiner: predicting metabolic pathways by heuristic search. Bioinformatics 2003;19:1692–8.\n";
+    }
+
+    @Override
+    public String getShortDescription() {
+        return "Create a subnetwork from a GSMN in SBML format, and two files containing lists of compounds of interests ids, one per row.";
     }
 }

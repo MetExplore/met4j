@@ -99,9 +99,14 @@ public class ChokePoint  extends AbstractMet4jApplication {
     }
 
     @Override
-    public String getDescription() {
-        return "Compute the Choke points of a metabolic network. Load points constitute an indicator of lethality and can help identifying drug target " +
+    public String getLongDescription() {
+        return this.getShortDescription()+"\nLoad points constitute an indicator of lethality and can help identifying drug target " +
                 "Choke points are reactions that are required to consume or produce one compound. Targeting of choke point can lead to the accumulation or the loss of some metabolites, thus choke points constitute an indicator of lethality and can help identifying drug target \n" +
                 "See : Syed Asad Rahman, Dietmar Schomburg; Observing local and global properties of metabolic pathways: ‘load points’ and ‘choke points’ in the metabolic networks. Bioinformatics 2006; 22 (14): 1767-1774. doi: 10.1093/bioinformatics/btl181";
+    }
+
+    @Override
+    public String getShortDescription() {
+        return "Compute the Choke points of a metabolic network.";
     }
 }

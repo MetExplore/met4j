@@ -204,8 +204,13 @@ public class NetworkSummary extends AbstractMet4jApplication {
     public String getLabel() {return this.getClass().getSimpleName();}
 
     @Override
-    public String getDescription() {return "Use a metabolic network in SBML file and an optional list of side compounds, " +
+    public String getLongDescription() {return "Use a metabolic network in SBML file and an optional list of side compounds, " +
             "and produce a report summarizing several graph measures characterising the structure of the network." +
             "This includes (non-exhaustive list): size and order, connectivity, density, degree distribution, shortest paths length, top centrality nodes...";}
+
+    @Override
+    public String getShortDescription() {
+        return "Creates a report summarizing several graph measures characterising the structure of the network.";
+    }
 
 }

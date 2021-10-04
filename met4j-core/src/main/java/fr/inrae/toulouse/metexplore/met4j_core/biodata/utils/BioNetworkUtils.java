@@ -102,28 +102,6 @@ public class BioNetworkUtils {
     }
 
     /**
-     * Copy a BioNetwork. Be careful, only the references are copied, the objects themselves (metabolites, reactions) are not duplicated.
-     *
-     * @param network the original network
-     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
-     */
-    public static BioNetwork copy(BioNetwork network) {
-
-        BioNetwork newNetwork = new BioNetwork();
-
-        newNetwork.add(network.getMetabolitesView());
-        newNetwork.add(network.getCompartmentsView());
-        newNetwork.add(network.getReactionsView());
-        newNetwork.add(network.getPathwaysView());
-        newNetwork.add(network.getGenesView());
-        newNetwork.add(network.getProteinsView());
-        newNetwork.add(network.getEnzymesView());
-
-        return newNetwork;
-
-    }
-
-    /**
      * <p>deepCopy.</p>
      *
      * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.

@@ -252,7 +252,7 @@ public class NotesParserTest {
 		Species m1 = model.createSpecies("m1");
 
 		String notesStr = "<body xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-				+ "    <p>Attribut1 : value1</p><p>Formula: C5H403</p>" + "<p>CHARGE: 3</p>"
+				+ "    <p>Attribut1 : value1</p><p>Formula: C5H403</p>" + "<p>CHARGE: 3.0</p>"
 				+ "<p>INCHI: InChI=inchiCode</p>" + "<p>SMILES: smilesCode</p>\n" + "  </body>";
 		
 		m1.setNotes(notesStr);

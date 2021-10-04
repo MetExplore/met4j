@@ -136,6 +136,64 @@ public class FBCParserTest {
 	@Test
 	public void testParseFluxReactions() throws SBMLException, XMLStreamException, Met4jSbmlReaderException {
 
+		initFluxes();
+
+		Flux fluxTestUpper = ReactionAttributes.getUpperBound(r1);
+
+		assertNotNull(fluxTestUpper);
+
+		assertEquals(1000.0, fluxTestUpper.value, 0.0);
+
+		Flux fluxTestLower = ReactionAttributes.getLowerBound(r1);
+
+		assertNotNull(fluxTestLower);
+
+		assertEquals(-1000.0, fluxTestLower.value, 0.0);
+
+		fluxTestLower = ReactionAttributes.getLowerBound(r2);
+
+		assertNotNull(fluxTestLower);
+
+		assertEquals(1000.0, fluxTestLower.value, 0.0);
+
+		fluxTestUpper = ReactionAttributes.getUpperBound(r2);
+
+		assertNotNull(fluxTestUpper);
+
+		assertEquals(1000.0, fluxTestUpper.value, 0.0);
+
+	}
+
+	@Test
+	public void testParseFluxReactionsWithoutUnitDefinitions() throws SBMLException, XMLStreamException, Met4jSbmlReaderException {
+
+		network.setAttribute(NetworkAttributes.UNIT_DEFINITIONS, null);
+		initFluxes();
+		Flux fluxTestUpper = ReactionAttributes.getUpperBound(r1);
+
+		assertNotNull(fluxTestUpper);
+
+		assertEquals(1000.0, fluxTestUpper.value, 0.0);
+
+	}
+
+	@Test
+	public void testParseFluxReactionsWithBadUnitDefinitions() throws SBMLException, XMLStreamException, Met4jSbmlReaderException {
+
+		network.setAttribute(NetworkAttributes.UNIT_DEFINITIONS, null);
+		BioUnitDefinition def = new BioUnitDefinition("notgood", "notgood");
+		NetworkAttributes.addUnitDefinition(network, def);
+
+		initFluxes();
+		Flux fluxTestUpper = ReactionAttributes.getUpperBound(r1);
+
+		assertNotNull(fluxTestUpper);
+
+		assertEquals(1000.0, fluxTestUpper.value, 0.0);
+
+	}
+
+	private void initFluxes() throws Met4jSbmlReaderException {
 		plugin = (FBCModelPlugin) model.getPlugin(PackageNamespace);
 		plugin.setStrict(true);
 
@@ -172,31 +230,6 @@ public class FBCParserTest {
 		parser.setFbcModel(plugin);
 
 		parser.parseModel(model, network);
-
-		Flux fluxTestUpper = ReactionAttributes.getUpperBound(r1);
-
-		assertNotNull(fluxTestUpper);
-
-		assertEquals(1000.0, fluxTestUpper.value, 0.0);
-
-		Flux fluxTestLower = ReactionAttributes.getLowerBound(r1);
-
-		assertNotNull(fluxTestLower);
-
-		assertEquals(-1000.0, fluxTestLower.value, 0.0);
-
-		fluxTestLower = ReactionAttributes.getLowerBound(r2);
-
-		assertNotNull(fluxTestLower);
-
-		assertEquals(1000.0, fluxTestLower.value, 0.0);
-
-		fluxTestUpper = ReactionAttributes.getUpperBound(r2);
-
-		assertNotNull(fluxTestUpper);
-
-		assertEquals(1000.0, fluxTestUpper.value, 0.0);
-
 	}
 
 	@Test

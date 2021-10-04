@@ -13,9 +13,10 @@ the same collection.
 
 ### Fixed
 
-ReactionAttributes.getSideCompounds now returns a BioCollection of BioMetabolite instead
+- ReactionAttributes.getSideCompounds now returns a BioCollection of BioMetabolite instead
 of a Set of String
 
+- Fixes issues in BioNetwork.removeOnCascade
 
 ## 0.6.0
 

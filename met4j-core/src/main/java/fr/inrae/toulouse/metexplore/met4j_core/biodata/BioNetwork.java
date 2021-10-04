@@ -286,8 +286,6 @@ public class BioNetwork extends BioEntity {
             this.removeEnzymeFromReaction(e, r);
         }
 
-//        reactions.parallelStream().forEach(bioReaction -> {this.removeEnzymeFromReaction(e, bioReaction);});
-
         this.enzymes.remove(e);
 
     }
@@ -448,16 +446,16 @@ public class BioNetwork extends BioEntity {
      */
     private void removeReaction(BioReaction r) {
 
-        this.reactions.remove(r);
+        BioCollection<BioPathway> pathways = this.getPathwaysFromReaction(r);
 
-        this.getPathwaysView().forEach(p -> {
+        pathways.forEach(p -> {
             p.removeReaction(r);
             if (p.getReactions().size() == 0) {
                 this.removeOnCascade(p);
             }
 
         });
-
+        this.reactions.remove(r);
     }
 
     /**
@@ -468,8 +466,7 @@ public class BioNetwork extends BioEntity {
      */
     private void removeCompartment(BioCompartment c) {
 
-        this.reactions.forEach(r -> {
-
+        this.getReactionsView().forEach(r -> {
             BioCollection<BioReactant> reactants = r.getReactantsView();
             for (BioReactant reactant : reactants) {
                 if (reactant.getLocation().equals(c)) {
@@ -503,7 +500,7 @@ public class BioNetwork extends BioEntity {
     public void affectLeft(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite... substrates) {
 
         for (BioMetabolite s : substrates)
-            affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.LEFT, s);
+            affectLeft(reaction, stoichiometry, localisation, s);
 
     }
 

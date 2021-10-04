@@ -339,12 +339,15 @@ public class BioNetworkTest {
         network.affectSubUnit(enz, 1.0, metabolite);
         network.removeOnCascade(metabolite);
 
+        BioCompartment emptyCompartment = new BioCompartment("emptyCompartment");
+        network.add(emptyCompartment);
+
         assertEquals(reaction.getLeftReactants().size(), 0);
         assertEquals(reaction.getRightReactants().size(), 0);
         assertEquals(enz.getParticipants().size(), 0);
         assertEquals(network.getReactionsView().size(), 0);
         assertEquals(network.getEnzymesView().size(), 0);
-        assertEquals(network.getCompartmentsView().size(), 0);
+        assertEquals(network.getCompartmentsView().size(), 1);
 
 
     }

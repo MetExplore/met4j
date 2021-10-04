@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.7.1
+
+### Fixed
+
+- [met4j-io] If no unit definition is set in the SBML header, there is no exception anymore when
+the FBC parser is used : a new unit definition is created when it is specified in the parameters
+
 ## 0.7.0
 
 ### Added

@@ -39,91 +39,86 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 /**
- *
- *	Biological cellular compartment, e.g. mitochondria, cytoplasm
+ * Biological cellular compartment, e.g. mitochondria, cytoplasm
  *
  * @author lcottret
  * @version $Id: $Id
  */
-public class BioCompartment extends BioPhysicalEntity{
-
-	
-	private BioCollection<BioEntity> components;
-
-	/**
-	 * Constructor from an id
-	 *
-	 * @param id : must be not null
-	 */
-	public BioCompartment(String id) {
-		super(id);
-
-		components  = new BioCollection<>();
-	}
-
-	/**
-	 *
-	 * Constructor from an id and a name
-	 *
-	 * @param id must be not null
-	 * @param name the name of the compartment
-	 */
-	public BioCompartment(String id, String name) {
-		super(id, name);
-
-		components  = new BioCollection<>();
-	}
-
-	/**
-	 * Copy of a compartment
-	 * Do not copy the list of components
-	 *
-	 * @param compartment the original compartment
-	 */
-	public BioCompartment(BioCompartment compartment) {
-		super(compartment);
-
-		components  = new BioCollection<>();
-	}
+public class BioCompartment extends BioPhysicalEntity {
 
 
-	/**
-	 * <p>getComponentsView.</p>
-	 *
-	 * @return an unmodifiable {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of the components
-	 */
-	public BioCollection<BioEntity> getComponentsView() {
-		return components.getView();
-	}
-	
-	/**
-	 * <p>Getter for the field <code>components</code>.</p>
-	 *
-	 * @return the components
-	 */
-	protected BioCollection<BioEntity> getComponents() {
-		return components;
-	}
+    private BioCollection<BioEntity> components;
 
-	/**
-	 *
-	 * set the components
-	 *
-	 * @param components a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} to set
-	 */
-	protected void setComponents(BioCollection<BioEntity> components) {
-		this.components = components;
-	}
+    /**
+     * Constructor from an id
+     *
+     * @param id : must be not null
+     */
+    public BioCompartment(String id) {
+        super(id);
 
-	/**
-	 *
-	 * Add a component
-	 *
-	 * @param e : the {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} to add
-	 */
-	protected void addComponent(BioEntity e)
-	{
-		this.components.add(e);
-	}
+        components = new BioCollection<>();
+    }
+
+    /**
+     * Constructor from an id and a name
+     *
+     * @param id   must be not null
+     * @param name the name of the compartment
+     */
+    public BioCompartment(String id, String name) {
+        super(id, name);
+
+        components = new BioCollection<>();
+    }
+
+    /**
+     * Copy of a compartment
+     * Do not copy the list of components
+     *
+     * @param compartment the original compartment
+     */
+    public BioCompartment(BioCompartment compartment) {
+        super(compartment);
+
+        components = new BioCollection<>();
+    }
+
+
+    /**
+     * <p>getComponentsView.</p>
+     *
+     * @return an unmodifiable {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of the components
+     */
+    public BioCollection<BioEntity> getComponentsView() {
+        return components.getView();
+    }
+
+    /**
+     * <p>Getter for the field <code>components</code>.</p>
+     *
+     * @return the components
+     */
+    protected BioCollection<BioEntity> getComponents() {
+        return components;
+    }
+
+    /**
+     * set the components
+     *
+     * @param components a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} to set
+     */
+    protected void setComponents(BioCollection<BioEntity> components) {
+        this.components = components;
+    }
+
+    /**
+     * Add a component
+     *
+     * @param e : the {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} to add
+     */
+    protected void addComponent(BioEntity e) {
+        this.components.add(e);
+    }
 
 }

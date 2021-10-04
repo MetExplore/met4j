@@ -160,20 +160,33 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 	 */
 	private void parseParameters() {
 
-		BioUnitDefinitionCollection udList = NetworkAttributes.getUnitDefinitions(this.flxNet.getUnderlyingBionet());
-
-		for (Parameter gParam : this.getFbcModel().getParent().getListOfParameters()) {
-			Flux bioParam = new Flux(gParam.getId());
-			bioParam.setConstant(gParam.getConstant());
-			bioParam.value = gParam.getValue();
-
-			String unit = gParam.getUnits();
-
-			if(unit != "") {
-				bioParam.unitDefinition = (BioUnitDefinition) (udList.get(gParam.getUnits()));
+		if(this.getFbcModel().getParent().getListOfParameters().size() > 0) {
+			BioUnitDefinitionCollection udList = NetworkAttributes.getUnitDefinitions(this.flxNet.getUnderlyingBionet());
+			if(udList == null) {
+				System.err.println("[Warning] No unit definition in the SBML file, default one selected");
+				udList = new BioUnitDefinitionCollection();
+				this.flxNet.getUnderlyingBionet().setAttribute(NetworkAttributes.UNIT_DEFINITIONS, udList);
 			}
 
-			this.flxNet.addFluxBound(bioParam);
+			for (Parameter gParam : this.getFbcModel().getParent().getListOfParameters()) {
+				Flux bioParam = new Flux(gParam.getId());
+				bioParam.setConstant(gParam.getConstant());
+				bioParam.value = gParam.getValue();
+
+				String unit = gParam.getUnits();
+
+				if (unit != "") {
+					BioUnitDefinition unitDefinition = udList.get(gParam.getUnits());
+					if(unitDefinition == null) {
+						System.err.println("[Warning] Unit definition "+gParam.getUnits()+" not defined in the SBML : we add it");
+						unitDefinition = new BioUnitDefinition(gParam.getUnits(), gParam.getUnits());
+						udList.add(unitDefinition);
+					}
+					bioParam.unitDefinition = unitDefinition;
+				}
+
+				this.flxNet.addFluxBound(bioParam);
+			}
 		}
 	}
 

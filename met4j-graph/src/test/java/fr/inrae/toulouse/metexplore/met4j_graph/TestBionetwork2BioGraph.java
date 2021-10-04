@@ -131,14 +131,6 @@ public class TestBionetwork2BioGraph {
 		r7.setReversible(false);
 		bn.affectToPathway(p2, r7);
 
-		bn.add(r1);
-		bn.add(r2);
-		bn.add(r3);
-		bn.add(r4);
-		bn.add(r5);
-		bn.add(r6);
-		bn.add(r7);
-		
 		try{
 			builder = new Bionetwork2BioGraph(bn);
 		}catch(Exception e){

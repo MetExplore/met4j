@@ -65,11 +65,14 @@ public abstract class BioEntity {
 	public BioEntity(String id, String name) {
 
 		if (StringUtils.isVoid(id)) {
-			throw new IllegalArgumentException("Invalid id for building a BioEntity: "+id);
+			String newId = UUID.randomUUID().toString();
+			this.id = newId;
+			System.err.println("Invalid id for building a BioEntity: "+id);
+			System.err.println("Creates a random unique id : "+newId);
 		}
-
-		this.id = id;
-
+		else {
+			this.id = id;
+		}
 		this.setName(name);
 		this.setRefs(new HashMap<>());
 
@@ -82,16 +85,7 @@ public abstract class BioEntity {
 	 * @param id String not null
 	 */
 	public BioEntity(String id) {
-
-		if (StringUtils.isVoid(id)) {
-			throw new IllegalArgumentException("Invalid id for building a BioEntity: "+id);
-		}
-
-		this.id = id;
-		this.setName(id);
-		this.setRefs(new HashMap<>());
-
-		attributes = new HashMap<>();
+		this(id, id);
 	}
 
 	/**

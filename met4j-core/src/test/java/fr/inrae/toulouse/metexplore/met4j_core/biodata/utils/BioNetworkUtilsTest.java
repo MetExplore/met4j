@@ -186,46 +186,4 @@ public class BioNetworkUtilsTest {
 
     }
 
-    @Test
-    public void copy() {
-
-        BioNetwork originalNetwork = new BioNetwork("ori");
-
-        BioReaction r1 = new BioReaction("R1");
-        BioReaction r2 = new BioReaction("R2");
-        BioMetabolite m1 = new BioMetabolite("M1");
-        BioMetabolite m2 = new BioMetabolite("M2");
-        BioMetabolite m3 = new BioMetabolite("M3");
-        BioMetabolite m4 = new BioMetabolite("M4");
-        BioCompartment c1 = new BioCompartment("p1");
-        BioPathway pathway1 = new BioPathway("pathway1");
-        BioEnzyme enzyme1 = new BioEnzyme("enz1");
-        BioProtein protein1 = new BioProtein("protein1");
-        BioGene gene1 = new BioGene("gene1");
-
-        originalNetwork.add(r1, r2, m1, m2, m3, m4, c1, pathway1, protein1, gene1, enzyme1);
-        originalNetwork.affectToPathway(pathway1, r1, r2);
-        originalNetwork.affectToCompartment(c1, m1, m2, m3, m4);
-        originalNetwork.affectGeneProduct(protein1, gene1);
-        originalNetwork.affectSubUnit(enzyme1, 1.0, protein1);
-        originalNetwork.affectLeft(r1, 2.0, c1, m1);
-        originalNetwork.affectRight(r1, 1.0, c1, m2);
-        originalNetwork.affectLeft(r2, 1.0, c1, m3);
-        originalNetwork.affectRight(r2, 2.0, c1, m4);
-
-        BioNetwork newNetwork = BioNetworkUtils.copy(originalNetwork);
-
-        originalNetwork.removeOnCascade(r1, r2, m1, m2, m3, m4, c1, pathway1, protein1, gene1, enzyme1);
-
-        assertEquals(2, newNetwork.getReactionsView().size());
-        assertEquals(4, newNetwork.getMetabolitesView().size());
-        assertEquals(1, newNetwork.getCompartmentsView().size());
-        assertEquals(1, newNetwork.getPathwaysView().size());
-        assertEquals(1, newNetwork.getEnzymesView().size());
-        assertEquals(1, newNetwork.getProteinsView().size());
-        assertEquals(1, newNetwork.getGenesView().size());
-
-        r1.setName("newName");
-        assertEquals(r1.getName(), newNetwork.getReactionsView().get("R1").getName());
-    }
 }

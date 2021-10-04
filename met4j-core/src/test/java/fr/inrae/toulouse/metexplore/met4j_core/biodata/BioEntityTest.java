@@ -78,9 +78,10 @@ public class BioEntityTest {
 		init();
 	}
 
-	@Test (expected = Exception.class)
+	@Test
 	public void testConstructorWithNullId() {
 		bioEntityTest = new BioEntityFake(null);
+		assertNotNull(bioEntityTest.getId());
 	}
 	
 	/**

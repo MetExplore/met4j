@@ -38,14 +38,18 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.ResourceURLFilter;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Resources;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 //import fr.inra.toulouse.metexplore.met4j_core.utils.ResourceURLFilter;
 //import fr.inra.toulouse.metexplore.met4j_core.utils.Resources;
 
 /**
- *
  * Main class for parsebionet List all the main classes in applications with
  * their description if available
  *
@@ -54,73 +58,94 @@ import java.net.URL;
  */
 public class Main {
 
-	/**
-	 * <p>main.</p>
-	 *
-	 * @param args an array of {@link java.lang.String} objects.
-	 */
-	public static void main(String[] args) {
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     */
+    public static void main(String[] args) {
 
-		try {
-			ResourceURLFilter filter = new ResourceURLFilter() {
+        try {
+            ResourceURLFilter filter = new ResourceURLFilter() {
 
-				public
-				boolean accept(URL u) {
+                public boolean accept(URL u) {
 
-					String path = Main.class.getPackage().getName()
-							.replace(".", "/");
+                    String path = Main.class.getPackage().getName()
+                            .replace(".", "/");
 
-					String s = u.getFile();
-					return s.endsWith(".class") && !s.contains("$")
-							&& s.contains(path);
-				}
-			};
+                    String s = u.getFile();
+                    return s.endsWith(".class") && !s.contains("$")
+                            && s.contains(path);
+                }
+            };
 
-			String path = Main.class.getPackage().getName().replace(".", "/");
+            String path = Main.class.getPackage().getName().replace(".", "/");
+            HashMap<String, Set<String>> packages = new HashMap<>();
+            HashMap<String, String> descs = new HashMap<>();
 
-			for (URL u : Resources.getResourceURLs(Resources.class, filter)) {
+            for (URL u : Resources.getResourceURLs(Resources.class, filter)) {
 
-				String entry = u.getFile();
+                String entry = u.getFile();
 
-				int idx = entry.indexOf(path);
+                int idx = entry.indexOf(path);
 
-				entry = entry
-						.substring(idx, entry.length() - ".class".length());
+                entry = entry
+                        .substring(idx, entry.length() - ".class".length());
 
-				Class<?> myClass = Class.forName(entry.replace('/', '.'));
+                Class<?> myClass = Class.forName(entry.replace('/', '.'));
 
-				try {
-					myClass.getMethod("main", String[].class);
-					Constructor<?> ctor = myClass.getConstructor();
 
-					Object obj = ctor.newInstance();
+                try {
+                    myClass.getMethod("main", String[].class);
+                    Constructor<?> ctor = myClass.getConstructor();
 
-					System.out.println("#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#\n# "
-							+ myClass.getCanonicalName()
-							+ "\n#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#\n");
+                    Object obj = ctor.newInstance();
 
-					try {
-						myClass.getMethod("printHeader").invoke(obj);
-						System.out.println("");
-					} catch (Exception e) {
-						System.out.println("No field message !\n");
-					}
+                    String packageName = myClass.getPackageName();
+                    String id = myClass.getCanonicalName();
 
-					try {
-						myClass.getMethod("printUsage").invoke(obj);
-						System.out.println("");
-					} catch (Exception e) {
-						System.out.println("No usage !\n");
-					}
+                    if (!packages.containsKey(packageName)) {
+                        packages.put(packageName, new HashSet<>());
+                    }
+                    String desc = "";
+                    try {
+                        desc += myClass.getMethod("getLabel").invoke(obj) + "\n"
+                                + myClass.getMethod("getShortDescription").invoke(obj);
 
-				} catch (Exception e1) {
-				}
+                        descs.put(id, desc);
+                        packages.get(packageName).add(id);
+                    } catch (Exception e) {
+                        desc += "No description !\n";
+                    }
 
-			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+                } catch (Exception e1) {
+                }
+
+            }
+
+            System.out.println("# Met4j-Toolbox\n" +
+                    "The applications are classified by package.\n"+
+                    "The complete class name must be provided " +
+                    "(e.g. fr.inrae.toulouse.metexplore.met4j_toolbox.attributes.SbmlSetChargesFromFile) to launch the app\n" +
+                    "Launch the application with the -h parameter to get the list of the parameters and a complete description.\n");
+            packages.keySet().stream().sorted().forEach(packageName -> {
+                Set<String> classes = packages.get(packageName);
+                if (classes.size() > 0) {
+                    System.out.println("## Package " + packageName + "\n");
+
+                    classes.stream().sorted().forEach(className -> {
+                        String desc = descs.get(className);
+                        System.out.println("### " + desc + "\n");
+                    });
+                    System.out.println("------------------------------------------");
+                }
+
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

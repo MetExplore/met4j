@@ -61,7 +61,15 @@ public class SbmlSetEcsFromFile extends AbstractSbmlSetReaction {
 
     /** {@inheritDoc} */
     @Override
-    public String getDescription() {
+    public String getLongDescription() {
+        return this.getShortDescription()+"\n"+this.setDescription+"\n" +
+                "The EC will be written in the SBML file in two locations:+\n" +
+                "- in the reaction notes (e.g. <p>EC_NUMBER: 2.4.2.14</p>\n" +
+                "- as a reaction annotation (e.g. <rdf:li rdf:resource=\"http://identifiers.org/ec-code/2.4.2.14\"/>)";
+    }
+
+    @Override
+    public String getShortDescription() {
         return "Set EC numbers to reactions from a tabulated file containing the reaction ids and the EC";
     }
 

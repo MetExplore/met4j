@@ -62,8 +62,25 @@ public class SbmlSetGprsFromFile  extends AbstractSbmlSetReaction {
 
     /** {@inheritDoc} */
     @Override
-    public String getDescription() {
-        return "Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and gprs written in a cobra way";
+    public String getLongDescription() {
+        return this.getShortDescription()+"\n" +
+                this.setDescription +"\n" +
+                "GPR must be written in a cobra way in the tabulated file as described in Schellenberger et al 2011 Nature Protocols 6(9):1290-307\n"+
+                "(The GPR will be written in the SBML file in two locations:\n" +
+                "- in the reaction notes <p>GENE_ASSOCIATION: ( XC_0401 ) OR ( XC_3282 )</p>" +"\n" +
+                "- as fbc gene product association :" +
+                "       <fbc:geneProductAssociation>\n" +
+                "          <fbc:or>\n" +
+                "            <fbc:geneProductRef fbc:geneProduct=\"XC_3282\"/>\n" +
+                "            <fbc:geneProductRef fbc:geneProduct=\"XC_0401\"/>\n" +
+                "          </fbc:or>\n" +
+                "        </fbc:geneProductAssociation>\n";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getShortDescription() {
+        return "Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way";
     }
 
     /**

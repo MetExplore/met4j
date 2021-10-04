@@ -46,6 +46,9 @@ import org.kohsuke.args4j.Option;
  */
 public abstract class AbstractSbmlSetAny extends AbstractSbmlSet {
 
+    public final String setDescription = "The ids must correspond between the tabulated file and the SBML file.\n" +
+            "If prefix or suffix is different in the SBML file, use the -p or the -s options.";
+
     @Option(name="-ci", usage="[1] number of the column where are the object ids")
     protected int colid=1;
 

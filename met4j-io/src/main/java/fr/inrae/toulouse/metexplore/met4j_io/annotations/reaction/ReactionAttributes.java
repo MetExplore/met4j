@@ -39,7 +39,9 @@ package fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction;
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 
 
@@ -51,39 +53,71 @@ import fr.inrae.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
  */
 public class ReactionAttributes extends GenericAttributes {
 
-    /** Constant <code>LOWER_BOUND="flux_lower_bound"</code> */
+    /**
+     * Constant <code>LOWER_BOUND="flux_lower_bound"</code>
+     */
     public static final String LOWER_BOUND = "flux_lower_bound";
-    /** Constant <code>UPPER_BOUND="flux_upper_bound"</code> */
+    /**
+     * Constant <code>UPPER_BOUND="flux_upper_bound"</code>
+     */
     public static final String UPPER_BOUND = "flux_upper_bound";
-    /** Constant <code>SCORE="score"</code> */
+    /**
+     * Constant <code>SCORE="score"</code>
+     */
     public static final String SCORE = "score";
-    /** Constant <code>STATUS="status"</code> */
+    /**
+     * Constant <code>STATUS="status"</code>
+     */
     public static final String STATUS = "status";
-    /** Constant <code>FAST="fast"</code> */
+    /**
+     * Constant <code>FAST="fast"</code>
+     */
     public static final String FAST = "fast";
-    /** Constant <code>KINETIC_FORMULA="kinetic_formula"</code> */
+    /**
+     * Constant <code>KINETIC_FORMULA="kinetic_formula"</code>
+     */
     public static final String KINETIC_FORMULA = "kinetic_formula";
-    /** Constant <code>FLUX_PARAMS="flux_params"</code> */
+    /**
+     * Constant <code>FLUX_PARAMS="flux_params"</code>
+     */
     public static final String FLUX_PARAMS = "flux_params";
-    /** Constant <code>ADDITIONAL_FLUX_PARAMS="additional_flux_params"</code> */
+    /**
+     * Constant <code>ADDITIONAL_FLUX_PARAMS="additional_flux_params"</code>
+     */
     public static final String ADDITIONAL_FLUX_PARAMS = "additional_flux_params";
-    /** Constant <code>SUBSYSTEM="SUBSYSTEM"</code> */
+    /**
+     * Constant <code>SUBSYSTEM="SUBSYSTEM"</code>
+     */
     public static final String SUBSYSTEM = "SUBSYSTEM";
-    /** Constant <code>EC_NUMBER="EC_NUMBER"</code> */
+    /**
+     * Constant <code>EC_NUMBER="EC_NUMBER"</code>
+     */
     public static final String EC_NUMBER = "EC_NUMBER";
-    /** Constant <code>GENE_ASSOCIATION="GENE_ASSOCIATION"</code> */
+    /**
+     * Constant <code>GENE_ASSOCIATION="GENE_ASSOCIATION"</code>
+     */
     public static final String GENE_ASSOCIATION = "GENE_ASSOCIATION";
-    /** Constant <code>HOLE="hole"</code> */
+    /**
+     * Constant <code>HOLE="hole"</code>
+     */
     public static final String HOLE = "hole";
-    /** Constant <code>SIDE_COMPOUNDS="side_compounds"</code> */
+    /**
+     * Constant <code>SIDE_COMPOUNDS="side_compounds"</code>
+     */
     public static final String SIDE_COMPOUNDS = "side_compounds";
-    /** Constant <code>SPONTANEOUS="spontaneous"</code> */
+    /**
+     * Constant <code>SPONTANEOUS="spontaneous"</code>
+     */
     public static final String SPONTANEOUS = "spontaneous";
 
 
-    /** Constant <code>MIN_LOWER_BOUND=Flux.FLUXMIN</code> */
+    /**
+     * Constant <code>MIN_LOWER_BOUND=Flux.FLUXMIN</code>
+     */
     public static final double MIN_LOWER_BOUND = Flux.FLUXMIN;
-    /** Constant <code>MAX_UPPER_BOUND=Flux.FLUXMAX</code> */
+    /**
+     * Constant <code>MAX_UPPER_BOUND=Flux.FLUXMAX</code>
+     */
     public static final double MAX_UPPER_BOUND = Flux.FLUXMAX;
 
     /**
@@ -112,7 +146,7 @@ public class ReactionAttributes extends GenericAttributes {
     /**
      * set lower bound
      *
-     * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+     * @param r   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
      * @param val a {@link fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.Flux} object.
      */
     public static void setLowerBound(BioReaction r, Flux val) {
@@ -122,7 +156,7 @@ public class ReactionAttributes extends GenericAttributes {
     /**
      * set upper bound
      *
-     * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+     * @param r   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
      * @param val a {@link fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.Flux} object.
      */
     public static void setUpperBound(BioReaction r, Flux val) {
@@ -144,7 +178,7 @@ public class ReactionAttributes extends GenericAttributes {
     /**
      * Set score
      *
-     * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+     * @param r     a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
      * @param score a {@link java.lang.Double} object.
      */
     public static void setScore(BioReaction r, Double score) {
@@ -166,7 +200,7 @@ public class ReactionAttributes extends GenericAttributes {
     /**
      * Set status
      *
-     * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+     * @param r      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
      * @param status a {@link java.lang.String} object.
      */
     public static void setStatus(BioReaction r, String status) {
@@ -188,7 +222,7 @@ public class ReactionAttributes extends GenericAttributes {
     /**
      * Set spontaneous attribute
      *
-     * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+     * @param r    a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
      * @param flag a boolean.
      */
     public static void setSpontaneous(BioReaction r, boolean flag) {
@@ -208,7 +242,7 @@ public class ReactionAttributes extends GenericAttributes {
     /**
      * Set fast attribute
      *
-     * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+     * @param r    a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
      * @param flag a boolean.
      */
     public static void setFast(BioReaction r, boolean flag) {
@@ -296,7 +330,7 @@ public class ReactionAttributes extends GenericAttributes {
     /**
      * get flux from its id
      *
-     * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+     * @param r  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
      * @param id a {@link java.lang.String} object.
      * @return a {@link fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.Flux} object.
      */
@@ -331,7 +365,7 @@ public class ReactionAttributes extends GenericAttributes {
     /**
      * Set hole attribute
      *
-     * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+     * @param r    a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
      * @param flag a {@link java.lang.Boolean} object.
      */
     public static void setHole(BioReaction r, Boolean flag) {
@@ -341,28 +375,32 @@ public class ReactionAttributes extends GenericAttributes {
     /**
      * set side compounds
      *
-     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+     * @param e             a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
      * @param sideCompounds a {@link java.util.Set} object.
      */
     public static void setSideCompounds(BioReaction e, Set<String> sideCompounds) {
-
-        e.setAttribute(SIDE_COMPOUNDS, sideCompounds);
-
+        sideCompounds.stream().forEach(id -> {
+            addSideCompound(e, id);
+        });
     }
 
     /**
      * add side compound
      *
-     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+     * @param e  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
      * @param id a {@link java.lang.String} object.
      */
     public static void addSideCompound(BioReaction e, String id) {
 
         if (getSideCompounds(e) == null) {
-            setSideCompounds(e, new HashSet<String>());
+            e.setAttribute(SIDE_COMPOUNDS, new BioCollection<BioMetabolite>());
         }
 
-        getSideCompounds(e).add(id);
+        BioMetabolite m = e.getMetabolitesView().get(id);
+        if (m == null) {
+            throw new IllegalArgumentException("[addSideCompound] The reaction " + e.getId() + " does not contain metabolite with the id << " + id + " >>");
+        }
+        getSideCompounds(e).add(m);
 
     }
 
@@ -373,9 +411,9 @@ public class ReactionAttributes extends GenericAttributes {
      * @return a {@link java.util.Set} object.
      */
     @SuppressWarnings("unchecked")
-    public static Set<String> getSideCompounds(BioReaction e) {
+    public static BioCollection<BioMetabolite> getSideCompounds(BioReaction e) {
 
-        return (Set<String>) e.getAttribute(SIDE_COMPOUNDS);
+        return (BioCollection<BioMetabolite>) e.getAttribute(SIDE_COMPOUNDS);
 
     }
 

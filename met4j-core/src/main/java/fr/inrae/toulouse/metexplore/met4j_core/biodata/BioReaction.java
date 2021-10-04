@@ -119,14 +119,6 @@ public class BioReaction extends BioEntity {
 		enzymes = new BioCollection<>();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-
-		return this.getId();
-
-	}
-
 	/**
 	 * <p>Getter for the field <code>ecNumber</code>.</p>
 	 *
@@ -413,6 +405,9 @@ public class BioReaction extends BioEntity {
 	/**
 	 * <p>getGenes.</p>
 	 *
+	 * Get the list of the genes associated to the reactions.
+	 * Be careful, modifying the BioCollection returned by this method won't affect the reaction
+	 *
 	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} object.
 	 */
 	protected BioCollection<BioGene> getGenes() {
@@ -429,6 +424,17 @@ public class BioReaction extends BioEntity {
 		}));
 
 		return new BioCollection<>(genes);
+	}
+
+	/**
+	 * <p>getMetabolitesView</p>
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection}
+	 * of the {@link BioMetabolite} involved in the reaction
+	 */
+	public BioCollection<BioMetabolite> getMetabolitesView() {
+		return this.getReactantsView().stream()
+				.map(bioReactant -> bioReactant.getMetabolite())
+				.collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
 	}
 
 }

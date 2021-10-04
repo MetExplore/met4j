@@ -23,7 +23,7 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
     String sbmlFilePath;
     @Option(name = "-t", aliases = {"--targets"}, usage = "input target file: tabulated file containing node of interest ids", required = true)
     String targetsFilePath;
-    @Option(name = "-o", usage="output file: path to the .gml file where the results precursor network will be exported", required = true)
+    @Option(name = "-o", usage = "output file: path to the .gml file where the results precursor network will be exported", required = true)
     String output;
 
     //oprtions
@@ -42,22 +42,22 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
     public void run() throws IOException, Met4jSbmlReaderException {
         JsbmlReader in = new JsbmlReader(sbmlFilePath);
         BipartiteGraph graph = (new Bionetwork2BioGraph(in.read())).getBipartiteGraph();
-        NodeMapping<BioEntity, BipartiteEdge,BipartiteGraph> mapper =  new NodeMapping<>(graph).skipIfNotFound();
+        NodeMapping<BioEntity, BipartiteEdge, BipartiteGraph> mapper = new NodeMapping<>(graph).skipIfNotFound();
 
         BioCollection<BioMetabolite> targets = mapper.map(targetsFilePath).stream()
                 .map(BioMetabolite.class::cast)
-                .collect(BioCollection::new,BioCollection::add,BioCollection::addAll);
+                .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
         BioCollection<BioMetabolite> bootstraps = mapper.map(sideCompoundFile).stream()
                 .map(BioMetabolite.class::cast)
-                .collect(BioCollection::new,BioCollection::add,BioCollection::addAll);
+                .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
         BioCollection<BioReaction> forbidden = mapper.map(reactionToIgnoreFile).stream()
                 .map(BioReaction.class::cast)
-                .collect(BioCollection::new,BioCollection::add,BioCollection::addAll);
+                .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
 
         fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.PrecursorNetwork precursorComp =
-                new fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.PrecursorNetwork(graph,bootstraps,targets,forbidden);
+                new fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.PrecursorNetwork(graph, bootstraps, targets, forbidden);
         BipartiteGraph precursorNet = precursorComp.getPrecursorNetwork();
-        ExportGraph.toGml(precursorNet,output);
+        ExportGraph.toGml(precursorNet, output);
     }
 
     @Override
@@ -66,10 +66,15 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
     }
 
     @Override
-    public String getDescription() {
-        return "Perform a network expansion from a set of compound targets to create a precursor network.\n" +
+    public String getLongDescription() {
+        return this.getShortDescription() + "\n" +
                 "The precursor network of a set of compounds (targets) refer to the sub-part of a metabolic network from which a target can be reached" +
                 "The network expansion process consist of adding a reaction to the network if any of its products " +
                 "are either a targets or a substrate of a previously added reaction";
+    }
+
+    @Override
+    public String getShortDescription() {
+        return "Perform a network expansion from a set of compound targets to create a precursor network.";
     }
 }

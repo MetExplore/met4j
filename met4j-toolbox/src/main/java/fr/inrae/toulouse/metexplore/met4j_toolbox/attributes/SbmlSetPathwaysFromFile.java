@@ -63,7 +63,21 @@ public class SbmlSetPathwaysFromFile extends AbstractSbmlSetReaction {
 
     /** {@inheritDoc} */
     @Override
-    public String getDescription() {
+    public String getLongDescription() {
+        return this.getShortDescription()+"\n" +
+                this.setDescription+"\n" +
+                "Pathways will be written in the SBML file in two ways:" +
+                "- as reaction note (e.g. <p>SUBSYSTEM: purine_biosynthesis</p>)" +
+                "- as SBML group:\n" +
+                        "      <groups:group groups:id=\"purine_biosynthesis\" groups:kind=\"classification\" groups:name=\"purine_biosynthesis\">\n" +
+                        "        <groups:listOfMembers>\n" +
+                        "          <groups:member groups:idRef=\"R_GLUPRT\"/>\n" +
+                        "          <groups:member groups:idRef=\"R_RNDR1b\"/>\n...\n";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getShortDescription() {
         return "Set pathway to reactions in a network from a tabulated file containing the reaction ids and the pathways";
     }
 

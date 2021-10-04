@@ -4,17 +4,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.7.0
+
+### Added
+
+- [met4j-core] Reaction.getMetabolitesView method allows to get all left and right metabolites in
+the same collection.
+
+- [met4j-core] If the id of a new BioEntity is not valid, a new random one is created
+
+### Fixed
+
+- [met4j-io] ReactionAttributes.getSideCompounds now returns a BioCollection of BioMetabolite instead
+of a Set of String
+
+- [met4j-core] Fix issues in BioNetwork.removeOnCascade
+
 ## 0.6.0
 
 ### Removed
-- MetExploreXml support : classes and apps
+- [met4j-io] MetExploreXml support : classes and apps
 
 ## [Unreleased]
 ### Added
-- Graph Analysis Apps: chokepoints, distance matrix, subnetwork extraction, loadpoint, metaborank, scopecompounds and other utilities
-- Improve graph export to gml: attributes can be exported too
+- [met4j-graph] Graph Analysis Apps: chokepoints, distance matrix, subnetwork extraction, loadpoint, metaborank, scopecompounds and other utilities
+- [met4j-graph] Improve graph export to gml: attributes can be exported too
 ### Removed
 - FlexFlux
 ### Fixed
-- Reaction graph creation was very slow, now fixed
-- Fixed FloydWarshall undirected with multi-graphs
+- [met4j-graph] Reaction graph creation was very slow, now fixed
+- [met4j-graph] Fixed FloydWarshall undirected with multi-graphs

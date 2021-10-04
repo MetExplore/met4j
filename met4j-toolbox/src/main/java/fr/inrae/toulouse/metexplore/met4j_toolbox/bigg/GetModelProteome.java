@@ -326,7 +326,13 @@ public class GetModelProteome extends AbstractMet4jApplication {
 
     /** {@inheritDoc} */
     @Override
-    public String getDescription() {
+    public String getLongDescription() {
+        return description;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getShortDescription() {
         return description;
     }
 }

@@ -100,7 +100,13 @@ public class Tab2Sbml extends AbstractMet4jApplication {
 
     /** {@inheritDoc} */
     @Override
-    public String getDescription() {
+    public String getLongDescription() {
+        return this.getShortDescription();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getShortDescription() {
         return "Create a Sbml File from a tabulated file that contains the reaction ids and the formulas";
     }
 

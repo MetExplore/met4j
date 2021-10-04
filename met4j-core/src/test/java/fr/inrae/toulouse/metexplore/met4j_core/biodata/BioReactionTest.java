@@ -37,8 +37,6 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Field;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.internal.ArrayComparisonFailure;
@@ -51,46 +49,68 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
  */
 public class BioReactionTest {
 
-	public static BioCompartment cpt1;
-	public static BioCompartment cpt2;
+	public static BioNetwork network;
 
-	public static BioReactant l1;
-	public static BioReactant l2;
-	public static BioReactant r1;
-	public static BioReactant r2;
+	public static BioCompartment cpt1, cpt2;
+
+	public static BioMetabolite l1, l2, r1, r2;
+	public static BioReactant l1Reactant, l2Reactant, r1Reactant, r2Reactant;
 
 	public static BioReaction reaction;
 
-	public static Field leftField;
-	public static Field rightField;
+	public static BioGene g1, g2, g3;
 
 	@Before
 	public void init()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		network = new BioNetwork();
+
 		cpt1 = new BioCompartment("cpt1");
 		cpt2 = new BioCompartment("cpt2");
 
-		l1 = new BioReactant(new BioMetabolite("l1"), 1.0, cpt1);
-		l2 = new BioReactant(new BioMetabolite("l2"), 1.0, cpt1);
-		r1 = new BioReactant(new BioMetabolite("r1"), 1.0, cpt2);
-		r2 = new BioReactant(new BioMetabolite("r2"), 1.0, cpt2);
+		l1 = new BioMetabolite("l1");
+		l2 = new BioMetabolite("l2");
+		r1 = new BioMetabolite("r1");
+		r2 = new BioMetabolite("r2");
+
+		l1Reactant = new BioReactant(l1, 1.0, cpt1);
+		l2Reactant = new BioReactant(l2, 1.0, cpt1);
+		r1Reactant = new BioReactant(r1, 1.0, cpt2);
+		r2Reactant = new BioReactant(r2, 1.0, cpt2);
 
 		reaction = new BioReaction("testreaction");
 
-		leftField = BioReaction.class.getDeclaredField("left");
-		leftField.setAccessible(true);
+		network.add(reaction, cpt1, cpt2, l1, l2, r1, r2);
 
-		rightField = BioReaction.class.getDeclaredField("right");
-		rightField.setAccessible(true);
-		BioCollection<BioReactant> left = new BioCollection<BioReactant>();
-		left.add(l1);
-		left.add(l2);
-		BioCollection<BioReactant> right = new BioCollection<BioReactant>();
-		right.add(r1);
-		right.add(r2);
+		network.affectToCompartment(cpt1, l1, l2);
+		network.affectToCompartment(cpt2, r1, r2);
 
-		leftField.set(reaction, left);
-		rightField.set(reaction, right);
+		network.affectLeft(reaction, l1Reactant, l2Reactant);
+		network.affectRight(reaction, r1Reactant, r2Reactant);
+
+		BioEnzyme e1 = new BioEnzyme("e1");
+		BioProtein p1 = new BioProtein("p1");
+		BioProtein p2 = new BioProtein("p2");
+		BioEnzyme e2 = new BioEnzyme("e2");
+		BioProtein p3 = new BioProtein("p3");
+		g1 = new BioGene("g1");
+		g2 = new BioGene("g2");
+		g3 = new BioGene("g3");
+
+		network.add(e1, e2, g1, g2, g3, p1, p2, p3);
+
+		network.affectEnzyme(reaction, e1, e2);
+
+		BioEnzymeParticipant ep1 = new BioEnzymeParticipant(p1);
+		BioEnzymeParticipant ep2 = new BioEnzymeParticipant(p2);
+		BioEnzymeParticipant ep3 = new BioEnzymeParticipant(p3);
+		network.affectSubUnit(e1, ep1);
+		network.affectSubUnit(e2, ep2, ep3);
+
+		network.affectGeneProduct(p1, g1);
+		network.affectGeneProduct(p2, g2);
+		network.affectGeneProduct(p3, g3);
+
 	}
 
 	/**
@@ -117,8 +137,8 @@ public class BioReactionTest {
 		assertTrue("Must be a transport reaction", reaction.isTransportReaction());
 
 		// Negative Test
-		r1.setLocation(cpt1);
-		r2.setLocation(cpt1);
+		r1Reactant.setLocation(cpt1);
+		r2Reactant.setLocation(cpt1);
 
 		assertFalse("Must not be a transport reaction", reaction.isTransportReaction());
 	}
@@ -130,8 +150,8 @@ public class BioReactionTest {
 	@Test
 	public void testGetLeft() {
 		BioCollection<BioPhysicalEntity> leftCpds = new BioCollection<BioPhysicalEntity>();
-		leftCpds.add(l1.getPhysicalEntity());
-		leftCpds.add(l2.getPhysicalEntity());
+		leftCpds.add(l1Reactant.getPhysicalEntity());
+		leftCpds.add(l2Reactant.getPhysicalEntity());
 
 		assertArrayEquals("getLeft does not function well", leftCpds.toArray(), reaction.getLeftsView().toArray());
 
@@ -144,8 +164,8 @@ public class BioReactionTest {
 	@Test
 	public void testGetRight() {
 		BioCollection<BioPhysicalEntity> rightCpds = new BioCollection<BioPhysicalEntity>();
-		rightCpds.add(r1.getPhysicalEntity());
-		rightCpds.add(r2.getPhysicalEntity());
+		rightCpds.add(r1Reactant.getPhysicalEntity());
+		rightCpds.add(r2Reactant.getPhysicalEntity());
 
 		assertArrayEquals("getLeft does not function well", rightCpds.toArray(), reaction.getRightsView().toArray());
 	}
@@ -158,10 +178,10 @@ public class BioReactionTest {
 	public void testGetEntities() {
 
 		BioCollection<BioPhysicalEntity> entities = new BioCollection<BioPhysicalEntity>();
-		entities.add(l1.getPhysicalEntity());
-		entities.add(l2.getPhysicalEntity());
-		entities.add(r1.getPhysicalEntity());
-		entities.add(r2.getPhysicalEntity());
+		entities.add(l1Reactant.getPhysicalEntity());
+		entities.add(l2Reactant.getPhysicalEntity());
+		entities.add(r1Reactant.getPhysicalEntity());
+		entities.add(r2Reactant.getPhysicalEntity());
 
 		// With distinct metabolites
 		assertArrayEquals("getEntities does not return the good entities", entities.toArray(),
@@ -179,10 +199,11 @@ public class BioReactionTest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testGetLeftReactants() throws ArrayComparisonFailure, IllegalArgumentException, IllegalAccessException {
+	public void testGetLeftReactants() throws ArrayComparisonFailure, IllegalArgumentException {
 
-		assertArrayEquals("getLeftReactants does not function well",
-				((BioCollection<BioPhysicalEntity>) leftField.get(reaction)).toArray(), reaction.getLeftReactants().toArray());
+		BioCollection<BioReactant> refs = new BioCollection<>();
+		refs.add(l1Reactant, l2Reactant);
+		assertEquals(refs, reaction.getLeftReactants());
 
 	}
 	
@@ -196,19 +217,36 @@ public class BioReactionTest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testGetRightReactants() throws ArrayComparisonFailure, IllegalArgumentException, IllegalAccessException {
+	public void testGetRightReactants() throws ArrayComparisonFailure, IllegalArgumentException {
 
-		assertArrayEquals("getRightReactants does not function well",
-				((BioCollection<BioPhysicalEntity>) rightField.get(reaction)).toArray(), reaction.getRightReactants().toArray());
+		BioCollection<BioReactant> refs = new BioCollection<>();
+		refs.add(r1Reactant, r2Reactant);
+		assertEquals(refs, reaction.getRightReactants());
 
 	}
 
-	public void testGetProteins() {
-		fail("not implemented");
-	}
-
+	@Test
 	public void testGetGenes() {
-		fail("not implemented");
+
+		BioCollection<BioGene> refs = new BioCollection<>();
+		refs.add(g1, g2, g3);
+
+		assertEquals(refs, reaction.getGenes());
+	}
+
+	/**
+	 * Test method for
+	 * {@link BioReaction#getMetabolitesView()}
+	 */
+	@Test
+	public void testGetMetabolitesView() {
+		BioCollection<BioMetabolite> refs = new BioCollection<>();
+		refs.add(l1Reactant.getMetabolite(), l2Reactant.getMetabolite(), r1Reactant.getMetabolite(), r2Reactant.getMetabolite());
+
+		BioCollection<BioMetabolite> tests = reaction.getMetabolitesView();
+
+		assertEquals(refs, tests);
+
 	}
 
 }

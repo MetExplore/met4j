@@ -60,18 +60,38 @@ public abstract class AbstractMet4jApplication {
      *
      * @return the description
      */
-    public abstract String getDescription();
+    public abstract String getLongDescription();
+
+    /**
+     * <p>getDescription.</p>
+     *
+     * @return the description
+     */
+    public abstract String getShortDescription();
 
     @Option(name = "-h", usage = "prints the help", required = false)
     private Boolean h = false;
 
     /**
      * <p>printHeader.</p>
+     *
+     * Prints the label and the long description
      */
-    public void printHeader()
+    public void printLongHeader()
     {
         System.out.println(this.getLabel());
-        System.out.println(this.getDescription());
+        System.out.println(this.getLongDescription());
+    }
+
+    /**
+     * <p>printHeader.</p>
+     *
+     * Prints the label and the long description
+     */
+    public void printShortHeader()
+    {
+        System.out.println(this.getLabel());
+        System.out.println(this.getShortDescription());
     }
 
     /**
@@ -94,13 +114,13 @@ public abstract class AbstractMet4jApplication {
             parser.parseArgument(args);
         } catch (CmdLineException e) {
             if(this.h == false) {
-                this.printHeader();
+                this.printShortHeader();
                 System.err.println("Error in arguments");
                 parser.printUsage(System.err);
                 System.exit(0);
             }
             else {
-                this.printHeader();
+                this.printLongHeader();
                 parser.printUsage(System.err);
                 System.exit(1);
             }
@@ -108,7 +128,7 @@ public abstract class AbstractMet4jApplication {
 
         if(this.h == true)
         {
-            this.printHeader();
+            this.printLongHeader();
             parser.printUsage(System.err);
             System.exit(1);
         }

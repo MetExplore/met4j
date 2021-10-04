@@ -63,7 +63,16 @@ public class SbmlSetRefsFromFile extends AbstractSbmlSetAny {
 
     /** {@inheritDoc} */
     @Override
-    public String getDescription() {
+    public String getLongDescription() {
+        return this.getShortDescription()+"\n" +
+                "Reference name given as parameter (-ref) must correspond to an existing id the " +
+                "registry of  identifiers.org (https://registry.identifiers.org/registry)\n" +
+                "The corresponding key:value pair will be written as metabolite or reaction annotation";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getShortDescription() {
         return "Add refs to network objects from a tabulated file containing the metabolite ids and the formulas";
     }
 

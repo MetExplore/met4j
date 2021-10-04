@@ -28,16 +28,16 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
     @Option(name = "-o", usage = "output Side-Compounds file", required = true)
     public String outputPath = null;
 
-    @Option(name = "-s",aliases = {"--onlySides"}, usage = "output compounds flagged as side-Compounds only")
+    @Option(name = "-s", aliases = {"--onlySides"}, usage = "output compounds flagged as side-Compounds only")
     public boolean sideOnly = false;
 
-    @Option(name = "-id",aliases = {"--onlyIds"}, usage = "do not report values in output, export ids list of compounds flagged as side-Compounds, allowing piping results")
+    @Option(name = "-id", aliases = {"--onlyIds"}, usage = "do not report values in output, export ids list of compounds flagged as side-Compounds, allowing piping results")
     public boolean noReportValue = false;
 
-    @Option(name = "-d", aliases = {"--degree"}, usage = "flag as side compounds any compounds with degree above threshold", forbids={"-dp"})
+    @Option(name = "-d", aliases = {"--degree"}, usage = "flag as side compounds any compounds with degree above threshold", forbids = {"-dp"})
     public int degree = 400;
 
-    @Option(name = "-dp", aliases = {"--degreep"}, usage = "flag as side compounds the top x% of compounds according to their degree", forbids={"-d"})
+    @Option(name = "-dp", aliases = {"--degreep"}, usage = "flag as side compounds the top x% of compounds according to their degree", forbids = {"-d"})
     public double degreePrecentile = Double.NaN;
 
     @Option(name = "-cc", aliases = {"--noCarbonSkeleton"}, usage = "flag as side compound any compounds with less than 2 carbons in formula")
@@ -45,8 +45,6 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
 
     @Option(name = "-er", aliases = {"--edgeRedundancy"}, usage = "flag as side compound any compound with a number of redundancy in incident edges (parallel edges connecting to the same neighbor) above the given threshold")
     public double parallelEdge = Double.NaN;
-
-
 
 
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
@@ -87,79 +85,79 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
         //degree statistics
         DescriptiveStatistics degreeStats = new DescriptiveStatistics();
         double dt = degree;
-        if(!Double.isNaN(degreePrecentile)){
-            for(BioMetabolite v : graph.vertexSet()){
+        if (!Double.isNaN(degreePrecentile)) {
+            for (BioMetabolite v : graph.vertexSet()) {
                 degreeStats.addValue(graph.degreeOf(v));
             }
             dt = degreeStats.getPercentile(degreePrecentile);
         }
 
         //formula regex
-        Pattern regex =  Pattern.compile(".*(R[^a-z]|C\\d).*");
+        Pattern regex = Pattern.compile(".*(R[^a-z]|C\\d).*");
 
         //header
-        Boolean reportValue=(!noReportValue);
-        if(reportValue){
+        Boolean reportValue = (!noReportValue);
+        if (reportValue) {
             StringBuffer l = new StringBuffer("ID\tNAME");
             l.append("\tDEGREE");
-            if(!Double.isNaN(parallelEdge)) l.append("\tINCIDENT_PARALLEL_EDGES");
-            if(flagInorganic) l.append("\tNO_CARBON_BOND");
+            if (!Double.isNaN(parallelEdge)) l.append("\tINCIDENT_PARALLEL_EDGES");
+            if (flagInorganic) l.append("\tNO_CARBON_BOND");
             l.append("\tIS_SIDE\n");
             fw.write(l.toString());
         }
 
         //if ids only, report side only
-        if(noReportValue) sideOnly=true;
+        if (noReportValue) sideOnly = true;
 
         int count = 0;
-        for(BioMetabolite v : graph.vertexSet()){
+        for (BioMetabolite v : graph.vertexSet()) {
 
-            boolean side=false;
+            boolean side = false;
 
             //check degree
             StringBuffer l = new StringBuffer(v.getId());
-            if(reportValue) l.append("\t"+v.getName());
+            if (reportValue) l.append("\t" + v.getName());
 
             int d = graph.degreeOf(v);
-            boolean sideFromDegree = (d>=degree);
-            if(sideFromDegree) side=true;
-            if(reportValue) l.append("\t"+d);
+            boolean sideFromDegree = (d >= degree);
+            if (sideFromDegree) side = true;
+            if (reportValue) l.append("\t" + d);
 
             //check parallel edge ratio
-            if(!Double.isNaN(parallelEdge)){
-                int ipe = graph.edgesOf(v).size()-graph.neighborListOf(v).size();
-                boolean sideFromParallel =  (ipe > parallelEdge);
-                if(sideFromParallel) side=true;
-                if(reportValue) l.append("\t"+ipe);
+            if (!Double.isNaN(parallelEdge)) {
+                int ipe = graph.edgesOf(v).size() - graph.neighborListOf(v).size();
+                boolean sideFromParallel = (ipe > parallelEdge);
+                if (sideFromParallel) side = true;
+                if (reportValue) l.append("\t" + ipe);
             }
 
             //check formula
-            if(flagInorganic){
+            if (flagInorganic) {
                 String formula = v.getChemicalFormula();
-                String inorganic ="?";
-                if(!StringUtils.isVoid(formula) && !formula.equals("NA") && !formula.equals("*")){
-                    if(regex.matcher(formula).matches()){
+                String inorganic = "?";
+                if (!StringUtils.isVoid(formula) && !formula.equals("NA") && !formula.equals("*")) {
+                    if (regex.matcher(formula).matches()) {
                         inorganic = "false";
-                    }else{
+                    } else {
                         inorganic = "true";
-                        side=true;
+                        side = true;
                     }
                 }
-                if(reportValue) l.append("\t"+inorganic);
+                if (reportValue) l.append("\t" + inorganic);
             }
 
-            if(reportValue) l.append("\t"+side);
+            if (reportValue) l.append("\t" + side);
 
-            if(!sideOnly || side){
+            if (!sideOnly || side) {
                 fw.write(l.toString());
                 fw.write("\n");
             }
-            if(side) count++;
+            if (side) count++;
         }
 
         fw.close();
         System.err.println("done");
-        System.err.println("found "+count+" side compound among "+ graph.vertexSet().size()+" compounds");
+        System.err.println("found " + count + " side compound among " + graph.vertexSet().size() + " compounds");
         System.err.println(outputPath);
     }
 
@@ -169,8 +167,8 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
     }
 
     @Override
-    public String getDescription() {
-        return "Scan a network to identify side-compounds.\n" +
+    public String getLongDescription() {
+        return this.getShortDescription() + "\n" +
                 "Side compounds are metabolites of small relevance for topological analysis. Their definition can be quite subjective and varies between sources.\n" +
                 "Side compounds tends to be ubiquitous and not specific to a particular biochemical or physiological process.\n" +
                 "Compounds usually considered as side compounds include water, atp or carbon dioxide. By being involved in many reactions and thus connected to many compounds, " +
@@ -185,5 +183,10 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
                 "Most of them are inorganic compound, another ill-defined concept, sometimes defined as compound lacking C-C or C-H bonds. Since chemical structure is rarely available " +
                 "in SBML model beyond chemical formula, we use a less restrictive criterion by flagging compound with one or no carbons. This cover most inorganic compounds, but include few compounds" +
                 " such as methane usually considered as organic.  ";
+    }
+
+    @Override
+    public String getShortDescription() {
+        return "Scan a network to identify side-compounds.";
     }
 }

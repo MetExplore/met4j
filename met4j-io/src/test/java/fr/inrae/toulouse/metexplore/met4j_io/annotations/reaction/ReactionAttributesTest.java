@@ -41,429 +41,488 @@ import static org.junit.Assert.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 
 public class ReactionAttributesTest {
 
-	BioReaction r;
-	Flux f;
+    BioReaction r;
+    Flux f;
 
-	@Rule
-	public ExpectedException exception = ExpectedException.none();
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
-	@Before
-	public void init() {
-		r = new BioReaction("r");
-		f = new Flux("flux");
-	}
+    @Before
+    public void init() {
+        r = new BioReaction("r");
+        f = new Flux("flux");
+    }
 
-	@Test
-	public void testGetLowerBound() {
+    @Test
+    public void testGetLowerBound() {
 
-		assertNull("If not set, the lower bound must equal to null", ReactionAttributes.getLowerBound(r));
+        assertNull("If not set, the lower bound must equal to null", ReactionAttributes.getLowerBound(r));
 
-		f.value = 150.0;
+        f.value = 150.0;
 
-		r.setAttribute(ReactionAttributes.LOWER_BOUND, f);
-		assertEquals("test get lower bound", 150.0, ((Flux) ReactionAttributes.getLowerBound(r)).value, 0.0);
+        r.setAttribute(ReactionAttributes.LOWER_BOUND, f);
+        assertEquals("test get lower bound", 150.0, ((Flux) ReactionAttributes.getLowerBound(r)).value, 0.0);
 
-	}
+    }
 
-	@Test
-	public void testGetUpperBound() {
+    @Test
+    public void testGetUpperBound() {
 
-		assertNull("If not set, the upper bound must equal to null", ReactionAttributes.getUpperBound(r));
+        assertNull("If not set, the upper bound must equal to null", ReactionAttributes.getUpperBound(r));
 
-		f.value = 150.0;
+        f.value = 150.0;
 
-		r.setAttribute(ReactionAttributes.UPPER_BOUND, f);
-		assertEquals("test get upper bound", 150.0, ((Flux) ReactionAttributes.getUpperBound(r)).value, 0.0);
+        r.setAttribute(ReactionAttributes.UPPER_BOUND, f);
+        assertEquals("test get upper bound", 150.0, ((Flux) ReactionAttributes.getUpperBound(r)).value, 0.0);
 
-	}
+    }
 
-	@Test
-	public void testSetLowerBound() {
+    @Test
+    public void testSetLowerBound() {
 
-		f.value = 150.0;
+        f.value = 150.0;
 
-		ReactionAttributes.setLowerBound(r, f);
+        ReactionAttributes.setLowerBound(r, f);
 
-		assertEquals("test set lower bound", 150.0, ((Flux) r.getAttribute(ReactionAttributes.LOWER_BOUND)).value, 0.0);
+        assertEquals("test set lower bound", 150.0, ((Flux) r.getAttribute(ReactionAttributes.LOWER_BOUND)).value, 0.0);
 
-		f.value = -150.0;
+        f.value = -150.0;
 
-		ReactionAttributes.setLowerBound(r, f);
+        ReactionAttributes.setLowerBound(r, f);
 
-		assertEquals("test set lower bound", -150.0, ((Flux) r.getAttribute(ReactionAttributes.LOWER_BOUND)).value, 0.0);
+        assertEquals("test set lower bound", -150.0, ((Flux) r.getAttribute(ReactionAttributes.LOWER_BOUND)).value, 0.0);
 
-		f.value = 150.0;
+        f.value = 150.0;
 
-		r.setReversible(false);
+        r.setReversible(false);
 
-		ReactionAttributes.setLowerBound(r, f);
-		assertEquals("test set lower bound", 150.0, ((Flux) r.getAttribute(ReactionAttributes.LOWER_BOUND)).value, 0.0);
+        ReactionAttributes.setLowerBound(r, f);
+        assertEquals("test set lower bound", 150.0, ((Flux) r.getAttribute(ReactionAttributes.LOWER_BOUND)).value, 0.0);
 
-	}
+    }
 
-	@Test
-	public void testSetUpperBound() {
+    @Test
+    public void testSetUpperBound() {
 
-		f.value = 150.0;
+        f.value = 150.0;
 
-		ReactionAttributes.setUpperBound(r, f);
+        ReactionAttributes.setUpperBound(r, f);
 
-		assertEquals("test set upper bound", 150.0, ((Flux) r.getAttribute(ReactionAttributes.UPPER_BOUND)).value, 0.0);
-		
-		f.value = -150.0;
+        assertEquals("test set upper bound", 150.0, ((Flux) r.getAttribute(ReactionAttributes.UPPER_BOUND)).value, 0.0);
 
-		ReactionAttributes.setUpperBound(r, f);
+        f.value = -150.0;
 
-		assertEquals("test set upper bound", -150.0, ((Flux) r.getAttribute(ReactionAttributes.UPPER_BOUND)).value, 0.0);
+        ReactionAttributes.setUpperBound(r, f);
 
-		r.setReversible(false);
+        assertEquals("test set upper bound", -150.0, ((Flux) r.getAttribute(ReactionAttributes.UPPER_BOUND)).value, 0.0);
 
-		f.value = 150.0;
-		ReactionAttributes.setUpperBound(r, f);
-		assertEquals("test set upper bound", 150.0, ((Flux) r.getAttribute(ReactionAttributes.UPPER_BOUND)).value, 0.0);
+        r.setReversible(false);
 
-	}
+        f.value = 150.0;
+        ReactionAttributes.setUpperBound(r, f);
+        assertEquals("test set upper bound", 150.0, ((Flux) r.getAttribute(ReactionAttributes.UPPER_BOUND)).value, 0.0);
 
-	@Test
-	public void testSetNotes() {
+    }
 
-		Notes notes = new Notes("<p>toto</p>");
+    @Test
+    public void testSetNotes() {
 
-		ReactionAttributes.setNotes(r, notes);
+        Notes notes = new Notes("<p>toto</p>");
 
-		assertEquals(notes, r.getAttribute(GenericAttributes.SBML_NOTES));
+        ReactionAttributes.setNotes(r, notes);
 
-	}
+        assertEquals(notes, r.getAttribute(GenericAttributes.SBML_NOTES));
 
-	@Test
-	public void testGetNotes() {
+    }
 
-		Notes notes = new Notes("<p>toto</p>");
+    @Test
+    public void testGetNotes() {
 
-		r.setAttribute(GenericAttributes.SBML_NOTES, notes);
+        Notes notes = new Notes("<p>toto</p>");
 
-		assertEquals(notes, ReactionAttributes.getNotes(r));
+        r.setAttribute(GenericAttributes.SBML_NOTES, notes);
 
-	}
+        assertEquals(notes, ReactionAttributes.getNotes(r));
 
-	@Test
-	public void testSetScore() {
+    }
 
-		Double score = 5.0;
+    @Test
+    public void testSetScore() {
 
-		ReactionAttributes.setScore(r, score);
+        Double score = 5.0;
 
-		assertEquals(score, r.getAttribute(ReactionAttributes.SCORE));
+        ReactionAttributes.setScore(r, score);
 
-	}
+        assertEquals(score, r.getAttribute(ReactionAttributes.SCORE));
 
-	@Test
-	public void testGetScore() {
+    }
 
-		Double score = 5.0;
+    @Test
+    public void testGetScore() {
 
-		r.setAttribute(ReactionAttributes.SCORE, score);
+        Double score = 5.0;
 
-		assertEquals(score, ReactionAttributes.getScore(r));
+        r.setAttribute(ReactionAttributes.SCORE, score);
 
-	}
+        assertEquals(score, ReactionAttributes.getScore(r));
 
-	@Test
-	public void testSetStatus() {
+    }
 
-		String status = "Good";
+    @Test
+    public void testSetStatus() {
 
-		ReactionAttributes.setStatus(r, status);
+        String status = "Good";
 
-		assertEquals(status, r.getAttribute(ReactionAttributes.STATUS));
+        ReactionAttributes.setStatus(r, status);
 
-	}
+        assertEquals(status, r.getAttribute(ReactionAttributes.STATUS));
 
-	@Test
-	public void testGetStatus() {
+    }
 
-		String status = "Good";
+    @Test
+    public void testGetStatus() {
 
-		r.setAttribute(ReactionAttributes.STATUS, status);
+        String status = "Good";
 
-		assertEquals(status, ReactionAttributes.getStatus(r));
+        r.setAttribute(ReactionAttributes.STATUS, status);
 
-	}
+        assertEquals(status, ReactionAttributes.getStatus(r));
 
-	@Test
-	public void testSetPmids() {
+    }
 
-		Set<Integer> pmids = new HashSet<Integer>();
+    @Test
+    public void testSetPmids() {
 
-		pmids.add(1235);
-		pmids.add(111);
+        Set<Integer> pmids = new HashSet<Integer>();
 
-		ReactionAttributes.setPmids(r, pmids);
+        pmids.add(1235);
+        pmids.add(111);
 
-		assertEquals(pmids, r.getAttribute(GenericAttributes.PMIDS));
+        ReactionAttributes.setPmids(r, pmids);
 
-	}
+        assertEquals(pmids, r.getAttribute(GenericAttributes.PMIDS));
 
-	@Test
-	public void testGetPmids() {
+    }
 
-		Set<Integer> pmids = new HashSet<Integer>();
+    @Test
+    public void testGetPmids() {
 
-		pmids.add(1235);
-		pmids.add(111);
+        Set<Integer> pmids = new HashSet<Integer>();
 
-		r.setAttribute(GenericAttributes.PMIDS, pmids);
+        pmids.add(1235);
+        pmids.add(111);
 
-		assertEquals(pmids, ReactionAttributes.getPmids(r));
+        r.setAttribute(GenericAttributes.PMIDS, pmids);
 
-	}
-	
-	@Test
-	public void testAddPmid() {
+        assertEquals(pmids, ReactionAttributes.getPmids(r));
 
-		Set<Integer> pmids = new HashSet<Integer>();
+    }
 
-		pmids.add(1235);
-		pmids.add(111);
+    @Test
+    public void testAddPmid() {
 
-		ReactionAttributes.addPmid(r, 1235);
-		ReactionAttributes.addPmid(r, 111);
-		
-		
-		assertEquals(pmids, ReactionAttributes.getPmids(r));
+        Set<Integer> pmids = new HashSet<Integer>();
 
-	}
+        pmids.add(1235);
+        pmids.add(111);
 
-	@Test
-	public void testSetComment() {
+        ReactionAttributes.addPmid(r, 1235);
+        ReactionAttributes.addPmid(r, 111);
 
-		String comment = "comment";
 
-		ReactionAttributes.setComment(r, comment);
+        assertEquals(pmids, ReactionAttributes.getPmids(r));
 
-		assertEquals(comment, r.getAttribute(GenericAttributes.COMMENT));
+    }
 
-	}
+    @Test
+    public void testSetComment() {
 
-	@Test
-	public void testGetComment() {
+        String comment = "comment";
 
-		String comment = "comment";
+        ReactionAttributes.setComment(r, comment);
 
-		r.setAttribute(GenericAttributes.COMMENT, comment);
+        assertEquals(comment, r.getAttribute(GenericAttributes.COMMENT));
 
-		assertEquals(comment, ReactionAttributes.getComment(r));
+    }
 
-	}
+    @Test
+    public void testGetComment() {
 
-	@Test
-	public void testSetSboTerm() {
+        String comment = "comment";
 
-		String sbo = "SBO:1234567";
-		ReactionAttributes.setSboTerm(r, sbo);
+        r.setAttribute(GenericAttributes.COMMENT, comment);
 
-		assertEquals((String) r.getAttribute(GenericAttributes.SBO_TERM), sbo);
-	}
+        assertEquals(comment, ReactionAttributes.getComment(r));
 
-	@Test
-	public void testGetSboTerm() {
+    }
 
-		String sbo = "sbo";
+    @Test
+    public void testSetSboTerm() {
 
-		r.setAttribute(GenericAttributes.SBO_TERM, sbo);
+        String sbo = "SBO:1234567";
+        ReactionAttributes.setSboTerm(r, sbo);
 
-		assertEquals(sbo, ReactionAttributes.getSboTerm(r));
+        assertEquals((String) r.getAttribute(GenericAttributes.SBO_TERM), sbo);
+    }
 
-	}
+    @Test
+    public void testGetSboTerm() {
 
-	@Test
-	public void testSetFast() {
+        String sbo = "sbo";
 
-		Boolean flag = true;
-		ReactionAttributes.setFast(r, flag);
+        r.setAttribute(GenericAttributes.SBO_TERM, sbo);
 
-		assertEquals((boolean) r.getAttribute(ReactionAttributes.FAST), true);
+        assertEquals(sbo, ReactionAttributes.getSboTerm(r));
 
-		flag = false;
-		ReactionAttributes.setFast(r, flag);
-		assertEquals((boolean) r.getAttribute(ReactionAttributes.FAST), false);
+    }
 
-	}
+    @Test
+    public void testSetFast() {
 
-	@Test
-	public void testGetFast() {
+        Boolean flag = true;
+        ReactionAttributes.setFast(r, flag);
 
-		assertFalse("By default fast must be false", ReactionAttributes.getFast(r));
+        assertEquals((boolean) r.getAttribute(ReactionAttributes.FAST), true);
 
-		Boolean flag = true;
+        flag = false;
+        ReactionAttributes.setFast(r, flag);
+        assertEquals((boolean) r.getAttribute(ReactionAttributes.FAST), false);
 
-		r.setAttribute(ReactionAttributes.FAST, flag);
+    }
 
-		assertEquals(flag, ReactionAttributes.getFast(r));
+    @Test
+    public void testGetFast() {
 
-	}
+        assertFalse("By default fast must be false", ReactionAttributes.getFast(r));
 
-	@Test
-	public void testSetKineticFormula() {
+        Boolean flag = true;
 
-		String f = "f";
-		ReactionAttributes.setKineticFormula(r, f);
+        r.setAttribute(ReactionAttributes.FAST, flag);
 
-		assertEquals((String) r.getAttribute(ReactionAttributes.KINETIC_FORMULA), f);
-	}
+        assertEquals(flag, ReactionAttributes.getFast(r));
 
-	@Test
-	public void testGetKineticFormula() {
+    }
 
-		String f = "f";
+    @Test
+    public void testSetKineticFormula() {
 
-		r.setAttribute(ReactionAttributes.KINETIC_FORMULA, f);
+        String f = "f";
+        ReactionAttributes.setKineticFormula(r, f);
 
-		assertEquals(f, ReactionAttributes.getKineticFormula(r));
+        assertEquals((String) r.getAttribute(ReactionAttributes.KINETIC_FORMULA), f);
+    }
 
-	}
+    @Test
+    public void testGetKineticFormula() {
 
-	@Test
-	public void testGetFluxParams() {
+        String f = "f";
 
-		Flux f = new Flux("f");
-		Flux f2 = new Flux("f2");
+        r.setAttribute(ReactionAttributes.KINETIC_FORMULA, f);
 
-		FluxCollection c = new FluxCollection();
-		c.add(f);
-		c.add(f2);
+        assertEquals(f, ReactionAttributes.getKineticFormula(r));
 
-		r.setAttribute(ReactionAttributes.FLUX_PARAMS, c);
+    }
 
-		assertEquals(c, ReactionAttributes.getFluxParams(r));
+    @Test
+    public void testGetFluxParams() {
 
-	}
+        Flux f = new Flux("f");
+        Flux f2 = new Flux("f2");
 
-	@Test
-	public void testSetFluxParams() {
+        FluxCollection c = new FluxCollection();
+        c.add(f);
+        c.add(f2);
 
-		Flux f = new Flux("f");
-		Flux f2 = new Flux("f2");
+        r.setAttribute(ReactionAttributes.FLUX_PARAMS, c);
 
-		FluxCollection c = new FluxCollection();
-		c.add(f);
-		c.add(f2);
+        assertEquals(c, ReactionAttributes.getFluxParams(r));
 
-		ReactionAttributes.setFluxParams(r, c);
+    }
 
-		assertEquals((FluxCollection) r.getAttribute(ReactionAttributes.FLUX_PARAMS), c);
+    @Test
+    public void testSetFluxParams() {
 
-	}
+        Flux f = new Flux("f");
+        Flux f2 = new Flux("f2");
 
-	@Test
-	public void testGetAdditionalFluxParams() {
+        FluxCollection c = new FluxCollection();
+        c.add(f);
+        c.add(f2);
 
-		Flux f = new Flux("f");
-		Flux f2 = new Flux("f2");
+        ReactionAttributes.setFluxParams(r, c);
 
-		FluxCollection c = new FluxCollection();
-		c.add(f);
-		c.add(f2);
+        assertEquals((FluxCollection) r.getAttribute(ReactionAttributes.FLUX_PARAMS), c);
 
-		r.setAttribute(ReactionAttributes.ADDITIONAL_FLUX_PARAMS, c);
+    }
 
-		assertEquals(c, ReactionAttributes.getAdditionalFluxParams(r));
+    @Test
+    public void testGetAdditionalFluxParams() {
 
-	}
+        Flux f = new Flux("f");
+        Flux f2 = new Flux("f2");
 
-	@Test
-	public void testSetAdditionalFluxParams() {
+        FluxCollection c = new FluxCollection();
+        c.add(f);
+        c.add(f2);
 
-		Flux f = new Flux("f");
-		Flux f2 = new Flux("f2");
+        r.setAttribute(ReactionAttributes.ADDITIONAL_FLUX_PARAMS, c);
 
-		FluxCollection c = new FluxCollection();
-		c.add(f);
-		c.add(f2);
+        assertEquals(c, ReactionAttributes.getAdditionalFluxParams(r));
 
-		ReactionAttributes.setAdditionalFluxParams(r, c);
+    }
 
-		assertEquals((FluxCollection) r.getAttribute(ReactionAttributes.ADDITIONAL_FLUX_PARAMS), c);
+    @Test
+    public void testSetAdditionalFluxParams() {
 
-	}
+        Flux f = new Flux("f");
+        Flux f2 = new Flux("f2");
 
-	@Test
-	public void testAddFlux() {
+        FluxCollection c = new FluxCollection();
+        c.add(f);
+        c.add(f2);
 
-		Flux f = new Flux("f");
-		Flux f2 = new Flux("f2");
+        ReactionAttributes.setAdditionalFluxParams(r, c);
 
-		ReactionAttributes.addFlux(r, f);
-		ReactionAttributes.addFlux(r, f2);
+        assertEquals((FluxCollection) r.getAttribute(ReactionAttributes.ADDITIONAL_FLUX_PARAMS), c);
 
-		assertEquals(((FluxCollection) r.getAttribute(ReactionAttributes.FLUX_PARAMS)).get("f"), f);
+    }
 
-		assertEquals(((FluxCollection) r.getAttribute(ReactionAttributes.FLUX_PARAMS)).get("f2"), f2);
+    @Test
+    public void testAddFlux() {
 
-	}
+        Flux f = new Flux("f");
+        Flux f2 = new Flux("f2");
 
-	@Test
-	public void testGetFlux() {
+        ReactionAttributes.addFlux(r, f);
+        ReactionAttributes.addFlux(r, f2);
 
-		Flux f = new Flux("f");
-		Flux f2 = new Flux("f2");
+        assertEquals(((FluxCollection) r.getAttribute(ReactionAttributes.FLUX_PARAMS)).get("f"), f);
 
-		ReactionAttributes.addFlux(r, f);
-		ReactionAttributes.addFlux(r, f2);
+        assertEquals(((FluxCollection) r.getAttribute(ReactionAttributes.FLUX_PARAMS)).get("f2"), f2);
 
-		Flux test = ReactionAttributes.getFlux(r, "f");
+    }
 
-		assertEquals(f, test);
+    @Test
+    public void testGetFlux() {
 
-		Flux test2 = ReactionAttributes.getFlux(r, "f2");
+        Flux f = new Flux("f");
+        Flux f2 = new Flux("f2");
 
-		assertEquals(f2, test2);
-		
-		assertNull(ReactionAttributes.getFlux(r, "nonExistant"));
+        ReactionAttributes.addFlux(r, f);
+        ReactionAttributes.addFlux(r, f2);
 
-	}
-	
-	@Test
-	public void testGetFluxWhenNoFluxParams() {
-		assertNull(ReactionAttributes.getFlux(r, "f"));
-	}
-	
-	@Test
-	public void testSetSpontaneous() {
+        Flux test = ReactionAttributes.getFlux(r, "f");
 
-		Boolean flag = true;
-		ReactionAttributes.setSpontaneous(r, flag);
+        assertEquals(f, test);
 
-		assertEquals((boolean) r.getAttribute(ReactionAttributes.SPONTANEOUS), true);
+        Flux test2 = ReactionAttributes.getFlux(r, "f2");
 
-		flag = false;
-		ReactionAttributes.setSpontaneous(r, flag);
-		assertEquals((boolean) r.getAttribute(ReactionAttributes.SPONTANEOUS), false);
+        assertEquals(f2, test2);
 
-	}
+        assertNull(ReactionAttributes.getFlux(r, "nonExistant"));
 
-	@Test
-	public void testGetSpontaneous() {
+    }
 
-		assertFalse("By default fast must be false", ReactionAttributes.getSpontaneous(r));
+    @Test
+    public void testGetFluxWhenNoFluxParams() {
+        assertNull(ReactionAttributes.getFlux(r, "f"));
+    }
 
-		Boolean flag = true;
+    @Test
+    public void testSetSpontaneous() {
 
-		r.setAttribute(ReactionAttributes.SPONTANEOUS, flag);
+        Boolean flag = true;
+        ReactionAttributes.setSpontaneous(r, flag);
 
-		assertEquals(flag, ReactionAttributes.getSpontaneous(r));
+        assertEquals((boolean) r.getAttribute(ReactionAttributes.SPONTANEOUS), true);
 
-	}
-	
+        flag = false;
+        ReactionAttributes.setSpontaneous(r, flag);
+        assertEquals((boolean) r.getAttribute(ReactionAttributes.SPONTANEOUS), false);
+
+    }
+
+    @Test
+    public void testGetSpontaneous() {
+
+        assertFalse("By default fast must be false", ReactionAttributes.getSpontaneous(r));
+
+        Boolean flag = true;
+
+        r.setAttribute(ReactionAttributes.SPONTANEOUS, flag);
+
+        assertEquals(flag, ReactionAttributes.getSpontaneous(r));
+
+    }
+
+    /**
+     * Creates a mini network with the reaction r : a -> b
+     * @return a {@link BioNetwork}
+     */
+    private BioNetwork miniNetwork() {
+        BioNetwork network = new BioNetwork();
+        BioMetabolite a = new BioMetabolite("a");
+        BioMetabolite b = new BioMetabolite("b");
+        BioCompartment cpt = new BioCompartment("cpt");
+        network.add(a, b, cpt, r);
+        network.affectToCompartment(cpt, a, b);
+        network.affectLeft(r, 1.0, cpt, a);
+        network.affectRight(r, 1.0, cpt, b);
+        return network;
+    }
+
+    @Test
+    public void testSetSideCompounds() {
+
+        BioNetwork network = miniNetwork();
+        Set<String> ids = new HashSet<>();
+        ids.add("a");
+        ids.add("b");
+
+        ReactionAttributes.setSideCompounds(r, ids);
+
+        BioCollection<BioMetabolite> refs = new BioCollection<>();
+        refs.add(network.getMetabolitesView().get("a"), network.getMetabolitesView().get("b"));
+
+        BioCollection<BioMetabolite> tests = (BioCollection<BioMetabolite>) r.getAttribute(ReactionAttributes.SIDE_COMPOUNDS);
+
+        assertEquals (refs,tests);
+
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetSideCompoundsWithAbsentMetabolite() {
+
+        miniNetwork();
+        Set<String> ids = new HashSet<>();
+        ids.add("a");
+        ids.add("b");
+        ids.add("c");
+
+        ReactionAttributes.setSideCompounds(r, ids);
+    }
+
+    @Test
+    public void getSideCompounds() {
+
+        BioNetwork network = miniNetwork();
+        BioCollection<BioMetabolite> sideCompounds = new BioCollection<>();
+        sideCompounds.add(network.getMetabolitesView().get("a"), network.getMetabolitesView().get("b"));
+        r.setAttribute(ReactionAttributes.SIDE_COMPOUNDS, sideCompounds);
+
+        assertEquals(sideCompounds, ReactionAttributes.getSideCompounds(r));
+
+    }
 }

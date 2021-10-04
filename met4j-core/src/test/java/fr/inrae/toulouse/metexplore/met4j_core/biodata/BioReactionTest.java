@@ -199,7 +199,7 @@ public class BioReactionTest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testGetLeftReactants() throws ArrayComparisonFailure, IllegalArgumentException, IllegalAccessException {
+	public void testGetLeftReactants() throws ArrayComparisonFailure, IllegalArgumentException {
 
 		BioCollection<BioReactant> refs = new BioCollection<>();
 		refs.add(l1Reactant, l2Reactant);
@@ -217,7 +217,7 @@ public class BioReactionTest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testGetRightReactants() throws ArrayComparisonFailure, IllegalArgumentException, IllegalAccessException {
+	public void testGetRightReactants() throws ArrayComparisonFailure, IllegalArgumentException {
 
 		BioCollection<BioReactant> refs = new BioCollection<>();
 		refs.add(r1Reactant, r2Reactant);

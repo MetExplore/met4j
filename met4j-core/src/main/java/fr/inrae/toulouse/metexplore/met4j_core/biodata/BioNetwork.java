@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
 
 /**
  * The BioNetwork class is the essential class of met4j.
- *
+ * <p>
  * It contains and links all the entities composing a metabolic network (metabolites, reactions,
  * pathways, genes, proteins, enzymes, compartments)
  *
@@ -128,24 +128,116 @@ public class BioNetwork extends BioEntity {
      */
     public void add(BioEntity e) {
         if (e instanceof BioPathway) {
-            this.pathways.add((BioPathway) e);
+            this.addPathway((BioPathway) e);
         } else if (e instanceof BioMetabolite) {
-            this.metabolites.add((BioMetabolite) e);
+            this.addMetabolite((BioMetabolite) e);
         } else if (e instanceof BioProtein) {
-            this.proteins.add((BioProtein) e);
+            this.addProtein((BioProtein) e);
         } else if (e instanceof BioGene) {
-            this.genes.add((BioGene) e);
+            this.addGene((BioGene) e);
         } else if (e instanceof BioReaction) {
-            this.reactions.add((BioReaction) e);
+            this.addReaction((BioReaction) e);
         } else if (e instanceof BioCompartment) {
-            this.compartments.add((BioCompartment) e);
+            this.addCompartment((BioCompartment) e);
         } else if (e instanceof BioEnzyme) {
-            this.enzymes.add((BioEnzyme) e);
+            this.addEnzyme((BioEnzyme) e);
         } else {
             throw new IllegalArgumentException(
                     "BioEntity \"" + e.getClass().getSimpleName() + "\" not supported by BioNetwork");
         }
     }
+
+    /**
+     * Adds a pathway in the network
+     * The pathway must not contain reactions
+     *
+     * @param pathway : the {@link BioPathway} to add
+     */
+    public void addPathway(BioPathway pathway) {
+        if (pathway.getReactions().size() > 0) {
+            throw new IllegalArgumentException("[addPathway] The pathway must be empty before adding it to a BioNetwork");
+        }
+        this.pathways.add(pathway);
+    }
+
+    /**
+     * Add a Metabolite in the network
+     *
+     * @param metabolite : the {@link BioMetabolite} to add
+     */
+    public void addMetabolite(BioMetabolite metabolite) {
+        this.metabolites.add(metabolite);
+    }
+
+    /**
+     * Add a protein in the network
+     * The protein must not be affected to a gene before adding it to a BioNetwork.
+     *
+     * @param protein : the {@link BioProtein} to add
+     */
+    public void addProtein(BioProtein protein) {
+        if (protein.getGene() != null) {
+            throw new IllegalArgumentException("[addProtein] The protein must not be affected to a gene before adding it to a BioNetwork");
+        }
+            this.proteins.add(protein);
+    }
+
+    /**
+     * Add a gene in the BioNetwork
+     *
+     * @param gene : the {@link BioGene} to add
+     */
+    public void addGene(BioGene gene) {
+        this.genes.add(gene);
+    }
+
+    /**
+     * Add a reaction in a BioNetwork
+     * The reaction must not be linked to reactants nor to enzymes
+     * @param reaction : the {@link BioReaction} to add
+     */
+    public void addReaction(BioReaction reaction) {
+
+        if (reaction.getLeftReactants().size() > 0 || reaction.getRightReactants().size() > 0) {
+            throw new IllegalArgumentException("[addReaction] The reaction must not contain substrates before adding it to a BioNetwork");
+        }
+
+        if(reaction.getEnzymes().size() > 0) {
+            throw new IllegalArgumentException("[addReaction] The reaction must not be affected to a reaction before adding it to a BioNetwork");
+        }
+
+        this.reactions.add(reaction);
+
+    }
+
+    /**
+     * Add a compartment in a BioNetwork
+     * The compartment must be empty
+     * @param compartment : the {@link BioCompartment} to add
+     */
+    public void addCompartment(BioCompartment compartment) {
+
+        if(compartment.getComponents().size()>0) {
+            throw new IllegalArgumentException("[addCompartment] The compartment must be empty before adding it to a BioNetwork");
+        }
+
+        this.compartments.add(compartment);
+    }
+
+    /**
+     * Add an enzyme in a BioNetwork
+     * The enzyme must not contain participants
+     * @param enzyme : the {@link BioEnzyme} to add
+     */
+    public void addEnzyme(BioEnzyme enzyme) {
+
+        if(enzyme.getParticipants().size() > 0) {
+            throw new IllegalArgumentException("[addEnzyme] The enzyme must not contain participants before adding it to a BioNetwork");
+        }
+
+        this.enzymes.add(enzyme);
+    }
+
 
     /**
      * Remove on cascade a BioEntity
@@ -154,8 +246,7 @@ public class BioNetwork extends BioEntity {
      */
     private void removeOnCascade(BioEntity e) {
 
-        if(e == null)
-        {
+        if (e == null) {
             throw new NullPointerException();
         }
         if (e instanceof BioPathway) {
@@ -171,7 +262,7 @@ public class BioNetwork extends BioEntity {
         } else if (e instanceof BioCompartment) {
             this.removeCompartment((BioCompartment) e);
         } else if (e instanceof BioEnzyme) {
-            this.removeEnzyme((BioEnzyme)e);
+            this.removeEnzyme((BioEnzyme) e);
         } else {
 
             throw new IllegalArgumentException(
@@ -191,7 +282,7 @@ public class BioNetwork extends BioEntity {
 
         BioCollection<BioReaction> reactions = this.reactions;
 
-        for(BioReaction r : reactions) {
+        for (BioReaction r : reactions) {
             this.removeEnzymeFromReaction(e, r);
         }
 
@@ -229,7 +320,6 @@ public class BioNetwork extends BioEntity {
      * where it is involved
      *
      * @param protein a {@link BioProtein} instance
-     *
      */
     private void removeProtein(BioProtein protein) {
 
@@ -272,7 +362,6 @@ public class BioNetwork extends BioEntity {
      * where it is involved and from the c
      *
      * @param m a {@link BioMetabolite}
-     *
      */
     private void removeMetabolite(BioMetabolite m) {
 
@@ -338,7 +427,6 @@ public class BioNetwork extends BioEntity {
      * proteins
      *
      * @param g a {@link BioGene}
-     *
      */
     private void removeGene(BioGene g) {
 
@@ -357,7 +445,6 @@ public class BioNetwork extends BioEntity {
      * Remove a reaction from the network and from the pathways where it is involved
      *
      * @param r a {@link BioReaction}
-     *
      */
     private void removeReaction(BioReaction r) {
 
@@ -378,7 +465,6 @@ public class BioNetwork extends BioEntity {
      * compartment
      *
      * @param c a BioCompartment
-     *
      */
     private void removeCompartment(BioCompartment c) {
 
@@ -399,7 +485,6 @@ public class BioNetwork extends BioEntity {
 
     /**
      * add a relation reactant-reaction
-     *
      */
     private void affectLeft(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite substrate) {
 
@@ -408,13 +493,12 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     *
      * Add several left metabolites to a reaction
      *
-     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param reaction      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @param stoichiometry the stroichiometric coefficient
-     * @param localisation the compartment of the substrates
-     * @param substrates 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
+     * @param localisation  the compartment of the substrates
+     * @param substrates    0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
      */
     public void affectLeft(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite... substrates) {
 
@@ -424,13 +508,12 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     *
      * Add several left metabolites to a reaction
      *
-     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param reaction      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @param stoichiometry the stroichiometric coefficient
-     * @param localisation the compartment of the substrates
-     * @param substrates a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
+     * @param localisation  the compartment of the substrates
+     * @param substrates    a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
      */
     public void affectLeft(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioCollection<BioMetabolite> substrates) {
 
@@ -449,10 +532,9 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     *
      * Add several left reactants to a reaction
      *
-     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @param reactants 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant}
      */
     public void affectLeft(BioReaction reaction, BioReactant... reactants) {
@@ -462,10 +544,9 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     *
      * Add several left reactants to a reaction
      *
-     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @param reactants a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant}
      */
     public void affectLeft(BioReaction reaction, BioCollection<BioReactant> reactants) {
@@ -475,9 +556,9 @@ public class BioNetwork extends BioEntity {
     /**
      * Remove a left reactant
      *
-     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to remove from the left side of the reaction
+     * @param e            a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to remove from the left side of the reaction
      * @param localisation a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param reaction     a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      */
     public void removeLeft(BioMetabolite e, BioCompartment localisation, BioReaction reaction) {
 
@@ -487,10 +568,10 @@ public class BioNetwork extends BioEntity {
     /**
      * Add a relation product-reaction
      *
-     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param reaction      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @param stoichiometry the stoichiometric coefficient
      * @param localisation  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-     * @param product a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to add to the right side of the reaction
+     * @param product       a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to add to the right side of the reaction
      */
     public void affectRight(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite product) {
 
@@ -500,10 +581,10 @@ public class BioNetwork extends BioEntity {
     /**
      * Add several relation product-reaction
      *
-     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param reaction      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @param stoichiometry the stoichiometric coefficient
      * @param localisation  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-     * @param products 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to add to the right side of the reaction
+     * @param products      0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to add to the right side of the reaction
      */
     public void affectRight(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioMetabolite... products) {
         for (BioMetabolite product : products)
@@ -513,10 +594,10 @@ public class BioNetwork extends BioEntity {
     /**
      * Add several relation product-reaction
      *
-     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param reaction      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @param stoichiometry the stoichiometric coefficient
      * @param localisation  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-     * @param products a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to add to the right side of the reaction
+     * @param products      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to add to the right side of the reaction
      */
     public void affectRight(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioCollection<BioMetabolite> products) {
         for (BioMetabolite product : products)
@@ -531,10 +612,9 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     *
      * affect several reactant to the right side of a reaction
      *
-     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @param reactants 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant}
      */
     public void affectRight(BioReaction reaction, BioReactant... reactants) {
@@ -544,10 +624,9 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     *
      * affect several reactant to the right side of a reaction
      *
-     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @param reactants a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant}
      */
     public void affectRight(BioReaction reaction, BioCollection<BioReactant> reactants) {
@@ -557,9 +636,9 @@ public class BioNetwork extends BioEntity {
     /**
      * Remove a right reactant
      *
-     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to remove from the right side of the reaction
+     * @param e            a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to remove from the right side of the reaction
      * @param localisation a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param reaction     a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      */
     public void removeRight(BioMetabolite e, BioCompartment localisation, BioReaction reaction) {
 
@@ -580,7 +659,7 @@ public class BioNetwork extends BioEntity {
 
         // The metabolite must be connected to the compartment
         if (!localisation.getComponents().contains(e)) {
-            throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the compartment "+localisation.getId());
+            throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the compartment " + localisation.getId());
         }
 
         // The network must contain the reaction
@@ -682,7 +761,7 @@ public class BioNetwork extends BioEntity {
      * Affect several enzymes to a reaction
      *
      * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @param enzymes 0 or several enzymes
+     * @param enzymes  0 or several enzymes
      */
     public void affectEnzyme(BioReaction reaction, BioEnzyme... enzymes) {
 
@@ -696,7 +775,7 @@ public class BioNetwork extends BioEntity {
      * Affect several enzymes to a reaction
      *
      * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @param enzymes a {@link BioCollection of enzymes}
+     * @param enzymes  a {@link BioCollection of enzymes}
      */
     public void affectEnzyme(BioReaction reaction, BioCollection<BioEnzyme> enzymes) {
 
@@ -710,7 +789,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Remove the link between enzyme from a reaction
      *
-     * @param enzyme a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
+     * @param enzyme   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
      * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @throws java.lang.IllegalArgumentException if the enzyme or the reaction are not present in the network
      */
@@ -730,10 +809,10 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Add a subunit to an enzymes
-     * @param enzyme a {@link BioEnzyme}
-     * @param quantity number of units
-     * @param unit a {@link BioPhysicalEntity}
      *
+     * @param enzyme   a {@link BioEnzyme}
+     * @param quantity number of units
+     * @param unit     a {@link BioPhysicalEntity}
      * @throws IllegalArgumentException of the enzyme of the unit is not present in the network
      */
     private void affectSubUnit(BioEnzyme enzyme, Double quantity, BioPhysicalEntity unit) {
@@ -754,9 +833,9 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Add a subunit to an enzyme
-     * @param enzyme a {@link BioEnzyme}
-     * @param unit a {@link BioEnzymeParticipant}
      *
+     * @param enzyme a {@link BioEnzyme}
+     * @param unit   a {@link BioEnzymeParticipant}
      * @throws IllegalArgumentException of the enzyme of the unit is not present in the network
      */
     private void affectSubUnit(BioEnzyme enzyme, BioEnzymeParticipant unit) {
@@ -778,24 +857,23 @@ public class BioNetwork extends BioEntity {
      * Add a subunit to an enzyme
      *
      * @param enzyme a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
-     * @param units several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant}
+     * @param units  several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant}
      * @throws java.lang.IllegalArgumentException of the enzyme of the unit is not present in the network
      */
     public void affectSubUnit(BioEnzyme enzyme, BioEnzymeParticipant... units) {
 
-       for(BioEnzymeParticipant u : units)
-       {
-           this.affectSubUnit(enzyme, u);
-       }
+        for (BioEnzymeParticipant u : units) {
+            this.affectSubUnit(enzyme, u);
+        }
 
     }
 
     /**
      * Adds several subunits to an enzyme with the same stoichiometric coefficient
      *
-     * @param enzyme a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
+     * @param enzyme   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
      * @param quantity the number of units of each subunit to add
-     * @param units 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity}
+     * @param units    0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity}
      */
     public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioPhysicalEntity... units) {
 
@@ -807,14 +885,14 @@ public class BioNetwork extends BioEntity {
     /**
      * Adds several subunits to an enzyme with the same stoichiometric coefficient
      *
-     * @param enzyme a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
+     * @param enzyme   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
      * @param quantity the number of units of each subunit to add
-     * @param units a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity}
+     * @param units    a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity}
      */
     public void affectSubUnit(BioEnzyme enzyme, Double quantity, BioCollection<?> units) {
 
         for (BioEntity unit : units) {
-                affectSubUnit(enzyme, quantity, (BioPhysicalEntity)unit);
+            affectSubUnit(enzyme, quantity, (BioPhysicalEntity) unit);
 
         }
     }
@@ -823,7 +901,7 @@ public class BioNetwork extends BioEntity {
      * Adds several subunits to an enzyme
      *
      * @param enzyme a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
-     * @param units a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant}
+     * @param units  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant}
      */
     public void affectSubUnit(BioEnzyme enzyme, BioCollection<BioEnzymeParticipant> units) {
 
@@ -836,7 +914,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Remove a subunit from an enzyme
      *
-     * @param unit a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity} to remove from the enzyme
+     * @param unit   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity} to remove from the enzyme
      * @param enzyme a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
      * @throws java.lang.IllegalArgumentException if the enzyme or the entity is not present in the network
      */
@@ -858,7 +936,7 @@ public class BioNetwork extends BioEntity {
      * Add a relation protein gene
      *
      * @param protein a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein} instance
-     * @param gene a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}
+     * @param gene    a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}
      * @throws java.lang.IllegalArgumentException if the gene or the protein is not present in the network
      */
     public void affectGeneProduct(BioProtein protein, BioGene gene) {
@@ -879,7 +957,7 @@ public class BioNetwork extends BioEntity {
      * Remove a relation between gene and product
      *
      * @param protein a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein} instance
-     * @param gene a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}
+     * @param gene    a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}
      * @throws java.lang.IllegalArgumentException if the gene or the protein is not present in the network
      */
     public void removeGeneProduct(BioProtein protein, BioGene gene) {
@@ -899,11 +977,9 @@ public class BioNetwork extends BioEntity {
     /**
      * Add a reaction to a pathway
      *
-     * @param pathway a {@link BioPathway}
+     * @param pathway  a {@link BioPathway}
      * @param reaction a {@link BioReaction}
-     *
      * @throws IllegalArgumentException if the pathway or the reaction is not present
-     *
      */
     private void affectToPathway(BioPathway pathway, BioReaction reaction) {
 
@@ -923,7 +999,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Add several reactions to a pathway
      *
-     * @param pathway a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}
+     * @param pathway   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}
      * @param reactions 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      */
     public void affectToPathway(BioPathway pathway, BioReaction... reactions) {
@@ -936,7 +1012,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Add several reactions to a pathway
      *
-     * @param pathway a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}
+     * @param pathway   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}
      * @param reactions a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      */
     public void affectToPathway(BioPathway pathway, BioCollection<BioReaction> reactions) {
@@ -1000,7 +1076,7 @@ public class BioNetwork extends BioEntity {
      * Affect several metabolites to a compartment
      *
      * @param compartment a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-     * @param entities one or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
+     * @param entities    one or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
      */
     public void affectToCompartment(BioCompartment compartment, BioEntity... entities) {
 
@@ -1014,7 +1090,7 @@ public class BioNetwork extends BioEntity {
      * Affect several metabolites from a collection to a compartment
      *
      * @param compartment a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-     * @param entities a BioCollection of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
+     * @param entities    a BioCollection of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
      */
     public void affectToCompartment(BioCompartment compartment, BioCollection<?> entities) {
         for (BioEntity e : entities) {
@@ -1026,12 +1102,12 @@ public class BioNetwork extends BioEntity {
      * Return true if the entity is in the list of metabolites, reactions, genes,
      * pathways, proteins, etc...
      *
-     * @param e  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
-     * @throws java.lang.NullPointerException if e is null
-     * @throws java.lang.IllegalArgumentException if e is not an instance of :
-     * {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein}, {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}, {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}, {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme},
-     * {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}, {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}, or {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
      * @return true if the network contains the entity
+     * @throws java.lang.NullPointerException     if e is null
+     * @throws java.lang.IllegalArgumentException if e is not an instance of :
+     *                                            {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein}, {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}, {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}, {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme},
+     *                                            {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}, {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}, or {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
      */
     public Boolean contains(BioEntity e) {
 
@@ -1064,9 +1140,9 @@ public class BioNetwork extends BioEntity {
      * metabolites
      *
      * @param substrates a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
-     * @param exact if true, the match must be exact, if false, the reactions
-     *              returned can have a superset of the specified substrates
-     * @return  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param exact      if true, the match must be exact, if false, the reactions
+     *                   returned can have a superset of the specified substrates
+     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      */
     public BioCollection<BioReaction> getReactionsFromSubstrates(BioCollection<BioMetabolite> substrates, Boolean exact) {
 
@@ -1078,9 +1154,9 @@ public class BioNetwork extends BioEntity {
      * returns the list of reactions that can produce a list of metabolites
      *
      * @param products a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
-     * @param exact if true, the match must be exact, if false, the reactions
-     *              returned can have a superset of the specified products
-     * @return  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param exact    if true, the match must be exact, if false, the reactions
+     *                 returned can have a superset of the specified products
+     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      */
     public BioCollection<BioReaction> getReactionsFromProducts(BioCollection<BioMetabolite> products, Boolean exact) {
 
@@ -1090,7 +1166,8 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Get reactions from a list of of substrates (or products)
-     * @return  a {@link BioCollection} of {@link BioReaction}
+     *
+     * @return a {@link BioCollection} of {@link BioReaction}
      */
     private BioCollection<BioReaction> getReactionsFromSubstratesOrProducts(BioCollection<BioMetabolite> metabolites,
                                                                             Boolean exact, Boolean areSubstrates) {
@@ -1124,7 +1201,7 @@ public class BioNetwork extends BioEntity {
     /**
      * @param m
      * @param isSubstrate
-     * @return  a {@link BioCollection} of {@link BioReaction}
+     * @return a {@link BioCollection} of {@link BioReaction}
      */
     private BioCollection<BioReaction> getReactionsFromSubstrateOrProduct(BioMetabolite m, Boolean isSubstrate) {
 
@@ -1177,11 +1254,11 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     *  Get pathways where a metabolite is involved
+     * Get pathways where a metabolite is involved
      *
      * @param metabolites a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
-     * @param all if true : a pathway must contain all the metabolites, if false, a pathway must contain at least
-     *            one of the metabolites
+     * @param all         if true : a pathway must contain all the metabolites, if false, a pathway must contain at least
+     *                    one of the metabolites
      * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}
      */
     public BioCollection<BioPathway> getPathwaysFromMetabolites(BioCollection<BioMetabolite> metabolites, Boolean all) {
@@ -1206,8 +1283,8 @@ public class BioNetwork extends BioEntity {
      * Get reactions from genes
      *
      * @param genes a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}
-     * @param all if true, a reaction must be coded by all the genes, if false a reaction must be coded by
-     *            at least one of the genes
+     * @param all   if true, a reaction must be coded by all the genes, if false a reaction must be coded by
+     *              at least one of the genes
      * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      */
     public BioCollection<BioReaction> getReactionsFromGenes(BioCollection<BioGene> genes, Boolean all) {
@@ -1277,9 +1354,8 @@ public class BioNetwork extends BioEntity {
     /**
      * @param reaction a {@link BioReaction}
      * @return a {@link BioCollection} of {@link BioGene}
-     *
-     * @throws IllegalArgumentException if reaction is not present in the network
      * @return a {@link BioCollection} of {@link BioGene}
+     * @throws IllegalArgumentException if reaction is not present in the network
      */
     private BioCollection<BioGene> getGenesFromReaction(BioReaction reaction) {
         if (!this.contains(reaction)) {
@@ -1386,7 +1462,7 @@ public class BioNetwork extends BioEntity {
      * Get pathways from gene ids
      *
      * @param genes a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}
-     * @param all if true, the pathway must contain all the genes
+     * @param all   if true, the pathway must contain all the genes
      * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}
      */
     public BioCollection<BioPathway> getPathwaysFromGenes(BioCollection<BioGene> genes, Boolean all) {
@@ -1408,7 +1484,7 @@ public class BioNetwork extends BioEntity {
      * get pathways from reactions
      *
      * @param reactions a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @param all if true, the pathway must contain all the reactions
+     * @param all       if true, the pathway must contain all the reactions
      * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}
      * @throws java.lang.IllegalArgumentException if a reaction is missing in the network
      */
@@ -1434,7 +1510,7 @@ public class BioNetwork extends BioEntity {
      *
      * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}
-     *
+     * <p>
      * throws {@link java.lang.IllegalArgumentException} if r is not in the network
      */
     public BioCollection<BioPathway> getPathwaysFromReaction(BioReaction r) {
@@ -1496,9 +1572,7 @@ public class BioNetwork extends BioEntity {
      *
      * @param p a {@link BioPathway}
      * @return a {@link BioCollection} of {@link BioReaction}
-     *
      * @throws IllegalArgumentException if the pathway is not in the network
-     *
      */
     private BioCollection<BioReaction> getReactionsFromPathway(BioPathway p) {
 
@@ -1535,6 +1609,7 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Get left or right reactants of a reaction
+     *
      * @param r a {@link BioReaction}
      * @return a {@link BioCollection} of {@link BioReactant}
      */
@@ -1611,7 +1686,6 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     *
      * Get compartments where is involved an entity
      *
      * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
@@ -1699,7 +1773,9 @@ public class BioNetwork extends BioEntity {
         return enzymes.getView();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -1715,7 +1791,9 @@ public class BioNetwork extends BioEntity {
                 Objects.equals(enzymes, that.enzymes);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), pathways, metabolites, proteins, genes, reactions, compartments, enzymes);

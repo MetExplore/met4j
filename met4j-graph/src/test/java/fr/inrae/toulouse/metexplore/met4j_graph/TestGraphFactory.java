@@ -82,7 +82,7 @@ public class TestGraphFactory {
 		bn.affectRight(r2, 1.0, comp, v3);
 
 		r3 = new BioReaction("r3");bn.add(r3);
-		bn.affectLeft(r3, 1.0, comp, v2);bn.add(r3);
+		bn.affectLeft(r3, 1.0, comp, v2);
 		bn.affectRight(r3, 1.0, comp, v3);
 		r3.setReversible(true);
 		

@@ -119,14 +119,6 @@ public class BioReaction extends BioEntity {
 		enzymes = new BioCollection<>();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-
-		return this.getId();
-
-	}
-
 	/**
 	 * <p>Getter for the field <code>ecNumber</code>.</p>
 	 *

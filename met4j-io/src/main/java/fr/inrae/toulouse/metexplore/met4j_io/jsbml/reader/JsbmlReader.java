@@ -176,7 +176,7 @@ public class JsbmlReader {
 
         JsbmlReader reader = new JsbmlReader(inputFile, false);
 
-        HashSet<PackageParser> pkgs = new HashSet<PackageParser>(Arrays.asList(
+        ArrayList<PackageParser> pkgs = new ArrayList<PackageParser>(Arrays.asList(
                 new NotesParser(true), new FBCParser(), new GroupPathwayParser(), new AnnotationParser(
                         true)));
 
@@ -219,7 +219,7 @@ public class JsbmlReader {
      * @return the created Bionetwork
      * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
      */
-    public BioNetwork read(HashSet<PackageParser> userEnabledPackages) throws Met4jSbmlReaderException {
+    public BioNetwork read(ArrayList<PackageParser> userEnabledPackages) throws Met4jSbmlReaderException {
         try {
             this.initiateModel();
         } catch (IOException | XMLStreamException e) {
@@ -266,7 +266,7 @@ public class JsbmlReader {
      * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
      */
     public BioNetwork read() throws Met4jSbmlReaderException {
-        HashSet<PackageParser> pkgs = new HashSet<PackageParser>(Arrays.asList(
+        ArrayList<PackageParser> pkgs = new ArrayList<PackageParser>(Arrays.asList(
                 new NotesParser(true), new FBCParser(), new GroupPathwayParser(), new AnnotationParser(
                         true)));
 
@@ -280,7 +280,7 @@ public class JsbmlReader {
      * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
      */
     public BioNetwork readWithoutNotes() throws Met4jSbmlReaderException {
-        HashSet<PackageParser> pkgs = new HashSet<PackageParser>(Arrays.asList( new FBCParser(), new GroupPathwayParser(), new AnnotationParser(
+        ArrayList<PackageParser> pkgs = new ArrayList<PackageParser>(Arrays.asList( new FBCParser(), new GroupPathwayParser(), new AnnotationParser(
                         true)));
 
         return this.read(pkgs);
@@ -295,7 +295,7 @@ public class JsbmlReader {
      * @return the ordered list of packages
      */
     private ArrayList<PackageParser> verifyPackages(
-            HashSet<PackageParser> userEnabledPackages) {
+            ArrayList<PackageParser> userEnabledPackages) {
 
         ArrayList<PackageParser> start = new ArrayList<PackageParser>();
         ArrayList<PackageParser> end = new ArrayList<PackageParser>();

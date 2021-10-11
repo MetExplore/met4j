@@ -13,6 +13,7 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplicati
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -52,7 +53,7 @@ public class Sbml2Graph extends AbstractMet4jApplication {
 
     public void run() throws IOException, Met4jSbmlReaderException {
         JsbmlReader reader = new JsbmlReader(this.inputPath, false);
-        HashSet<PackageParser> pkgs = new HashSet<>(Arrays.asList(
+        ArrayList<PackageParser> pkgs = new ArrayList<>(Arrays.asList(
                 new NotesParser(false), new FBCParser(), new GroupPathwayParser()));
         BioNetwork network = reader.read(pkgs);
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);

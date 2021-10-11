@@ -604,9 +604,15 @@ public class JsbmlToBioNetwork {
 
 		Double stoDbl = specieRef.getStoichiometry();
 
-		if(Double.isNaN(stoDbl) || Double.isInfinite(stoDbl) || stoDbl <= 0) {
+		if(Double.isNaN(stoDbl) || Double.isInfinite(stoDbl) || stoDbl == 0) {
 			System.err.println("Warning : invalid coefficient : " + stoDbl + " for " + specieId);
 			stoDbl = 1.0;
+		}
+
+		if(stoDbl < 0)
+		{
+			System.err.println("Warning : negative coefficient : " + stoDbl + " for " + specieId+" : set to positive");
+			stoDbl = -stoDbl;
 		}
 
 		BioMetabolite bionetSpecies = this.getNetwork().getMetabolitesView().get(specieId);

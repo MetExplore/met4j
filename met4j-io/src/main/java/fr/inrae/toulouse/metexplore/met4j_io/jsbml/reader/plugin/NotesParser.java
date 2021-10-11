@@ -313,6 +313,14 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
         this.addNetworkNotes(model, bionetwork);
 
+        if (bionetwork.getPathwaysView().size() > 0) {
+            this.setPathwayPattern(null);
+        }
+
+        if (bionetwork.getGenesView().size() > 0) {
+            this.setGPRPattern(null);
+        }
+
         this.addNotes(bionetwork.getReactionsView());
         this.addNotes(bionetwork.getMetabolitesView());
         this.addNotes(bionetwork.getCompartmentsView());

@@ -430,9 +430,9 @@ public class BioNetwork extends BioEntity {
 
         this.genes.remove(g);
 
-        BioCollection<BioProtein> proteinsCopy = new BioCollection<>(proteins);
-        proteinsCopy.forEach(p -> {
-            if (p.getGene().equals(g)) {
+        BioCollection<BioProtein> proteins = this.getProteinsView();
+        proteins.forEach(p -> {
+            if (p.getGene() != null && p.getGene().equals(g)) {
                 this.removeOnCascade(p);
             }
         });

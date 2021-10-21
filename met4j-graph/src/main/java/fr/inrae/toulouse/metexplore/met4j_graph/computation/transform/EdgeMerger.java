@@ -51,7 +51,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 public class EdgeMerger {
 	
 	/**
-	 * Merge edges sharing same source and target, create new one with concatenated labels
+	 * Merge edges sharing same source and target, create new one with concatenated labels and summed weights
 	 *
 	 * @param g a graph.
 	 * @param <V> vertex class

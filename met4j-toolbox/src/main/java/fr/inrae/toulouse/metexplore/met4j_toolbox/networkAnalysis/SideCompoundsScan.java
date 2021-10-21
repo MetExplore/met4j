@@ -1,5 +1,6 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis;
 
+import fr.inrae.toulouse.metexplore.met4j_chemUtils.FormulaParser;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DefaultWeightPolicy;
@@ -42,6 +43,9 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
 
     @Option(name = "-cc", aliases = {"--noCarbonSkeleton"}, usage = "flag as side compound any compounds with less than 2 carbons in formula")
     public Boolean flagInorganic = false;
+
+    @Option(name = "-uf", aliases = {"--undefinedFormula"}, usage = "flag as side compound any compounds with no valid chemical formula")
+    public Boolean flagNoFormula = false;
 
     @Option(name = "-er", aliases = {"--edgeRedundancy"}, usage = "flag as side compound any compound with a number of redundancy in incident edges (parallel edges connecting to the same neighbor) above the given threshold")
     public double parallelEdge = Double.NaN;
@@ -92,9 +96,6 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
             dt = degreeStats.getPercentile(degreePrecentile);
         }
 
-        //formula regex
-        Pattern regex = Pattern.compile(".*(R[^a-z]|C\\d).*");
-
         //header
         Boolean reportValue = (!noReportValue);
         if (reportValue) {
@@ -102,6 +103,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
             l.append("\tDEGREE");
             if (!Double.isNaN(parallelEdge)) l.append("\tINCIDENT_PARALLEL_EDGES");
             if (flagInorganic) l.append("\tNO_CARBON_BOND");
+            if (flagNoFormula) l.append("\tVALID_CHEMICAL");
             l.append("\tIS_SIDE\n");
             fw.write(l.toString());
         }
@@ -132,18 +134,31 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
             }
 
             //check formula
-            if (flagInorganic) {
+            if (flagInorganic || flagNoFormula) {
                 String formula = v.getChemicalFormula();
                 String inorganic = "?";
-                if (!StringUtils.isVoid(formula) && !formula.equals("NA") && !formula.equals("*")) {
-                    if (regex.matcher(formula).matches()) {
-                        inorganic = "false";
-                    } else {
-                        inorganic = "true";
+                String validForumla = "true";
+                try{
+                    FormulaParser fp = new FormulaParser(formula);
+                    if(flagInorganic){
+                        if(fp.isExpectedInorganic()){
+                            inorganic = "true";
+                            side = true;
+                        }else{
+                            inorganic = "false";
+                        }
+                    }
+                }catch(IllegalArgumentException e){
+                    if(flagNoFormula){
+                        validForumla = "false";
                         side = true;
                     }
+
                 }
-                if (reportValue) l.append("\t" + inorganic);
+                if (reportValue){
+                    if(flagInorganic) l.append("\t" + inorganic);
+                    if(flagNoFormula) l.append("\t" + validForumla);
+                }
             }
 
             if (reportValue) l.append("\t" + side);
@@ -182,7 +197,10 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
                 "- *Carbon Count*: Metabolic \"waste\", or degradation end-product such as ammonia or carbon dioxide are usually considered as side compounds.\n" +
                 "Most of them are inorganic compound, another ill-defined concept, sometimes defined as compound lacking C-C or C-H bonds. Since chemical structure is rarely available " +
                 "in SBML model beyond chemical formula, we use a less restrictive criterion by flagging compound with one or no carbons. This cover most inorganic compounds, but include few compounds" +
-                " such as methane usually considered as organic.  ";
+                " such as methane usually considered as organic.  " +
+                "- *Chemical Formula*: Metabolic network often contains 'artifacts' that serve modelling purpose (to define a composite objective function for example). " +
+                "Such entities can be considered as 'side entities'. Since they are not actual chemical compounds, they can be detected by their lack of valid chemical formula. " +
+                "However, this can also flag main compounds with erroneous or missing annotation.";
     }
 
     @Override

@@ -4,7 +4,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## 0.7.5
+
+### Fixed
+
+[met4j-core] debug remove(gene)
+
+## 0.7.4
+
+### Fixed
+
+[met4j-io] replace negative coefficients by positive coefficients
+
+## 0.7.3
+
+### Fixed
+
+[maven]: Change rule of deploy
+
+## 0.7.2
+
+### Fixed
+
+[met4j-io]: Check that pathways are not created before note parsing
+
 ## 0.7.1
+
+### Fixed
+
+- [met4j-io] Removes the exception when no unit definition is set
+
 
 ### Fixed
 

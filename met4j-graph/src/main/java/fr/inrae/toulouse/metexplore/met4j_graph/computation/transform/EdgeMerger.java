@@ -37,6 +37,7 @@ package fr.inrae.toulouse.metexplore.met4j_graph.computation.transform;
 
 import java.util.*;
 
+import com.google.common.primitives.Doubles;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.parallel.MergedGraph;
@@ -206,6 +207,38 @@ public class EdgeMerger {
 		
 		return mergedG;
 	}
-	
-	
+
+
+	public static <V extends BioEntity,E extends Edge<V>, G extends BioGraph<V,E>> Comparator<E> alphabeticalOrder(){
+		return new Comparator<E>() {
+			@Override
+			public int compare(E e1, E e2) {
+				return e1.toString().compareTo(e2.toString());
+			}
+		};
+	}
+	public static <V extends BioEntity,E extends Edge<V>, G extends BioGraph<V,E>> Comparator<E> highWeightFirst(G g){
+		return new Comparator<E>() {
+			@Override
+			public int compare(E e1, E e2) {
+				return Doubles.compare(
+						g.getEdgeWeight(e2),
+						g.getEdgeWeight(e1)
+				);
+			}
+		};
+	}
+	public static <V extends BioEntity,E extends Edge<V>, G extends BioGraph<V,E>> Comparator<E> lowWeightFirst(G g){
+		return new Comparator<E>() {
+			@Override
+			public int compare(E e1, E e2) {
+				return Doubles.compare(
+						g.getEdgeWeight(e1),
+						g.getEdgeWeight(e2)
+				);
+			}
+		};
+	}
+
+
 }

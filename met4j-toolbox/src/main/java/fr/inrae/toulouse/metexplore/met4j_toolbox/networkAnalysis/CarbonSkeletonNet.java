@@ -156,10 +156,10 @@ public class CarbonSkeletonNet  extends AbstractMet4jApplication {
             System.out.println(" Done.");
         }
 
+        //export graph
         System.out.print("Exporting...");
         if(asMatrix){
             ComputeAdjacencyMatrix adjBuilder = new ComputeAdjacencyMatrix(graph);
-            if (undirected) adjBuilder.asUndirected();
             if(!computeWeight) adjBuilder.parallelEdgeWeightsHandling((u, v) -> Math.max(u,v));
             ExportMatrix.toCSV(this.outputPath,adjBuilder.getadjacencyMatrix());
         }else{

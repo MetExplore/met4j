@@ -189,7 +189,7 @@ public class AnnotationWriterTest {
 
 		assertNotNull(s1);
 
-		assertTrue(s1.getAnnotationString().contains("http://identifiers.org/kegg.reaction/id2"));
+		assertTrue(s1.getAnnotationString().contains("https://identifiers.org/kegg.reaction/id2"));
 
 	}
 
@@ -213,7 +213,7 @@ public class AnnotationWriterTest {
 		assertNotNull(s1);
 		
 		assertTrue(s1.getAnnotationString()
-				.contains("<rdf:li rdf:resource=\"http://identifiers.org/pubchem.compound/puchem123\"/>"));
+				.contains("<rdf:li rdf:resource=\"https://identifiers.org/pubchem.compound/puchem123\"/>"));
 		
 	}
 	
@@ -225,10 +225,10 @@ public class AnnotationWriterTest {
 		assertNotNull(s1);
 		
 		assertTrue(s1.getAnnotationString()
-				.contains("<rdf:li rdf:resource=\"http://identifiers.org/pubmed/23456\"/>"));
+				.contains("<rdf:li rdf:resource=\"https://identifiers.org/pubmed/23456\"/>"));
 		
 		assertTrue(s1.getAnnotationString()
-				.contains("<rdf:li rdf:resource=\"http://identifiers.org/pubmed/12345\"/>"));
+				.contains("<rdf:li rdf:resource=\"https://identifiers.org/pubmed/12345\"/>"));
 		
 	}
 	
@@ -239,7 +239,7 @@ public class AnnotationWriterTest {
 
 		assertNotNull(r1);
 
-		assertTrue(r1.getAnnotationString().contains("http://identifiers.org/kegg.reaction/id1"));
+		assertTrue(r1.getAnnotationString().contains("https://identifiers.org/kegg.reaction/id1"));
 
 	}
 	
@@ -250,7 +250,7 @@ public class AnnotationWriterTest {
 
 		assertNotNull(r1);
 
-		assertTrue(r1.getAnnotationString().contains("http://identifiers.org/ec-code/1.2.3.4"));
+		assertTrue(r1.getAnnotationString().contains("https://identifiers.org/ec-code/1.2.3.4"));
 
 	}
 	
@@ -262,10 +262,10 @@ public class AnnotationWriterTest {
 		assertNotNull(r1);
 
 		assertTrue(r1.getAnnotationString()
-				.contains("<rdf:li rdf:resource=\"http://identifiers.org/pubmed/23456\"/>"));
+				.contains("<rdf:li rdf:resource=\"https://identifiers.org/pubmed/23456\"/>"));
 		
 		assertTrue(r1.getAnnotationString()
-				.contains("<rdf:li rdf:resource=\"http://identifiers.org/pubmed/12345\"/>"));
+				.contains("<rdf:li rdf:resource=\"https://identifiers.org/pubmed/12345\"/>"));
 	}
 	
 

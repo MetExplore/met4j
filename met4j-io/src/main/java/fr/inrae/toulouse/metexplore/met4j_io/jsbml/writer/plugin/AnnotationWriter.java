@@ -81,7 +81,7 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
     /**
      * The default URL pattern for the annotations
      */
-    public static final String DEFAULT_URL_BASE = "http://identifiers.org/";
+    public static final String DEFAULT_URL_BASE = "https://identifiers.org/";
 
     /**
      * The user defined URL pattern for the annotations

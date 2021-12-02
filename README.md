@@ -1,11 +1,12 @@
+![](https://forgemia.inra.fr/uploads/-/system/project/avatar/864/met4J_logo.png?width=64)
 # Met4J
 
 ## Java library for metabolic networks
 
+[![pipeline status](https://forgemia.inra.fr/metexplore/met4j/badges/develop/pipeline.svg)](https://forgemia.inra.fr/metexplore/met4j/-/commits/ci_coverage2)
 
-[![pipeline status](https://forgemia.inra.fr/metexplore/met4j/badges/ci_coverage2/pipeline.svg)](https://forgemia.inra.fr/metexplore/met4j/-/commits/ci_coverage2)
-
-[![coverage report](https://forgemia.inra.fr/metexplore/met4j/badges/ci_coverage2/coverage.svg)](https://forgemia.inra.fr/metexplore/met4j/-/commits/ci_coverage2)
+[![coverage report](https://forgemia.inra.fr/metexplore/met4j/badges/develop/coverage.svg)](https://forgemia.inra.fr/metexplore/met4j/-/commits/ci_coverage2)
+**Met4J is an open-source Java library dedicated to the structural analysis of metabolic networks. It also came with a toolbox gathering CLI for several analyses relevant to metabolism-related research.**
 
 ### Modules
 

@@ -2,6 +2,11 @@
 
 ## Java library for metabolic networks
 
+
+[![pipeline status](https://forgemia.inra.fr/metexplore/met4j/badges/ci_coverage2/pipeline.svg)](https://forgemia.inra.fr/metexplore/met4j/-/commits/ci_coverage2)
+
+[![coverage report](https://forgemia.inra.fr/metexplore/met4j/badges/ci_coverage2/coverage.svg)](https://forgemia.inra.fr/metexplore/met4j/-/commits/ci_coverage2)
+
 ### Modules
 
 Met4j is composed by several maven modules:

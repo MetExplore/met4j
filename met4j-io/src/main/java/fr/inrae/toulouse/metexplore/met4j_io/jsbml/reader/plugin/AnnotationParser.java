@@ -98,7 +98,7 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 	 * </ul>
 	 * The first parenthesis group is
 	 */
-	public static final String defaultAnnotationPattern = "http://identifiers.org/([^/]+)/(.*)";
+	public static final String defaultAnnotationPattern = "https?://identifiers.org/([^/]+)/(.*)";
 
 	/**
 	 * Constructor

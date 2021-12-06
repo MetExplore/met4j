@@ -42,6 +42,7 @@ package fr.inrae.toulouse.metexplore.met4j_graph;
 import static org.junit.Assert.*;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.EdgeMerger;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.parallel.MergedGraph;
@@ -141,7 +142,7 @@ public class TestEdgeMerger {
 		bb1 = new ReactionEdge(b1,b2,r7);g.addEdge(b1,b2, bb1);
 		bb2 = new ReactionEdge(b2,b1,r7);g.addEdge(b2,b1, bb2);
 	}
-	
+
 	@Test
 	public void testMergeEdgeOverride() {
 		CompoundGraph g2 = new CompoundGraph(g);
@@ -173,6 +174,42 @@ public class TestEdgeMerger {
 		Assert.assertEquals("Error while creating the initial graph", 10, g.edgeSet().size());
 		Assert.assertEquals("Wrong final number of edges", 8, g2.edgeSet().size());
 
+	}
+
+	@Test
+	public void testMergeEdgeComparator1() {
+		CompoundGraph g2 = new CompoundGraph(g);
+		EdgeMerger.mergeEdgesWithOverride(g2, EdgeMerger.alphabeticalOrder());
+		g2.setEdgeWeight(ab1,2.0);
+		g2.setEdgeWeight(ab2,5.0);
+		g2.setEdgeWeight(ab3,0.5);
+		Assert.assertEquals("Error while creating the initial graph", 10, g.edgeSet().size());
+		Assert.assertEquals("Wrong final number of edges", 8, g2.edgeSet().size());
+		Assert.assertTrue("Wrong edge kept", g2.containsEdge(ab1));
+	}
+
+	@Test
+	public void testMergeEdgeComparator2() {
+		CompoundGraph g2 = new CompoundGraph(g);
+		g2.setEdgeWeight(ab1,2.0);
+		g2.setEdgeWeight(ab2,5.0);
+		g2.setEdgeWeight(ab3,0.5);
+		EdgeMerger.mergeEdgesWithOverride(g2, EdgeMerger.highWeightFirst(g2));
+		Assert.assertEquals("Error while creating the initial graph", 10, g.edgeSet().size());
+		Assert.assertEquals("Wrong final number of edges", 8, g2.edgeSet().size());
+		Assert.assertTrue("Wrong edge kept", g2.containsEdge(ab2));
+	}
+
+	@Test
+	public void testMergeEdgeComparator3() {
+		CompoundGraph g2 = new CompoundGraph(g);
+		g2.setEdgeWeight(ab1,2.0);
+		g2.setEdgeWeight(ab2,5.0);
+		g2.setEdgeWeight(ab3,0.5);
+		EdgeMerger.mergeEdgesWithOverride(g2, EdgeMerger.lowWeightFirst(g2));
+		Assert.assertEquals("Error while creating the initial graph", 10, g.edgeSet().size());
+		Assert.assertEquals("Wrong final number of edges", 8, g2.edgeSet().size());
+		Assert.assertTrue("Wrong edge kept", g2.containsEdge(ab3));
 	}
 
 }

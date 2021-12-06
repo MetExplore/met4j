@@ -58,19 +58,19 @@ import java.util.stream.Collectors;
  */
 public class BioNetwork extends BioEntity {
 
-    private BioCollection<BioPathway> pathways = new BioCollection<>();
+    private final BioCollection<BioPathway> pathways = new BioCollection<>();
 
-    private BioCollection<BioMetabolite> metabolites = new BioCollection<>();
+    private final BioCollection<BioMetabolite> metabolites = new BioCollection<>();
 
-    private BioCollection<BioProtein> proteins = new BioCollection<>();
+    private final BioCollection<BioProtein> proteins = new BioCollection<>();
 
-    private BioCollection<BioGene> genes = new BioCollection<>();
+    private final BioCollection<BioGene> genes = new BioCollection<>();
 
-    private BioCollection<BioReaction> reactions = new BioCollection<>();
+    private final BioCollection<BioReaction> reactions = new BioCollection<>();
 
-    private BioCollection<BioCompartment> compartments = new BioCollection<>();
+    private final BioCollection<BioCompartment> compartments = new BioCollection<>();
 
-    private BioCollection<BioEnzyme> enzymes = new BioCollection<>();
+    private final BioCollection<BioEnzyme> enzymes = new BioCollection<>();
 
     /**
      * <p>Constructor for BioNetwork.</p>
@@ -179,7 +179,7 @@ public class BioNetwork extends BioEntity {
         if (protein.getGene() != null) {
             throw new IllegalArgumentException("[addProtein] The protein must not be affected to a gene before adding it to a BioNetwork");
         }
-            this.proteins.add(protein);
+        this.proteins.add(protein);
     }
 
     /**
@@ -194,6 +194,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Add a reaction in a BioNetwork
      * The reaction must not be linked to reactants nor to enzymes
+     *
      * @param reaction : the {@link BioReaction} to add
      */
     public void addReaction(BioReaction reaction) {
@@ -202,7 +203,7 @@ public class BioNetwork extends BioEntity {
             throw new IllegalArgumentException("[addReaction] The reaction must not contain substrates before adding it to a BioNetwork");
         }
 
-        if(reaction.getEnzymes().size() > 0) {
+        if (reaction.getEnzymes().size() > 0) {
             throw new IllegalArgumentException("[addReaction] The reaction must not be affected to a reaction before adding it to a BioNetwork");
         }
 
@@ -213,11 +214,12 @@ public class BioNetwork extends BioEntity {
     /**
      * Add a compartment in a BioNetwork
      * The compartment must be empty
+     *
      * @param compartment : the {@link BioCompartment} to add
      */
     public void addCompartment(BioCompartment compartment) {
 
-        if(compartment.getComponents().size()>0) {
+        if (compartment.getComponents().size() > 0) {
             throw new IllegalArgumentException("[addCompartment] The compartment must be empty before adding it to a BioNetwork");
         }
 
@@ -227,11 +229,12 @@ public class BioNetwork extends BioEntity {
     /**
      * Add an enzyme in a BioNetwork
      * The enzyme must not contain participants
+     *
      * @param enzyme : the {@link BioEnzyme} to add
      */
     public void addEnzyme(BioEnzyme enzyme) {
 
-        if(enzyme.getParticipants().size() > 0) {
+        if (enzyme.getParticipants().size() > 0) {
             throw new IllegalArgumentException("[addEnzyme] The enzyme must not contain participants before adding it to a BioNetwork");
         }
 
@@ -242,7 +245,7 @@ public class BioNetwork extends BioEntity {
     /**
      * Remove on cascade a BioEntity
      *
-     * @param e
+     * @param e the {@link BioEntity} to remove
      */
     private void removeOnCascade(BioEntity e) {
 
@@ -268,8 +271,6 @@ public class BioNetwork extends BioEntity {
             throw new IllegalArgumentException(
                     "BioEntity \"" + e.getClass().getSimpleName() + "\" not supported by BioNetwork");
         }
-
-        e = null;
 
     }
 
@@ -686,15 +687,15 @@ public class BioNetwork extends BioEntity {
             throw new IllegalArgumentException("Compartment " + localisation.getId() + " not in the network");
         }
 
-        if (!this.metabolites.contains(reactant.getPhysicalEntity())) {
+        if (!this.metabolites.contains(reactant.getMetabolite())) {
             throw new IllegalArgumentException(
-                    "Metabolite " + reactant.getPhysicalEntity().getId() + " not in the network");
+                    "Metabolite " + reactant.getMetabolite().getId() + " not in the network");
         }
 
         // The metabolite must be connected to the compartment
-        if (!localisation.getComponents().contains(reactant.getPhysicalEntity())) {
+        if (!localisation.getComponents().contains(reactant.getMetabolite())) {
             throw new IllegalArgumentException(
-                    "Metabolite " + reactant.getPhysicalEntity().getId() + " not in the compartment");
+                    "Metabolite " + reactant.getMetabolite().getId() + " not in the compartment");
         }
 
         // The network must contain the reaction
@@ -1196,8 +1197,8 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     * @param m
-     * @param isSubstrate
+     * @param m a {@link BioMetabolite}
+     * @param isSubstrate a {@link Boolean} indicating if the metabolite is a substrate or a product
      * @return a {@link BioCollection} of {@link BioReaction}
      */
     private BioCollection<BioReaction> getReactionsFromSubstrateOrProduct(BioMetabolite m, Boolean isSubstrate) {
@@ -1209,7 +1210,7 @@ public class BioNetwork extends BioEntity {
         BioCollection<BioReaction> reactions = new BioCollection<>();
 
         this.getReactionsView().forEach(r -> {
-            boolean flag = false;
+            boolean flag;
 
             BioCollection<BioMetabolite> lefts = r.getLeftsView();
             BioCollection<BioMetabolite> rights = r.getRightsView();
@@ -1350,7 +1351,6 @@ public class BioNetwork extends BioEntity {
 
     /**
      * @param reaction a {@link BioReaction}
-     * @return a {@link BioCollection} of {@link BioGene}
      * @return a {@link BioCollection} of {@link BioGene}
      * @throws IllegalArgumentException if reaction is not present in the network
      */

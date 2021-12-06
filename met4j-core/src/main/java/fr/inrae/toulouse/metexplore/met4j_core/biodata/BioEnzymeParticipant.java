@@ -48,54 +48,53 @@ import java.util.Locale;
  */
 public class BioEnzymeParticipant extends BioParticipant {
 
+    /**
+     * Constructor
+     *
+     * @param physicalEntity the physical entity that is contained in the enzyme
+     * @param stoichiometry  the number of unities of the physical entity
+     */
+    public BioEnzymeParticipant(BioPhysicalEntity physicalEntity, Double stoichiometry) {
+        super(physicalEntity, stoichiometry);
+    }
 
-	/**
-	 * Constructor
-	 *
-	 * @param physicalEntity the physical entity that is contained in the enzyme
-	 * @param stoichiometry the number of unities of the physical entity
-	 */
-	public BioEnzymeParticipant(BioPhysicalEntity physicalEntity, Double stoichiometry) {
-		super(physicalEntity, stoichiometry);
-	}
+    /**
+     * Constructor
+     *
+     * @param physicalEntity the physical entity that is contained in the enzyme
+     *                       The stoichiometry is put to 1.
+     */
+    public BioEnzymeParticipant(BioPhysicalEntity physicalEntity) {
+        super(physicalEntity, 1.0);
+    }
 
-	/**
-	 * Constructor
-	 *
-	 * @param physicalEntity the physical entity that is contained in the enzyme
-	 * The stoichiometry is put to 1.
-	 */
-	public BioEnzymeParticipant(BioPhysicalEntity physicalEntity) {
-		super(physicalEntity, 1.0);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
 
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
+        String quantityStr = "";
 
-		String quantityStr = "";
+        if (this.getQuantity() == Math.floor(this.getQuantity())) {
 
-		if (this.getQuantity() == Math.floor(this.getQuantity())) {
+            quantityStr += this.getQuantity().intValue();
 
-			quantityStr += this.getQuantity().intValue();
+        } else {
+            Locale currentLocale = Locale.getDefault();
 
-		} else {
-			Locale currentLocale = Locale.getDefault();
+            DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
+            otherSymbols.setDecimalSeparator('.');
+            otherSymbols.setGroupingSeparator('.');
 
-			DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
-			otherSymbols.setDecimalSeparator('.');
-			otherSymbols.setGroupingSeparator('.');
+            NumberFormat formater = new DecimalFormat("#0.00", otherSymbols);
+            quantityStr = formater.format(this.getQuantity());
 
-			NumberFormat formater = new DecimalFormat("#0.00", otherSymbols);
-			quantityStr = formater.format(this.getQuantity());
+        }
 
-		}
+        String buffer = quantityStr + " " + this.getId();
 
-		StringBuilder buffer = new StringBuilder(quantityStr);
-		buffer.append(" ");
-		buffer.append(this.getId());
+        return buffer;
 
-		return buffer.toString();
-
-	}
+    }
 }

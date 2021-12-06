@@ -35,10 +35,6 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
-
 /**
  * <p>BioMetabolite class.</p>
  *

@@ -3,7 +3,6 @@
 
 ## Java library for metabolic networks
 
-
 [![pipeline status](https://forgemia.inra.fr/metexplore/met4j/badges/master/pipeline.svg)](https://forgemia.inra.fr/metexplore/met4j/-/commits/master)
 
 [![coverage report](https://forgemia.inra.fr/metexplore/met4j/badges/master/coverage.svg)](https://forgemia.inra.fr/metexplore/met4j/-/commits/master)

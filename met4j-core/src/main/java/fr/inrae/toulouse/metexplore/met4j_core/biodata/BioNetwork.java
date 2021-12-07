@@ -328,13 +328,7 @@ public class BioNetwork extends BioEntity {
             BioCollection<BioEnzymeParticipant> participants = new BioCollection<>(
                     e.getParticipants());
 
-            boolean remove = false;
-            for (BioEnzymeParticipant p : participants) {
-                if (p.getPhysicalEntity().equals(protein)) {
-                    remove = true;
-                    break;
-                }
-            }
+            Boolean remove = participants.stream().anyMatch(p -> p.getPhysicalEntity().equals(protein));
 
             if (remove) {
                 this.removeOnCascade(e);
@@ -423,7 +417,8 @@ public class BioNetwork extends BioEntity {
 
     /**
      * Remove a gene from the network and remove the link between the gene and
-     * proteins
+     * proteins.
+     * If the protein is not linked to a gene anymore, remove the protein
      *
      * @param g a {@link BioGene}
      */
@@ -672,11 +667,6 @@ public class BioNetwork extends BioEntity {
         }
     }
 
-    private void affectSideReaction(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioReaction.Side side, BioMetabolite... metabolites) {
-        for (BioMetabolite m : metabolites) {
-            this.affectSideReaction(reaction, stoichiometry, localisation, side, m);
-        }
-    }
 
     private void affectSideReaction(BioReactant reactant, BioReaction reaction, BioReaction.Side side) {
 

@@ -52,8 +52,6 @@ import nu.xom.ParsingException;
 import nu.xom.Serializer;
 import nu.xom.ValidityException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLError;
@@ -70,8 +68,6 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
 /**
  * The main writer class. It uses the correct {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.BionetworkToJsbml} class
  * depending on the SBML level defined by the user
- *
- * To launch with -Dlog4j.configuration="log4jmet4j.properties"
  *
  * @author Benjamin
  * @since 3.0

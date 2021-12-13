@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -65,9 +64,7 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
  * The main reader class. It uses the correct {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlToBioNetwork} class
  * depending on the SBML level defined in the file
  *
- * To launch with -Dlog4j.configuration="log4jmet4j.properties"
- *
- * @author Benjamin
+ * @author Benjamin Merlet
  * @since 3.0
  * @version $Id: $Id
  */

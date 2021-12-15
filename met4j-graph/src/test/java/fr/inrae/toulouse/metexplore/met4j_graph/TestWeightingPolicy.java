@@ -42,6 +42,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+import fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalSimilarity.FingerprintBuilder;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.*;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -53,6 +54,8 @@ import org.junit.Test;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import org.openscience.cdk.exception.CDKException;
+import org.openscience.cdk.similarity.Tanimoto;
 
 /**
  * Test {@link fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph} with {@link WeightingPolicy <BioMetabolite, ReactionEdge , CompoundGraph >}
@@ -65,6 +68,8 @@ public class TestWeightingPolicy {
 	public static BioMetabolite a,b,c,d,e,f,x,y;
 	
 	public static ReactionEdge ab,bc,ad,de,ef,fc,bx,eb,yc;
+
+	public static double abSim,bcSim,adSim,efSim,bxSim,ebSim,deSim,fcSim,ycSim;
 	 
 	@BeforeClass
 	public static void init(){
@@ -98,6 +103,20 @@ public class TestWeightingPolicy {
 		bx = new ReactionEdge(b,x,bxc);g.addEdge(b, x, bx);
 		eb = new ReactionEdge(e,b,efb);g.addEdge(e, b, eb);
 		yc = new ReactionEdge(y,c,fyc);g.addEdge(y, c, yc);
+
+		try {
+			abSim=Tanimoto.calculate(FingerprintBuilder.getExtendedFingerprint(a),FingerprintBuilder.getExtendedFingerprint(b));
+			bcSim=Tanimoto.calculate(FingerprintBuilder.getExtendedFingerprint(b),FingerprintBuilder.getExtendedFingerprint(c));
+			adSim=Tanimoto.calculate(FingerprintBuilder.getExtendedFingerprint(a),FingerprintBuilder.getExtendedFingerprint(d));
+			efSim=Tanimoto.calculate(FingerprintBuilder.getExtendedFingerprint(e),FingerprintBuilder.getExtendedFingerprint(f));
+			bxSim=Tanimoto.calculate(FingerprintBuilder.getExtendedFingerprint(b),FingerprintBuilder.getExtendedFingerprint(x));
+			ebSim=Tanimoto.calculate(FingerprintBuilder.getExtendedFingerprint(e),FingerprintBuilder.getExtendedFingerprint(b));
+			deSim=Tanimoto.calculate(FingerprintBuilder.getExtendedFingerprint(d),FingerprintBuilder.getExtendedFingerprint(e));
+			fcSim=Tanimoto.calculate(FingerprintBuilder.getExtendedFingerprint(f),FingerprintBuilder.getExtendedFingerprint(c));
+			ycSim=Tanimoto.calculate(FingerprintBuilder.getExtendedFingerprint(y),FingerprintBuilder.getExtendedFingerprint(c));
+		} catch (CDKException ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	/**
@@ -175,24 +194,24 @@ public class TestWeightingPolicy {
 		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new SimilarityWeightPolicy();
 		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
 		wp.setWeight(g);
-		abWeight=0.15566037735849056;
-		bcWeight=0.0661764705882353;
-		adWeight=0.5751633986928104;
-		efWeight=0.9347826086956522;
-		bxWeight=0.07192575406032482;
-		ebWeight=0.18159806295399517;
-		deWeight=0.4397590361445783;
-		fcWeight=0.3157894736842105;
-		ycWeight=0.5555555555555556;
-		assertEquals("wrong weight with similarity weighting policy", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
-		assertEquals("wrong weight with similarity weighting policy", adWeight, g.getEdgeWeight(ad),Double.MIN_VALUE);
-		assertEquals("wrong weight with similarity weighting policy", bcWeight, g.getEdgeWeight(bc),Double.MIN_VALUE);
-		assertEquals("wrong weight with similarity weighting policy", bxWeight, g.getEdgeWeight(bx),Double.MIN_VALUE);
-		assertEquals("wrong weight with similarity weighting policy", deWeight, g.getEdgeWeight(de),Double.MIN_VALUE);
-		assertEquals("wrong weight with similarity weighting policy", ebWeight, g.getEdgeWeight(eb),Double.MIN_VALUE);
-		assertEquals("wrong weight with similarity weighting policy", efWeight, g.getEdgeWeight(ef),Double.MIN_VALUE);
-		assertEquals("wrong weight with similarity weighting policy", fcWeight, g.getEdgeWeight(fc),Double.MIN_VALUE);
-		assertEquals("wrong weight with similarity weighting policy", ycWeight, g.getEdgeWeight(yc),Double.MIN_VALUE);
+		abWeight=abSim;
+		bcWeight=bcSim;
+		adWeight=adSim;
+		efWeight=efSim;
+		bxWeight=bxSim;
+		ebWeight=ebSim;
+		deWeight=deSim;
+		fcWeight=fcSim;
+		ycWeight=ycSim;
+		assertEquals("wrong weight with similarity weighting policy", abWeight, g.getEdgeWeight(ab),1.0e-6);
+		assertEquals("wrong weight with similarity weighting policy", adWeight, g.getEdgeWeight(ad),1.0e-6);
+		assertEquals("wrong weight with similarity weighting policy", bcWeight, g.getEdgeWeight(bc),1.0e-6);
+		assertEquals("wrong weight with similarity weighting policy", bxWeight, g.getEdgeWeight(bx),1.0e-6);
+		assertEquals("wrong weight with similarity weighting policy", deWeight, g.getEdgeWeight(de),1.0e-6);
+		assertEquals("wrong weight with similarity weighting policy", ebWeight, g.getEdgeWeight(eb),1.0e-6);
+		assertEquals("wrong weight with similarity weighting policy", efWeight, g.getEdgeWeight(ef),1.0e-6);
+		assertEquals("wrong weight with similarity weighting policy", fcWeight, g.getEdgeWeight(fc),1.0e-6);
+		assertEquals("wrong weight with similarity weighting policy", ycWeight, g.getEdgeWeight(yc),1.0e-6);
 
 	}
 	
@@ -205,24 +224,24 @@ public class TestWeightingPolicy {
 		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new StochasticWeightPolicy();
 		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
 		wp.setWeight(g);
-		abWeight=0.15566037735849056/(0.15566037735849056+0.5751633986928104);
-		bcWeight=0.0661764705882353/(0.0661764705882353+0.07192575406032482);
-		adWeight=0.5751633986928104/(0.15566037735849056+0.5751633986928104);
-		efWeight=0.9347826086956522/(0.9347826086956522+0.18159806295399517);
-		bxWeight=0.07192575406032482/(0.0661764705882353+0.07192575406032482);
-		ebWeight=0.18159806295399517/(0.9347826086956522+0.18159806295399517);
+		abWeight=abSim/(abSim+adSim);
+		bcWeight=bcSim/(bcSim+bxSim);
+		adWeight=adSim/(abSim+adSim);
+		efWeight=efSim/(efSim+ebSim);
+		bxWeight=bxSim/(bcSim+bxSim);
+		ebWeight=ebSim/(efSim+ebSim);
 		deWeight=1;
 		fcWeight=1;
 		ycWeight=1;
-		assertEquals("wrong weight with stochastic weighting policy", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
-		assertEquals("wrong weight with stochastic weighting policy", adWeight, g.getEdgeWeight(ad),Double.MIN_VALUE);
-		assertEquals("wrong weight with stochastic weighting policy", bcWeight, g.getEdgeWeight(bc),Double.MIN_VALUE);
-		assertEquals("wrong weight with stochastic weighting policy", bxWeight, g.getEdgeWeight(bx),Double.MIN_VALUE);
-		assertEquals("wrong weight with stochastic weighting policy", deWeight, g.getEdgeWeight(de),Double.MIN_VALUE);
-		assertEquals("wrong weight with stochastic weighting policy", ebWeight, g.getEdgeWeight(eb),Double.MIN_VALUE);
-		assertEquals("wrong weight with stochastic weighting policy", efWeight, g.getEdgeWeight(ef),Double.MIN_VALUE);
-		assertEquals("wrong weight with stochastic weighting policy", fcWeight, g.getEdgeWeight(fc),Double.MIN_VALUE);
-		assertEquals("wrong weight with stochastic weighting policy", ycWeight, g.getEdgeWeight(yc),Double.MIN_VALUE);
+		assertEquals("wrong weight with stochastic weighting policy", abWeight, g.getEdgeWeight(ab),1.0e-6);
+		assertEquals("wrong weight with stochastic weighting policy", adWeight, g.getEdgeWeight(ad),1.0e-6);
+		assertEquals("wrong weight with stochastic weighting policy", bcWeight, g.getEdgeWeight(bc),1.0e-6);
+		assertEquals("wrong weight with stochastic weighting policy", bxWeight, g.getEdgeWeight(bx),1.0e-6);
+		assertEquals("wrong weight with stochastic weighting policy", deWeight, g.getEdgeWeight(de),1.0e-6);
+		assertEquals("wrong weight with stochastic weighting policy", ebWeight, g.getEdgeWeight(eb),1.0e-6);
+		assertEquals("wrong weight with stochastic weighting policy", efWeight, g.getEdgeWeight(ef),1.0e-6);
+		assertEquals("wrong weight with stochastic weighting policy", fcWeight, g.getEdgeWeight(fc),1.0e-6);
+		assertEquals("wrong weight with stochastic weighting policy", ycWeight, g.getEdgeWeight(yc),1.0e-6);
 	}
 	
 	/**
@@ -233,24 +252,24 @@ public class TestWeightingPolicy {
 		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new ReactionProbabilityWeight(new SimilarityWeightPolicy());
 		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
 		wp.setWeight(g);
-		abWeight=0.15566037735849056/(0.15566037735849056+0.5751633986928104);
-		bcWeight=0.0661764705882353/(0.0661764705882353+0.07192575406032482);
-		adWeight=0.5751633986928104/(0.15566037735849056+0.5751633986928104);
-		efWeight=0.9347826086956522/(0.9347826086956522+0.18159806295399517);
-		bxWeight=0.07192575406032482/(0.0661764705882353+0.07192575406032482);
-		ebWeight=0.18159806295399517/(0.9347826086956522+0.18159806295399517);
+		abWeight=abSim/(abSim+adSim);
+		bcWeight=bcSim/(bcSim+bxSim);
+		adWeight=adSim/(abSim+adSim);
+		efWeight=efSim/(efSim+ebSim);
+		bxWeight=bxSim/(bcSim+bxSim);
+		ebWeight=ebSim/(efSim+ebSim);
 		deWeight=1;
 		fcWeight=1;
 		ycWeight=1;
-		assertEquals("wrong weight with stochastic weighting policy", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
-		assertEquals("wrong weight with stochastic weighting policy", adWeight, g.getEdgeWeight(ad),Double.MIN_VALUE);
-		assertEquals("wrong weight with stochastic weighting policy", bcWeight, g.getEdgeWeight(bc),Double.MIN_VALUE);
-		assertEquals("wrong weight with stochastic weighting policy", bxWeight, g.getEdgeWeight(bx),Double.MIN_VALUE);
-		assertEquals("wrong weight with stochastic weighting policy", deWeight, g.getEdgeWeight(de),Double.MIN_VALUE);
-		assertEquals("wrong weight with stochastic weighting policy", ebWeight, g.getEdgeWeight(eb),Double.MIN_VALUE);
-		assertEquals("wrong weight with stochastic weighting policy", efWeight, g.getEdgeWeight(ef),Double.MIN_VALUE);
-		assertEquals("wrong weight with stochastic weighting policy", fcWeight, g.getEdgeWeight(fc),Double.MIN_VALUE);
-		assertEquals("wrong weight with stochastic weighting policy", ycWeight, g.getEdgeWeight(yc),Double.MIN_VALUE);
+		assertEquals("wrong weight with stochastic weighting policy", abWeight, g.getEdgeWeight(ab),1.0e-6);
+		assertEquals("wrong weight with stochastic weighting policy", adWeight, g.getEdgeWeight(ad),1.0e-6);
+		assertEquals("wrong weight with stochastic weighting policy", bcWeight, g.getEdgeWeight(bc),1.0e-6);
+		assertEquals("wrong weight with stochastic weighting policy", bxWeight, g.getEdgeWeight(bx),1.0e-6);
+		assertEquals("wrong weight with stochastic weighting policy", deWeight, g.getEdgeWeight(de),1.0e-6);
+		assertEquals("wrong weight with stochastic weighting policy", ebWeight, g.getEdgeWeight(eb),1.0e-6);
+		assertEquals("wrong weight with stochastic weighting policy", efWeight, g.getEdgeWeight(ef),1.0e-6);
+		assertEquals("wrong weight with stochastic weighting policy", fcWeight, g.getEdgeWeight(fc),1.0e-6);
+		assertEquals("wrong weight with stochastic weighting policy", ycWeight, g.getEdgeWeight(yc),1.0e-6);
 	}
 	
 	/**

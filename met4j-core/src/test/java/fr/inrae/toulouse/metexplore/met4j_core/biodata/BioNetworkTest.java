@@ -51,7 +51,7 @@ public class BioNetworkTest {
     BioNetwork network;
     BioReaction r;
     BioMetabolite s1, s2, p1, p2;
-    BioCompartment cpt;
+    BioCompartment cpt, cpt2;
     BioEnzyme e1, e2;
     BioGene g1, g2;
     BioPathway pathway;
@@ -254,6 +254,22 @@ public class BioNetworkTest {
     }
 
     @Test
+    public void testAddBioCollection() {
+
+        BioCollection<BioCompartment> cpts = new BioCollection<BioCompartment>();
+
+        cpt = new BioCompartment("cpt");
+        cpt2 = new BioCompartment("cpt2");
+
+        cpts.add(cpt, cpt2);
+
+        network.add(cpts);
+
+        assertEquals(2, network.getCompartmentsView().size());
+
+    }
+
+    @Test
     public void testRemoveProtein() {
         // Simple test of removing one protein
         BioProtein protein = new BioProtein("protein");
@@ -399,23 +415,40 @@ public class BioNetworkTest {
         network.add(cpt);
         network.removeOnCascade(cpt);
 
-        assertEquals("Compartment not removed from the network", 0, network.getCompartmentsView().size());
+        assertEquals("Remove one compartment alone", 0, network.getCompartmentsView().size());
 
+        BioCompartment cpt2 = new BioCompartment("cpt2");
         // Test if reactants in reactions are removed
         BioReaction reaction = new BioReaction("reac");
+        BioReaction reaction2 = new BioReaction("reac2");
         BioMetabolite met = new BioMetabolite("metId");
-        network.add(met);
-        network.add(cpt);
-        network.add(reaction);
+        BioMetabolite met2 = new BioMetabolite("metId2");
+
+        network.add(met, met2);
+        network.add(cpt, cpt2);
+        network.add(reaction, reaction2);
         network.affectToCompartment(cpt, met);
         network.affectLeft(reaction, 1.0, cpt, met);
         network.affectRight(reaction, 1.0, cpt, met);
+        network.affectToCompartment(cpt2, met2);
+        network.affectLeft(reaction2, 1.0, cpt2, met2);
+        network.affectRight(reaction2, 1.0, cpt2, met2);
 
         network.removeOnCascade(cpt);
 
-        assertEquals("Substrate not removed from reaction when the compartment is removed", 0,
+        assertEquals("Substrate not removed from reaction when the compartment is removed", 1,
                 network.getReactionsView().size());
 
+    }
+
+    @Test
+    public void testRemoveCollection() {
+        this.addTestReactionToNetwork();
+        BioCollection<BioMetabolite> metabolites = new BioCollection<>();
+        metabolites.add(s1, s2);
+        network.removeOnCascade(metabolites);
+
+        assertEquals(2, network.getMetabolitesView().size());
     }
 
     @Test
@@ -438,6 +471,182 @@ public class BioNetworkTest {
         network.affectLeft(reaction, reactant);
 
         assertEquals("Substrate not well added", 2, reaction.getLeftReactants().size());
+
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testAffectSubstrateMetaboliteNotPresent() {
+
+        BioReaction reaction = new BioReaction("r1");
+        network.add(reaction);
+        BioMetabolite s1 = new BioMetabolite("s1");
+
+        BioCompartment cpt = new BioCompartment("cpt");
+        network.add(cpt);
+
+        network.affectLeft(reaction, 1.0, cpt, s1);
+
+    }
+
+    /**
+     * Test add a reactant to a reaction when
+     * the metabolite has been removed from the network
+     * Must throw an exception
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testAffectSubstrateMetaboliteNotPresent2() {
+
+        BioReaction reaction = new BioReaction("r1");
+        network.add(reaction);
+        BioMetabolite s1 = new BioMetabolite("s1");
+        BioMetabolite s2 = new BioMetabolite("s2");
+
+        network.add(s1, s2);
+
+        BioCompartment cpt = new BioCompartment("cpt");
+        network.add(cpt);
+
+        network.affectToCompartment(cpt, s1);
+        network.affectToCompartment(cpt, s2);
+
+        BioReactant reactant = new BioReactant(s1, 1.0, cpt);
+
+        network.removeOnCascade(s1);
+
+        network.affectLeft(reaction, reactant);
+
+        assertEquals(2.0, network.getCompartmentsView().size());
+
+    }
+
+    /**
+     *
+     */
+    @Test (expected = IllegalArgumentException.class)
+    public void testAffectSubstrateMetaboliteNotInCompartment() {
+
+        BioReaction reaction = new BioReaction("r1");
+        network.add(reaction);
+        BioMetabolite s1 = new BioMetabolite("s1");
+        network.add(s1);
+
+        BioCompartment cpt = new BioCompartment("cpt");
+        network.add(cpt);
+
+        network.affectLeft(reaction, 1.0, cpt, s1);
+
+    }
+
+    @Test
+    public void testAffectSubstrateCollection() {
+
+        BioReaction reaction = new BioReaction("r1");
+        network.add(reaction);
+        BioMetabolite s1 = new BioMetabolite("s1");
+        network.add(s1);
+        BioMetabolite s2 = new BioMetabolite("s2");
+        network.add(s2);
+        BioCompartment cpt = new BioCompartment("cpt");
+        network.add(cpt);
+
+        BioReactant reactant1 = new BioReactant(s1, 1.0, cpt);
+        BioReactant reactant2 = new BioReactant(s2, 1.0, cpt);
+        BioCollection<BioReactant> reactants = new BioCollection<>();
+        reactants.add(reactant1, reactant2);
+
+        network.affectToCompartment(cpt, s1, s2);
+
+        network.affectLeft(reaction, reactants);
+
+        assertEquals("Substrate collection not well added", 2, reaction.getLeftReactants().size());
+
+    }
+
+    @Test
+    public void testAffectSubstrateCollection2() {
+
+        BioReaction reaction = new BioReaction("r1");
+        network.add(reaction);
+        BioMetabolite s1 = new BioMetabolite("s1");
+        network.add(s1);
+        BioMetabolite s2 = new BioMetabolite("s2");
+        network.add(s2);
+        BioCompartment cpt = new BioCompartment("cpt");
+        network.add(cpt);
+
+        BioCollection<BioMetabolite> metabolites = new BioCollection<>();
+        metabolites.add(s1, s2);
+
+        network.affectToCompartment(cpt, s1, s2);
+
+        network.affectLeft(reaction, 1.0, cpt, metabolites);
+        assertEquals("Substrate collection not well added", 2, reaction.getLeftReactants().size());
+
+    }
+
+    @Test
+    public void testAffectProductsCollection() {
+
+        BioReaction reaction = new BioReaction("r1");
+        network.add(reaction);
+        BioMetabolite s1 = new BioMetabolite("s1");
+        network.add(s1);
+        BioMetabolite s2 = new BioMetabolite("s2");
+        network.add(s2);
+        BioCompartment cpt = new BioCompartment("cpt");
+        network.add(cpt);
+
+        BioReactant reactant1 = new BioReactant(s1, 1.0, cpt);
+        BioReactant reactant2 = new BioReactant(s2, 1.0, cpt);
+        BioCollection<BioReactant> reactants = new BioCollection<>();
+        reactants.add(reactant1, reactant2);
+
+        network.affectToCompartment(cpt, s1, s2);
+
+        network.affectRight(reaction, reactants);
+
+        assertEquals("Product collection not well added", 2, reaction.getRightReactants().size());
+
+    }
+
+    @Test
+    public void testAffectProductCollection2() {
+
+        BioReaction reaction = new BioReaction("r1");
+        network.add(reaction);
+        BioMetabolite s1 = new BioMetabolite("s1");
+        network.add(s1);
+        BioMetabolite s2 = new BioMetabolite("s2");
+        network.add(s2);
+        BioCompartment cpt = new BioCompartment("cpt");
+        network.add(cpt);
+
+        BioCollection<BioMetabolite> metabolites = new BioCollection<>();
+        metabolites.add(s1, s2);
+
+        network.affectToCompartment(cpt, s1, s2);
+
+        network.affectRight(reaction, 1.0, cpt, metabolites);
+        assertEquals("Substrate collection not well added", 2, reaction.getRightReactants().size());
+
+    }
+
+    @Test
+    public void testAffectProducts() {
+
+        BioReaction reaction = new BioReaction("r1");
+        network.add(reaction);
+        BioMetabolite s1 = new BioMetabolite("s1");
+        network.add(s1);
+        BioMetabolite s2 = new BioMetabolite("s2");
+        network.add(s2);
+        BioCompartment cpt = new BioCompartment("cpt");
+        network.add(cpt);
+
+        network.affectToCompartment(cpt, s1, s2);
+
+        network.affectRight(reaction, 1.0, cpt, s1, s2);
+        assertEquals("Substrate collection not well added", 2, reaction.getRightReactants().size());
 
     }
 
@@ -473,8 +682,26 @@ public class BioNetworkTest {
         network.add(metabolite);
 
         network.add(reaction);
-        // The compartment has not been added to the network
+
+        network.add(cpt);
+
         network.affectLeft(reaction, 1.0, cpt, metabolite);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAffectSubstrateInNoCompartment2() {
+        BioReaction reaction = new BioReaction("reactionId");
+        BioMetabolite metabolite = new BioMetabolite("metId");
+        BioCompartment cpt = new BioCompartment("cptId");
+
+        network.add(metabolite);
+
+        network.add(reaction);
+
+        BioReactant reactant = new BioReactant(metabolite, 1.0, cpt);
+
+        // The compartment has not been added to the network
+        network.affectLeft(reaction, reactant);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -769,6 +996,24 @@ public class BioNetworkTest {
         network.removeReactionFromPathway(reaction, pathway);
 
         assertEquals("Reaction not removed from pathway", 0, pathway.getReactions().size());
+
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testRemoveOnCascadeNull() {
+
+        network.removeOnCascade(cpt);
+
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveOnCascadeNotGoodClass() {
+
+        s1 = new BioMetabolite("s1");
+        cpt = new BioCompartment("cpt");
+        BioReactant bioReactant = new BioReactant(s1, 1.0, cpt);
+
+        network.removeOnCascade(bioReactant);
 
     }
 
@@ -1489,5 +1734,6 @@ public class BioNetworkTest {
         assertEquals("Test getCompartmentsOf", ref, test);
 
     }
+
 
 }

@@ -172,9 +172,9 @@
         <module>met4j-chemUtils</module>
         <module>met4j-mathUtils</module>
         <module>met4j-graph</module>
-        <module>met4j-toolbox</module>
         <module>met4j-mapping</module>
         <module>coverage</module>
+        <module>met4j-toolbox</module>
     </modules>
 
     <dependencies>

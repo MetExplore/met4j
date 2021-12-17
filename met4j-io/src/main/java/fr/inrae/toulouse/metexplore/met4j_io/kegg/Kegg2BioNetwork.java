@@ -133,6 +133,7 @@ public class Kegg2BioNetwork {
      */
     public static void main(String[] args) {
         Kegg2BioNetwork ktbn = new Kegg2BioNetwork("hsa", "map");
+        ktbn.checkKeggOrgId("hsa");
         try {
             ktbn.createBionetworkFromKegg();
         }
@@ -643,7 +644,11 @@ public class Kegg2BioNetwork {
 
         for(String genome: Data){
             String[] tab=genome.split("\\t");
-            if (tab[1].split(",")[0].equalsIgnoreCase(keggId)){
+            if(tab.length < 2) {
+                System.err.println("Fatal Error : kegg api does not return the good format");
+                return false;
+            }
+            if (tab[1].split(";")[0].equalsIgnoreCase(keggId)){
                 return true;
             }
         }

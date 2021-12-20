@@ -600,7 +600,7 @@ public class Kegg2BioNetwork {
         HashMap<String, ArrayList<String>> output=new HashMap<String, ArrayList<String>>();
 
         for (String line: Data){
-            //System.err.println(line);
+            System.err.println(line);
 
             String[] linedata=line.split("[ ]{2,}");
             //System.err.println(linedata.length);

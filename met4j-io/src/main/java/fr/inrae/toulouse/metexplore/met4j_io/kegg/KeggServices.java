@@ -179,7 +179,7 @@ public class KeggServices {
      * @param query a String containing several ids separated by +
      * @return a {@link String}, the result of the query
      */
-    protected String getKeggEntities(String query) {
+    public String getKeggEntities(String query) {
         return this.webResource.path("get").path(query).get(String.class);
     }
 

@@ -38,20 +38,17 @@ package fr.inrae.toulouse.metexplore.met4j_io.kegg;
 
 
 import java.io.StringReader;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
-import com.sun.jersey.api.client.ClientHandlerException;
+import com.google.common.collect.Lists;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
-import fr.inrae.toulouse.metexplore.met4j_io.annotations.reactant.ReactantAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
@@ -60,18 +57,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-
-
-
 
 /**
  * <p>Kegg2BioNetwork class.</p>
@@ -82,111 +67,104 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 public class Kegg2BioNetwork {
 
 
+    KeggServices keggServices;
     public String origin = "map";
     public BioNetwork network;
     public String keggOrgId;
 
-    private HashMap<String,String> linkECGene= new HashMap<String,String>();
-    private HashSet<String> geneList=new HashSet<String>();
-
-    private ClientConfig config;
-    private Client client;
-    private WebResource webResource;
-
+    private final HashSet<String> ecList = new HashSet<>();
+    private final HashSet<String> geneList = new HashSet<>();
+    private final HashMap<String, String> pathwayList = new HashMap<>();
 
     /**
      * <p>Constructor for Kegg2BioNetwork.</p>
      *
      * @param idOrg a {@link java.lang.String} object.
      */
-    public Kegg2BioNetwork(String idOrg){
-        this.keggOrgId=idOrg;
+    public Kegg2BioNetwork(String idOrg) throws Exception {
+
+        if (idOrg.length() != 3) {
+            throw new Exception("[met4j-io][Kegg2BioNetwork] The organism id must have 3 letters");
+        }
+
+        this.keggOrgId = idOrg.toLowerCase();
 
         this.network = new BioNetwork(idOrg);
-
-        this.config = new DefaultClientConfig();
-        this.client = Client.create(this.getConfig());
-        this.webResource = this.getClient().resource(this.getBaseURI());
+        this.keggServices = new KeggServices();
     }
 
     /**
      * <p>Constructor for Kegg2BioNetwork.</p>
      *
      * @param idOrg a {@link java.lang.String} object.
-     * @param ori a {@link java.lang.String} object.
+     * @param ori   a {@link java.lang.String} object.
      */
-    public Kegg2BioNetwork(String idOrg, String ori) {
-        this.keggOrgId = idOrg;
-
-        this.network = new BioNetwork(idOrg);
-
+    public Kegg2BioNetwork(String idOrg, String ori) throws Exception {
+        this(idOrg);
         this.origin = ori;
-        this.config = new DefaultClientConfig();
-        this.client = Client.create((ClientConfig)this.getConfig());
-        this.webResource = this.getClient().resource(this.getBaseURI());
-    }
-
-    /**
-     * Main for testing class
-     *
-     * @param args an array of {@link java.lang.String} objects.
-     */
-    public static void main(String[] args) {
-        Kegg2BioNetwork ktbn = new Kegg2BioNetwork("hsa", "map");
-        ktbn.checkKeggOrgId("hsa");
-        try {
-            ktbn.createBionetworkFromKegg();
-        }
-        catch (Exception e) {
-            ktbn.network = null;
-            e.printStackTrace();
-        }
     }
 
     /**
      * <p>createBionetworkFromKegg.</p>
      */
-    public void createBionetworkFromKegg()  {
+    public void createBionetworkFromKegg() {
+        System.err.println("Start : " + (new Date()));
         try {
             this.setBionetworkDefaultValue();
-            System.err.println("Retrieving Genomic Data...");
-            this.retrieveGPR();
 
-            System.err.println("Retrieving Pathways topology...");
-            this.getPathways();
+            System.err.println("Gets EC numbers...");
+            this.setECList();
 
-            System.err.println("Retrieving Data on Reactions...");
-            for (BioReaction rxn : this.network.getReactionsView()) {
+            System.err.println("Gets pathways...");
+            this.createNetworkPathways();
+
+            System.err.println("Gets reaction data...");
+
+            List<List<String>> queryReactions = this.patitionIdsByTen(new ArrayList<>(this.network.getReactionsView().getIds()));
+
+            for (List<String> tenReactions : queryReactions) {
                 TimeUnit.MILLISECONDS.sleep(100);
 
-                this.getReactionData(rxn);
+                this.getReactionData(tenReactions);
             }
 
-            System.err.println("Retrieving Data on Metabolites...");
-            for (BioMetabolite ent : this.network.getMetabolitesView()) {
+
+            System.err.println("Get metabolite data...");
+
+            List<List<String>> queryMetabolites = this.patitionIdsByTen(new ArrayList<>(this.network.getMetabolitesView().getIds()));
+
+            for (List<String> tenMetabolites : queryMetabolites) {
                 TimeUnit.MILLISECONDS.sleep(100);
 
-                this.getCompoundData(ent);
+                this.getCompoundData(tenMetabolites);
             }
-        }
-        catch (Exception e) {
+
+            System.err.println("Done !\n");
+            System.err.println("Number of reactions: " + this.getNetwork().getReactionsView().size());
+            System.err.println("Number of metabolites: " + this.getNetwork().getMetabolitesView().size());
+            System.err.println("Number of pathways: " + this.getNetwork().getPathwaysView().size());
+            System.err.println("Number of genes: " + this.getNetwork().getGenesView().size());
+        } catch (Exception e) {
+            System.err.println("[met4j-io][Kegg2BioNetwork] Unable to create a network from KEGG." +
+                    " KEGG API may be down, please try later.");
             e.printStackTrace();
             this.network = null;
         }
+        System.err.println("End : " + (new Date()));
     }
 
     /**
      * Set the default value for the compartment and the unitdefinition used in the model,
      * also retrieves the name of the network
      */
-    public void setBionetworkDefaultValue(){
+    public void setBionetworkDefaultValue() throws Exception {
 
-        this.getNetWorkName();
+        this.setNetWorkName();
 
-        BioCompartment defaultCompartment = new BioCompartment("x", "default");
-        this.network.add(defaultCompartment );
+        BioCompartment defaultCompartment = new BioCompartment("default", "default");
+        this.network.add(defaultCompartment);
 
-        BioUnitDefinition unitDef= new BioUnitDefinition();
+        BioUnitDefinition unitDef = new BioUnitDefinition();
 
         NetworkAttributes.addUnitDefinition(this.network, unitDef);
 
@@ -194,129 +172,160 @@ public class Kegg2BioNetwork {
 
 
     /**
-     * <p>retrieveGPR.</p>
+     * Gets all the gene ids of the organism.
      *
      * @throws java.lang.Exception if any.
      */
-    public void retrieveGPR() throws Exception {
-        String[] genes= null;
+    public void setGeneList() throws Exception {
 
-        String geneString=this.webResource.path("link").path("genome").path(this.keggOrgId).get(String.class);
+        String geneString = this.keggServices.getKeggGeneEntries(this.keggOrgId);
 
-        genes=geneString.split("\\n");
+        String[] genes = geneString.split("\\n");
 
-        if(genes.length==0){
-            throw new Exception("Unable to retrieve the genomic data of the organism "+this.keggOrgId) ;
-        }
-
-        for (String line :genes){
-            String[] geneData=line.split("\\t");
-
+        for (String line : genes) {
+            String[] geneData = line.split("\\t");
+            if (geneData.length != 2) {
+                throw new Exception("[met4j-io][Kegg2BioNetwork] Gene list badly formatted for the organism "
+                        + this.keggOrgId + " (" + line + ")");
+            }
             this.geneList.add(geneData[0]);
-
         }
-
-        this.setLinkECGene(this.keggOrgId);
-
     }
 
     /**
      * Retrieves all pathways associated to the organism using the Kegg API.
+     * First, get pathway list : the api (ex : http://rest.kegg.jp/list/pathway/hsa)
+     * returns a tabulated file. Ex :
+     * path:hsa00010	Glycolysis / Gluconeogenesis - Homo sapiens (human)
+     * path:hsa00020	Citrate cycle (TCA cycle) - Homo sapiens (human)
+     * path:hsa00030	Pentose phosphate pathway - Homo sapiens (human)
+     * path:hsa00040	Pentose and glucuronate interconversions - Homo sapiens (human)
+     * path:hsa00051	Fructose and mannose metabolism - Homo sapiens (human)
+     * <p>
+     * Then,
      *
      * @throws java.lang.Exception if any.
      */
-    public void getPathways() throws Exception{
-        String[] pathList= null;
+    public void createNetworkPathways() throws Exception {
 
-        pathList=this.webResource.path("list").path("pathway").path(this.keggOrgId).get(String.class).split("\\n");
-        for (String line :pathList){
-            String[] pathwayData=line.split("\\t");
-            String dbid=this.simplifyId(pathwayData[0].substring(5));
-            BioPathway path=new BioPathway(dbid,pathwayData[1]);
+        this.setPathwayList();
+
+        for (String dbId : this.pathwayList.keySet()) {
+
+            String name = this.pathwayList.get(dbId);
+            BioPathway path = new BioPathway(dbId, name);
 
             this.network.add(path);
 
             this.getPathwayComponents(path);
 
-            if(this.network.getReactionsFromPathways(path).size()==0)
-            {
+            if (this.network.getReactionsFromPathways(path).size() == 0) {
                 this.network.removeOnCascade(path);
             }
         }
     }
 
+    /**
+     * Set Pathway list
+     */
+    public void setPathwayList() throws Exception {
+
+        String pathwayEntries = this.keggServices.getKeggPathwayEntries(this.keggOrgId);
+
+        String[] pathList = pathwayEntries.split("\\n");
+
+        for (String line : pathList) {
+            String[] pathwayData = line.split("\\t");
+
+            if (pathwayData.length != 2) {
+                throw new Exception("[met4j-io][Kegg2BioNetwork] Invalid format in pathway data : " + line);
+            }
+
+            String dbId = this.simplifyId(pathwayData[0].substring(5));
+            String name = pathwayData[1];
+            this.pathwayList.put(dbId, name);
+        }
+
+    }
+
 
     /**
-     * <p>getPathwayComponents.</p>
+     * For each pathway, dowload the kgml via api (ex : http://rest.kegg.jp/get/hsa05130/kgml)
+     * Adds the reactions in the network.
+     * If origin = map, adds also the primary compounds.
+     * <p>
+     * Sets the links between reactions and genes.
      *
      * @param pathway a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway} object.
      * @throws java.lang.Exception if any.
      */
     public void getPathwayComponents(BioPathway pathway) throws Exception {
 
-        String xml=null;
-        xml=this.webResource.path("get").path(pathway.getId()).path("kgml").accept(MediaType.APPLICATION_XML).get(String.class);
+        String xml = this.keggServices.getKgml(pathway.getId());
 
-        Document doc=Kegg2BioNetwork.loadXMLFromString(xml);
+        Document doc;
+        try {
+            doc = Kegg2BioNetwork.loadXMLFromString(xml);
+        } catch (Exception e) {
+            System.err.println("[met4j-io][Kegg2BioNetwork] Badly formatted KGML for pathway " + pathway.getId());
+            throw e;
+        }
+
         doc.getDocumentElement().normalize();
 
-
-        HashMap<String,String> RectionInPath = new HashMap<String, String>();
+        HashMap<String, String> reactionInPath = new HashMap<>();
 
         NodeList entryList = doc.getElementsByTagName("entry");
-        for (int i=0,c=entryList.getLength();i<c;i++ ){
-            Node entry=entryList.item(i);
-            if(((Element) entry).getAttribute("type").equalsIgnoreCase("GENE")){
-
+        for (int i = 0, c = entryList.getLength(); i < c; i++) {
+            Node entry = entryList.item(i);
+            if (((Element) entry).getAttribute("type").equalsIgnoreCase("GENE")) {
                 /*
                  * get all reaction that have known genes associated to it
                  */
-                RectionInPath.put(((Element) entry).getAttribute("reaction"), ((Element) entry).getAttribute("name"));
+                reactionInPath.put(((Element) entry).getAttribute("reaction"), ((Element) entry).getAttribute("name"));
             }
         }
 
-        NodeList reactionList=doc.getElementsByTagName("reaction");
-        for(int i=0,c=reactionList.getLength(); i<c ;i++){
+        NodeList reactionList = doc.getElementsByTagName("reaction");
+        for (int i = 0, c = reactionList.getLength(); i < c; i++) {
             //get the reaction node
-            Node entry=reactionList.item(i);
-            Element rxn=(Element) entry;
+            Node entry = reactionList.item(i);
+            Element rxn = (Element) entry;
 
-            if(RectionInPath.containsKey(rxn.getAttribute("name"))){
-                String[] reactionIds=rxn.getAttribute("name").split(" ");
+            if (reactionInPath.containsKey(rxn.getAttribute("name"))) {
+                String[] reactionIds = rxn.getAttribute("name").split(" ");
 
-                for(String longId:reactionIds){
+                for (String longId : reactionIds) {
 
                     String id = this.simplifyId(longId).replace("rn_", "");
                     BioReaction reaction;
-                    if(this.network.getReactionsView().containsId(id)){
-                        reaction=this.network.getReactionsView().get(id);
-                    }
-                    else{
-                        reaction=new BioReaction(id);
+
+                    if (this.network.getReactionsView().containsId(id)) {
+                        reaction = this.network.getReactionsView().get(id);
+                        if (rxn.getAttribute("type").equalsIgnoreCase("reversible")) {
+                            reaction.setReversible(true);
+                        }
+                    } else {
+                        reaction = new BioReaction(id);
 
                         this.network.add(reaction);
 
-                        if(rxn.getAttribute("type").equalsIgnoreCase("reversible")){
-                            reaction.setReversible(true);
-                        }else{
-                            reaction.setReversible(false);
-                        }
+                        reaction.setReversible(rxn.getAttribute("type").equalsIgnoreCase("reversible"));
 
                         /*
                          * Set the GPR for this reaction
-                         * TODO : LC 2019-10-09 not really done for complex GPR, no ?
                          */
-                        String[] genes=RectionInPath.get(rxn.getAttribute("name")).split(" ");
-                        for(String longGeneId:genes){
+                        String[] genes = reactionInPath.get(rxn.getAttribute("name")).split(" ");
+                        for (String longGeneId : genes) {
 
-                                String geneId = this.simplifyId(longGeneId);
-                                BioGene gene=new BioGene(geneId);
-                                BioProtein prot=new BioProtein(geneId);
-                                BioEnzyme enz = new BioEnzyme(geneId);
-                                network.add(gene, prot, enz);
-                                network.affectGeneProduct(prot, gene);
-                                network.affectSubUnit(enz, 1.0, prot);
-                                network.affectEnzyme(reaction, enz);
+                            String geneId = this.simplifyId(longGeneId);
+                            BioGene gene = new BioGene(geneId);
+                            BioProtein prot = new BioProtein(geneId);
+                            BioEnzyme enz = new BioEnzyme(geneId);
+                            network.add(gene, prot, enz);
+                            network.affectGeneProduct(prot, gene);
+                            network.affectSubUnit(enz, 1.0, prot);
+                            network.affectEnzyme(reaction, enz);
                         }
                         if (this.origin.equals("map")) {
                             NodeList childs = rxn.getChildNodes();
@@ -324,8 +333,8 @@ public class Kegg2BioNetwork {
                             for (int j = 1; j < d; j += 2) {
                                 BioMetabolite cpd;
                                 Node child = childs.item(j);
-                                Element Compound = (Element)child;
-                                BioCompartment cpt = this.network.getCompartmentsView().get("x");
+                                Element Compound = (Element) child;
+                                BioCompartment cpt = this.network.getCompartmentsView().get("default");
 
                                 String metaboliteId = this.simplifyMetaboliteId(Compound.getAttribute("name"));
 
@@ -354,230 +363,320 @@ public class Kegg2BioNetwork {
                 }
             }
         }
-
-		/*
-		System.err.println(this.bioNetwork.getReactionsView().size()+" reaction added to network");
-		System.err.println(this.bioNetwork.getPhysicalEntityList().size()+" metabolites added");
-		System.exit(0);*/
     }
 
-    private void getNetWorkName() {
-        String[] data= null;
-        String name;
-        try {
-            data=this.webResource.path("info").path(this.keggOrgId).get(String.class).split("\\n");
-            name=data[0].split("\\s{2,}")[1];
-        }catch(UniformInterfaceException e){
-            name="undefined";
+    public void setNetWorkName() throws Exception {
+
+        String info = this.keggServices.getKeggOrganismInfo(this.keggOrgId);
+
+        String[] data = info.split("\\n");
+
+        String firstLine = data[0];
+        String[] fields = firstLine.split("\\s{2,}");
+        if (fields.length != 2) {
+            throw new Exception("[met4j-io][Kegg2BioNetwork] Impossible to get organism name for " + this.keggOrgId +
+                    " : info badly formatted (" + firstLine + ")");
         }
 
+        String name = fields[1].replaceAll(" KEGG.*", "");
 
         this.network.setName(name);
 
     }
 
+
+    /**
+     * Create reactant from string
+     * <p>
+     * Reformat these patterns :
+     * 2n C1 -> 2 C1
+     * n C1 -> 1 C1
+     * C1 -> 1 C1
+     * C1(n+1) -> C1
+     *
+     * @param substrateAndStoichio a String containing the coefficient (optional) and the cpd id
+     * @return a {@link BioReactant}
+     */
+    private BioReactant createReactant(String substrateAndStoichio, String reactionId) {
+        String stoichio;
+        String longCpdId;
+        BioMetabolite cpd;
+
+        BioCompartment cpt = this.network.getCompartmentsView().get("default");
+
+        String[] tmp = substrateAndStoichio.split("[ ]+");
+        if (tmp.length == 2) {
+            stoichio = tmp[0];
+
+            Pattern p = Pattern.compile("^(\\d+)[\\D+]+.*");
+            Matcher m = p.matcher(stoichio);
+            if (m.find()) {
+                // The stoichio is in the form 2n, we keep only 2.
+                stoichio = m.group(1);
+                System.err.println("[met4j-io][Kegg2BioNetwork] Warning: in reaction " + reactionId +
+                        " : changes the stoichiometric coefficient from " + tmp[0] + " to " + stoichio);
+            }
+            longCpdId = tmp[1];
+
+        } else {
+            stoichio = "1.0";
+            longCpdId = substrateAndStoichio;
+        }
+
+        // Here we remove patterns like (n), (n +1)
+        if (longCpdId.matches(".*\\([^)]+\\)$")) {
+            String id2 = longCpdId.replaceAll("\\([^)]+\\)", "");
+            System.err.println("[met4j-io][Kegg2BioNetwork] Warning: in reaction " + reactionId +
+                    " : changes the id from " + longCpdId + " to " + id2);
+            longCpdId = id2;
+        }
+
+        String cpdId = this.simplifyMetaboliteId(longCpdId);
+
+        if (this.network.getMetabolitesView().containsId(cpdId)) {
+            cpd = this.network.getMetabolitesView().get(cpdId);
+        } else {
+            cpd = new BioMetabolite(cpdId);
+            this.network.add(cpd);
+            this.network.affectToCompartment(cpt, cpd);
+        }
+
+        double coeff = 1.0;
+        try {
+            coeff = Double.parseDouble(stoichio);
+        } catch (NumberFormatException e) {
+            System.err.println("[met4j-io][Kegg2BioNetwork] Warning :  The stoechiometry "
+                    + stoichio + " in the reaction " + reactionId + " is not a number, it is left as 1.0");
+        }
+
+        return new BioReactant(cpd, coeff, cpt);
+    }
+
     /**
      * Retrieve Reaction data from the Kegg database and add the other attributes by using default values
      * from the sbml specifications (2.4)
-     * @param rxn
+     * <p>
+     * Get the info of a reaction by the api (ex : http://rest.kegg.jp/get/rn:R07618)
+     * ENTRY       R07618                      Reaction
+     * NAME        enzyme N6-(dihydrolipoyl)lysine:NAD+ oxidoreductase
+     * DEFINITION  Enzyme N6-(dihydrolipoyl)lysine + NAD+ <=> Enzyme N6-(lipoyl)lysine + NADH + H+
+     * EQUATION    C15973 + C00003 <=> C15972 + C00004 + C00080
+     * COMMENT     Oxo-acid dehydrogenase complexes, dihydrolipoyl dehydrogenase
+     * RCLASS      RC00001  C00003_C00004
+     * RC00583  C15972_C15973
+     * ENZYME      1.8.1.4
+     * PATHWAY     rn00010  Glycolysis / Gluconeogenesis
+     * rn00020  Citrate cycle (TCA cycle)
+     * rn00280  Valine, leucine and isoleucine degradation
+     * rn00620  Pyruvate metabolism
+     * rn00640  Propanoate metabolism
+     * rn01100  Metabolic pathways
+     * rn01110  Biosynthesis of secondary metabolites
+     * rn01240  Biosynthesis of cofactors
+     * MODULE      M00009  Citrate cycle (TCA cycle, Krebs cycle)
+     * M00011  Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate
+     * M00036  Leucine degradation, leucine => acetoacetate + acetyl-CoA
+     * M00307  Pyruvate oxidation, pyruvate => acetyl-CoA
+     * ORTHOLOGY   K00382  dihydrolipoamide dehydrogenase [EC:1.8.1.4]
+     * DBLINKS     RHEA: 15048
+     * ///
+     * <p>
+     * Sets the formula if origin != map
+     * <p>
+     * Sets the EC number
+     *
+     * @param reactions a {@link List} of reaction ids
      */
-    private void getReactionData(BioReaction rxn) {
+    protected void getReactionData(List<String> reactions) throws Exception {
 
+        HashMap<String, HashMap<String, ArrayList<String>>> allData = this.getEntitiesData(reactions);
 
-        HashMap<String, ArrayList<String>> Data= null;
-        try {
-            Data = this.getEntityDataHasHash(rxn.getId());
-        } catch (Exception e) {
-            System.err.println("Problem while loading reaction "+rxn.getId()+" via kegg api!");
-            return;
-        }
+        for (String id : allData.keySet()) {
 
-        if(Data.get("NAME")!=null){
-            rxn.setName( Data.get("NAME").get(0));
-        }
-        if(Data.get("COMMENT")!=null){
-            rxn.setComment( Data.get("COMMENT").get(0));
-        }
-        if (this.origin.equals("reaction") && Data.get("EQUATION") != null && Data.get("EQUATION").get(0).contains("<=>")) {
-            String longCpdId;
-            String[] tmp2;
-            BioMetabolite cpd;
-            String[] tmp;
-            String stoechio;
-            String[] eq = Data.get("EQUATION").get(0).split(" <=> ");
-            String[] subs = eq[0].split(" \\+ ");
-            String[] prod = eq[1].split(" \\+ ");
+            /*
+             * Reactions must be first created in createNetworksForPathways
+             */
+            BioReaction rxn = this.getNetwork().getReactionsView().get(id);
 
-           BioCompartment cpt = this.network.getCompartmentsView().get("x");
-
-            for (String substrateAndStoechio : subs) {
-                tmp = substrateAndStoechio.split("[ ]+");
-                if (tmp.length == 2) {
-                    stoechio = tmp[0];
-                    longCpdId = tmp[1].replaceAll("\\([^\\)]+\\)", "");
-                } else if (Pattern.compile("^\\d+[\\D+]+.*").matcher(tmp[0]).matches()) {
-                    tmp2 = tmp[0].split("(?<=\\d+)(?=\\D+)");
-                    stoechio = tmp2[0];
-                    longCpdId = tmp2[1].replaceAll("\\([^\\)]+\\)", "");
-                } else {
-                    stoechio = "1.0";
-                    longCpdId = substrateAndStoechio.replaceAll("\\([^\\)]+\\)", "");
-                }
-
-                String cpdId = this.simplifyMetaboliteId(longCpdId);
-
-                if (this.network.getMetabolitesView().containsId(cpdId)) {
-                    cpd = this.network.getMetabolitesView().get(cpdId);
-                } else {
-                    cpd = new BioMetabolite(cpdId);
-                    this.network.add(cpd);
-                    this.network.affectToCompartment(cpt, cpd);
-                }
-
-                Double coeff = 1.0;
-                try {
-                    coeff = Double.parseDouble(stoechio);
-                }catch (NumberFormatException e) {
-                    System.err.println("The stoechiometry "+stoechio+" is not a number, it is left as 1.0");
-                }
-
-                BioReactant lpart = new BioReactant(cpd, coeff, cpt);
-                ReactantAttributes.setConstant(lpart, false);
-                network.affectLeft(rxn, lpart);
+            if (rxn == null) {
+                throw new Exception("[met4j-io][Kegg2BioNetwork] Problem while setting reaction " + id + "");
             }
-            for (String productAndStoechio : prod) {
 
-                tmp = productAndStoechio.split("[ ]+");
-                if (tmp.length == 2) {
-                    stoechio = tmp[0];
-                    longCpdId = tmp[1].replaceAll("\\([^\\)]+\\)", "");
-                } else if (Pattern.compile("^\\d+[\\D+]+.*").matcher(tmp[0]).matches()) {
-                    tmp2 = tmp[0].split("(?<=\\d+)(?=\\D+)");
-                    stoechio = tmp2[0];
-                    longCpdId = tmp2[1].replaceAll("\\([^\\)]+\\)", "");
-                } else {
-                    stoechio = "1.0";
-                    longCpdId = productAndStoechio.replaceAll("\\([^\\)]+\\)", "");
-                }
+            HashMap<String, ArrayList<String>> Data = allData.get(id);
 
-                String cpdId = this.simplifyMetaboliteId(longCpdId);
-
-                if (this.network.getMetabolitesView().containsId(cpdId)) {
-                    cpd = this.network.getMetabolitesView().get(cpdId);
-                } else {
-                    cpd = new BioMetabolite(cpdId);
-                    this.network.add(cpd);
-                    this.network.affectToCompartment(cpt, cpd);
-                }
-
-                Double coeff = 1.0;
-                try {
-                    coeff = Double.parseDouble(stoechio);
-                }catch (NumberFormatException e) {
-                    System.err.println("The stoechiometry "+stoechio+" is not a number, it is left as 1.0");
-                }
-
-                BioReactant rpart = new BioReactant(cpd, coeff, cpt);
-                ReactantAttributes.setConstant(rpart, false);
-                network.affectRight(rxn, rpart);
+            if (Data.get("NAME") != null) {
+                rxn.setName(Data.get("NAME").get(0));
             }
-        }
-        if(Data.get("ENZYME")!=null){
-            for(String ecNum:Data.get("ENZYME")){
-                if(this.linkECGene.containsKey(ecNum)){
-                    if (rxn.getEcNumber() == null || rxn.getEcNumber().isEmpty() || rxn.getEcNumber().equalsIgnoreCase(" ")){
-                        rxn.setEcNumber(ecNum);
-                    }
-                    else{
-                        rxn.setEcNumber(rxn.getEcNumber()+" / "+ecNum);
+            if (Data.get("COMMENT") != null) {
+                rxn.setComment(Data.get("COMMENT").get(0));
+            }
+            if (this.origin.equals("reaction") && Data.get("EQUATION") != null && Data.get("EQUATION").get(0).contains("<=>")) {
+
+
+                String[] eq = Data.get("EQUATION").get(0).split(" <=> ");
+                String[] subs = eq[0].split(" \\+ ");
+                String[] prod = eq[1].split(" \\+ ");
+
+                for (String substrateAndStoichio : subs) {
+                    BioReactant lPart = createReactant(substrateAndStoichio, id);
+                    network.affectLeft(rxn, lPart);
+                }
+
+                for (String productAndStoechio : prod) {
+                    BioReactant rPart = createReactant(productAndStoechio, id);
+                    network.affectRight(rxn, rPart);
+                }
+            }
+            if (Data.get("ENZYME") != null) {
+                for (String ecNum : Data.get("ENZYME")) {
+                    if (this.ecList.contains(ecNum)) {
+                        if (rxn.getEcNumber() == null || rxn.getEcNumber().isEmpty() || rxn.getEcNumber().equalsIgnoreCase(" ")) {
+                            rxn.setEcNumber(ecNum);
+                        } else {
+                            rxn.setEcNumber(rxn.getEcNumber() + " / " + ecNum);
+                        }
                     }
                 }
             }
         }
-
     }
 
     /**
      * Retrieve data for each compound from the Kegg database and add the other attributes by using default values
      * from the sbml specifications (2.4)
      * Note that those compounds can come from Kegg Compound Database or from Kegg Glycan Database
-     * @param metabolite
+     * <p>
+     * Get the metabolite data from kegg api (ex : http://rest.kegg.jp/get/C15973)
+     * ENTRY       C15973                      Compound
+     * NAME        Enzyme N6-(dihydrolipoyl)lysine;
+     * Dihydrolipoamide-E;
+     * [E2 protein]-N6-[(R)-dihydrolipoyl]-L-lysine;
+     * [Lipoyl-carrier protein E2]-N6-[(R)-dihydrolipoyl]-L-lysine
+     * FORMULA     C8H16NOS2R
+     * COMMENT     Generic compound in reaction hierarchy
+     * The reduced lipoyllysine residue in EC 2.3.1.12, dihydrolipoyllysine-residue acetyltransferase ( EC 2.3.1.61, dihydrolipoyllysine-residue succinyltransferase or EC 2.3.1.168, dihydrolipoyllysine-residue (2-methylpropanoyl)transferase ).
+     * REACTION    R02569 R02570 R02571 R02662 R03174 R04097 R07618 R10998
+     * R12423 R12432 R12603
+     * PATHWAY     map00010  Glycolysis / Gluconeogenesis
+     * map00020  Citrate cycle (TCA cycle)
+     * map00280  Valine, leucine and isoleucine degradation
+     * map00620  Pyruvate metabolism
+     * map00640  Propanoate metabolism
+     * map00785  Lipoic acid metabolism
+     * map01100  Metabolic pathways
+     * map01240  Biosynthesis of cofactors
+     * MODULE      M00009  Citrate cycle (TCA cycle, Krebs cycle)
+     * M00011  Citrate cycle, second carbon oxidation, 2-oxoglutarate => oxaloacetate
+     * M00036  Leucine degradation, leucine => acetoacetate + acetyl-CoA
+     * M00307  Pyruvate oxidation, pyruvate => acetyl-CoA
+     * M00881  Lipoic acid biosynthesis, plants and bacteria, octanoyl-ACP => dihydrolipoyl-E2/H
+     * M00883  Lipoic acid biosynthesis, animals and bacteria, octanoyl-ACP => dihydrolipoyl-H => dihydrolipoyl-E2
+     * M00884  Lipoic acid biosynthesis, octanoyl-CoA => dihydrolipoyl-E2
+     * ENZYME      1.8.1.4         1.11.1.28       2.3.1.12        2.3.1.61
+     * 2.3.1.168       2.8.1.8
+     * DBLINKS     PubChem: 47205286
+     * ChEBI: 80219
+     * ATOM        13
+     * 1   C1c C    15.4683  -15.8087
+     * 2   C1b C    16.6705  -16.5090
+     * 3   C1b C    14.2660  -16.5090
+     * 4   S1a S    15.4683  -14.4255
+     * 5   C1b C    17.8728  -15.8087
+     * 6   C1b C    13.0639  -15.8087
+     * 7   C1b C    19.0808  -16.5090
+     * 8   S1a S    13.0639  -14.4255
+     * 9   C1b C    20.2771  -15.8087
+     * 10  C5a C    21.4794  -16.5090
+     * 11  O5a O    21.4794  -17.8921
+     * 12  N1b N    22.8334  -15.8379
+     * 13  R   R    24.2335  -15.8379
+     * BOND        12
+     * 1     1   2 1 #Down
+     * 2     1   3 1
+     * 3     1   4 1
+     * 4     2   5 1
+     * 5     3   6 1
+     * 6     5   7 1
+     * 7     6   8 1
+     * 8     7   9 1
+     * 9     9  10 1
+     * 10   10  11 2
+     * 11   10  12 1
+     * 12   12  13 1
+     * ///
+     * <p>
+     * Adds name, mass, formula information and db links.
+     *
+     * @param metabolites : a {@link List} of metabolite ids
      */
-    private void getCompoundData(BioMetabolite metabolite){
+    protected void getCompoundData(List<String> metabolites) throws Exception {
 
-        MetaboliteAttributes.setBoundaryCondition(metabolite, false);
-        MetaboliteAttributes.setConstant(metabolite, false);
-        MetaboliteAttributes.setHasOnlySubstanceUnits(metabolite, false);
+        HashMap<String, HashMap<String, ArrayList<String>>> dataMap = this.getEntitiesData(metabolites);
 
-        HashMap<String, ArrayList<String>> Data= null;
-        try {
-            Data = this.getEntityDataHasHash(metabolite.getId());
-        } catch (Exception e) {
-            System.err.println("Problem while loading metabolite "+metabolite.getId()+" via KEGG api!");
-        }
+        for (String id : dataMap.keySet()) {
 
-        if(Data.get("NAME")!=null){ //kegg glycans entries do not always have names or chemical formulas
-            metabolite.setName( Data.get("NAME").get(0));
-        }
-        if(Data.get("FORMULA") != null){
-            metabolite.setChemicalFormula(Data.get("FORMULA").get(0));
-        }
-        if(Data.get("MASS")!=null){
-            Double mass = 0.0;
-            try {
-                mass = Double.parseDouble(Data.get("MASS").get(0));
-            }catch (NumberFormatException e) {
-                System.err.println("The mass "+Data.get("MASS").get(0)+" is not a number, it is left as 0.0");
+            BioMetabolite metabolite = this.getNetwork().getMetabolitesView().get(id);
+
+            HashMap<String, ArrayList<String>> Data = dataMap.get(id);
+
+            MetaboliteAttributes.setBoundaryCondition(metabolite, false);
+            MetaboliteAttributes.setConstant(metabolite, false);
+            MetaboliteAttributes.setHasOnlySubstanceUnits(metabolite, false);
+
+            if (Data.get("NAME") != null) { //kegg glycans entries do not always have names or chemical formulas
+                metabolite.setName(Data.get("NAME").get(0));
             }
-            metabolite.setMolecularWeight(mass);
-        }else if(Data.get("MOL_WEIGHT")!= null){
-            Double mass = 0.0;
-            try {
-                mass = Double.parseDouble(Data.get("MOL_WEIGHT").get(0));
-            }catch (NumberFormatException e) {
-                System.err.println("The mass "+Data.get("MOL_WEIGHT").get(0)+" is not a number, it is left as 0.0");
+            if (Data.get("FORMULA") != null) {
+                metabolite.setChemicalFormula(Data.get("FORMULA").get(0));
             }
-            metabolite.setMolecularWeight(mass);
-        }
+            if (Data.get("MOL_WEIGHT") != null) {
+                double mass = 0.0;
+                try {
+                    mass = Double.parseDouble(Data.get("MOL_WEIGHT").get(0));
+                } catch (NumberFormatException e) {
+                    System.err.println("The mass " + Data.get("MOL_WEIGHT").get(0) + " is not a number, it is left as 0.0");
+                }
+                metabolite.setMolecularWeight(mass);
+            } else if (Data.get("EXACT_MASS") != null) {
+                double mass = 0.0;
+                try {
+                    mass = Double.parseDouble(Data.get("EXACT_MASS").get(0));
+                } catch (NumberFormatException e) {
+                    System.err.println("The mass " + Data.get("EXACT_MASS").get(0) + " is not a number, it is left as 0.0");
+                }
+                metabolite.setMolecularWeight(mass);
+            }
 
-        metabolite.addRef(new BioRef("Import", "kegg.compound", metabolite.getId(), 1));
+            metabolite.addRef(new BioRef("kegg", "kegg.compound", metabolite.getId(), 1));
 
-        if (Data.get("DBLINKS")!=null){
-            for (String links: Data.get("DBLINKS")){
-                String[] tab=links.split(": ");
-                metabolite.addRef(new BioRef("Import", tab[0], tab[1], 1));
+            if (Data.get("DBLINKS") != null) {
+                for (String links : Data.get("DBLINKS")) {
+                    String[] tab = links.split(": ");
+                    metabolite.addRef(new BioRef("kegg", tab[0], tab[1], 1));
+                }
             }
         }
     }
 
 
-
     private String simplifyMetaboliteId(String id) {
-        String[] tempArray=id.split("[: ]");
-        if(tempArray.length>1){
+        String[] tempArray = id.split("[: ]");
+        if (tempArray.length > 1) {
             return tempArray[1];
-        }
-        else {
+        } else {
             return id;
         }
     }
 
     private String simplifyId(String id) {
-       return id.replaceAll("[: ]", "_");
-    }
-
-    private URI getBaseURI() {
-        return UriBuilder.fromUri("http://rest.kegg.jp/").build();
+        return id.replaceAll("[: ]", "_");
     }
 
     /**
-     *
-     * @param xml
-     * @return
-     * @throws Exception
+     * @param xml a String
+     * @return a {@link Document}
      */
-    private static Document loadXMLFromString(String xml) throws Exception
-    {
+    private static Document loadXMLFromString(String xml) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xml));
@@ -585,75 +684,78 @@ public class Kegg2BioNetwork {
     }
 
     /**
-     * <p>getEntityDataHasHash.</p>
+     * Gets the data of a list of entities from the Kegg api
+     * <p>
+     * The list of ids (no more than 10) are concatened in one query.
      *
-     * @param id a {@link java.lang.String} object.
-     * @return a {@link java.util.HashMap} object.
+     * @param list {@link List} of ids
+     * @return a map whose primary keys are entity ids and the second keys are the data fields
      */
-    public HashMap<String, ArrayList<String>> getEntityDataHasHash(String id) {
+    public HashMap<String, HashMap<String, ArrayList<String>>> getEntitiesData(List<String> list) throws Exception {
 
-        String[] Data= new String[0];
+        if (list.size() > 10) {
+            throw new IllegalArgumentException("[FATAL][met4j-io][Kegg2BioNetwork] query apis must not contain more than 10 ids");
+        }
 
-        Data = this.webResource.path("get").path(id).get(String.class).split("\\n");
+        String ids = String.join("+", list);
 
-        String lastKey=null;
-        HashMap<String, ArrayList<String>> output=new HashMap<String, ArrayList<String>>();
+        String[] Data = this.keggServices.getKeggEntities(ids).split("\\n");
 
-        for (String line: Data){
-            System.err.println(line);
+        String lastKey = null, id = null;
+        HashMap<String, ArrayList<String>> output = null;
 
-            String[] linedata=line.split("[ ]{2,}");
-            //System.err.println(linedata.length);
-            if(linedata[0].length()!=0){
-                lastKey=linedata[0];
+        HashMap<String, HashMap<String, ArrayList<String>>> res = new HashMap<>();
+
+        for (String line : Data) {
+
+            String[] linedata = line.split("[ ]{2,}");
+
+            if (linedata[0].length() != 0) {
+                lastKey = linedata[0];
             }
-            //System.err.println("value of index 0 '"+linedata[0]+"'. of length "+linedata[0].length());
-            //System.err.println("value of last key "+lastKey);
 
+            if (lastKey != null && lastKey.equalsIgnoreCase("///")) {
+                res.put(id, output);
+                continue;
+            }
 
-            if(output.containsKey(lastKey) && !lastKey.equalsIgnoreCase("///")){
-                //System.err.println("add to last");
-                for (int i=1, c=linedata.length;i<c;i++){
-                    output.get(lastKey).add(linedata[i].replace(";", ""));
+            if (lastKey != null && lastKey.equalsIgnoreCase("ENTRY")) {
+                id = linedata[1];
+                output = new HashMap<>();
+                continue;
+            }
+
+            if (lastKey != null) {
+                String valuePart = line.replace(lastKey, "").trim();
+
+                String[] values = valuePart.split("[ ]{3,}");
+                if (id != null) {
+                    ArrayList<String> tempData;
+
+                    if (output.containsKey(lastKey)) {
+                        tempData = output.get(lastKey);
+
+                    } else {
+                        tempData = new ArrayList<>();
+                        output.put(lastKey, tempData);
+                    }
+
+                    for (String s : values) {
+                        String value = s.trim();
+                        if (!value.isEmpty()) {
+                            tempData.add(s.replace(";", ""));
+                        }
+                    }
                 }
-            }else if (!output.containsKey(lastKey) && !lastKey.equalsIgnoreCase("///")){
-                //System.err.println("add to new");
-                ArrayList<String> tempData = new  ArrayList<String>();
-                for (int i=1, c=linedata.length;i<c;i++){
-                    tempData.add(linedata[i].replace(";", ""));
-                }
-
-                output.put(lastKey, tempData);
-            }else{
-                break;
             }
         }
 
-        return output;
-    }
-
-    /**
-     * <p>checkKeggOrgId.</p>
-     *
-     * @param keggId a {@link java.lang.String} object.
-     * @return a boolean.
-     */
-    public boolean checkKeggOrgId(String keggId){
-
-        String[] Data=this.webResource.path("list").path("genome").get(String.class).split("\\n");
-
-        for(String genome: Data){
-            String[] tab=genome.split("\\t");
-            if(tab.length < 2) {
-                System.err.println("Fatal Error : kegg api does not return the good format");
-                return false;
-            }
-            if (tab[1].split(";")[0].equalsIgnoreCase(keggId)){
-                return true;
-            }
+        if (res.size() != list.size()) {
+            throw new Exception("[met4j-io][Kegg2BioNetwork] Problem while loading entities "
+                    + ids + " : the number of results is different than the number of ids");
         }
-        return false;
 
+        return res;
     }
 
     /**
@@ -665,112 +767,66 @@ public class Kegg2BioNetwork {
         return network;
     }
 
-
     /**
-     * <p>Getter for the field <code>keggOrgId</code>.</p>
-     *
-     * @return a {@link java.lang.String} object.
+     * Sets the links between ecs and genes.
      */
-    public String getKeggOrgId() {
-        return keggOrgId;
-    }
+    public void setECList() throws Exception {
 
+        String ecEntries;
 
-    /**
-     * <p>Setter for the field <code>network</code>.</p>
-     *
-     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
-     */
-    public void setNetwork(BioNetwork network) {
-        this.network = network;
-    }
+        ecEntries = keggServices.getKeggEcGeneEntries(this.keggOrgId);
 
+        String[] Data = ecEntries.split("\\n");
 
-    /**
-     * <p>Setter for the field <code>keggOrgId</code>.</p>
-     *
-     * @param keggOrgId a {@link java.lang.String} object.
-     */
-    public void setKeggOrgId(String keggOrgId) {
-        this.keggOrgId = keggOrgId;
-    }
-
-    /**
-     * <p>Getter for the field <code>config</code>.</p>
-     *
-     * @return a {@link com.sun.jersey.api.client.config.ClientConfig} object.
-     */
-    public ClientConfig getConfig() {
-        return config;
-    }
-
-    /**
-     * <p>Getter for the field <code>client</code>.</p>
-     *
-     * @return a {@link com.sun.jersey.api.client.Client} object.
-     */
-    public Client getClient() {
-        return client;
-    }
-
-    /**
-     * <p>Getter for the field <code>webResource</code>.</p>
-     *
-     * @return a {@link com.sun.jersey.api.client.WebResource} object.
-     */
-    public WebResource getWebResource() {
-        return webResource;
-    }
-
-    /**
-     * <p>Setter for the field <code>config</code>.</p>
-     *
-     * @param config a {@link com.sun.jersey.api.client.config.ClientConfig} object.
-     */
-    public void setConfig(ClientConfig config) {
-        this.config = config;
-    }
-
-    /**
-     * <p>Setter for the field <code>client</code>.</p>
-     *
-     * @param client a {@link com.sun.jersey.api.client.Client} object.
-     */
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    /**
-     * <p>Setter for the field <code>webResource</code>.</p>
-     *
-     * @param webResource a {@link com.sun.jersey.api.client.WebResource} object.
-     */
-    public void setWebResource(WebResource webResource) {
-        this.webResource = webResource;
-    }
-
-    /**
-     * <p>Getter for the field <code>linkECGene</code>.</p>
-     *
-     * @return a {@link java.util.HashMap} object.
-     */
-    public HashMap<String,String> getLinkECGene() {
-        return linkECGene;
-    }
-
-    /**
-     * <p>Setter for the field <code>linkECGene</code>.</p>
-     *
-     * @param id a {@link java.lang.String} object.
-     */
-    public void setLinkECGene(String id) {
-        String[] Data=this.webResource.path("link").path("ec").path(id).get(String.class).split("\\n");
-
-        for (String line: Data){
-            String[] tmp=line.split("\t");
-            linkECGene.put(tmp[1].substring(3, tmp[1].length()) , tmp[0]);
+        for (String line : Data) {
+            String[] tmp = line.split("\t");
+            if (tmp.length != 2) {
+                throw new Exception("[met4j-io][Kegg2BioNetwork] Problem while loading EC numbers: api result badly formatted : " + line);
+            }
+            ecList.add(tmp[1].substring(3));
         }
 
     }
 
+    /**
+     * Partition a list of ids by lists of 10 elements and concatenate them into
+     * strings ready for api
+     * For instance : [A,B,C,D,E,F,G,H,I,L], [M,N,O]
+     * will return :
+     * ["A+B+C+D+E+F+G+H+I+L"], ["M+N+O"]
+     *
+     * @param ids a {@link List} of ids
+     * @return a {@link Set} of {@link String}
+     */
+    private List<List<String>> patitionIdsByTen(List<String> ids) {
+        return Lists.partition(ids, 10);
+    }
+
+    public HashSet<String> getGeneList() {
+        return geneList;
+    }
+
+    public HashSet<String> getEcList() {
+        return ecList;
+    }
+
+    public HashMap<String, String> getPathwayList() {
+        return pathwayList;
+    }
+
+    /**
+     * Main for testing class
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     */
+    public static void main(String[] args) throws Exception {
+        Kegg2BioNetwork ktbn = new Kegg2BioNetwork("hsa", "reaction");
+        ktbn.keggServices.checkKeggOrgId("bap");
+        try {
+            ktbn.createBionetworkFromKegg();
+        } catch (Exception e) {
+            ktbn.network = null;
+            e.printStackTrace();
+        }
+    }
 }

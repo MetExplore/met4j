@@ -459,8 +459,6 @@ public class JsbmlToBioNetwork {
 		for (SpeciesReference specieRef : listOf) {
 			BioReactant reactant = this.parseParticipantSpecies(specieRef);
 
-			System.err.println("reactant : "+reactant);
-
 			if(reactant != null) {
 				if (specieRef.isSetConstant()) {
 					ReactantAttributes.setConstant(reactant, specieRef.getConstant());

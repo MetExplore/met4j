@@ -45,6 +45,18 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
 public class BioNetworkUtilsTest {
 
+    BioReaction r1;
+    BioReaction r2;
+    BioMetabolite m1;
+    BioMetabolite m2;
+    BioMetabolite m3;
+    BioMetabolite m4;
+    BioCompartment c1;
+    BioPathway pathway1;
+    BioEnzyme enzyme1;
+    BioProtein protein1;
+    BioGene gene1;
+
     @Test
     public void testGetChokeReactions() {
 
@@ -112,22 +124,20 @@ public class BioNetworkUtilsTest {
 
     }
 
-    @Test
-    public void deepCopy() {
-
+    private BioNetwork miniNetwork() {
         BioNetwork originalNetwork = new BioNetwork("ori");
 
-        BioReaction r1 = new BioReaction("R1");
-        BioReaction r2 = new BioReaction("R2");
-        BioMetabolite m1 = new BioMetabolite("M1");
-        BioMetabolite m2 = new BioMetabolite("M2");
-        BioMetabolite m3 = new BioMetabolite("M3");
-        BioMetabolite m4 = new BioMetabolite("M4");
-        BioCompartment c1 = new BioCompartment("c1");
-        BioPathway pathway1 = new BioPathway("pathway1");
-        BioEnzyme enzyme1 = new BioEnzyme("enz1");
-        BioProtein protein1 = new BioProtein("protein1");
-        BioGene gene1 = new BioGene("gene1");
+        r1 = new BioReaction("R1");
+        r2 = new BioReaction("R2");
+        m1 = new BioMetabolite("M1");
+        m2 = new BioMetabolite("M2");
+        m3 = new BioMetabolite("M3");
+        m4 = new BioMetabolite("M4");
+        c1 = new BioCompartment("c1");
+        pathway1 = new BioPathway("pathway1");
+        enzyme1 = new BioEnzyme("enz1");
+        protein1 = new BioProtein("protein1");
+        gene1 = new BioGene("gene1");
 
         originalNetwork.add(r1, r2, m1, m2, m3, m4, c1, pathway1, protein1, gene1, enzyme1);
         originalNetwork.affectToPathway(pathway1, r1, r2);
@@ -138,10 +148,25 @@ public class BioNetworkUtilsTest {
         originalNetwork.affectRight(r1, 1.0, c1, m2);
         originalNetwork.affectLeft(r2, 1.0, c1, m3);
         originalNetwork.affectRight(r2, 2.0, c1, m4);
+        originalNetwork.affectEnzyme(r1, enzyme1);
+
+        return originalNetwork;
+    }
+
+
+    @Test
+    public void deepCopy() {
+
+        BioNetwork originalNetwork = miniNetwork();
 
         BioNetwork newNetwork = BioNetworkUtils.deepCopy(originalNetwork);
 
-        originalNetwork.removeOnCascade(r1, r2, m1, m2, m3, m4, c1, pathway1, protein1, gene1, enzyme1);
+        originalNetwork.removeOnCascade(originalNetwork.getReactionsView());
+        originalNetwork.removeOnCascade(originalNetwork.getMetabolitesView());
+        originalNetwork.removeOnCascade(originalNetwork.getCompartmentsView());
+        originalNetwork.removeOnCascade(originalNetwork.getEnzymesView());
+        originalNetwork.removeOnCascade(originalNetwork.getGenesView());
+        originalNetwork.removeOnCascade(originalNetwork.getProteinsView());
 
         assertEquals(2, newNetwork.getReactionsView().size());
         assertEquals(4, newNetwork.getMetabolitesView().size());
@@ -182,6 +207,29 @@ public class BioNetworkUtilsTest {
 
         assertEquals(enzyme1.getParticipantsView().size(),
                 newNetwork.getEnzymesView().get("enz1").getParticipantsView().size());
+
+        assertEquals(1, newNetwork.getGenesFromReactions(newNetwork.getReactionsView().get("R1")).size());
+
+
+        // Deep copy withot genes
+        // We reinit the original network
+        originalNetwork = miniNetwork();
+        originalNetwork.affectToPathway(pathway1, r1, r2);
+        originalNetwork.affectToCompartment(c1, m1, m2, m3, m4);
+        originalNetwork.affectGeneProduct(protein1, gene1);
+        originalNetwork.affectSubUnit(enzyme1, 1.0, protein1);
+        originalNetwork.affectLeft(r1, 2.0, c1, m1);
+        originalNetwork.affectRight(r1, 1.0, c1, m2);
+        originalNetwork.affectLeft(r2, 1.0, c1, m3);
+        originalNetwork.affectRight(r2, 2.0, c1, m4);
+        originalNetwork.affectEnzyme(r1, enzyme1);
+
+        newNetwork = BioNetworkUtils.deepCopy(originalNetwork, false);
+        assertEquals(2, newNetwork.getReactionsView().size());
+        assertEquals(0, newNetwork.getGenesView().size());
+        assertEquals(0, newNetwork.getProteinsView().size());
+        assertEquals(0, newNetwork.getEnzymesView().size());
+        assertEquals(0, newNetwork.getGenesFromReactions(newNetwork.getReactionsView().get("R1")).size());
 
 
     }

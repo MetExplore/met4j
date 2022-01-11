@@ -97,7 +97,7 @@ public class JsbmlToBioNetworkTest {
 	Model model;
 	JsbmlToBioNetwork parser;
 	Compartment c1, c2, c3;
-	Species m1, m2, m3;
+	Species m1, m2, m3, m4;
 	Reaction r1, r2, r3;
 	SpeciesType type1, type2, type3;
 
@@ -148,6 +148,8 @@ public class JsbmlToBioNetworkTest {
 
 		m1 = model.createSpecies("m1", "name1", c1);
 		m2 = model.createSpecies("m2", "name2", c2);
+		m4 = model.createSpecies("m4", "m4", c1);
+
 		m3 = model.createSpecies("m3");
 		m3.setCompartment(c1);
 
@@ -213,7 +215,12 @@ public class JsbmlToBioNetworkTest {
 			m2Ref.setConstant(false);
 		}
 
+		// This metabolite must not be taken into account
+		SpeciesReference m4Ref = new SpeciesReference(m4);
+		m4Ref.setStoichiometry(0.0);
+
 		r1.addReactant(m1Ref);
+		r1.addReactant(m4Ref);
 		r1.addProduct(m2Ref);
 		r1.addProduct(m1RefBis);
 
@@ -400,6 +407,7 @@ public class JsbmlToBioNetworkTest {
 		testIds.add("m1");
 		testIds.add("m2");
 		testIds.add("m3");
+		testIds.add("m4");
 
 		assertEquals(testIds, parser.getNetwork().getMetabolitesView().getIds());
 
@@ -407,6 +415,7 @@ public class JsbmlToBioNetworkTest {
 		testNames.add("name1");
 		testNames.add("name2");
 		testNames.add("m3");
+		testNames.add("m4");
 
 		assertEquals(testNames,
 				parser.getNetwork().getMetabolitesView().stream().map(x -> x.getName()).collect(Collectors.toSet()));
@@ -486,7 +495,7 @@ public class JsbmlToBioNetworkTest {
 		assertTrue(reaction2.isReversible());
 		assertTrue(reaction3.isReversible());
 
-		assertEquals(r1.getListOfReactants().size(), parser.getNetwork().getLeftReactants(reaction1).size());
+		assertEquals(1, parser.getNetwork().getLeftReactants(reaction1).size());
 		assertEquals(r1.getListOfProducts().size(), parser.getNetwork().getRightReactants(reaction1).size());
 
 		testIds.clear();

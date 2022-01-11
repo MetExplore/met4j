@@ -65,7 +65,7 @@ public abstract class BioEntity {
     public BioEntity(String id, String name) {
 
         if (StringUtils.isVoid(id)) {
-            String newId = UUID.randomUUID().toString();
+            String newId = UUID.randomUUID().toString().replaceAll("-","_");
             this.id = newId;
             System.err.println("Invalid id for building a BioEntity: " + id);
             System.err.println("Creates a random unique id : " + newId);

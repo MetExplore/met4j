@@ -459,14 +459,18 @@ public class JsbmlToBioNetwork {
 		for (SpeciesReference specieRef : listOf) {
 			BioReactant reactant = this.parseParticipantSpecies(specieRef);
 
-			if (specieRef.isSetConstant()) {
-				ReactantAttributes.setConstant(reactant, specieRef.getConstant());
-			}
+			System.err.println("reactant : "+reactant);
 
-			if (side.equals("left")) {
-				this.getNetwork().affectLeft(bionetReaction, reactant);
-			} else {
-				this.getNetwork().affectRight(bionetReaction, reactant);
+			if(reactant != null) {
+				if (specieRef.isSetConstant()) {
+					ReactantAttributes.setConstant(reactant, specieRef.getConstant());
+				}
+
+				if (side.equals("left")) {
+					this.getNetwork().affectLeft(bionetReaction, reactant);
+				} else {
+					this.getNetwork().affectRight(bionetReaction, reactant);
+				}
 			}
 
 		}
@@ -615,10 +619,20 @@ public class JsbmlToBioNetwork {
 			stoDbl = -stoDbl;
 		}
 
-		BioMetabolite bionetSpecies = this.getNetwork().getMetabolitesView().get(specieId);
+		if(stoDbl == 0)
+		{
+			System.err.println("Warning : coefficient equals to 0 for " + specieId+" : This reactant won't be added to the reaction");
+			stoDbl = -stoDbl;
+		}
 
-		BioReactant reactant = new BioReactant(bionetSpecies, stoDbl,
-				this.getNetwork().getCompartmentsView().get(specie.getCompartment()));
+		BioReactant reactant = null;
+
+		if(stoDbl != 0) {
+			BioMetabolite bionetSpecies = this.getNetwork().getMetabolitesView().get(specieId);
+
+			reactant = new BioReactant(bionetSpecies, stoDbl,
+					this.getNetwork().getCompartmentsView().get(specie.getCompartment()));
+		}
 
 		return reactant;
 	}

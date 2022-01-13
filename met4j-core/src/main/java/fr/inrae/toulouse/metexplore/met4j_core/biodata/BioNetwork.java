@@ -89,15 +89,6 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     * Copy only the id, the refs and the attributes
-     *
-     * @param network Original BioNetwork
-     */
-    public BioNetwork(BioNetwork network) {
-        super(network);
-    }
-
-    /**
      * Add several entities
      *
      * @param bioEntities 0 to several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} instances

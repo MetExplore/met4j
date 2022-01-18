@@ -237,17 +237,6 @@ public class BioCollectionTest {
 
 	}
 
-	@Test(expected = UnsupportedOperationException.class)
-	public void testGetView() {
-
-		BioCollection<BioMetabolite> c2 = collec.getView();
-
-		assertEquals(2, c2.size());
-
-		c2.remove(m1);
-
-	}
-
 	@Test
 	public void testEqualsObject() {
 

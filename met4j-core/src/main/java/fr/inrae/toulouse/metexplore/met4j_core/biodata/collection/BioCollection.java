@@ -245,7 +245,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @return an unmodifiable copy of the {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection}
 	 */
 	public BioCollection<E> getView() {
-		return new BioCollection<>(Collections.unmodifiableMap(new HashMap<>(this.entities)));
+		return new BioCollection<>(new HashMap<>(this.entities));
 	}
 
 	/** {@inheritDoc} */

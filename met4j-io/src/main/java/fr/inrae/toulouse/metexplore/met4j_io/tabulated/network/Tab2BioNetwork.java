@@ -567,11 +567,7 @@ public class Tab2BioNetwork {
                 cpd = new BioMetabolite(cpdId);
                 this.bioNetwork.add(cpd);
             }
-
-
-            this.bioNetwork.add(compartment);
             this.bioNetwork.affectToCompartment(compartment, cpd);
-
 
             if (cpd.getId().endsWith(this.flagExternal)) {
                 MetaboliteAttributes.setBoundaryCondition(cpd, true);

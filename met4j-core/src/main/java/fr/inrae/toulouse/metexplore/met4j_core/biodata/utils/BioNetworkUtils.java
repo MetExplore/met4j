@@ -132,7 +132,6 @@ public class BioNetworkUtils {
         // Copy metabolites
         BioCollection<BioMetabolite> metabolitesToCopy = networkIn.getMetabolitesView();
         if (keepPrevious) {
-            metabolitesToCopy = new BioCollection<>(metabolitesToCopy);
             metabolitesToCopy.removeAll(networkOut.getMetabolitesView());
         }
 
@@ -145,7 +144,6 @@ public class BioNetworkUtils {
         // Copy metabolites
         BioCollection<BioCompartment> compartmentsToCopy = networkIn.getCompartmentsView();
         if (keepPrevious) {
-            compartmentsToCopy = new BioCollection<>(compartmentsToCopy);
             compartmentsToCopy.removeAll(networkOut.getCompartmentsView());
         }
 
@@ -174,7 +172,6 @@ public class BioNetworkUtils {
         if (keepGPR) {
             BioCollection<BioGene> genesToCopy = networkIn.getGenesView();
             if (keepPrevious) {
-                genesToCopy = new BioCollection<>(genesToCopy);
                 genesToCopy.removeAll(networkOut.getGenesView());
             }
 
@@ -188,7 +185,6 @@ public class BioNetworkUtils {
         if (keepGPR) {
             BioCollection<BioProtein> proteinsToCopy = networkIn.getProteinsView();
             if (keepPrevious) {
-                proteinsToCopy = new BioCollection<>(proteinsToCopy);
                 proteinsToCopy.removeAll(networkOut.getProteinsView());
             }
             for (BioProtein protein : networkIn.getProteinsView()) {
@@ -215,7 +211,6 @@ public class BioNetworkUtils {
 
             BioCollection<BioEnzyme> enzymesToCopy = networkIn.getEnzymesView();
             if (keepPrevious) {
-                enzymesToCopy = new BioCollection<>(enzymesToCopy);
                 enzymesToCopy.removeAll(networkOut.getEnzymesView());
             }
 
@@ -262,7 +257,6 @@ public class BioNetworkUtils {
         // Copy reactions
         BioCollection<BioReaction> reactionsToCopy = networkIn.getReactionsView();
         if (keepPrevious) {
-            reactionsToCopy = new BioCollection<>(reactionsToCopy);
             reactionsToCopy.removeAll(networkOut.getReactionsView());
         }
 
@@ -314,7 +308,6 @@ public class BioNetworkUtils {
         // Copy pathways
         BioCollection<BioPathway> pathwaysToCopy = networkIn.getPathwaysView();
         if (keepPrevious) {
-            pathwaysToCopy = new BioCollection<>(pathwaysToCopy);
             pathwaysToCopy.removeAll(networkOut.getPathwaysView());
         }
 

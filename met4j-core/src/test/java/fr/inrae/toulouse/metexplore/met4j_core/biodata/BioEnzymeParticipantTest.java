@@ -67,7 +67,7 @@ public class BioEnzymeParticipantTest {
 		
 		assertNotEquals("p and p2 must not be equal", p, p2);
 		
-		assertEquals("p and pBis must not be equal", p, pBis);
+		assertEquals("p and pBis must be equal", p, pBis);
 		
 		
 	}

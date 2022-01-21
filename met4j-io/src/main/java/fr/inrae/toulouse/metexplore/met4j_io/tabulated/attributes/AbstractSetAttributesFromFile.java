@@ -68,15 +68,27 @@ public abstract class AbstractSetAttributesFromFile {
     private Boolean addPrefix = false;
     private Boolean addSuffix = false;
 
-    /** Constant <code>REACTION="R"</code> */
+    private Set<String> ids;
+
+    /**
+     * Constant <code>REACTION="R"</code>
+     */
     public static final String REACTION = "R";
-    /** Constant <code>METABOLITE="M"</code> */
+    /**
+     * Constant <code>METABOLITE="M"</code>
+     */
     public static final String METABOLITE = "M";
-    /** Constant <code>PROTEIN="P"</code> */
+    /**
+     * Constant <code>PROTEIN="P"</code>
+     */
     public static final String PROTEIN = "P";
-    /** Constant <code>GENE="G"</code> */
+    /**
+     * Constant <code>GENE="G"</code>
+     */
     public static final String GENE = "G";
-    /** Constant <code>PATHWAY="Pa"</code> */
+    /**
+     * Constant <code>PATHWAY="Pa"</code>
+     */
     public static final String PATHWAY = "Pa";
 
     private Set<String> objectIds;
@@ -86,24 +98,19 @@ public abstract class AbstractSetAttributesFromFile {
     /**
      * <p>Constructor for AbstractSetAttributesFromFile.</p>
      *
-     * @param colAttr
-     *            : number of the attribute column
-     * @param bn
-     *            : BioNetwork
-     * @param fileIn
-     *            : tabulated file containing the ids and the attributes
-     * @param c
-     *            : comment character
-     * @param o
-     *            : object to set ("R" : reaction, "M" : metabolite, "G" : gene,
-     *            "P" : protein, "PA" : pathway)
-     * @param p a {@link java.lang.Boolean} object.
-     * @param nSkip a int.
-     * @param s a {@link java.lang.Boolean} object.
-     * @param colId a int.
+     * @param colAttr : number of the attribute column
+     * @param bn      : BioNetwork
+     * @param fileIn  : tabulated file containing the ids and the attributes
+     * @param c       : comment character
+     * @param o       : object to set ("R" : reaction, "M" : metabolite, "G" : gene,
+     *                "P" : protein, "PA" : pathway)
+     * @param p       a {@link java.lang.Boolean} object.
+     * @param nSkip   a int.
+     * @param s       a {@link java.lang.Boolean} object.
+     * @param colId   a int.
      */
     public AbstractSetAttributesFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, String o,
-                                     Boolean p, Boolean s) {
+                                         Boolean p, Boolean s) {
 
         this.setColId(colId);
         this.setColAttr(colAttr);
@@ -114,6 +121,7 @@ public abstract class AbstractSetAttributesFromFile {
         this.setAddPrefix(p);
         this.setAddSuffix(s);
         this.setIdAttributeMap(new HashMap<String, String>());
+        this.ids = new HashSet<>();
 
         if (!o.equalsIgnoreCase(REACTION) && !o.equalsIgnoreCase(METABOLITE) && !o.equalsIgnoreCase(PROTEIN)
                 && !o.equalsIgnoreCase(GENE) && !o.equalsIgnoreCase(PATHWAY)) {
@@ -180,131 +188,11 @@ public abstract class AbstractSetAttributesFromFile {
 
         int nLines = 0;
 
-        Set<String> ids = new HashSet<String>();
-
         while ((ligne = br.readLine()) != null) {
 
             nLines++;
 
-            if (nLines > this.nSkip) {
-                if (this.getCommentCharacter().equals("") || !ligne.matches("^" + this.getCommentCharacter() + ".*")) {
-                    String[] tab = ligne.split("\\t");
-
-                    if (tab.length <= this.colId || tab.length <= this.colAttr) {
-                        System.err
-                                .println("********\n[Warning]Bad number of columns line " + nLines + "\n********");
-                        // flag = false;
-                    } else {
-
-                        String attribute = tab[this.colAttr];
-
-                        if (!this.testAttribute(attribute)) {
-                            System.err.println("********\n[Warning]Attribute \"" + attribute
-                                    + "\" not well formatted\n********");
-                            // flag = false;
-                        }
-
-                        String id = tab[this.colId];
-                        // remove spaces
-                        id = id.trim();
-
-                        if (this.getObject().equalsIgnoreCase(METABOLITE)) {
-                            // To transform metabolite id like this cpd[c] in
-                            // cpd_c
-                            Pattern cpd_Pattern = Pattern.compile("^.*(\\[([^\\]]*)\\])$");
-
-                            Matcher matcherCpd = cpd_Pattern.matcher(id);
-
-                            // cpd(e) becomes cpd_e
-                            if (matcherCpd.matches()) {
-                                id = id.replace(matcherCpd.group(1), "_" + matcherCpd.group(2));
-                            }
-                        }
-
-                        if (this.getObject().equalsIgnoreCase(METABOLITE) && this.addSuffix) {
-                            Boolean presence = false;
-
-                            BioCollection<BioCompartment> compartmentsView = this.getNetwork().getCompartmentsView();
-                            // Checks if the suffix corresponds to a compartment
-                            for (String compartmentId : compartmentsView.getIds()) {
-
-                                String metaboliteId = id;
-
-                                // // To see if the id ends with _compartmentId
-                                // Pattern cpt_Pattern =
-                                // Pattern.compile("^.*_([^_])"+compartmentId+"$");
-                                //
-                                // metaboliteId =
-                                // metaboliteId.replaceAll("[^A-Za-z0-9_]",
-                                // "_");
-                                //
-                                // System.err.println(metaboliteId);
-                                //
-                                // Matcher matcherCpt =
-                                // cpt_Pattern.matcher(metaboliteId);
-
-                                // if(! matcherCpt.matches()) {
-                                metaboliteId = (this.addPrefix ? "M_" : "") + metaboliteId + "_" + compartmentId;
-                                // }
-                                // else {
-                                // metaboliteId = (this.addPrefix ? "M_" : "")
-                                // +metaboliteId;
-                                // }
-
-                                if (this.getNetwork().getMetabolitesView().containsId(metaboliteId)) {
-                                    this.getIdAttributeMap().put(metaboliteId, attribute);
-                                    presence = true;
-                                }
-                            }
-
-                            if (presence && ids.contains(id)) {
-                                System.err.println("[Warning] Duplicated id : " + id + " line " + nLines);
-                                // flag = false;
-                            }
-
-                            if (presence) {
-                                ids.add(id);
-                            }
-
-                            if (!presence) {
-                                System.err.println("[Warning] Metabolite " + id
-                                        + " does not correspond to any metabolite in the network line " + nLines);
-                                // flag = false;
-                            }
-                        } else {
-
-//							id = id.replaceAll("[^A-Za-z0-9_]", "_");
-
-                            if (this.addPrefix && this.object.equalsIgnoreCase(REACTION)) {
-                                if (!id.startsWith("R_"))
-                                    id = "R_" + id;
-                            } else if (this.addPrefix && this.object.equalsIgnoreCase(METABOLITE)) {
-                                if (!id.startsWith("M_"))
-                                    id = "M_" + id;
-                            }
-
-                            if (id.equals("")) {
-                                System.err.println(
-                                        "********\n[Fatal Error]Empty object id empty line " + nLines + "\n********");
-                                flag = false;
-                            }
-
-                            if (ids.contains(id)) {
-                                System.err.println("[Warning] Duplicated id : " + id + " line " + nLines);
-                            } else {
-                                if (!this.objectIds.contains(id)) {
-                                    System.err
-                                            .println("[Warning] " + id + " not present in the network line " + nLines);
-                                    // flag = false;
-                                } else {
-                                    this.getIdAttributeMap().put(id, attribute);
-                                    ids.add(id);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            flag = parseLine(ligne, nLines);
         }
 
         br.close();
@@ -319,11 +207,140 @@ public abstract class AbstractSetAttributesFromFile {
 
     }
 
+    protected Boolean parseLine(String line, int nLines) {
+
+        Boolean flag = true;
+
+        line = line.replace("\n", "").replace("\r", "");
+
+        if ((nLines > this.nSkip) && (! line.isEmpty())
+                && (this.getCommentCharacter().equals("")
+                || !line.matches("^" + this.getCommentCharacter() + ".*"))) {
+
+            String[] tab = line.split("\\t");
+
+            if (tab.length <= this.colId || tab.length <= this.colAttr) {
+                System.err
+                        .println("********\n[Error]Bad number of columns line " + nLines + "\n********");
+                flag = false;
+            } else {
+
+                String attribute = tab[this.colAttr];
+
+                if (!this.testAttribute(attribute)) {
+                    System.err.println("********\n[Warning]Attribute \"" + attribute
+                            + "\" not well formatted\n********");
+                    flag = false;
+                }
+
+                String id = tab[this.colId];
+                // remove spaces
+                id = id.trim();
+
+                if (this.getObject().equalsIgnoreCase(METABOLITE)) {
+                    // To transform metabolite id like this cpd[c] in
+                    // cpd_c
+                    Pattern cpd_Pattern = Pattern.compile("^.*(\\[([^\\]]*)\\])$");
+
+                    Matcher matcherCpd = cpd_Pattern.matcher(id);
+
+                    // cpd(e) becomes cpd_e
+                    if (matcherCpd.matches()) {
+                        id = id.replace(matcherCpd.group(1), "_" + matcherCpd.group(2));
+                    }
+                }
+
+                if (this.getObject().equalsIgnoreCase(METABOLITE) && this.addSuffix) {
+                    Boolean presence = false;
+
+                    BioCollection<BioCompartment> compartmentsView = this.getNetwork().getCompartmentsView();
+                    // Checks if the suffix corresponds to a compartment
+                    for (String compartmentId : compartmentsView.getIds()) {
+
+                        String metaboliteId = id;
+
+                        // // To see if the id ends with _compartmentId
+                        // Pattern cpt_Pattern =
+                        // Pattern.compile("^.*_([^_])"+compartmentId+"$");
+                        //
+                        // metaboliteId =
+                        // metaboliteId.replaceAll("[^A-Za-z0-9_]",
+                        // "_");
+                        //
+                        // System.err.println(metaboliteId);
+                        //
+                        // Matcher matcherCpt =
+                        // cpt_Pattern.matcher(metaboliteId);
+
+                        // if(! matcherCpt.matches()) {
+                        metaboliteId = (this.addPrefix ? "M_" : "") + metaboliteId + "_" + compartmentId;
+                        // }
+                        // else {
+                        // metaboliteId = (this.addPrefix ? "M_" : "")
+                        // +metaboliteId;
+                        // }
+
+                        if (this.getNetwork().getMetabolitesView().containsId(metaboliteId)) {
+                            this.getIdAttributeMap().put(metaboliteId, attribute);
+                            presence = true;
+                        }
+                    }
+
+                    if (presence && ids.contains(id)) {
+                        System.err.println("[Warning] Duplicated id : " + id + " line " + nLines);
+                        flag = false;
+                    }
+
+                    if (presence) {
+                        ids.add(id);
+                    }
+
+                    if (!presence) {
+                        System.err.println("[Warning] Metabolite " + id
+                                + " does not correspond to any metabolite in the network line " + nLines);
+                        // flag = false;
+                    }
+                } else {
+//							id = id.replaceAll("[^A-Za-z0-9_]", "_");
+
+                    if (this.addPrefix && this.object.equalsIgnoreCase(REACTION)) {
+                        if (!id.startsWith("R_"))
+                            id = "R_" + id;
+                    } else if (this.addPrefix && this.object.equalsIgnoreCase(METABOLITE)) {
+                        if (!id.startsWith("M_"))
+                            id = "M_" + id;
+                    }
+
+                    if (id.equals("")) {
+                        System.err.println(
+                                "********\n[Fatal Error]Empty object id empty column " + nLines + "\n********");
+                        flag = false;
+                    }
+
+                    if (ids.contains(id)) {
+                        System.err.println("[Warning] Duplicated id : " + id + " line " + nLines);
+                        flag = false;
+                    } else {
+                        if (!this.objectIds.contains(id)) {
+                            System.err
+                                    .println("[Warning] " + id + " not present in the network line " + nLines);
+                            // flag = false;
+                        } else {
+                            this.getIdAttributeMap().put(id, attribute);
+                            ids.add(id);
+                        }
+                    }
+                }
+            }
+        }
+        return flag;
+    }
+
     /**
      * Abstract function to validate the attribute
      *
-     * @return true if attribute well formatted
      * @param attribute a {@link java.lang.String} object.
+     * @return true if attribute well formatted
      */
     public abstract Boolean testAttribute(String attribute);
 
@@ -347,8 +364,7 @@ public abstract class AbstractSetAttributesFromFile {
     /**
      * <p>Setter for the field <code>colId</code>.</p>
      *
-     * @param colId
-     *            the colId to set
+     * @param colId the colId to set
      */
     public void setColId(int colId) {
         this.colId = colId;
@@ -366,8 +382,7 @@ public abstract class AbstractSetAttributesFromFile {
     /**
      * <p>Setter for the field <code>colAttr</code>.</p>
      *
-     * @param colAttr
-     *            the colAttr to set
+     * @param colAttr the colAttr to set
      */
     public void setColAttr(int colAttr) {
         this.colAttr = colAttr;
@@ -385,8 +400,7 @@ public abstract class AbstractSetAttributesFromFile {
     /**
      * <p>setNetwork.</p>
      *
-     * @param bn
-     *            the network to set
+     * @param bn the network to set
      */
     public void setNetwork(BioNetwork bn) {
         this.bn = bn;
@@ -404,8 +418,7 @@ public abstract class AbstractSetAttributesFromFile {
     /**
      * <p>Setter for the field <code>fileIn</code>.</p>
      *
-     * @param fileIn
-     *            the fileIn to set
+     * @param fileIn the fileIn to set
      */
     public void setFileIn(String fileIn) {
         this.fileIn = fileIn;
@@ -423,8 +436,7 @@ public abstract class AbstractSetAttributesFromFile {
     /**
      * <p>Setter for the field <code>commentCharacter</code>.</p>
      *
-     * @param commentCharacter
-     *            the commentCharacter to set
+     * @param commentCharacter the commentCharacter to set
      */
     public void setCommentCharacter(String commentCharacter) {
         this.commentCharacter = commentCharacter;
@@ -442,8 +454,7 @@ public abstract class AbstractSetAttributesFromFile {
     /**
      * <p>Setter for the field <code>nSkip</code>.</p>
      *
-     * @param nSkip
-     *            the nSkip to set
+     * @param nSkip the nSkip to set
      */
     public void setnSkip(int nSkip) {
         this.nSkip = nSkip;
@@ -461,8 +472,7 @@ public abstract class AbstractSetAttributesFromFile {
     /**
      * <p>Setter for the field <code>object</code>.</p>
      *
-     * @param object
-     *            the object to set
+     * @param object the object to set
      */
     public void setObject(String object) {
         this.object = object;
@@ -498,8 +508,7 @@ public abstract class AbstractSetAttributesFromFile {
     /**
      * <p>Setter for the field <code>idAttributeMap</code>.</p>
      *
-     * @param idAttributeMap
-     *            the idAttributeMap to set
+     * @param idAttributeMap the idAttributeMap to set
      */
     public void setIdAttributeMap(HashMap<String, String> idAttributeMap) {
         this.idAttributeMap = idAttributeMap;

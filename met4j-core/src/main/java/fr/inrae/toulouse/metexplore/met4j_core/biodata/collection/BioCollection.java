@@ -198,7 +198,15 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	/** {@inheritDoc} */
 	@Override
 	public boolean add(E e) {
-		entities.put(e.getId(), e);
+		if(entities.containsValue(e)) {
+			return false;
+		}
+		else {
+			if (entities.keySet().contains(e.getId())) {
+				throw new IllegalArgumentException("An entity with the same id (" + e.getId() + ") is already present in the BioCollection");
+			}
+			entities.put(e.getId(), e);
+		}
 		return true;
 	}
 

@@ -54,8 +54,8 @@ public class BioEnzymeParticipant extends BioParticipant {
      * @param physicalEntity the physical entity that is contained in the enzyme
      * @param stoichiometry  the number of unities of the physical entity
      */
-    public BioEnzymeParticipant(BioPhysicalEntity physicalEntity, Double stoichiometry) {
-        super(physicalEntity, stoichiometry);
+    protected BioEnzymeParticipant(BioPhysicalEntity physicalEntity, Double stoichiometry) {
+        super(physicalEntity.getId() + "__" + stoichiometry, physicalEntity, stoichiometry);
     }
 
     /**
@@ -65,7 +65,7 @@ public class BioEnzymeParticipant extends BioParticipant {
      *                       The stoichiometry is put to 1.
      */
     public BioEnzymeParticipant(BioPhysicalEntity physicalEntity) {
-        super(physicalEntity, 1.0);
+        this(physicalEntity, 1.0);
     }
 
     /**
@@ -92,7 +92,7 @@ public class BioEnzymeParticipant extends BioParticipant {
 
         }
 
-        String buffer = quantityStr + " " + this.getId();
+        String buffer = quantityStr + " " + this.getPhysicalEntity().getId();
 
         return buffer;
 

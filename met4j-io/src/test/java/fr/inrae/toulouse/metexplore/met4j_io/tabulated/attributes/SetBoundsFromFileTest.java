@@ -40,7 +40,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.Flux;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -207,7 +206,7 @@ public class SetBoundsFromFileTest {
     public void setLowerBounds() throws IOException {
         SetBoundsFromFile c = Mockito.spy(new SetBoundsFromFile(0, 1, network, "", "#", 1, false, BoundsType.LOWER));
 
-        Mockito.doReturn(true).when(c).test();
+        Mockito.doReturn(true).when(c).parseAttributeFile();
 
         String line = "r1\t12.0\n";
 
@@ -229,7 +228,7 @@ public class SetBoundsFromFileTest {
     public void setUpperBounds() throws IOException {
         SetBoundsFromFile c = Mockito.spy(new SetBoundsFromFile(0, 1, network, "", "#", 1, false, BoundsType.UPPER));
 
-        Mockito.doReturn(true).when(c).test();
+        Mockito.doReturn(true).when(c).parseAttributeFile();
 
         String line = "r1\t12.0\n";
 

@@ -237,22 +237,4 @@ public class BioCollectionTest {
 
 	}
 
-	@Test
-	public void testEqualsObject() {
-
-		BioCollection<BioMetabolite> c2 = new BioCollection<BioMetabolite>();
-
-		BioMetabolite m1Bis = new BioMetabolite("m1", "metabolite1");
-		BioMetabolite m2Bis = new BioMetabolite("m2", "metabolite2");
-
-		c2.add(m1Bis);
-
-		assertFalse(collec.equals(c2));
-
-		c2.add(m2Bis);
-
-		assertTrue(collec.equals(c2));
-
-	}
-
 }

@@ -36,6 +36,7 @@
 
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
+import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.EntityType;
 import org.kohsuke.args4j.Option;
 
 /**
@@ -58,8 +59,8 @@ public abstract class AbstractSbmlSetAny extends AbstractSbmlSet {
     @Option(name="-s", usage="[deactivated] To match the objects in the sbml file, adds the suffix _comparmentID to metabolites")
     protected Boolean s=false;
 
-    @Option(name="-o", usage="[R] Object type in the column id. R:reaction;M:metabolite;P:protein;G:gene")
-    protected String o="R";
+    @Option(name="-o", usage="[REACTION] Object type in the column id : REACTION;METABOLITE;PROTEIN;GENE;PATHWAY")
+    protected EntityType o= EntityType.REACTION;
 
     /**
      * <p>Constructor for AbstractSbmlSetAny.</p>

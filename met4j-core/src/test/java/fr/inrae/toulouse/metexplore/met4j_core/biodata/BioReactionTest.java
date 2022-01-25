@@ -56,7 +56,7 @@ public class BioReactionTest {
 	public static BioMetabolite l1, l2, r1, r2;
 	public static BioReactant l1Reactant, l2Reactant, r1Reactant, r2Reactant;
 
-	public static BioReaction reaction;
+	public static BioReaction reaction, reaction2;
 
 	public static BioGene g1, g2, g3;
 
@@ -79,14 +79,20 @@ public class BioReactionTest {
 		r2Reactant = new BioReactant(r2, 1.0, cpt2);
 
 		reaction = new BioReaction("testreaction");
+		reaction2 = new BioReaction("testreaction2");
 
-		network.add(reaction, cpt1, cpt2, l1, l2, r1, r2);
+		network.add(reaction, reaction2, cpt1, cpt2, l1, l2, r1, r2);
 
 		network.affectToCompartment(cpt1, l1, l2);
 		network.affectToCompartment(cpt2, r1, r2);
 
+		network.addReactants(l1Reactant, l2Reactant, r1Reactant, r2Reactant);
+
 		network.affectLeft(reaction, l1Reactant, l2Reactant);
 		network.affectRight(reaction, r1Reactant, r2Reactant);
+
+		network.affectLeft(reaction2, l1Reactant);
+		network.affectRight(reaction2, l2Reactant);
 
 		BioEnzyme e1 = new BioEnzyme("e1");
 		BioProtein p1 = new BioProtein("p1");
@@ -104,6 +110,9 @@ public class BioReactionTest {
 		BioEnzymeParticipant ep1 = new BioEnzymeParticipant(p1);
 		BioEnzymeParticipant ep2 = new BioEnzymeParticipant(p2);
 		BioEnzymeParticipant ep3 = new BioEnzymeParticipant(p3);
+
+		network.addEnzymeParticipants(ep1, ep2, ep3);
+
 		network.affectSubUnit(e1, ep1);
 		network.affectSubUnit(e2, ep2, ep3);
 
@@ -136,11 +145,8 @@ public class BioReactionTest {
 		// Positive test
 		assertTrue("Must be a transport reaction", reaction.isTransportReaction());
 
-		// Negative Test
-		r1Reactant.setLocation(cpt1);
-		r2Reactant.setLocation(cpt1);
 
-		assertFalse("Must not be a transport reaction", reaction.isTransportReaction());
+		assertFalse("Must not be a transport reaction", reaction2.isTransportReaction());
 	}
 
 	/**

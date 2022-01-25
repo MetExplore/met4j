@@ -35,6 +35,7 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
+import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -49,7 +50,7 @@ import java.util.Objects;
  */
 public class BioReactant extends BioParticipant {
 
-	private BioCompartment location = null;
+	private final BioCompartment location;
 
 	/**
 	 * Constructor
@@ -58,9 +59,9 @@ public class BioReactant extends BioParticipant {
 	 * @param stoichiometry stoichiometric coefficient
 	 * @param location a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
 	 */
-	public BioReactant(BioMetabolite metabolite, Double stoichiometry, BioCompartment location) {
-		super(metabolite, stoichiometry);
-		this.setLocation(location);
+	protected BioReactant(@Nonnull BioMetabolite metabolite, Double stoichiometry, @Nonnull BioCompartment location) {
+		super(metabolite.getId()+"__"+stoichiometry+"__"+location.getId(), metabolite, stoichiometry);
+		this.location = location;
 	}
 
 	/**
@@ -70,15 +71,6 @@ public class BioReactant extends BioParticipant {
 	 */
 	public BioCompartment getLocation() {
 		return location;
-	}
-
-	/**
-	 * Set location
-	 *
-	 * @param location a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-	 */
-	protected void setLocation(BioCompartment location) {
-		this.location = location;
 	}
 
 	/**
@@ -114,7 +106,7 @@ public class BioReactant extends BioParticipant {
 
 		StringBuilder buffer = new StringBuilder(quantityStr);
 		buffer.append(" ");
-		buffer.append(this.getId());
+		buffer.append(this.getPhysicalEntity().getId());
 		if (this.getLocation() != null) {
 			buffer.append("[");
 			buffer.append(this.getLocation().getId());

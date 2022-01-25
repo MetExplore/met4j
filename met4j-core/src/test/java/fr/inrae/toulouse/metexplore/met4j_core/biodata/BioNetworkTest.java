@@ -467,14 +467,13 @@ public class BioNetworkTest {
 
         network.affectLeft(reaction, 1.0, cpt, s1);
 
-        BioReactant reactant = new BioReactant(s2, 1.0, cpt);
-        network.affectLeft(reaction, reactant);
+        network.affectLeft(reaction, 1.0, cpt, s2);
 
         assertEquals("Substrate not well added", 2, reaction.getLeftReactants().size());
 
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testAffectSubstrateMetaboliteNotPresent() {
 
         BioReaction reaction = new BioReaction("r1");
@@ -493,7 +492,7 @@ public class BioNetworkTest {
      * the metabolite has been removed from the network
      * Must throw an exception
      */
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testAffectSubstrateMetaboliteNotPresent2() {
 
         BioReaction reaction = new BioReaction("r1");
@@ -522,7 +521,7 @@ public class BioNetworkTest {
     /**
      *
      */
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testAffectSubstrateMetaboliteNotInCompartment() {
 
         BioReaction reaction = new BioReaction("r1");
@@ -540,25 +539,15 @@ public class BioNetworkTest {
     @Test
     public void testAffectSubstrateCollection() {
 
-        BioReaction reaction = new BioReaction("r1");
-        network.add(reaction);
-        BioMetabolite s1 = new BioMetabolite("s1");
-        network.add(s1);
-        BioMetabolite s2 = new BioMetabolite("s2");
-        network.add(s2);
-        BioCompartment cpt = new BioCompartment("cpt");
-        network.add(cpt);
+        BioReaction reaction1 = this.addTestReactionToNetwork();
+        BioCollection<BioReactant> reactants = reaction1.getLeftReactants();
 
-        BioReactant reactant1 = new BioReactant(s1, 1.0, cpt);
-        BioReactant reactant2 = new BioReactant(s2, 1.0, cpt);
-        BioCollection<BioReactant> reactants = new BioCollection<>();
-        reactants.add(reactant1, reactant2);
+        BioReaction reaction2 = new BioReaction("r2");
+        this.network.add(reaction2);
 
-        network.affectToCompartment(cpt, s1, s2);
+        network.affectLeft(reaction2, reactants);
 
-        network.affectLeft(reaction, reactants);
-
-        assertEquals("Substrate collection not well added", 2, reaction.getLeftReactants().size());
+        assertEquals("Substrate collection not well added", 2, reaction2.getLeftReactants().size());
 
     }
 
@@ -587,25 +576,18 @@ public class BioNetworkTest {
     @Test
     public void testAffectProductsCollection() {
 
-        BioReaction reaction = new BioReaction("r1");
-        network.add(reaction);
-        BioMetabolite s1 = new BioMetabolite("s1");
-        network.add(s1);
-        BioMetabolite s2 = new BioMetabolite("s2");
-        network.add(s2);
-        BioCompartment cpt = new BioCompartment("cpt");
-        network.add(cpt);
+        BioReaction reaction1 = addTestReactionToNetwork();
 
-        BioReactant reactant1 = new BioReactant(s1, 1.0, cpt);
-        BioReactant reactant2 = new BioReactant(s2, 1.0, cpt);
-        BioCollection<BioReactant> reactants = new BioCollection<>();
-        reactants.add(reactant1, reactant2);
+        BioReaction reaction2 = new BioReaction("r2");
+        network.add(reaction2);
+
+        BioCollection<BioReactant> reactants = reaction1.getRightReactants();
 
         network.affectToCompartment(cpt, s1, s2);
 
-        network.affectRight(reaction, reactants);
+        network.affectRight(reaction2, reactants);
 
-        assertEquals("Product collection not well added", 2, reaction.getRightReactants().size());
+        assertEquals("Product collection not well added", 2, reaction2.getRightReactants().size());
 
     }
 
@@ -745,8 +727,7 @@ public class BioNetworkTest {
         network.affectToCompartment(cpt, s1, s2);
 
         network.affectRight(reaction, 1.0, cpt, s1);
-        BioReactant reactant = new BioReactant(s2, 1.0, cpt);
-        network.affectRight(reaction, reactant);
+        network.affectRight(reaction, 1.0, cpt, s2);
 
         assertEquals("Product not well added", 2, reaction.getRightReactants().size());
     }
@@ -1666,5 +1647,17 @@ public class BioNetworkTest {
 
     }
 
+    @Test
+    public void testGetEnzymeParticipant() {
 
+        BioProtein p1 = new BioProtein("p1");
+        BioEnzyme e1 = new BioEnzyme("e1");
+        BioEnzymeParticipant participant = new BioEnzymeParticipant(p1, 2.0);
+
+        network.add(p1, e1);
+        network.affectSubUnit(e1, 2.0, p1);
+
+        assertNotNull(network.getEnzymeParticipant(p1, 2.0));
+        assertEquals(participant, network.getEnzymeParticipant(p1, 2.0));
+    }
 }

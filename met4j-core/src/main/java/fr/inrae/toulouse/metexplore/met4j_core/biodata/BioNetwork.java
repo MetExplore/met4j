@@ -41,10 +41,7 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -71,6 +68,10 @@ public class BioNetwork extends BioEntity {
     private final BioCollection<BioCompartment> compartments = new BioCollection<>();
 
     private final BioCollection<BioEnzyme> enzymes = new BioCollection<>();
+
+    private final BioCollection<BioReactant> reactants = new BioCollection<>();
+
+    private final BioCollection<BioEnzymeParticipant> enzymeParticipants = new BioCollection<>();
 
     /**
      * <p>Constructor for BioNetwork.</p>
@@ -533,7 +534,7 @@ public class BioNetwork extends BioEntity {
      * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @param reactants a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant}
      */
-    public void affectLeft(BioReaction reaction, BioCollection<BioReactant> reactants) {
+    protected void affectLeft(BioReaction reaction, BioCollection<BioReactant> reactants) {
         this.affectLeft(reaction, reactants.toArray(new BioReactant[0]));
     }
 
@@ -613,7 +614,7 @@ public class BioNetwork extends BioEntity {
      * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @param reactants a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant}
      */
-    public void affectRight(BioReaction reaction, BioCollection<BioReactant> reactants) {
+    protected void affectRight(BioReaction reaction, BioCollection<BioReactant> reactants) {
         this.affectRight(reaction, reactants.toArray(new BioReactant[0]));
     }
 
@@ -629,8 +630,27 @@ public class BioNetwork extends BioEntity {
         removeSideReaction(e, localisation, reaction, BioReaction.Side.RIGHT);
     }
 
+    /**
+     * get a reactant with the same metabolite, stoichiometry and compartment
+     *
+     * @param metabolite
+     * @param stoichiometry
+     * @param compartment
+     * @return
+     */
+    protected BioReactant getReactant(BioMetabolite metabolite, Double stoichiometry, BioCompartment compartment) {
+        Optional<BioReactant> any = this.reactants.stream()
+                .filter(r -> r.getMetabolite().equals(metabolite) &&
+                        r.getQuantity().equals(stoichiometry)
+                        && r.getLocation().equals(compartment)).findAny();
+        if (any.isPresent()) {
+            return any.get();
+        }
+        return null;
+    }
+
     private void affectSideReaction(BioReaction reaction, Double stoichiometry, BioCompartment localisation, BioReaction.Side side, BioMetabolite e) {
-        BioReactant reactant = new BioReactant(e, stoichiometry, localisation);
+
 
         // The network must contain the compartment
         if (!this.compartments.contains(localisation)) {
@@ -651,6 +671,13 @@ public class BioNetwork extends BioEntity {
             throw new IllegalArgumentException("Reaction " + reaction.getId() + " not in the network");
         }
 
+        BioReactant reactant = this.getReactant(e, stoichiometry, localisation);
+
+        if (reactant == null) {
+            reactant = new BioReactant(e, stoichiometry, localisation);
+            this.reactants.add(reactant);
+        }
+
         if (side.equals(BioReaction.Side.LEFT)) {
             reaction.getLeftReactants().add(reactant);
         } else {
@@ -658,10 +685,28 @@ public class BioNetwork extends BioEntity {
         }
     }
 
+    private void addReactant(BioReactant reactant) {
+        this.reactants.add(reactant);
+    }
+
+    /**
+     * Add reactants in the list of reactants
+     * @param reactants
+     */
+    protected void addReactants(BioReactant ...reactants) {
+        for(BioReactant r : reactants) {
+            this.addReactant(r);
+        }
+    }
+
 
     private void affectSideReaction(BioReactant reactant, BioReaction reaction, BioReaction.Side side) {
 
         BioCompartment localisation = reactant.getLocation();
+
+        if (! this.reactants.contains(reactant)) {
+            throw new IllegalArgumentException("Reactant " + reactant.getId() + " not in the network");
+        }
 
         // The network must contain the compartment
         if (!this.compartments.contains(localisation)) {
@@ -685,9 +730,13 @@ public class BioNetwork extends BioEntity {
         }
 
         if (side.equals(BioReaction.Side.LEFT)) {
-            reaction.getLeftReactants().add(reactant);
+            if (!reaction.getLeftReactants().containsId(reactant.getId())) {
+                reaction.getLeftReactants().add(reactant);
+            }
         } else {
-            reaction.getRightReactants().add(reactant);
+            if (!reaction.getRightReactants().containsId(reactant.getId())) {
+                reaction.getRightReactants().add(reactant);
+            }
         }
     }
 
@@ -787,6 +836,23 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
+     * Get enzyme participant with the same quantity and the same entity
+     *
+     * @param quantity
+     * @param unit
+     * @return
+     */
+    protected BioEnzymeParticipant getEnzymeParticipant(BioPhysicalEntity unit, Double quantity) {
+        Optional<BioEnzymeParticipant> any = this.enzymeParticipants.stream()
+                .filter(e -> e.getPhysicalEntity().equals(unit) && e.getQuantity().equals(quantity))
+                .findAny();
+
+        if (any.isPresent()) {
+            return any.get();
+        } else return null;
+    }
+
+    /**
      * Add a subunit to an enzymes
      *
      * @param enzyme   a {@link BioEnzyme}
@@ -796,14 +862,18 @@ public class BioNetwork extends BioEntity {
      */
     private void affectSubUnit(BioEnzyme enzyme, Double quantity, BioPhysicalEntity unit) {
 
-        BioEnzymeParticipant p = new BioEnzymeParticipant(unit, quantity);
-
         if (!this.contains(enzyme)) {
             throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
         }
 
         if (!this.contains(unit)) {
             throw new IllegalArgumentException("Physical entity " + unit.getId() + " not present in the network");
+        }
+
+        BioEnzymeParticipant p = this.getEnzymeParticipant(unit, quantity);
+        if (p == null) {
+            p = new BioEnzymeParticipant(unit, quantity);
+            this.enzymeParticipants.add(p);
         }
 
         enzyme.addParticipant(p);
@@ -819,6 +889,9 @@ public class BioNetwork extends BioEntity {
      */
     private void affectSubUnit(BioEnzyme enzyme, BioEnzymeParticipant unit) {
 
+        if(! this.enzymeParticipants.contains(unit)) {
+            throw new IllegalArgumentException("Enzyme participant " + unit.getId() + " not present in the network");
+        }
 
         if (!this.contains(enzyme)) {
             throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
@@ -828,7 +901,9 @@ public class BioNetwork extends BioEntity {
             throw new IllegalArgumentException("Physical entity " + unit.getPhysicalEntity().getId() + " not present in the network");
         }
 
-        enzyme.addParticipant(unit);
+        if(! enzyme.getParticipants().containsId(unit.getId())) {
+            enzyme.addParticipant(unit);
+        }
 
     }
 
@@ -882,7 +957,7 @@ public class BioNetwork extends BioEntity {
      * @param enzyme a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
      * @param units  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant}
      */
-    public void affectSubUnit(BioEnzyme enzyme, BioCollection<BioEnzymeParticipant> units) {
+    protected void affectSubUnit(BioEnzyme enzyme, BioCollection<BioEnzymeParticipant> units) {
 
         for (BioEnzymeParticipant unit : units) {
             affectSubUnit(enzyme, unit);
@@ -1178,7 +1253,7 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     * @param m a {@link BioMetabolite}
+     * @param m           a {@link BioMetabolite}
      * @param isSubstrate a {@link Boolean} indicating if the metabolite is a substrate or a product
      * @return a {@link BioCollection} of {@link BioReaction}
      */
@@ -1775,5 +1850,57 @@ public class BioNetwork extends BioEntity {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), pathways, metabolites, proteins, genes, reactions, compartments, enzymes);
+    }
+
+
+    /**
+     * @param e
+     * @return
+     */
+    public Boolean containsEntityWithSameId(BioEntity e) {
+        if (e == null) {
+            throw new NullPointerException();
+        }
+
+        String id = e.getId();
+
+        Boolean flag;
+
+        if (e instanceof BioPathway) {
+            flag = this.pathways.containsId(id);
+        } else if (e instanceof BioMetabolite) {
+            flag = this.metabolites.containsId(id);
+        } else if (e instanceof BioProtein) {
+            flag = this.proteins.containsId(id);
+        } else if (e instanceof BioGene) {
+            flag = this.genes.containsId(id);
+        } else if (e instanceof BioReaction) {
+            flag = this.reactions.containsId(id);
+        } else if (e instanceof BioCompartment) {
+            flag = this.compartments.containsId(id);
+        } else if (e instanceof BioEnzyme) {
+            flag = this.enzymes.containsId(id);
+        } else {
+
+            throw new IllegalArgumentException(
+                    "BioEntity \"" + e.getClass().getSimpleName() + "\" not supported by BioNetwork");
+        }
+        return flag;
+
+    }
+
+    /**
+     * Adds enzymes participants in the network
+     * @param enzymeParticipants
+     */
+    protected void addEnzymeParticipants(BioEnzymeParticipant ...enzymeParticipants) {
+        for(BioEnzymeParticipant ep : enzymeParticipants) {
+            this.addEnzymeParticipant(ep);
+        }
+
+    }
+
+    private void addEnzymeParticipant(BioEnzymeParticipant ep) {
+        this.enzymeParticipants.add(ep);
     }
 }

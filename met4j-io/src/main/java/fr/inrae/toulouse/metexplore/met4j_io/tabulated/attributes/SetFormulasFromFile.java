@@ -37,6 +37,7 @@
 package fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 import java.io.IOException;
 
@@ -62,7 +63,7 @@ public class SetFormulasFromFile extends AbstractSetAttributesFromFile {
      */
     public SetFormulasFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s) {
 
-        super(colId, colAttr, bn, fileIn, c, nSkip, "M", p, s);
+        super(colId, colAttr, bn, fileIn, c, nSkip, EntityType.METABOLITE, p, s);
 
     }
 
@@ -72,7 +73,11 @@ public class SetFormulasFromFile extends AbstractSetAttributesFromFile {
      * Test the name
      */
     public Boolean testAttribute(String formula) {
-        return true;
+        if(formula.isEmpty()) {
+            return true;
+        }
+
+        return StringUtils.checkMetaboliteFormula(formula);
     }
 
     /**
@@ -86,7 +91,7 @@ public class SetFormulasFromFile extends AbstractSetAttributesFromFile {
         Boolean flag = true;
 
         try {
-            flag = this.test();
+            flag = this.parseAttributeFile();
         } catch (IOException e) {
             return false;
         }
@@ -103,7 +108,7 @@ public class SetFormulasFromFile extends AbstractSetAttributesFromFile {
 
             String formula = this.getIdAttributeMap().get(id);
 
-            this.getNetwork().getMetabolitesView().get(id).setChemicalFormula(formula);
+            this.bn.getMetabolitesView().get(id).setChemicalFormula(formula);
 
         }
 

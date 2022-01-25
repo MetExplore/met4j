@@ -50,6 +50,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 /**
  * <p>Abstract AbstractSetAttributesFromFile class.</p>
  *
@@ -58,99 +59,77 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractSetAttributesFromFile {
 
-    private int colId = 0;
-    private int colAttr = 1;
-    private BioNetwork bn;
-    private String fileIn;
-    private String commentCharacter = "#";
-    private int nSkip = 0;
-    private String object = REACTION;
-    private Boolean addPrefix = false;
-    private Boolean addSuffix = false;
+    protected int colId = 0;
+    protected int colAttr = 1;
+    protected BioNetwork bn;
+    protected String fileIn;
+    protected String commentCharacter = "#";
+    protected int nSkip = 0;
+    protected EntityType entityType = EntityType.REACTION;
+    protected Boolean addPrefix = false;
+    protected Boolean addSuffix = false;
 
-    private Set<String> ids;
+    protected Set<String> ids;
 
-    /**
-     * Constant <code>REACTION="R"</code>
-     */
-    public static final String REACTION = "R";
-    /**
-     * Constant <code>METABOLITE="M"</code>
-     */
-    public static final String METABOLITE = "M";
-    /**
-     * Constant <code>PROTEIN="P"</code>
-     */
-    public static final String PROTEIN = "P";
-    /**
-     * Constant <code>GENE="G"</code>
-     */
-    public static final String GENE = "G";
-    /**
-     * Constant <code>PATHWAY="Pa"</code>
-     */
-    public static final String PATHWAY = "Pa";
+    protected Set<String> objectIds;
 
-    private Set<String> objectIds;
-
-    private HashMap<String, String> idAttributeMap;
+    protected HashMap<String, String> idAttributeMap;
 
     /**
      * <p>Constructor for AbstractSetAttributesFromFile.</p>
      *
-     * @param colAttr : number of the attribute column
-     * @param bn      : BioNetwork
-     * @param fileIn  : tabulated file containing the ids and the attributes
-     * @param c       : comment character
-     * @param o       : object to set ("R" : reaction, "M" : metabolite, "G" : gene,
-     *                "P" : protein, "PA" : pathway)
-     * @param p       a {@link java.lang.Boolean} object.
-     * @param nSkip   a int.
-     * @param s       a {@link java.lang.Boolean} object.
-     * @param colId   a int.
+     * @param colId      a int.
+     * @param colAttr    : number of the attribute column
+     * @param bn         : BioNetwork
+     * @param fileIn     : tabulated file containing the ids and the attributes
+     * @param c          : comment character
+     * @param nSkip      a int.
+     * @param entityType a {@link EntityType}
+     * @param p          a {@link Boolean} object.
+     * @param s          a {@link Boolean} object.
      */
-    public AbstractSetAttributesFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, String o,
+    public AbstractSetAttributesFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, EntityType entityType,
                                          Boolean p, Boolean s) {
 
-        this.setColId(colId);
-        this.setColAttr(colAttr);
-        this.setNetwork(bn);
-        this.setFileIn(fileIn);
-        this.setCommentCharacter(c);
-        this.setnSkip(nSkip);
-        this.setAddPrefix(p);
-        this.setAddSuffix(s);
-        this.setIdAttributeMap(new HashMap<String, String>());
+        this.colId = colId;
+        this.colAttr = colAttr;
+        this.bn = bn;
+        this.fileIn = fileIn;
+        this.commentCharacter = c;
+        this.nSkip = nSkip;
+        this.addPrefix = p;
+        this.addSuffix = s;
+        this.idAttributeMap = new HashMap<>();
         this.ids = new HashSet<>();
 
-        if (!o.equalsIgnoreCase(REACTION) && !o.equalsIgnoreCase(METABOLITE) && !o.equalsIgnoreCase(PROTEIN)
-                && !o.equalsIgnoreCase(GENE) && !o.equalsIgnoreCase(PATHWAY)) {
-            System.err.println("Bad identifier of object : " + o);
-            System.err.println("Identifiers allowed : " + REACTION + " (reaction) " + METABOLITE + " (metabolite) "
-                    + PROTEIN + " (protein) " + GENE + " (gene) " + PATHWAY + " (pathway)");
-            System.err.println(REACTION + " is defined as default");
-        } else {
-            this.setObject(o);
-        }
+        this.entityType = entityType;
 
-        if (this.getObject().equalsIgnoreCase(REACTION)) {
+        if (this.entityType.equals(EntityType.REACTION)) {
             this.objectIds = bn.getReactionsView().getIds();
         }
 
-        if (this.getObject().equalsIgnoreCase(METABOLITE)) {
+        if (this.entityType.equals(EntityType.METABOLITE)) {
             this.objectIds = bn.getMetabolitesView().getIds();
         }
 
-        if (this.getObject().equalsIgnoreCase(PROTEIN)) {
+        if (this.entityType.equals(EntityType.PROTEIN)) {
             this.objectIds = bn.getProteinsView().getIds();
         }
 
-        if (this.getObject().equalsIgnoreCase(GENE)) {
+        if (this.entityType.equals(EntityType.GENE)) {
             this.objectIds = bn.getGenesView().getIds();
         }
 
-        if (this.getObject().equalsIgnoreCase(PATHWAY)) {
+        if (this.entityType.equals(EntityType.PATHWAY)) {
             this.objectIds = bn.getPathwaysView().getIds();
+        }
+
+        if (this.colId < 0) {
+            throw new IllegalArgumentException("The id column number must be positive");
+        }
+
+        if (this.colAttr < 0) {
+            throw new IllegalArgumentException("The attribute column number must be positive");
         }
 
     }
@@ -161,22 +140,14 @@ public abstract class AbstractSetAttributesFromFile {
      * @return a {@link java.lang.Boolean} object.
      * @throws java.io.IOException if any.
      */
-    public Boolean test() throws IOException {
+    public Boolean parseAttributeFile() throws IOException {
 
         Boolean flag = true;
-
-        if (this.colId < 0) {
-            System.err.println("There is an error in the id column number");
-        }
-
-        if (this.colAttr < 0) {
-            System.err.println("There is an error in the attribute column number");
-        }
 
         FileInputStream in;
         BufferedReader br;
         try {
-            in = new FileInputStream(this.getFileIn());
+            in = new FileInputStream(this.fileIn);
             InputStreamReader ipsr = new InputStreamReader(in);
             br = new BufferedReader(ipsr);
         } catch (Exception e) {
@@ -194,17 +165,7 @@ public abstract class AbstractSetAttributesFromFile {
 
             flag = parseLine(ligne, nLines);
         }
-
-        br.close();
-
-        if (flag == false) {
-            System.err.println("Input file badly formatted");
-        } else {
-            System.err.println("The input file looks good and contains " + ids.size() + " entries");
-        }
-
         return flag;
-
     }
 
     protected Boolean parseLine(String line, int nLines) {
@@ -213,17 +174,26 @@ public abstract class AbstractSetAttributesFromFile {
 
         line = line.replace("\n", "").replace("\r", "");
 
-        if ((nLines > this.nSkip) && (! line.isEmpty())
-                && (this.getCommentCharacter().equals("")
-                || !line.matches("^" + this.getCommentCharacter() + ".*"))) {
+        if ((nLines > this.nSkip) && (!line.isEmpty())
+                && (this.commentCharacter.equals("")
+                || !line.matches("^" + this.commentCharacter + ".*"))) {
 
             String[] tab = line.split("\\t");
 
-            if (tab.length <= this.colId || tab.length <= this.colAttr) {
-                System.err
-                        .println("********\n[Error]Bad number of columns line " + nLines + "\n********");
-                flag = false;
-            } else {
+            // We do not return an error if the length of the tab
+            // is less than the column index because when the final columns are empty,
+            // the split does not take into account them
+
+            Pattern pattern = Pattern.compile("\\t");
+            Matcher matcher = pattern.matcher(line);
+            long nbColumns = matcher.results().count() + 1;
+
+            if (nbColumns <= this.colId || nbColumns <= this.colAttr) {
+                System.err.println("********\n[Warning] Bad number of columns line " + nLines + "(" + nbColumns + ")\n********");
+                return false;
+            }
+
+            if (tab.length > this.colId && tab.length > this.colAttr) {
 
                 String attribute = tab[this.colAttr];
 
@@ -237,7 +207,7 @@ public abstract class AbstractSetAttributesFromFile {
                 // remove spaces
                 id = id.trim();
 
-                if (this.getObject().equalsIgnoreCase(METABOLITE)) {
+                if (this.entityType.equals(EntityType.METABOLITE)) {
                     // To transform metabolite id like this cpd[c] in
                     // cpd_c
                     Pattern cpd_Pattern = Pattern.compile("^.*(\\[([^\\]]*)\\])$");
@@ -250,10 +220,10 @@ public abstract class AbstractSetAttributesFromFile {
                     }
                 }
 
-                if (this.getObject().equalsIgnoreCase(METABOLITE) && this.addSuffix) {
+                if (this.entityType.equals(EntityType.METABOLITE) && this.addSuffix) {
                     Boolean presence = false;
 
-                    BioCollection<BioCompartment> compartmentsView = this.getNetwork().getCompartmentsView();
+                    BioCollection<BioCompartment> compartmentsView = this.bn.getCompartmentsView();
                     // Checks if the suffix corresponds to a compartment
                     for (String compartmentId : compartmentsView.getIds()) {
 
@@ -280,7 +250,7 @@ public abstract class AbstractSetAttributesFromFile {
                         // +metaboliteId;
                         // }
 
-                        if (this.getNetwork().getMetabolitesView().containsId(metaboliteId)) {
+                        if (this.bn.getMetabolitesView().containsId(metaboliteId)) {
                             this.getIdAttributeMap().put(metaboliteId, attribute);
                             presence = true;
                         }
@@ -303,10 +273,10 @@ public abstract class AbstractSetAttributesFromFile {
                 } else {
 //							id = id.replaceAll("[^A-Za-z0-9_]", "_");
 
-                    if (this.addPrefix && this.object.equalsIgnoreCase(REACTION)) {
+                    if (this.addPrefix && this.entityType.equals(EntityType.REACTION)) {
                         if (!id.startsWith("R_"))
                             id = "R_" + id;
-                    } else if (this.addPrefix && this.object.equalsIgnoreCase(METABOLITE)) {
+                    } else if (this.addPrefix && this.entityType.equals(EntityType.METABOLITE)) {
                         if (!id.startsWith("M_"))
                             id = "M_" + id;
                     }
@@ -353,150 +323,6 @@ public abstract class AbstractSetAttributesFromFile {
     public abstract Boolean setAttributes() throws IOException;
 
     /**
-     * <p>Getter for the field <code>colId</code>.</p>
-     *
-     * @return the colId
-     */
-    public int getColId() {
-        return colId;
-    }
-
-    /**
-     * <p>Setter for the field <code>colId</code>.</p>
-     *
-     * @param colId the colId to set
-     */
-    public void setColId(int colId) {
-        this.colId = colId;
-    }
-
-    /**
-     * <p>Getter for the field <code>colAttr</code>.</p>
-     *
-     * @return the colAttr
-     */
-    public int getColAttr() {
-        return colAttr;
-    }
-
-    /**
-     * <p>Setter for the field <code>colAttr</code>.</p>
-     *
-     * @param colAttr the colAttr to set
-     */
-    public void setColAttr(int colAttr) {
-        this.colAttr = colAttr;
-    }
-
-    /**
-     * <p>getNetwork.</p>
-     *
-     * @return the network
-     */
-    public BioNetwork getNetwork() {
-        return bn;
-    }
-
-    /**
-     * <p>setNetwork.</p>
-     *
-     * @param bn the network to set
-     */
-    public void setNetwork(BioNetwork bn) {
-        this.bn = bn;
-    }
-
-    /**
-     * <p>Getter for the field <code>fileIn</code>.</p>
-     *
-     * @return the fileIn
-     */
-    public String getFileIn() {
-        return fileIn;
-    }
-
-    /**
-     * <p>Setter for the field <code>fileIn</code>.</p>
-     *
-     * @param fileIn the fileIn to set
-     */
-    public void setFileIn(String fileIn) {
-        this.fileIn = fileIn;
-    }
-
-    /**
-     * <p>Getter for the field <code>commentCharacter</code>.</p>
-     *
-     * @return the commentCharacter
-     */
-    public String getCommentCharacter() {
-        return commentCharacter;
-    }
-
-    /**
-     * <p>Setter for the field <code>commentCharacter</code>.</p>
-     *
-     * @param commentCharacter the commentCharacter to set
-     */
-    public void setCommentCharacter(String commentCharacter) {
-        this.commentCharacter = commentCharacter;
-    }
-
-    /**
-     * <p>Getter for the field <code>nSkip</code>.</p>
-     *
-     * @return the nSkip
-     */
-    public int getnSkip() {
-        return nSkip;
-    }
-
-    /**
-     * <p>Setter for the field <code>nSkip</code>.</p>
-     *
-     * @param nSkip the nSkip to set
-     */
-    public void setnSkip(int nSkip) {
-        this.nSkip = nSkip;
-    }
-
-    /**
-     * <p>Getter for the field <code>object</code>.</p>
-     *
-     * @return the object
-     */
-    public String getObject() {
-        return object;
-    }
-
-    /**
-     * <p>Setter for the field <code>object</code>.</p>
-     *
-     * @param object the object to set
-     */
-    public void setObject(String object) {
-        this.object = object;
-    }
-
-    /**
-     * <p>Setter for the field <code>addPrefix</code>.</p>
-     *
-     * @param p a {@link java.lang.Boolean} object.
-     */
-    public void setAddPrefix(Boolean p) {
-        this.addPrefix = p;
-    }
-
-    /**
-     * <p>Setter for the field <code>addSuffix</code>.</p>
-     *
-     * @param s a {@link java.lang.Boolean} object.
-     */
-    public void setAddSuffix(Boolean s) {
-        this.addSuffix = s;
-    }
-
-    /**
      * <p>Getter for the field <code>idAttributeMap</code>.</p>
      *
      * @return the idAttributeMap
@@ -504,33 +330,5 @@ public abstract class AbstractSetAttributesFromFile {
     public HashMap<String, String> getIdAttributeMap() {
         return idAttributeMap;
     }
-
-    /**
-     * <p>Setter for the field <code>idAttributeMap</code>.</p>
-     *
-     * @param idAttributeMap the idAttributeMap to set
-     */
-    public void setIdAttributeMap(HashMap<String, String> idAttributeMap) {
-        this.idAttributeMap = idAttributeMap;
-    }
-
-    /**
-     * <p>Getter for the field <code>addPrefix</code>.</p>
-     *
-     * @return a {@link java.lang.Boolean} object.
-     */
-    public Boolean getAddPrefix() {
-        return addPrefix;
-    }
-
-    /**
-     * <p>Getter for the field <code>addSuffix</code>.</p>
-     *
-     * @return a {@link java.lang.Boolean} object.
-     */
-    public Boolean getAddSuffix() {
-        return addSuffix;
-    }
-
 
 }

@@ -116,7 +116,13 @@ public class NetworkAttributes extends GenericAttributes {
 			addUnitDefinitions(network, new BioUnitDefinitionCollection());
 		}
 
-		getUnitDefinitions(network).add(unit);
+		BioUnitDefinitionCollection unitDefinitions = getUnitDefinitions(network);
+
+		if(! unitDefinitions.containsId(unit.getId())) {
+			unitDefinitions.add(unit);
+		}
+
+
 
 	}
 

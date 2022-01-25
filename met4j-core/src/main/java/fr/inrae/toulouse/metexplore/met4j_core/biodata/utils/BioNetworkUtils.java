@@ -136,12 +136,14 @@ public class BioNetworkUtils {
         }
 
         for (BioMetabolite metabolite : metabolitesToCopy) {
-            BioMetabolite newMetabolite = new BioMetabolite(metabolite);
-            networkOut.add(newMetabolite);
+            BioMetabolite newMetabolite;
+            if (!networkOut.containsEntityWithSameId(metabolite)) {
+                newMetabolite = new BioMetabolite(metabolite);
+                networkOut.add(newMetabolite);
+            }
         }
 
-        // Copy compartments (empty for the moment)
-        // Copy metabolites
+        // Copy compartments
         BioCollection<BioCompartment> compartmentsToCopy = networkIn.getCompartmentsView();
         if (keepPrevious) {
             compartmentsToCopy.removeAll(networkOut.getCompartmentsView());
@@ -151,7 +153,7 @@ public class BioNetworkUtils {
 
             BioCompartment newCpt;
 
-            if (compartmentsToCopy.contains(cpt)) {
+            if (compartmentsToCopy.contains(cpt) && (!networkOut.containsEntityWithSameId(cpt))) {
                 newCpt = new BioCompartment(cpt);
                 networkOut.add(newCpt);
             } else {
@@ -176,8 +178,10 @@ public class BioNetworkUtils {
             }
 
             for (BioGene gene : genesToCopy) {
-                BioGene newGene = new BioGene(gene);
-                networkOut.add(newGene);
+                if (!networkOut.containsEntityWithSameId(gene)) {
+                    BioGene newGene = new BioGene(gene);
+                    networkOut.add(newGene);
+                }
             }
         }
 
@@ -191,7 +195,7 @@ public class BioNetworkUtils {
 
                 BioProtein newProtein;
 
-                if (proteinsToCopy.contains(protein)) {
+                if (proteinsToCopy.contains(protein) && (!networkOut.containsEntityWithSameId(protein))) {
                     newProtein = new BioProtein(protein);
                     networkOut.add(newProtein);
                 } else {
@@ -218,7 +222,7 @@ public class BioNetworkUtils {
 
                 BioEnzyme newEnzyme;
 
-                if (enzymesToCopy.contains(enzyme)) {
+                if (enzymesToCopy.contains(enzyme) && !networkOut.containsEntityWithSameId(enzyme)) {
                     newEnzyme = new BioEnzyme(enzyme);
                     networkOut.add(newEnzyme);
                 } else {
@@ -230,25 +234,19 @@ public class BioNetworkUtils {
                 for (BioEnzymeParticipant participant : participants) {
                     Double quantity = participant.getQuantity();
 
-                    BioEnzymeParticipant newParticipant = null;
                     if (participant.getPhysicalEntity().getClass().equals(BioMetabolite.class)) {
                         BioMetabolite metabolite = (BioMetabolite) participant.getPhysicalEntity();
                         BioMetabolite newMetabolite = networkOut.getMetabolitesView().get(metabolite.getId());
-                        newParticipant = new BioEnzymeParticipant(newMetabolite, quantity);
+                        networkOut.affectSubUnit(newEnzyme, quantity, newMetabolite);
                     } else if (participant.getPhysicalEntity().getClass().equals(BioProtein.class)) {
                         BioProtein protein = (BioProtein) participant.getPhysicalEntity();
                         BioProtein newProtein = networkOut.getProteinsView().get(protein.getId());
-                        newParticipant = new BioEnzymeParticipant(newProtein, quantity);
+                        networkOut.affectSubUnit(newEnzyme, quantity, newProtein);
                     } else {
                         System.err.println("BioPhysical entity not recognized as enzyme participant : "
                                 + participant.getPhysicalEntity().getId()
                                 + "(" + participant.getPhysicalEntity().getClass() + ")");
                     }
-
-                    if (newParticipant != null) {
-                        networkOut.affectSubUnit(newEnzyme, newParticipant);
-                    }
-
                 }
             }
         }
@@ -264,7 +262,7 @@ public class BioNetworkUtils {
 
             BioReaction newReaction;
 
-            if (reactionsToCopy.contains(r)) {
+            if (reactionsToCopy.contains(r) && !networkOut.containsEntityWithSameId(r)) {
 
                 newReaction = new BioReaction(r);
                 newReaction.setSpontaneous(r.isSpontaneous());
@@ -281,9 +279,7 @@ public class BioNetworkUtils {
                 BioMetabolite newMetabolite = networkOut.getMetabolitesView().get(reactant.getMetabolite().getId());
                 BioCompartment newCpt = networkOut.getCompartmentsView().get(reactant.getLocation().getId());
                 Double sto = reactant.getQuantity();
-                BioReactant newReactant = new BioReactant(newMetabolite, sto, newCpt);
-
-                networkOut.affectLeft(newReaction, newReactant);
+                networkOut.affectLeft(newReaction, sto, newCpt, newMetabolite);
             }
 
             // Copy rights
@@ -291,9 +287,7 @@ public class BioNetworkUtils {
                 BioMetabolite newMetabolite = networkOut.getMetabolitesView().get(reactant.getMetabolite().getId());
                 BioCompartment newCpt = networkOut.getCompartmentsView().get(reactant.getLocation().getId());
                 Double sto = reactant.getQuantity();
-                BioReactant newReactant = new BioReactant(newMetabolite, sto, newCpt);
-
-                networkOut.affectRight(newReaction, newReactant);
+                networkOut.affectRight(newReaction, sto, newCpt, newMetabolite);
             }
 
             // Copy enzymes
@@ -313,7 +307,7 @@ public class BioNetworkUtils {
 
         for (BioPathway pathway : networkIn.getPathwaysView()) {
 
-            if (pathwaysToCopy.contains(pathway)) {
+            if (pathwaysToCopy.contains(pathway) && !networkOut.containsEntityWithSameId(pathway)) {
                 BioPathway newPathway = new BioPathway(pathway);
                 networkOut.add(newPathway);
             }

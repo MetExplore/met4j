@@ -1,5 +1,5 @@
 /*
- * Copyright INRAE (2021)
+ * Copyright INRAE (2022)
  *
  * contact-metexplore@inrae.fr
  *
@@ -38,81 +38,71 @@ package fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.Flux;
-import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 
-enum BoundsType {
-    LOWER, UPPER
-}
-
-public class SetBoundsFromFile extends AbstractSetAttributesFromFile {
+import static org.junit.Assert.*;
 
 
-    private BoundsType type;
+public class SetGprsFromFileTest {
 
-    public SetBoundsFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, BoundsType type) {
-        super(colId, colAttr, bn, fileIn, c, nSkip, EntityType.REACTION, p, false);
-        this.type = type;
+
+    private BioNetwork network;
+    private BioReaction reaction;
+    private SetGprsFromFile setGprsFromFile;
+
+    @Before
+    public void init() throws IOException {
+        network = new BioNetwork();
+        reaction = new BioReaction("r");
+        network.add(reaction);
+
+        setGprsFromFile = Mockito.spy(new SetGprsFromFile(0, 1, network, "", "", 0, false, false));
+
+        Mockito.doReturn(true).when(setGprsFromFile).parseAttributeFile();
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Test the bound
-     */
-    public Boolean testAttribute(String bound) {
+    @Test
+    public void testAttribute() {
 
-        try {
-            Double.parseDouble(bound);
-        } catch (NumberFormatException e) {
-            return false;
-        }
-        return true;
+        assertTrue(setGprsFromFile.testAttribute("anything"));
+
     }
 
-    /**
-     * Reads the file and sets the attributes
-     *
-     * @return a {@link java.lang.Boolean} object.
-     * @throws java.io.IOException if any.
-     */
-    public Boolean setAttributes() {
+    @Test
+    public void setAttributes() throws IOException {
 
-        Boolean flag;
+        String line = "r\t(G1 and G2) or G3\n";
 
-        try {
-            flag = this.parseAttributeFile();
-        } catch (IOException e) {
-            return false;
-        }
+        Boolean flag = setGprsFromFile.parseLine(line, 1);
 
-        if(!flag) {
-            return false;
-        }
+        assertTrue(flag);
 
-        int n = 0;
+        setGprsFromFile.setAttributes();
 
-        for(String id : this.getIdAttributeMap().keySet()) {
-            n++;
-            Double bound = Double.parseDouble(this.getIdAttributeMap().get(id));
-            BioReaction r = this.bn.getReactionsView().get(id);
-            if(this.type.equals(BoundsType.LOWER)) {
-                ReactionAttributes.setLowerBound(r, new Flux(bound));
-            }
-            else {
-                ReactionAttributes.setUpperBound(r, new Flux(bound));
-            }
-        }
+        assertEquals(2, network.getEnzymesView().size());
+        assertEquals(3, network.getGenesView().size());
+        assertEquals(3, network.getProteinsView().size());
+        assertEquals(2, reaction.getEnzymesView().size());
+    }
 
-        System.err.println(n+" reactions processed");
+    @Test
+    public void setBadAttributes() throws IOException {
 
-        return flag;
+        String line = "r\t(G1 and G2 or G3\n";
 
+        Boolean flag = setGprsFromFile.parseLine(line, 1);
+
+        assertTrue(flag);
+
+        setGprsFromFile.setAttributes();
+
+        assertEquals(0, network.getEnzymesView().size());
+        assertEquals(0, network.getGenesView().size());
+        assertEquals(0, network.getProteinsView().size());
+        assertEquals(0, reaction.getEnzymesView().size());
     }
 }
-
-
-
-

@@ -47,7 +47,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 public class BioParticipantFake extends BioParticipant {
 
 	public BioParticipantFake(BioPhysicalEntity physicalEntity, Double quantity) {
-		super(physicalEntity, quantity);
+		super(physicalEntity.getId()+"__"+quantity, physicalEntity, quantity);
 	}
 
 }

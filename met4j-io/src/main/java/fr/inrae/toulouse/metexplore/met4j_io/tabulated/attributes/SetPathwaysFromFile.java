@@ -78,7 +78,7 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
      */
     public SetPathwaysFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s, String sep) {
 
-        super(colId, colAttr, bn, fileIn, c, nSkip, REACTION, p, s);
+        super(colId, colAttr, bn, fileIn, c, nSkip, EntityType.REACTION, p, s);
 
         this.sep = sep;
     }
@@ -103,7 +103,7 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
         Boolean flag = true;
 
         try {
-            flag = this.test();
+            flag = this.parseAttributeFile();
         } catch (IOException e) {
             return false;
         }
@@ -129,12 +129,12 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
 
             String[] pathwayIds = pathwayIdsStr.split(Pattern.quote(sep));
 
-            BioReaction rxn = this.getNetwork().getReactionsView().get(id);
+            BioReaction rxn = this.bn.getReactionsView().get(id);
 
-            BioCollection<BioPathway> oldPathways = this.getNetwork().getPathwaysFromReaction(rxn);
+            BioCollection<BioPathway> oldPathways = this.bn.getPathwaysFromReaction(rxn);
 
             for(BioPathway p : oldPathways) {
-                this.getNetwork().removeReactionFromPathway(rxn, p);
+                this.bn.removeReactionFromPathway(rxn, p);
             }
 
             for (int i = 0; i < pathwayIds.length; i++) {
@@ -145,13 +145,13 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
                 pathwayId = pathwayId.replaceAll("[^A-Za-z0-9_-]", "_");
 
                 BioPathway pathway;
-                if (this.getNetwork().getPathwaysView().containsId(pathwayId)) {
-                    pathway = this.getNetwork().getPathwaysView().get(pathwayId);
+                if (this.bn.getPathwaysView().containsId(pathwayId)) {
+                    pathway = this.bn.getPathwaysView().get(pathwayId);
                 } else {
                     pathway = new BioPathway(pathwayId);
-                    this.getNetwork().add(pathway);
+                    this.bn.add(pathway);
                 }
-                this.getNetwork().affectToPathway(pathway, rxn);
+                this.bn.affectToPathway(pathway, rxn);
             }
         }
 

@@ -319,10 +319,27 @@ public class Kegg2BioNetwork {
                         for (String longGeneId : genes) {
 
                             String geneId = this.simplifyId(longGeneId);
-                            BioGene gene = new BioGene(geneId);
-                            BioProtein prot = new BioProtein(geneId);
-                            BioEnzyme enz = new BioEnzyme(geneId);
-                            network.add(gene, prot, enz);
+
+                            BioGene gene = network.getGenesView().get(geneId);
+                            if(gene == null)
+                            {
+                                gene = new BioGene(geneId);
+                                network.add(gene);
+                            }
+
+                            BioProtein prot = network.getProteinsView().get(geneId);
+                            if(prot == null)
+                            {
+                                prot = new BioProtein(geneId);
+                                network.add(prot);
+                            }
+
+                            BioEnzyme enz = network.getEnzymesView().get(geneId);
+                            if(enz == null) {
+                                enz = new BioEnzyme(geneId);
+                                network.add(enz);
+                            }
+
                             network.affectGeneProduct(prot, gene);
                             network.affectSubUnit(enz, 1.0, prot);
                             network.affectEnzyme(reaction, enz);
@@ -346,19 +363,14 @@ public class Kegg2BioNetwork {
                                     this.network.affectToCompartment(cpt, cpd);
                                 }
                                 if (child.getNodeName().equalsIgnoreCase("substrate")) {
-                                    BioReactant lpart = new BioReactant(cpd, 1.0, cpt);
-                                    ReactionAttributes.setConstant(lpart, false);
-                                    network.affectLeft(reaction, lpart);
+                                    network.affectLeft(reaction, 1.0, cpt, cpd);
                                     continue;
                                 }
-                                BioReactant rpart = new BioReactant(cpd, 1.0, cpt);
-                                ReactionAttributes.setConstant(rpart, false);
-                                network.affectRight(reaction, rpart);
+                                network.affectRight(reaction, 1.0, cpt, cpd);
                             }
                         }
 
                     }
-
                     network.affectToPathway(pathway, reaction);
                 }
             }
@@ -397,7 +409,7 @@ public class Kegg2BioNetwork {
      * @param substrateAndStoichio a String containing the coefficient (optional) and the cpd id
      * @return a {@link BioReactant}
      */
-    private BioReactant createReactant(String substrateAndStoichio, String reactionId) {
+    private void createReactant(String substrateAndStoichio, BioReaction reaction, Boolean rightSide) {
         String stoichio;
         String longCpdId;
         BioMetabolite cpd;
@@ -413,7 +425,7 @@ public class Kegg2BioNetwork {
             if (m.find()) {
                 // The stoichio is in the form 2n, we keep only 2.
                 stoichio = m.group(1);
-                System.err.println("[met4j-io][Kegg2BioNetwork] Warning: in reaction " + reactionId +
+                System.err.println("[met4j-io][Kegg2BioNetwork] Warning: in reaction " + reaction.getId() +
                         " : changes the stoichiometric coefficient from " + tmp[0] + " to " + stoichio);
             }
             longCpdId = tmp[1];
@@ -426,7 +438,7 @@ public class Kegg2BioNetwork {
         // Here we remove patterns like (n), (n +1)
         if (longCpdId.matches(".*\\([^)]+\\)$")) {
             String id2 = longCpdId.replaceAll("\\([^)]+\\)", "");
-            System.err.println("[met4j-io][Kegg2BioNetwork] Warning: in reaction " + reactionId +
+            System.err.println("[met4j-io][Kegg2BioNetwork] Warning: in reaction " + reaction.getId() +
                     " : changes the id from " + longCpdId + " to " + id2);
             longCpdId = id2;
         }
@@ -446,10 +458,17 @@ public class Kegg2BioNetwork {
             coeff = Double.parseDouble(stoichio);
         } catch (NumberFormatException e) {
             System.err.println("[met4j-io][Kegg2BioNetwork] Warning :  The stoechiometry "
-                    + stoichio + " in the reaction " + reactionId + " is not a number, it is left as 1.0");
+                    + stoichio + " in the reaction " + reaction.getId() + " is not a number, it is left as 1.0");
         }
 
-        return new BioReactant(cpd, coeff, cpt);
+        if(! rightSide){
+            this.network.affectLeft(reaction, coeff, cpt, cpd);
+        }
+        else {
+            this.network.affectRight(reaction, coeff, cpt, cpd);
+        }
+
+        return;
     }
 
     /**
@@ -518,13 +537,11 @@ public class Kegg2BioNetwork {
                 String[] prod = eq[1].split(" \\+ ");
 
                 for (String substrateAndStoichio : subs) {
-                    BioReactant lPart = createReactant(substrateAndStoichio, id);
-                    network.affectLeft(rxn, lPart);
+                    createReactant(substrateAndStoichio, rxn, false);
                 }
 
                 for (String productAndStoechio : prod) {
-                    BioReactant rPart = createReactant(productAndStoechio, id);
-                    network.affectRight(rxn, rPart);
+                    createReactant(productAndStoechio, rxn, true);
                 }
             }
             if (Data.get("ENZYME") != null) {

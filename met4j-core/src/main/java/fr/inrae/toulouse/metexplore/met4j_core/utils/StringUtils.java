@@ -36,6 +36,9 @@
 
 package fr.inrae.toulouse.metexplore.met4j_core.utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * <p>StringUtils class.</p>
  *
@@ -43,6 +46,9 @@ package fr.inrae.toulouse.metexplore.met4j_core.utils;
  * @version $Id: $Id
  */
 public class StringUtils {
+
+	private static Pattern patternEC = Pattern.compile("(EC\\s*)*\\d{1}(\\.(\\d{0,3}|-)){0,3}");
+	private static Pattern patternFormula = Pattern.compile("^([\\*\\(\\)A-Z][a-z]*\\d*)+$");;
 
 	/**
 	 * <p>isVoid.</p>
@@ -88,6 +94,26 @@ public class StringUtils {
 		}
 		// only got here if we didn't return false
 		return true;
+	}
+
+	/**
+	 * Check EC number
+	 * @param ec
+	 * @return
+	 */
+	public static  boolean checkEcNumber(String ec) {
+		Matcher m = patternEC.matcher(ec);
+		return m.matches();
+	}
+
+	/**
+	 * Checks if a metabolite formula is well formatted
+	 * @param formula
+	 * @return
+	 */
+	public static boolean checkMetaboliteFormula(String formula) {
+		Matcher m = patternFormula.matcher(formula);
+		return m.matches();
 	}
 
 }

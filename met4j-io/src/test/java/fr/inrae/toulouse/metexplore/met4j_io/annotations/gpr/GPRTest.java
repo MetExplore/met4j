@@ -1,5 +1,5 @@
 /*
- * Copyright INRAE (2020)
+ * Copyright INRAE (2022)
  *
  * contact-metexplore@inrae.fr
  *
@@ -34,56 +34,42 @@
  *
  */
 
-package fr.inrae.toulouse.metexplore.met4j_io.annotations.reactant;
+package fr.inrae.toulouse.metexplore.met4j_io.annotations.gpr;
+
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.MalformedGeneAssociationStringException;
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import org.junit.Before;
-import org.junit.Test;
+public class GPRTest {
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant;
-import fr.inrae.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
+    @Test
+    public void createGPRfromString() throws MalformedGeneAssociationStringException {
 
-public class ReactantAttributesTest {
+        BioNetwork network = new BioNetwork();
+        BioEnzyme e1 = new BioEnzyme("e1");
+        BioEnzyme e2 = new BioEnzyme("e2");
+        BioProtein p1 = new BioProtein("p1");
+        BioProtein p2 = new BioProtein("p2");
+        BioGene g1 = new BioGene("g1");
+        BioGene g2 = new BioGene("g2");
+        BioReaction r1 = new BioReaction("r1");
 
-	BioReactant r;
-	BioCompartment c;
-	BioMetabolite m;
+        network.add(e1, e2, p1, p2, g1, g2, r1);
 
-	@Before
-	public void init() {
-		m = new BioMetabolite("m");
-		c = new BioCompartment("c");
+        network.affectGeneProduct(p1, g1);
+        network.affectSubUnit(e1, 1.0, p1);
+        network.affectEnzyme(r1, e1);
 
-		r = new BioReactant(m, 1.0, c);
-	}
+        GPR.createGPRfromString(network, r1, "G3 AND G4");
 
-	@Test
-	public void testGetConstant() {
+        assertEquals(1, r1.getEnzymesView().size());
 
-		assertFalse(ReactantAttributes.getConstant(r));
+        assertEquals(2, network.getGenesFromReactions(r1).size());
 
-		r.setAttribute(GenericAttributes.CONSTANT, false);
+        assertTrue(network.getGenesFromReactions(r1).containsId("G3"));
+        assertTrue(network.getGenesFromReactions(r1).containsId("G4"));
 
-		assertFalse(ReactantAttributes.getConstant(r));
-
-		r.setAttribute(GenericAttributes.CONSTANT, true);
-
-		assertTrue(ReactantAttributes.getConstant(r));
-
-	}
-
-	@Test
-	public void testSetConstant() {
-
-		ReactantAttributes.setConstant(r, false);
-		assertFalse((Boolean) r.getAttribute(GenericAttributes.CONSTANT));
-
-		ReactantAttributes.setConstant(r, true);
-		assertTrue((Boolean) r.getAttribute(GenericAttributes.CONSTANT));
-
-	}
-
+    }
 }

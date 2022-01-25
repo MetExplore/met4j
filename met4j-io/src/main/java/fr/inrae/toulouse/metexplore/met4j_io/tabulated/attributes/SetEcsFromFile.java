@@ -39,6 +39,9 @@ package fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <p>SetEcsFromFile class.</p>
@@ -47,32 +50,48 @@ import java.io.IOException;
  * @version $Id: $Id
  */
 public class SetEcsFromFile extends AbstractSetAttributesFromFile {
+    private final Pattern patternEC;
+
     /**
      * <p>Constructor for SetEcsFromFile.</p>
      *
-     * @param colId number of the column where are the reaction ids
+     * @param colId   number of the column where are the reaction ids
      * @param colAttr number of the column where are the gpr
-     * @param bn BioNetwork
-     * @param fileIn tabulated file
-     * @param c comment string
-     * @param nSkip number of lines to skip at the beginning of the file
-     * @param p if true, to match the reactions in the sbml file, the reaction ids in the tabulated file are formatted in the palsson way
-     * @param s a {@link java.lang.Boolean} object.
+     * @param bn      BioNetwork
+     * @param fileIn  tabulated file
+     * @param c       comment string
+     * @param nSkip   number of lines to skip at the beginning of the file
+     * @param p       if true, to match the reactions in the sbml file, the reaction ids in the tabulated file are formatted in the palsson way
+     * @param s       a {@link java.lang.Boolean} object.
      */
     public SetEcsFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s) {
 
-        super(colId, colAttr, bn, fileIn, c, nSkip, REACTION, p, s);
+        super(colId, colAttr, bn, fileIn, c, nSkip, EntityType.REACTION, p, s);
+
+        patternEC = Pattern.compile("(EC\\s*)*\\d{1}(\\.(\\d{0,3}|-)){0,3}");
 
     }
 
     /**
      * {@inheritDoc}
-     *
+     * <p>
      * Test the ec
-     * TODO : to complete
      */
     public Boolean testAttribute(String ec) {
-        return true;
+        if (ec.isEmpty())
+            return true;
+
+        if(ec.endsWith(";"))
+            return false;
+
+        String[] ecs = ec.split(";");
+
+        System.err.println("ec : "+ec+" l :"+ecs.length);
+
+        return Arrays.stream(ecs).allMatch(e -> {
+            Matcher m = patternEC.matcher(e);
+            return m.matches();
+        });
     }
 
     /**
@@ -86,28 +105,30 @@ public class SetEcsFromFile extends AbstractSetAttributesFromFile {
         Boolean flag = true;
 
         try {
-            flag = this.test();
+            flag = this.parseAttributeFile();
         } catch (IOException e) {
             return false;
         }
 
-        if(!flag) {
+        if (!flag) {
             return false;
         }
 
         int n = 0;
 
-        for(String id : this.getIdAttributeMap().keySet()) {
+        for (String id : this.getIdAttributeMap().keySet()) {
 
             n++;
 
-            String EC = this.getIdAttributeMap().get(id);
+            String ec = this.getIdAttributeMap().get(id);
 
-            this.getNetwork().getReactionsView().get(id).setEcNumber(EC);
+            if(! ec.isEmpty()) {
+                this.bn.getReactionsView().get(id).setEcNumber(ec);
+            }
 
         }
 
-        System.err.println(n+" reactions processed");
+        System.err.println(n + " reactions processed");
 
         return flag;
 

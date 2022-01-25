@@ -15,12 +15,10 @@ public class FormulaParser {
     String formula;
     Pattern inorgaRegex;
     Pattern groupMatch;
-    Pattern genericFormula = Pattern.compile("^([\\*\\(\\)A-Z][a-z]*\\d*)+$");;
     List<String> atoms = Arrays.asList("H","B","C","N","O","F","Na","Mg","Al","Si","P","S","Cl","K","Ca","Cr","Mn","Fe","Co","Cu","Zn","Se","Mo","Cd","Sn","I");
 
-
     public FormulaParser(String formula){
-        if(StringUtils.isVoid(formula) || !genericFormula.matcher(formula).find()) throw new IllegalArgumentException("Unable to parse formula");
+        if(StringUtils.isVoid(formula) || ! StringUtils.checkMetaboliteFormula(formula)) throw new IllegalArgumentException("Unable to parse formula");
         this.formula=formula;
     }
 

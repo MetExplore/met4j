@@ -37,7 +37,6 @@
 package fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 
 import java.io.IOException;
@@ -61,11 +60,11 @@ public class SetNamesFromFile extends AbstractSetAttributesFromFile {
      * @param nSkip a int.
      * @param p a {@link java.lang.Boolean} object.
      * @param s a {@link java.lang.Boolean} object.
-     * @param object a {@link java.lang.String} object.
+     * @param entityType a {@link EntityType} object.
      */
-    public SetNamesFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s, String object) {
+    public SetNamesFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s, EntityType entityType) {
 
-        super(colId, colAttr, bn, fileIn, c, nSkip, object, p, s);
+        super(colId, colAttr, bn, fileIn, c, nSkip, entityType, p, s);
 
     }
 
@@ -89,7 +88,7 @@ public class SetNamesFromFile extends AbstractSetAttributesFromFile {
         Boolean flag = true;
 
         try {
-            flag = this.test();
+            flag = this.parseAttributeFile();
         } catch (IOException e) {
             return false;
         }
@@ -108,20 +107,20 @@ public class SetNamesFromFile extends AbstractSetAttributesFromFile {
 
             String name = this.getIdAttributeMap().get(id);
 
-            if(this.getObject().equalsIgnoreCase(METABOLITE)) {
-                object = this.getNetwork().getMetabolitesView().get(id);
+            if(this.entityType.equals(EntityType.METABOLITE)) {
+                object = this.bn.getMetabolitesView().get(id);
             }
-            else if(this.getObject().equalsIgnoreCase(GENE)) {
-                object = this.getNetwork().getGenesView().get(id);
+            else if(this.entityType.equals(EntityType.GENE)) {
+                object = this.bn.getGenesView().get(id);
             }
-            else if(this.getObject().equalsIgnoreCase(PROTEIN)) {
-                object = this.getNetwork().getProteinsView().get(id);
+            else if(this.entityType.equals(EntityType.PROTEIN)) {
+                object = this.bn.getProteinsView().get(id);
             }
-            else if(this.getObject().equalsIgnoreCase(PATHWAY)) {
-                object = this.getNetwork().getPathwaysView().get(id);
+            else if(this.entityType.equals(EntityType.PATHWAY)) {
+                object = this.bn.getPathwaysView().get(id);
             }
             else {
-                object = this.getNetwork().getReactionsView().get(id);
+                object = this.bn.getReactionsView().get(id);
             }
 
             object.setName(name);

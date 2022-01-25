@@ -47,7 +47,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
  */
 public abstract class BioEntity {
 
-    private final String id;
+    final String id;
     private String name;
     private ArrayList<String> synonyms = new ArrayList<>();
     private String comment;
@@ -101,26 +101,6 @@ public abstract class BioEntity {
         this.setComment(e.getComment());
         this.setRefs(new HashMap<>(e.getRefs()));
         this.setAttributes(new HashMap<>(e.getAttributes()));
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BioEntity bioEntity = (BioEntity) o;
-        return id.equals(bioEntity.id);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 
     /**

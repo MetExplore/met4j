@@ -78,7 +78,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.compartment.BioCompartmentType;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
-import fr.inrae.toulouse.metexplore.met4j_io.annotations.reactant.ReactantAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.Flux;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
@@ -521,21 +520,15 @@ public class JsbmlToBioNetworkTest {
 
 		assertNotNull(m1Ref);
 
-		assertTrue(ReactantAttributes.getConstant(m1Ref));
-
 		BioReactant m2Ref = parser.getNetwork().getRightReactants(reaction1).stream()
 				.filter((x) -> x.getPhysicalEntity().getId().compareTo("m2") == 0).findFirst().orElse(null);
 
 		assertNotNull(m2Ref);
 
-		assertFalse(ReactantAttributes.getConstant(m2Ref));
-
 		BioReactant m1RefBis = parser.getNetwork().getRightReactants(reaction1).stream()
 				.filter((x) -> x.getPhysicalEntity().getId().compareTo("m1") == 0).findFirst().orElse(null);
 
 		assertNotNull(m1RefBis);
-
-		assertFalse(ReactantAttributes.getConstant(m1RefBis));
 
 		// Test sbo term
 		String sboTerm = ReactionAttributes.getSboTerm(reaction1);

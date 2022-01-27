@@ -534,7 +534,7 @@ public class BioNetwork extends BioEntity {
      * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @param reactants a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant}
      */
-    protected void affectLeft(BioReaction reaction, BioCollection<BioReactant> reactants) {
+    public void affectLeft(BioReaction reaction, BioCollection<BioReactant> reactants) {
         this.affectLeft(reaction, reactants.toArray(new BioReactant[0]));
     }
 
@@ -614,7 +614,7 @@ public class BioNetwork extends BioEntity {
      * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @param reactants a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant}
      */
-    protected void affectRight(BioReaction reaction, BioCollection<BioReactant> reactants) {
+    public void affectRight(BioReaction reaction, BioCollection<BioReactant> reactants) {
         this.affectRight(reaction, reactants.toArray(new BioReactant[0]));
     }
 

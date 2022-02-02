@@ -38,6 +38,9 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.ResourceURLFilter;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Resources;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.HashMap;
@@ -53,6 +56,68 @@ import java.util.Set;
  */
 public class GenerateDoc {
 
+    private static String mainTitle="met4j-toolbox";
+
+    private static String shortDesc = "**Met4j command-line toolbox for metabolic networks**";
+
+    private static String install="" +
+            "```\n" +
+            "cd met4j-toolbox\n" +
+            "mvn clean compile assembly:single\n" +
+            "```\n";
+
+    private static String usage="" +
+            "The toolbox can be launched using\n" +
+            "```\n" +
+            "java -jar met4j-toolbox-<version>-jar-with-dependencies.jar\n" +
+            "```\n" +
+            "which will list all the contained applications that can be called using\n" +
+            "\n" +
+            "```\n" +
+            "java -cp met4j-toolbox-<version>-jar-with-dependencies.jar <Package>.<App name> -h\n" +
+            "```\n";
+
+    private static StringBuffer getHeader(){
+        StringBuffer sb = new StringBuffer();
+        sb.append("# "+mainTitle); sb.append("\n");
+        sb.append(shortDesc); sb.append("\n");
+        sb.append("\n## Installation\n");
+        sb.append(install);
+        sb.append("\n## Usage\n");
+        sb.append(usage);
+        sb.append("\n## Features\n");
+        return sb;
+    }
+
+    private static StringBuffer getAppTable(HashMap<String, HashMap<String, String>> apps){
+        StringBuffer sb = new StringBuffer();
+        apps.keySet().stream().sorted().forEach(packageName -> {
+            HashMap<String,String> classes = apps.get(packageName);
+            if (classes.size() > 0) {
+
+                sb.append("<table>"); sb.append("\n");
+                sb.append("<thead>" +
+                        "<tr>" +
+                        "<th colspan=\"2\">"+
+                        "Package " + packageName +
+                        "</th>" +
+                        "</tr>" +
+                        "</thead>");sb.append("\n");
+                sb.append("<tbody>");sb.append("\n");
+                classes.keySet().stream().sorted().forEach(className -> {
+                    String desc = classes.get(className);
+                    sb.append(desc);
+                    sb.append("\n");
+                });
+                sb.append("</tbody>");sb.append("\n");
+                sb.append("</table>");sb.append("\n");
+
+            }
+        });
+        return sb;
+    }
+
+
     /**
      * <p>main.</p>
      *
@@ -61,6 +126,7 @@ public class GenerateDoc {
     public static void main(String[] args) {
 
         try {
+
             ResourceURLFilter filter = new ResourceURLFilter() {
 
                 public boolean accept(URL u) {
@@ -75,8 +141,7 @@ public class GenerateDoc {
             };
 
             String path = Main.class.getPackage().getName().replace(".", "/");
-            HashMap<String, Set<String>> packages = new HashMap<>();
-            HashMap<String, String> descs = new HashMap<>();
+            HashMap<String, HashMap<String, String>> apps = new HashMap<>();
 
             for (URL u : Resources.getResourceURLs(Resources.class, filter)) {
 
@@ -99,8 +164,8 @@ public class GenerateDoc {
                     String packageName = myClass.getPackageName();
                     String id = myClass.getCanonicalName();
 
-                    if (!packages.containsKey(packageName)) {
-                        packages.put(packageName, new HashSet<>());
+                    if (!apps.containsKey(packageName)) {
+                        apps.put(packageName, new HashMap<>());
                     }
                     String desc = "";
                     try {
@@ -119,44 +184,22 @@ public class GenerateDoc {
                                 lp+"</details>"+
                                 "</td></tr>";
 
-                        descs.put(id, desc);
-                        packages.get(packageName).add(id);
+                        apps.get(packageName).put(id, desc);
                     } catch (Exception e) {
-                        desc += "No description !";
+                        System.err.println("no description set for "+id);
                     }
-
-
                 } catch (Exception e1) {
+                    //method not set
                 }
 
             }
 
-            System.out.println("# Met4j-Toolbox\n" +
-                    "The applications are classified by package.\n"+
-                    "The complete class name must be provided " +
-                    "(e.g. fr.inrae.toulouse.metexplore.met4j_toolbox.attributes.SbmlSetChargesFromFile) to launch the app\n" +
-                    "Launch the application with the -h parameter to get the list of the parameters and a complete description.\n");
-            packages.keySet().stream().sorted().forEach(packageName -> {
-                Set<String> classes = packages.get(packageName);
-                if (classes.size() > 0) {
-                    System.out.println("<table>");
-                    System.out.println("<thead>" +
-                            "<tr>" +
-                            "<th colspan=\"2\">"+
-                            "Package " + packageName +
-                            "</th>" +
-                            "</tr>" +
-                            "</thead>");
-                    System.out.println("<tbody>");
-                    classes.stream().sorted().forEach(className -> {
-                        String desc = descs.get(className);
-                        System.out.println(desc);
-                    });
-                    System.out.println("</tbody>");
-                    System.out.println("</table>");
-                }
+            BufferedWriter w = new BufferedWriter(new FileWriter(args[0]));
+            w.write(GenerateDoc.getHeader().toString());
+            w.write(GenerateDoc.getAppTable(apps).toString());
+            w.flush();
+            w.close();
 
-            });
 
         } catch (Exception e) {
             e.printStackTrace();

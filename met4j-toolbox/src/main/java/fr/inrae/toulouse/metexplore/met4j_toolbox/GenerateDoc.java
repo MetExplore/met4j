@@ -37,8 +37,10 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox;
 
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.ResourceURLFilter;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Resources;
+import org.kohsuke.args4j.CmdLineParser;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -117,6 +119,12 @@ public class GenerateDoc {
         return sb;
     }
 
+    private static String getUsage(Object app){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        CmdLineParser parser = new CmdLineParser(app);
+        parser.printUsage(baos);
+        return baos.toString(java.nio.charset.StandardCharsets.UTF_8);
+    }
 
     /**
      * <p>main.</p>
@@ -177,11 +185,14 @@ public class GenerateDoc {
                         Object lpo = myClass.getMethod("getLongDescription").invoke(obj);
                         String lp = lpo !=null ? (String) lpo : "";
                         lp=lp.replaceAll("\n\r?","<br/>");
+                        String us =getUsage(obj);
                         desc += "<tr><td>"+
                                 label +
                                 "</td><td>" +
                                 sp+"<details><summary><small>more</small></summary>" +
-                                lp+"</details>"+
+                                lp+"<br/><br/>" +
+                                "<pre><code>"+us+"</code></pre>" +
+                                "</details>"+
                                 "</td></tr>";
 
                         apps.get(packageName).put(id, desc);

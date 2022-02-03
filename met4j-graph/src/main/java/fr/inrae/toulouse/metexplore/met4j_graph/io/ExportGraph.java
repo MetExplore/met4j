@@ -395,8 +395,44 @@ public class ExportGraph {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+	public static <EdgeNameProvider> void toGmlWithAttributes(ReactionGraph graph, String outputPath){
+	ExportGraph.toGmlWithAttributes(graph, outputPath,false);
+	}
+
+	public static <EdgeNameProvider> void toGmlWithAttributes(ReactionGraph graph, String outputPath, Boolean weight){
+		try {
+			GmlExporter<BioReaction, CompoundEdge> gml
+					= new GmlExporter<>();
+			gml.setParameter(GmlExporter.Parameter.EXPORT_EDGE_LABELS, true);
+			gml.setParameter(GmlExporter.Parameter.EXPORT_VERTEX_LABELS, true);
+			gml.setParameter(GmlExporter.Parameter.EXPORT_CUSTOM_EDGE_ATTRIBUTES, true);
+			gml.setParameter(GmlExporter.Parameter.EXPORT_CUSTOM_VERTEX_ATTRIBUTES, true);
+			gml.setVertexAttributeProvider(v -> {
+				Map<String, Attribute> att = new HashMap<>();
+				if(v.getName()!=null) att.put("Name", DefaultAttribute.createAttribute(v.getName()));
+				if(v.isReversible()!=null) att.put("Reversible", DefaultAttribute.createAttribute(v.isReversible()));
+				if(v.getEcNumber()!=null) att.put("EC", DefaultAttribute.createAttribute(v.getEcNumber()));
+				return att;
+			});
+			gml.setEdgeAttributeProvider(e -> {
+				Map<String, Attribute> att = new HashMap<>();
+				if(e.getCompound()!=null && e.getCompound().getName()!=null) att.put("Name", DefaultAttribute.createAttribute(e.getCompound().getName()));
+				if(e.getCompound()!=null && e.getCompound().getChemicalFormula()!=null) att.put("Formula", DefaultAttribute.createAttribute(e.getCompound().getChemicalFormula()));
+				if(e.getCompound()!=null && e.getCompound().getMolecularWeight()!=null) att.put("Mass", DefaultAttribute.createAttribute(e.getCompound().getMolecularWeight()));
+				if(weight) att.put("Weight", DefaultAttribute.createAttribute(graph.getEdgeWeight(e)));
+				return att;
+			});
+			FileWriter fw = new FileWriter(new File(outputPath).getAbsoluteFile());
+			PrintWriter pw = new PrintWriter(fw);
+			gml.exportGraph(graph, pw);
+			System.out.println(outputPath+" created.");
+		} catch (IOException e) {
+			System.err.println("Error in file export!");
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Export bipartite edge.
 	 *

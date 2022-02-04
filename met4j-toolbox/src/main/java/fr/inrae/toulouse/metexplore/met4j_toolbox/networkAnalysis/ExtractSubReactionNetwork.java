@@ -45,11 +45,8 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
     @Option(name = "-sc", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore")
     public String sideCompoundFile = null;
     
-    @Option(name = "-cw", aliases = {"--customWeights"}, usage = "an optional file containing weights for compound pairs", forbids = {"-dw", "-sw"})
+    @Option(name = "-cw", aliases = {"--customWeights"}, usage = "an optional file containing weights for reactions pairs")
     public String weightFile = null;
-
-    //@Option(name = "-u", aliases = {"--undirected"}, usage = "Ignore reaction direction")
-    //public Boolean undirected = false;
 
     @Option(name = "-k", usage = "Extract k-shortest paths", forbids = {"-st"})
     public int k = 1;

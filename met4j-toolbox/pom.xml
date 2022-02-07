@@ -70,9 +70,7 @@
 
     <description>Bundle of all met4j modules and api</description>
 
-
     <build>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -95,7 +93,6 @@
                                 </filter>
                             </filters>
                             <transformers>
-
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>
@@ -105,7 +102,8 @@
                                         <Multi-Release>true</Multi-Release>
                                     </manifestEntries>
                                 </transformer>
-                                <transformer implementation="com.github.edwgiz.mavenShadePlugin.log4j2CacheTransformer.PluginsCacheFileTransformer" />
+                                <transformer
+                                        implementation="com.github.edwgiz.mavenShadePlugin.log4j2CacheTransformer.PluginsCacheFileTransformer"/>
                             </transformers>
                             <createDependencyReducedPom>
                                 false
@@ -133,7 +131,6 @@
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-
                     <!-- create report during maven verify phase -->
                     <execution>
                         <id>report</id>

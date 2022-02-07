@@ -449,7 +449,7 @@ public class JsbmlToBioNetwork {
      */
     private void parseReactionListOf(BioReaction bionetReaction, ListOf<SpeciesReference> listOf, String side) {
         for (SpeciesReference specieRef : listOf) {
-           this.parseParticipantSpecies(bionetReaction, specieRef, side);
+            this.parseParticipantSpecies(bionetReaction, specieRef, side);
         }
     }
 
@@ -482,11 +482,19 @@ public class JsbmlToBioNetwork {
                     specieId = specieId.replaceFirst("_.$", "");
                     specieName = specieName.replaceFirst("^_", "");
                     specieName = specieName.replaceFirst("_.$", "");
-                    BioGene gene = new BioGene(specieId, specieName);
+
+                    BioGene gene;
+                    if(this.getNetwork().getGenesView().containsId(specieId)) {
+                        gene = this.getNetwork().getGenesView().get(specieId);
+                    }
+                    else {
+                        gene = new BioGene(specieId, specieName);
+                        this.getNetwork().add(gene);
+                    }
 
                     gene.setAttribute("oldId", oldId);
 
-                    this.getNetwork().add(gene);
+
                 } else if (sboTerm.compareToIgnoreCase("SBO:0000014") == 0 || sboTerm.compareToIgnoreCase("SBO:0000297") == 0) {
                     validSboTerm = false;
                     hasInvalidSboTerms = true;
@@ -497,11 +505,15 @@ public class JsbmlToBioNetwork {
                     specieId = specieId.replaceFirst("_.$", "");
                     specieName = specieName.replaceFirst("^_", "");
                     specieName = specieName.replaceFirst("_.$", "");
-                    BioEnzyme enz = new BioEnzyme(specieId, specieName);
 
+                    BioEnzyme enz;
+                    if (this.getNetwork().getEnzymesView().containsId(specieId)) {
+                        enz = this.getNetwork().getEnzymesView().get(specieId);
+                    } else {
+                        enz = new BioEnzyme(specieId, specieName);
+                        this.getNetwork().add(enz);
+                    }
                     enz.setAttribute("oldId", oldId);
-
-                    this.getNetwork().add(enz);
                 }
             }
 
@@ -602,8 +614,7 @@ public class JsbmlToBioNetwork {
                 this.network.affectLeft(reaction, stoDbl,
                         this.getNetwork().getCompartmentsView().get(specie.getCompartment()),
                         bionetSpecies);
-            }
-            else {
+            } else {
                 this.network.affectRight(reaction, stoDbl,
                         this.getNetwork().getCompartmentsView().get(specie.getCompartment()),
                         bionetSpecies);

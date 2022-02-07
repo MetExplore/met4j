@@ -37,14 +37,9 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.convert;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import fr.inrae.toulouse.metexplore.met4j_io.kegg.Kegg2BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.kohsuke.args4j.Option;
-
-import java.io.IOException;
 
 public class Kegg2Sbml  extends AbstractMet4jApplication  {
 

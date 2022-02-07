@@ -83,6 +83,9 @@
                         <manifest>
                             <mainClass>fr.inrae.toulouse.metexplore.met4j_toolbox.Main</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <Multi-Release>true</Multi-Release>
+                        </manifestEntries>
                     </archive>
                 </configuration>
                 <executions>

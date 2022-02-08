@@ -128,7 +128,7 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
         return this.getShortDescription() + "\n" +
                 "The subnetwork corresponds to part of the network that connects reactions from the first list to reactions from the second list.\n" +
                 "Sources and targets list can have elements in common. The connecting part can be defined as the union of shortest or k-shortest paths between sources and targets, " +
-                "or the Steiner tree connecting them. Contrary to Compound graph, reaction graph often lacks weighting policy for edge relevance. In order to ensure appropriate " +
+                "or the Steiner tree connecting them. Contrary to compound graph, reaction graph often lacks weighting policy for edge relevance. In order to ensure appropriate " +
                 "network density, a list of side compounds to ignore for linking reactions must be provided";
     }
 

@@ -75,12 +75,12 @@ public abstract class ObjectsPerObject {
     public abstract void compute();
 
 
-    /**
+ /*   *//**
      * Write distribution in file
      *
      * @param fileName path of the output file
      * @throws java.io.IOException if any.
-     */
+     *//*
     public void writeDistributions(String fileName) throws IOException {
 
         FileWriter fw = new FileWriter(fileName);
@@ -94,12 +94,12 @@ public abstract class ObjectsPerObject {
         fw.close();
     }
 
-    /**
+    *//**
      * Write the number of objects per object in a file
      *
      * @param fileName the path of the output file
      * @throws java.io.IOException if any.
-     */
+     *//*
     public void writeNumberOfObjectsPerObject(String fileName) throws IOException {
 
         FileWriter fw = new FileWriter(fileName);
@@ -113,6 +113,6 @@ public abstract class ObjectsPerObject {
 
         fw.close();
     }
-
+*/
 
 }

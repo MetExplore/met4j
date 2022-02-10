@@ -645,40 +645,25 @@ public class BioNetwork extends BioEntity {
         return any.orElse(null);
     }
 
-    private void affectSideReaction(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, @NonNull BioReaction.Side side, @NonNull BioMetabolite e) {
+    /**
+     *
+     * @param reaction a {@link BioReaction}
+     * @param stoichiometry a {@link Double}
+     * @param localisation a {@link BioCompartment}
+     * @param side a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction.Side}
+     * @param metabolite a {@link BioMetabolite}
+     */
+    private void affectSideReaction(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, @NonNull BioReaction.Side side, @NonNull BioMetabolite metabolite) {
 
-
-        // The network must contain the compartment
-        if (!this.compartments.contains(localisation)) {
-            throw new IllegalArgumentException("Compartment " + localisation.getId() + " not in the network");
-        }
-
-        if (!this.metabolites.contains(e)) {
-            throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the network");
-        }
-
-        // The metabolite must be connected to the compartment
-        if (!localisation.getComponents().contains(e)) {
-            throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the compartment " + localisation.getId());
-        }
-
-        // The network must contain the reaction
-        if (!this.reactions.contains(reaction)) {
-            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not in the network");
-        }
-
-        BioReactant reactant = this.getReactant(e, stoichiometry, localisation);
+        BioReactant reactant = this.getReactant(metabolite, stoichiometry, localisation);
 
         if (reactant == null) {
-            reactant = new BioReactant(e, stoichiometry, localisation);
+            reactant = new BioReactant(metabolite, stoichiometry, localisation);
             this.reactants.add(reactant);
         }
 
-        if (side.equals(BioReaction.Side.LEFT)) {
-            reaction.getLeftReactants().add(reactant);
-        } else {
-            reaction.getRightReactants().add(reactant);
-        }
+        this.affectSideReaction(reactant, reaction, side);
+
     }
 
     private void addReactant(BioReactant reactant) {
@@ -856,21 +841,14 @@ public class BioNetwork extends BioEntity {
      */
     private void affectSubUnit(@NonNull BioEnzyme enzyme, @NonNull Double quantity, @NonNull BioPhysicalEntity unit) {
 
-        if (!this.contains(enzyme)) {
-            throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
-        }
-
-        if (!this.contains(unit)) {
-            throw new IllegalArgumentException("Physical entity " + unit.getId() + " not present in the network");
-        }
-
         BioEnzymeParticipant p = this.getEnzymeParticipant(unit, quantity);
         if (p == null) {
             p = new BioEnzymeParticipant(unit, quantity);
             this.enzymeParticipants.add(p);
         }
 
-        enzyme.addParticipant(p);
+        this.affectSubUnit(enzyme, p);
+
 
     }
 
@@ -1692,11 +1670,14 @@ public class BioNetwork extends BioEntity {
      * @param reactions a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
      */
-    public BioCollection<BioMetabolite> getMetabolitesFromReactions(@NonNull BioCollection<BioReaction> reactions) {
+    public BioCollection<BioMetabolite> getMetabolitesFromReactions(@NonNull BioCollection<@NonNull BioReaction> reactions) {
 
         BioCollection<BioMetabolite> allMetabolites = new BioCollection<>();
 
         for (BioReaction reaction : reactions) {
+            if(! this.contains(reaction)) {
+                throw new IllegalArgumentException("Reaction "+reaction+" not present in the network");
+            }
             if (this.contains(reaction)) {
                 allMetabolites.addAll(this.getLefts(reaction));
                 allMetabolites.addAll(this.getRights(reaction));
@@ -1809,33 +1790,6 @@ public class BioNetwork extends BioEntity {
     public BioCollection<BioEnzyme> getEnzymesView() {
         return enzymes.getView();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        BioNetwork that = (BioNetwork) o;
-        return Objects.equals(pathways, that.pathways) &&
-                Objects.equals(metabolites, that.metabolites) &&
-                Objects.equals(proteins, that.proteins) &&
-                Objects.equals(genes, that.genes) &&
-                Objects.equals(reactions, that.reactions) &&
-                Objects.equals(compartments, that.compartments) &&
-                Objects.equals(enzymes, that.enzymes);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), pathways, metabolites, proteins, genes, reactions, compartments, enzymes);
-    }
-
 
     /**
      * @param e a {@link BioEntity}

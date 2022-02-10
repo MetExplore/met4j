@@ -48,7 +48,6 @@ import java.util.TreeMap;
  * <p>Abstract ObjectsPerObject class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public abstract class ObjectsPerObject {
 

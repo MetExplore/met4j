@@ -80,13 +80,13 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		StringBuilder str = new StringBuilder("BioCollection\n[\n");
-		for (E e : this.entities.values()) {
-			str.append(e.toString());
-			str.append("\n");
-		}
+		StringBuilder str = new StringBuilder(this.getClass().getSimpleName()+"(");
 
-		return str + "]";
+		str.append(entities.values().stream()
+				.map(BioEntity::getId)
+				.collect(Collectors.joining(", ")));
+
+		return str + ")";
 	}
 
 	/**

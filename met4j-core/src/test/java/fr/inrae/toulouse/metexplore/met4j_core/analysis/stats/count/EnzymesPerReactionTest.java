@@ -1,5 +1,5 @@
 /*
- * Copyright INRAE (2020)
+ * Copyright INRAE (2022)
  *
  * contact-metexplore@inrae.fr
  *
@@ -36,64 +36,47 @@
 
 package fr.inrae.toulouse.metexplore.met4j_core.analysis.stats.count;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
+import org.junit.Test;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import lombok.NonNull;
+import java.util.TreeMap;
 
-/**
- * <p>Allows to compute the distribution of the number of enzymes per reaction</p>
- *
- * @author lcottret
- */
-public class EnzymesPerReaction extends ObjectsPerObject {
+import static org.junit.Assert.*;
 
-    /**
-     * Constructor
-     *
-     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
-     */
-    public EnzymesPerReaction(@NonNull BioNetwork network) {
+public class EnzymesPerReactionTest {
 
-        super(network);
-
-    }
-
-    /**
-     * Computes the number of enzymes per reaction, the distribution and the mean
-     */
+    @Test
     public void compute() {
 
-        BioCollection<BioReaction> reactions = network.getReactionsView();
+        BioNetwork network = new BioNetwork();
 
-        int sum = 0;
+        BioReaction r1 = new BioReaction("r1");
+        BioReaction r2 = new BioReaction("r2");
+        BioReaction r3 = new BioReaction("r3");
 
-        int nbReactionWithEnzymes = 0;
+        BioEnzyme e1 = new BioEnzyme("e1");
+        BioEnzyme e2 = new BioEnzyme("e2");
 
-        for (BioReaction reaction : reactions) {
+        network.add(r1, r2, r3, e1, e2);
 
-            BioCollection<BioEnzyme> enzymes = reaction.getEnzymesView();
+        network.affectEnzyme(r1, e1, e2);
+        network.affectEnzyme(r2, e1);
+        network.affectEnzyme(r3, e1);
 
-            int nbEnzymes = enzymes.size();
+        EnzymesPerReaction enzymesPerReaction = new EnzymesPerReaction(network);
 
-            if (nbEnzymes > 0) {
+        enzymesPerReaction.compute();
 
-                nbReactionWithEnzymes ++;
-                sum += nbEnzymes;
+        Double mean = enzymesPerReaction.mean;
+        TreeMap<Integer, Integer> distribution = enzymesPerReaction.distribution;
 
-                nbs.put(reaction.getId(), nbEnzymes);
+        assertEquals(2, distribution.size());
 
-                if (!distribution.containsKey(nbEnzymes)) {
-                    distribution.put(nbEnzymes, 1);
-                } else {
-                    int nbReactions = distribution.get(nbEnzymes) + 1;
-                    distribution.put(nbEnzymes, nbReactions);
-                }
-            }
+        assertEquals(2, distribution.get(1), 0);
+        assertEquals(1, distribution.get(2), 0);
 
-        }
-        mean = (double) sum / (double) nbReactionWithEnzymes;
+        assertEquals(1.333, mean, 0.01);
+
+
     }
 }

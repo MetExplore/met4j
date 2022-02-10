@@ -45,13 +45,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import lombok.EqualsAndHashCode;
 
 /**
  * <p>BioCollection class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
+ *
  */
+@EqualsAndHashCode
 public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	private Map<String, E> entities;
@@ -254,50 +256,6 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 */
 	public BioCollection<E> getView() {
 		return new BioCollection<>(new HashMap<>(this.entities));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean equals(Object obj) {
-
-		// checking if both the object references are
-		// referring to the same object.
-		if (this == obj)
-			return true;
-
-		if (obj == null || obj.getClass() != this.getClass())
-			return false;
-
-		BioCollection<?> c = (BioCollection<?>) obj;
-
-		if (c.size() != this.size())
-			return false;
-
-		for (BioEntity e : c) {
-			if (!this.contains(e))
-				return false;
-		}
-
-		return true;
-
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public int hashCode() {
-
-		StringBuilder idsString = new StringBuilder();
-
-		ArrayList<String> ids = new ArrayList<>(this.getIds());
-
-		Collections.sort(ids);
-
-		for (String id : ids) {
-			idsString.append(id);
-		}
-
-		return idsString.toString().hashCode();
-
 	}
 
 	/**

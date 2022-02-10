@@ -1,5 +1,5 @@
 /*
- * Copyright INRAE (2020)
+ * Copyright INRAE (2022)
  *
  * contact-metexplore@inrae.fr
  *
@@ -36,53 +36,55 @@
 
 package fr.inrae.toulouse.metexplore.met4j_core.biodata.collection;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.util.HashSet;
+import static org.junit.Assert.*;
+import static org.junit.Assert.*;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+public class BioCollectionsTest {
+    BioCollection a, b;
+    BioMetabolite m1, m2, m3;
 
-/**
- * <p>BioCollections class.</p>
- *
- * @author cfrainay
- */
-public class BioCollections{
+    @Before
+    public void init() {
+        a = new BioCollection();
+        b = new BioCollection();
 
-	/**
-	 * <p>intersect.</p>
-	 *
-	 * @param collections 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection}
-	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} containing the entities formed by the intersection of the entities in collections
-	 * @param <E> a E object.
-	 */
-	public static <E extends BioEntity> BioCollection<E> intersect(BioCollection<E>... collections){
+        m1 = new BioMetabolite("m1");
+        m2 = new BioMetabolite("m2");
+        m3 = new BioMetabolite("m3");
 
-		if(collections.length > 0) {
-			BioCollection<E> intersect = new BioCollection<>(collections[0]);
-			for (int i = 1; i < collections.length; i++) {
-				intersect.retainAll(collections[i]);
-				if (intersect.isEmpty()) return intersect;
-			}
-			return intersect;
-		}
-		else {
-			return new BioCollection<E>();
-		}
-	}
+        b.add(m1, m2);
+        a.add(m1, m3);
+    }
 
-	/**
-	 * <p>union.</p>
-	 *
-	 * @param collections 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection}
-	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} containing the entities formed by the union of the entities in collections
-	 * @param <E> a E object.
-	 */
-	public static <E extends BioEntity> BioCollection<E> union(BioCollection<E>... collections){
-		
-		HashSet<E> union = new HashSet<>();
-		for(BioCollection<E> collection : collections){
-			union.addAll(collection);
-		}
-		return new BioCollection<>(union);
-	}
+    @Test
+    public void intersect() {
+
+        BioCollection intersect = BioCollections.intersect(a, b);
+
+        assertEquals(1, intersect.size());
+        assertTrue(intersect.contains(m1));
+
+    }
+
+    @Test
+    public void intersectWithNoCollection() {
+        BioCollection intersect = BioCollections.intersect();
+        assertEquals(0, intersect.size());
+
+    }
+
+    @Test
+    public void union() {
+
+        BioCollection union = BioCollections.union(a, b);
+
+        assertEquals(3, union.size());
+        assertTrue(union.contains(m1));
+        assertTrue(union.contains(m2));
+        assertTrue(union.contains(m3));
+    }
 }

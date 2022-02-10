@@ -35,7 +35,7 @@
  */
 
 /**
- * Contains classes to handle BioCollection
+ * Contains classes to handle collections of metabolic entities
  */
 
 package fr.inrae.toulouse.metexplore.met4j_core.biodata.collection;

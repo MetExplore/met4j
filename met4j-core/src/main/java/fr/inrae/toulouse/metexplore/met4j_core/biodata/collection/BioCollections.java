@@ -55,6 +55,7 @@ public class BioCollections{
 	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} containing the entities formed by the intersection of the entities in collections
 	 * @param <E> a E object.
 	 */
+	@SafeVarargs
 	public static <E extends BioEntity> BioCollection<E> intersect(BioCollection<E>... collections){
 
 		if(collections.length > 0) {
@@ -66,7 +67,7 @@ public class BioCollections{
 			return intersect;
 		}
 		else {
-			return new BioCollection<E>();
+			return new BioCollection<>();
 		}
 	}
 
@@ -77,6 +78,7 @@ public class BioCollections{
 	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} containing the entities formed by the union of the entities in collections
 	 * @param <E> a E object.
 	 */
+	@SafeVarargs
 	public static <E extends BioEntity> BioCollection<E> union(BioCollection<E>... collections){
 		
 		HashSet<E> union = new HashSet<>();

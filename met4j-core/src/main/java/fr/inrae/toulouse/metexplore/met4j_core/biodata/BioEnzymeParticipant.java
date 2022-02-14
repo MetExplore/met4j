@@ -94,9 +94,7 @@ public class BioEnzymeParticipant extends BioParticipant {
 
         }
 
-        String buffer = quantityStr + " " + this.getPhysicalEntity().getId();
-
-        return buffer;
+        return quantityStr + " " + this.getPhysicalEntity().getId();
 
     }
 }

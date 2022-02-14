@@ -35,9 +35,7 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata.collection;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -54,6 +52,7 @@ import lombok.NonNull;
  * @author lcottret
  *
  */
+@SuppressWarnings({"NullableProblems", "SuspiciousMethodCalls"})
 @EqualsAndHashCode
 public class BioCollection<E extends BioEntity> implements Collection<E> {
 
@@ -83,11 +82,10 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		StringBuilder str = new StringBuilder(this.getClass().getSimpleName()+"(");
 
-		str.append(entities.values().stream()
+		String str = this.getClass().getSimpleName() + "(" + entities.values().stream()
 				.map(BioEntity::getId)
-				.collect(Collectors.joining(", ")));
+				.collect(Collectors.joining(", "));
 
 		return str + ")";
 	}
@@ -205,7 +203,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 			return false;
 		}
 		else {
-			if (entities.keySet().contains(e.getId())) {
+			if (entities.containsKey(e.getId())) {
 				throw new IllegalArgumentException("An entity with the same id (" + e.getId() + ") is already present in the BioCollection");
 			}
 			entities.put(e.getId(), e);
@@ -219,7 +217,8 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @param newEntities : 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
 	 * @return always true
 	 */
-	public boolean add(E... newEntities) {
+	@SafeVarargs
+	public final boolean add(E... newEntities) {
 		for(E e : newEntities) {
 			entities.put(e.getId(), e);
 		}
@@ -231,7 +230,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	public boolean remove(@NonNull Object o) {
 		Object removed =  entities.remove(((BioEntity) o).getId());
 
-		return removed == null ? false : true;
+		return removed != null;
 
 	}
 

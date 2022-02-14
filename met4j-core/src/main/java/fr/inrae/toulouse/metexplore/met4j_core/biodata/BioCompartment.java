@@ -37,8 +37,6 @@
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Biological cellular compartment, e.g. mitochondria, cytoplasm

@@ -115,6 +115,9 @@ public class BioReaction extends BioEntity {
 		left = new BioCollection<>();
 		right = new BioCollection<>();
 		enzymes = new BioCollection<>();
+		this.spontaneous = reaction.spontaneous;
+		this.ecNumber = reaction.ecNumber;
+		this.reversible = reaction.reversible;
 	}
 
 	/**
@@ -431,7 +434,7 @@ public class BioReaction extends BioEntity {
 	 */
 	public BioCollection<BioMetabolite> getMetabolitesView() {
 		return this.getReactantsView().stream()
-				.map(bioReactant -> bioReactant.getMetabolite())
+				.map(BioReactant::getMetabolite)
 				.collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
 	}
 

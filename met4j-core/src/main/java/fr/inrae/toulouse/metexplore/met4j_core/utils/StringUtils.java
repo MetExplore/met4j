@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
 public class StringUtils {
 
 	final private static Pattern patternEC = Pattern.compile("(EC\\s*)*\\d(\\.(\\d{0,3}|-)){0,3}");
-	final private static Pattern patternFormula = Pattern.compile("^([\\*\\(\\)A-Z][a-z]*\\d*)+$");;
+	final private static Pattern patternFormula = Pattern.compile("^([*\\(-Z][a-z]*\\d*)+$");
 
 	/**
 	 * <p>isVoid.</p>
@@ -100,8 +100,8 @@ public class StringUtils {
 
 	/**
 	 * Check EC number
-	 * @param ec
-	 * @return
+	 * @param ec a string to test as ec number
+	 * @return true if it looks like an ec number (e.g 1.2.3.4, 1.2.3, 1.2, 1)
 	 */
 	public static  boolean checkEcNumber(@NonNull String ec) {
 		Matcher m = patternEC.matcher(ec);
@@ -110,8 +110,8 @@ public class StringUtils {
 
 	/**
 	 * Checks if a metabolite formula is well formatted
-	 * @param formula
-	 * @return
+	 * @param formula a String to check
+	 * @return true if it looks like a chemical formula (e.g. CH3, C, (n)CH2O6)
 	 */
 	public static boolean checkMetaboliteFormula(@NonNull String formula) {
 		Matcher m = patternFormula.matcher(formula);

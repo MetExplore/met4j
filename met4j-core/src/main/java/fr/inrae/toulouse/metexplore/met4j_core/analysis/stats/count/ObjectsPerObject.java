@@ -39,8 +39,6 @@ package fr.inrae.toulouse.metexplore.met4j_core.analysis.stats.count;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import lombok.NonNull;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -52,11 +50,11 @@ import java.util.TreeMap;
  */
 public abstract class ObjectsPerObject {
 
-    public BioNetwork network;
+    final public BioNetwork network;
 
-    public TreeMap<Integer, Integer> distribution = new TreeMap<>();
+    final public TreeMap<Integer, Integer> distribution = new TreeMap<>();
 
-    public HashMap<String, Integer> nbs = new HashMap<>();
+    final public HashMap<String, Integer> nbs = new HashMap<>();
 
     public Double mean;
 

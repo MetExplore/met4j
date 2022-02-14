@@ -42,8 +42,6 @@ import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * <p>BioNetworkUtils class.</p>
@@ -120,7 +118,6 @@ public class BioNetworkUtils {
      *                     - add components to an enzyme
      *                     - add reactions to a pathway
      *                     - add enzymes or reactants to a reaction
-     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
      */
     public static void deepCopy(@NonNull BioNetwork networkIn, @NonNull BioNetwork networkOut, Boolean keepGPR, Boolean keepPrevious) {
 
@@ -317,8 +314,5 @@ public class BioNetworkUtils {
                 networkOut.affectToPathway(newPathway, newReaction);
             }
         }
-
-        return;
-
     }
 }

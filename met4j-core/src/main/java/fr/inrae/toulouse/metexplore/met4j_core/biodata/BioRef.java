@@ -46,10 +46,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.commons.lang3.Validate;
-
-
-
 
 /**
  * <p>BioRef class.</p>

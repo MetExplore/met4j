@@ -242,15 +242,10 @@ public class BioNetworkUtils {
                         BioProtein protein = (BioProtein) participant.getPhysicalEntity();
                         BioProtein newProtein = networkOut.getProteinsView().get(protein.getId());
                         networkOut.affectSubUnit(newEnzyme, quantity, newProtein);
-                    } else {
-                        System.err.println("BioPhysical entity not recognized as enzyme participant : "
-                                + participant.getPhysicalEntity().getId()
-                                + "(" + participant.getPhysicalEntity().getClass() + ")");
                     }
                 }
             }
         }
-
 
         // Copy reactions
         BioCollection<BioReaction> reactionsToCopy = networkIn.getReactionsView();

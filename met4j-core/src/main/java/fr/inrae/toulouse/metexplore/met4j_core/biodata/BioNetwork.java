@@ -841,6 +841,9 @@ public class BioNetwork extends BioEntity {
      */
     private void affectSubUnit(@NonNull BioEnzyme enzyme, @NonNull Double quantity, @NonNull BioPhysicalEntity unit) {
 
+        if(! (unit instanceof  BioMetabolite) && ! (unit instanceof BioProtein) ) {
+            throw new IllegalArgumentException("A subunit of a BioEnzyme must be a BioProtein or a BioMetabolite");
+        }
         BioEnzymeParticipant p = this.getEnzymeParticipant(unit, quantity);
         if (p == null) {
             p = new BioEnzymeParticipant(unit, quantity);

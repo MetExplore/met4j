@@ -53,9 +53,7 @@ public class BioEnzyme extends BioPhysicalEntity {
      * @param id the id of the BioEnzyme
      */
     public BioEnzyme(String id) {
-        super(id);
-
-        participants = new BioCollection<>();
+        this(id, id);
     }
 
     /**
@@ -100,14 +98,6 @@ public class BioEnzyme extends BioPhysicalEntity {
         return participants.getView();
     }
 
-    /**
-     * <p>Setter for the field <code>participants</code>.</p>
-     *
-     * @param participants the participants to set
-     */
-    protected void setParticipants(BioCollection<BioEnzymeParticipant> participants) {
-        this.participants = participants;
-    }
 
     /**
      * <p>addParticipant.</p>
@@ -127,12 +117,11 @@ public class BioEnzyme extends BioPhysicalEntity {
 
         BioCollection<BioEnzymeParticipant> tmp = new BioCollection<>(this.participants);
 
-        for (BioEnzymeParticipant p : tmp) {
+        tmp.forEach(p -> {
             if (p.getPhysicalEntity().equals(e)) {
                 this.participants.remove(p);
-                return;
             }
-        }
+        });
     }
 
 }

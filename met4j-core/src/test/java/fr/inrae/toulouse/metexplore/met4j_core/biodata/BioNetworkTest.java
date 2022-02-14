@@ -293,10 +293,11 @@ public class BioNetworkTest {
         BioEnzyme enzyme = new BioEnzyme("enzyme");
         network.add(enzyme);
         protein.removeGene();
-        network.add(protein);
+        network.add(protein, protein2);
         network.affectGeneProduct(protein, gene);
-        network.affectSubUnit(enzyme, 1.0, protein);
+        network.affectSubUnit(enzyme, 1.0, protein, protein2);
         network.removeOnCascade(protein);
+
         assertEquals("Enzyme not removed", 0, network.getEnzymesView().size());
 
         // Test if the compartment still contains the protein
@@ -1007,6 +1008,18 @@ public class BioNetworkTest {
         network.affectSubUnit(enz, 1.0, unitMetabolite);
 
         assertEquals("subunit not added to enzyme", 1, enz.getParticipants().size());
+    }
+
+    @Test (expected =  IllegalArgumentException.class)
+    public void testAffectSubUnitNotGoodType() {
+
+        BioEnzyme enz = new BioEnzyme("enz");
+        BioEnzyme enz2 = new BioEnzyme("enz2");
+
+        network.add(enz, enz2);
+
+        network.affectSubUnit(enz, 1.0, enz);
+
     }
 
     @Test
@@ -2193,7 +2206,7 @@ public class BioNetworkTest {
 
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testGetLeftsWithAbsentReaction() {
 
         this.addTestReactionToNetwork();
@@ -2291,7 +2304,7 @@ public class BioNetworkTest {
 
     }
 
-    @Test (expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void TestContainsBadEntityWithSameId() {
         this.network.containsEntityWithSameId(this.network);
     }

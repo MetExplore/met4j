@@ -36,8 +36,7 @@
 
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
-import fr.inrae.toulouse.metexplore.met4j_core.utils.ErrorUtils;
-
+import lombok.Getter;
 import javax.annotation.Nonnull;
 import java.util.Objects;
 
@@ -49,8 +48,10 @@ import java.util.Objects;
  */
 public abstract class BioParticipant extends BioEntity {
 
+	@Getter
 	private final BioPhysicalEntity physicalEntity;
 	
+	@Getter
 	private final Double quantity;
 
 	/**
@@ -65,33 +66,12 @@ public abstract class BioParticipant extends BioEntity {
 		this.physicalEntity=physicalEntity;
 		if(Double.isNaN(quantity) || Double.isInfinite(quantity) || quantity <= 0)
 		{
-			ErrorUtils.error("Illegal argument for "+quantity+" "+this.getPhysicalEntity().getId()+": the quantity must be finite and positive");
+			System.err.println("Illegal argument for "+quantity+" "+this.getPhysicalEntity().getId()+": the quantity must be finite and positive");
 			throw new IllegalArgumentException();
 		}
 
 		this.quantity = quantity;
 	}
-
-
-	/**
-	 * <p>Getter for the field <code>physicalEntity</code>.</p>
-	 *
-	 * @return Returns the physicalEntity.
-	 */
-	public BioPhysicalEntity getPhysicalEntity() {
-		return physicalEntity;
-	}
-	
-
-	/**
-	 * <p>Getter for the field <code>quantity</code>.</p>
-	 *
-	 * @return the quantity
-	 */
-	public Double getQuantity() {
-		return quantity;
-	}
-
 
 	/** {@inheritDoc} */
 	@Override
@@ -101,11 +81,5 @@ public abstract class BioParticipant extends BioEntity {
 		BioParticipant that = (BioParticipant) o;
 		return Objects.equals(physicalEntity, that.physicalEntity) &&
 				Objects.equals(quantity, that.quantity);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public int hashCode() {
-		return Objects.hash(super.hashCode(), physicalEntity, quantity);
 	}
 }

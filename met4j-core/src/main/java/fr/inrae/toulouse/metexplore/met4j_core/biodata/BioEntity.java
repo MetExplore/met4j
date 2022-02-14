@@ -38,6 +38,8 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 import java.util.*;
 
 import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The root class
@@ -47,13 +49,27 @@ import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
  */
 public abstract class BioEntity {
 
+    @Getter
     final String id;
+
+    @Getter
+    @Setter
     private String name;
+
+    @Getter
+    @Setter
     private ArrayList<String> synonyms = new ArrayList<>();
+
+    @Getter
+    @Setter
     private String comment;
 
+    @Getter
+    @Setter
     private HashMap<String, Set<BioRef>> refs;
 
+    @Getter
+    @Setter
     private HashMap<String, Object> attributes;
 
     /**
@@ -65,7 +81,7 @@ public abstract class BioEntity {
     public BioEntity(String id, String name) {
 
         if (StringUtils.isVoid(id)) {
-            String newId = UUID.randomUUID().toString().replaceAll("-","_");
+            String newId = UUID.randomUUID().toString().replaceAll("-", "_");
             this.id = newId;
             System.err.println("Invalid id for building a BioEntity: " + id);
             System.err.println("Creates a random unique id : " + newId);
@@ -104,78 +120,6 @@ public abstract class BioEntity {
     }
 
     /**
-     * Set the name of the entity
-     *
-     * @param n String
-     */
-    public void setName(String n) {
-        this.name = n;
-    }
-
-    /**
-     * Get the name of the entity
-     *
-     * @return the name of the entity
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
-     * Get the list of the synonyms
-     *
-     * @return an ArrayList of the synonyms of the entity
-     */
-    public ArrayList<String> getSynonyms() {
-        return this.synonyms;
-    }
-
-    /**
-     * Add a synonym in the list
-     *
-     * @param s synonym to add
-     */
-    public void addSynonym(String s) {
-        this.synonyms.add(s);
-    }
-
-    /**
-     * Set the comment on the entity
-     *
-     * @param c String
-     */
-    public void setComment(String c) {
-        this.comment = c;
-    }
-
-    /**
-     * Get the comment on the entity
-     *
-     * @return the comment on the entity
-     */
-    public String getComment() {
-        return this.comment;
-    }
-
-    /**
-     * <p>Getter for the field <code>id</code>.</p>
-     *
-     * @return Returns the id.
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * <p>Setter for the field <code>synonyms</code>.</p>
-     *
-     * @param synonyms a {@link java.util.ArrayList} object.
-     */
-    public void setSynonyms(ArrayList<String> synonyms) {
-        this.synonyms = synonyms;
-    }
-
-    /**
      * TODO : voir la coherence du code entre les deux methodes addRef. Celle ci
      * devrait se terminer par un this.addRef(ref)
      *
@@ -187,7 +131,7 @@ public abstract class BioEntity {
      */
     public void addRef(String dbName, String dbId, int confidenceLevel, String relation, String origin) {
         BioRef ref = new BioRef(origin, dbName, dbId, confidenceLevel);
-        ref.setLogicallink(relation);
+        ref.logicallink = relation;
         this.addRef(ref);
     }
 
@@ -197,7 +141,7 @@ public abstract class BioEntity {
      * @param ref a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioRef}
      */
     public void addRef(BioRef ref) {
-        String dbName = ref.getDbName();
+        String dbName = ref.dbName;
         if (!this.hasRef(ref)) {
             if (this.refs.containsKey(dbName)) {
                 refs.get(dbName).add(ref);
@@ -209,15 +153,7 @@ public abstract class BioEntity {
         }
     }
 
-    /**
-     * Get all refs
-     *
-     * @return a {@link java.util.HashMap} for which the key is the database name and the values the set of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioRef}
-     * associated to this database
-     */
-    public HashMap<String, Set<BioRef>> getRefs() {
-        return this.refs;
-    }
+
 
     /**
      * Get all refs associated to a database
@@ -242,7 +178,7 @@ public abstract class BioEntity {
             return false;
         }
         for (BioRef ref : this.refs.get(dbName)) {
-            if (ref.getId().equals(refId)) {
+            if (ref.id.equals(refId)) {
                 return true;
             }
         }
@@ -269,38 +205,11 @@ public abstract class BioEntity {
     }
 
     /**
-     * <p>Setter for the field <code>refs</code>.</p>
-     *
-     * @param refs a {@link java.util.HashMap} object.
-     */
-    public void setRefs(HashMap<String, Set<BioRef>> refs) {
-        this.refs = refs;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public String toString() {
         return this.getId();
-    }
-
-    /**
-     * <p>Getter for the field <code>attributes</code>.</p>
-     *
-     * @return a {@link java.util.HashMap} object.
-     */
-    public HashMap<String, Object> getAttributes() {
-        return attributes;
-    }
-
-    /**
-     * <p>Setter for the field <code>attributes</code>.</p>
-     *
-     * @param attributes a {@link java.util.HashMap} object.
-     */
-    public void setAttributes(HashMap<String, Object> attributes) {
-        this.attributes = attributes;
     }
 
     /**

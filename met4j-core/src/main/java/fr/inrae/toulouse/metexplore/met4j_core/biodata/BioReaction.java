@@ -88,10 +88,7 @@ public class BioReaction extends BioEntity {
 	 * @param id a {@link java.lang.String} object.
 	 */
 	public BioReaction(String id) {
-		super(id);
-		left = new BioCollection<>();
-		right = new BioCollection<>();
-		enzymes = new BioCollection<>();
+		this(id, id);
 	}
 
 	/**

@@ -56,8 +56,7 @@ public class BioPathway extends BioEntity {
 	 * @param id the id of the pathway
 	 */
 	public BioPathway(String id) {
-		super(id);
-		reactions = new BioCollection<>();
+		this(id, id);
 	}
 
 	/**
@@ -91,14 +90,6 @@ public class BioPathway extends BioEntity {
 		return reactions;
 	}
 
-	/**
-	 * <p>Setter for the field <code>reactions</code>.</p>
-	 *
-	 * @param reactions a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} object.
-	 */
-	protected void setReactions(BioCollection<BioReaction> reactions) {
-		this.reactions = reactions;
-	}
 
 	/**
 	 * <p>addReaction.</p>

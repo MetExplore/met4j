@@ -35,6 +35,9 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * <p>BioMetabolite class.</p>
  *
@@ -43,10 +46,20 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
  */
 public class BioMetabolite extends BioPhysicalEntity {
 
+    @Getter
+    @Setter
     private Double molecularWeight;
+    @Getter
+    @Setter
     private String chemicalFormula;
+    @Getter
+    @Setter
     private String inchi;
+    @Getter
+    @Setter
     private String smiles;
+    @Getter
+    @Setter
     private Integer charge = 0;
 
     /**
@@ -55,7 +68,7 @@ public class BioMetabolite extends BioPhysicalEntity {
      * @param id the id of the BioMetabolite
      */
     public BioMetabolite(String id) {
-        super(id);
+        this(id, id);
     }
 
     /**
@@ -77,110 +90,11 @@ public class BioMetabolite extends BioPhysicalEntity {
     public BioMetabolite(BioMetabolite metabolite) {
         super(metabolite);
 
-        this.inchi = metabolite.inchi;
-        this.smiles = metabolite.smiles;
-        this.charge = metabolite.charge;
-        this.molecularWeight = metabolite.molecularWeight;
-        this.chemicalFormula = metabolite.chemicalFormula;
+        this.setInchi(metabolite.getInchi());
+        this.setSmiles(metabolite.getSmiles());
+        this.setCharge(metabolite.getCharge());
+        this.setMolecularWeight(metabolite.getMolecularWeight());
+        this.setChemicalFormula(metabolite.getChemicalFormula());
 
-    }
-
-
-    /**
-     * <p>Getter for the field <code>inchi</code>.</p>
-     *
-     * @return the inchi
-     */
-    public String getInchi() {
-        return inchi;
-    }
-
-    /**
-     * <p>Setter for the field <code>inchi</code>.</p>
-     *
-     * @param inchi the inchi to set
-     */
-    public void setInchi(String inchi) {
-        this.inchi = inchi;
-    }
-
-
-    /**
-     * <p>Getter for the field <code>smiles</code>.</p>
-     *
-     * @return the smile
-     */
-    public String getSmiles() {
-        return smiles;
-    }
-
-
-    /**
-     * <p>Setter for the field <code>smiles</code>.</p>
-     *
-     * @param smile the smile to set
-     */
-    public void setSmiles(String smile) {
-        this.smiles = smile;
-    }
-
-
-    /**
-     * <p>Setter for the field <code>molecularWeight</code>.</p>
-     *
-     * @param molecularWeight the molecularWeight to set
-     */
-    public void setMolecularWeight(double molecularWeight) {
-        this.molecularWeight = molecularWeight;
-    }
-
-
-    /**
-     * <p>Getter for the field <code>chemicalFormula</code>.</p>
-     *
-     * @return the chemical formula of the metabolite
-     */
-    public String getChemicalFormula() {
-        return chemicalFormula;
-    }
-
-
-    /**
-     * <p>Setter for the field <code>chemicalFormula</code>.</p>
-     *
-     * @param chemicalFormula : a String like C6H12O6
-     */
-    public void setChemicalFormula(String chemicalFormula) {
-        this.chemicalFormula = chemicalFormula;
-    }
-
-
-    /**
-     * <p>Getter for the field <code>molecularWeight</code>.</p>
-     *
-     * @return the molecularWeight
-     */
-    public Double getMolecularWeight() {
-        return molecularWeight;
-    }
-
-
-    /**
-     * <p>Getter for the field <code>charge</code>.</p>
-     *
-     * @return the charge
-     */
-    public Integer getCharge() {
-        return charge;
-    }
-
-
-    /**
-     * <p>Setter for the field <code>charge</code>.</p>
-     *
-     * @param charge the charge to set
-     */
-    public void setCharge(Integer charge) {
-        this.charge = charge;
     }
 }

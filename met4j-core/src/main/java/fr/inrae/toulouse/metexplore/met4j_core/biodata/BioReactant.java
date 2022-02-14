@@ -35,6 +35,8 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
+import lombok.Getter;
+
 import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -50,7 +52,7 @@ import java.util.Objects;
  */
 public class BioReactant extends BioParticipant {
 
-	private final BioCompartment location;
+	@Getter private final BioCompartment location;
 
 	/**
 	 * Constructor
@@ -62,15 +64,6 @@ public class BioReactant extends BioParticipant {
 	protected BioReactant(@Nonnull BioMetabolite metabolite, Double stoichiometry, @Nonnull BioCompartment location) {
 		super(metabolite.getId()+"__"+stoichiometry+"__"+location.getId(), metabolite, stoichiometry);
 		this.location = location;
-	}
-
-	/**
-	 * Get location of the reactant
-	 *
-	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-	 */
-	public BioCompartment getLocation() {
-		return location;
 	}
 
 	/**

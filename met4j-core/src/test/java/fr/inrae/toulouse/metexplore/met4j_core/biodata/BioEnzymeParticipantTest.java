@@ -53,7 +53,9 @@ public class BioEnzymeParticipantTest {
 
 		assertEquals("toString does not work", "2 p1", p.toString());
 
+		p = new BioEnzymeParticipant(new BioProtein("p1"), 1.54546);
 
+		assertEquals("toString does not work", "1.55 p1", p.toString());
 	}
 }
 

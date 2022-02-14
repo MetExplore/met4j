@@ -37,16 +37,9 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata.utils;
 
 import static org.junit.Assert.*;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import org.junit.Before;
 import org.junit.Test;
-
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 
 /**
  * @author lcottret
@@ -55,7 +48,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 public class BioReactionUtilsTest {
 	BioNetwork network;
 	BioReaction r1;
-	BioMetabolite m1, m2;
+	BioMetabolite m1, m2, m3;
 	BioCompartment c;
 	BioProtein p1, p2, p3;
 	BioGene g1, g2, g3;
@@ -66,15 +59,18 @@ public class BioReactionUtilsTest {
 		network = new BioNetwork();
 		r1 = new BioReaction("r1");
 		network.add(r1);
-		m1 = new BioMetabolite("m1");
+		m1 = new BioMetabolite("m1", "metabolite1");
 		network.add(m1);
-		m2 = new BioMetabolite("m2");
+		m2 = new BioMetabolite("m2", "metabolite2");
 		network.add(m2);
+		m3 = new BioMetabolite("m3", "metabolite3");
+		network.add(m3);
 		c = new BioCompartment("c");
 		network.add(c);
-		network.affectToCompartment(c, m1, m2);
+		network.affectToCompartment(c, m1, m2, m3);
 		network.affectLeft(r1, 1.0, c, m1);
-		network.affectRight(r1, 1.0, c, m2);
+		network.affectRight(r1, 2.0, c, m2);
+		network.affectRight(r1, 1.5, c, m3);
 		r1.setReversible(false);
 
 		e1 = new BioEnzyme("e1");
@@ -118,7 +114,8 @@ public class BioReactionUtilsTest {
 		assertFalse("r1 and r2 must be identified as not redundant",
 				BioReactionUtils.areRedundant(network, r1, r2));
 
-		network.affectRight(r2, 1.0, c, m2);
+		network.affectRight(r2, 2.0, c, m2);
+		network.affectRight(r2, 1.5, c, m3);
 
 		assertTrue("r1 and r2 must be identified as redundant", BioReactionUtils.areRedundant(network, r1, r2));
 
@@ -135,14 +132,17 @@ public class BioReactionUtilsTest {
 
 		network.affectLeft(r2, 1.0, c, m1);
 
-		network.affectRight(r2, 1.0, c, m2);
+		network.affectRight(r2, 2.0, c, m2);
+		network.affectRight(r2, 1.5, c, m3);
 
 		assertTrue("r1 and r2 must be identified as redundant", BioReactionUtils.areRedundant(network, r1, r2));
 
 		network.removeLeft(m1, c, r2);
 		network.removeRight(m2, c, r2);
+		network.removeRight(m3, c, r2);
 
-		network.affectLeft(r2, 1.0, c, m2);
+		network.affectLeft(r2, 2.0, c, m2);
+		network.affectLeft(r2, 1.5, c, m3);
 
 		network.affectRight(r2, 1.0, c, m1);
 
@@ -223,6 +223,13 @@ public class BioReactionUtilsTest {
 
 	}
 
+
+	@Test (expected = IllegalArgumentException.class)
+	public void testGprReactionNotPresent() {
+		BioReaction r3 = new BioReaction("r3");
+		BioReactionUtils.getGPR(network, r3, false);
+	}
+
 	@Test
 	public void testGpr() {
 
@@ -242,7 +249,11 @@ public class BioReactionUtilsTest {
 		String gprTest = BioReactionUtils.getGPR(network, r1, false);
 
 		assertEquals("Test  GPRs", gprRef, gprTest);
-		
+
+		gprTest = BioReactionUtils.getGPR(network, r1);
+
+		assertEquals("Test  GPRs", gprRef, gprTest);
+
 		String gprRefWithNames = "( G1 AND G2 ) OR ( G3 )";
 		
 		gprTest = BioReactionUtils.getGPR(network, r1, true);
@@ -251,44 +262,40 @@ public class BioReactionUtilsTest {
 		
 	}
 
-	// /**
-	// * Test method for
-	// * {@link
-	// fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioReactionUtils#isGeneticallyPossible(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
-	// */
-	// @Test
-	// public void testIsGeneticallyPossible() {
-	// fail("Not yet implemented");
-	// }
-	//
-	// /**
-	// * Test method for
-	// * {@link
-	// fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioReactionUtils#getGPR(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
-	// */
-	// @Test
-	// public void testGetGPR() {
-	// fail("Not yet implemented");
-	// }
-	//
-	// /**
-	// * Test method for
-	// * {@link
-	// fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioReactionUtils#computeAtomBalances(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
-	// */
-	// @Test
-	// public void testComputeAtomBalances() {
-	// fail("Not yet implemented");
-	// }
-	//
-	// /**
-	// * Test method for
-	// * {@link
-	// fr.inra.toulouse.metexplore.met4j_core.biodata.utils.BioReactionUtils#isBalanced(fr.inra.toulouse.metexplore.met4j_core.biodata.BioReaction)}.
-	// */
-	// @Test
-	// public void testIsBalanced() {
-	// fail("Not yet implemented");
-	// }
 
+	@Test
+	public void getEquation() {
+
+		String equation = BioReactionUtils.getEquation(r1, false, false);
+		assertEquals("m1 --> 2.0 m2 + 1.5 m3", equation);
+
+		equation = BioReactionUtils.getEquation(r1, true, false);
+		assertEquals("metabolite1 --> 2.0 metabolite2 + 1.5 metabolite3", equation);
+
+		equation = BioReactionUtils.getEquation(r1, false, true);
+		assertEquals("m1[c] --> 2.0 m2[c] + 1.5 m3[c]", equation);
+
+
+	}
+
+	@Test
+	public void getPathwaysString() {
+
+		BioPathway p1 = new BioPathway("p1", "pathway1");
+		BioPathway p2 = new BioPathway("p2", "pathway2");
+
+		network.add(p1, p2);
+
+		network.affectToPathway(p1, r1);
+		network.affectToPathway(p2, r1);
+
+		String pathwaysString = BioReactionUtils.getPathwaysString(r1, network, false, "++");
+
+		assertEquals("p1++p2", pathwaysString);
+
+		pathwaysString = BioReactionUtils.getPathwaysString(r1, network, true, "++");
+
+		assertEquals("pathway1++pathway2", pathwaysString);
+
+	}
 }

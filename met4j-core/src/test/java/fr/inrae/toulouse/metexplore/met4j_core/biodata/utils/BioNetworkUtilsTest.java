@@ -212,7 +212,6 @@ public class BioNetworkUtilsTest {
 
         assertEquals(2, newNetwork.getReactionsFromPathways(newNetwork.getPathwaysView().get("pathway1")).size());
 
-        System.err.println(enzyme1.getParticipantsView());
         assertEquals(2,
                 newNetwork.getEnzymesView().get("enz1").getParticipantsView().size());
 

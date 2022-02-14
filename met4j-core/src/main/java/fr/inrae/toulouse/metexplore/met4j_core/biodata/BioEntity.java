@@ -39,6 +39,7 @@ import java.util.*;
 
 import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 /**
@@ -110,7 +111,7 @@ public abstract class BioEntity {
      *
      * @param e the original bioentity
      */
-    public BioEntity(BioEntity e) {
+    public BioEntity(@NonNull BioEntity e) {
         this.id = e.getId();
         this.name = e.getName();
         this.setSynonyms(new ArrayList<>(e.getSynonyms()));
@@ -129,7 +130,7 @@ public abstract class BioEntity {
      * @param relation        Type of relation
      * @param origin          Origin database
      */
-    public void addRef(String dbName, String dbId, int confidenceLevel, String relation, String origin) {
+    public void addRef(@NonNull String dbName, @NonNull String dbId, int confidenceLevel, @NonNull String relation, @NonNull String origin) {
         BioRef ref = new BioRef(origin, dbName, dbId, confidenceLevel);
         ref.logicallink = relation;
         this.addRef(ref);
@@ -140,7 +141,7 @@ public abstract class BioEntity {
      *
      * @param ref a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioRef}
      */
-    public void addRef(BioRef ref) {
+    public void addRef(@NonNull BioRef ref) {
         String dbName = ref.dbName;
         if (!this.hasRef(ref)) {
             if (this.refs.containsKey(dbName)) {
@@ -161,7 +162,7 @@ public abstract class BioEntity {
      * @param dbName the database name
      * @return a {@link java.util.Set} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioRef}
      */
-    public Set<BioRef> getRefs(String dbName) {
+    public Set<BioRef> getRefs(@NonNull String dbName) {
         return this.refs.getOrDefault(dbName, null);
     }
 
@@ -173,7 +174,7 @@ public abstract class BioEntity {
      * @param refId  the reference id
      * @return true if the entity has the reference
      */
-    public boolean hasRef(String dbName, String refId) {
+    public boolean hasRef(@NonNull String dbName, @NonNull String refId) {
         if (this.refs == null || !this.refs.containsKey(dbName)) {
             return false;
         }
@@ -191,7 +192,7 @@ public abstract class BioEntity {
      * @param unkRef a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioRef}
      * @return true if the entity has the reference
      */
-    public boolean hasRef(BioRef unkRef) {
+    public boolean hasRef(@NonNull BioRef unkRef) {
 
         if (this.refs == null || !this.refs.containsKey(unkRef.dbName)) {
             return false;
@@ -219,7 +220,7 @@ public abstract class BioEntity {
      * @param value a {@link java.lang.Object} object.
      * @return a {@link java.lang.Object} object.
      */
-    public Object setAttribute(String key, Object value) {
+    public Object setAttribute(@NonNull String key, Object value) {
         return attributes.put(key, value);
     }
 
@@ -229,7 +230,7 @@ public abstract class BioEntity {
      * @param key a {@link java.lang.String} object.
      * @return a {@link java.lang.Object} object.
      */
-    public Object getAttribute(String key) {
+    public Object getAttribute(@NonNull String key) {
         return attributes.get(key);
     }
 

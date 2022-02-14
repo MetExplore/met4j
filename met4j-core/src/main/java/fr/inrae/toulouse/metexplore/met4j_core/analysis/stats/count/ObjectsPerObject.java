@@ -37,6 +37,7 @@
 package fr.inrae.toulouse.metexplore.met4j_core.analysis.stats.count;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import lombok.NonNull;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -64,7 +65,7 @@ public abstract class ObjectsPerObject {
      *
      * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
      */
-    public ObjectsPerObject(BioNetwork network) {
+    public ObjectsPerObject(@NonNull BioNetwork network) {
         this.network = network;
     }
 

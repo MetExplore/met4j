@@ -36,6 +36,7 @@
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import lombok.NonNull;
 
 /**
  * A set or series of interactions, often forming a network, which biologists
@@ -76,7 +77,7 @@ public class BioPathway extends BioEntity {
 	 *
 	 * @param pathway the original pathway
 	 */
-	public BioPathway(BioPathway pathway) {
+	public BioPathway(@NonNull BioPathway pathway) {
 		super(pathway);
 		reactions = new BioCollection<>();
 	}
@@ -96,7 +97,7 @@ public class BioPathway extends BioEntity {
 	 *
 	 * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
 	 */
-	protected void addReaction(BioReaction reaction) {
+	protected void addReaction(@NonNull BioReaction reaction) {
 		this.reactions.add(reaction);
 
 	}
@@ -106,7 +107,7 @@ public class BioPathway extends BioEntity {
 	 *
 	 * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
 	 */
-	protected void removeReaction(BioReaction reaction) {
+	protected void removeReaction(@NonNull BioReaction reaction) {
 		this.reactions.remove(reaction);
 	}
 

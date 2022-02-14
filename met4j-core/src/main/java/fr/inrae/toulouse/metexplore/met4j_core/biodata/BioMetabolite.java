@@ -36,6 +36,7 @@
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 /**
@@ -87,7 +88,7 @@ public class BioMetabolite extends BioPhysicalEntity {
      *
      * @param metabolite the original metabolite
      */
-    public BioMetabolite(BioMetabolite metabolite) {
+    public BioMetabolite(@NonNull BioMetabolite metabolite) {
         super(metabolite);
 
         this.setInchi(metabolite.getInchi());

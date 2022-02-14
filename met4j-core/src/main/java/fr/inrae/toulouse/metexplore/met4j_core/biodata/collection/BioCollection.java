@@ -46,6 +46,7 @@ import java.util.stream.Collectors;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 
 /**
  * <p>BioCollection class.</p>
@@ -97,7 +98,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @param id id
 	 * @return {@link java.lang.Boolean}
 	 */
-	public Boolean containsId(String id) {
+	public Boolean containsId(@NonNull String id) {
 		return entities.containsKey(id);
 	}
 
@@ -107,7 +108,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @param name name
 	 * @return {@link java.lang.Boolean}
 	 */
-	public Boolean containsName(String name) {
+	public Boolean containsName(@NonNull String name) {
 		return entities.values().stream().anyMatch(o -> o.getName().equals(name));
 	}
 
@@ -117,7 +118,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @param id id
 	 * @return the entity or null
 	 */
-	public E get(String id) {
+	public E get(@NonNull String id) {
 
 		return entities.get(id);
 	}
@@ -137,7 +138,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @param name name of the entity
 	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection}
 	 */
-	public BioCollection<E> getEntitiesFromName(String name) {
+	public BioCollection<E> getEntitiesFromName(@NonNull String name) {
 
 		return entities.values().stream().filter(o -> o.getName().equals(name)).collect(Collectors.toCollection( BioCollection<E>::new));
 
@@ -193,13 +194,13 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean contains(Object o) {
+	public boolean contains(@NonNull Object o) {
 		return entities.containsValue(o);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean add(E e) {
+	public boolean add(@NonNull E e) {
 		if(entities.containsValue(e)) {
 			return false;
 		}
@@ -227,7 +228,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean remove(Object o) {
+	public boolean remove(@NonNull Object o) {
 		Object removed =  entities.remove(((BioEntity) o).getId());
 
 		return removed == null ? false : true;
@@ -242,7 +243,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean addAll(Collection<? extends E> c) {
+	public boolean addAll(@NonNull Collection<? extends E> c) {
 		for (E e : c) {
 			this.add(e);
 		}

@@ -36,6 +36,8 @@
 
 package fr.inrae.toulouse.metexplore.met4j_core.utils;
 
+import lombok.NonNull;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -101,7 +103,7 @@ public class StringUtils {
 	 * @param ec
 	 * @return
 	 */
-	public static  boolean checkEcNumber(String ec) {
+	public static  boolean checkEcNumber(@NonNull String ec) {
 		Matcher m = patternEC.matcher(ec);
 		return m.matches();
 	}
@@ -111,7 +113,7 @@ public class StringUtils {
 	 * @param formula
 	 * @return
 	 */
-	public static boolean checkMetaboliteFormula(String formula) {
+	public static boolean checkMetaboliteFormula(@NonNull String formula) {
 		Matcher m = patternFormula.matcher(formula);
 		return m.matches();
 	}

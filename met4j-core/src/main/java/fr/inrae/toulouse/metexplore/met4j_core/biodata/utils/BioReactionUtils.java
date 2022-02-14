@@ -45,6 +45,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -64,7 +65,7 @@ public class BioReactionUtils {
      * @return true if the substrates and the products have the same id
      * @throws java.lang.IllegalArgumentException if one of the reaction is not in the network
      */
-    public static Boolean areRedundant(BioNetwork network, BioReaction r1, BioReaction r2) {
+    public static Boolean areRedundant(@NonNull BioNetwork network, @NonNull BioReaction r1, @NonNull BioReaction r2) {
 
 
         if (!network.contains(r1)) {
@@ -113,7 +114,7 @@ public class BioReactionUtils {
      * @param getGeneNames if true returns the gene names instead of the gene ids
      * @return a String like "G1 OR (G2 AND G3)
      */
-    public static String getGPR(BioNetwork network, BioReaction r, Boolean getGeneNames) {
+    public static String getGPR(@NonNull BioNetwork network, @NonNull BioReaction r, @NonNull Boolean getGeneNames) {
 
         if (!network.contains(r)) {
             throw new IllegalArgumentException(r.getId() + " is not present in the network");
@@ -184,7 +185,7 @@ public class BioReactionUtils {
      * @param getCompartment a {@link java.lang.Boolean} object.
      * @return a {@link java.lang.String} object.
      */
-    public static String getEquation(BioReaction r, Boolean getNames, String revSep, String irrevSep, Boolean getCompartment) {
+    public static String getEquation(@NonNull BioReaction r, @NonNull Boolean getNames, @NonNull String revSep, @NonNull String irrevSep, Boolean getCompartment) {
 
         BioCollection<BioReactant> lefts = r.getLeftReactantsView();
         BioCollection<BioReactant> rights = r.getRightReactantsView();
@@ -241,7 +242,7 @@ public class BioReactionUtils {
      * @param delim    a {@link java.lang.String} object.
      * @return a {@link java.lang.String} object.
      */
-    public static String getPathwaysString(BioReaction r, BioNetwork n, Boolean getNames, String delim) {
+    public static String getPathwaysString(@NonNull BioReaction r, @NonNull BioNetwork n, Boolean getNames, @NonNull String delim) {
 
         BioCollection<BioPathway> pathways = n.getPathwaysFromReaction(r);
 

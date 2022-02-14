@@ -36,6 +36,7 @@
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import lombok.NonNull;
 
 /**
  * <p>BioEnzyme class.</p>
@@ -74,7 +75,7 @@ public class BioEnzyme extends BioPhysicalEntity {
      *
      * @param e Original enzyme
      */
-    public BioEnzyme(BioEnzyme e) {
+    public BioEnzyme(@NonNull BioEnzyme e) {
         super(e);
 
         participants = new BioCollection<>();
@@ -104,7 +105,7 @@ public class BioEnzyme extends BioPhysicalEntity {
      *
      * @param participant a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant} object.
      */
-    protected void addParticipant(BioEnzymeParticipant participant) {
+    protected void addParticipant(@NonNull BioEnzymeParticipant participant) {
         this.participants.add(participant);
     }
 
@@ -113,7 +114,7 @@ public class BioEnzyme extends BioPhysicalEntity {
      *
      * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity}
      */
-    protected void removeParticipant(BioPhysicalEntity e) {
+    protected void removeParticipant(@NonNull BioPhysicalEntity e) {
 
         BioCollection<BioEnzymeParticipant> tmp = new BioCollection<>(this.participants);
 

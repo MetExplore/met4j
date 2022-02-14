@@ -38,6 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 import java.util.HashSet;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import lombok.NonNull;
 
 /**
  * A conversion interaction in which one or more entities (substrates) undergo
@@ -109,7 +110,7 @@ public class BioReaction extends BioEntity {
 	 *
 	 * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
 	 */
-	public BioReaction(BioReaction reaction) {
+	public BioReaction(@NonNull BioReaction reaction) {
 		super(reaction);
 		left = new BioCollection<>();
 		right = new BioCollection<>();
@@ -291,7 +292,7 @@ public class BioReaction extends BioEntity {
 	 * @param side : {@link Side} the side of the reaction
 	 * @return {@link BioCollection} of {@link BioReactant}
 	 */
-	private BioCollection<BioReactant> getSideReactants(Side side) {
+	private BioCollection<BioReactant> getSideReactants(@NonNull Side side) {
 
 		BioCollection<BioReactant> reactantCollection;
 
@@ -357,7 +358,7 @@ public class BioReaction extends BioEntity {
 	 *
 	 * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
 	 */
-	protected void addEnzyme(BioEnzyme e) {
+	protected void addEnzyme(@NonNull BioEnzyme e) {
 		this.enzymes.add(e);
 	}
 
@@ -366,7 +367,7 @@ public class BioReaction extends BioEntity {
 	 *
 	 * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
 	 */
-	protected void removeEnzyme(BioEnzyme e) {
+	protected void removeEnzyme(@NonNull BioEnzyme e) {
 		this.enzymes.remove(e);
 	}
 
@@ -378,7 +379,7 @@ public class BioReaction extends BioEntity {
 	 * @param localisation a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} object.
 	 * @param side a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction.Side} object.
 	 */
-	protected void removeSide(BioPhysicalEntity e, BioCompartment localisation, Side side) {
+	protected void removeSide(@NonNull BioPhysicalEntity e, @NonNull BioCompartment localisation, @NonNull Side side) {
 
 		BioCollection<BioReactant> reactants;
 		if (side.equals(Side.LEFT)) {

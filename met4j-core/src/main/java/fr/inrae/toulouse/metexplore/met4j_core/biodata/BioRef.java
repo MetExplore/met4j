@@ -43,6 +43,7 @@ import java.util.Comparator;
 import java.util.Objects;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import org.apache.commons.lang3.Validate;
@@ -82,10 +83,7 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 	 * @param id reference id
 	 * @param confidenceLevel a confidence level
 	 */
-	public BioRef(String origin,String dbName,String id,int confidenceLevel) {
-		
-		Validate.notNull(dbName, "BioRef's database name can't be null");
-		Validate.notNull(id, "BioRef's database identifier can't be null");
+	public BioRef(String origin, @NonNull String dbName, @NonNull String id, int confidenceLevel) {
 		
 		this.origin=origin;
 		this.dbName=dbName;
@@ -97,13 +95,13 @@ public class BioRef implements Comparator<BioRef>,Comparable<BioRef>{
 
 	/** {@inheritDoc} */
 	@Override
-	public int compare(BioRef arg0, BioRef arg1) {		
+	public int compare(@NonNull BioRef arg0, @NonNull BioRef arg1) {
 		return arg0.getConfidenceLevel()-arg1.getConfidenceLevel();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public int compareTo(BioRef o) {
+	public int compareTo(@NonNull BioRef o) {
 		return compare(this,o);
 	}
 	

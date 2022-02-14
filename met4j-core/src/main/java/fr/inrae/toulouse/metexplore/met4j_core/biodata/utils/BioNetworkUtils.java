@@ -38,6 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata.utils;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class BioNetworkUtils {
      * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
      * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      */
-    public static BioCollection<BioReaction> getChokeReactions(BioNetwork network) {
+    public static BioCollection<BioReaction> getChokeReactions(@NonNull BioNetwork network) {
 
         BioCollection<BioReaction> chokeReactions = new BioCollection<>();
 
@@ -94,7 +95,7 @@ public class BioNetworkUtils {
      *
      * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
      */
-    public static void removeNotConnectedMetabolites(BioNetwork network) {
+    public static void removeNotConnectedMetabolites(@NonNull BioNetwork network) {
         BioCollection<BioMetabolite> metabolites = network.getMetabolitesView();
         for (BioMetabolite m : metabolites) {
             if (network.getReactionsFromMetabolite(m).size() == 0) {
@@ -121,7 +122,7 @@ public class BioNetworkUtils {
      *                     - add enzymes or reactants to a reaction
      * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
      */
-    public static void deepCopy(BioNetwork networkIn, BioNetwork networkOut, Boolean keepGPR, Boolean keepPrevious) {
+    public static void deepCopy(@NonNull BioNetwork networkIn, @NonNull BioNetwork networkOut, Boolean keepGPR, Boolean keepPrevious) {
 
 
         networkOut.setSynonyms(new ArrayList<>(networkIn.getSynonyms()));

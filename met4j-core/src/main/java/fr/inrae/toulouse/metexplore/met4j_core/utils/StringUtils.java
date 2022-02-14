@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
  */
 public class StringUtils {
 
-	private static Pattern patternEC = Pattern.compile("(EC\\s*)*\\d{1}(\\.(\\d{0,3}|-)){0,3}");
+	private static Pattern patternEC = Pattern.compile("(EC\\s*)*\\d(\\.(\\d{0,3}|-)){0,3}");
 	private static Pattern patternFormula = Pattern.compile("^([\\*\\(\\)A-Z][a-z]*\\d*)+$");;
 
 	/**

@@ -41,6 +41,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.extern.java.Log;
 
 /**
  * The root class
@@ -48,6 +49,7 @@ import lombok.Setter;
  * @author lcottret
  * @version $Id: $Id
  */
+@Log
 public abstract class BioEntity {
 
     @Getter
@@ -80,12 +82,10 @@ public abstract class BioEntity {
      * @param name String
      */
     public BioEntity(String id, String name) {
-
         if (StringUtils.isVoid(id)) {
             String newId = UUID.randomUUID().toString().replaceAll("-", "_");
             this.id = newId;
-            System.err.println("Invalid id for building a BioEntity: " + id);
-            System.err.println("Creates a random unique id : " + newId);
+            log.warning("Invalid id for building a BioEntity: " + id+", creates a random unique id : " + newId);
         } else {
             this.id = id;
         }

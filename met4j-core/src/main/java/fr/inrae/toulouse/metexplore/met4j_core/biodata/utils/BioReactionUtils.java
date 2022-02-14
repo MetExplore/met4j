@@ -54,218 +54,199 @@ import org.apache.commons.lang3.StringUtils;
  * @version $Id: $Id
  */
 public class BioReactionUtils {
-	
-	/**
-	 * Comparison of two reactions
-	 *
-	 * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
-	 * @param r1 a first {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-	 * @param r2 a second {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-	 * @return true if the substrates and the products have the same id
-	 * @throws java.lang.IllegalArgumentException if one of the reaction is not in the network
-	 */
-	public static Boolean areRedundant(BioNetwork network, BioReaction r1, BioReaction r2) {
 
-		
-		if(! network.contains(r1))
-		{
-			throw new IllegalArgumentException(r1.getId()+" is not present in the network");
-		}
-		
-		if(! network.contains(r2))
-		{
-			throw new IllegalArgumentException(r2.getId()+" is not present in the network");
-		}
-		
-		
-		if(r1.isReversible() != r2.isReversible())
-		{
-			return false;
-		}
-		
-		BioCollection<BioReactant> leftR1 = network.getLeftReactants(r1);
-		BioCollection<BioReactant> leftR2 = network.getLeftReactants(r2);
-		BioCollection<BioReactant> rightR1 = network.getRightReactants(r1);
-		BioCollection<BioReactant> rightR2 = network.getRightReactants(r2);
-		
-		Boolean flag1 = leftR1.containsAll(leftR2) &&
-				leftR2.containsAll(leftR1) && 
-				rightR1.containsAll(rightR2) &&
-				rightR2.containsAll(rightR1);
-		
-		if(! r1.isReversible())
-		{
-			return flag1;
-		}
-		else 
-		{
-			Boolean flag2 = rightR1.containsAll(leftR2) &&
-					leftR2.containsAll(rightR1) && 
-					leftR1.containsAll(rightR2) &&
-					rightR2.containsAll(leftR1);
-			
-			return flag1 || flag2;
-		}
-		
-
-	}
-	
-	
-	
-	/**
-	 * get Gene association of a reaction in string format
-	 *
-	 * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
-	 * @param r a BioReaction
-	 * @param getGeneNames if true returns the gene names instead of the gene ids
-	 * @return a String like "G1 OR (G2 AND G3)
-	 */
-	public static String getGPR(BioNetwork network, BioReaction r, Boolean getGeneNames) {
-		
-		if(! network.contains(r))
-		{
-			throw new IllegalArgumentException(r.getId()+" is not present in the network");
-		}
-		
-		BioCollection<BioEnzyme> enzymes = r.getEnzymesView();
-		
-		TreeSet<String> geneIdSets  = new TreeSet<>();
-		
-		for(BioEnzyme enz : enzymes)
-		{
-			BioCollection<BioEnzymeParticipant> participants = enz.getParticipantsView();
-			
-			TreeSet<String> geneIds = new TreeSet<>();
-			
-			for(BioEnzymeParticipant p : participants) {
-				BioPhysicalEntity ent = p.getPhysicalEntity();
-				
-				if(ent.getClass().equals(BioProtein.class))
-				{
-					BioProtein prot = (BioProtein) ent;
-					BioGene g = prot.getGene();
-					if(g == null)
-					{
-						System.err.println("[WARNING] No gene for the protein "+prot.getId());
-					}
-					else {
-						String id = getGeneNames ? g.getName() : g.getId();
-						geneIds.add(id);
-					}
-				}
-			}
-			
-			if(geneIds.size() > 0)
-			{
-				String geneIdString = StringUtils.join(geneIds.toArray(new String[0]), " AND ");
-				geneIdSets.add(geneIdString);
-			}
-			
-		}
-		
-		TreeSet<String> finalSet;
-		
-		if(geneIdSets.size() > 1 ){
-			
-			finalSet = geneIdSets.stream().map(s -> "( " + s + " )").collect(Collectors.toCollection(TreeSet::new));
-			
-		}
-		else {
-			finalSet = geneIdSets;
-		}
+    /**
+     * Comparison of two reactions
+     *
+     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
+     * @param r1      a first {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param r2      a second {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @return true if the substrates and the products have the same id
+     * @throws java.lang.IllegalArgumentException if one of the reaction is not in the network
+     */
+    public static Boolean areRedundant(BioNetwork network, BioReaction r1, BioReaction r2) {
 
 
-		return StringUtils.join(finalSet.toArray(new String[0]), " OR ");
-		
-	}
+        if (!network.contains(r1)) {
+            throw new IllegalArgumentException(r1.getId() + " is not present in the network");
+        }
 
-	/**
-	 * get Gene association of a reaction in string format
-	 *
-	 * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
-	 * @param r a BioReaction
-	 * @return a String like "G1 OR (G2 AND G3)
-	 */
-	public static String getGPR(BioNetwork network, BioReaction r) {
-		return getGPR(network, r, false);
-	}
+        if (!network.contains(r2)) {
+            throw new IllegalArgumentException(r2.getId() + " is not present in the network");
+        }
 
-	/**
-	 * <p>getEquation.</p>
-	 *
-	 * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
-	 * @param getNames a {@link java.lang.Boolean} object.
-	 * @param revSep a {@link java.lang.String} object.
-	 * @param irrevSep a {@link java.lang.String} object.
-	 * @param getCompartment a {@link java.lang.Boolean} object.
-	 * @return a {@link java.lang.String} object.
-	 */
-	public static String getEquation(BioReaction r, Boolean getNames, String revSep, String irrevSep, Boolean getCompartment) {
 
-		BioCollection<BioReactant> lefts = r.getLeftReactantsView();
-		BioCollection<BioReactant> rights = r.getRightReactantsView();
-		Boolean rev = r.isReversible();
+        if (r1.isReversible() != r2.isReversible()) {
+            return false;
+        }
 
-		String eq = rev ? " "+revSep+" " : " "+irrevSep+" ";
+        BioCollection<BioReactant> leftR1 = network.getLeftReactants(r1);
+        BioCollection<BioReactant> leftR2 = network.getLeftReactants(r2);
+        BioCollection<BioReactant> rightR1 = network.getRightReactants(r1);
+        BioCollection<BioReactant> rightR2 = network.getRightReactants(r2);
 
-		return reactantsToString(lefts, getNames, getCompartment) + eq + reactantsToString(rights,getNames, getCompartment);
-	}
+        Boolean flag1 = leftR1.containsAll(leftR2) &&
+                leftR2.containsAll(leftR1) &&
+                rightR1.containsAll(rightR2) &&
+                rightR2.containsAll(rightR1);
 
-	/**
-	 * <p>getEquation.</p>
-	 *
-	 * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
-	 * @param getNames a {@link java.lang.Boolean} object.
-	 * @param getCompartment a {@link java.lang.Boolean} object.
-	 * @return a {@link java.lang.String} object.
-	 */
-	public static String getEquation(BioReaction r, Boolean getNames, Boolean getCompartment) {
+        if (!r1.isReversible()) {
+            return flag1;
+        } else {
+            Boolean flag2 = rightR1.containsAll(leftR2) &&
+                    leftR2.containsAll(rightR1) &&
+                    leftR1.containsAll(rightR2) &&
+                    rightR2.containsAll(leftR1);
 
-		BioCollection<BioReactant> lefts = r.getLeftReactantsView();
-		BioCollection<BioReactant> rights = r.getRightReactantsView();
-		Boolean rev = r.isReversible();
+            return flag1 || flag2;
+        }
 
-		String revSep = "<==>";
-		String irrevSep = "-->";
 
-		String eq = rev ? " "+revSep+" " : " "+irrevSep+" ";
+    }
 
-		return reactantsToString(lefts, getNames, getCompartment) + eq + reactantsToString(rights,getNames, getCompartment);
-	}
 
-	private static String reactantsToString(BioCollection<BioReactant> reactants, Boolean getNames, Boolean getCompartment)
-	{
-		ArrayList<String> parts = new ArrayList<>();
+    /**
+     * get Gene association of a reaction in string format
+     *
+     * @param network      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
+     * @param r            a BioReaction
+     * @param getGeneNames if true returns the gene names instead of the gene ids
+     * @return a String like "G1 OR (G2 AND G3)
+     */
+    public static String getGPR(BioNetwork network, BioReaction r, Boolean getGeneNames) {
 
-		for(BioReactant r : reactants) {
-			String id = getNames ? r.getMetabolite().getName() : r.getMetabolite().getId();
-			Double sto = r.getQuantity();
-			String cptId = r.getLocation().getId();
+        if (!network.contains(r)) {
+            throw new IllegalArgumentException(r.getId() + " is not present in the network");
+        }
 
-			String reactantString  = (sto == 1.0 ? "" : sto+" ") + id + (getCompartment ? "["+cptId+"]" : "");
+        BioCollection<BioEnzyme> enzymes = r.getEnzymesView();
 
-			parts.add(reactantString);
-		}
+        TreeSet<String> geneIdSets = new TreeSet<>();
 
-		return String.join(" + ", parts);
+        for (BioEnzyme enz : enzymes) {
+            BioCollection<BioEnzymeParticipant> participants = enz.getParticipantsView();
 
-	}
+            TreeSet<String> geneIds = new TreeSet<>();
 
-	/**
-	 * <p>getPathwaysString.</p>
-	 *
-	 * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
-	 * @param n a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
-	 * @param getNames a {@link java.lang.Boolean} object.
-	 * @param delim a {@link java.lang.String} object.
-	 * @return a {@link java.lang.String} object.
-	 */
-	public static String getPathwaysString(BioReaction r, BioNetwork n, Boolean getNames, String delim) {
+            for (BioEnzymeParticipant p : participants) {
+                BioPhysicalEntity ent = p.getPhysicalEntity();
 
-		BioCollection<BioPathway> pathways = n.getPathwaysFromReaction(r);
+                if (ent.getClass().equals(BioProtein.class)) {
+                    BioProtein prot = (BioProtein) ent;
+                    BioGene g = prot.getGene();
+                    if (g != null) {
+                        String id = getGeneNames ? g.getName() : g.getId();
+                        geneIds.add(id);
+                    }
+                }
+            }
 
-		Set<String> stringArrayList = pathways.stream().map(p -> getNames ? p.getName() : p.getId()).collect(Collectors.toSet());
+            if (geneIds.size() > 0) {
+                String geneIdString = StringUtils.join(geneIds.toArray(new String[0]), " AND ");
+                geneIdSets.add(geneIdString);
+            }
 
-		return String.join(delim, stringArrayList);
-	}
+        }
+
+        TreeSet<String> finalSet;
+
+        if (geneIdSets.size() > 1) {
+
+            finalSet = geneIdSets.stream().map(s -> "( " + s + " )").collect(Collectors.toCollection(TreeSet::new));
+
+        } else {
+            finalSet = geneIdSets;
+        }
+
+
+        return StringUtils.join(finalSet.toArray(new String[0]), " OR ");
+
+    }
+
+    /**
+     * get Gene association of a reaction in string format
+     *
+     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
+     * @param r       a BioReaction
+     * @return a String like "G1 OR (G2 AND G3)
+     */
+    public static String getGPR(BioNetwork network, BioReaction r) {
+        return getGPR(network, r, false);
+    }
+
+    /**
+     * <p>getEquation.</p>
+     *
+     * @param r              a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+     * @param getNames       a {@link java.lang.Boolean} object.
+     * @param revSep         a {@link java.lang.String} object.
+     * @param irrevSep       a {@link java.lang.String} object.
+     * @param getCompartment a {@link java.lang.Boolean} object.
+     * @return a {@link java.lang.String} object.
+     */
+    public static String getEquation(BioReaction r, Boolean getNames, String revSep, String irrevSep, Boolean getCompartment) {
+
+        BioCollection<BioReactant> lefts = r.getLeftReactantsView();
+        BioCollection<BioReactant> rights = r.getRightReactantsView();
+        Boolean rev = r.isReversible();
+
+        String eq = rev ? " " + revSep + " " : " " + irrevSep + " ";
+
+        return reactantsToString(lefts, getNames, getCompartment) + eq + reactantsToString(rights, getNames, getCompartment);
+    }
+
+    /**
+     * <p>getEquation.</p>
+     *
+     * @param r              a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+     * @param getNames       a {@link java.lang.Boolean} object.
+     * @param getCompartment a {@link java.lang.Boolean} object.
+     * @return a {@link java.lang.String} object.
+     */
+    public static String getEquation(BioReaction r, Boolean getNames, Boolean getCompartment) {
+
+        BioCollection<BioReactant> lefts = r.getLeftReactantsView();
+        BioCollection<BioReactant> rights = r.getRightReactantsView();
+        Boolean rev = r.isReversible();
+
+        String revSep = "<==>";
+        String irrevSep = "-->";
+
+        return getEquation(r, getNames, revSep, irrevSep, getCompartment);
+    }
+
+    private static String reactantsToString(BioCollection<BioReactant> reactants, Boolean getNames, Boolean getCompartment) {
+        ArrayList<String> parts = new ArrayList<>();
+
+        for (BioReactant r : reactants) {
+            String id = getNames ? r.getMetabolite().getName() : r.getMetabolite().getId();
+            Double sto = r.getQuantity();
+            String cptId = r.getLocation().getId();
+
+            String reactantString = (sto == 1.0 ? "" : sto + " ") + id + (getCompartment ? "[" + cptId + "]" : "");
+
+            parts.add(reactantString);
+        }
+
+        return String.join(" + ", parts);
+
+    }
+
+    /**
+     * <p>getPathwaysString.</p>
+     *
+     * @param r        a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+     * @param n        a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     * @param getNames a {@link java.lang.Boolean} object.
+     * @param delim    a {@link java.lang.String} object.
+     * @return a {@link java.lang.String} object.
+     */
+    public static String getPathwaysString(BioReaction r, BioNetwork n, Boolean getNames, String delim) {
+
+        BioCollection<BioPathway> pathways = n.getPathwaysFromReaction(r);
+
+        Set<String> stringArrayList = pathways.stream().map(p -> getNames ? p.getName() : p.getId()).collect(Collectors.toSet());
+
+        return String.join(delim, stringArrayList);
+    }
 }

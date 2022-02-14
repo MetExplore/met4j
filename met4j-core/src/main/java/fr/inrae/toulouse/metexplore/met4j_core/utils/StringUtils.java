@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
 public class StringUtils {
 
 	final private static Pattern patternEC = Pattern.compile("(EC\\s*)*\\d(\\.(\\d{0,3}|-)){0,3}");
-	final private static Pattern patternFormula = Pattern.compile("^([*\\(-Z][a-z]*\\d*)+$");
+	final private static Pattern patternFormula = Pattern.compile("^([\\*\\(\\)A-Z][a-z]*\\d*)+$");
 
 	/**
 	 * <p>isVoid.</p>

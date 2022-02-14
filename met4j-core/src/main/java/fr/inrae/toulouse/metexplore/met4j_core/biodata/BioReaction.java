@@ -74,10 +74,10 @@ public class BioReaction extends BioEntity {
 	private String ecNumber;
 	private boolean reversible=true;
 
-	private BioCollection<BioReactant> left;
-	private BioCollection<BioReactant> right;
+	final private BioCollection<BioReactant> left;
+	final private BioCollection<BioReactant> right;
 
-	private BioCollection<BioEnzyme> enzymes;
+	final private BioCollection<BioEnzyme> enzymes;
 
 	public enum Side {
 		LEFT, RIGHT

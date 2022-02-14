@@ -46,7 +46,7 @@ import lombok.NonNull;
  */
 public class BioEnzyme extends BioPhysicalEntity {
 
-    private BioCollection<BioEnzymeParticipant> participants;
+    final private BioCollection<BioEnzymeParticipant> participants;
 
     /**
      * Constructor

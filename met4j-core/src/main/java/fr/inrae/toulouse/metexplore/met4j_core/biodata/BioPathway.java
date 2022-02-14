@@ -48,7 +48,7 @@ import lombok.NonNull;
  */
 public class BioPathway extends BioEntity {
 
-	private BioCollection<BioReaction> reactions;
+	final private BioCollection<BioReaction> reactions;
 
 	/**
 	 *

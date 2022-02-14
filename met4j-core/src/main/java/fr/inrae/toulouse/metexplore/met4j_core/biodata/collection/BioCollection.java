@@ -57,7 +57,7 @@ import lombok.NonNull;
 @EqualsAndHashCode
 public class BioCollection<E extends BioEntity> implements Collection<E> {
 
-	private Map<String, E> entities;
+	final private Map<String, E> entities;
 
 	private BioCollection(Map<String, E> entities) {
 		this.entities = entities;

@@ -49,7 +49,7 @@ import lombok.Setter;
 public class BioCompartment extends BioPhysicalEntity {
 
 
-    private BioCollection<BioEntity> components;
+    final private BioCollection<BioEntity> components;
 
     /**
      * Constructor from an id

@@ -141,6 +141,17 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <mainClass>fr.inrae.toulouse.metexplore.met4j_toolbox.GenerateDoc</mainClass>
+                    <arguments>
+                        <argument>README.md</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

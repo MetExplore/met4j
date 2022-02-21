@@ -39,9 +39,7 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata.utils;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.NonNull;
@@ -205,10 +203,6 @@ public class BioReactionUtils {
      */
     public static String getEquation(BioReaction r, Boolean getNames, Boolean getCompartment) {
 
-        BioCollection<BioReactant> lefts = r.getLeftReactantsView();
-        BioCollection<BioReactant> rights = r.getRightReactantsView();
-        Boolean rev = r.isReversible();
-
         String revSep = "<==>";
         String irrevSep = "-->";
 
@@ -218,7 +212,10 @@ public class BioReactionUtils {
     private static String reactantsToString(BioCollection<BioReactant> reactants, Boolean getNames, Boolean getCompartment) {
         ArrayList<String> parts = new ArrayList<>();
 
-        for (BioReactant r : reactants) {
+        List<BioReactant> reactantList = reactants.stream().sorted(Comparator.comparing(reactant -> reactant.getMetabolite().getId()))
+                .collect(Collectors.toList());
+
+        for (BioReactant r : reactantList) {
             String id = getNames ? r.getMetabolite().getName() : r.getMetabolite().getId();
             Double sto = r.getQuantity();
             String cptId = r.getLocation().getId();
@@ -227,6 +224,7 @@ public class BioReactionUtils {
 
             parts.add(reactantString);
         }
+
 
         return String.join(" + ", parts);
 

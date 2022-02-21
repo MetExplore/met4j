@@ -74,7 +74,7 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
         HashSet<BioReaction> targets = new HashSet<>(rmapper.map(targetPath));
         if(rmapper.getNumberOfSkippedEntries()>0) System.err.println(rmapper.getNumberOfSkippedEntries() + " target not found in network.");
 
-        //Create compound graph
+        //Create reaction graph
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
         ReactionGraph graph = builder.getReactionGraph(sideCpds);
 

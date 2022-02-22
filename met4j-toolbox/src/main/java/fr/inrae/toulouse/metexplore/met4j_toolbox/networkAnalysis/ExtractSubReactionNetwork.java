@@ -40,10 +40,9 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
     public String targetPath = null;
     @Option(name = "-o", usage = "output gml file", required = true)
     public String outputPath = null;
-
-
-    @Option(name = "-sc", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore")
+    @Option(name = "-sc", aliases = {"--side"}, usage = "a file containing list of side compounds to ignore", required = true)
     public String sideCompoundFile = null;
+
     
     @Option(name = "-cw", aliases = {"--customWeights"}, usage = "an optional file containing weights for reactions pairs")
     public String weightFile = null;

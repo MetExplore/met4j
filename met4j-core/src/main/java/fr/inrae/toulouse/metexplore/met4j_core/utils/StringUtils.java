@@ -56,7 +56,7 @@ public class StringUtils {
 	 * <p>isVoid.</p>
 	 *
 	 * @param in a String
-	 * @return true if in is null or empty or equals to NA, na, multiple spaces, NULL, or null
+	 * @return true if in is null or empty or equals to multiple spaces, NULL, or null
 	 */
 	public static boolean isVoid (String in) {
 		if(in == null) return true;

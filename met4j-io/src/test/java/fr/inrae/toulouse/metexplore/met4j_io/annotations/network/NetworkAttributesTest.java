@@ -108,6 +108,11 @@ public class NetworkAttributesTest {
 		assertNull("Test get not existing unit definition", test);
 	}
 
+	@Test(expected = NullPointerException.class)
+	public void testGetUnitDefinitionWithoutUnitDefinitions() {
+		NetworkAttributes.getUnitDefinition(network, "toto");
+	}
+
 	@Test
 	public void testContainsUnitDefinition() {
 

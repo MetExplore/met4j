@@ -37,7 +37,6 @@
 package fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 import java.io.IOException;
 
@@ -52,35 +51,44 @@ public class SetChargesFromFile extends AbstractSetAttributesFromFile {
     /**
      * <p>Constructor for SetChargesFromFile.</p>
      *
-     * @param colId a int.
+     * @param colId   a int.
      * @param colAttr a int.
-     * @param bn a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
-     * @param fileIn a {@link java.lang.String} object.
-     * @param c a {@link java.lang.String} object.
-     * @param nSkip a int.
-     * @param p a {@link java.lang.Boolean} object.
-     * @param s a {@link java.lang.Boolean} object.
+     * @param bn      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     * @param fileIn  a {@link java.lang.String} object.
+     * @param c       a {@link java.lang.String} object.
+     * @param nSkip   a int.
+     * @param p       a {@link java.lang.Boolean} object.
+     * @param s       a {@link java.lang.Boolean} object.
      */
     public SetChargesFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s) {
 
-        super(colId, colAttr, bn, fileIn, c, nSkip, "M", p, s);
+        super(colId, colAttr, bn, fileIn, c, nSkip, EntityType.METABOLITE, p, s);
 
     }
 
     /**
      * {@inheritDoc}
-     *
+     * <p>
      * Test the charge
      */
     public Boolean testAttribute(String charge) {
-        if(StringUtils.isInteger(charge)) {
-            return true;
-        }
-        else {
-            System.err.println(charge+ " no in good format (integer)");
-            return false;
+
+        Boolean flag = true;
+
+        try {
+            Double val = Double.parseDouble(charge);
+            if(val%1 != 0) {
+                flag = false;
+            }
+        } catch (NumberFormatException e) {
+            flag = false;
         }
 
+        if(! flag) {
+            System.err.println("Error : the charge " + charge + " is not an integer");
+        }
+
+        return flag;
     }
 
     /**
@@ -89,38 +97,39 @@ public class SetChargesFromFile extends AbstractSetAttributesFromFile {
      * @return a {@link java.lang.Boolean} object.
      * @throws java.io.IOException if any.
      */
-    public Boolean setAttributes() throws IOException {
+    public Boolean setAttributes() {
 
-        Boolean flag = true;
+        Boolean flag;
 
         try {
-            flag = this.test();
+            flag = this.parseAttributeFile();
         } catch (IOException e) {
             return false;
         }
 
-        if(!flag) {
+        if (!flag) {
             return false;
         }
 
         int n = 0;
 
-        for(String id : this.getIdAttributeMap().keySet()) {
+        for (String id : this.getIdAttributeMap().keySet()) {
 
             n++;
 
             String charge = this.getIdAttributeMap().get(id);
 
-            try {
-                this.getNetwork().getMetabolitesView().get(id).setCharge(Integer.parseInt(charge));
-            } catch (NumberFormatException e) {
-                System.err.println("Warning : the charge + \""+charge+"\" for the metabolite "+id+" is not an integer");
+            if(this.testAttribute(charge)) {
+                Double dbl = Double.parseDouble(charge);
+                this.bn.getMetabolitesView().get(id).setCharge(dbl.intValue());
             }
-
+            else {
+                System.err.println("Warning : the charge + \"" + charge + "\" for the metabolite " + id + " is not an integer");
+            }
         }
 
 
-        System.err.println(n+" attributions");
+        System.err.println(n + " attributions");
 
         return flag;
 

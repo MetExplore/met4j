@@ -52,6 +52,7 @@ import nu.xom.ParsingException;
 import nu.xom.Serializer;
 import nu.xom.ValidityException;
 
+import org.apache.commons.io.FileUtils;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLError;
@@ -365,25 +366,27 @@ public class JsbmlWriter {
     /**
      * Used to correct the XML indentation
      *
-     * @param sbmlFile The sbml file as a String
+     * @param sbmlContent The sbml file as a String
      * @throws nu.xom.ValidityException if any.
      * @throws java.io.IOException if any.
      * @throws nu.xom.ParsingException if any.
      */
-    protected void prettifyXML(String sbmlFile) throws ValidityException,
+    protected void prettifyXML(String sbmlContent) throws ValidityException,
             IOException, ParsingException {
 
         File file;
-        FileWriter fw = new FileWriter(new File("/tmp/toto"));
-        fw.write(sbmlFile);
+        FileWriter fw = new FileWriter(this.getFilename()+"_beforePrettify.tmp");
+        fw.write(sbmlContent);
         FileOutputStream out = new FileOutputStream(
                 this.getFilename());
         Serializer serializer = new Serializer(out);
         serializer.setIndent(2); // or whatever you like
-        serializer.write(new Builder().build(sbmlFile, ""));
+        serializer.write(new Builder().build(sbmlContent, ""));
 
         serializer.flush();
         out.close();
+
+        FileUtils.forceDelete(new File(this.getFilename()+"_beforePrettify.tmp"));
     }
 
     /**

@@ -36,6 +36,7 @@
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import lombok.NonNull;
 
 /**
  * <p>BioEnzyme class.</p>
@@ -45,7 +46,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
  */
 public class BioEnzyme extends BioPhysicalEntity {
 
-    private BioCollection<BioEnzymeParticipant> participants;
+    final private BioCollection<BioEnzymeParticipant> participants;
 
     /**
      * Constructor
@@ -53,9 +54,7 @@ public class BioEnzyme extends BioPhysicalEntity {
      * @param id the id of the BioEnzyme
      */
     public BioEnzyme(String id) {
-        super(id);
-
-        participants = new BioCollection<>();
+        this(id, id);
     }
 
     /**
@@ -76,7 +75,7 @@ public class BioEnzyme extends BioPhysicalEntity {
      *
      * @param e Original enzyme
      */
-    public BioEnzyme(BioEnzyme e) {
+    public BioEnzyme(@NonNull BioEnzyme e) {
         super(e);
 
         participants = new BioCollection<>();
@@ -100,21 +99,13 @@ public class BioEnzyme extends BioPhysicalEntity {
         return participants.getView();
     }
 
-    /**
-     * <p>Setter for the field <code>participants</code>.</p>
-     *
-     * @param participants the participants to set
-     */
-    protected void setParticipants(BioCollection<BioEnzymeParticipant> participants) {
-        this.participants = participants;
-    }
 
     /**
      * <p>addParticipant.</p>
      *
      * @param participant a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant} object.
      */
-    protected void addParticipant(BioEnzymeParticipant participant) {
+    protected void addParticipant(@NonNull BioEnzymeParticipant participant) {
         this.participants.add(participant);
     }
 
@@ -123,16 +114,15 @@ public class BioEnzyme extends BioPhysicalEntity {
      *
      * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity}
      */
-    protected void removeParticipant(BioPhysicalEntity e) {
+    protected void removeParticipant(@NonNull BioPhysicalEntity e) {
 
         BioCollection<BioEnzymeParticipant> tmp = new BioCollection<>(this.participants);
 
-        for (BioEnzymeParticipant p : tmp) {
+        tmp.forEach(p -> {
             if (p.getPhysicalEntity().equals(e)) {
                 this.participants.remove(p);
-                return;
             }
-        }
+        });
     }
 
 }

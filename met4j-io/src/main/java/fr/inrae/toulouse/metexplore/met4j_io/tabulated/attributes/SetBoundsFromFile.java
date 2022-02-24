@@ -43,17 +43,18 @@ import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttrib
 
 import java.io.IOException;
 
+enum BoundsType {
+    LOWER, UPPER
+}
+
 public class SetBoundsFromFile extends AbstractSetAttributesFromFile {
 
 
-    private String type = "L";
+    private BoundsType type;
 
-    public SetBoundsFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s, String type) {
-        super(colId, colAttr, bn, fileIn, c, nSkip, REACTION, p, s);
+    public SetBoundsFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, BoundsType type) {
+        super(colId, colAttr, bn, fileIn, c, nSkip, EntityType.REACTION, p, false);
         this.type = type;
-        if(! (this.type.equals("L") || this.type.equals("U"))) {
-            throw new IllegalArgumentException("type must be L or U");
-        }
     }
 
     /**
@@ -77,12 +78,12 @@ public class SetBoundsFromFile extends AbstractSetAttributesFromFile {
      * @return a {@link java.lang.Boolean} object.
      * @throws java.io.IOException if any.
      */
-    public Boolean setAttributes() throws IOException {
+    public Boolean setAttributes() {
 
-        Boolean flag = true;
+        Boolean flag;
 
         try {
-            flag = this.test();
+            flag = this.parseAttributeFile();
         } catch (IOException e) {
             return false;
         }
@@ -95,9 +96,9 @@ public class SetBoundsFromFile extends AbstractSetAttributesFromFile {
 
         for(String id : this.getIdAttributeMap().keySet()) {
             n++;
-            String bound = this.getIdAttributeMap().get(id);
-            BioReaction r = this.getNetwork().getReactionsView().get(id);
-            if(this.type.equals("L")) {
+            Double bound = Double.parseDouble(this.getIdAttributeMap().get(id));
+            BioReaction r = this.bn.getReactionsView().get(id);
+            if(this.type.equals(BoundsType.LOWER)) {
                 ReactionAttributes.setLowerBound(r, new Flux(bound));
             }
             else {
@@ -111,3 +112,7 @@ public class SetBoundsFromFile extends AbstractSetAttributesFromFile {
 
     }
 }
+
+
+
+

@@ -138,13 +138,14 @@ public class FluxReaction extends BioEntity {
 			if (protlist.size() == 1) {
 				
 				BioProtein prot = protlist.iterator().next();
-				
-				BioEnzyme enz = new BioEnzyme(prot.getId(), prot.getName());
-				enz.setName(prot.getName());
-				
-				if(! bn.contains(enz)) {
+
+				BioEnzyme enz = bn.getEnzymesView().get(prot.getId());
+				if(enz == null)
+				{
+					enz = new BioEnzyme(prot.getId(), prot.getName());
 					bn.add(enz);
 				}
+
 				bn.affectSubUnit(enz, 1.0, prot);
 				
 				bn.affectEnzyme(rxn, enz);
@@ -152,10 +153,11 @@ public class FluxReaction extends BioEntity {
 			} else {
 				
 				String id = createIdFromProteins(protlist);
-				
-				BioEnzyme enz = new BioEnzyme(id, id);
-				
-				if(! bn.contains(enz)) {
+
+				BioEnzyme enz = bn.getEnzymesView().get(id);
+
+				if(enz == null) {
+					enz = new BioEnzyme(id, id);
 					bn.add(enz);
 				}
 				

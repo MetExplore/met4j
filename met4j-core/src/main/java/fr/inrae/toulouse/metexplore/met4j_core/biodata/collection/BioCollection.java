@@ -35,9 +35,7 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata.collection;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -45,16 +43,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 
 /**
  * <p>BioCollection class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
+ *
  */
+@SuppressWarnings({"NullableProblems", "SuspiciousMethodCalls"})
+@EqualsAndHashCode
 public class BioCollection<E extends BioEntity> implements Collection<E> {
 
-	private Map<String, E> entities;
+	final private Map<String, E> entities;
 
 	private BioCollection(Map<String, E> entities) {
 		this.entities = entities;
@@ -80,13 +82,12 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		StringBuilder str = new StringBuilder("BioCollection\n[\n");
-		for (E e : this.entities.values()) {
-			str.append(e.toString());
-			str.append("\n");
-		}
 
-		return str + "]";
+		String str = this.getClass().getSimpleName() + "(" + entities.values().stream()
+				.map(BioEntity::getId)
+				.collect(Collectors.joining(", "));
+
+		return str + ")";
 	}
 
 	/**
@@ -95,7 +96,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @param id id
 	 * @return {@link java.lang.Boolean}
 	 */
-	public Boolean containsId(String id) {
+	public Boolean containsId(@NonNull String id) {
 		return entities.containsKey(id);
 	}
 
@@ -105,7 +106,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @param name name
 	 * @return {@link java.lang.Boolean}
 	 */
-	public Boolean containsName(String name) {
+	public Boolean containsName(@NonNull String name) {
 		return entities.values().stream().anyMatch(o -> o.getName().equals(name));
 	}
 
@@ -115,7 +116,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @param id id
 	 * @return the entity or null
 	 */
-	public E get(String id) {
+	public E get(@NonNull String id) {
 
 		return entities.get(id);
 	}
@@ -135,7 +136,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @param name name of the entity
 	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection}
 	 */
-	public BioCollection<E> getEntitiesFromName(String name) {
+	public BioCollection<E> getEntitiesFromName(@NonNull String name) {
 
 		return entities.values().stream().filter(o -> o.getName().equals(name)).collect(Collectors.toCollection( BioCollection<E>::new));
 
@@ -191,14 +192,22 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean contains(Object o) {
+	public boolean contains(@NonNull Object o) {
 		return entities.containsValue(o);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean add(E e) {
-		entities.put(e.getId(), e);
+	public boolean add(@NonNull E e) {
+		if(entities.containsValue(e)) {
+			return false;
+		}
+		else {
+			if (entities.containsKey(e.getId())) {
+				throw new IllegalArgumentException("An entity with the same id (" + e.getId() + ") is already present in the BioCollection");
+			}
+			entities.put(e.getId(), e);
+		}
 		return true;
 	}
 
@@ -208,7 +217,8 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @param newEntities : 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
 	 * @return always true
 	 */
-	public boolean add(E... newEntities) {
+	@SafeVarargs
+	public final boolean add(E... newEntities) {
 		for(E e : newEntities) {
 			entities.put(e.getId(), e);
 		}
@@ -217,10 +227,10 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean remove(Object o) {
+	public boolean remove(@NonNull Object o) {
 		Object removed =  entities.remove(((BioEntity) o).getId());
 
-		return removed == null ? false : true;
+		return removed != null;
 
 	}
 
@@ -232,7 +242,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean addAll(Collection<? extends E> c) {
+	public boolean addAll(@NonNull Collection<? extends E> c) {
 		for (E e : c) {
 			this.add(e);
 		}
@@ -245,51 +255,7 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	 * @return an unmodifiable copy of the {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection}
 	 */
 	public BioCollection<E> getView() {
-		return new BioCollection<>(Collections.unmodifiableMap(new HashMap<>(this.entities)));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean equals(Object obj) {
-
-		// checking if both the object references are
-		// referring to the same object.
-		if (this == obj)
-			return true;
-
-		if (obj == null || obj.getClass() != this.getClass())
-			return false;
-
-		BioCollection<?> c = (BioCollection<?>) obj;
-
-		if (c.size() != this.size())
-			return false;
-
-		for (BioEntity e : c) {
-			if (!this.contains(e))
-				return false;
-		}
-
-		return true;
-
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public int hashCode() {
-
-		StringBuilder idsString = new StringBuilder();
-
-		ArrayList<String> ids = new ArrayList<>(this.getIds());
-
-		Collections.sort(ids);
-
-		for (String id : ids) {
-			idsString.append(id);
-		}
-
-		return idsString.toString().hashCode();
-
+		return new BioCollection<>(new HashMap<>(this.entities));
 	}
 
 	/**

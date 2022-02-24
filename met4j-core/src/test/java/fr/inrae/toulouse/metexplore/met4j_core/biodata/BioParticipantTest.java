@@ -48,9 +48,7 @@ public class BioParticipantTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testSetNaNQuantity() {
 
-		BioParticipant p = new BioParticipantFake(new BioMetabolite("test"), 2.0);
-		Double nan = Double.NaN;
-		p.setQuantity(nan);
+		BioParticipant p = new BioParticipantFake(new BioMetabolite("test"),  Double.NaN);
 
 	}
 	
@@ -60,9 +58,7 @@ public class BioParticipantTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testSetInfiniteQuantity() {
 
-		BioParticipant p = new BioParticipantFake(new BioMetabolite("test"), 2.0);
-		Double inf = Double.POSITIVE_INFINITY;
-		p.setQuantity(inf);
+		BioParticipant p = new BioParticipantFake(new BioMetabolite("test"), Double.POSITIVE_INFINITY);
 	}
 	
 	/**
@@ -71,12 +67,9 @@ public class BioParticipantTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testSetNegativeOrNullQuantity() {
 
-		BioParticipant p = new BioParticipantFake(new BioMetabolite("test"), 2.0);
-		Double n = 0.0;
-		p.setQuantity(n);
-		
-		n = -10.0;
-		p.setQuantity(n);
+		new BioParticipantFake(new BioMetabolite("test"), 0.0);
+
+		new BioParticipantFake(new BioMetabolite("test"), -10.0);
 	}
 
 }

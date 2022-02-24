@@ -4,7 +4,7 @@
 
 ### Installation
 
-``` 
+```console 
 cd met4j-core;
 mvn clean install;
 ```
@@ -18,7 +18,7 @@ Put this in the pom.xml file of your project:
 		<dependency>
 			<groupId>fr.inrae.toulouse.metexplore</groupId>
 			<artifactId>met4j-core</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>8.2</version>
 		</dependency>
 ...
 </dependencies>

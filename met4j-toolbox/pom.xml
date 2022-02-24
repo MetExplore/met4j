@@ -5,7 +5,7 @@
     <parent>
         <groupId>fr.inrae.toulouse.metexplore</groupId>
         <artifactId>met4j</artifactId>
-        <version>0.8.3-SNAPSHOT</version>
+        <version>0.9.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>met4j-toolbox</artifactId>
@@ -33,32 +33,32 @@
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-chemUtils</artifactId>
-            <version>0.8.3-SNAPSHOT</version>
+            <version>0.9.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-io</artifactId>
-            <version>0.8.3-SNAPSHOT</version>
+            <version>0.9.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-core</artifactId>
-            <version>0.8.3-SNAPSHOT</version>
+            <version>0.9.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-mathUtils</artifactId>
-            <version>0.8.3-SNAPSHOT</version>
+            <version>0.9.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-graph</artifactId>
-            <version>0.8.3-SNAPSHOT</version>
+            <version>0.9.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-mapping</artifactId>
-            <version>0.8.3-SNAPSHOT</version>
+            <version>0.9.0-SNAPSHOT</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
         <dependency>
@@ -70,22 +70,54 @@
 
     <description>Bundle of all met4j modules and api</description>
 
-
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>fr.inrae.toulouse.metexplore.met4j_toolbox.Main</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-                <version>2.2-beta-5</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>
+                                        fr.inrae.toulouse.metexplore.met4j_toolbox.Main
+                                    </mainClass>
+                                    <manifestEntries>
+                                        <Multi-Release>true</Multi-Release>
+                                    </manifestEntries>
+                                </transformer>
+                                <transformer
+                                        implementation="com.github.edwgiz.mavenShadePlugin.log4j2CacheTransformer.PluginsCacheFileTransformer"/>
+                            </transformers>
+                            <createDependencyReducedPom>
+                                false
+                            </createDependencyReducedPom>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.github.edwgiz</groupId>
+                        <artifactId>maven-shade-plugin.log4j2-cachefile-transformer</artifactId>
+                        <version>2.6.1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -99,7 +131,6 @@
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-
                     <!-- create report during maven verify phase -->
                     <execution>
                         <id>report</id>
@@ -109,6 +140,17 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <mainClass>fr.inrae.toulouse.metexplore.met4j_toolbox.GenerateDoc</mainClass>
+                    <arguments>
+                        <argument>README.md</argument>
+                    </arguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>

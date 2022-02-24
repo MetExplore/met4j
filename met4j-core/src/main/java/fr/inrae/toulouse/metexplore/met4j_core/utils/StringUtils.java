@@ -36,6 +36,11 @@
 
 package fr.inrae.toulouse.metexplore.met4j_core.utils;
 
+import lombok.NonNull;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * <p>StringUtils class.</p>
  *
@@ -44,11 +49,14 @@ package fr.inrae.toulouse.metexplore.met4j_core.utils;
  */
 public class StringUtils {
 
+	final private static Pattern patternEC = Pattern.compile("(EC\\s*)*\\d(\\.(\\d{0,3}|-)){0,3}");
+	final private static Pattern patternFormula = Pattern.compile("^([\\*\\(\\)A-Z][a-z]*\\d*)+$");
+
 	/**
 	 * <p>isVoid.</p>
 	 *
 	 * @param in a String
-	 * @return true if in is null or empty or equals to NA, na, multiple spaces, NULL, or null
+	 * @return true if in is null or empty or equals to multiple spaces, NULL, or null
 	 */
 	public static boolean isVoid (String in) {
 		if(in == null) return true;
@@ -88,6 +96,26 @@ public class StringUtils {
 		}
 		// only got here if we didn't return false
 		return true;
+	}
+
+	/**
+	 * Check EC number
+	 * @param ec a string to test as ec number
+	 * @return true if it looks like an ec number (e.g 1.2.3.4, 1.2.3, 1.2, 1)
+	 */
+	public static  boolean checkEcNumber(@NonNull String ec) {
+		Matcher m = patternEC.matcher(ec);
+		return m.matches();
+	}
+
+	/**
+	 * Checks if a metabolite formula is well formatted
+	 * @param formula a String to check
+	 * @return true if it looks like a chemical formula (e.g. CH3, C, (n)CH2O6)
+	 */
+	public static boolean checkMetaboliteFormula(@NonNull String formula) {
+		Matcher m = patternFormula.matcher(formula);
+		return m.matches();
 	}
 
 }

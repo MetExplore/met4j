@@ -35,6 +35,8 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
+import lombok.Getter;
+
 /**
  * <p>BioProtein class.</p>
  *
@@ -43,7 +45,7 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
  */
 public class BioProtein extends BioPhysicalEntity {
 
-	private BioGene gene;
+	@Getter private BioGene gene;
 
 
 	/**
@@ -52,7 +54,7 @@ public class BioProtein extends BioPhysicalEntity {
 	 * @param id the id of the BioProtein
 	 */
 	public BioProtein(String id) {
-		super(id);
+		this(id, id);
 	}
 
 	/**
@@ -83,15 +85,6 @@ public class BioProtein extends BioPhysicalEntity {
 	 */
 	protected  void setGene(BioGene g) {
 		this.gene = g;
-	}
-
-	/**
-	 * Get gene
-	 *
-	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}
-	 */
-	public BioGene getGene() {
-		return this.gene;
 	}
 
 	/**

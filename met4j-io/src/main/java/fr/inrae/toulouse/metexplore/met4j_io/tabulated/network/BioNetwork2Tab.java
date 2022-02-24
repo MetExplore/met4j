@@ -84,35 +84,40 @@ public class BioNetwork2Tab {
     public void write() throws IOException {
 
         FileWriter fw = new FileWriter(this.outputFile);
-
         fw.write("#Id\tName\tFormulaIds\tFormulaNames\tEC\tpathways\tgpr\tlb\tub\n");
-
         /**
          * For ordering reactions in the file and thus making easy the tests and the versioning
          */
         TreeMap<String, BioReaction> reactions = new TreeMap<String, BioReaction>(
                 this.network.getReactionsView().getMapView());
 
-
         for(BioReaction r : reactions.values()) {
-
-            String name = r.getName();
-            String formulaIds = BioReactionUtils.getEquation(r, false, revSep, irrevSep, true);
-            String formulaNames =BioReactionUtils.getEquation(r, true, revSep, irrevSep, true);
-            String ec = r.getEcNumber() == null ? "NA" : r.getEcNumber();
-            String pathways = BioReactionUtils.getPathwaysString(r, this.network,true, " ; ");
-            String gpr = BioReactionUtils.getGPR(this.network, r);
-            Flux lowerBound = ReactionAttributes.getLowerBound(r);
-            String lb = lowerBound != null ? lowerBound.value.toString() : "NA";
-            Flux upperBound = ReactionAttributes.getUpperBound(r);
-            String ub = upperBound != null ? upperBound.value.toString() : "NA";
-
-            fw.write(r.getId()+"\t"+name+"\t"+formulaIds+"\t"+formulaNames+"\t"+ec+"\t"
-                    + pathways + "\t" + gpr + "\t" + lb + "\t" +ub+"\n");
-
+            fw.write(this.getReactionLine(r));
         }
-
         fw.close();
 
     }
+
+
+    /**
+     * Get reaction information in a String
+     * @param r a {@link BioReaction}
+     * @return a String
+     */
+    protected String getReactionLine(BioReaction r) {
+        String name = r.getName();
+        String formulaIds = BioReactionUtils.getEquation(r, false, revSep, irrevSep, true);
+        String formulaNames =BioReactionUtils.getEquation(r, true, revSep, irrevSep, true);
+        String ec = r.getEcNumber() == null ? "NA" : r.getEcNumber();
+        String pathways = BioReactionUtils.getPathwaysString(r, this.network,true, " ; ");
+        String gpr = BioReactionUtils.getGPR(this.network, r);
+        Flux lowerBound = ReactionAttributes.getLowerBound(r);
+        String lb = lowerBound != null ? lowerBound.value.toString() : "NA";
+        Flux upperBound = ReactionAttributes.getUpperBound(r);
+        String ub = upperBound != null ? upperBound.value.toString() : "NA";
+
+        return r.getId()+"\t"+name+"\t"+formulaIds+"\t"+formulaNames+"\t"+ec+"\t"
+                + pathways + "\t" + gpr + "\t" + lb + "\t" +ub+"\n";
+    }
+
 }

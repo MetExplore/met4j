@@ -41,12 +41,12 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import lombok.NonNull;
 
 /**
- * <p>EnzymesPerReaction class.</p>
+ * <p>Allows to compute the distribution of the number of enzymes per reaction</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class EnzymesPerReaction extends ObjectsPerObject {
 
@@ -55,14 +55,14 @@ public class EnzymesPerReaction extends ObjectsPerObject {
      *
      * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
      */
-    public EnzymesPerReaction(BioNetwork network) {
+    public EnzymesPerReaction(@NonNull BioNetwork network) {
 
         super(network);
 
     }
 
     /**
-     * Computes the number of genes per reaction, the distribution and the mean
+     * Computes the number of enzymes per reaction, the distribution and the mean
      */
     public void compute() {
 
@@ -94,9 +94,6 @@ public class EnzymesPerReaction extends ObjectsPerObject {
             }
 
         }
-
-
         mean = (double) sum / (double) nbReactionWithEnzymes;
-
     }
 }

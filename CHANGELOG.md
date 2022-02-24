@@ -4,6 +4,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.9.0
+
+### Features
+
+[met4j-toolbox] ExtractSubReactionNetwork app
+
+## 0.8.3 
+
+### Fixed
+
+[met4j-io] Debug Tab2BioNetwork
+
+## 0.8.2
+
+### Fixed
+
+[met4j-io] Deals better when a reactant has a stoichiometry equals to 0. Before, there was an Exception, now the reactant is simply not taken into account.
+
+## 0.8.1
+
+### Fixed
+
+[met4j-io] New stable version of JSBML (1.6.1 that corrects log4j vulnerabilities)
+
+## 0.8.0
+
+### Features
+
+App Kegg2Sbml
+
+ 
 ## 0.7.6
 
 ### Fixed

@@ -105,15 +105,6 @@ public class FluxNetwork {
 		return underlyingBionet;
 	}
 
-	/**
-	 * Set the {@link #underlyingBionet}
-	 *
-	 * @param underlyingBionet
-	 *            the new {@link #underlyingBionet}
-	 */
-	public void setUnderlyingBionet(BioNetwork underlyingBionet) {
-		this.underlyingBionet = underlyingBionet;
-	}
 
 	/**
 	 * Retrieves the {@link #listOfObjectives}
@@ -122,16 +113,6 @@ public class FluxNetwork {
 	 */
 	public HashMap<String, BioObjective> getListOfObjectives() {
 		return this.listOfObjectives;
-	}
-
-	/**
-	 * Set the {@link #listOfObjectives}
-	 *
-	 * @param listOfObjectives
-	 *            the new {@link #listOfObjectives}
-	 */
-	public void setListOfObjectives(HashMap<String, BioObjective> listOfObjectives) {
-		this.listOfObjectives = listOfObjectives;
 	}
 
 	/**
@@ -184,15 +165,6 @@ public class FluxNetwork {
 	}
 
 	/**
-	 * Get the value of {@link #fbcStrict}
-	 *
-	 * @return {@link #fbcStrict}
-	 */
-	public boolean getFbcStrict() {
-		return this.fbcStrict;
-	}
-
-	/**
 	 * Set the value of {@link #fbcStrict}
 	 *
 	 * @param fbcStrict
@@ -212,16 +184,6 @@ public class FluxNetwork {
 	}
 
 	/**
-	 * Set the {@link #listOfFluxBounds} to a new value
-	 *
-	 * @param listOfFluxBounds
-	 *            the new {@link #listOfFluxBounds}
-	 */
-	public void setListOfFluxBounds(HashMap<String, Flux> listOfFluxBounds) {
-		this.listOfFluxBounds = listOfFluxBounds;
-	}
-
-	/**
 	 * Add a new flux bound to {@link #listOfFluxBounds}
 	 *
 	 * @param flx
@@ -238,17 +200,6 @@ public class FluxNetwork {
 	 */
 	public HashMap<String, FluxReaction> getListOfFluxReactions() {
 		return listOfFluxReactions;
-	}
-
-	/**
-	 * Set the {@link #listOfFluxReactions} to a new value
-	 *
-	 * @param listOfFluxReactions
-	 *            the new {@link #listOfFluxReactions}
-	 */
-	public void setListOfFluxReactions(
-			HashMap<String, FluxReaction> listOfFluxReactions) {
-		this.listOfFluxReactions = listOfFluxReactions;
 	}
 
 }

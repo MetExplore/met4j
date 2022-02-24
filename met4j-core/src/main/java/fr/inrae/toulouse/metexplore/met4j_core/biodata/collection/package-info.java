@@ -1,5 +1,5 @@
 /*
- * Copyright INRAE (2020)
+ * Copyright INRAE (2022)
  *
  * contact-metexplore@inrae.fr
  *
@@ -33,43 +33,9 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  */
-package fr.inrae.toulouse.metexplore.met4j_core.utils;
-
 
 /**
- * Facilitates the message errors
- *
- * @author lcottret
- * @version $Id: $Id
+ * Contains classes to handle collections of metabolic entities
  */
-public class ErrorUtils {
 
-	
-	private static final String  prefix = "met4j";
-
-	/**
-	 * Prints a Warning message in stderr
-	 *
-	 * @param message a String
-	 */
-	public static void warning(String message) {
-		
-		System.err.println("["+prefix+" WARNING] "+message);
-		
-	}
-
-	/**
-	 * Prints an Error message in stderr
-	 *
-	 * @param message a String
-	 */
-	public static void error(String message) {
-		
-		System.err.println("["+prefix+" ERROR] "+message);
-	
-	}
-	
- 	
-	
-	
-}
+package fr.inrae.toulouse.metexplore.met4j_core.biodata.collection;

@@ -37,9 +37,8 @@
 package fr.inrae.toulouse.metexplore.met4j_core.analysis.stats.count;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import lombok.NonNull;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -48,15 +47,14 @@ import java.util.TreeMap;
  * <p>Abstract ObjectsPerObject class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public abstract class ObjectsPerObject {
 
-    public BioNetwork network;
+    final public BioNetwork network;
 
-    public TreeMap<Integer, Integer> distribution = new TreeMap<>();
+    final public TreeMap<Integer, Integer> distribution = new TreeMap<>();
 
-    public HashMap<String, Integer> nbs = new HashMap<>();
+    final public HashMap<String, Integer> nbs = new HashMap<>();
 
     public Double mean;
 
@@ -65,7 +63,7 @@ public abstract class ObjectsPerObject {
      *
      * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
      */
-    public ObjectsPerObject(BioNetwork network) {
+    public ObjectsPerObject(@NonNull BioNetwork network) {
         this.network = network;
     }
 
@@ -73,46 +71,5 @@ public abstract class ObjectsPerObject {
      * <p>compute.</p>
      */
     public abstract void compute();
-
-
-    /**
-     * Write distribution in file
-     *
-     * @param fileName path of the output file
-     * @throws java.io.IOException if any.
-     */
-    public void writeDistributions(String fileName) throws IOException {
-
-        FileWriter fw = new FileWriter(fileName);
-
-
-        for(Integer nb : distribution.keySet())
-        {
-            fw.write(nb+"\t"+distribution.get(nb)+"\n");
-        }
-
-        fw.close();
-    }
-
-    /**
-     * Write the number of objects per object in a file
-     *
-     * @param fileName the path of the output file
-     * @throws java.io.IOException if any.
-     */
-    public void writeNumberOfObjectsPerObject(String fileName) throws IOException {
-
-        FileWriter fw = new FileWriter(fileName);
-
-
-        for(String id : nbs.keySet()) {
-
-            fw.write(id+"\t"+nbs.get(id)+"\n");
-
-        }
-
-        fw.close();
-    }
-
 
 }

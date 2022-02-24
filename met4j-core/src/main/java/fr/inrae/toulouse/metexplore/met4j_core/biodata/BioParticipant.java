@@ -36,8 +36,8 @@
 
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
-import fr.inrae.toulouse.metexplore.met4j_core.utils.ErrorUtils;
-
+import lombok.Getter;
+import javax.annotation.Nonnull;
 import java.util.Objects;
 
 /**
@@ -48,9 +48,11 @@ import java.util.Objects;
  */
 public abstract class BioParticipant extends BioEntity {
 
-	private BioPhysicalEntity physicalEntity;
+	@Getter
+	private final BioPhysicalEntity physicalEntity;
 	
-	private Double quantity;
+	@Getter
+	private final Double quantity;
 
 	/**
 	 * Constructor
@@ -58,58 +60,15 @@ public abstract class BioParticipant extends BioEntity {
 	 * @param physicalEntity a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity}
 	 * @param quantity number of units of physicalEntity
 	 */
-	public BioParticipant(BioPhysicalEntity physicalEntity, Double quantity) {
-		super(physicalEntity.getId());
+
+	public BioParticipant(String id, @Nonnull BioPhysicalEntity physicalEntity, Double quantity) {
+		super(id);
 		this.physicalEntity=physicalEntity;
-		this.setQuantity(quantity);
-	}
-	
-	
-	/**
-	 * <p>Getter for the field <code>physicalEntity</code>.</p>
-	 *
-	 * @return Returns the physicalEntity.
-	 */
-	public BioPhysicalEntity getPhysicalEntity() {
-		return physicalEntity;
-	}
-	
-
-	/**
-	 * <p>Setter for the field <code>physicalEntity</code>.</p>
-	 *
-	 * @param physicalEntity the physicalEntity to set
-	 */
-	public void setPhysicalEntity(BioPhysicalEntity physicalEntity) {
-		this.physicalEntity = physicalEntity;
-	}
-	
-	
-
-
-	/**
-	 * <p>Getter for the field <code>quantity</code>.</p>
-	 *
-	 * @return the quantity
-	 */
-	public Double getQuantity() {
-		return quantity;
-	}
-
-
-	/**
-	 * <p>Setter for the field <code>quantity</code>.</p>
-	 *
-	 * @param quantity the quantity to set
-	 */
-	public void setQuantity(Double quantity) {
-		
 		if(Double.isNaN(quantity) || Double.isInfinite(quantity) || quantity <= 0)
 		{
-			ErrorUtils.error("Illegal argument for "+quantity+" "+this.getPhysicalEntity().getId()+": the quantity must be finite and positive");
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Illegal argument for "+quantity+" "+this.getPhysicalEntity().getId()+": the quantity must be finite and positive");
 		}
-		
+
 		this.quantity = quantity;
 	}
 
@@ -118,15 +77,8 @@ public abstract class BioParticipant extends BioEntity {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
 		BioParticipant that = (BioParticipant) o;
 		return Objects.equals(physicalEntity, that.physicalEntity) &&
 				Objects.equals(quantity, that.quantity);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public int hashCode() {
-		return Objects.hash(super.hashCode(), physicalEntity, quantity);
 	}
 }

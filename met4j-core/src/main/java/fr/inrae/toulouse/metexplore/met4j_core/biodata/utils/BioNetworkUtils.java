@@ -38,9 +38,10 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata.utils;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import lombok.NonNull;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * <p>BioNetworkUtils class.</p>
@@ -58,7 +59,7 @@ public class BioNetworkUtils {
      * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
      * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      */
-    public static BioCollection<BioReaction> getChokeReactions(BioNetwork network) {
+    public static BioCollection<BioReaction> getChokeReactions(@NonNull BioNetwork network) {
 
         BioCollection<BioReaction> chokeReactions = new BioCollection<>();
 
@@ -92,7 +93,7 @@ public class BioNetworkUtils {
      *
      * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
      */
-    public static void removeNotConnectedMetabolites(BioNetwork network) {
+    public static void removeNotConnectedMetabolites(@NonNull BioNetwork network) {
         BioCollection<BioMetabolite> metabolites = network.getMetabolitesView();
         for (BioMetabolite m : metabolites) {
             if (network.getReactionsFromMetabolite(m).size() == 0) {
@@ -101,144 +102,217 @@ public class BioNetworkUtils {
         }
     }
 
+    public static void deepCopy(BioNetwork networkIn, BioNetwork networkOut) {
+        deepCopy(networkIn, networkOut, true, false);
+    }
+
     /**
      * <p>deepCopy.</p>
      *
-     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
-     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     * @param networkIn    a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object. The source network
+     * @param networkOut   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object. The target network
+     * @param keepGPR      keep the associations between reactions and genes (proteins and enzymes)
+     * @param keepPrevious do not replace the entities in networkOut but complete them
+     *                     For instance :
+     *                     - add metabolites to a compartment
+     *                     - add components to an enzyme
+     *                     - add reactions to a pathway
+     *                     - add enzymes or reactants to a reaction
      */
-    public static BioNetwork deepCopy(BioNetwork network) {
+    public static void deepCopy(@NonNull BioNetwork networkIn, @NonNull BioNetwork networkOut, Boolean keepGPR, Boolean keepPrevious) {
 
-        BioNetwork newNetwork = new BioNetwork(network);
+
+        networkOut.setSynonyms(new ArrayList<>(networkIn.getSynonyms()));
+        networkOut.setComment(networkIn.getComment());
+        networkOut.setRefs(new HashMap<>(networkIn.getRefs()));
+        networkOut.setAttributes(new HashMap<>(networkIn.getAttributes()));
 
         // Copy metabolites
-        for (BioMetabolite metabolite : network.getMetabolitesView()) {
-            BioMetabolite newMetabolite = new BioMetabolite(metabolite);
-            newNetwork.add(newMetabolite);
+        BioCollection<BioMetabolite> metabolitesToCopy = networkIn.getMetabolitesView();
+        if (keepPrevious) {
+            metabolitesToCopy.removeAll(networkOut.getMetabolitesView());
         }
 
-        // Copy compartments (empty for the moment)
-        for (BioCompartment cpt : network.getCompartmentsView()) {
-            BioCompartment newCpt = new BioCompartment(cpt);
-            newNetwork.add(newCpt);
+        for (BioMetabolite metabolite : metabolitesToCopy) {
+            BioMetabolite newMetabolite;
+            if (!networkOut.containsEntityWithSameId(metabolite)) {
+                newMetabolite = new BioMetabolite(metabolite);
+                networkOut.add(newMetabolite);
+            }
+        }
+
+        // Copy compartments
+        BioCollection<BioCompartment> compartmentsToCopy = networkIn.getCompartmentsView();
+        if (keepPrevious) {
+            compartmentsToCopy.removeAll(networkOut.getCompartmentsView());
+        }
+
+        for (BioCompartment cpt : networkIn.getCompartmentsView()) {
+
+            BioCompartment newCpt;
+
+            if (compartmentsToCopy.contains(cpt) && (!networkOut.containsEntityWithSameId(cpt))) {
+                newCpt = new BioCompartment(cpt);
+                networkOut.add(newCpt);
+            } else {
+                newCpt = networkOut.getCompartmentsView().get(cpt.getId());
+            }
 
             // Copy metabolites in the compartments
             cpt.getComponentsView().stream().
                     filter((c) -> c.getClass().equals(BioMetabolite.class)).
                     map(BioEntity::getId).
                     forEach((id) -> {
-                        BioMetabolite newMetabolite = newNetwork.getMetabolitesView().get(id);
-                        newNetwork.affectToCompartment(newCpt, newMetabolite);
+                        BioMetabolite newMetabolite = networkOut.getMetabolitesView().get(id);
+                        networkOut.affectToCompartment(newCpt, newMetabolite);
                     });
         }
 
         // Copy genes
-        for (BioGene gene : network.getGenesView()) {
-            BioGene newGene = new BioGene(gene);
-            newNetwork.add(newGene);
+        if (keepGPR) {
+            BioCollection<BioGene> genesToCopy = networkIn.getGenesView();
+            if (keepPrevious) {
+                genesToCopy.removeAll(networkOut.getGenesView());
+            }
+
+            for (BioGene gene : genesToCopy) {
+                if (!networkOut.containsEntityWithSameId(gene)) {
+                    BioGene newGene = new BioGene(gene);
+                    networkOut.add(newGene);
+                }
+            }
         }
 
         // Copy proteins
-        for (BioProtein protein : network.getProteinsView()) {
-            BioProtein newProtein = new BioProtein(protein);
-            newNetwork.add(newProtein);
-            if (protein.getGene() != null) {
-                String geneId = protein.getGene().getId();
-                BioGene newGene = newNetwork.getGenesView().get(geneId);
-                newNetwork.affectGeneProduct(newProtein, newGene);
+        if (keepGPR) {
+            BioCollection<BioProtein> proteinsToCopy = networkIn.getProteinsView();
+            if (keepPrevious) {
+                proteinsToCopy.removeAll(networkOut.getProteinsView());
+            }
+            for (BioProtein protein : networkIn.getProteinsView()) {
+
+                BioProtein newProtein;
+
+                if (proteinsToCopy.contains(protein) && (!networkOut.containsEntityWithSameId(protein))) {
+                    newProtein = new BioProtein(protein);
+                    networkOut.add(newProtein);
+                } else {
+                    newProtein = networkOut.getProteinsView().get(protein.getId());
+                }
+
+                if (protein.getGene() != null) {
+                    String geneId = protein.getGene().getId();
+                    BioGene newGene = networkOut.getGenesView().get(geneId);
+                    networkOut.affectGeneProduct(newProtein, newGene);
+                }
             }
         }
 
         // Copy enzymes
-        for (BioEnzyme enzyme : network.getEnzymesView()) {
-            BioEnzyme newEnzyme = new BioEnzyme(enzyme);
+        if (keepGPR) {
 
-            newNetwork.add(newEnzyme);
+            BioCollection<BioEnzyme> enzymesToCopy = networkIn.getEnzymesView();
+            if (keepPrevious) {
+                enzymesToCopy.removeAll(networkOut.getEnzymesView());
+            }
 
-            BioCollection<BioEnzymeParticipant> participants = enzyme.getParticipantsView();
+            for (BioEnzyme enzyme : networkIn.getEnzymesView()) {
 
-            for (BioEnzymeParticipant participant : participants) {
-                Double quantity = participant.getQuantity();
+                BioEnzyme newEnzyme;
 
-                BioEnzymeParticipant newParticipant = null;
-                if (participant.getPhysicalEntity().getClass().equals(BioMetabolite.class)) {
-                    BioMetabolite metabolite = (BioMetabolite) participant.getPhysicalEntity();
-                    BioMetabolite newMetabolite = newNetwork.getMetabolitesView().get(metabolite.getId());
-                    newParticipant = new BioEnzymeParticipant(newMetabolite, quantity);
-                } else if (participant.getPhysicalEntity().getClass().equals(BioProtein.class)) {
-                    BioProtein protein = (BioProtein) participant.getPhysicalEntity();
-                    BioProtein newProtein = newNetwork.getProteinsView().get(protein.getId());
-                    newParticipant = new BioEnzymeParticipant(newProtein, quantity);
+                if (enzymesToCopy.contains(enzyme) && !networkOut.containsEntityWithSameId(enzyme)) {
+                    newEnzyme = new BioEnzyme(enzyme);
+                    networkOut.add(newEnzyme);
                 } else {
-                    System.err.println("BioPhysical entity not recognized as enzyme participant : "
-                            + participant.getPhysicalEntity().getId()
-                            + "(" + participant.getPhysicalEntity().getClass() + ")");
+                    newEnzyme = networkOut.getEnzymesView().get(enzyme.getId());
                 }
 
-                if(newParticipant != null)
-                {
-                    newNetwork.affectSubUnit(newEnzyme, newParticipant);
-                }
+                BioCollection<BioEnzymeParticipant> participants = enzyme.getParticipantsView();
 
+                for (BioEnzymeParticipant participant : participants) {
+                    Double quantity = participant.getQuantity();
+
+                    if (participant.getPhysicalEntity().getClass().equals(BioMetabolite.class)) {
+                        BioMetabolite metabolite = (BioMetabolite) participant.getPhysicalEntity();
+                        BioMetabolite newMetabolite = networkOut.getMetabolitesView().get(metabolite.getId());
+                        networkOut.affectSubUnit(newEnzyme, quantity, newMetabolite);
+                    } else if (participant.getPhysicalEntity().getClass().equals(BioProtein.class)) {
+                        BioProtein protein = (BioProtein) participant.getPhysicalEntity();
+                        BioProtein newProtein = networkOut.getProteinsView().get(protein.getId());
+                        networkOut.affectSubUnit(newEnzyme, quantity, newProtein);
+                    }
+                }
             }
         }
 
-
         // Copy reactions
-        for (BioReaction r : network.getReactionsView()) {
-            BioReaction newReaction = new BioReaction(r);
-            newReaction.setSpontaneous(r.isSpontaneous());
-            newReaction.setReversible(r.isReversible());
-            newReaction.setEcNumber(r.getEcNumber());
+        BioCollection<BioReaction> reactionsToCopy = networkIn.getReactionsView();
+        if (keepPrevious) {
+            reactionsToCopy.removeAll(networkOut.getReactionsView());
+        }
 
-            newNetwork.add(newReaction);
+        for (BioReaction r : networkIn.getReactionsView()) {
+
+            BioReaction newReaction;
+
+            if (reactionsToCopy.contains(r) && !networkOut.containsEntityWithSameId(r)) {
+
+                newReaction = new BioReaction(r);
+                newReaction.setSpontaneous(r.isSpontaneous());
+                newReaction.setReversible(r.isReversible());
+                newReaction.setEcNumber(r.getEcNumber());
+
+                networkOut.add(newReaction);
+            } else {
+                newReaction = networkOut.getReactionsView().get(r.getId());
+            }
 
             // Copy lefts
             for (BioReactant reactant : r.getLeftReactantsView()) {
-                BioMetabolite newMetabolite = newNetwork.getMetabolitesView().get(reactant.getMetabolite().getId());
-                BioCompartment newCpt = newNetwork.getCompartmentsView().get(reactant.getLocation().getId());
+                BioMetabolite newMetabolite = networkOut.getMetabolitesView().get(reactant.getMetabolite().getId());
+                BioCompartment newCpt = networkOut.getCompartmentsView().get(reactant.getLocation().getId());
                 Double sto = reactant.getQuantity();
-                BioReactant newReactant = new BioReactant(newMetabolite, sto, newCpt);
-
-                newNetwork.affectLeft(newReaction, newReactant);
+                networkOut.affectLeft(newReaction, sto, newCpt, newMetabolite);
             }
 
             // Copy rights
             for (BioReactant reactant : r.getRightReactantsView()) {
-                BioMetabolite newMetabolite = newNetwork.getMetabolitesView().get(reactant.getMetabolite().getId());
-                BioCompartment newCpt = newNetwork.getCompartmentsView().get(reactant.getLocation().getId());
+                BioMetabolite newMetabolite = networkOut.getMetabolitesView().get(reactant.getMetabolite().getId());
+                BioCompartment newCpt = networkOut.getCompartmentsView().get(reactant.getLocation().getId());
                 Double sto = reactant.getQuantity();
-                BioReactant newReactant = new BioReactant(newMetabolite, sto, newCpt);
-
-                newNetwork.affectRight(newReaction, newReactant);
+                networkOut.affectRight(newReaction, sto, newCpt, newMetabolite);
             }
 
             // Copy enzymes
-            for(BioEnzyme enzyme: r.getEnzymesView())
-            {
-                BioEnzyme newEnzyme = newNetwork.getEnzymesView().get(enzyme.getId());
-                newNetwork.affectEnzyme(newReaction, newEnzyme);
+            if (keepGPR) {
+                for (BioEnzyme enzyme : r.getEnzymesView()) {
+                    BioEnzyme newEnzyme = networkOut.getEnzymesView().get(enzyme.getId());
+                    networkOut.affectEnzyme(newReaction, newEnzyme);
+                }
             }
         }
 
         // Copy pathways
-        for(BioPathway pathway : network.getPathwaysView())
-        {
-            BioPathway newPathway = new BioPathway(pathway);
-            newNetwork.add(newPathway);
-
-            // Add reactions into pathway
-            BioCollection<BioReaction> reactions = network.getReactionsFromPathways(pathway);
-
-            for(BioReaction reaction : reactions)
-            {
-                BioReaction newReaction = newNetwork.getReactionsView().get(reaction.getId());
-                newNetwork.affectToPathway(newPathway, newReaction);
-            }
+        BioCollection<BioPathway> pathwaysToCopy = networkIn.getPathwaysView();
+        if (keepPrevious) {
+            pathwaysToCopy.removeAll(networkOut.getPathwaysView());
         }
 
+        for (BioPathway pathway : networkIn.getPathwaysView()) {
 
-        return newNetwork;
+            if (pathwaysToCopy.contains(pathway) && !networkOut.containsEntityWithSameId(pathway)) {
+                BioPathway newPathway = new BioPathway(pathway);
+                networkOut.add(newPathway);
+            }
 
+            BioPathway newPathway = networkOut.getPathwaysView().get(pathway.getId());
+            // Add reactions into pathway
+            BioCollection<BioReaction> reactions = networkIn.getReactionsFromPathways(pathway);
+
+            for (BioReaction reaction : reactions) {
+                BioReaction newReaction = networkOut.getReactionsView().get(reaction.getId());
+                networkOut.affectToPathway(newPathway, newReaction);
+            }
+        }
     }
 }

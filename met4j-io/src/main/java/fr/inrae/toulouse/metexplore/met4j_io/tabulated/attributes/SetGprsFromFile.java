@@ -40,7 +40,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.gpr.GPR;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.MalformedGeneAssociationStringException;
 
 import java.io.IOException;
 
@@ -66,7 +65,7 @@ public class SetGprsFromFile extends AbstractSetAttributesFromFile {
      */
     public SetGprsFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s) {
 
-        super(colId, colAttr, bn, fileIn, c, nSkip, REACTION, p, s);
+        super(colId, colAttr, bn, fileIn, c, nSkip, EntityType.REACTION, p, s);
 
     }
 
@@ -92,7 +91,7 @@ public class SetGprsFromFile extends AbstractSetAttributesFromFile {
         Boolean flag = true;
 
         try {
-            flag = this.test();
+            flag = this.parseAttributeFile();
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -103,7 +102,7 @@ public class SetGprsFromFile extends AbstractSetAttributesFromFile {
         }
 
 
-        BioCollection<BioReaction> reactionsView = this.getNetwork().getReactionsView();
+        BioCollection<BioReaction> reactionsView = this.bn.getReactionsView();
 
         for(String id : this.getIdAttributeMap().keySet()) {
 
@@ -112,7 +111,7 @@ public class SetGprsFromFile extends AbstractSetAttributesFromFile {
             String gpr = this.getIdAttributeMap().get(id);
 
             try {
-                GPR.createGPRfromString(this.getNetwork(), reaction, gpr);
+                GPR.createGPRfromString(this.bn, reaction, gpr);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("GPR badly formatted for reaction "+reaction.getId());

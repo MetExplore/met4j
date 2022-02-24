@@ -35,6 +35,8 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
+import lombok.NonNull;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -54,8 +56,8 @@ public class BioEnzymeParticipant extends BioParticipant {
      * @param physicalEntity the physical entity that is contained in the enzyme
      * @param stoichiometry  the number of unities of the physical entity
      */
-    public BioEnzymeParticipant(BioPhysicalEntity physicalEntity, Double stoichiometry) {
-        super(physicalEntity, stoichiometry);
+    protected BioEnzymeParticipant(@NonNull BioPhysicalEntity physicalEntity, @NonNull Double stoichiometry) {
+        super(physicalEntity.getId() + "__" + stoichiometry, physicalEntity, stoichiometry);
     }
 
     /**
@@ -64,8 +66,8 @@ public class BioEnzymeParticipant extends BioParticipant {
      * @param physicalEntity the physical entity that is contained in the enzyme
      *                       The stoichiometry is put to 1.
      */
-    public BioEnzymeParticipant(BioPhysicalEntity physicalEntity) {
-        super(physicalEntity, 1.0);
+    public BioEnzymeParticipant(@NonNull BioPhysicalEntity physicalEntity) {
+        this(physicalEntity, 1.0);
     }
 
     /**
@@ -92,9 +94,7 @@ public class BioEnzymeParticipant extends BioParticipant {
 
         }
 
-        String buffer = quantityStr + " " + this.getId();
-
-        return buffer;
+        return quantityStr + " " + this.getPhysicalEntity().getId();
 
     }
 }

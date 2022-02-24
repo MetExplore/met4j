@@ -39,7 +39,6 @@ package fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioRef;
-import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
 import fr.inrae.toulouse.metexplore.met4j_io.refs.IdentifiersOrg;
 
 import java.io.IOException;
@@ -66,17 +65,17 @@ public class SetRefsFromFile extends AbstractSetAttributesFromFile {
      * @param p a {@link java.lang.Boolean} object.
      * @param s a {@link java.lang.Boolean} object.
      * @param ref a {@link java.lang.String} object.
-     * @param type a {@link java.lang.String} object.
+     * @param entityType a {@link EntityType} object.
      */
-    public SetRefsFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s, String ref, String type) {
-        super(colId, colAttr, bn, fileIn, c, nSkip, type, p, s);
+    public SetRefsFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s, String ref, EntityType entityType) {
+        super(colId, colAttr, bn, fileIn, c, nSkip, entityType, p, s);
 
         this.ref = ref;
 
     }
 
     /** {@inheritDoc} */
-    public Boolean testAttribute(String charge) {
+    public Boolean testAttribute(String attribute) {
         return true;
     }
 
@@ -91,7 +90,7 @@ public class SetRefsFromFile extends AbstractSetAttributesFromFile {
         Boolean flag = true;
 
         try {
-            flag = this.test();
+            flag = this.parseAttributeFile();
         } catch (IOException e) {
             return false;
         }
@@ -103,7 +102,7 @@ public class SetRefsFromFile extends AbstractSetAttributesFromFile {
         int n = 0;
 
         if(! IdentifiersOrg.validIdentifiers.contains(ref)) {
-            System.err.println("Warning : the identifier "+ref+" is not a valid id in identifiers.org, it will appear only in SBML notes");
+            System.err.println("Warning : the identifier "+ref+" is not a valid id in identifiers.org");
         }
 
         for(String id : this.getIdAttributeMap().keySet()) {
@@ -112,20 +111,20 @@ public class SetRefsFromFile extends AbstractSetAttributesFromFile {
             BioEntity object;
             n++;
 
-            if(this.getObject().equalsIgnoreCase(METABOLITE)) {
-                object = this.getNetwork().getMetabolitesView().get(id);
+            if(this.entityType.equals(EntityType.METABOLITE)) {
+                object = this.bn.getMetabolitesView().get(id);
             }
-            else if(this.getObject().equalsIgnoreCase(GENE)) {
-                object = this.getNetwork().getGenesView().get(id);
+            else if(this.entityType.equals(EntityType.GENE)) {
+                object = this.bn.getGenesView().get(id);
             }
-            else if(this.getObject().equalsIgnoreCase(PROTEIN)) {
-                object = this.getNetwork().getProteinsView().get(id);
+            else if(this.entityType.equals(EntityType.PROTEIN)) {
+                object = this.bn.getProteinsView().get(id);
             }
-            else if(this.getObject().equalsIgnoreCase(PATHWAY)) {
-                object = this.getNetwork().getPathwaysView().get(id);
+            else if(this.entityType.equals(EntityType.PATHWAY)) {
+                object = this.bn.getPathwaysView().get(id);
             }
             else {
-                object = this.getNetwork().getReactionsView().get(id);
+                object = this.bn.getReactionsView().get(id);
             }
 
             object.addRef(new BioRef("attributesTable", this.ref, this.getIdAttributeMap().get(id), 1));

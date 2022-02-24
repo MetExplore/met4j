@@ -38,6 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 import java.util.HashSet;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import lombok.NonNull;
 
 /**
  * A conversion interaction in which one or more entities (substrates) undergo
@@ -73,10 +74,10 @@ public class BioReaction extends BioEntity {
 	private String ecNumber;
 	private boolean reversible=true;
 
-	private BioCollection<BioReactant> left;
-	private BioCollection<BioReactant> right;
+	final private BioCollection<BioReactant> left;
+	final private BioCollection<BioReactant> right;
 
-	private BioCollection<BioEnzyme> enzymes;
+	final private BioCollection<BioEnzyme> enzymes;
 
 	public enum Side {
 		LEFT, RIGHT
@@ -88,10 +89,7 @@ public class BioReaction extends BioEntity {
 	 * @param id a {@link java.lang.String} object.
 	 */
 	public BioReaction(String id) {
-		super(id);
-		left = new BioCollection<>();
-		right = new BioCollection<>();
-		enzymes = new BioCollection<>();
+		this(id, id);
 	}
 
 	/**
@@ -112,11 +110,14 @@ public class BioReaction extends BioEntity {
 	 *
 	 * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
 	 */
-	public BioReaction(BioReaction reaction) {
+	public BioReaction(@NonNull BioReaction reaction) {
 		super(reaction);
 		left = new BioCollection<>();
 		right = new BioCollection<>();
 		enzymes = new BioCollection<>();
+		this.spontaneous = reaction.spontaneous;
+		this.ecNumber = reaction.ecNumber;
+		this.reversible = reaction.reversible;
 	}
 
 	/**
@@ -294,7 +295,7 @@ public class BioReaction extends BioEntity {
 	 * @param side : {@link Side} the side of the reaction
 	 * @return {@link BioCollection} of {@link BioReactant}
 	 */
-	private BioCollection<BioReactant> getSideReactants(Side side) {
+	private BioCollection<BioReactant> getSideReactants(@NonNull Side side) {
 
 		BioCollection<BioReactant> reactantCollection;
 
@@ -360,7 +361,7 @@ public class BioReaction extends BioEntity {
 	 *
 	 * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
 	 */
-	protected void addEnzyme(BioEnzyme e) {
+	protected void addEnzyme(@NonNull BioEnzyme e) {
 		this.enzymes.add(e);
 	}
 
@@ -369,7 +370,7 @@ public class BioReaction extends BioEntity {
 	 *
 	 * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
 	 */
-	protected void removeEnzyme(BioEnzyme e) {
+	protected void removeEnzyme(@NonNull BioEnzyme e) {
 		this.enzymes.remove(e);
 	}
 
@@ -381,7 +382,7 @@ public class BioReaction extends BioEntity {
 	 * @param localisation a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} object.
 	 * @param side a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction.Side} object.
 	 */
-	protected void removeSide(BioPhysicalEntity e, BioCompartment localisation, Side side) {
+	protected void removeSide(@NonNull BioPhysicalEntity e, @NonNull BioCompartment localisation, @NonNull Side side) {
 
 		BioCollection<BioReactant> reactants;
 		if (side.equals(Side.LEFT)) {
@@ -433,7 +434,7 @@ public class BioReaction extends BioEntity {
 	 */
 	public BioCollection<BioMetabolite> getMetabolitesView() {
 		return this.getReactantsView().stream()
-				.map(bioReactant -> bioReactant.getMetabolite())
+				.map(BioReactant::getMetabolite)
 				.collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
 	}
 

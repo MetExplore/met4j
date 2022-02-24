@@ -175,6 +175,9 @@ public class BioEntityTest {
 		assertFalse("Must return false when the ref does not correspond to any ref",
 				bioEntityTest.hasRef("test", "test"));
 
+		assertFalse("Must return false when the ref does not correspond to any ref",
+				bioEntityTest.hasRef(ref.dbName, "test"));
+
 		// Test if hasRef returns true if the parameters corresponds to a ref
 		assertTrue("Must return true if the parameters corresponds to a ref", bioEntityTest.hasRef(ref.dbName, ref.id));
 
@@ -214,4 +217,21 @@ public class BioEntityTest {
 
 	}
 
+	@Test
+	public void setAttribute() {
+
+		bioEntityTest.setAttribute("test", "value");
+
+		assertTrue(bioEntityTest.getAttributes().containsKey("test"));
+
+		assertEquals("value", bioEntityTest.getAttributes().get("test"));
+	}
+
+	@Test
+	public void getAttribute() {
+		bioEntityTest.getAttributes().put("test", "value");
+
+		assertEquals("value", bioEntityTest.getAttribute("test"));
+
+	}
 }

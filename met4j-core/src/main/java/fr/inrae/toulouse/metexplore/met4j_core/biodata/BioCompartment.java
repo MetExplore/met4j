@@ -47,7 +47,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 public class BioCompartment extends BioPhysicalEntity {
 
 
-    private BioCollection<BioEntity> components;
+    final private BioCollection<BioEntity> components;
 
     /**
      * Constructor from an id
@@ -55,9 +55,7 @@ public class BioCompartment extends BioPhysicalEntity {
      * @param id : must be not null
      */
     public BioCompartment(String id) {
-        super(id);
-
-        components = new BioCollection<>();
+        this(id, id);
     }
 
     /**
@@ -84,7 +82,6 @@ public class BioCompartment extends BioPhysicalEntity {
         components = new BioCollection<>();
     }
 
-
     /**
      * <p>getComponentsView.</p>
      *
@@ -101,15 +98,6 @@ public class BioCompartment extends BioPhysicalEntity {
      */
     protected BioCollection<BioEntity> getComponents() {
         return components;
-    }
-
-    /**
-     * set the components
-     *
-     * @param components a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} to set
-     */
-    protected void setComponents(BioCollection<BioEntity> components) {
-        this.components = components;
     }
 
     /**

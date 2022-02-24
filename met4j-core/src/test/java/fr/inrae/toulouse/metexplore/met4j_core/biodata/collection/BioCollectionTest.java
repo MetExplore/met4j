@@ -38,6 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata.collection;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -217,6 +218,7 @@ public class BioCollectionTest {
 
 	}
 
+	@Test
 	public void testAddAll() {
 
 		BioMetabolite m3 = new BioMetabolite("m3");
@@ -237,33 +239,41 @@ public class BioCollectionTest {
 
 	}
 
-	@Test(expected = UnsupportedOperationException.class)
-	public void testGetView() {
+	@Test
+	public void testToString() {
 
-		BioCollection<BioMetabolite> c2 = collec.getView();
+		BioMetabolite m1 = new BioMetabolite("m1");
+		BioMetabolite m2 = new BioMetabolite("m2");
 
-		assertEquals(2, c2.size());
+		BioCollection collection = new BioCollection();
+		collection.add(m1, m2);
 
-		c2.remove(m1);
+		String ref = "BioCollection(m1, m2)";
+
+		assertEquals(ref, collection.toString());
 
 	}
+
+	@Test (expected =  IllegalArgumentException.class)
+	public void testAddEntityWithSameId() {
+
+		BioMetabolite other = new BioMetabolite("m1");
+		collec.add(other);
+
+	}
+
 
 	@Test
-	public void testEqualsObject() {
+	public void getMapView() {
 
-		BioCollection<BioMetabolite> c2 = new BioCollection<BioMetabolite>();
+		HashMap<String, BioMetabolite> mapView = collec.getMapView();
 
-		BioMetabolite m1Bis = new BioMetabolite("m1", "metabolite1");
-		BioMetabolite m2Bis = new BioMetabolite("m2", "metabolite2");
+		assertEquals(2, mapView.size());
+		assertTrue(mapView.containsValue(m1));
+		assertTrue(mapView.containsValue(m2));
 
-		c2.add(m1Bis);
-
-		assertFalse(collec.equals(c2));
-
-		c2.add(m2Bis);
-
-		assertTrue(collec.equals(c2));
-
+		mapView.remove("m1");
+		// The map is only a view, changing it does not affect the collection
+		assertEquals(2, collec.size());
 	}
-
 }

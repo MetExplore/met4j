@@ -72,7 +72,7 @@ public class BioRefTest {
 		assertFalse("Two refs with different db must not be equal", ref.equals(ref3));
 		assertFalse("Two refs with different id must not be equal", ref.equals(ref4));
 		
-		ref.setLogicallink("otherLink");
+		ref.logicallink = "otherLink";
 		assertFalse("Two refs with different logical link must not be equal", ref.equals(ref2));
 		
 	}

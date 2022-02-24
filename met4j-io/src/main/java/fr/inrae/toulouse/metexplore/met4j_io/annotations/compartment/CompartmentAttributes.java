@@ -67,8 +67,8 @@ public class CompartmentAttributes extends GenericAttributes {
 	 */
 	public static void setOutsideCompartment(BioCompartment c, BioCompartment outside) {
 
-		if (c.equals(outside)) {
-			throw new IllegalArgumentException("The compartment and the outside compartment must be different");
+		if (c.getId().equals(outside.getId())) {
+			throw new IllegalArgumentException("The compartment and the outside compartment have a different id");
 		}
 
 		c.setAttribute(OUTSIDE_COMPARTMENT, outside);

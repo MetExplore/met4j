@@ -123,8 +123,8 @@ public class FluxReaction extends BioEntity {
 				
 				BioProtein prot;
 
-				if (bn.getProteinsView().containsId(gene.getId())) {
-					prot = bn.getProteinsView().get(gene.getId());
+				if (bn.containsProtein(gene.getId())) {
+					prot = bn.getProtein(gene.getId());
 				} else {
 					prot = new BioProtein(gene.getId(), gene.getName());
 					bn.add(prot);
@@ -139,7 +139,7 @@ public class FluxReaction extends BioEntity {
 				
 				BioProtein prot = protlist.iterator().next();
 
-				BioEnzyme enz = bn.getEnzymesView().get(prot.getId());
+				BioEnzyme enz = bn.getEnzyme(prot.getId());
 				if(enz == null)
 				{
 					enz = new BioEnzyme(prot.getId(), prot.getName());
@@ -154,7 +154,7 @@ public class FluxReaction extends BioEntity {
 				
 				String id = createIdFromProteins(protlist);
 
-				BioEnzyme enz = bn.getEnzymesView().get(id);
+				BioEnzyme enz = bn.getEnzyme(id);
 
 				if(enz == null) {
 					enz = new BioEnzyme(id, id);

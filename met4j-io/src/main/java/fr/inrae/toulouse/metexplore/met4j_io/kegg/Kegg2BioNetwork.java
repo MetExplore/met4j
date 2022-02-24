@@ -300,8 +300,8 @@ public class Kegg2BioNetwork {
                     String id = this.simplifyId(longId).replace("rn_", "");
                     BioReaction reaction;
 
-                    if (this.network.getReactionsView().containsId(id)) {
-                        reaction = this.network.getReactionsView().get(id);
+                    if (this.network.containsReaction(id)) {
+                        reaction = this.network.getReaction(id);
                         if (rxn.getAttribute("type").equalsIgnoreCase("reversible")) {
                             reaction.setReversible(true);
                         }
@@ -320,21 +320,21 @@ public class Kegg2BioNetwork {
 
                             String geneId = this.simplifyId(longGeneId);
 
-                            BioGene gene = network.getGenesView().get(geneId);
+                            BioGene gene = network.getGene(geneId);
                             if(gene == null)
                             {
                                 gene = new BioGene(geneId);
                                 network.add(gene);
                             }
 
-                            BioProtein prot = network.getProteinsView().get(geneId);
+                            BioProtein prot = network.getProtein(geneId);
                             if(prot == null)
                             {
                                 prot = new BioProtein(geneId);
                                 network.add(prot);
                             }
 
-                            BioEnzyme enz = network.getEnzymesView().get(geneId);
+                            BioEnzyme enz = network.getEnzyme(geneId);
                             if(enz == null) {
                                 enz = new BioEnzyme(geneId);
                                 network.add(enz);
@@ -351,12 +351,12 @@ public class Kegg2BioNetwork {
                                 BioMetabolite cpd;
                                 Node child = childs.item(j);
                                 Element Compound = (Element) child;
-                                BioCompartment cpt = this.network.getCompartmentsView().get("default");
+                                BioCompartment cpt = this.network.getCompartment("default");
 
                                 String metaboliteId = this.simplifyMetaboliteId(Compound.getAttribute("name"));
 
-                                if (this.network.getMetabolitesView().containsId(metaboliteId)) {
-                                    cpd = this.network.getMetabolitesView().get(metaboliteId);
+                                if (this.network.containsMetabolite(metaboliteId)) {
+                                    cpd = this.network.getMetabolite(metaboliteId);
                                 } else {
                                     cpd = new BioMetabolite(metaboliteId);
                                     this.network.add(cpd);
@@ -414,7 +414,7 @@ public class Kegg2BioNetwork {
         String longCpdId;
         BioMetabolite cpd;
 
-        BioCompartment cpt = this.network.getCompartmentsView().get("default");
+        BioCompartment cpt = this.network.getCompartment("default");
 
         String[] tmp = substrateAndStoichio.split("[ ]+");
         if (tmp.length == 2) {
@@ -445,8 +445,8 @@ public class Kegg2BioNetwork {
 
         String cpdId = this.simplifyMetaboliteId(longCpdId);
 
-        if (this.network.getMetabolitesView().containsId(cpdId)) {
-            cpd = this.network.getMetabolitesView().get(cpdId);
+        if (this.network.containsMetabolite(cpdId)) {
+            cpd = this.network.getMetabolite(cpdId);
         } else {
             cpd = new BioMetabolite(cpdId);
             this.network.add(cpd);
@@ -515,7 +515,7 @@ public class Kegg2BioNetwork {
             /*
              * Reactions must be first created in createNetworksForPathways
              */
-            BioReaction rxn = this.getNetwork().getReactionsView().get(id);
+            BioReaction rxn = this.getNetwork().getReaction(id);
 
             if (rxn == null) {
                 throw new Exception("[met4j-io][Kegg2BioNetwork] Problem while setting reaction " + id + "");
@@ -632,7 +632,7 @@ public class Kegg2BioNetwork {
 
         for (String id : dataMap.keySet()) {
 
-            BioMetabolite metabolite = this.getNetwork().getMetabolitesView().get(id);
+            BioMetabolite metabolite = this.getNetwork().getMetabolite(id);
 
             HashMap<String, ArrayList<String>> Data = dataMap.get(id);
 

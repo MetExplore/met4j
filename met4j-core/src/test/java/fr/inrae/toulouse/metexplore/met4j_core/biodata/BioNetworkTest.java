@@ -1893,7 +1893,7 @@ public class BioNetworkTest {
         assertEquals("Bad number of pathways with these genes", 1, pathways.size());
 
         assertTrue("Bad pathway with these genes",
-                pathways.contains(network.getPathwaysView().get("pathway1")));
+                pathways.contains(network.getPathway("pathway1")));
 
         pathways = network.getPathwaysFromGenes(genes, true);
 
@@ -1989,7 +1989,7 @@ public class BioNetworkTest {
         BioReaction r3 = new BioReaction("r3");
         network.add(r3);
 
-        BioPathway pathway1 = network.getPathwaysView().get("pathway1");
+        BioPathway pathway1 = network.getPathway("pathway1");
 
         network.affectToPathway(pathway1, r2);
 

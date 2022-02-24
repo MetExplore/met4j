@@ -250,7 +250,7 @@ public abstract class AbstractSetAttributesFromFile {
                         // +metaboliteId;
                         // }
 
-                        if (this.bn.getMetabolitesView().containsId(metaboliteId)) {
+                        if (this.bn.containsMetabolite(metaboliteId)) {
                             this.getIdAttributeMap().put(metaboliteId, attribute);
                             presence = true;
                         }

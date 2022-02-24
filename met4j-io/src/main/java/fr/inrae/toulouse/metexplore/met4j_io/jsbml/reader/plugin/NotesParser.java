@@ -280,7 +280,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
             if (!tmpAssos.isEmpty()) {
                 GeneSet x = new GeneSet();
 
-                BioGene g = network.getGenesView().get(tmpAssos);
+                BioGene g = network.getGene(tmpAssos);
                 if (g == null) {
                     g = new BioGene(tmpAssos);
                     network.add(g);
@@ -429,8 +429,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
                     if (!isVoid(value)) {
 
-                        if (this.getNetwork().getPathwaysView().containsId(value)) {
-                            this.getNetwork().affectToPathway(this.getNetwork().getPathwaysView().get(value), reaction
+                        if (this.getNetwork().containsPathway(value)) {
+                            this.getNetwork().affectToPathway(this.getNetwork().getPathway(value), reaction
                             );
                         } else {
                             BioPathway bionetPath = new BioPathway(value, value);

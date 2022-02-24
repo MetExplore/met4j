@@ -165,7 +165,7 @@ public class NotesParserTest {
 
 		assertEquals(2, network.getPathwaysView().size());
 
-		BioPathway p1 = network.getPathwaysView().get("Pathway1");
+		BioPathway p1 = network.getPathway("Pathway1");
 
 		assertNotNull(p1);
 

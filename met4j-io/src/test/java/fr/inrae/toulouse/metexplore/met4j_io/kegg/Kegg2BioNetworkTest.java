@@ -143,19 +143,19 @@ public class Kegg2BioNetworkTest {
         app.getPathwayComponents(pathway);
 
         assertEquals(20, app.getNetwork().getReactionsView().size());
-        assertTrue(app.getNetwork().getReactionsView().containsId("R03270"));
+        assertTrue(app.getNetwork().containsReaction("R03270"));
 
         assertEquals(20, app.getNetwork().getMetabolitesView().size());
-        assertTrue(app.getNetwork().getMetabolitesView().containsId("C00122"));
+        assertTrue(app.getNetwork().containsMetabolite("C00122"));
 
         assertEquals(29, app.getNetwork().getGenesView().size());
-        assertTrue(app.getNetwork().getGenesView().containsId("bpa_BPP3216"));
+        assertTrue(app.getNetwork().containsGene("bpa_BPP3216"));
 
         assertEquals(1, app.getNetwork().getPathwaysView().size());
-        assertTrue(app.getNetwork().getPathwaysView().containsId("fakePathway"));
+        assertTrue(app.getNetwork().containsPathway("fakePathway"));
 
         // C15972 + C05125 --> C00068 + C16255
-        BioReaction R03270 = app.getNetwork().getReactionsView().get("R03270");
+        BioReaction R03270 = app.getNetwork().getReaction("R03270");
         Set<String> leftIds = new HashSet<>();
         Set<String> rightIds = new HashSet<>();
 
@@ -170,8 +170,8 @@ public class Kegg2BioNetworkTest {
 
         assertFalse(R03270.isReversible());
 
-        assertTrue(app.getNetwork().getReactionsView().containsId("R07618"));
-        BioReaction R07618 = app.getNetwork().getReactionsView().get("R07618");
+        assertTrue(app.getNetwork().containsReaction("R07618"));
+        BioReaction R07618 = app.getNetwork().getReaction("R07618");
 
         Set<String> geneIds = new HashSet<>();
         geneIds.add("bpa_BPP1464");
@@ -392,9 +392,9 @@ public class Kegg2BioNetworkTest {
 
         assertEquals(2, app.getNetwork().getReactionsView().size());
 
-        assertTrue(app.getNetwork().getReactionsView().containsId("R00109"));
+        assertTrue(app.getNetwork().containsReaction("R00109"));
 
-        BioReaction R00109 = app.getNetwork().getReactionsView().get("R00109");
+        BioReaction R00109 = app.getNetwork().getReaction("R00109");
 
         assertTrue(R00109.getLeftsView().containsId("C02683"));
 
@@ -451,7 +451,7 @@ public class Kegg2BioNetworkTest {
 
         app.getCompoundData(metabolites);
 
-        BioMetabolite C00005 = app.getNetwork().getMetabolitesView().get("C00005");
+        BioMetabolite C00005 = app.getNetwork().getMetabolite("C00005");
 
         assertEquals("NADPH", C00005.getName());
 
@@ -459,7 +459,7 @@ public class Kegg2BioNetworkTest {
 
         assertEquals(745.4209, C00005.getMolecularWeight(), 0.0);
 
-        BioMetabolite C02683 = app.getNetwork().getMetabolitesView().get("C02683");
+        BioMetabolite C02683 = app.getNetwork().getMetabolite("C02683");
 
         assertEquals(3.0, C02683.getMolecularWeight(), 0.0);
 

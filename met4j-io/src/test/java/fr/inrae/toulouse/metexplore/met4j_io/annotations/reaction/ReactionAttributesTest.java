@@ -494,7 +494,7 @@ public class ReactionAttributesTest {
         ReactionAttributes.setSideCompounds(r, ids);
 
         BioCollection<BioMetabolite> refs = new BioCollection<>();
-        refs.add(network.getMetabolitesView().get("a"), network.getMetabolitesView().get("b"));
+        refs.add(network.getMetabolite("a"), network.getMetabolite("b"));
 
         BioCollection<BioMetabolite> tests = (BioCollection<BioMetabolite>) r.getAttribute(ReactionAttributes.SIDE_COMPOUNDS);
 
@@ -519,7 +519,7 @@ public class ReactionAttributesTest {
 
         BioNetwork network = miniNetwork();
         BioCollection<BioMetabolite> sideCompounds = new BioCollection<>();
-        sideCompounds.add(network.getMetabolitesView().get("a"), network.getMetabolitesView().get("b"));
+        sideCompounds.add(network.getMetabolite("a"), network.getMetabolite("b"));
         r.setAttribute(ReactionAttributes.SIDE_COMPOUNDS, sideCompounds);
 
         assertEquals(sideCompounds, ReactionAttributes.getSideCompounds(r));

@@ -108,19 +108,19 @@ public class SetNamesFromFile extends AbstractSetAttributesFromFile {
             String name = this.getIdAttributeMap().get(id);
 
             if(this.entityType.equals(EntityType.METABOLITE)) {
-                object = this.bn.getMetabolitesView().get(id);
+                object = this.bn.getMetabolite(id);
             }
             else if(this.entityType.equals(EntityType.GENE)) {
-                object = this.bn.getGenesView().get(id);
+                object = this.bn.getGene(id);
             }
             else if(this.entityType.equals(EntityType.PROTEIN)) {
-                object = this.bn.getProteinsView().get(id);
+                object = this.bn.getProtein(id);
             }
             else if(this.entityType.equals(EntityType.PATHWAY)) {
-                object = this.bn.getPathwaysView().get(id);
+                object = this.bn.getPathway(id);
             }
             else {
-                object = this.bn.getReactionsView().get(id);
+                object = this.bn.getReaction(id);
             }
 
             object.setName(name);

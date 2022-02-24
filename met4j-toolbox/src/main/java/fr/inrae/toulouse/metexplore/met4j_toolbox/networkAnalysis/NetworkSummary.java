@@ -86,7 +86,7 @@ public class NetworkSummary extends AbstractMet4jApplication {
             String line;
             while ((line = fr.readLine()) != null) {
                 String sId = line.trim().split("\t")[0];
-                BioMetabolite s = network.getMetabolitesView().get(sId);
+                BioMetabolite s = network.getMetabolite(sId);
                 if(s!=null){
                     sideCpds.add(s);
                 }else{

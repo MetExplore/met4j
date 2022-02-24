@@ -189,7 +189,7 @@ public class JsbmlToBioNetwork {
                 compartName = compartId;
             }
 
-            BioCompartment bionetCompart = this.getNetwork().getCompartmentsView().get(compartId);
+            BioCompartment bionetCompart = this.getNetwork().getCompartment(compartId);
             if (bionetCompart == null) {
                 bionetCompart = new BioCompartment(compartId, compartName);
                 this.getNetwork().add(bionetCompart);
@@ -484,8 +484,8 @@ public class JsbmlToBioNetwork {
                     specieName = specieName.replaceFirst("_.$", "");
 
                     BioGene gene;
-                    if(this.getNetwork().getGenesView().containsId(specieId)) {
-                        gene = this.getNetwork().getGenesView().get(specieId);
+                    if(this.getNetwork().containsGene(specieId)) {
+                        gene = this.getNetwork().getGene(specieId);
                     }
                     else {
                         gene = new BioGene(specieId, specieName);
@@ -507,8 +507,8 @@ public class JsbmlToBioNetwork {
                     specieName = specieName.replaceFirst("_.$", "");
 
                     BioEnzyme enz;
-                    if (this.getNetwork().getEnzymesView().containsId(specieId)) {
-                        enz = this.getNetwork().getEnzymesView().get(specieId);
+                    if (this.getNetwork().containsEnzyme(specieId)) {
+                        enz = this.getNetwork().getEnzyme(specieId);
                     } else {
                         enz = new BioEnzyme(specieId, specieName);
                         this.getNetwork().add(enz);
@@ -567,7 +567,7 @@ public class JsbmlToBioNetwork {
                 this.getNetwork().add(bionetSpecies);
 
                 this.getNetwork().affectToCompartment(
-                        this.getNetwork().getCompartmentsView().get(specie.getCompartment()), bionetSpecies);
+                        this.getNetwork().getCompartment(specie.getCompartment()), bionetSpecies);
             }
         }
 
@@ -608,15 +608,15 @@ public class JsbmlToBioNetwork {
 
 
         if (stoDbl != 0) {
-            BioMetabolite bionetSpecies = this.getNetwork().getMetabolitesView().get(specieId);
+            BioMetabolite bionetSpecies = this.getNetwork().getMetabolite(specieId);
 
             if (side.equals("left")) {
                 this.network.affectLeft(reaction, stoDbl,
-                        this.getNetwork().getCompartmentsView().get(specie.getCompartment()),
+                        this.getNetwork().getCompartment(specie.getCompartment()),
                         bionetSpecies);
             } else {
                 this.network.affectRight(reaction, stoDbl,
-                        this.getNetwork().getCompartmentsView().get(specie.getCompartment()),
+                        this.getNetwork().getCompartment(specie.getCompartment()),
                         bionetSpecies);
             }
         }

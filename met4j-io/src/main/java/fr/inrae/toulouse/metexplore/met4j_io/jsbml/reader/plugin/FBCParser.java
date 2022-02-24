@@ -221,7 +221,7 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 
 		for (Reaction rxn : this.getFbcModel().getParent().getListOfReactions()) {
 
-			BioReaction reaction = this.flxNet.getUnderlyingBionet().getReactionsView().get(rxn.getId());
+			BioReaction reaction = this.flxNet.getUnderlyingBionet().getReaction(rxn.getId());
 
 			FBCReactionPlugin rxnPlugin = (FBCReactionPlugin) rxn.getPlugin("fbc");
 			FluxReaction flxReaction = new FluxReaction(reaction);
@@ -308,7 +308,7 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 
 				GA.setId(geneRef.getId());
 
-				BioGene g = this.flxNet.getUnderlyingBionet().getGenesView().get(geneRef.getGeneProduct());
+				BioGene g = this.flxNet.getUnderlyingBionet().getGene(geneRef.getGeneProduct());
 
 				if(g== null) {
 					throw new Met4jSbmlReaderException("Gene "+geneRef.getGeneProduct() + " not present in the list of genes");
@@ -338,7 +338,7 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 
 			BioNetwork net = this.flxNet.getUnderlyingBionet();
 
-			BioMetabolite metabolite = net.getMetabolitesView().get(specie.getId());
+			BioMetabolite metabolite = net.getMetabolite(specie.getId());
 
 			if (speciePlugin.isSetCharge())
 				metabolite.setCharge(speciePlugin.getCharge());
@@ -377,8 +377,7 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 				
 				String id, name;
 				
-				BioReaction r = this.flxNet.getUnderlyingBionet().getReactionsView()
-						.get(fbcFluxObj.getReaction());
+				BioReaction r = this.flxNet.getUnderlyingBionet().getReaction(fbcFluxObj.getReaction());
 
 				if(r != null) {
 

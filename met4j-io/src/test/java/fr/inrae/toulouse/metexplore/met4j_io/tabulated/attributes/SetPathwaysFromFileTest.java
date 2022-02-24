@@ -87,9 +87,9 @@ public class SetPathwaysFromFileTest {
         setPathwaysFromFile.setAttributes();
 
         assertEquals(1, network.getPathwaysView().size());
-        assertTrue(network.getPathwaysView().containsId("p1"));
+        assertTrue(network.containsPathway("p1"));
 
-        BioPathway p = network.getPathwaysView().get("p1");
+        BioPathway p = network.getPathway("p1");
 
         assertEquals(1, network.getReactionsFromPathways(p).size());
         assertTrue(network.getReactionsFromPathways(p).containsId("r"));
@@ -104,12 +104,12 @@ public class SetPathwaysFromFileTest {
 
         assertEquals(2, network.getPathwaysView().size());
 
-        assertTrue(network.getPathwaysView().containsId("p1"));
-        assertTrue(network.getPathwaysView().containsId("p2"));
+        assertTrue(network.containsPathway("p1"));
+        assertTrue(network.containsPathway("p2"));
 
         assertEquals(2, network.getReactionsFromPathways(p).size());
 
-        BioPathway p2 = network.getPathwaysView().get("p2");
+        BioPathway p2 = network.getPathway("p2");
 
         assertEquals(1, network.getReactionsFromPathways(p2).size());
 

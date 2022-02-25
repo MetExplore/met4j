@@ -38,10 +38,14 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc;
 
 import static org.junit.Assert.*;
 
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.GeneSetException;
 import org.junit.Before;
 import org.junit.Test;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class GeneAssociationTest {
 
@@ -61,35 +65,45 @@ public class GeneAssociationTest {
 	}
 
 	@Test
-	public void testToString() {
+	public void testToString() throws GeneSetException {
 
 		GeneSet set1 = new GeneSet();
-		set1.add(g1);
-
+		set1.add(g1.getId());
 		a.add(set1);
 
 		assertEquals("g1", a.toString());
 
-		set1.add(g2);
+		a.remove(set1);
+		set1.addedInGeneAssociation = false;
+		set1.add(g2.getId());
+
+		a.add(set1);
+
 
 		assertEquals("g1 AND g2", a.toString());
 
 		GeneSet set2 = new GeneSet();
-		set2.add(g3);
+		set2.add(g3.getId());
 
 		a.add(set2);
 
 		assertEquals("( g1 AND g2 ) OR g3", a.toString());
 
-		set2.add(g4);
+		a.remove(set2);
+
+		set2.addedInGeneAssociation = false;
+
+		set2.add(g4.getId());
+
+		a.add(set2);
 
 		assertEquals("( g1 AND g2 ) OR ( g3 AND g4 )", a.toString());
 
 		BioGene g1Bis = new BioGene("g1");
 		BioGene g2Bis = new BioGene("g2");
 		GeneSet set1Bis = new GeneSet();
-		set1Bis.add(g1Bis);
-		set1Bis.add(g2Bis);
+		set1Bis.add(g1Bis.getId());
+		set1Bis.add(g2Bis.getId());
 
 		assertEquals(set1Bis.hashCode(), set1.hashCode());
 		assertEquals(set1Bis, set1);
@@ -101,88 +115,92 @@ public class GeneAssociationTest {
 	}
 
 	@Test
-	public void testContains() {
+	public void testContains() throws GeneSetException {
 
 		GeneSet set1 = new GeneSet();
-		set1.add(g1);
+		set1.add(g1.getId());
+		set1.add(g2.getId());
 
 		a.add(set1);
-
-		assertTrue(a.contains(set1));
-
-		assertEquals("g1", a.toString());
-
-		set1.add(g2);
 
 		assertTrue(a.contains(set1));
 
 	}
 
 	@Test
-	public void testRemove() {
+	public void testRemove() throws GeneSetException {
 
 		GeneSet set1 = new GeneSet();
 		
 		assertFalse(a.remove(set1));
 		
-		set1.add(g1);
+		set1.add(g1.getId());
+		set1.add(g2.getId());
 
 		a.add(set1);
 
 		assertTrue(a.contains(set1));
 
-		assertEquals("g1", a.toString());
-
-		set1.add(g2);
-
 		a.remove(set1);
 		
 		assertTrue(!a.contains(set1));
-
-		a.add(set1);
-		set1.remove(g2);
-
-		GeneSet set1bis = new GeneSet();
-		set1bis.add(g1);
-
-		a.remove(set1bis);
 
 		assertEquals(0, a.size());
 
 	}
 
+	@Test (expected = GeneSetException.class)
+	public void testAddTransformGeneSetInGeneAssociation() throws GeneSetException {
+		GeneSet set1 = new GeneSet();
+		set1.add(g1.getId());
+		a.add(set1);
+		set1.add(g2.getId());
+	}
+
 	@Test
-	public void testAdd() {
+	public void testAdd() throws GeneSetException {
 
 		GeneSet set1 = new GeneSet();
-		set1.add(g1);
+		set1.add(g1.getId());
+		set1.add(g2.getId());
 		a.add(set1);
-		set1.add(g2);
 
 		GeneSet set1bis = new GeneSet();
-		set1bis.add(g1);
-		set1bis.add(g2);
+		set1bis.add(g1.getId());
+		set1bis.add(g2.getId());
 
 		a.add(set1bis);
+		System.err.println("set1 :  "+set1);
+		System.err.println("set1Bis :  "+set1bis);
+		assertEquals(set1, set1bis);
+		System.err.println("Gene sets "+a.geneSets);
+		System.err.println("hashcode set 1"+set1.hashCode());
+		System.err.println("hashcode set 2"+set1bis.hashCode());
+
+		Set<GeneSet> set = new HashSet<>();
+		set.add(set1);
+		set.add(set1bis);
+		System.err.println("Set : "+set);
 
 		assertEquals(1, a.size());
 
 	}
 
 	@Test
-	public void testAddAll() {
+	public void testAddAll() throws GeneSetException {
 
 		GeneAssociation a2 = new GeneAssociation();
 
 		GeneSet set1 = new GeneSet();
-		set1.add(g1);
+		set1.add(g1.getId());
+		set1.add(g2.getId());
+		set1.add(g3.getId());
+
 		a.add(set1);
-		set1.add(g2);
 
 		GeneSet set2 = new GeneSet();
-		set2.add(g2);
+		set2.add(g2.getId());
 		a2.add(set2);
-		set1.add(g3);
 
 		a.addAll(a2);
 
@@ -197,18 +215,19 @@ public class GeneAssociationTest {
 	}
 
 	@Test
-	public void testRemoveAll() {
+	public void testRemoveAll() throws GeneSetException {
 
 		GeneAssociation a2 = new GeneAssociation();
 
 		GeneSet set1 = new GeneSet();
-		set1.add(g1);
+		set1.add(g1.getId());
+		set1.add(g3.getId());
+		set1.add(g2.getId());
+
 		a.add(set1);
-		set1.add(g2);
 
 		GeneSet set2 = new GeneSet();
-		set2.add(g2);
-		set1.add(g3);
+		set2.add(g2.getId());
 
 		a.add(set2);
 		a2.add(set1);
@@ -222,18 +241,19 @@ public class GeneAssociationTest {
 	}
 	
 	@Test
-	public void testRetainAll() {
+	public void testRetainAll() throws GeneSetException {
 		
 		GeneAssociation a2 = new GeneAssociation();
 
 		GeneSet set1 = new GeneSet();
-		set1.add(g1);
+		set1.add(g1.getId());
+		set1.add(g2.getId());
+		set1.add(g3.getId());
+
 		a.add(set1);
-		set1.add(g2);
 
 		GeneSet set2 = new GeneSet();
-		set2.add(g2);
-		set1.add(g3);
+		set2.add(g2.getId());
 
 		a.add(set2);
 		a2.add(set1);
@@ -247,17 +267,17 @@ public class GeneAssociationTest {
 	}
 	
 	@Test
-	public void testContainsAll() {
+	public void testContainsAll() throws GeneSetException {
 		
 		GeneAssociation a2 = new GeneAssociation();
 
 		GeneSet set1 = new GeneSet();
-		set1.add(g1);
-		set1.add(g2);
+		set1.add(g1.getId());
+		set1.add(g2.getId());
 
 		GeneSet set2 = new GeneSet();
-		set2.add(g2);
-		set1.add(g3);
+		set2.add(g2.getId());
+		set1.add(g3.getId());
 
 		a.add(set2);
 		a2.add(set1);

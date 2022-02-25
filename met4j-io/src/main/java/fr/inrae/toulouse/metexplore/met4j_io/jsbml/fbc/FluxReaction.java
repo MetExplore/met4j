@@ -55,52 +55,50 @@ import java.util.stream.Collectors;
  * associations
  *
  * @author Benjamin
- * @since 3.0
  * @version $Id: $Id
+ * @since 3.0
  */
 public class FluxReaction extends BioEntity {
 
-	/**
-	 * The actual {@link BioReaction} that is behind this
-	 * {@link FluxReaction}
-	 */
-	private BioReaction underlyingReaction;
-	/**
-	 * The object holding the Gene Association
-	 * 
-	 * @see GeneAssociation
-	 */
-	private GeneAssociation reactionGeneAssociation;
+    /**
+     * The actual {@link BioReaction} that is behind this
+     * {@link FluxReaction}
+     */
+    private BioReaction underlyingReaction;
+    /**
+     * The object holding the Gene Association
+     *
+     * @see GeneAssociation
+     */
+    private GeneAssociation reactionGeneAssociation;
 
-	/**
-	 * Constructor using a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-	 *
-	 * @param reaction
-	 *            the {@link #underlyingReaction}
-	 */
-	public FluxReaction(BioReaction reaction) {
-		super(reaction.getId());
-		this.underlyingReaction = reaction;
-	}
+    /**
+     * Constructor using a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     *
+     * @param reaction the {@link #underlyingReaction}
+     */
+    public FluxReaction(BioReaction reaction) {
+        super(reaction.getId());
+        this.underlyingReaction = reaction;
+    }
 
-	/**
-	 * Convert the reaction's {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} to a set of
-	 * enzymes and add them to the {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} given in
-	 * parameter.It also add them to the reaction as enzymes
-	 *
-	 * @param bn
-	 *            The {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} where the enzymes will be
-	 *            added
-	 */
-	public void convertGeneAssociationstoComplexes(BioNetwork bn) {
+    /**
+     * Convert the reaction's {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} to a set of
+     * enzymes and add them to the {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} given in
+     * parameter.It also add them to the reaction as enzymes
+     *
+     * @param bn The {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} where the enzymes will be
+     *           added
+     */
+    public void convertGeneAssociationstoComplexes(BioNetwork bn) {
 
-		BioReaction rxn = this.getUnderlyingReaction();
-		
-		if(! bn.contains(rxn)) {
-			throw new IllegalArgumentException(rxn+" not present in the network");
-		}
-		
-		// BioNetwork bn=net.getUnderlyingBionet();
+        BioReaction rxn = this.getUnderlyingReaction();
+
+        if (!bn.contains(rxn)) {
+            throw new IllegalArgumentException(rxn + " not present in the network");
+        }
+
+        // BioNetwork bn=net.getUnderlyingBionet();
 
 //		BioCompartment defaultCmp;
 //		if ((defaultCmp = bn.findbioCompartmentInList("fake_compartment")) == null) {
@@ -109,108 +107,85 @@ public class FluxReaction extends BioEntity {
 //			bn.addCompartment(defaultCmp);
 //		}
 
-		for (GeneSet sga : this.getReactionGeneAssociation()) {
-			BioCollection<BioProtein> protlist = new BioCollection<BioProtein>();
+        for (GeneSet sga : this.getReactionGeneAssociation()) {
 
-			// for each gene get the corresponding protein from the network or
-			// create it if it doesn't exists
-			for (BioGene gene : sga) {
-				
-				if(! bn.contains(gene))
-				{
-					bn.add(gene);
-				}
-				
-				BioProtein prot;
+            String enzymeId;
+            if (sga.size() == 1) {
+                enzymeId = sga.iterator().next();
+            } else {
+                enzymeId = sga.stream().sorted().collect(Collectors.joining("_AND_"));
+            }
 
-				if (bn.containsProtein(gene.getId())) {
-					prot = bn.getProtein(gene.getId());
-				} else {
-					prot = new BioProtein(gene.getId(), gene.getName());
-					bn.add(prot);
-				}
-				
-				bn.affectGeneProduct(prot, gene);
+            affectEnzyme(bn, rxn, sga, enzymeId);
 
-				protlist.add(prot);
-			}
+        }
 
-			if (protlist.size() == 1) {
-				
-				BioProtein prot = protlist.iterator().next();
+    }
 
-				BioEnzyme enz = bn.getEnzyme(prot.getId());
-				if(enz == null)
-				{
-					enz = new BioEnzyme(prot.getId(), prot.getName());
-					bn.add(enz);
-				}
+    private void affectEnzyme(BioNetwork bn, BioReaction rxn, GeneSet sga, String enzymeId) {
+        BioEnzyme enz = bn.getEnzyme(enzymeId);
 
-				bn.affectSubUnit(enz, 1.0, prot);
-				
-				bn.affectEnzyme(rxn, enz);
+        if (enz == null) {
+            enz = new BioEnzyme(enzymeId, enzymeId);
+            bn.add(enz);
+        }
 
-			} else {
-				
-				String id = createIdFromProteins(protlist);
+        for (String geneId : sga.getGeneIds()) {
+            BioGene gene = bn.getGene(geneId);
+            if (gene == null) {
+                gene = new BioGene(geneId);
+                BioProtein prot = new BioProtein(geneId);
+                bn.add(gene, prot);
+            }
 
-				BioEnzyme enz = bn.getEnzyme(id);
+            BioProtein prot = bn.getProtein(geneId);
+            if (prot == null) {
+                prot = new BioProtein(geneId);
+                bn.add(prot);
+            }
+            bn.affectGeneProduct(prot, gene);
+            bn.affectSubUnit(enz, 1.0, prot);
 
-				if(enz == null) {
-					enz = new BioEnzyme(id, id);
-					bn.add(enz);
-				}
-				
-				for(BioProtein prot : protlist)
-				{
-					bn.affectSubUnit(enz, 1.0, prot);
-				}
-				
-				bn.affectEnzyme(rxn, enz);
+        }
 
-			}
+        bn.affectEnzyme(rxn, enz);
+    }
 
-		}
+    /**
+     * <p>createIdFromProteins.</p>
+     *
+     * @param proteins a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} object.
+     * @return a {@link java.lang.String} object.
+     */
+    public static String createIdFromProteins(BioCollection<BioProtein> proteins) {
+        return proteins.getIds().stream().sorted().collect(Collectors.joining("_AND_"));
+    }
 
-	}
+    /**
+     * Get the {@link #underlyingReaction}
+     *
+     * @return the {@link #underlyingReaction}
+     */
+    public BioReaction getUnderlyingReaction() {
+        return underlyingReaction;
+    }
 
-	/**
-	 * <p>createIdFromProteins.</p>
-	 *
-	 * @param proteins a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} object.
-	 * @return a {@link java.lang.String} object.
-	 */
-	public static String createIdFromProteins(BioCollection<BioProtein> proteins)
-	{
-		return proteins.getIds().stream().sorted().collect(Collectors.joining("_AND_"));
-	}
+    /**
+     * Get the {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} of the reaction
+     *
+     * @return {@link #reactionGeneAssociation}
+     */
+    public GeneAssociation getReactionGeneAssociation() {
+        return reactionGeneAssociation;
+    }
 
-	/**
-	 * Get the {@link #underlyingReaction}
-	 *
-	 * @return the {@link #underlyingReaction}
-	 */
-	public BioReaction getUnderlyingReaction() {
-		return underlyingReaction;
-	}
-
-	/**
-	 * Get the {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} of the reaction
-	 *
-	 * @return {@link #reactionGeneAssociation}
-	 */
-	public GeneAssociation getReactionGeneAssociation() {
-		return reactionGeneAssociation;
-	}
-
-	/**
-	 * Set {@link #reactionGeneAssociation} to a new value
-	 *
-	 * @param reactionGAs
-	 *            the new value of {@link #reactionGeneAssociation}
-	 */
-	public void setReactionGeneAssociation(GeneAssociation reactionGAs) {
-		this.reactionGeneAssociation = reactionGAs;
-	}
+    /**
+     * Set {@link #reactionGeneAssociation} to a new value
+     *
+     * @param reactionGAs the new value of {@link #reactionGeneAssociation}
+     */
+    public void setReactionGeneAssociation(GeneAssociation reactionGAs) {
+        this.reactionGeneAssociation = reactionGAs;
+    }
 
 }

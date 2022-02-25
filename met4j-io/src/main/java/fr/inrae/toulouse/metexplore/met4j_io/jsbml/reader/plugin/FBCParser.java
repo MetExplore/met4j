@@ -36,10 +36,13 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.Flux;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.GeneSetException;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageReaderException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.*;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML3Compatible;
@@ -60,10 +63,6 @@ import org.sbml.jsbml.ext.fbc.GeneProductRef;
 import org.sbml.jsbml.ext.fbc.Objective;
 import org.sbml.jsbml.ext.fbc.Or;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -133,7 +132,11 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 
 		this.parseParameters();
 		this.parseListOfGeneProducts();
-		this.parseFluxReactions();
+		try {
+			this.parseFluxReactions();
+		} catch (Exception e) {
+			throw new Met4jSbmlReaderException(e.getMessage());
+		}
 
 		/**
 		 * Same Methods as FBC1 parser.
@@ -204,6 +207,14 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 			gene.setName(geneProd.getLabel());
 
 			this.getFlxNet().getUnderlyingBionet().add(gene);
+
+			BioProtein protein = new BioProtein(geneId, geneName);
+
+			this.getFlxNet().getUnderlyingBionet().add(protein);
+
+			this.getFlxNet().getUnderlyingBionet().affectGeneProduct(protein, gene);
+
+
 		}
 	}
 
@@ -217,7 +228,7 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 	 * <li>fbc:GeneProductAssociation
 	 * </ul>
 	 */
-	private void parseFluxReactions() throws Met4jSbmlReaderException {
+	private void parseFluxReactions() throws Exception {
 
 		for (Reaction rxn : this.getFbcModel().getParent().getListOfReactions()) {
 
@@ -259,7 +270,7 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 	 *            the current Association block
 	 * @return an ArrayList of {@link GeneSet}
 	 */
-	private GeneAssociation computeGeneAssocations(Association block) throws Met4jSbmlReaderException {
+	private GeneAssociation computeGeneAssocations(Association block) throws GeneSetException, Met4jSbmlReaderException {
 
 		GeneAssociation geneAssociation = new GeneAssociation();
 
@@ -304,9 +315,9 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 				// The association is composed of a GeneProductRef.
 
 				GeneProductRef geneRef = (GeneProductRef) block;
-				GeneSet GA = new GeneSet();
+				GeneSet geneSet = new GeneSet();
 
-				GA.setId(geneRef.getId());
+				geneSet.setId(geneRef.getId());
 
 				BioGene g = this.flxNet.getUnderlyingBionet().getGene(geneRef.getGeneProduct());
 
@@ -314,9 +325,9 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 					throw new Met4jSbmlReaderException("Gene "+geneRef.getGeneProduct() + " not present in the list of genes");
 				}
 
-				GA.add(g);
+				geneSet.add(g.getId());
 
-				geneAssociation.add(GA);
+				geneAssociation.add(geneSet);
 			}
 		}
 

@@ -45,6 +45,7 @@ import fr.inrae.toulouse.metexplore.met4j_io.annotations.network.NetworkAttribut
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.GeneSetException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.MalformedGeneAssociationStringException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.FluxReaction;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation;
@@ -221,7 +222,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
      * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.MalformedGeneAssociationStringException if any.
      */
     public static GeneAssociation computeGeneAssociation(String assosString, BioNetwork network)
-            throws MalformedGeneAssociationStringException {
+            throws GeneSetException, MalformedGeneAssociationStringException {
 
         GeneAssociation geneAssociation = new GeneAssociation();
 
@@ -285,7 +286,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
                     g = new BioGene(tmpAssos);
                     network.add(g);
                 }
-                x.add(g);
+                x.add(g.getId());
                 geneAssociation.add(x);
             } else {
                 for (String s : subAssos) {
@@ -530,7 +531,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
                     && (m = Pattern.compile(this.getGPRPattern()).matcher(reactionNotes)).find()) {
                 try {
                     GPR.createGPRfromString(this.network, reaction, m.group(1));
-                } catch (MalformedGeneAssociationStringException e) {
+                } catch (MalformedGeneAssociationStringException | GeneSetException e) {
                     NotesParser.errorsAndWarnings.add(e.getLocalizedMessage());
                 }
 

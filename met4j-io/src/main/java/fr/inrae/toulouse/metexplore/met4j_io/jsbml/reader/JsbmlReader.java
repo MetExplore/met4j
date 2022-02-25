@@ -44,6 +44,7 @@ import java.util.HashMap;
 
 import javax.xml.stream.XMLStreamException;
 
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageReaderException;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLError;
@@ -165,7 +166,7 @@ public class JsbmlReader {
      * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
      * @throws java.io.IOException if any.
      */
-    public static void main(String[] args) throws Met4jSbmlReaderException, IOException {
+    public static void main(String[] args) throws Met4jSbmlReaderException, IOException, JSBMLPackageReaderException {
         // String
         String inputFile = args[0];
 

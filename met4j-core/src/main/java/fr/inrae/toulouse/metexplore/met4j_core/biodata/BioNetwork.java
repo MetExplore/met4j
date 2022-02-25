@@ -1858,7 +1858,7 @@ public class BioNetwork extends BioEntity {
             throw new IllegalArgumentException("Entity " + e + " not present in the network");
         }
 
-        for (BioCompartment c : this.getCompartmentsView()) {
+        for (BioCompartment c : this.compartments) {
             if (c.getComponents().contains(e)) {
                 cpts.add(c);
             }

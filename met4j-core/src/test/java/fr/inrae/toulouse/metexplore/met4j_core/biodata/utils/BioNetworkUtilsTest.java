@@ -269,7 +269,7 @@ public class BioNetworkUtilsTest {
         assertEquals(3, enzyme1.getParticipantsView().size());
         // The gene must be updated
         assertEquals(gene1.getId(), protein1.getGene().getId());
-        assertEquals(2, r1.getLeftReactantsView().size());
+        assertEquals(1, r1.getLeftReactantsView().size());
         assertEquals(2, r1.getEnzymesView().size());
         assertEquals(3, newNetwork.getReactionsFromPathways(pathway1).size());
 

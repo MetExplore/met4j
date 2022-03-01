@@ -119,7 +119,8 @@ public class BioNetworkUtils {
      *                     - add metabolites to a compartment
      *                     - add components to an enzyme
      *                     - add reactions to a pathway
-     *                     - add enzymes or reactants to a reaction
+     *                     - add enzymes to a reaction
+     *                     But, it does not change the reactants of a reaction, ie the formula of the reaction.
      */
     public static void deepCopy(@NonNull BioNetwork networkIn, @NonNull BioNetwork networkOut, Boolean keepGPR, Boolean keepPrevious) {
 
@@ -268,24 +269,24 @@ public class BioNetworkUtils {
                 newReaction.setEcNumber(r.getEcNumber());
 
                 networkOut.add(newReaction);
+
+                // Copy lefts
+                for (BioReactant reactant : r.getLeftReactantsView()) {
+                    BioMetabolite newMetabolite = networkOut.getMetabolite(reactant.getMetabolite().getId());
+                    BioCompartment newCpt = networkOut.getCompartment(reactant.getLocation().getId());
+                    Double sto = reactant.getQuantity();
+                    networkOut.affectLeft(newReaction, sto, newCpt, newMetabolite);
+                }
+
+                // Copy rights
+                for (BioReactant reactant : r.getRightReactantsView()) {
+                    BioMetabolite newMetabolite = networkOut.getMetabolite(reactant.getMetabolite().getId());
+                    BioCompartment newCpt = networkOut.getCompartment(reactant.getLocation().getId());
+                    Double sto = reactant.getQuantity();
+                    networkOut.affectRight(newReaction, sto, newCpt, newMetabolite);
+                }
             } else {
                 newReaction = networkOut.getReaction(r.getId());
-            }
-
-            // Copy lefts
-            for (BioReactant reactant : r.getLeftReactantsView()) {
-                BioMetabolite newMetabolite = networkOut.getMetabolite(reactant.getMetabolite().getId());
-                BioCompartment newCpt = networkOut.getCompartment(reactant.getLocation().getId());
-                Double sto = reactant.getQuantity();
-                networkOut.affectLeft(newReaction, sto, newCpt, newMetabolite);
-            }
-
-            // Copy rights
-            for (BioReactant reactant : r.getRightReactantsView()) {
-                BioMetabolite newMetabolite = networkOut.getMetabolite(reactant.getMetabolite().getId());
-                BioCompartment newCpt = networkOut.getCompartment(reactant.getLocation().getId());
-                Double sto = reactant.getQuantity();
-                networkOut.affectRight(newReaction, sto, newCpt, newMetabolite);
             }
 
             // Copy enzymes

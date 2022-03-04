@@ -416,6 +416,59 @@ public class TestWeightingPolicy {
 
 	}
 
+	/**
+	 * Test the weights Import
+	 */
+	@Test
+	public void testWeightsFromFileImportIII() {
+		Path tmpPath = null;
+		try {
+			tmpPath = Files.createTempFile("test_edgeWeightmport", ".tmp");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			Assert.fail("Creation of the temporary directory");
+		}
+		String filePath = "EdgeWeightTestFileII.tab";
+		try {
+			filePath = TestUtils.copyProjectResource(filePath, tmpPath.toFile());
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("problem while reading edge weight file");
+		}
+
+		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
+		abWeight=0.2;
+		bcWeight=0.4;
+		adWeight=0.6;
+		efWeight=0.8;
+		bxWeight=1.0;
+		ebWeight=1.2;
+		deWeight=1.4;
+		fcWeight=1.6;
+		ycWeight=1.8;
+
+		WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph> wp =
+				new WeightsFromFile<BioMetabolite,ReactionEdge,CompoundGraph>(filePath)
+						.sep(",")
+						.sourceCol(0)
+						.targetCol(1)
+						.edgeLabelCol(2)
+						.weightCol(4)
+						.processWeigthCol(s -> {return Double.parseDouble(s)*2;});
+		wp.setWeight(g);
+
+		assertEquals("wrong weight after import", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", adWeight, g.getEdgeWeight(ad),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", bcWeight, g.getEdgeWeight(bc),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", bxWeight, g.getEdgeWeight(bx),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", deWeight, g.getEdgeWeight(de),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", ebWeight, g.getEdgeWeight(eb),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", efWeight, g.getEdgeWeight(ef),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", fcWeight, g.getEdgeWeight(fc),Double.MIN_VALUE);
+		assertEquals("wrong weight after import", ycWeight, g.getEdgeWeight(yc),Double.MIN_VALUE);
+
+	}
+
 	@Test
 	public void testAtomMappingWeightPolicyI() {
 

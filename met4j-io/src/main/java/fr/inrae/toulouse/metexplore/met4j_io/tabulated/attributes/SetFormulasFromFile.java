@@ -108,7 +108,7 @@ public class SetFormulasFromFile extends AbstractSetAttributesFromFile {
 
             String formula = this.getIdAttributeMap().get(id);
 
-            this.bn.getMetabolitesView().get(id).setChemicalFormula(formula);
+            this.bn.getMetabolite(id).setChemicalFormula(formula);
 
         }
 

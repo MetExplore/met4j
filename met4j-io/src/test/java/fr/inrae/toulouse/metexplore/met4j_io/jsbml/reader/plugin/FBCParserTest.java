@@ -293,8 +293,6 @@ public class FBCParserTest {
 		assertEquals("", ga3);
 
 		SBMLWriter s = new SBMLWriter();
-		System.err.println(s.writeSBMLToString(doc));
-
 	}
 
 	@Test
@@ -358,8 +356,6 @@ public class FBCParserTest {
 		sObj3.setCoefficient(1.5);
 		
 		SBMLWriter s = new SBMLWriter();
-		System.err.println(s.writeSBMLToString(doc));
-
 		parser.parseModel(model, network);
 
 		assertEquals(2, parser.getFlxNet().getListOfObjectives().size());

@@ -123,7 +123,7 @@ public class SetEcsFromFile extends AbstractSetAttributesFromFile {
             String ec = this.getIdAttributeMap().get(id);
 
             if(! ec.isEmpty()) {
-                this.bn.getReactionsView().get(id).setEcNumber(ec);
+                this.bn.getReaction(id).setEcNumber(ec);
             }
 
         }

@@ -38,6 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin;
 
 import java.util.ArrayList;
 
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageReaderException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import org.sbml.jsbml.Model;
 

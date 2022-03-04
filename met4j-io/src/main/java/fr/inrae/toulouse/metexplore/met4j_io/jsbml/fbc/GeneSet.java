@@ -36,94 +36,124 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.GeneSetException;
 
 /**
  * This class represents a unique "AND" gene association
- * 
+ * <p>
  * it is composed of a set of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene} that all need to be active for
  * this association to be active
  *
  * @author Benjamin mainly modified by LC
- * @since 3.0
  * @version $Id: $Id
+ * @since 3.0
  */
-public class GeneSet extends HashSet<BioGene> {
+public class GeneSet {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private String id;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    private String id;
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * This method outputs the PAlson's representation of an "AND" gene
-	 * association
-	 */
-	@Override
-	public String toString() {
-
-		return this.stream().map(x -> x.getId()).sorted().collect(Collectors.joining(" AND "));
-
-	}
-
-	/**
-	 * <p>Getter for the field <code>id</code>.</p>
-	 *
-	 * @return a {@link java.lang.String} object.
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * <p>Setter for the field <code>id</code>.</p>
-	 *
-	 * @param id a {@link java.lang.String} object.
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public int hashCode() {
-
-		String str = toString();
-
-		final int prime = 31;
-		
-		// TODO : not very satisfying since we use a mutable property...
-		int result = prime * ((str == null) ? 0 : str.hashCode());
-		return result;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean equals(Object obj) {
-
-		String str = this.toString();
-
-		if (this == obj)
-			return true;
-		
-		if (getClass() != obj.getClass())
-			return false;
-		GeneSet other = (GeneSet) obj;
-		if (str == null) {
-			if (other.toString() != null)
-				return false;
-		} else if (!str.equals(other.toString()))
-			return false;
-
-		return true;
-	}
+    private Set<String> geneIds;
 
 
+    /**
+     * This is to prevent the hashcode modification
+     */
+    public Boolean addedInGeneAssociation = false;
+
+
+    public GeneSet() {
+        geneIds = new HashSet<>();
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method outputs the PAlson's representation of an "AND" gene
+     * association
+     */
+    @Override
+    public String toString() {
+        return this.geneIds.stream().sorted().collect(Collectors.joining(" AND "));
+    }
+
+    /**
+     * <p>Getter for the field <code>id</code>.</p>
+     *
+     * @return a {@link java.lang.String} object.
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * <p>Setter for the field <code>id</code>.</p>
+     *
+     * @param id a {@link java.lang.String} object.
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
+    public boolean addAll(GeneSet s) throws GeneSetException {
+        if (this.addedInGeneAssociation) {
+            throw new GeneSetException();
+        }
+        return geneIds.addAll(s.geneIds);
+    }
+
+    public boolean add(String c) throws GeneSetException {
+        if (this.addedInGeneAssociation) {
+            throw new GeneSetException();
+        }
+        return geneIds.add(c);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return this.geneIds.stream().sorted().collect(Collectors.joining(" AND ")).hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GeneSet)) return false;
+        GeneSet geneSet = (GeneSet) o;
+        return geneIds.equals(geneSet.geneIds);
+    }
+
+    public int size() {
+        return this.geneIds.size();
+    }
+
+    public Iterator<String> iterator() {
+        return this.geneIds.iterator();
+    }
+
+    public Stream<String> stream() {
+        return this.geneIds.stream();
+    }
+
+    protected Set<String> getGeneIds() {
+        return this.geneIds;
+    }
+
+    public void remove(String geneId) {
+        this.geneIds.remove(geneId);
+    }
 }

@@ -121,7 +121,7 @@ public class SetChargesFromFile extends AbstractSetAttributesFromFile {
 
             if(this.testAttribute(charge)) {
                 Double dbl = Double.parseDouble(charge);
-                this.bn.getMetabolitesView().get(id).setCharge(dbl.intValue());
+                this.bn.getMetabolite(id).setCharge(dbl.intValue());
             }
             else {
                 System.err.println("Warning : the charge + \"" + charge + "\" for the metabolite " + id + " is not an integer");

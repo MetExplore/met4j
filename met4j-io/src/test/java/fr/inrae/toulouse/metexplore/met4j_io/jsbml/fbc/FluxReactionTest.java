@@ -41,7 +41,9 @@ import static org.junit.Assert.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.GeneSetException;
 import org.junit.Test;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene;
@@ -51,18 +53,19 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 public class FluxReactionTest {
 
 	@Test
-	public void testConvertGeneAssociationstoComplexes() {
+	public void testConvertGeneAssociationstoComplexes() throws GeneSetException {
 
 		BioNetwork network = new BioNetwork();
 
 		BioGene g1 = new BioGene("g1");
+		BioProtein p1 = new BioProtein("g1");
 
 		BioReaction r1 = new BioReaction("r1");
 		
-		network.add(r1);
+		network.add(r1, g1, p1);
 		
 		GeneSet set1 = new GeneSet();
-		set1.add(g1);
+		set1.add(g1.getId());
 		
 		GeneAssociation a1 = new GeneAssociation();
 		a1.add(set1);
@@ -74,13 +77,23 @@ public class FluxReactionTest {
 		
 		BioCollection<BioGene> genes = new BioCollection<BioGene>();
 		genes.add(g1);
-		
+
+		assertTrue(network.contains(g1));
 		assertTrue(network.getProteinsView().getIds().contains("g1"));
 		assertTrue(network.getEnzymesView().getIds().contains("g1"));
+		System.err.println(network.getReactionsFromGenes(genes, true));
+		System.err.println("r1 genes "+r1.getEnzymesView());
+		System.err.println("p1 gene "+p1.getGene());
 		assertTrue(network.getReactionsFromGenes(genes, true).contains(r1));
 		
 		BioGene g2 = new BioGene("g2");
-		set1.add(g2);
+		BioProtein p2 = new BioProtein("g2");
+		network.add(g2, p2);
+
+		a1.remove(set1);
+		set1.addedInGeneAssociation = false;
+		set1.add(g2.getId());
+		a1.add(set1);
 		
 		f1.convertGeneAssociationstoComplexes(network);
 		genes.add(g2);
@@ -88,9 +101,6 @@ public class FluxReactionTest {
 		assertTrue(network.getProteinsView().getIds().contains("g2"));
 		assertTrue(network.getEnzymesView().getIds().contains("g1_AND_g2"));
 		assertTrue(network.getReactionsFromGenes(genes, true).contains(r1));
-		
-		
-		
 		
 
 	}

@@ -37,47 +37,52 @@
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.GeneSetException;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class GeneAssociationsTest {
 
-    @Test
-    public void mergeGeneAssociations() {
+    private static GeneSet gs1, gs2, gs3, gs4, gs5, gs6, gsA, gsB, gsC, gsD, gsE, gsF, gsG, gsH, gsI;
+    private static GeneAssociation ga1, ga2, refMerge;
+    private static BioGene G1, G2, G3, G4, G5, G6;
 
-        GeneAssociation ga1 = new GeneAssociation();
-        GeneAssociation ga2 = new GeneAssociation();
+    @Before
+    public void init() throws GeneSetException {
+        ga1 = new GeneAssociation();
+        ga2 = new GeneAssociation();
 
-        BioGene G1 = new BioGene("G1");
-        BioGene G2 = new BioGene("G2");
-        BioGene G3 = new BioGene("G3");
-        BioGene G4 = new BioGene("G4");
-        BioGene G5 = new BioGene("G5");
-        BioGene G6 = new BioGene("G6");
+        G1 = new BioGene("G1");
+        G2 = new BioGene("G2");
+        G3 = new BioGene("G3");
+        G4 = new BioGene("G4");
+        G5 = new BioGene("G5");
+        G6 = new BioGene("G6");
 
-        GeneSet gs1 = new GeneSet();
-        gs1.add(G1);
-        gs1.add(G2);
+        gs1 = new GeneSet();
+        gs1.add(G1.getId());
+        gs1.add(G2.getId());
 
-        GeneSet gs2 = new GeneSet();
-        gs2.add(G3);
-        gs2.add(G4);
+        gs2 = new GeneSet();
+        gs2.add(G3.getId());
+        gs2.add(G4.getId());
 
-        GeneSet gs3 = new GeneSet();
-        gs3.add(G5);
+        gs3 = new GeneSet();
+        gs3.add(G5.getId());
 
-        GeneSet gs4 = new GeneSet();
-        gs4.add(G5);
-        gs4.add(G3);
+        gs4 = new GeneSet();
+        gs4.add(G5.getId());
+        gs4.add(G3.getId());
 
-        GeneSet gs5 = new GeneSet();
-        gs5.add(G6);
-        gs5.add(G2);
+        gs5 = new GeneSet();
+        gs5.add(G6.getId());
+        gs5.add(G2.getId());
 
-        GeneSet gs6 = new GeneSet();
-        gs6.add(G6);
-        gs6.add(G1);
+        gs6 = new GeneSet();
+        gs6.add(G6.getId());
+        gs6.add(G1.getId());
 
         ga1.add(gs1);
         ga1.add(gs2);
@@ -87,42 +92,48 @@ public class GeneAssociationsTest {
         ga2.add(gs5);
         ga2.add(gs6);
 
-        GeneAssociation refMerge = new GeneAssociation();
-        GeneSet gsA = new GeneSet();
+        refMerge = new GeneAssociation();
+        gsA = new GeneSet();
         gsA.addAll(gs1);
         gsA.addAll(gs4);
 
-        GeneSet gsB = new GeneSet();
+        gsB = new GeneSet();
         gsB.addAll(gs1);
         gsB.addAll(gs5);
 
-        GeneSet gsC = new GeneSet();
+        gsC = new GeneSet();
         gsC.addAll(gs1);
         gsC.addAll(gs6);
 
-        GeneSet gsD = new GeneSet();
+        gsD = new GeneSet();
         gsD.addAll(gs2);
         gsD.addAll(gs4);
 
-        GeneSet gsE = new GeneSet();
+        gsE = new GeneSet();
         gsE.addAll(gs2);
         gsE.addAll(gs5);
 
-        GeneSet gsF = new GeneSet();
+        gsF = new GeneSet();
         gsF.addAll(gs2);
         gsF.addAll(gs6);
 
-        GeneSet gsG = new GeneSet();
+        gsG = new GeneSet();
         gsG.addAll(gs3);
         gsG.addAll(gs4);
 
-        GeneSet gsH = new GeneSet();
+        gsH = new GeneSet();
         gsH.addAll(gs3);
         gsH.addAll(gs5);
 
-        GeneSet gsI = new GeneSet();
+        gsI = new GeneSet();
         gsI.addAll(gs3);
         gsI.addAll(gs6);
+    }
+
+
+    @Test
+    public void mergeGeneAssociations() throws GeneSetException {
+
 
         refMerge.add(gsA);
         refMerge.add(gsB);
@@ -137,26 +148,38 @@ public class GeneAssociationsTest {
         GeneAssociation testMerge = GeneAssociations.merge(ga1, ga2);
 
         assertEquals(refMerge, testMerge);
+    }
 
-        // Test 3 geneAssociations
+    @Test
+    public void testMerge3GeneAssociations() throws GeneSetException {
 
         GeneAssociation ga3 = new GeneAssociation();
         GeneSet gs7 = new GeneSet();
-        gs7.add(G2);
+        gs7.add(G2.getId());
 
         ga3.add(gs7);
 
-        gsA.add(G2);
-        gsB.add(G2);
-        gsC.add(G2);
-        gsD.add(G2);
-        gsE.add(G2);
-        gsF.add(G2);
-        gsG.add(G2);
-        gsH.add(G2);
-        gsI.add(G2);
+        gsA.add(G2.getId());
+        gsB.add(G2.getId());
+        gsC.add(G2.getId());
+        gsD.add(G2.getId());
+        gsE.add(G2.getId());
+        gsF.add(G2.getId());
+        gsG.add(G2.getId());
+        gsH.add(G2.getId());
+        gsI.add(G2.getId());
 
-        testMerge = GeneAssociations.merge(ga1, ga2, ga3);
+        refMerge.add(gsA);
+        refMerge.add(gsB);
+        refMerge.add(gsC);
+        refMerge.add(gsD);
+        refMerge.add(gsE);
+        refMerge.add(gsF);
+        refMerge.add(gsG);
+        refMerge.add(gsH);
+        refMerge.add(gsI);
+
+        GeneAssociation testMerge = GeneAssociations.merge(ga1, ga2, ga3);
         assertEquals(refMerge, testMerge);
 
     }

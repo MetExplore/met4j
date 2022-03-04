@@ -184,38 +184,38 @@ public class BioNetworkUtilsTest {
         assertEquals(1, newNetwork.getGenesView().size());
 
         r1.setName("newName");
-        assertNotEquals(r1.getName(), newNetwork.getReactionsView().get("R1").getName());
+        assertNotEquals(r1.getName(), newNetwork.getReaction("R1").getName());
 
         m1.setName("newName");
-        assertNotEquals(m1.getName(), newNetwork.getMetabolitesView().get("M1").getName());
+        assertNotEquals(m1.getName(), newNetwork.getMetabolite("M1").getName());
 
         c1.setName("newName");
-        assertNotEquals(c1.getName(), newNetwork.getCompartmentsView().get("c1").getName());
+        assertNotEquals(c1.getName(), newNetwork.getCompartment("c1").getName());
 
         pathway1.setName("newName");
-        assertNotEquals(pathway1.getName(), newNetwork.getPathwaysView().get("pathway1").getName());
+        assertNotEquals(pathway1.getName(), newNetwork.getPathway("pathway1").getName());
 
         enzyme1.setName("newName");
-        assertNotEquals(enzyme1.getName(), newNetwork.getEnzymesView().get("enz1").getName());
+        assertNotEquals(enzyme1.getName(), newNetwork.getEnzyme("enz1").getName());
 
         protein1.setName("newName");
-        assertNotEquals(protein1.getName(), newNetwork.getProteinsView().get("protein1").getName());
+        assertNotEquals(protein1.getName(), newNetwork.getProtein("protein1").getName());
 
         gene1.setName("newName");
-        assertNotEquals(gene1.getName(), newNetwork.getGenesView().get("gene1").getName());
+        assertNotEquals(gene1.getName(), newNetwork.getGene("gene1").getName());
 
         assertEquals(r1.getLeftsView().size(),
-                newNetwork.getReactionsView().get("R1").getLeftsView().size());
+                newNetwork.getReaction("R1").getLeftsView().size());
 
         assertEquals(r1.getRightsView().size(),
-                newNetwork.getReactionsView().get("R1").getLeftsView().size());
+                newNetwork.getReaction("R1").getLeftsView().size());
 
-        assertEquals(2, newNetwork.getReactionsFromPathways(newNetwork.getPathwaysView().get("pathway1")).size());
+        assertEquals(2, newNetwork.getReactionsFromPathways(newNetwork.getPathway("pathway1")).size());
 
         assertEquals(2,
-                newNetwork.getEnzymesView().get("enz1").getParticipantsView().size());
+                newNetwork.getEnzyme("enz1").getParticipantsView().size());
 
-        assertEquals(1, newNetwork.getGenesFromReactions(newNetwork.getReactionsView().get("R1")).size());
+        assertEquals(1, newNetwork.getGenesFromReactions(newNetwork.getReaction("R1")).size());
 
         // Deep copy without genes
         // We reinit the original network
@@ -228,7 +228,7 @@ public class BioNetworkUtilsTest {
         assertEquals(0, newNetwork.getGenesView().size());
         assertEquals(0, newNetwork.getProteinsView().size());
         assertEquals(0, newNetwork.getEnzymesView().size());
-        assertEquals(0, newNetwork.getGenesFromReactions(newNetwork.getReactionsView().get("R1")).size());
+        assertEquals(0, newNetwork.getGenesFromReactions(newNetwork.getReaction("R1")).size());
 
         // Deep copy without replacing existing entities
         newNetwork = new BioNetwork();
@@ -269,7 +269,7 @@ public class BioNetworkUtilsTest {
         assertEquals(3, enzyme1.getParticipantsView().size());
         // The gene must be updated
         assertEquals(gene1.getId(), protein1.getGene().getId());
-        assertEquals(2, r1.getLeftReactantsView().size());
+        assertEquals(1, r1.getLeftReactantsView().size());
         assertEquals(2, r1.getEnzymesView().size());
         assertEquals(3, newNetwork.getReactionsFromPathways(pathway1).size());
 

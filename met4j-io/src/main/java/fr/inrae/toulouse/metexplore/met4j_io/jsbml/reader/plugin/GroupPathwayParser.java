@@ -97,7 +97,7 @@ public class GroupPathwayParser implements PackageParser, PrimaryDataTag, Reader
 		ListOf<Group> groups = this.plugin.getListOfGroups();
 
 		for (Group group : groups) {
-			if (this.network.getPathwaysView().containsId(group.getId())) {
+			if (this.network.containsPathway(group.getId())) {
 				errorsAndWarnings.add(
 						"[Warning] Pathway " + group.getId() + " duplicated. The second one has not been processed");
 			} else {
@@ -110,11 +110,11 @@ public class GroupPathwayParser implements PackageParser, PrimaryDataTag, Reader
 				for (Member member : members) {
 
 					String rxnId = member.getIdRef();
-					if (!this.network.getReactionsView().containsId(rxnId)) {
+					if (!this.network.containsReaction(rxnId)) {
 						errorsAndWarnings.add("[Warning] Pathway " + group.getId() + ": the reaction " + rxnId
 								+ " does not exist in the network");
 					} else {
-						BioReaction reaction = this.network.getReactionsView().get(rxnId);
+						BioReaction reaction = this.network.getReaction(rxnId);
 
 						network.affectToPathway(pathway, reaction);
 					}

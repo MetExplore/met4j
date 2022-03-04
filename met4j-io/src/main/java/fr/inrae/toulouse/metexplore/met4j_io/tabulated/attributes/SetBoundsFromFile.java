@@ -97,7 +97,7 @@ public class SetBoundsFromFile extends AbstractSetAttributesFromFile {
         for(String id : this.getIdAttributeMap().keySet()) {
             n++;
             Double bound = Double.parseDouble(this.getIdAttributeMap().get(id));
-            BioReaction r = this.bn.getReactionsView().get(id);
+            BioReaction r = this.bn.getReaction(id);
             if(this.type.equals(BoundsType.LOWER)) {
                 ReactionAttributes.setLowerBound(r, new Flux(bound));
             }

@@ -39,6 +39,7 @@ package fr.inrae.toulouse.metexplore.met4j_io.annotations.gpr;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.GeneSetException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.MalformedGeneAssociationStringException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.FluxReaction;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation;
@@ -62,7 +63,7 @@ public class GPR {
      * @param gpr a {@link java.lang.String} object.
      * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.MalformedGeneAssociationStringException if any.
      */
-    public static void createGPRfromString(BioNetwork network, BioReaction reaction, String gpr) throws MalformedGeneAssociationStringException {
+    public static void createGPRfromString(BioNetwork network, BioReaction reaction, String gpr) throws MalformedGeneAssociationStringException, GeneSetException {
         for (BioEnzyme e : reaction.getEnzymesView()) {
             network.removeEnzymeFromReaction(e, reaction);
         }

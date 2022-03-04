@@ -37,201 +37,167 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * This class represents the full gene association as they are described in SBML
- * files. 
- * 
+ * files.
+ * <p>
  * This class consists of a list of {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneSet}s. Each of them being one
  * possible "AND" gene association that can activate a given reaction
  *
  * @author Benjamin mainly modified by LC
- * @since 3.0
  * @version $Id: $Id
+ * @since 3.0
  */
 public class GeneAssociation implements Set<GeneSet> {
 
-	public ArrayList<GeneSet> geneSets;
+    public Set<GeneSet> geneSets;
 
-	/**
-	 * <p>Constructor for GeneAssociation.</p>
-	 */
-	public GeneAssociation() {
-		geneSets = new ArrayList<GeneSet>();
-	}
+    /**
+     * <p>Constructor for GeneAssociation.</p>
+     */
+    public GeneAssociation() {
+        geneSets = new HashSet<>();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * Returns the string representation of this GPR as a fully developed AND/OR
-	 * logical expression.
-	 */
-	@Override
-	public String toString() {
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns the string representation of this GPR as a fully developed AND/OR
+     * logical expression.
+     */
+    @Override
+    public String toString() {
 
-		return this.stream().map(x -> x.size() > 1 && this.size() > 1 ? "( " + x.toString() + " )" : x.toString())
-				.sorted().collect(Collectors.joining(" OR "));
+        return this.stream().map(x -> x.size() > 1 && this.size() > 1 ? "( " + x.toString() + " )" : x.toString())
+                .sorted().collect(Collectors.joining(" OR "));
 
-	}
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public int size() {
-		return geneSets.size();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int size() {
+        return geneSets.size();
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean isEmpty() {
-		return geneSets.isEmpty();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isEmpty() {
+        return geneSets.isEmpty();
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean contains(Object o) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean contains(Object o) {
+        return  geneSets.contains(o);
+    }
 
-		for (GeneSet g : geneSets) {
-			if (g.equals(o)) {
-				return true;
-			}
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterator<GeneSet> iterator() {
+        return geneSets.iterator();
+    }
 
-		return false;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object[] toArray() {
+        return geneSets.toArray();
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public Iterator<GeneSet> iterator() {
-		return geneSets.iterator();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return geneSets.toArray(a);
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public Object[] toArray() {
-		return geneSets.toArray();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean add(GeneSet e) {
 
-	/** {@inheritDoc} */
-	@Override
-	public <T> T[] toArray(T[] a) {
-		return geneSets.toArray(a);
-	}
+        e.addedInGeneAssociation = true;
+        return geneSets.add(e);
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean add(GeneSet e) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean remove(Object o) {
+        return geneSets.remove(o);
+    }
 
-		for (GeneSet g : this.geneSets) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        return this.geneSets.containsAll(c);
+    }
 
-			if (e.equals(g)) {
-				return false;
-			}
-		}
+    /*
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean addAll(Collection<? extends GeneSet> c) {
+        c.forEach(geneId -> this.geneSets.add(geneId));
+        return true;
+    }
 
-		return geneSets.add(e);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean retainAll(Collection<?> c) {
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean remove(Object o) {
+        return this.geneSets.retainAll(c);
+    }
 
-		ArrayList<GeneSet> genes = new ArrayList<GeneSet>(this.geneSets);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean removeAll(Collection<?> c) {
 
-		for (GeneSet g : genes) {
-			if (o.equals(g)) {
-				
-				return geneSets.remove(g);
-			}
-		}
+        return this.geneSets.removeAll(c);
+    }
 
-		return false;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void clear() {
+        geneSets.clear();
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean containsAll(Collection<?> c) {
 
-		for (GeneSet g : (GeneAssociation) c) {
-			if (!this.contains(g)) {
-				return false;
-			}
-		}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GeneAssociation)) return false;
+        GeneAssociation geneSets1 = (GeneAssociation) o;
+        return geneSets.equals(geneSets1.geneSets);
+    }
 
-		return true;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean addAll(Collection<? extends GeneSet> c) {
-
-		Boolean flag = false;
-
-		for (GeneSet g : (GeneAssociation) c) {
-			Boolean f = this.add(g);
-			if (f) {
-				flag = true;
-			}
-		}
-
-		return flag;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean retainAll(Collection<?> c) {
-
-		Boolean flag = false;
-
-		HashSet<GeneSet> genes = new HashSet<GeneSet>(this.geneSets);
-
-		for (GeneSet g : genes) {
-			if (!c.contains(g)) {
-				flag = true;
-				this.remove(g);
-			}
-		}
-
-		return flag;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean removeAll(Collection<?> c) {
-
-		Boolean flag = false;
-
-		HashSet<GeneSet> genes = new HashSet<GeneSet>(this.geneSets);
-
-		for (GeneSet g : genes) {
-			if (c.contains(g)) {
-				flag = true;
-				this.remove(g);
-			}
-		}
-
-		return flag;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void clear() {
-		geneSets.clear();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		GeneAssociation geneSets1 = (GeneAssociation) o;
-		return Objects.equals(geneSets, geneSets1.geneSets);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public int hashCode() {
-		return Objects.hash(geneSets);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(geneSets);
+    }
 }

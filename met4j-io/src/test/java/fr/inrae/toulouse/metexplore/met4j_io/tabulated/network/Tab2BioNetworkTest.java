@@ -135,9 +135,9 @@ public class Tab2BioNetworkTest {
         assertEquals(1, network.getReactionsView().size());
         assertEquals(4, network.getMetabolitesView().size());
         assertEquals(1, network.getCompartmentsView().size());
-        assertTrue(network.getReactionsView().containsId("r"));
+        assertTrue(network.containsReaction("r"));
 
-        BioReaction reaction = network.getReactionsView().get("r");
+        BioReaction reaction = network.getReaction("r");
 
         assertEquals(2, reaction.getLeftReactantsView().size());
         assertEquals(2, reaction.getRightReactantsView().size());
@@ -165,7 +165,7 @@ public class Tab2BioNetworkTest {
         app.parseLine(line, 1);
 
         BioNetwork network = app.getBioNetwork();
-        BioReaction reaction = network.getReactionsView().get("r");
+        BioReaction reaction = network.getReaction("r");
         assertTrue(reaction.isReversible());
     }
 
@@ -191,7 +191,7 @@ public class Tab2BioNetworkTest {
         assertEquals(1, network.getReactionsView().size());
         assertEquals(4, network.getMetabolitesView().size());
         assertEquals(1, network.getCompartmentsView().size());
-        assertTrue(network.getCompartmentsView().containsId("p"));
+        assertTrue(network.containsCompartment("p"));
 
     }
 
@@ -211,10 +211,10 @@ public class Tab2BioNetworkTest {
         assertEquals(1, network.getReactionsView().size());
         assertEquals(4, network.getMetabolitesView().size());
         assertEquals(4, network.getCompartmentsView().size());
-        assertTrue(network.getCompartmentsView().containsId("p"));
-        assertTrue(network.getCompartmentsView().containsId("c"));
-        assertTrue(network.getCompartmentsView().containsId("r"));
-        assertTrue(network.getCompartmentsView().containsId("x"));
+        assertTrue(network.containsCompartment("p"));
+        assertTrue(network.containsCompartment("c"));
+        assertTrue(network.containsCompartment("r"));
+        assertTrue(network.containsCompartment("x"));
 
     }
 
@@ -232,10 +232,10 @@ public class Tab2BioNetworkTest {
         BioNetwork network = app.getBioNetwork();
 
         assertEquals(4, network.getMetabolitesView().size());
-        assertTrue(network.getMetabolitesView().containsId("M_m1_c"));
-        assertTrue(network.getMetabolitesView().containsId("M_m2_p"));
-        assertTrue(network.getMetabolitesView().containsId("M_m3_x"));
-        assertTrue(network.getMetabolitesView().containsId("M_m4_r"));
+        assertTrue(network.containsMetabolite("M_m1_c"));
+        assertTrue(network.containsMetabolite("M_m2_p"));
+        assertTrue(network.containsMetabolite("M_m3_x"));
+        assertTrue(network.containsMetabolite("M_m4_r"));
     }
 
     @Test
@@ -252,7 +252,7 @@ public class Tab2BioNetworkTest {
         BioNetwork network = app.getBioNetwork();
         assertEquals(1, network.getReactionsView().size());
 
-        assertTrue(network.getReactionsView().containsId("R_r"));
+        assertTrue(network.containsReaction("R_r"));
     }
 
     @Test

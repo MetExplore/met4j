@@ -44,6 +44,7 @@ import java.util.HashMap;
 
 import javax.xml.stream.XMLStreamException;
 
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageReaderException;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.SBMLDocument;
 import org.sbml.jsbml.SBMLError;
@@ -165,7 +166,7 @@ public class JsbmlReader {
      * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
      * @throws java.io.IOException if any.
      */
-    public static void main(String[] args) throws Met4jSbmlReaderException, IOException {
+    public static void main(String[] args) throws Met4jSbmlReaderException, IOException, JSBMLPackageReaderException {
         // String
         String inputFile = args[0];
 
@@ -197,7 +198,7 @@ public class JsbmlReader {
         System.err.println(net.getGenesView().size() + " genes");
         System.err.println(net.getEnzymesView().size() + " enzymes");
 
-//		BioPathway p = this.getConverter().getNetwork().getPathwaysView().get("g1");
+//		BioPathway p = this.getConverter().getNetwork().getPathway("g1");
 //
 //		System.err.println(this.getConverter().getNetwork().getReactionsFromPathway(p).size());
 

@@ -36,6 +36,8 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc;
 
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.GeneSetException;
+
 /**
  * <p>GeneAssociations class.</p>
  *
@@ -51,8 +53,7 @@ public class GeneAssociations {
      * @param ga2 a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} object.
      * @return a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} object.
      */
-    public static GeneAssociation merge(GeneAssociation ga1, GeneAssociation ga2)
-    {
+    public static GeneAssociation merge(GeneAssociation ga1, GeneAssociation ga2) throws GeneSetException {
         GeneAssociation newGa = new GeneAssociation();
         for(GeneSet gs1 : ga1)
         {
@@ -74,8 +75,7 @@ public class GeneAssociations {
      * @param geneAssociations a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} object.
      * @return a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} object.
      */
-    public static GeneAssociation merge(GeneAssociation... geneAssociations)
-    {
+    public static GeneAssociation merge(GeneAssociation... geneAssociations) throws GeneSetException {
         GeneAssociation newGa = new GeneAssociation();
 
         if(geneAssociations != null && geneAssociations.length != 0) {

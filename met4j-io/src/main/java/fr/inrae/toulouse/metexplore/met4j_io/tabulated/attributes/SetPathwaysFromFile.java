@@ -129,7 +129,7 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
 
             String[] pathwayIds = pathwayIdsStr.split(Pattern.quote(sep));
 
-            BioReaction rxn = this.bn.getReactionsView().get(id);
+            BioReaction rxn = this.bn.getReaction(id);
 
             BioCollection<BioPathway> oldPathways = this.bn.getPathwaysFromReaction(rxn);
 
@@ -145,8 +145,8 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
                 pathwayId = pathwayId.replaceAll("[^A-Za-z0-9_-]", "_");
 
                 BioPathway pathway;
-                if (this.bn.getPathwaysView().containsId(pathwayId)) {
-                    pathway = this.bn.getPathwaysView().get(pathwayId);
+                if (this.bn.containsPathway(pathwayId)) {
+                    pathway = this.bn.getPathway(pathwayId);
                 } else {
                     pathway = new BioPathway(pathwayId);
                     this.bn.add(pathway);

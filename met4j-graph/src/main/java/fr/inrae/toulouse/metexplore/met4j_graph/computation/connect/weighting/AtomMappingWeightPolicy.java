@@ -4,11 +4,13 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -101,6 +103,23 @@ public class AtomMappingWeightPolicy extends WeightingPolicy<BioMetabolite, Reac
                 .sep("\t"));
     }
 
+    public AtomMappingWeightPolicy fromConservedCarbonIndexes(String GSAMoutputFile){
+        String sep =",";
+        return this.fromNumberOfConservedCarbons(new WeightsFromFile(GSAMoutputFile, false)
+                .weightCol(8)
+                .edgeLabelCol(6)
+                .sourceCol(0)
+                .targetCol(3)
+                .processWeigthCol(new Function<String, Double>() {
+                    @Override
+                    public Double apply(String s) {
+                        return Double.valueOf(s.split(sep).length);
+                    }
+                })
+                .sep("\t"))
+                ;
+    }
+
     @Override
     public void setWeight(CompoundGraph compoundGraph) {
         if(conservedCarbons==null) throw new IllegalArgumentException("an atom mapping must be provided");
@@ -110,7 +129,8 @@ public class AtomMappingWeightPolicy extends WeightingPolicy<BioMetabolite, Reac
         for(ReactionEdge e : compoundGraph.edgeSet()){
             Integer cc = null;
             if(importer !=null){
-                cc=(int) compoundGraph.getEdgeWeight(e);
+                Double w = compoundGraph.getEdgeWeight(e);
+                if(!Double.isNaN(w)) cc= Integer.valueOf((int) compoundGraph.getEdgeWeight(e));
             }else{
                 Map<BioMetabolite,Integer> mapping = conservedCarbons.get(e.getV1());
                 if(mapping!=null) cc = conservedCarbons.get(e.getV1()).get(e.getV2());

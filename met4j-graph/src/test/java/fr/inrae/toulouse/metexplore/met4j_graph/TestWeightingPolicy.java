@@ -470,6 +470,41 @@ public class TestWeightingPolicy {
 	}
 
 	@Test
+	public void testAtomMappingWeightPolicy() {
+		Path tmpPath = null;
+		try {
+			tmpPath = Files.createTempFile("test_edgeWeightmport", ".tmp");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			Assert.fail("Creation of the temporary directory");
+		}
+		String filePath = "AAMTestFile.tab";
+		try {
+			filePath = TestUtils.copyProjectResource(filePath, tmpPath.toFile());
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("problem while reading edge weight file");
+		}
+
+		int CCnb1 =21;
+		int CCnb5 =5;
+		int CCnb6 =1;
+
+
+
+		AtomMappingWeightPolicy wp1 = new AtomMappingWeightPolicy().fromConservedCarbonIndexes(filePath);
+		wp1.setWeight(g);
+		assertEquals("wrong weight for AAM weight", CCnb1, g.getEdgeWeight(ad),Double.MIN_VALUE);
+		assertTrue("wrong weight for AAM weight", Double.isNaN(g.getEdgeWeight(ab)));
+		assertTrue("wrong weight for AAM weight", Double.isNaN(g.getEdgeWeight(bc)));
+		assertTrue("wrong weight for AAM weight", Double.isNaN(g.getEdgeWeight(bx)));
+		assertEquals("wrong weight for AAM weight", CCnb5, g.getEdgeWeight(eb),Double.MIN_VALUE);
+		assertEquals("wrong weight for AAM weight", CCnb6, g.getEdgeWeight(ef),Double.MIN_VALUE);
+		assertTrue("wrong weight for AAM weight", Double.isNaN(g.getEdgeWeight(yc)));
+
+	}
+
+	@Test
 	public void testAtomMappingWeightPolicyI() {
 
 		String RxnSmiles1 = "[O:1]=[C:2]([NH2:3])[C:4]1=[CH:5][CH:6]=[CH:7][N:8](=[CH:9]1)[CH:10]2[O:11][CH:12]([CH2:13][O:14][P:15](=[O:16])([OH:17])[O:18][P:19](=[O:20])([OH:21])[O:22][CH2:23][CH:24]3[O:25][CH:26]([N:27]4[CH:28]=[N:29][C:30]=5[C:31](=[N:32][CH:33]=[N:34][C:35]45)[NH2:36])[CH:37]([O:38][P:39](=[O:40])([OH:41])[OH:42])[CH:43]3[OH:44])[CH:45]([OH:46])[CH:47]2[OH:48]>>[O:1]=[C:2]([NH2:3])[C:4]=1[CH2:5][CH:6]=[CH:7][N:8]([CH:9]1)[CH:10]2[O:11][CH:12]([CH2:13][O:14][P:15](=[O:16])([OH:17])[O:18][P:19](=[O:20])([OH:21])[O:22][CH2:23][CH:24]3[O:25][CH:26]([N:27]4[CH:28]=[N:29][C:30]=5[C:31](=[N:32][CH:33]=[N:34][C:35]45)[NH2:36])[CH:37]([O:38][P:39](=[O:40])([OH:41])[OH:42])[CH:43]3[OH:44])[CH:45]([OH:46])[CH:47]2[OH:48]";

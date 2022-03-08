@@ -58,6 +58,9 @@ public class CarbonSkeletonNet  extends AbstractMet4jApplication {
     @Option(name = "-am", aliases = {"--asmatrix"}, usage = "export as matrix (implies simple graph conversion). Default export as GML file", required = false)
     public boolean asMatrix = false;
 
+    @Option(name = "-i", aliases = {"--fromIndexes"}, usage = "Use GSAM output with carbon indexes", required = false)
+    public boolean fromIndexes = false;
+
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
 
         CarbonSkeletonNet app = new CarbonSkeletonNet();
@@ -84,11 +87,13 @@ public class CarbonSkeletonNet  extends AbstractMet4jApplication {
         System.out.println(" Done.");
 
         System.out.print("Processing atom mappings...");
-        AtomMappingWeightPolicy wp = new AtomMappingWeightPolicy()
-                .fromNumberOfConservedCarbons(inputAAM)
-                .binarize()
-                .removeEdgeWithoutMapping()
-                .removeEdgesWithoutConservedCarbon();
+        AtomMappingWeightPolicy wp = ( fromIndexes ?
+                new AtomMappingWeightPolicy().fromConservedCarbonIndexes(inputAAM) :
+                new AtomMappingWeightPolicy().fromNumberOfConservedCarbons(inputAAM)
+        );
+        wp = wp.binarize()
+        .removeEdgeWithoutMapping()
+        .removeEdgesWithoutConservedCarbon();
 
         wp.setWeight(graph);
         System.out.println(" Done.");

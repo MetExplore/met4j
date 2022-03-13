@@ -43,6 +43,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,7 +61,7 @@ public class Kegg2BioNetworkTest {
 
     @Before
     public void init() throws Exception {
-        app = new Kegg2BioNetwork("fak", "reaction");
+        app = spy(new Kegg2BioNetwork("fak", "reaction"));
 
         keggServices = spy(new KeggServices());
         app.keggServices = keggServices;
@@ -139,6 +140,11 @@ public class Kegg2BioNetworkTest {
         app.origin = "map";
 
         app.getNetwork().add(pathway);
+
+        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+        // Do not load dtd
+        builderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        doReturn(builderFactory).when(app).getFactory();
 
         app.getPathwayComponents(pathway);
 
@@ -315,6 +321,10 @@ public class Kegg2BioNetworkTest {
         doReturn(KeggApiMock.noReactionPathwayKgml).when(keggServices).getKgml("bpa00000");
         doReturn(KeggApiMock.tcaKgml).when(keggServices).getKgml("bpa00020");
 
+        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+        // Do not load dtd
+        builderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        doReturn(builderFactory).when(app).getFactory();
 
         app.createNetworkPathways();
 
@@ -384,6 +394,10 @@ public class Kegg2BioNetworkTest {
 
         doReturn(pathwayList).when(keggServices).getKeggPathwayEntries(anyString());
         doReturn(KeggApiMock.fakeKgml).when(keggServices).getKgml("bpa0");
+        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+        // Do not load dtd
+        builderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        doReturn(builderFactory).when(app).getFactory();
 
         app.setECList();
         app.createNetworkPathways();
@@ -436,7 +450,10 @@ public class Kegg2BioNetworkTest {
 
         doReturn(pathwayList).when(keggServices).getKeggPathwayEntries(anyString());
         doReturn(KeggApiMock.fakeKgml).when(keggServices).getKgml("bpa0");
-
+        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+        // Do not load dtd
+        builderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        doReturn(builderFactory).when(app).getFactory();
         app.setECList();
         app.createNetworkPathways();
 

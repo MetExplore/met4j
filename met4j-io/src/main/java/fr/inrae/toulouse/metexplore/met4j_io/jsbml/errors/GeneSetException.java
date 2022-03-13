@@ -37,10 +37,6 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors;
 
 public class GeneSetException extends Exception {
 
-    public GeneSetException(String message) {
-        super(message);
-    }
-
     public GeneSetException() {
         super("Not possible to transform gene set since it has been added in a gene association");
     }

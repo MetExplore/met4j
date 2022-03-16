@@ -92,12 +92,28 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
         //perform scan
         //------------
         System.err.println("Scaning...");
+
+        //if merging compartment
+        Map<String, Integer> mergedDegree = new HashMap<>();
+        if(merge){
+            mergedDegree = graph.vertexSet().stream().collect(
+                    Collectors.groupingBy(
+                            BioMetabolite::getName,
+                            Collectors.summingInt(v -> graph.degreeOf(v))
+                    )
+            );
+        }
+
         //degree statistics
         DescriptiveStatistics degreeStats = new DescriptiveStatistics();
         double dt = degree;
         if (!Double.isNaN(degreePrecentile)) {
             for (BioMetabolite v : graph.vertexSet()) {
-                degreeStats.addValue(graph.degreeOf(v));
+                if (merge){
+                    degreeStats.addValue(mergedDegree.get(v.getName()));
+                }else{
+                    degreeStats.addValue(graph.degreeOf(v));
+                }
             }
             dt = degreeStats.getPercentile(degreePrecentile);
         }
@@ -116,17 +132,6 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
 
         //if ids only, report side only
         if (noReportValue) sideOnly = true;
-
-        //if merging compartment
-        Map<String, Integer> mergedDegree = new HashMap<>();
-        if(merge){
-            mergedDegree = graph.vertexSet().stream().collect(
-                Collectors.groupingBy(
-                    BioMetabolite::getName,
-                    Collectors.summingInt(v -> graph.degreeOf(v))
-                )
-            );
-        }
 
         int count = 0;
         for (BioMetabolite v : graph.vertexSet()) {

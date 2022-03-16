@@ -16,7 +16,10 @@ import org.kohsuke.args4j.Option;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -49,6 +52,9 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
 
     @Option(name = "-er", aliases = {"--edgeRedundancy"}, usage = "flag as side compound any compound with a number of redundancy in incident edges (parallel edges connecting to the same neighbor) above the given threshold")
     public double parallelEdge = Double.NaN;
+
+    @Option(name = "-m", aliases = {"--merge"}, usage = "Degree and other graph measures are shared between compounds in different compartments. Requires consistent and unambiguous naming in SBML.")
+    public Boolean merge = false;
 
 
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
@@ -111,6 +117,17 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
         //if ids only, report side only
         if (noReportValue) sideOnly = true;
 
+        //if merging compartment
+        Map<String, Integer> mergedDegree = new HashMap<>();
+        if(merge){
+            mergedDegree = graph.vertexSet().stream().collect(
+                Collectors.groupingBy(
+                    BioMetabolite::getName,
+                    Collectors.summingInt(v -> graph.degreeOf(v))
+                )
+            );
+        }
+
         int count = 0;
         for (BioMetabolite v : graph.vertexSet()) {
 
@@ -120,7 +137,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
             StringBuffer l = new StringBuffer(v.getId());
             if (reportValue) l.append("\t" + v.getName());
 
-            int d = graph.degreeOf(v);
+            int d = merge? mergedDegree.get(v.getName()) : graph.degreeOf(v);
             boolean sideFromDegree = (d >= degree);
             if (sideFromDegree) side = true;
             if (reportValue) l.append("\t" + d);

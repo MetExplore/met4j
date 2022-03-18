@@ -1,0 +1,95 @@
+package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
+
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import org.kohsuke.args4j.Option;
+
+import java.io.IOException;
+
+public class ExtractPathways extends AbstractMet4jApplication {
+
+    @Option(name = "-i", usage = "input SBML file", required = true)
+    public String inputPath = null;
+
+    @Option(name = "-o", usage = "output SBML file", required = true)
+    public String outputPath = null;
+
+    @Option(name = "-p", usage = "pathway identifiers, separated by \"+\" sign if more than one", required = true)
+    public String pathwayId = null;
+
+    public static void main(String[] args) throws IOException, Met4jSbmlReaderException, Met4jSbmlWriterException {
+
+        ExtractPathways app = new ExtractPathways();
+
+        app.parseArguments(args);
+
+        app.run();
+
+    }
+
+
+    public void run() throws IOException, Met4jSbmlReaderException, Met4jSbmlWriterException {
+        //read smbl
+        JsbmlReader reader = new JsbmlReader(this.inputPath, false);
+        BioNetwork network = reader.read();
+        System.out.println("reaction in network: "+network.getReactionsView().size());
+        System.out.println("species in network: "+network.getMetabolitesView().size());
+        System.out.println("genes in network: "+network.getGenesView().size());
+
+
+        //get all reactions & metabolites
+        BioCollection<BioReaction> reactions = new BioCollection<>(network.getReactionsView());
+        BioCollection<BioMetabolite> metabolites = new BioCollection<>(network.getMetabolitesView());
+        BioCollection<BioGene> genes = new BioCollection<>(network.getGenesView());
+
+        //get pathways
+        BioCollection<BioPathway> pathways = new BioCollection<>();
+        for(String id : pathwayId.split("\\+")){
+            BioPathway pathway = network.getPathwaysView().get(id);
+            if(pathway!=null) pathways.add(pathway);
+            System.out.println("reaction in pathway "+pathway.getName()+" ("+id+"): "+network.getReactionsFromPathways(pathway).size());
+            System.out.println("species in pathway "+pathway.getName()+" ("+id+"): "+network.getMetabolitesFromPathway(pathway).size());
+            System.out.println("genes in pathway "+pathway.getName()+" ("+id+"): "+network.getGenesFromPathways(pathway).size());
+        }
+
+        //remove pathway's reactions and metabolites from list
+        BioCollection<BioReaction> pathwaysReactions = network.getReactionsFromPathways(pathways);
+        reactions.removeAll(pathwaysReactions);
+        metabolites.removeAll(network.getMetabolitesFromReactions(pathwaysReactions));
+        genes.removeAll(network.getGenesFromReactions(pathwaysReactions));
+
+        //remove remaining reactions
+        network.removeOnCascade(reactions);
+        network.removeOnCascade(metabolites);
+        network.removeOnCascade(genes);
+        System.out.println("reaction in network: "+network.getReactionsView().size());
+        System.out.println("species in network: "+network.getMetabolitesView().size());
+        System.out.println("genes in network: "+network.getGenesView().size());
+
+        //export network
+        JsbmlWriter w = new JsbmlWriter(outputPath, network);
+        w.write();
+        System.err.println("network exported.");
+        return;
+    }
+
+    @Override
+    public String getLabel() {
+        return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public String getLongDescription() {
+        return "\"Extract pathway(s) from GSMN: From a SBML file, Create a sub-network SBML file including only a selection of pathways";
+    }
+
+    @Override
+    public String getShortDescription() {
+        return "Extract pathway(s) from GSMN";
+    }
+}

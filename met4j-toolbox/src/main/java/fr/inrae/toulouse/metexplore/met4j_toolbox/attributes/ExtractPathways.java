@@ -37,9 +37,9 @@ public class ExtractPathways extends AbstractMet4jApplication {
         //read smbl
         JsbmlReader reader = new JsbmlReader(this.inputPath, false);
         BioNetwork network = reader.read();
-        System.out.println("reaction in network: "+network.getReactionsView().size());
-        System.out.println("species in network: "+network.getMetabolitesView().size());
-        System.out.println("genes in network: "+network.getGenesView().size());
+        System.out.println("Number of reactions in original network: "+network.getReactionsView().size());
+        System.out.println("Number of species in original network: "+network.getMetabolitesView().size());
+        System.out.println("Number of genes in original network: "+network.getGenesView().size());
 
 
         //get all reactions & metabolites
@@ -52,9 +52,9 @@ public class ExtractPathways extends AbstractMet4jApplication {
         for(String id : pathwayId.split("\\+")){
             BioPathway pathway = network.getPathwaysView().get(id);
             if(pathway!=null) pathways.add(pathway);
-            System.out.println("reaction in pathway "+pathway.getName()+" ("+id+"): "+network.getReactionsFromPathways(pathway).size());
-            System.out.println("species in pathway "+pathway.getName()+" ("+id+"): "+network.getMetabolitesFromPathway(pathway).size());
-            System.out.println("genes in pathway "+pathway.getName()+" ("+id+"): "+network.getGenesFromPathways(pathway).size());
+            System.out.println("Number of reactions in pathway "+pathway.getName()+" ("+id+"): "+network.getReactionsFromPathways(pathway).size());
+            System.out.println("Number of species in pathway "+pathway.getName()+" ("+id+"): "+network.getMetabolitesFromPathway(pathway).size());
+            System.out.println("Number of genes in pathway "+pathway.getName()+" ("+id+"): "+network.getGenesFromPathways(pathway).size());
         }
 
         //remove pathway's reactions and metabolites from list
@@ -67,9 +67,9 @@ public class ExtractPathways extends AbstractMet4jApplication {
         network.removeOnCascade(reactions);
         network.removeOnCascade(metabolites);
         network.removeOnCascade(genes);
-        System.out.println("reaction in network: "+network.getReactionsView().size());
-        System.out.println("species in network: "+network.getMetabolitesView().size());
-        System.out.println("genes in network: "+network.getGenesView().size());
+        System.out.println("Number of reactions in network: "+network.getReactionsView().size());
+        System.out.println("Number of species in network: "+network.getMetabolitesView().size());
+        System.out.println("Number of genes in network: "+network.getGenesView().size());
 
         //export network
         JsbmlWriter w = new JsbmlWriter(outputPath, network);

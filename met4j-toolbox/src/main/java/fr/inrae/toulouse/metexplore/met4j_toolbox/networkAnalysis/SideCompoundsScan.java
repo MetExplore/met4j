@@ -4,12 +4,12 @@ import fr.inrae.toulouse.metexplore.met4j_chemUtils.FormulaParser;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DefaultWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.VertexContraction;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.kohsuke.args4j.Option;
@@ -18,7 +18,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -53,8 +53,10 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
     @Option(name = "-er", aliases = {"--edgeRedundancy"}, usage = "flag as side compound any compound with a number of redundancy in incident edges (parallel edges connecting to the same neighbor) above the given threshold")
     public double parallelEdge = Double.NaN;
 
-    @Option(name = "-m", aliases = {"--merge"}, usage = "Degree and other graph measures are shared between compounds in different compartments. Requires consistent and unambiguous naming in SBML.")
-    public Boolean merge = false;
+    enum strategy {by_name,by_id}
+    @Option(name = "-m", aliases = {"--merge"}, usage = "Degree is shared between compounds in different compartments. " +
+            "Use names if consistent and unambiguous across compartments, or identifiers if compartment suffix is present (id in form \"xxx_y\" with xxx as base identifier and y as compartment label).")
+    public strategy mergingStrat = null;
 
 
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
@@ -95,10 +97,14 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
 
         //if merging compartment
         Map<String, Integer> mergedDegree = new HashMap<>();
+        Boolean merge = (mergingStrat!=null);
+        Function<BioMetabolite,String> getSharedId = BioMetabolite::getName;
         if(merge){
+            if(mergingStrat.equals(strategy.by_id)) getSharedId = (new VertexContraction.MapByIdSubString("^(\\w+)_\\w$"))::commonField;
+
             mergedDegree = graph.vertexSet().stream().collect(
                     Collectors.groupingBy(
-                            BioMetabolite::getName,
+                            getSharedId,
                             Collectors.summingInt(v -> graph.degreeOf(v))
                     )
             );
@@ -110,7 +116,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
         if (!Double.isNaN(degreePrecentile)) {
             for (BioMetabolite v : graph.vertexSet()) {
                 if (merge){
-                    degreeStats.addValue(mergedDegree.get(v.getName()));
+                    degreeStats.addValue(mergedDegree.get(getSharedId.apply(v)));
                 }else{
                     degreeStats.addValue(graph.degreeOf(v));
                 }
@@ -142,7 +148,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
             StringBuffer l = new StringBuffer(v.getId());
             if (reportValue) l.append("\t" + v.getName());
 
-            int d = merge? mergedDegree.get(v.getName()) : graph.degreeOf(v);
+            int d = merge ? mergedDegree.get(getSharedId.apply(v)) : graph.degreeOf(v);
             boolean sideFromDegree = (d >= degree);
             if (sideFromDegree) side = true;
             if (reportValue) l.append("\t" + d);

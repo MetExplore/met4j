@@ -165,7 +165,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
             if (flagInorganic || flagNoFormula) {
                 String formula = v.getChemicalFormula();
                 String inorganic = "?";
-                String validForumla = "true";
+                String validFormula = "true";
                 try{
                     FormulaParser fp = new FormulaParser(formula);
                     if(flagInorganic){
@@ -178,14 +178,14 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
                     }
                 }catch(IllegalArgumentException e){
                     if(flagNoFormula){
-                        validForumla = "false";
+                        validFormula = "false";
                         side = true;
                     }
 
                 }
                 if (reportValue){
                     if(flagInorganic) l.append("\t" + inorganic);
-                    if(flagNoFormula) l.append("\t" + validForumla);
+                    if(flagNoFormula) l.append("\t" + validFormula);
                 }
             }
 

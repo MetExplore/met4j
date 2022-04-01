@@ -213,8 +213,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
     public String getLongDescription() {
         return this.getShortDescription() + "\n" +
                 "Side compounds are metabolites of small relevance for topological analysis. Their definition can be quite subjective and varies between sources.\n" +
-                "Side compounds tend to be ubiquitous and not specific to a particular biochemical or physiological process.
-" +
+                "Side compounds tend to be ubiquitous and not specific to a particular biochemical or physiological process." +
                 "Compounds usually considered as side compounds include water, atp or carbon dioxide. By being involved in many reactions and thus connected to many compounds, " +
                 "they tend to significantly lower the average shortest path distances beyond expected metabolic relatedness.\n" +
                 "This tool attempts to propose a list of side compounds according to specific criteria:  \n" +

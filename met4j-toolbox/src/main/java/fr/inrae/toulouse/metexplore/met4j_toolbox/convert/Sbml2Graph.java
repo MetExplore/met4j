@@ -52,7 +52,7 @@ public class Sbml2Graph extends AbstractMet4jApplication {
 
 
     public void run() throws IOException, Met4jSbmlReaderException {
-        JsbmlReader reader = new JsbmlReader(this.inputPath, false);
+        JsbmlReader reader = new JsbmlReader(this.inputPath);
         ArrayList<PackageParser> pkgs = new ArrayList<>(Arrays.asList(
                 new NotesParser(false), new FBCParser(), new GroupPathwayParser()));
         BioNetwork network = reader.read(pkgs);

@@ -56,7 +56,7 @@ public class DistanceMatrix extends AbstractMet4jApplication {
 
     public void run() throws IOException, Met4jSbmlReaderException {
         //import network
-        JsbmlReader reader = new JsbmlReader(this.inputPath, false);
+        JsbmlReader reader = new JsbmlReader(this.inputPath);
         BioNetwork network = reader.read();
 
         //Create compound graph

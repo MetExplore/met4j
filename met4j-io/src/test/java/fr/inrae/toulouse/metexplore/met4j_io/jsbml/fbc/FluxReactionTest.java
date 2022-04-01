@@ -52,20 +52,30 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 
 public class FluxReactionTest {
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testConvertGeneAssociationstoComplexesWithAbsentReaction() throws GeneSetException {
+		BioNetwork network = new BioNetwork();
+		BioReaction r1 = new BioReaction("r1");
+
+		FluxReaction f1 = new FluxReaction(r1);
+
+		f1.convertGeneAssociationstoComplexes(network);
+
+	}
+
 	@Test
 	public void testConvertGeneAssociationstoComplexes() throws GeneSetException {
 
 		BioNetwork network = new BioNetwork();
 
-		BioGene g1 = new BioGene("g1");
 		BioProtein p1 = new BioProtein("g1");
 
 		BioReaction r1 = new BioReaction("r1");
 		
-		network.add(r1, g1, p1);
+		network.add(r1);
 		
 		GeneSet set1 = new GeneSet();
-		set1.add(g1.getId());
+		set1.add("g1");
 		
 		GeneAssociation a1 = new GeneAssociation();
 		a1.add(set1);
@@ -74,11 +84,12 @@ public class FluxReactionTest {
 		
 		f1.setReactionGeneAssociation(a1);
 		f1.convertGeneAssociationstoComplexes(network);
-		
-		BioCollection<BioGene> genes = new BioCollection<BioGene>();
-		genes.add(g1);
 
-		assertTrue(network.contains(g1));
+		assertTrue(network.containsGene("g1"));
+
+		BioCollection<BioGene> genes = new BioCollection<BioGene>();
+		genes.add(network.getGene("g1"));
+
 		assertTrue(network.getProteinsView().getIds().contains("g1"));
 		assertTrue(network.getEnzymesView().getIds().contains("g1"));
 		System.err.println(network.getReactionsFromGenes(genes, true));

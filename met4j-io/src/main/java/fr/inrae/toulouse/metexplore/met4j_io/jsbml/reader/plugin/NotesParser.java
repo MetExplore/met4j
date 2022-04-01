@@ -47,7 +47,6 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.GeneSetException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.MalformedGeneAssociationStringException;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.FluxReaction;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociations;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneSet;
@@ -226,11 +225,11 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
         GeneAssociation geneAssociation = new GeneAssociation();
 
-        ArrayList<String> subAssos = new ArrayList<String>();
+        ArrayList<String> subAssos = new ArrayList<>();
 
         String tmpAssos = assosString;
 
-        /**
+        /*
          * This Allows to separate parenthesis block.
          */
         while (tmpAssos.contains("(")) {
@@ -245,7 +244,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
                         subAssos.add(subAsso);
 
-                        tmpAssos = tmpAssos.substring(0, i) + tmpAssos.substring(end + 1, tmpAssos.length());
+                        tmpAssos = tmpAssos.substring(0, i) + tmpAssos.substring(end + 1);
 
                     } catch (ArrayIndexOutOfBoundsException e) {
                         throw new MalformedGeneAssociationStringException("Malformed Gene Association");
@@ -267,14 +266,14 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
             StringUtils.addAllNonEmpty(subAssos, Arrays.asList(tmpAssos.split("(?i) and ")));
             // foreach items in "and" block
 
-            ArrayList<GeneAssociation> geneAssociations = new ArrayList<GeneAssociation>();
+            ArrayList<GeneAssociation> geneAssociations = new ArrayList<>();
 
             for (String s : subAssos) {
                 geneAssociations.add(computeGeneAssociation(s, network));
             }
 
             // Merge the geneAssociations
-            geneAssociation = GeneAssociations.merge(geneAssociations.stream().toArray(GeneAssociation[]::new));
+            geneAssociation = GeneAssociations.merge(geneAssociations.toArray(GeneAssociation[]::new));
 
         } else {
             tmpAssos = tmpAssos.replaceAll(" ", "");
@@ -497,8 +496,8 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
 
                     String[] pmids = pmidsStr.split(this.separator);
 
-                    for (int i = 0; i < pmids.length; i++) {
-                        String pmid = pmids[i].trim();
+                    for (String s : pmids) {
+                        String pmid = s.trim();
 
                         if (!isVoid(pmid)) {
                             String pmidInt = pmid.replaceAll("[^\\d]", "");
@@ -551,7 +550,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
      * {@link #othersAsRefs} is true
      * </ul>
      *
-     * @param metabolite
+     * @param metabolite a {@link BioMetabolite}
      */
     private void parseNotes(BioMetabolite metabolite) {
 
@@ -609,10 +608,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
             String value = m.group(1).trim();
 
             if (!isVoid(value)) {
-
                 metabolite.setSmiles(value);
-
-                metaboNotes = metaboNotes.replaceAll(this.getSmilesPattern(), "");
             }
         }
 
@@ -621,13 +617,13 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
-     * @param e
+     * @param e a {@link BioEntity}
      */
     private void parseOtherRefs(BioEntity e) {
 
         String notes = GenericAttributes.getNotes(e).getXHTMLasString();
 
-        String dbName = null;
+        String dbName;
         String values;
 
         Matcher m;
@@ -676,7 +672,7 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
     }
 
     /**
-     * @param cpt
+     * @param cpt a {@link BioCompartment}
      */
     private void parseNotes(BioCompartment cpt) {
 

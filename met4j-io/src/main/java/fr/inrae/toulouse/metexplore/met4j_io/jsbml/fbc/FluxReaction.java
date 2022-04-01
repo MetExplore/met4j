@@ -64,7 +64,7 @@ public class FluxReaction extends BioEntity {
      * The actual {@link BioReaction} that is behind this
      * {@link FluxReaction}
      */
-    private BioReaction underlyingReaction;
+    private final BioReaction underlyingReaction;
     /**
      * The object holding the Gene Association
      *
@@ -149,16 +149,6 @@ public class FluxReaction extends BioEntity {
         }
 
         bn.affectEnzyme(rxn, enz);
-    }
-
-    /**
-     * <p>createIdFromProteins.</p>
-     *
-     * @param proteins a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} object.
-     * @return a {@link java.lang.String} object.
-     */
-    public static String createIdFromProteins(BioCollection<BioProtein> proteins) {
-        return proteins.getIds().stream().sorted().collect(Collectors.joining("_AND_"));
     }
 
     /**

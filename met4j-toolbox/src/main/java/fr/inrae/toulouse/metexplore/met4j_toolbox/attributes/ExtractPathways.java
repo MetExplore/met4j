@@ -35,7 +35,7 @@ public class ExtractPathways extends AbstractMet4jApplication {
 
     public void run() throws IOException, Met4jSbmlReaderException, Met4jSbmlWriterException {
         //read smbl
-        JsbmlReader reader = new JsbmlReader(this.inputPath, false);
+        JsbmlReader reader = new JsbmlReader(this.inputPath);
         BioNetwork network = reader.read();
         System.out.println("Number of reactions in original network: "+network.getReactionsView().size());
         System.out.println("Number of species in original network: "+network.getMetabolitesView().size());

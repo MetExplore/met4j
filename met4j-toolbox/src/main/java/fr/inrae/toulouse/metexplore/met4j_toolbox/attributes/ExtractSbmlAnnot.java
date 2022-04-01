@@ -53,7 +53,7 @@ public class ExtractSbmlAnnot extends AbstractMet4jApplication {
         FileWriter fw = new FileWriter(outputPath);
 
         //read smbl
-        JsbmlReader reader = new JsbmlReader(this.inputPath, true);
+        JsbmlReader reader = new JsbmlReader(this.inputPath);
         BioNetwork network = reader.read();
 
         BioCollection<? extends BioEntity> entities = new BioCollection<>();

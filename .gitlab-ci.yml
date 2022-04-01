@@ -19,8 +19,6 @@ test:
     - mvn clean test
     - cat coverage/target/site/jacoco-aggregate/index.html | grep -o '<tfoot>.*</tfoot>'
 
-
-
 deploySnapshot:
   stage: deploy
   script:

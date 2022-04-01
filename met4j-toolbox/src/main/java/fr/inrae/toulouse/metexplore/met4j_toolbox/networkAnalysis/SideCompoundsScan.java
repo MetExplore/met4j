@@ -77,7 +77,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
         //import network
         System.err.println("reading SBML...");
         System.err.println(inputPath);
-        JsbmlReader reader = new JsbmlReader(this.inputPath, false);
+        JsbmlReader reader = new JsbmlReader(this.inputPath);
         BioNetwork network = reader.read();
 
         //Create compound graph

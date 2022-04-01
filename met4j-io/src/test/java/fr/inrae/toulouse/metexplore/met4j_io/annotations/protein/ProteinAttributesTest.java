@@ -33,12 +33,25 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  */
-package fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors;
 
-public class GeneSetException extends Exception {
+package fr.inrae.toulouse.metexplore.met4j_io.annotations.protein;
 
-    public GeneSetException() {
-        super("Not possible to transform gene set since it has been added in a gene association");
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+public class ProteinAttributesTest {
+
+    @Test
+    public void test() {
+        BioProtein p = new BioProtein("p");
+
+        String comment = "comment";
+        ProteinAttributes.setComment(p, comment);
+
+        assertEquals(comment, ProteinAttributes.getComment(p));
+
     }
 
 }

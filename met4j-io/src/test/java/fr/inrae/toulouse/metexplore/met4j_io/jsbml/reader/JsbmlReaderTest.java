@@ -33,12 +33,60 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  */
-package fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors;
 
-public class GeneSetException extends Exception {
+package fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader;
 
-    public GeneSetException() {
-        super("Not possible to transform gene set since it has been added in a gene association");
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_io.kegg.KeggApiMock;
+import org.junit.Test;
+import org.sbml.jsbml.SBMLDocument;
+import org.w3c.dom.Document;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+
+public class JsbmlReaderTest {
+
+    @Test
+    public void read() throws IOException, XMLStreamException, Met4jSbmlReaderException {
+
+        JsbmlReader reader = spy(new JsbmlReader("test"));
+
+        SbmlDocMock docMockGenerator  = new SbmlDocMock();
+        SBMLDocument doc = docMockGenerator.doc;
+
+        doReturn(doc).when(reader).sbmlRead();
+
+        BioNetwork network = reader.read();
+
+        assertNotNull(network);
+
+        assertEquals(3, network.getReactionsView().size());
+
+        // Other tests are done on JsbmlToBioNetwork
+
     }
+
+    @Test
+    public void readWithoutNotes() throws IOException, XMLStreamException, Met4jSbmlReaderException {
+        JsbmlReader reader = spy(new JsbmlReader("test"));
+
+        SbmlDocMock docMockGenerator  = new SbmlDocMock();
+        SBMLDocument doc = docMockGenerator.doc;
+
+        doReturn(doc).when(reader).sbmlRead();
+
+        BioNetwork network = reader.readWithoutNotes();
+
+        assertNotNull(network);
+
+        assertEquals(3, network.getReactionsView().size());
+    }
+
 
 }

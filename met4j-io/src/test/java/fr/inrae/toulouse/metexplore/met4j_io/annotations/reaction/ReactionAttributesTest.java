@@ -525,4 +525,32 @@ public class ReactionAttributesTest {
         assertEquals(sideCompounds, ReactionAttributes.getSideCompounds(r));
 
     }
+
+    @Test
+    public void getHole() {
+
+        Boolean hole = true;
+
+        BioReaction r = new BioReaction("r");
+
+        assertFalse(ReactionAttributes.getHole(r));
+
+        r.setAttribute(ReactionAttributes.HOLE, hole);
+
+        assertTrue(ReactionAttributes.getHole(r));
+
+    }
+
+    @Test
+    public void setHole() {
+
+        Boolean hole = true;
+
+        BioReaction r = new BioReaction("r");
+
+        ReactionAttributes.setHole(r, hole);
+
+        assertTrue((Boolean) r.getAttribute(ReactionAttributes.HOLE));
+
+    }
 }

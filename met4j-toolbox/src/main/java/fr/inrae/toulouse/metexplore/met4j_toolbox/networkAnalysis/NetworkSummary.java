@@ -67,7 +67,7 @@ public class NetworkSummary extends AbstractMet4jApplication {
 
         //import network
         System.err.println("reading SBML...");
-        JsbmlReader reader = new JsbmlReader(this.inputPath, false);
+        JsbmlReader reader = new JsbmlReader(this.inputPath);
         BioNetwork network = reader.read();
 
         //Create compound graph

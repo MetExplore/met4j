@@ -73,34 +73,20 @@ public class JsbmlReaderTest {
     }
 
     @Test
-    public void validateSbml() throws IOException, XMLStreamException, Met4jSbmlReaderException {
-
+    public void readWithoutNotes() throws IOException, XMLStreamException, Met4jSbmlReaderException {
         JsbmlReader reader = spy(new JsbmlReader("test"));
 
         SbmlDocMock docMockGenerator  = new SbmlDocMock();
         SBMLDocument doc = docMockGenerator.doc;
 
-        Boolean check = reader.validateSBML(doc);
+        doReturn(doc).when(reader).sbmlRead();
 
-        System.err.println(reader.errorsAndWarnings);
+        BioNetwork network = reader.readWithoutNotes();
 
-        assertTrue(check);
+        assertNotNull(network);
 
-        SbmlDocInvalidMock invalidDocMockGenerator  = new SbmlDocInvalidMock();
-        SBMLDocument invalidDoc = invalidDocMockGenerator.doc;
-
-        assertFalse(reader.validateSBML(invalidDoc));
-
-
+        assertEquals(3, network.getReactionsView().size());
     }
 
-    @Test
-    public void readWithoutNotes() {
-        fail();
-    }
 
-    @Test
-    public void validateSBML() {
-        fail();
-    }
 }

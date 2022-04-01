@@ -64,13 +64,6 @@ public class SbmlDocMock {
         c2.setName("compartment2");
         c3 = model.createCompartment("c3");
 
-        CompartmentType compartmentType = new CompartmentType("cType");
-        model.addCompartmentType(compartmentType);
-        c1.setCompartmentType(compartmentType);
-
-        c1.setOutside(c2);
-        c2.setOutside(c1);
-
         c1.setSize(2.0);
 
         c1.setSpatialDimensions(4.0);
@@ -90,46 +83,12 @@ public class SbmlDocMock {
         m1.setInitialAmount(2.0);
         m2.setInitialAmount(3.0);
 
-        if (model.getLevel() < 3) {
-            m1.setCharge(3);
-            m2.setCharge(4);
-
-            type1 = model.createSpeciesType("type1");
-            type1.setSBOTerm(1234567);
-
-            type2 = model.createSpeciesType("type2");
-            Annotation annotation = new Annotation();
-            CVTerm cvterm = new CVTerm();
-            cvterm.addResource("urn.miriam.obo.go#GO%3A1234567");
-            cvterm.setQualifierType(org.sbml.jsbml.CVTerm.Type.BIOLOGICAL_QUALIFIER);
-            cvterm.setBiologicalQualifierType(CVTerm.Qualifier.BQB_IS);
-            annotation.addCVTerm(cvterm);
-            type2.setAnnotation(annotation);
-
-            type3 = model.createSpeciesType("type3");
-            try {
-                type3.setNotes(
-                        "<notes>\n" + "<body xmlns=\"http://www.w3.org/1999/xhtml\"><p>Attr:val</p></body></notes>");
-            } catch (XMLStreamException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-            m1.setSpeciesType(type1);
-            m2.setSpeciesType(type2);
-            m3.setSpeciesType(type3);
-
-        }
 
         r1 = model.createReaction("r1");
         r1.setName("name1");
         r1.setReversible(false);
 
-        if (model.getLevel() > 2) {
-            r1.setSBOTerm("SBO:0000167");
-        }
-
-        r1.setFast(true);
+        r1.setSBOTerm("SBO:0000167");
 
         r2 = model.createReaction("r2");
 
@@ -141,10 +100,8 @@ public class SbmlDocMock {
 
         SpeciesReference m2Ref = new SpeciesReference(m2);
 
-        if (model.getLevel() > 2) {
-            m1Ref.setConstant(true);
-            m2Ref.setConstant(false);
-        }
+        m1Ref.setConstant(true);
+        m2Ref.setConstant(false);
 
         // This metabolite must not be taken into account
         SpeciesReference m4Ref = new SpeciesReference(m4);

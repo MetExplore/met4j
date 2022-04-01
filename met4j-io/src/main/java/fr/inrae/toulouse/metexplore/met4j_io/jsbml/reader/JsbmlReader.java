@@ -40,15 +40,14 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.xml.stream.XMLStreamException;
 
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.SBMLDocument;
-import org.sbml.jsbml.SBMLError;
-import org.sbml.jsbml.SBMLError.SEVERITY;
 import org.sbml.jsbml.SBMLReader;
-import org.sbml.jsbml.validator.SBMLValidator;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
@@ -87,14 +86,6 @@ public class JsbmlReader {
      * The SBML Model retrieved through jsbml's
      */
     private Model model;
-    /**
-     * Attribute that specifies if the input sbml is valid or not
-     */
-    private boolean validSBML = true;
-    /**
-     * Set to true to use SBML online validator
-     */
-    private boolean useValidator;
 
     private String xmlString = null;
 
@@ -106,19 +97,6 @@ public class JsbmlReader {
      */
     public JsbmlReader(String filename) throws IOException {
         this.filename = filename;
-        this.useValidator = false;
-    }
-
-    /**
-     * Constructor
-     *
-     * @param filename     the filename
-     * @param useValidator set the {@link #useValidator} attribute
-     * @throws java.io.IOException if any.
-     */
-    public JsbmlReader(String filename, boolean useValidator) throws IOException {
-        this.filename = filename;
-        this.useValidator = useValidator;
     }
 
     /**
@@ -129,20 +107,7 @@ public class JsbmlReader {
      */
     public JsbmlReader(InputStream inputStream) throws IOException {
         this.xmlString = this.inputStreamToString(inputStream);
-        this.useValidator = false;
 
-    }
-
-    /**
-     * <p>Constructor for JsbmlReader.</p>
-     *
-     * @param inputStream  a {@link java.io.InputStream} object.
-     * @param useValidator a boolean.
-     * @throws java.io.IOException if any.
-     */
-    public JsbmlReader(InputStream inputStream, boolean useValidator) throws IOException {
-        this.xmlString = this.inputStreamToString(inputStream);
-        this.useValidator = useValidator;
     }
 
     private String inputStreamToString(InputStream inputStream) throws IOException {
@@ -152,9 +117,7 @@ public class JsbmlReader {
         while ((line = br.readLine()) != null) {
             sb.append(line).append(System.lineSeparator());
         }
-
         return sb.toString();
-
     }
 
     /*
@@ -221,30 +184,24 @@ public class JsbmlReader {
             this.initiateModel();
         } catch (IOException | XMLStreamException e) {
             e.printStackTrace();
-            this.setValidSBML(false);
         }
 
-        if (this.isValidSBML()) {
 
-            System.err.println("Verifying enabled Plugins...");
-            ArrayList<PackageParser> verifiedPkgs = this.verifyPackages(userEnabledPackages);
+        System.err.println("Verifying enabled Plugins...");
+        ArrayList<PackageParser> verifiedPkgs = this.verifyPackages(userEnabledPackages);
 
-            JsbmlToBioNetwork converter = new JsbmlToBioNetwork(this.getModel());
+        JsbmlToBioNetwork converter = new JsbmlToBioNetwork(this.getModel());
 
-            this.setConverter(converter);
+        this.setConverter(converter);
 
-            try {
-                converter.setPackages(verifiedPkgs);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new Met4jSbmlReaderException("Problem while setting the JSBML packages");
-            }
-
-            return parseModel();
-        } else {
-
-            return null;
+        try {
+            converter.setPackages(verifiedPkgs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Met4jSbmlReaderException("Problem while setting the JSBML packages");
         }
+
+        return parseModel();
     }
 
     protected BioNetwork parseModel() throws Met4jSbmlReaderException {
@@ -328,13 +285,6 @@ public class JsbmlReader {
     private void initiateModel() throws IOException, XMLStreamException {
 
         SBMLDocument doc = sbmlRead();
-
-        if (this.useValidator) {
-            System.err.println("Validating Input SBML..");
-            this.setValidSBML(this.validateSBML(doc));
-            System.err.println("Validation of input SBML done : " + this.validSBML);
-        }
-
         this.setModel(doc.getModel());
 
     }
@@ -350,59 +300,6 @@ public class JsbmlReader {
         }
 
         return doc;
-    }
-
-    /**
-     * Validates the SBML document using the online validator
-     *
-     * @param doc the SBMLDocument object
-     * @return true if SBMLValidator returns no errors, false otherwise. This
-     * method returns true if the Validator only returns warnings
-     */
-    public boolean validateSBML(SBMLDocument doc) {
-
-        // TODO test if the validator is working properly before checking
-        // consistency.
-
-        doc.setConsistencyChecks(SBMLValidator.CHECK_CATEGORY.GENERAL_CONSISTENCY, true);
-        doc.setConsistencyChecks(SBMLValidator.CHECK_CATEGORY.IDENTIFIER_CONSISTENCY, true);
-        doc.setConsistencyChecks(SBMLValidator.CHECK_CATEGORY.UNITS_CONSISTENCY, true);
-        doc.setConsistencyChecks(SBMLValidator.CHECK_CATEGORY.SBO_CONSISTENCY, true);
-        doc.setConsistencyChecks(SBMLValidator.CHECK_CATEGORY.MATHML_CONSISTENCY, false);
-        doc.setConsistencyChecks(SBMLValidator.CHECK_CATEGORY.OVERDETERMINED_MODEL, false);
-        doc.setConsistencyChecks(SBMLValidator.CHECK_CATEGORY.MODELING_PRACTICE, false);
-
-        // Online validator
-        int code = doc.checkConsistencyOffline();
-
-        if (code > 0) {
-
-            HashMap<Integer, String> parsedErrors = new HashMap<>();
-
-            for (SBMLError err : doc.getErrorLog().getValidationErrors()) {
-                StringBuilder sb = new StringBuilder();
-
-                if (!parsedErrors.containsKey(err.getCode())) {
-                    parsedErrors.put(err.getCode(), "");
-                } else {
-                    sb.append(parsedErrors.get(err.getCode())).append("\n");
-                }
-
-
-                sb.append(err.getSeverity()).append(" line ").append(err.getLine())
-                        .append(" : ").append(err.getCategory())
-                        .append(" : ").append(err.getShortMessage().getMessage());
-
-                String newMessage = sb.toString();
-                parsedErrors.put(err.getCode(), newMessage);
-
-            }
-
-            errorsAndWarnings.addAll(parsedErrors.values());
-
-            return doc.getErrorLog().getNumFailsWithSeverity(SEVERITY.ERROR) == 0;
-        }
-        return true;
     }
 
     /**
@@ -460,24 +357,6 @@ public class JsbmlReader {
     }
 
     /**
-     * <p>isValidSBML.</p>
-     *
-     * @return the validSBML
-     */
-    public boolean isValidSBML() {
-        return validSBML;
-    }
-
-    /**
-     * <p>Setter for the field <code>validSBML</code>.</p>
-     *
-     * @param validSBML the validSBML to set
-     */
-    public void setValidSBML(boolean validSBML) {
-        this.validSBML = validSBML;
-    }
-
-    /**
      * <p>Getter for the field <code>errorsAndWarnings</code>.</p>
      *
      * @return the errorsAndWarnings
@@ -494,23 +373,4 @@ public class JsbmlReader {
     public void setErrorsAndWarnings(ArrayList<String> errorsAndWarnings) {
         this.errorsAndWarnings = errorsAndWarnings;
     }
-
-    /**
-     * <p>isUseValidator.</p>
-     *
-     * @return the useValidator
-     */
-    public boolean isUseValidator() {
-        return useValidator;
-    }
-
-    /**
-     * <p>Setter for the field <code>useValidator</code>.</p>
-     *
-     * @param useValidator the useValidator to set
-     */
-    public void setUseValidator(boolean useValidator) {
-        this.useValidator = useValidator;
-    }
-
 }

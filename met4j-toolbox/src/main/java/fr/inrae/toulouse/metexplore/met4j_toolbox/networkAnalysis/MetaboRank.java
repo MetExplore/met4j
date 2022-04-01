@@ -138,7 +138,7 @@ public class MetaboRank extends AbstractMet4jApplication {
      *
      */
     private BioNetwork importModel(String sbmlFilePath) throws IOException, Met4jSbmlReaderException {
-        JsbmlReader reader = new JsbmlReader(sbmlFilePath, false);
+        JsbmlReader reader = new JsbmlReader(sbmlFilePath);
         BioNetwork model = reader.read();
         System.err.println("model imported.");
         return model;

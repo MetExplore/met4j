@@ -73,18 +73,21 @@ public class ExtractSbmlAnnot extends AbstractMet4jApplication {
         int i = 0;
         for(BioEntity e : entities){
 
-            StringBuffer sb = new StringBuffer(e.getId());
             Set<BioRef> refSet = e.getRefs(db);
             if(refSet!=null){
                 i+=1;
-                if(uniq) refSet=  new HashSet<BioRef>(Arrays.asList(refSet.iterator().next()));
+                if(uniq)refSet=  new HashSet<BioRef>(Arrays.asList(refSet.iterator().next()));
                 for(BioRef ref : refSet){
+                    StringBuffer sb = new StringBuffer();
+                    sb.append(e.getId());
                     sb.append(sep);
                     sb.append(ref.getId());
                     sb.append("\n");
                     fw.write(sb.toString());
                 }
             }else if(!skip){
+                StringBuffer sb = new StringBuffer();
+                sb.append(e.getId());
                 sb.append(sep);
                 sb.append("NA\n");
                 fw.write(sb.toString());

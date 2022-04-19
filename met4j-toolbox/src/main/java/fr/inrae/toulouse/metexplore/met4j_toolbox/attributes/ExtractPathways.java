@@ -51,10 +51,14 @@ public class ExtractPathways extends AbstractMet4jApplication {
         BioCollection<BioPathway> pathways = new BioCollection<>();
         for(String id : pathwayId.split("\\+")){
             BioPathway pathway = network.getPathwaysView().get(id);
-            if(pathway!=null) pathways.add(pathway);
-            System.out.println("Number of reactions in pathway "+pathway.getName()+" ("+id+"): "+network.getReactionsFromPathways(pathway).size());
-            System.out.println("Number of species in pathway "+pathway.getName()+" ("+id+"): "+network.getMetabolitesFromPathway(pathway).size());
-            System.out.println("Number of genes in pathway "+pathway.getName()+" ("+id+"): "+network.getGenesFromPathways(pathway).size());
+            if(pathway!=null){
+                pathways.add(pathway);
+                System.out.println("Number of reactions in pathway "+pathway.getName()+" ("+id+"): "+network.getReactionsFromPathways(pathway).size());
+                System.out.println("Number of species in pathway "+pathway.getName()+" ("+id+"): "+network.getMetabolitesFromPathway(pathway).size());
+                System.out.println("Number of genes in pathway "+pathway.getName()+" ("+id+"): "+network.getGenesFromPathways(pathway).size());
+            }else{
+                System.out.println("Error: Pathway "+id+" not found in network, please check sbml file.");
+            }
         }
 
         //remove pathway's reactions and metabolites from list

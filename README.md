@@ -62,7 +62,7 @@ mv ./target/*-jar-with-dependencies.jar ../../../
 ## Usage
 
 Documentation for the library modules can be found in each module's own README.  
-Detailed code examples can be found at [https://forgemia.inra.fr/metexplore/tutorialmet4j](https://cecill.info/licences/Licence_CeCILL_V2.1-en.html).  
+Detailed code examples can be found at [here](https://forgemia.inra.fr/metexplore/tutorialmet4j).  
 
 The toolbox can be launched using
 ```
@@ -72,6 +72,14 @@ which will list all the contained applications that can be called using
 
 ```
 java -cp met4j-toolbox-0.8.0-jar-with-dependencies.jar <App full name> -h
+```
+
+### With singularity
+
+You need at least [singularity](https://sylabs.io/guides/3.5/user-guide/quick_start.html) v3.5.
+
+```console
+singularity pull met4j-toolbox.sif oras://registry.forgemia.inra.fr/metexplore/met4j/met4j-singularity:latest
 ```
 
 ## Contributing

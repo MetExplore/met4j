@@ -57,10 +57,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
  * @version $Id: $Id
  */
 public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGraph<V ,E>>{
-	
+
 	/** The graph. */
 	public final G g;
-	
+
 	/**
 	 * Instantiates a new shortest paths computor.
 	 *
@@ -69,7 +69,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	public ShortestPath(G g) {
 		this.g=g;
 	}
-	
+
 	/**
 	 * compute the shortest paths (or lightest paths if the graph is weighted) between 2 nodes
 	 *
@@ -86,29 +86,29 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 		if(!g.containsVertex(end)){
 			throw(new IllegalArgumentException("Error: end node "+end.getId()+" not found in graph"));
 		}
-		
+
 		HashMap<V,E> incoming = new HashMap<>();
 		HashMap<V,Double> distMap = new HashMap<>();
 		Set<V> unseen = new HashSet<>();
 		Set<V> seen = new HashSet<>();
-		
+
 		//init dist from start
 		for(V v : g.vertexSet()){
 			distMap.put(v, Double.POSITIVE_INFINITY);
 		}
-		
+
 		unseen.add(start);
 		distMap.put(start,0.0);
 
-		
+
 		while (!unseen.isEmpty()) {
-			
+
 			//get the closest node from the start vertex
 			V n = getNearest(distMap,unseen);
 			unseen.remove(n);
 			seen.add(n);
-			
-			
+
+
 			//add current nodes's successor to the list of node to process, if not already seen
 			//	skip outgoing edges from reaction already used in path
 			for(E e : g.outgoingEdgesOf(n)){
@@ -126,7 +126,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 			}
 		}
 		if(!incoming.containsKey(end)) return null;
-		
+
 		//backtracking
 		double weight = 0.0;
 		List<E> sp = new ArrayList<>();
@@ -142,8 +142,8 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 		Collections.reverse(sp);
 		return new BioPath<>(g, start, end, sp, weight);
 	}
-	
-	
+
+
 	/**
 	 * compute the shortest paths (or lightest paths if the graph is weighted) between 2 nodes as if the graph was undirected
 	 *
@@ -160,28 +160,28 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 		if(!g.containsVertex(end)){
 			throw(new IllegalArgumentException("Error: end node "+end.getId()+" not found in graph"));
 		}
-		
+
 		HashMap<V,E> incoming = new HashMap<>();
 		HashMap<V,Double> distMap = new HashMap<>();
 		Set<V> unseen = new HashSet<>();
 		Set<V> seen = new HashSet<>();
-		
+
 		//init dist from start
 		for(V v : g.vertexSet()){
 			distMap.put(v, Double.POSITIVE_INFINITY);
 		}
-		
+
 		unseen.add(start);
 		distMap.put(start,0.0);
-		
+
 		while (!unseen.isEmpty()) {
-			
+
 			//get the closest node from the start vertex
 			V n = getNearest(distMap,unseen);
 			unseen.remove(n);
 			seen.add(n);
-			
-			
+
+
 			//add current nodes's successor to the list of node to process, if not already seen
 			//	skip outgoing edges from reaction already used in path
 			for(E e : g.outgoingEdgesOf(n)){
@@ -212,7 +212,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 			}
 		}
 		if(!incoming.containsKey(end)) return null;
-		
+
 		//backtracking
 		double weight = 0.0;
 		List<E> sp = new ArrayList<>();
@@ -232,7 +232,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 		Collections.reverse(sp);
 		return new BioPath<>(g, start, end, sp, weight);
 	}
-	
+
 	/**
 	 * get the nearest vertex to a given seed node from a list of node to check
 	 *
@@ -252,8 +252,8 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 		}
 		return nearest;
 	}
-	
-	
+
+
 	/**
 	 * compute the list of edges from the union of all shortest paths between all nodes in a given set
 	 *
@@ -263,7 +263,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	public List<BioPath<V,E>> getShortestPathsUnionList(Set<V> nodeOfInterest){
 		return getShortestPathsUnionList(nodeOfInterest,nodeOfInterest);
 	}
-	
+
 
 	/**
 	 * compute the list of edges from the union of all shortest paths between sources and target nodes
@@ -274,17 +274,18 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 */
 	public List<BioPath<V,E>> getShortestPathsUnionList(Set<V> startNodes, Set<V> targetNodes){
 		ArrayList<BioPath<V,E>> shortest = new ArrayList<>();
-		for(V start : startNodes){
+		// for(V start : startNodes){
+		startNodes.parallelStream().forEach(start -> {
 			for(V end : targetNodes){
 				if(start!=end){
 					BioPath<V, E> toAdd = getShortest(start, end);
 					if(toAdd!=null) shortest.add(toAdd);
 				}
 			}
-		}
+		});
 		return shortest;
 	}
-	
+
 	/**
 	 * Compute a graph where each edge correspond to an existing path between source and target
 	 *
@@ -303,7 +304,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 				cg.addVertex(v);
 			}
 		}
-		for(V v1 : sources){
+		sources.parallelStream().forEach(v1 -> {
 			for(V v2: targets){
 				if(v1!=v2){
 					BioPath<V,E> sp = this.getShortest(v1, v2);
@@ -320,15 +321,15 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 						}else{
 							cg.setEdgeWeight(e,sp.getLength());
 						}
-					
+
 					}
 				}
 			}
-		}
+		});
 
 		return cg;
 	}
-	
+
 	/**
 	 * compute for each node in the first list, the minimum path length to be reached by nodes in the second set
 	 *
@@ -357,7 +358,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 		}
 		return minSpDist;
 	}
-	
+
 	/**
 	 * compute for each node in the first list, the average minimum path length to be reached by nodes in the second set
 	 *
@@ -385,23 +386,23 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 		}
 		return avgSpDist;
 	}
-	
+
 	/**
 	 * return all the shortest path in the given graph.
 	 * @return all the shortest path in the given graph.
 	 */
-	public Set<BioPath<V,E>> getAllShortestPaths(){
-		HashSet<BioPath<V, E>> paths = new HashSet<>();
-		
-		for(V v1 : g.vertexSet()){
-			for(V v2 : g.vertexSet()){
-				if(v1!=v2){
-					BioPath<V, E> sp = this.getShortest(v1, v2);
-					if(sp!=null) paths.add(sp);
-				}
-			}
-		}
-		return paths;
-	}
+	 public Set<BioPath<V,E>> getAllShortestPaths(){
+ 		HashSet<BioPath<V, E>> paths = new HashSet<>();
+ 		Set<V> v_set = g.vertexSet();
+ 		v_set.parallelStream().forEach(v1 -> {
+ 			for(V v2 : g.vertexSet()){
+ 				if(v1!=v2){
+ 					BioPath<V, E> sp = this.getShortest(v1, v2);
+ 					if(sp!=null) paths.add(sp);
+ 				}
+ 			}
+ 		});
+ 		return paths;
+ 	}
 
 }

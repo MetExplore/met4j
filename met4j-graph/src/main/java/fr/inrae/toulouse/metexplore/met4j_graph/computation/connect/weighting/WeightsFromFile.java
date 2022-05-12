@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
@@ -71,7 +72,12 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 	private int weightCol = 3;
 	private boolean skipHeader = false;
 	private boolean missingAsNaN = true;
+	private Function<String,Double> process = Double::parseDouble;
 
+	public WeightsFromFile<V,E,G> processWeigthCol(Function<String,Double> process) {
+		this.process = process;
+		return this;
+	}
 	public WeightsFromFile<V,E,G> removeEdgeNotInFile() {
 		this.removeEdgeNotInFile = true;
 		return this;
@@ -151,7 +157,7 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 					if(e!=null){
 						if(!seenEdges.contains(e)){
 							try{
-								double w = Double.parseDouble(lineParts[weightCol]);
+								double w = process.apply(lineParts[weightCol]);
 								if(!Double.isNaN(w)){
 									g.setEdgeWeight(e, w);
 									seenEdges.add(e);

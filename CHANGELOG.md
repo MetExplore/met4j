@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.10.0
+
+### Features
+
+[met4j-toolbox] New app: networkAnalysis.CompoundNet: Advanced compound graph building
+
+[met4j-toolbox] New app: attributes.ExtractPathways: SBML sub network creation from a list of pathways
+
+[met4j-toolbox] New app: attributes.ExtractSbmlAnnot: Extract sbml annotations 
+
+[met4j-toolbox] App improvements: networkAnalysis.SideCompoundsScan: Handle multiple compartments
+
 ## 0.9.1
 
 ### Fixed

@@ -265,7 +265,7 @@ public class Kegg2BioNetwork {
 
         Document doc;
         try {
-            doc = Kegg2BioNetwork.loadXMLFromString(xml);
+            doc = this.loadXMLFromString(xml);
         } catch (Exception e) {
             System.err.println("[met4j-io][Kegg2BioNetwork] Badly formatted KGML for pathway " + pathway.getId());
             throw e;
@@ -689,15 +689,20 @@ public class Kegg2BioNetwork {
         return id.replaceAll("[: ]", "_");
     }
 
+
     /**
      * @param xml a String
      * @return a {@link Document}
      */
-    private static Document loadXMLFromString(String xml) throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    protected Document loadXMLFromString(String xml) throws Exception {
+        DocumentBuilderFactory factory = getFactory();
         DocumentBuilder builder = factory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xml));
         return builder.parse(is);
+    }
+
+    protected DocumentBuilderFactory getFactory() {
+        return DocumentBuilderFactory.newInstance();
     }
 
     /**

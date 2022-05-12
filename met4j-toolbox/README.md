@@ -4,24 +4,45 @@
 ## Installation
 ```
 cd met4j-toolbox
-mvn clean compile assembly:single
+mvn clean package
 ```
 
 ## Usage
 The toolbox can be launched using
 ```
-java -jar met4j-toolbox-<version>-jar-with-dependencies.jar
+java -jar met4j-toolbox-<version>.jar
 ```
 which will list all the contained applications that can be called using
 
 ```
-java -cp met4j-toolbox-<version>-jar-with-dependencies.jar <Package>.<App name> -h
+java -cp met4j-toolbox-<version>.jar <Package>.<App name> -h
 ```
 
 ## Features
 <table>
 <thead><tr><th colspan="2">Package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes</th></tr></thead>
 <tbody>
+<tr><td>ExtractPathways</td><td>Extract pathway(s) from GSMN<details><summary><small>more</small></summary>"Extract pathway(s) from GSMN: From a SBML file, Create a sub-network SBML file including only a selection of pathways<br/><br/><pre><code> -h     : prints the help (default: false)
+ -i VAL : input SBML file
+ -o VAL : output SBML file
+ -p VAL : pathway identifiers, separated by "+" sign if more than one
+</code></pre></details></td></tr>
+<tr><td>ExtractSbmlAnnot</td><td>Extract databases' references from SBML annotations or notes.<details><summary><small>more</small></summary>Extract databases' references from SBML annotations or notes. The references are exported as a tabulated file with one column with the SBML compound, reaction or gene identifiers, and one column with the corresponding database identifier.The name of the targeted database need to be provided under the same form than the one used in the notes field or the identifiers.org uri<br/><br/><pre><code> -db VAL                                : name of the referenced database to
+                                          export annotations from, as listed in
+                                          notes or identifiers.org base uri
+ -export [METABOLITE | REACTION | GENE] : the type of entity to extract
+                                          annotation, either metabolite,
+                                          reaction, or gene
+ -h                                     : prints the help (default: false)
+ -i VAL                                 : input SBML file
+ -o VAL                                 : output file path
+ -skip                                  : Skip entities without the selected
+                                          annotations, by default output them
+                                          with NA value (default: false)
+ -uniq                                  : keep only one identifier if multiple
+                                          are referenced for the same entity
+                                          (default: false)
+</code></pre></details></td></tr>
 <tr><td>SbmlSetChargesFromFile</td><td>Set charge to network metabolites from a tabulated file containing the metabolite ids and the formulas<details><summary><small>more</small></summary>Set charge to network metabolites from a tabulated file containing the metabolite ids and the formulas<br/>The charge must be a number. The ids must correspond between the tabulated file and the SBML file.<br/>If prefix or suffix is different in the SBML file, use the -p or the -s options.<br/>The charge will be written in the SBML file in two locations:+<br/>- in the reaction notes (e.g. <p>charge: -1</p><br/>- as fbc attribute (e.g. fbc:charge="1")<br/><br/><pre><code> -c VAL    : [#] Comment String in the tabulated file. The lines beginning by
              this string won't be read (default: #)
  -cc N     : [2] number of the column where are the charges (default: 2)
@@ -220,6 +241,8 @@ java -cp met4j-toolbox-<version>-jar-with-dependencies.jar <Package>.<App name> 
                                (default: false)
  -g VAL                      : input GSAM file
  -h                          : prints the help (default: false)
+ -i (--fromIndexes)          : Use GSAM output with carbon indexes (default:
+                               false)
  -ks (--keepSingleCarbon)    : keep edges involving single-carbon compounds,
                                such as CO2 (requires formulas in SBML)
                                (default: false)
@@ -239,6 +262,31 @@ java -cp met4j-toolbox-<version>-jar-with-dependencies.jar <Package>.<App name> 
  -i VAL          : input SBML file
  -o VAL          : output results file
  -s (--side) VAL : an optional file containing list of side compounds to ignore
+</code></pre></details></td></tr>
+<tr><td>CompoundNet</td><td>Advanced creation of a compound graph representation of a SBML file content<details><summary><small>more</small></summary>Metabolic networks used for quantitative analysis often contain links that are irrelevant for graph-based structural analysis. For example, inclusion of side compounds or modelling artifacts such as 'biomass' nodes.<br/>While Carbon Skeleton Graph offer a relevant alternative topology for graph-based analysis, it requires compounds' structure information, usually not provided in model, and difficult to retrieve for model with sparse cross-reference annotations.<br/>In contrary to the SBML2Graph app that performs a raw conversion of the SBML content, the present app propose a fine-tuned creation of compound graph from predefined list of side compounds and degree² weighting to get relevant structure without structural data.This app also enable Markov-chain based analysis of metabolic networks by computing reaction-normalized transition probabilities on the network.<br/><br/><pre><code> -am (--asmatrix)                    : export as matrix (implies simple graph
+                                       conversion). Default export as GML file
+                                       (default: false)
+ -cw (--customWeights) VAL           : an optional file containing weights for
+                                       compound pairs
+ -dw (--degreeWeights)               : penalize traversal of hubs by using
+                                       degree square weighting (default: false)
+ -h                                  : prints the help (default: false)
+ -mc (--mergecomp) [by_name | by_id] : merge compartments. Use names if
+                                       consistent and unambiguous across
+                                       compartments, or identifiers if
+                                       compartment suffix is present (id in
+                                       form "xxx_y" with xxx as base identifier
+                                       and y as compartment label).
+ -me (--simple)                      : merge parallel edges to produce a simple
+                                       graph (default: false)
+ -o VAL                              : output Graph file
+ -ri (--removeIsolatedNodes)         : remove isolated nodes (default: false)
+ -s VAL                              : input SBML file
+ -sc VAL                             : input Side compound file
+ -tp (--transitionproba)             : set weight as random walk transition
+                                       probability, normalized by reaction
+                                       (default: false)
+ -un (--undirected)                  : create as undirected (default: false)
 </code></pre></details></td></tr>
 <tr><td>DistanceMatrix</td><td>Create a compound to compound distance matrix.<details><summary><small>more</small></summary>Create a compound to compound distance matrix.<br/>The distance between two compounds is computed as the length of the shortest path connecting the two in the compound graph, where two compounds are linked if they are respectively substrate and product of the same reaction.<br/>An optional edge weighting can be used, turning the distances into the sum of edge weights in the lightest path, rather than the length of the shortest path.The default weighting use target's degree squared. Alternatively, custom weighting can be provided in a file. In that case, edges without weight are ignored during path search.<br/>If no edge weighting is set, it is recommended to provide a list of side compounds to ignore during network traversal.<br/><br/><pre><code> -dw (--degree)     : penalize traversal of hubs by using degree square
                       weighting (default: false)
@@ -264,6 +312,17 @@ java -cp met4j-toolbox-<version>-jar-with-dependencies.jar <Package>.<App name> 
  -st (--steinertree)       : Extract Steiner Tree (default: false)
  -sw (--chemSimWeights)    : penalize traversal of non-relevant edges by using
                              chemical similarity weighting (default: false)
+ -t VAL                    : input targets txt file
+</code></pre></details></td></tr>
+<tr><td>ExtractSubReactionNetwork</td><td>Create a subnetwork from a GSMN in SBML format, and two files containing lists of reactions of interests ids, one per row, plus one file of the same format containing side compounds ids.<details><summary><small>more</small></summary>Create a subnetwork from a GSMN in SBML format, and two files containing lists of reactions of interests ids, one per row, plus one file of the same format containing side compounds ids.<br/>The subnetwork corresponds to part of the network that connects reactions from the first list to reactions from the second list.<br/>Sources and targets list can have elements in common. The connecting part can be defined as the union of shortest or k-shortest paths between sources and targets, or the Steiner tree connecting them. Contrary to compound graph, reaction graph often lacks weighting policy for edge relevance. In order to ensure appropriate network density, a list of side compounds to ignore for linking reactions must be provided. An optional edge weight file, if available, can also be used.<br/><br/><pre><code> -cw (--customWeights) VAL : an optional file containing weights for reactions
+                             pairs
+ -h                        : prints the help (default: false)
+ -i VAL                    : input SBML file
+ -k N                      : Extract k-shortest paths (default: 1)
+ -o VAL                    : output gml file
+ -s VAL                    : input sources txt file
+ -sc (--side) VAL          : a file containing list of side compounds to ignore
+ -st (--steinertree)       : Extract Steiner Tree (default: false)
  -t VAL                    : input targets txt file
 </code></pre></details></td></tr>
 <tr><td>LoadPoint</td><td>Compute the Load points of a metabolic network. Load points constitute an indicator of lethality and can help identifying drug target.<details><summary><small>more</small></summary>Compute the Load points of a metabolic network. Load points constitute an indicator of lethality and can help identifying drug target.<br/>From Rahman et al. Observing local and global properties of metabolic pathways: ‘load points’ and ‘choke points’ in the metabolic networks. Bioinf. (2006):<br/>For a given metabolic network, the load L on metabolite m can be defined as :<br/>ln [(pm/km)/(∑Mi=1Pi)/(∑Mi=1Ki)]<br/>p is the number of shortest paths passing through a metabolite m;<br/>k is the number of nearest neighbour links for m in the network;<br/>P is the total number of shortest paths;<br/>K is the sum of links in the metabolic network of M metabolites (where M is the number of metabolites in the network).<br/>Use of the logarithm makes the relevant values more distinguishable.<br/><br/><pre><code> -h              : prints the help (default: false)
@@ -322,26 +381,34 @@ java -cp met4j-toolbox-<version>-jar-with-dependencies.jar <Package>.<App name> 
  -t (--trace)       : trace inclusion step index for each node in output
                       (default: false)
 </code></pre></details></td></tr>
-<tr><td>SideCompoundsScan</td><td>Scan a network to identify side-compounds.<details><summary><small>more</small></summary>Scan a network to identify side-compounds.<br/>Side compounds are metabolites of small relevance for topological analysis. Their definition can be quite subjective and varies between sources.<br/>Side compounds tends to be ubiquitous and not specific to a particular biochemical or physiological process.<br/>Compounds usually considered as side compounds include water, atp or carbon dioxide. By being involved in many reactions and thus connected to many compounds, they tend to significantly lower the average shortest path distances beyond expected metabolic relatedness.<br/>This tool attempts to propose a list of side compounds according to specific criteria:  <br/>- *Degree*: Compounds with an uncommonly high number of neighbors can betray a lack of process specificity.  <br/>High degree compounds typically include water and most main cofactors (CoA, ATP, NADPH...) but can also include central compounds such as pyruvate or acetyl-CoA  <br/>- *Edge Redundancy*: Similar to degree, this criteria assume that side compounds are involved in many reactions, but in pairs with other side compounds.<br/>Therefore, the transition from ATP to ADP will appear multiple time in the network, creating redundant 'parallel edges' between these two neighbors.<br/>Having a high number of redundancy, i.e. edges that don't extends one's neighborhood, can point out cofactors while keeping converging pathways' products like pyruvate aside.  <br/>- *Carbon Count*: Metabolic "waste", or degradation end-product such as ammonia or carbon dioxide are usually considered as side compounds.<br/>Most of them are inorganic compound, another ill-defined concept, sometimes defined as compound lacking C-C or C-H bonds. Since chemical structure is rarely available in SBML model beyond chemical formula, we use a less restrictive criterion by flagging compound with one or no carbons. This cover most inorganic compounds, but include few compounds such as methane usually considered as organic.  - *Chemical Formula*: Metabolic network often contains 'artifacts' that serve modelling purpose (to define a composite objective function for example). Such entities can be considered as 'side entities'. Since they are not actual chemical compounds, they can be detected by their lack of valid chemical formula. However, this can also flag main compounds with erroneous or missing annotation.<br/><br/><pre><code> -cc (--noCarbonSkeleton) : flag as side compound any compounds with less than
-                            2 carbons in formula (default: false)
- -d (--degree) N          : flag as side compounds any compounds with degree
-                            above threshold (default: 400)
- -dp (--degreep) N        : flag as side compounds the top x% of compounds
-                            according to their degree (default: NaN)
- -er (--edgeRedundancy) N : flag as side compound any compound with a number of
-                            redundancy in incident edges (parallel edges
-                            connecting to the same neighbor) above the given
-                            threshold (default: NaN)
- -h                       : prints the help (default: false)
- -i VAL                   : input SBML file
- -id (--onlyIds)          : do not report values in output, export ids list of
-                            compounds flagged as side-Compounds, allowing
-                            piping results (default: false)
- -o VAL                   : output Side-Compounds file
- -s (--onlySides)         : output compounds flagged as side-Compounds only
-                            (default: false)
- -uf (--undefinedFormula) : flag as side compound any compounds with no valid
-                            chemical formula (default: false)
+<tr><td>SideCompoundsScan</td><td>Scan a network to identify side-compounds.<details><summary><small>more</small></summary>Scan a network to identify side-compounds.<br/>Side compounds are metabolites of small relevance for topological analysis. Their definition can be quite subjective and varies between sources.<br/>Side compounds tend to be ubiquitous and not specific to a particular biochemical or physiological process.Compounds usually considered as side compounds include water, atp or carbon dioxide. By being involved in many reactions and thus connected to many compounds, they tend to significantly lower the average shortest path distances beyond expected metabolic relatedness.<br/>This tool attempts to propose a list of side compounds according to specific criteria:  <br/>- *Degree*: Compounds with an uncommonly high number of neighbors can betray a lack of process specificity.  <br/>High degree compounds typically include water and most main cofactors (CoA, ATP, NADPH...) but can also include central compounds such as pyruvate or acetyl-CoA  <br/>- *Neighbor Coupling*: Similar to degree, this criteria assume that side compounds are involved in many reactions, but in pairs with other side compounds.<br/>Therefore, the transition from ATP to ADP will appear multiple time in the network, creating redundant 'parallel edges' between these two neighbors.<br/>Being tightly coupled to another compound through a high number of redundant edges, can point out cofactors while keeping converging pathways' products with high degree like pyruvate aside.  <br/>- *Carbon Count*: Metabolic "waste", or degradation end-product such as ammonia or carbon dioxide are usually considered as side compounds.<br/>Most of them are inorganic compound, another ill-defined concept, sometimes defined as compound lacking C-C or C-H bonds. Since chemical structure is rarely available in SBML model beyond chemical formula, we use a less restrictive criterion by flagging compound with one or no carbons. This cover most inorganic compounds, but include few compounds such as methane usually considered as organic.  - *Chemical Formula*: Metabolic network often contains 'artifacts' that serve modelling purpose (to define a composite objective function for example). Such entities can be considered as 'side entities'. Since they are not actual chemical compounds, they can be detected by their lack of valid chemical formula. However, this can also flag main compounds with erroneous or missing annotation.<br/><br/><pre><code> -cc (--noCarbonSkeleton)       : flag as side compound any compounds with less
+                                  than 2 carbons in formula (default: false)
+ -d (--degree) N                : flag as side compounds any compounds with
+                                  degree above threshold (default: 400)
+ -dp (--degreep) N              : flag as side compounds the top x% of
+                                  compounds according to their degree (default:
+                                  NaN)
+ -h                             : prints the help (default: false)
+ -i VAL                         : input SBML file
+ -id (--onlyIds)                : do not report values in output, export ids
+                                  list of compounds flagged as side-Compounds,
+                                  allowing piping results (default: false)
+ -m (--merge) [by_name | by_id] : Degree is shared between compounds in
+                                  different compartments. Use names if
+                                  consistent and unambiguous across
+                                  compartments, or identifiers if compartment
+                                  suffix is present (id in form "xxx_y" with
+                                  xxx as base identifier and y as compartment
+                                  label).
+ -nc (--neighborCoupling) N     : flag as side compound any compound with a
+                                  number of parallel edges shared with a
+                                  neighbor above the given threshold (default:
+                                  NaN)
+ -o VAL                         : output Side-Compounds file
+ -s (--onlySides)               : output compounds flagged as side-Compounds
+                                  only (default: false)
+ -uf (--undefinedFormula)       : flag as side compound any compounds with no
+                                  valid chemical formula (default: false)
 </code></pre></details></td></tr>
 </tbody>
 </table>

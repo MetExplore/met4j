@@ -65,18 +65,18 @@ public class GenerateDoc {
     private static String install="" +
             "```\n" +
             "cd met4j-toolbox\n" +
-            "mvn clean compile assembly:single\n" +
+            "mvn clean package\n" +
             "```\n";
 
     private static String usage="" +
             "The toolbox can be launched using\n" +
             "```\n" +
-            "java -jar met4j-toolbox-<version>-jar-with-dependencies.jar\n" +
+            "java -jar met4j-toolbox-<version>.jar\n" +
             "```\n" +
             "which will list all the contained applications that can be called using\n" +
             "\n" +
             "```\n" +
-            "java -cp met4j-toolbox-<version>-jar-with-dependencies.jar <Package>.<App name> -h\n" +
+            "java -cp met4j-toolbox-<version>.jar <Package>.<App name> -h\n" +
             "```\n";
 
     private static StringBuffer getHeader(){

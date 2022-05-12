@@ -1,16 +1,18 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis;
 
-import fr.inrae.toulouse.metexplore.met4j_chemUtils.FormulaParser;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.AtomMappingWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.ReactionProbabilityWeight;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.*;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.EdgeMerger;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.VertexContraction;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBCParser;
@@ -25,23 +27,24 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.function.Function;
 
-public class CarbonSkeletonNet  extends AbstractMet4jApplication {
+public class CompoundNet extends AbstractMet4jApplication {
 
     @Option(name = "-s", usage = "input SBML file", required = true)
     public String inputPath = null;
 
-    @Option(name = "-g", usage = "input GSAM file", required = true)
-    public String inputAAM = null;
+    @Option(name = "-sc", usage = "input Side compound file", required = false)
+    public String inputSide = null;
 
     @Option(name = "-o", usage = "output Graph file", required = true)
     public String outputPath = null;
 
-    @Option(name = "-ks", aliases = {"--keepSingleCarbon"}, usage = "keep edges involving single-carbon compounds, such as CO2 (requires formulas in SBML)", required = false)
-    public boolean keepSingleCarbon = false;
-
-    @Option(name = "-mc", aliases = {"--nocomp"}, usage = "merge compartments (requires unique compound names that are consistent across compartments)", required = false)
-    public boolean mergeComp = false;
+    enum strategy {by_name,by_id}
+    @Option(name = "-mc", aliases = {"--mergecomp"}, usage = "merge compartments. " +
+            "Use names if consistent and unambiguous across compartments, or identifiers if compartment suffix is present (id in form \"xxx_y\" with xxx as base identifier and y as compartment label).")
+    public strategy mergingStrat = null;
+    public String idRegex = "^(\\w+)_\\w$";
 
     @Option(name = "-me", aliases = {"--simple"}, usage = "merge parallel edges to produce a simple graph", required = false)
     public boolean mergeEdges = false;
@@ -49,21 +52,23 @@ public class CarbonSkeletonNet  extends AbstractMet4jApplication {
     @Option(name = "-ri", aliases = {"--removeIsolatedNodes"}, usage = "remove isolated nodes", required = false)
     public boolean removeIsolated = false;
 
+    @Option(name = "-dw", aliases = {"--degreeWeights"}, usage = "penalize traversal of hubs by using degree square weighting", forbids = {"-cw", "-sw"})
+    public Boolean degree = false;
+    @Option(name = "-cw", aliases = {"--customWeights"}, usage = "an optional file containing weights for compound pairs", forbids = {"-dw", "-sw"})
+    public String weightFile = null;
+
     @Option(name = "-un", aliases = {"--undirected"}, usage = "create as undirected", required = false)
     public boolean undirected = false;
 
-    @Option(name = "-tp", aliases = {"--transitionproba"}, usage = "set transition probability as weight", required = false)
+    @Option(name = "-tp", aliases = {"--transitionproba"}, usage = "set weight as random walk transition probability, normalized by reaction", required = false)
     public boolean computeWeight = false;
 
     @Option(name = "-am", aliases = {"--asmatrix"}, usage = "export as matrix (implies simple graph conversion). Default export as GML file", required = false)
     public boolean asMatrix = false;
 
-    @Option(name = "-i", aliases = {"--fromIndexes"}, usage = "Use GSAM output with carbon indexes", required = false)
-    public boolean fromIndexes = false;
-
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
 
-        CarbonSkeletonNet app = new CarbonSkeletonNet();
+        CompoundNet app = new CompoundNet();
 
         app.parseArguments(args);
 
@@ -86,17 +91,26 @@ public class CarbonSkeletonNet  extends AbstractMet4jApplication {
         CompoundGraph graph = builder.getCompoundGraph();
         System.out.println(" Done.");
 
-        System.out.print("Processing atom mappings...");
-        AtomMappingWeightPolicy wp = ( fromIndexes ?
-                new AtomMappingWeightPolicy().fromConservedCarbonIndexes(inputAAM) :
-                new AtomMappingWeightPolicy().fromNumberOfConservedCarbons(inputAAM)
-        );
-        wp = wp.binarize()
-        .removeEdgeWithoutMapping()
-        .removeEdgesWithoutConservedCarbon();
+        //Graph processing: side compound removal [optional]
+        if (inputSide != null) {
+            System.err.println("removing side compounds...");
+            NodeMapping<BioMetabolite, ReactionEdge, CompoundGraph> mapper = new NodeMapping<>(graph).skipIfNotFound();
+            BioCollection<BioMetabolite> sideCpds = mapper.map(inputSide);
+            boolean removed = graph.removeAllVertices(sideCpds);
+            if (removed) System.err.println(sideCpds.size() + " compounds removed.");
+        }
 
+        //Graph processing: set weights [optional]
+        WeightingPolicy<BioMetabolite, ReactionEdge, CompoundGraph> wp = new DefaultWeightPolicy<>();
+        if (weightFile != null) {
+            System.err.println("Setting edge weights...");
+            wp = new WeightsFromFile(weightFile);
+        } else if (degree) {
+            System.err.println("Setting edge weights...");
+            int pow = 2;
+            wp = new DegreeWeightPolicy(pow);
+        }
         wp.setWeight(graph);
-        System.out.println(" Done.");
 
         //invert graph as undirected (copy edge weight to reversed edge)
        if(undirected){
@@ -106,31 +120,11 @@ public class CarbonSkeletonNet  extends AbstractMet4jApplication {
        }
 
         //merge compartment
-        if(mergeComp){
+        if(mergingStrat!=null){
             System.out.print("Merging compartments...");
             VertexContraction vc = new VertexContraction();
-            graph = vc.decompartmentalize(graph, new VertexContraction.MapByName());
-            System.out.println(" Done.");
-        }
-
-        //remove single-carbon compounds
-        if(!keepSingleCarbon){
-            System.out.println("Skip compounds with less than two carbons detected...");
-            HashSet<BioMetabolite> toRemove = new HashSet<>();
-            for(BioMetabolite n : graph.vertexSet()) {
-                if (!graph.edgesOf(n).isEmpty()) {
-                    String formula = n.getChemicalFormula();
-                    try {
-                        FormulaParser fp = new FormulaParser(formula);
-                        if (fp.isExpectedInorganic()) {
-                            graph.removeAllEdges(graph.edgesOf(n));
-                            System.out.println("\tdisconnecting " + n.getName());
-                        }
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("\tcan't define structure of " + n.getName());
-                    }
-                }
-            }
+            VertexContraction.Mapper merger = mergingStrat.equals(strategy.by_name) ? new VertexContraction.MapByName() : new VertexContraction.MapByIdSubString(idRegex);
+            graph = vc.decompartmentalize(graph, merger);
             System.out.println(" Done.");
         }
 
@@ -179,14 +173,13 @@ public class CarbonSkeletonNet  extends AbstractMet4jApplication {
 
     @Override
     public String getLongDescription() {
-        return "Metabolic networks used for quantitative analysis often contain links that are irrelevant for graph-based structural analysis. For example, inclusion of side compounds or modelling artifacts such as 'biomass' nodes." +
-                " Focusing on links between compounds that share parts of their carbon skeleton allows to avoid many transitions involving side compounds, and removes entities without defined chemical structure. " +
-                "This app produce a Carbon Skeleton Network relevant for graph-based analysis of metabolism, in GML or matrix format, from a SBML and an GSAM atom mapping file. " +
-                "GSAM (see https://forgemia.inra.fr/metexplore/gsam) perform atom mapping at genome-scale level using the Reaction Decoder Tool (https://github.com/asad/ReactionDecoder) and allows to compute the number of conserved atoms of a given type between reactants." +
-                "This app also enable Markov-chain based analysis of metabolic networks by computing reaction-normalized transition probabilities on the Carbon Skeleton Network.";
+        return "Metabolic networks used for quantitative analysis often contain links that are irrelevant for graph-based structural analysis. For example, inclusion of side compounds or modelling artifacts such as 'biomass' nodes.\n" +
+                "While Carbon Skeleton Graph offer a relevant alternative topology for graph-based analysis, it requires compounds' structure information, usually not provided in model, and difficult to retrieve for model with sparse cross-reference annotations.\n" +
+                "In contrary to the SBML2Graph app that performs a raw conversion of the SBML content, the present app propose a fine-tuned creation of compound graph from predefined list of side compounds and degree² weighting to get relevant structure without structural data."+
+                "This app also enable Markov-chain based analysis of metabolic networks by computing reaction-normalized transition probabilities on the network.";
     }
 
     @Override
-    public String getShortDescription() {return "Create a carbon skeleton graph representation of a SBML file content, using GSAM atom-mapping file (see https://forgemia.inra.fr/metexplore/gsam)";}
+    public String getShortDescription() {return "Advanced creation of a compound graph representation of a SBML file content";}
 }
 

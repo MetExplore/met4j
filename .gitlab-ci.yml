@@ -1,4 +1,16 @@
-image: maven:3.6-adoptopenjdk-14
+
+
+stages:
+  - build
+  - test
+  - deploy
+  - build-containers
+
+.template_docker:
+  stage: build-containers
+  image: docker:latest
+  services:
+    - docker:dind
 
 variables:
   MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
@@ -9,19 +21,20 @@ cache:
     - .m2/repository/
 
 build:
+  image: maven:3.6-adoptopenjdk-14
   stage: build
   script:
     - mvn compile
 
 test:
+  image: maven:3.6-adoptopenjdk-14
   stage: test
   script:
     - mvn clean test
     - cat coverage/target/site/jacoco-aggregate/index.html | grep -o '<tfoot>.*</tfoot>'
 
-
-
 deploySnapshot:
+  image: maven:3.6-adoptopenjdk-14
   stage: deploy
   script:
     - mvn $MAVEN_CLI_OPTS deploy -Dmaven.test.skip=true
@@ -29,6 +42,7 @@ deploySnapshot:
     - develop
 
 deployCentral:
+  image: maven:3.6-adoptopenjdk-14
   stage: deploy
   before_script:
     - 'which ssh-agent || ( apt-get update -qy && apt-get install openssh-client -qqy )'
@@ -49,3 +63,47 @@ deployCentral:
     - mvn $MAVEN_CLI_OPTS release:perform -Darguments=-Dgpg.passphrase=${GPG_PASSPHRASE} -DlocalCheckout=true
   only:
     - master
+
+buildSingularity:
+  stage: build-containers
+  image:
+    name: quay.io/singularity/singularity:v3.4.0
+    entrypoint: [ "" ]
+  script:
+    - singularity build met4j-toolbox.sif met4j.singularity
+    - singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"$CI_COMMIT_TAG"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+      when: manual
+
+buildDockerProdGitlab:
+  extends: .template_docker
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -t "$CI_REGISTRY/metexplore/met4j/met4j-docker:latest" .
+    - docker push "$CI_REGISTRY/metexplore/met4j/met4j-docker:latest"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+      when: manual
+
+buildDockerProdDockerhub:
+  extends: .template_docker
+  before_script:
+    - docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_PASSWORD" $DOCKERHUB_REGISTRY
+  script:
+    - docker build --pull -t "$DOCKERHUB_IMAGE:latest" .
+    - docker push "$DOCKERHUB_IMAGE:latest"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+      when: manual
+
+
+
+

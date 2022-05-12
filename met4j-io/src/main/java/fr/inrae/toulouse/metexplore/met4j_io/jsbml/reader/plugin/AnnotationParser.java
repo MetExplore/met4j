@@ -40,7 +40,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML1Compatible;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML2Compatible;
@@ -52,11 +51,9 @@ import org.sbml.jsbml.UniqueNamedSBase;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity;
 
 import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.*;
 
@@ -152,8 +149,6 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 		this.parseSbmlAnnotations(bionetwork.getReactionsView());
 		this.parseSbmlAnnotations(bionetwork.getMetabolitesView());
 		this.parseSbmlAnnotations(bionetwork.getGenesView());
-//		this.parseSbmlAnnotations(bionetwork.getProteinsView());
-//		this.parseSbmlAnnotations(bionetwork.getEnzymesView());
 		this.parseSbmlAnnotations(bionetwork.getCompartmentsView());
 	}
 
@@ -194,7 +189,7 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
 		Matcher m;
 		for (CVTerm cv : annot.getListOfCVTerms()) {
 			
-			String qual = "NA";
+			String qual;
 			
 			if(cv.isBiologicalQualifier()) {
 			

@@ -43,6 +43,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,7 +61,7 @@ public class Kegg2BioNetworkTest {
 
     @Before
     public void init() throws Exception {
-        app = new Kegg2BioNetwork("fak", "reaction");
+        app = spy(new Kegg2BioNetwork("fak", "reaction"));
 
         keggServices = spy(new KeggServices());
         app.keggServices = keggServices;
@@ -71,6 +72,11 @@ public class Kegg2BioNetworkTest {
         doReturn(KeggApiMock.tcaKgml).when(keggServices).getKgml(anyString());
         doReturn(KeggApiMock.orgInfo).when(keggServices).getKeggOrganismInfo(anyString());
         doReturn(KeggApiMock.reactionInfo).when(keggServices).getKeggEntities(anyString());
+
+        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+        // Do not load dtd
+        builderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        doReturn(builderFactory).when(app).getFactory();
 
         app.setBionetworkDefaultValue();
 
@@ -139,6 +145,7 @@ public class Kegg2BioNetworkTest {
         app.origin = "map";
 
         app.getNetwork().add(pathway);
+
 
         app.getPathwayComponents(pathway);
 
@@ -328,6 +335,7 @@ public class Kegg2BioNetworkTest {
         doThrow(Exception.class).when(keggServices).getKeggPathwayEntries(anyString());
         doReturn(KeggApiMock.noReactionPathwayKgml).when(keggServices).getKgml("bpa00000");
 
+
         app.createNetworkPathways();
 
     }
@@ -338,6 +346,7 @@ public class Kegg2BioNetworkTest {
         doThrow(Exception.class).when(keggServices).getKeggPathwayEntries(anyString());
         doReturn(KeggApiMock.errorResult).when(keggServices).getKgml("bpa00000");
         doReturn(KeggApiMock.tcaKgml).when(keggServices).getKgml("bpa00020");
+
 
         app.createNetworkPathways();
 
@@ -366,6 +375,7 @@ public class Kegg2BioNetworkTest {
         doReturn(pathwayList).when(keggServices).getKeggPathwayEntries(anyString());
         doReturn(KeggApiMock.fakeKgml).when(keggServices).getKgml("bpa0");
 
+
         app.setECList();
         app.createNetworkPathways();
 
@@ -384,6 +394,7 @@ public class Kegg2BioNetworkTest {
 
         doReturn(pathwayList).when(keggServices).getKeggPathwayEntries(anyString());
         doReturn(KeggApiMock.fakeKgml).when(keggServices).getKgml("bpa0");
+
 
         app.setECList();
         app.createNetworkPathways();
@@ -462,7 +473,6 @@ public class Kegg2BioNetworkTest {
         BioMetabolite C02683 = app.getNetwork().getMetabolite("C02683");
 
         assertEquals(3.0, C02683.getMolecularWeight(), 0.0);
-
 
 
     }

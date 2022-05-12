@@ -392,16 +392,29 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @return all the shortest path in the given graph.
 	 */
 	 public Set<BioPath<V,E>> getAllShortestPaths(){
- 		HashSet<BioPath<V, E>> paths = new HashSet<>();
- 		Set<V> v_set = g.vertexSet();
- 		v_set.parallelStream().forEach(v1 -> {
- 			for(V v2 : g.vertexSet()){
- 				if(v1!=v2){
- 					BioPath<V, E> sp = this.getShortest(v1, v2);
- 					if(sp!=null) paths.add(sp);
+ 		Set<BioPath<V,E>> paths = new HashSet();
+ 		//Generate pair map
+ 		HashMap<List<V>,BioPath<V,E>> result_map = new HashMap<>();
+ 		for(V v1 : g.vertexSet())
+ 		{
+ 			for(V v2 : g.vertexSet()) {
+ 				List<V> tmp_set = new ArrayList();
+ 				tmp_set.add(v1);
+ 				tmp_set.add(v2);
+ 				if(v1!=v2) {
+ 					result_map.put(tmp_set, null);
  				}
  			}
+ 		}
+ 		result_map.entrySet()
+ 		.parallelStream()
+ 		.forEach(entry -> {
+ 			BioPath<V, E> sp = this.getShortest(entry.getKey().get(0), entry.getKey().get(1));
+ 			result_map.replace(entry.getKey(), sp);
  		});
+ 		for(BioPath<V, E> bp : result_map.values()) {
+ 			if(bp != null) paths.add(bp);
+ 		}
  		return paths;
  	}
 

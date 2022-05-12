@@ -36,6 +36,7 @@
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -107,11 +108,7 @@ public class PathBasedCentrality<V extends BioEntity,E extends Edge<V>, G extend
 	 * @return the geodesic betweenness
 	 */
 	public Map<V, Integer> getGeodesicBetweenness(){
-		if(this.allShortestPaths ==null){
-			ShortestPath<V, E, G> pathComputor = new ShortestPath<>(g);
-            allShortestPaths =pathComputor.getAllShortestPaths();
-		}
-		return getBetweenness(allShortestPaths);
+		return getBetweenness(this.getAllShortestPaths());
 	}
 	
 	/**
@@ -143,11 +140,7 @@ public class PathBasedCentrality<V extends BioEntity,E extends Edge<V>, G extend
 	 * @return the geodesic neighborhood centrality
 	 */
 	public Map<V, Integer> getGeodesicNeighborhoodCentrality(){
-		if(this.allShortestPaths ==null){
-			ShortestPath<V, E, G> pathComputor = new ShortestPath<>(g);
-            allShortestPaths =pathComputor.getAllShortestPaths();
-		}
-		return getNeighborhoodCentrality(allShortestPaths);
+		return getNeighborhoodCentrality(this.getAllShortestPaths());
 	}
 	
 	/**
@@ -296,11 +289,7 @@ public class PathBasedCentrality<V extends BioEntity,E extends Edge<V>, G extend
 	 * @return a {@link java.util.Map} object.
 	 */
 	public Map<V, Double> getGeodesicCloseness(){
-		if(this.allShortestPaths ==null){
-			ShortestPath<V, E, G> pathComputor = new ShortestPath<>(g);
-            allShortestPaths =pathComputor.getAllShortestPaths();
-		}
-		return getCloseness(allShortestPaths);
+		return getCloseness(this.getAllShortestPaths());
 	}
 	
 	/**
@@ -341,7 +330,7 @@ public class PathBasedCentrality<V extends BioEntity,E extends Edge<V>, G extend
 	public Set<BioPath<V, E>> getAllShortestPaths() {
 		if(this.allShortestPaths ==null){
 			ShortestPath<V, E, G> pathComputor = new ShortestPath<>(g);
-            allShortestPaths =pathComputor.getAllShortestPaths();
+            allShortestPaths = new HashSet<>(pathComputor.getAllShortestPaths());
 		}
 		return allShortestPaths;
 	}

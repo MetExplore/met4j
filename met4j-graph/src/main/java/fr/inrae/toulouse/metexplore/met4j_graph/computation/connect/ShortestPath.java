@@ -35,13 +35,8 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.connect;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
@@ -49,6 +44,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compressed.CompressedGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compressed.PathEdge;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import org.jgrapht.alg.util.Pair;
 
 /**
  * Class to use the shortest paths in a graph
@@ -273,17 +269,12 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @return the list of edges involved in the shortest path union
 	 */
 	public List<BioPath<V,E>> getShortestPathsUnionList(Set<V> startNodes, Set<V> targetNodes){
-		ArrayList<BioPath<V,E>> shortest = new ArrayList<>();
-		// for(V start : startNodes){
-		startNodes.parallelStream().forEach(start -> {
-			for(V end : targetNodes){
-				if(start!=end){
-					BioPath<V, E> toAdd = getShortest(start, end);
-					if(toAdd!=null) shortest.add(toAdd);
-				}
-			}
-		});
-		return shortest;
+		Collection<Pair<V,V>> pairs = prepareSPcomputation(startNodes,targetNodes);
+		if(pairs.isEmpty()) return new ArrayList<>();
+		return pairs.parallelStream()
+				.map(p -> this.getShortest(p.getFirst(),p.getSecond()))
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -304,7 +295,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 				cg.addVertex(v);
 			}
 		}
-		sources.parallelStream().forEach(v1 -> {
+		for(V v1 : sources){
 			for(V v2: targets){
 				if(v1!=v2){
 					BioPath<V,E> sp = this.getShortest(v1, v2);
@@ -325,7 +316,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 					}
 				}
 			}
-		});
+		}
 
 		return cg;
 	}
@@ -391,18 +382,20 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * return all the shortest path in the given graph.
 	 * @return all the shortest path in the given graph.
 	 */
-	 public Set<BioPath<V,E>> getAllShortestPaths(){
- 		HashSet<BioPath<V, E>> paths = new HashSet<>();
- 		Set<V> v_set = g.vertexSet();
- 		v_set.parallelStream().forEach(v1 -> {
- 			for(V v2 : g.vertexSet()){
- 				if(v1!=v2){
- 					BioPath<V, E> sp = this.getShortest(v1, v2);
- 					if(sp!=null) paths.add(sp);
- 				}
- 			}
- 		});
- 		return paths;
- 	}
+	public List<BioPath<V,E>> getAllShortestPaths(){
+		return getShortestPathsUnionList(g.vertexSet());
+	}
+
+	private Collection<Pair<V,V>> prepareSPcomputation(Set<V> sources, Set<V> targets){
+		ArrayList<Pair<V,V>> pairs = new ArrayList<>();
+		for(V v1 : sources){
+			for(V v2 : targets){
+				if(v1!=v2){
+					pairs.add(new Pair<>(v1,v2));
+				}
+			}
+		}
+		return pairs;
+	}
 
 }

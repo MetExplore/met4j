@@ -81,7 +81,7 @@ public abstract class BioEntity {
      */
     public BioEntity(String id, String name) {
         if (StringUtils.isVoid(id)) {
-            String newId = UUID.randomUUID().toString().replaceAll("-", "_");
+            String newId = "_"+UUID.randomUUID().toString().replaceAll("-", "_");
             this.id = newId;
         } else {
             this.id = id;

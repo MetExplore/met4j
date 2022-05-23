@@ -8,47 +8,64 @@ import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.KShortestPat
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.ShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.SteinerTreeApprox;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DefaultWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DegreeWeightPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightsFromFile;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.CompoundEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_mapping.Mapper;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.*;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+
 public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
 
+    @Format(name = Sbml)
+    @ParameterType(name = InputFile)
     @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
+
+    @Format(name = Text)
+    @ParameterType(name = InputFile)
     @Option(name = "-s", usage = "input sources txt file", required = true)
     public String sourcePath = null;
+
+    @Format(name = Text)
+    @ParameterType(name = InputFile)
     @Option(name = "-t", usage = "input targets txt file", required = true)
     public String targetPath = null;
+
+    @Format(name = Gml)
+    @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output gml file", required = true)
     public String outputPath = null;
+
+    @Format(name = Text)
+    @ParameterType(name = InputFile)
     @Option(name = "-sc", aliases = {"--side"}, usage = "a file containing list of side compounds to ignore", required = true)
     public String sideCompoundFile = null;
 
-    
+    @Format(name = Tsv)
+    @ParameterType(name = InputFile)
     @Option(name = "-cw", aliases = {"--customWeights"}, usage = "an optional file containing weights for reactions pairs")
     public String weightFile = null;
 
     @Option(name = "-k", usage = "Extract k-shortest paths", forbids = {"-st"})
     public int k = 1;
+
     @Option(name = "-st", aliases = {"--steinertree"}, usage = "Extract Steiner Tree", forbids = {"-k"})
     public boolean st = false;
 
@@ -60,18 +77,21 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
 
         //Graph processing: import side compounds
         System.err.println("importing side compounds...");
-        Mapper<BioMetabolite> mapper = new Mapper<>(network,BioNetwork::getMetabolitesView).skipIfNotFound();
+        Mapper<BioMetabolite> mapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
         BioCollection<BioMetabolite> sideCpds = mapper.map(sideCompoundFile);
-        if(mapper.getNumberOfSkippedEntries()>0) System.err.println(mapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
+        if (mapper.getNumberOfSkippedEntries() > 0)
+            System.err.println(mapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
         System.err.println(sideCpds.size() + " side compounds ignored during graph build.");
 
         //get sources and targets
         System.err.println("extracting sources and targets");
-        Mapper<BioReaction> rmapper = new Mapper<>(network,BioNetwork::getReactionsView).skipIfNotFound();
+        Mapper<BioReaction> rmapper = new Mapper<>(network, BioNetwork::getReactionsView).skipIfNotFound();
         HashSet<BioReaction> sources = new HashSet<>(rmapper.map(sourcePath));
-        if(rmapper.getNumberOfSkippedEntries()>0) System.err.println(rmapper.getNumberOfSkippedEntries() + " source not found in network.");
+        if (rmapper.getNumberOfSkippedEntries() > 0)
+            System.err.println(rmapper.getNumberOfSkippedEntries() + " source not found in network.");
         HashSet<BioReaction> targets = new HashSet<>(rmapper.map(targetPath));
-        if(rmapper.getNumberOfSkippedEntries()>0) System.err.println(rmapper.getNumberOfSkippedEntries() + " target not found in network.");
+        if (rmapper.getNumberOfSkippedEntries() > 0)
+            System.err.println(rmapper.getNumberOfSkippedEntries() + " target not found in network.");
 
         //Create reaction graph
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);

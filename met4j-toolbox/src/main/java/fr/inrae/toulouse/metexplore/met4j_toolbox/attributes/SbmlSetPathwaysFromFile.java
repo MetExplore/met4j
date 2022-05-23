@@ -38,6 +38,8 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetPathwaysFromFile;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 /**
@@ -48,11 +50,12 @@ import org.kohsuke.args4j.Option;
  */
 public class SbmlSetPathwaysFromFile extends AbstractSbmlSetReaction {
 
+    @ParameterType(name= EnumParameterTypes.Integer)
     @Option(name="-cp", usage="[2] number of the column where are the pathways")
-    private int colp=2;
+    public int colp=2;
 
     @Option(name="-sep", usage="[|] Separator of pathways in the tabulated file")
-    private String sep = "|";
+    public String sep = "|";
 
 
     /** {@inheritDoc} */
@@ -113,7 +116,7 @@ public class SbmlSetPathwaysFromFile extends AbstractSbmlSetReaction {
 
         if(!flag) {
             System.err.println("Error in "+this.getLabel());
-            System.exit(0);
+            System.exit(1);
         }
 
 

@@ -1,8 +1,13 @@
 # met4j-toolbox
 **Met4j command-line toolbox for metabolic networks**
 
-## Installation
+## Installation from source
+
 ```
+git clone https://forgemia.inra.fr/metexplore/met4j.git;
+cd met4j;
+mvn clean install 
+
 cd met4j-toolbox
 mvn clean package
 ```
@@ -10,12 +15,120 @@ mvn clean package
 ## Usage
 The toolbox can be launched using
 ```
-java -jar met4j-toolbox-<version>.jar
+java -jar target/met4j-toolbox-<version>.jar
 ```
 which will list all the contained applications that can be called using
 
 ```
-java -cp met4j-toolbox-<version>.jar <Package>.<App name> -h
+java -cp target/met4j-toolbox-<version>.jar <Package>.<App name> -h
+```
+
+
+## From singularity
+
+You need at least [singularity](https://sylabs.io/guides/3.5/user-guide/quick_start.html) v3.5.
+
+```console
+singularity pull met4j-toolbox.sif oras://registry.forgemia.inra.fr/metexplore/met4j/met4j-singularity:latest
+```
+
+If you want a specific version:
+
+```console
+singularity pull met4j-toolbox.sif oras://registry.forgemia.inra.fr/metexplore/met4j/met4j-singularity:x.y.z
+```
+
+If you want the last develop version:
+
+```console
+singularity pull met4j-toolbox.sif oras://registry.forgemia.inra.fr/metexplore/met4j/met4j-singularity:develop
+```
+
+If you want to build by yourself the singularity image:
+
+```console
+cd met4j-toolbox
+mvn package
+cd ../
+singularity build met4j-toolbox.sif met4j.singularity
+```
+
+
+This will download a singularity container met4j-toolbox.sif that you can directly launch.
+
+To list all the apps.
+```console
+met4j-toolbox.sif 
+```
+
+To launch a specific app, prefix its name with the last component of its package name. For instance:
+
+```console
+met4j-toolbox.sif convert.Tab2Sbml -h -in fic.tsv -sbml fic.sbml
+```
+
+By default, singularity does not see the directories that are not descendants of your home directory. To get the directories outside your home directory, you have to specify the SINGULARITY_BIND environment variable.
+At least, to get the data in the default reference directory, you have to specify:
+In bash:
+```console
+export SINGULARITY_BIND=/db
+```
+In csh or in tcsh
+```console
+setenv SINGULARITY_BIND /db
+```
+
+## From docker
+
+First install [Docker](https://www.docker.com/).
+
+Pull the latest met4j image:
+
+```console
+sudo docker pull metexplore/met4j:latest
+```
+
+If you want a specific version:
+
+```console
+sudo docker pull metexplore/met4j:x.y.z
+```
+
+If you want the develop version:
+```console
+sudo docker pull metexplore/met4j:develop
+```
+
+If you want to build by yourself the docker image:
+
+```console
+cd met4j-toolbox
+mvn package
+cd ../
+sudo docker build -t metexplore/met4j:myversion .
+```
+
+
+To list all the apps:
+```console
+sudo docker run metexplore/met4j:latest met4j.sh
+```
+
+Don't forget to map volumes when you want to process local files.
+Example:
+
+```console
+sudo docker run -v /home/lcottret/work:/work \
+ metexplore/met4j:latest met4j.sh convert.Sbml2Tab \
+ -in /work/toy_model.xml -out /work/toy_model.tsv
+```
+
+If you change the working directory, you have to specify "sh /usr/bin/met4j.sh":
+
+```console
+sudo docker run -w /work -v /home/lcottret/work:/work \
+ metexplore/met4j:latest sh /usr/bin/met4j.sh convert.Sbml2Tab \
+ -in toy_model.xml -out toy_model.tsv
 ```
 
 ## Features

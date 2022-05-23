@@ -41,6 +41,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 import java.io.FileWriter;
@@ -55,11 +59,15 @@ import java.io.PrintWriter;
  */
 public class SbmlToMetaboliteTable extends AbstractMet4jApplication {
 
+    @ParameterType(name= EnumParameterTypes.InputFile)
+    @Format(name= EnumFormats.Sbml)
     @Option(name = "-s", usage = "Sbml file", required = true)
-    protected String sbml;
+    public String sbml;
 
+    @ParameterType(name= EnumParameterTypes.OutputFile)
+    @Format(name= EnumFormats.Tsv)
     @Option(name = "-o", usage = "Output file", required=true)
-    protected String outputFile;
+    public String outputFile;
 
     /**
      * <p>main.</p>
@@ -104,7 +112,7 @@ public class SbmlToMetaboliteTable extends AbstractMet4jApplication {
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Unable to read the sbml file " + this.sbml);
-            System.exit(0);
+            System.exit(1);
         }
 
         BioNetwork bn = null;
@@ -113,7 +121,7 @@ public class SbmlToMetaboliteTable extends AbstractMet4jApplication {
         } catch (Met4jSbmlReaderException e) {
             e.printStackTrace();
             System.err.println("Problem while reading the sbml file " + this.sbml);
-            System.exit(0);
+            System.exit(1);
         }
 
         return bn;

@@ -44,6 +44,6 @@ if [ $# -lt 1 ]
         echo "display Help"
         exec java -jar $path_jar
     else
-        echo "Lauch met4j-toolbox"
+        echo "Launch met4j-toolbox"
 	      exec java -Dlog4j.configuration= -cp $path_jar fr.inrae.toulouse.metexplore.met4j_toolbox."$@"
 fi

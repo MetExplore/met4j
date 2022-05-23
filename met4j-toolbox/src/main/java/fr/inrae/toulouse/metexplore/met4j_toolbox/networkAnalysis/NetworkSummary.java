@@ -18,6 +18,9 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.kohsuke.args4j.Option;
 
@@ -28,24 +31,31 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+
 
 public class NetworkSummary extends AbstractMet4jApplication {
 
+    @Format(name = Sbml)
+    @ParameterType(name = InputFile)
     @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
+    @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output report file", required = true)
     public String outputPath = null;
 
+    @ParameterType(name = InputFile)
     @Option(name = "-s", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore (recommended)")
     public String sideCompoundFile = null;
 
-    @Option(name = "-sd", aliases = {"--skipdist"}, usage = "skip full distance matrix computation (quick summary)", forbids={"-w"})
+    @Option(name = "-sd", aliases = {"--skipdist"}, usage = "skip full distance matrix computation (quick summary)", forbids = {"-w"})
     public Boolean skipdist = false;
 
     @Option(name = "-d", aliases = {"--directed"}, usage = "use reaction direction for distances")
     public Boolean directed = false;
-
 
 
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
@@ -58,12 +68,12 @@ public class NetworkSummary extends AbstractMet4jApplication {
     public void run() throws IOException, Met4jSbmlReaderException {
         //Start output
         FileWriter fw = new FileWriter(outputPath);
-            fw.write("#\tMET4J NETWORK SUMMARY\n");
-            fw.write("#\tNetwork: "+this.inputPath+"\n");
-            if(sideCompoundFile!=null) fw.write("#\tSide compounds: "+this.sideCompoundFile+"\n");
+        fw.write("#\tMET4J NETWORK SUMMARY\n");
+        fw.write("#\tNetwork: " + this.inputPath + "\n");
+        if (sideCompoundFile != null) fw.write("#\tSide compounds: " + this.sideCompoundFile + "\n");
         Date currentDate = new Date();
-            fw.write("#\t"+currentDate.toString()+"\n");
-            fw.write("#"+"-".repeat(60)+"\n");
+        fw.write("#\t" + currentDate.toString() + "\n");
+        fw.write("#" + "-".repeat(60) + "\n");
 
         //import network
         System.err.println("reading SBML...");
@@ -79,23 +89,23 @@ public class NetworkSummary extends AbstractMet4jApplication {
         wp.setWeight(graph);
 
         //Graph processing: side compound removal
-        if(sideCompoundFile!=null){
+        if (sideCompoundFile != null) {
             System.err.println("removing side compounds...");
-            BioCollection<BioMetabolite> sideCpds=new BioCollection<>();
+            BioCollection<BioMetabolite> sideCpds = new BioCollection<>();
             BufferedReader fr = new BufferedReader(new FileReader(sideCompoundFile));
             String line;
             while ((line = fr.readLine()) != null) {
                 String sId = line.trim().split("\t")[0];
                 BioMetabolite s = network.getMetabolite(sId);
-                if(s!=null){
+                if (s != null) {
                     sideCpds.add(s);
-                }else{
-                    System.err.println(sId+" side compound not found in network.");
+                } else {
+                    System.err.println(sId + " side compound not found in network.");
                 }
             }
             fr.close();
             boolean removed = graph.removeAllVertices(sideCpds);
-            if (removed) System.err.println(sideCpds.size()+" compounds removed.");
+            if (removed) System.err.println(sideCpds.size() + " compounds removed.");
         }
 
         //Start Anlysis
@@ -104,43 +114,43 @@ public class NetworkSummary extends AbstractMet4jApplication {
         analyzer.adjustEdgeCountForMultiGraph();
 
         //basic stats
-            fw.write("Number of nodes:\t"+graph.vertexSet().size()+"\n");
-            fw.write("Number of edges:\t"+graph.edgeSet().size()+"\n");
-            fw.write("Number of neighbor pairs (ignore parallel edges):\t"+(int)analyzer.getNumberOfEdges()+"\n");
+        fw.write("Number of nodes:\t" + graph.vertexSet().size() + "\n");
+        fw.write("Number of edges:\t" + graph.edgeSet().size() + "\n");
+        fw.write("Number of neighbor pairs (ignore parallel edges):\t" + (int) analyzer.getNumberOfEdges() + "\n");
 
         //connectivity
         System.err.println("extract connected component...");
         List<Set<BioMetabolite>> cc = GraphMeasure.getConnectedCompenent(graph);
-            fw.write("Number of connected component:\t"+cc.size()+"\n");
+        fw.write("Number of connected component:\t" + cc.size() + "\n");
         Map<Integer, Integer> ccSizes = cc.stream().collect(Collectors.groupingBy(Set::size))
                 .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, (e -> e.getValue().size())));
-        for(Map.Entry e : ccSizes.entrySet()){
-            fw.write("\t"+e.getKey()+" x"+e.getValue()+"\n");
+        for (Map.Entry e : ccSizes.entrySet()) {
+            fw.write("\t" + e.getKey() + " x" + e.getValue() + "\n");
         }
 
         //density
         System.err.println("Compute density...");
-        fw.write("Density (gamma index):\t"+analyzer.getGamma()+"\n");
+        fw.write("Density (gamma index):\t" + analyzer.getGamma() + "\n");
         DescriptiveStatistics clusterStats = new DescriptiveStatistics();
         System.err.println("Compute local clustering coefficients...");
-        GraphLocalMeasure<BioMetabolite,ReactionEdge,CompoundGraph> analyzer2 = new GraphLocalMeasure(graph);
-        for(BioMetabolite v : graph.vertexSet()){
+        GraphLocalMeasure<BioMetabolite, ReactionEdge, CompoundGraph> analyzer2 = new GraphLocalMeasure(graph);
+        for (BioMetabolite v : graph.vertexSet()) {
             clusterStats.addValue(analyzer2.getLocalClusteringCoeff(v));
         }
-            fw.write("Average local clustering coefficient:\t"+clusterStats.getMean()+"\n");
+        fw.write("Average local clustering coefficient:\t" + clusterStats.getMean() + "\n");
 
 
         //degree statistics
         System.err.println("Compute degree statistics...");
         DescriptiveStatistics degreeStats = new DescriptiveStatistics();
-        for(BioMetabolite v : graph.vertexSet()){
+        for (BioMetabolite v : graph.vertexSet()) {
             degreeStats.addValue(graph.degreeOf(v));
         }
-        fw.write("Max degree:\t"+degreeStats.getMax()+"\n");
-        fw.write("Average degree:\t"+degreeStats.getMean()+"\n");
+        fw.write("Max degree:\t" + degreeStats.getMax() + "\n");
+        fw.write("Average degree:\t" + degreeStats.getMean() + "\n");
 
         //distances statistics
-        if(!skipdist) {
+        if (!skipdist) {
             System.err.println("Compute distances...");
             //  compute distance matrix
             ComputeAdjacencyMatrix adjBuilder = new ComputeAdjacencyMatrix(graph);
@@ -153,11 +163,11 @@ public class NetworkSummary extends AbstractMet4jApplication {
             System.err.println("Compute distances statistics...");
             DescriptiveStatistics distStats = new DescriptiveStatistics();
             //  gather all elements in matrix, remove infinity
-            for(int i=0; i<distM.numRows(); i++){
-                for(int j=0; j<distM.numCols(); j++){
-                    if(i!=j){
-                        Double d=distM.get(i,j);
-                        if(!d.equals(Double.POSITIVE_INFINITY)){
+            for (int i = 0; i < distM.numRows(); i++) {
+                for (int j = 0; j < distM.numCols(); j++) {
+                    if (i != j) {
+                        Double d = distM.get(i, j);
+                        if (!d.equals(Double.POSITIVE_INFINITY)) {
                             distStats.addValue(d);
                         }
                     }
@@ -165,8 +175,8 @@ public class NetworkSummary extends AbstractMet4jApplication {
             }
 
             int diameter = (int) distStats.getMax();
-                fw.write("Diameter:\t"+diameter+"\n");
-                fw.write("Average shortest path length:\t"+distStats.getMean()+"\n");
+            fw.write("Diameter:\t" + diameter + "\n");
+            fw.write("Average shortest path length:\t" + distStats.getMean() + "\n");
 
             //Centrality analysis
             System.err.println("Compute centrality...");
@@ -186,7 +196,7 @@ public class NetworkSummary extends AbstractMet4jApplication {
             fw.write("Top Closeness:\n");
             for (int i = 0; i < 20; i++) {
                 Map.Entry<BioMetabolite, Integer> e = it.next();
-                fw.write("\t"+(e.getValue()+1)+"\t"+e.getKey().getName()+"\t"+(closenessRaw.get(e.getKey())*graph.vertexSet().size())+"\n");
+                fw.write("\t" + (e.getValue() + 1) + "\t" + e.getKey().getName() + "\t" + (closenessRaw.get(e.getKey()) * graph.vertexSet().size()) + "\n");
 
             }
 
@@ -200,13 +210,18 @@ public class NetworkSummary extends AbstractMet4jApplication {
         System.err.println("Done.");
         fw.close();
     }
-    @Override
-    public String getLabel() {return this.getClass().getSimpleName();}
 
     @Override
-    public String getLongDescription() {return "Use a metabolic network in SBML file and an optional list of side compounds, " +
-            "and produce a report summarizing several graph measures characterising the structure of the network." +
-            "This includes (non-exhaustive list): size and order, connectivity, density, degree distribution, shortest paths length, top centrality nodes...";}
+    public String getLabel() {
+        return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public String getLongDescription() {
+        return "Use a metabolic network in SBML file and an optional list of side compounds, " +
+                "and produce a report summarizing several graph measures characterising the structure of the network." +
+                "This includes (non-exhaustive list): size and order, connectivity, density, degree distribution, shortest paths length, top centrality nodes...";
+    }
 
     @Override
     public String getShortDescription() {

@@ -7,6 +7,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 import java.io.FileWriter;
@@ -15,16 +19,20 @@ import java.util.*;
 
 public class ExtractSbmlAnnot extends AbstractMet4jApplication {
 
+    @Format(name= EnumFormats.Sbml)
+    @ParameterType(name= EnumParameterTypes.InputFile)
     @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
+    @Format(name= EnumFormats.Tsv)
+    @ParameterType(name= EnumParameterTypes.OutputFile)
     @Option(name = "-o", usage = "output file path", required = true)
     public String outputPath = null;
 
     enum entity { METABOLITE,REACTION,GENE}
 
     @Option(name="-export", usage = "the type of entity to extract annotation, either metabolite, reaction, or gene", required = true)
-    public entity export;
+    public entity export = entity.METABOLITE;
 
     @Option(name="-db", usage = "name of the referenced database to export annotations from, as listed in notes or identifiers.org base uri", required = true)
     public String db;

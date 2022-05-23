@@ -4,11 +4,9 @@ From: debian:stable-slim
 %runscript
     if [ $# -lt 1 ] 
     then
-        echo "display Help"
-        exec java -jar /opt/bin/met4j.jar
+        exec sh /opt/bin/met4j.sh
     else
-        echo "Lauch met4j-toolbox"
-	    exec java -Dlog4j.configuration= -cp /opt/bin/met4j.jar fr.inrae.toulouse.metexplore.met4j_toolbox."$@"
+	    exec sh /opt/bin/met4j.sh "$@"
     fi
 
 %help
@@ -17,7 +15,10 @@ Usage: met4j.sif
 
 This is singularity container for met4j
 
+First launch :
 
+cd met4j-toolbox
+mvn package
 
 %labels
     Maintainer Ludovic.Cottret@inrae.fr
@@ -27,37 +28,15 @@ This is singularity container for met4j
 	apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y \
-        openjdk-11-jre   \
-        git \
-        maven
+        openjdk-11-jre
     apt-get clean && \
-    apt-get purge 
+    apt-get purge
 
-	mkdir -p /opt
-
-    cd /opt
-
-    git clone https://forgemia.inra.fr/metexplore/met4j.git
-
-    cd met4j/
-    
-    mvn install
-
-    cd met4j-toolbox
-
-    mvn package
-
-    mkdir -p /opt/bin
-
-    cp target/met4j*.jar /opt/bin/met4j.jar
-
-    cd /opt 
-
-    rm -rf met4j ~/.m2
-
-    apt-get remove -y maven git
-
-    apt-get autoremove -y
+    cd /usr/bin && ln -s /opt/bin/met4j.sh
 
 %environment
     export LC_ALL=C
+
+%files
+    ./docker_files/met4j.sh /opt/bin/met4j.sh
+    ./met4j-toolbox/target/met4j*.jar /opt/bin/met4j.jar

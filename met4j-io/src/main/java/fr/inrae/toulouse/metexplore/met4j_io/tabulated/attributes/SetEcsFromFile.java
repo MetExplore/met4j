@@ -86,8 +86,6 @@ public class SetEcsFromFile extends AbstractSetAttributesFromFile {
 
         String[] ecs = ec.split(";");
 
-        System.err.println("ec : "+ec+" l :"+ecs.length);
-
         return Arrays.stream(ecs).allMatch(e -> {
             Matcher m = patternEC.matcher(e);
             return m.matches();

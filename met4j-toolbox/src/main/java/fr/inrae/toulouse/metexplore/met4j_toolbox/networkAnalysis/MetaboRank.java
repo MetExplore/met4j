@@ -52,6 +52,9 @@ import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 import java.io.*;
@@ -61,28 +64,46 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Tsv;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+
 /**
  * @author clement
  */
 public class MetaboRank extends AbstractMet4jApplication {
 
     //arguments
+    @Format(name = Sbml)
+    @ParameterType(name = InputFile)
     @Option(name = "-i", usage = "input SBML file: path to network used for computing centrality, in sbml format.", required = true)
-    String sbmlFilePath;
+    public String sbmlFilePath;
+
+    @Format(name = Tsv)
+    @ParameterType(name = InputFile)
     @Option(name = "-s", usage = "input seeds file: tabulated file containing node of interest ids and weight", required = true)
-    String seedsFilePath;
+    public String seedsFilePath;
+
+    @Format(name = Tsv)
+    @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output file: path to the file where the results will be exported", required = true)
-    String output;
+    public String output;
 
     //parameters
+    @Format(name = Tsv)
+    @ParameterType(name = InputFile)
     @Option(name = "-w", usage = "input edge weight file: (recommended) path to file containing edges' weights. Will be normalized as transition probabilities")
-    String edgeWeightsFilePaths;
+    public String edgeWeightsFilePaths;
+
     @Option(name = "-max", usage = "maximal number of iteration")
-    int maxNbOfIter = 15000;
+    public int maxNbOfIter = 15000;
+
     @Option(name = "-t", usage = "convergence tolerance")
-    double tolerance = 0.001;
+    public double tolerance = 0.001;
+
     @Option(name = "-d", usage = "damping factor")
-    double dampingFactor = 0.85;
+    public double dampingFactor = 0.85;
 
     //variables
     CompoundGraph firstGraph;

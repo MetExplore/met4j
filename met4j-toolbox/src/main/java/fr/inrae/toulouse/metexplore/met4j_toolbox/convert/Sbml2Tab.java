@@ -39,10 +39,12 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.convert;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.network.BioNetwork2Tab;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.network.Tab2BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
@@ -61,9 +63,13 @@ public class Sbml2Tab extends AbstractMet4jApplication {
     @Option(name = "-r", usage = "[<==>] String for reversible reaction")
     public String r = "<==>";
 
+    @Format(name = EnumFormats.Tsv)
+    @ParameterType(name = EnumParameterTypes.OutputFile)
     @Option(name = "-out", usage = "[out.tsv] Tabulated file")
     public String out = "out.tsv";
 
+    @ParameterType(name = EnumParameterTypes.InputFile)
+    @Format(name = EnumFormats.Sbml)
     @Option(name = "-in", usage = "Sbml file", required = true)
     public String in;
 

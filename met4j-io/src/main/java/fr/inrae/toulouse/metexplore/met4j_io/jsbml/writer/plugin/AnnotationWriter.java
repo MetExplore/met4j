@@ -247,7 +247,7 @@ public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
             addingLoop:
             for (BioRef r : refs) {
 
-                if (IdentifiersOrg.validIdentifiers.contains(r.getDbName().toLowerCase())){
+                if (IdentifiersOrg.validIdentifiers.contains(r.getDbName().toLowerCase()) && ! r.getDbName().equalsIgnoreCase("inchi")){
 
                     Qualifier qual;
 

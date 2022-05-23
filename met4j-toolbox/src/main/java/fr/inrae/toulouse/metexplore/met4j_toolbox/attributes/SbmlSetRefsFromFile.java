@@ -39,6 +39,8 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetChargesFromFile;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetRefsFromFile;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 /**
@@ -49,11 +51,12 @@ import org.kohsuke.args4j.Option;
  */
 public class SbmlSetRefsFromFile extends AbstractSbmlSetAny {
 
+    @ParameterType(name= EnumParameterTypes.Integer)
     @Option(name="-cr", usage="[2] number of the column where are the references")
-    private int colRef=2;
+    public int colRef=2;
 
     @Option(name="-ref", usage="Name of the ref. Must exist in identifiers.org", required = true)
-    private String ref=null;
+    public String ref=null;
 
     /** {@inheritDoc} */
     @Override
@@ -108,11 +111,11 @@ public class SbmlSetRefsFromFile extends AbstractSbmlSetAny {
 
         if(!flag) {
             System.err.println("Error in "+this.getLabel());
-            System.exit(0);
+            System.exit(1);
         }
 
         this.writeSbml(bn);
 
-        System.exit(1);
+        System.exit(0);
     }
 }

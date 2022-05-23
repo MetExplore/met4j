@@ -11,11 +11,18 @@ import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.kohsuke.args4j.Option;
 
 import java.io.FileWriter;
 import java.io.IOException;
+
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Tsv;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -26,9 +33,13 @@ import java.util.stream.Collectors;
  */
 public class SideCompoundsScan extends AbstractMet4jApplication {
 
+    @Format(name = Sbml)
+    @ParameterType(name = InputFile)
     @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
+    @Format(name = Tsv)
+    @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output Side-Compounds file", required = true)
     public String outputPath = null;
 
@@ -53,10 +64,10 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
     @Option(name = "-nc", aliases = {"--neighborCoupling"}, usage = "flag as side compound any compound with a number of parallel edges shared with a neighbor above the given threshold")
     public double parallelEdge = Double.NaN;
 
-    enum strategy {by_name,by_id}
+    enum strategy {no, by_name,by_id}
     @Option(name = "-m", aliases = {"--merge"}, usage = "Degree is shared between compounds in different compartments. " +
             "Use names if consistent and unambiguous across compartments, or identifiers if compartment suffix is present (id in form \"xxx_y\" with xxx as base identifier and y as compartment label).")
-    public strategy mergingStrat = null;
+    public strategy mergingStrat = strategy.no;
 
 
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
@@ -97,7 +108,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
 
         //if merging compartment
         Map<String, Integer> mergedDegree = new HashMap<>();
-        Boolean merge = (mergingStrat!=null);
+        Boolean merge = (mergingStrat!=strategy.no);
         Function<BioMetabolite,String> getSharedId = BioMetabolite::getName;
         if(merge){
             if(mergingStrat.equals(strategy.by_id)) getSharedId = (new VertexContraction.MapByIdSubString("^(\\w+)_\\w$"))::commonField;
@@ -172,14 +183,15 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
                 String validFormula = "true";
                 try{
                     FormulaParser fp = new FormulaParser(formula);
-                    if(flagInorganic){
-                        if(fp.isExpectedInorganic()){
+                    if (flagInorganic) {
+                        if (fp.isExpectedInorganic()) {
                             inorganic = "true";
                             side = true;
-                        }else{
+                        } else {
                             inorganic = "false";
                         }
                     }
+
                 }catch(IllegalArgumentException e){
                     if(flagNoFormula){
                         validFormula = "false";

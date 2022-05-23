@@ -41,9 +41,13 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.*;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
+
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.*;
 
 /**
  * <p>Abstract AbstractSbmlSet class.</p>
@@ -54,19 +58,26 @@ import java.io.IOException;
 public abstract class AbstractSbmlSet extends AbstractMet4jApplication {
 
     @Option(name="-n", usage="[0] Number of lines to skip at the beginning of the tabulated file")
-    protected int nSkip = 0;
+    public int nSkip = 0;
 
+    @Format(name= Sbml)
+    @ParameterType(name = OutputFile)
     @Option(name="-out", usage="[out.sbml] Out sbml file")
-    protected String out = "out.sbml";
+    public String out = "out.sbml";
 
+    @Format(name= Sbml)
+    @ParameterType(name = InputFile)
     @Option(name="-sbml", usage="Original sbml file", required=true)
-    protected String sbml;
+    public String sbml;
 
+    @ParameterType(name = InputFile)
+    @Format(name= Tsv)
     @Option(name="-tab", usage="Tabulated file")
-    protected String tab;
+    public String tab;
 
+    @ParameterType(name= EnumParameterTypes.Text)
     @Option(name="-c", usage="[#] Comment String in the tabulated file. The lines beginning by this string won't be read")
-    protected String c="#";
+    public String c="#";
 
     /**
      * <p>Constructor for AbstractSbmlSet.</p>
@@ -86,7 +97,7 @@ public abstract class AbstractSbmlSet extends AbstractMet4jApplication {
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Unable to read the sbml file "+this.sbml);
-            System.exit(0);
+            System.exit(1);
         }
 
         BioNetwork bn = null;
@@ -95,7 +106,7 @@ public abstract class AbstractSbmlSet extends AbstractMet4jApplication {
         } catch (Met4jSbmlReaderException e) {
             e.printStackTrace();
             System.err.println("Problem while reading the sbml file "+this.sbml);
-            System.exit(0);
+            System.exit(1);
         }
 
         return bn;
@@ -115,7 +126,7 @@ public abstract class AbstractSbmlSet extends AbstractMet4jApplication {
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error in writing the sbml file");
-            System.exit(0);
+            System.exit(1);
         }
     }
 

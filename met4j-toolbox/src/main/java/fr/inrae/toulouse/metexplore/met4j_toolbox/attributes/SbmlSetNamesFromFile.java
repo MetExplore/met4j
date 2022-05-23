@@ -39,6 +39,8 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetNamesFromFile;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 /**
@@ -49,8 +51,9 @@ import org.kohsuke.args4j.Option;
  */
 public class SbmlSetNamesFromFile extends AbstractSbmlSetAny {
 
+    @ParameterType(name= EnumParameterTypes.Integer)
     @Option(name="-cname", usage="[2] number of the column where are the names")
-    private int colname=2;
+    public int colname=2;
 
     /** {@inheritDoc} */
     @Override
@@ -103,13 +106,13 @@ public class SbmlSetNamesFromFile extends AbstractSbmlSetAny {
 
         if(!flag) {
             System.err.println("Error in SbmlSetNames");
-            System.exit(0);
+            System.exit(1);
         }
 
 
         this.writeSbml(bn);
 
-        System.exit(1);
+        System.exit(0);
 
 
     }

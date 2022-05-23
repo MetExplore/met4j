@@ -11,6 +11,9 @@ import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 import java.io.BufferedReader;
@@ -20,14 +23,24 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoadPoint  extends AbstractMet4jApplication {
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 
+public class LoadPoint extends AbstractMet4jApplication {
+
+    @Format(name = Sbml)
+    @ParameterType(name = InputFile)
     @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
+    @Format(name = Tsv)
+    @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output results file", required = true)
     public String outputPath = null;
 
+    @Format(name = Text)
+    @ParameterType(name = InputFile)
     @Option(name = "-s", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore")
     public String sideCompoundFile = null;
 
@@ -59,23 +72,23 @@ public class LoadPoint  extends AbstractMet4jApplication {
         CompoundGraph graph = builder.getCompoundGraph();
 
         //Graph processing: side compound removal [optional]
-        if(sideCompoundFile!=null){
+        if (sideCompoundFile != null) {
             System.err.println("removing side compounds...");
-            BioCollection<BioMetabolite> sideCpds=new BioCollection<>();
+            BioCollection<BioMetabolite> sideCpds = new BioCollection<>();
             BufferedReader fr = new BufferedReader(new FileReader(sideCompoundFile));
             String line;
             while ((line = fr.readLine()) != null) {
                 String sId = line.trim().split("\t")[0];
                 BioMetabolite s = network.getMetabolite(sId);
-                if(s!=null){
+                if (s != null) {
                     sideCpds.add(s);
-                }else{
-                    System.err.println(sId+" side compound not found in network.");
+                } else {
+                    System.err.println(sId + " side compound not found in network.");
                 }
             }
             fr.close();
             boolean removed = graph.removeAllVertices(sideCpds);
-            if (removed) System.err.println(sideCpds.size()+" compounds removed.");
+            if (removed) System.err.println(sideCpds.size() + " compounds removed.");
         }
 
         //Graph processing: set weights
@@ -84,14 +97,14 @@ public class LoadPoint  extends AbstractMet4jApplication {
 
         //compute loads
         System.err.println("Computing load points...");
-        fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.LoadPoint computor = new fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.LoadPoint<BioMetabolite, ReactionEdge,CompoundGraph>(graph);
+        fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.LoadPoint computor = new fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.LoadPoint<BioMetabolite, ReactionEdge, CompoundGraph>(graph);
         HashMap<BioMetabolite, Double> loads = computor.getLoads(k);
 
         //export results
         System.err.println("Export results...");
-        for(Map.Entry<BioMetabolite, Double> e : loads.entrySet()){
+        for (Map.Entry<BioMetabolite, Double> e : loads.entrySet()) {
             BioMetabolite m = e.getKey();
-            fw.write(m.getId()+"\t"+m.getName()+"\t"+e.getValue()+"\n");
+            fw.write(m.getId() + "\t" + m.getName() + "\t" + e.getValue() + "\n");
         }
         System.err.println("done.");
         fw.close();

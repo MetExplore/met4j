@@ -37,7 +37,11 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.EntityType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
+
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.*;
 
 /**
  * <p>Abstract AbstractSbmlSetAny class.</p>
@@ -50,17 +54,19 @@ public abstract class AbstractSbmlSetAny extends AbstractSbmlSet {
     public final String setDescription = "The ids must correspond between the tabulated file and the SBML file.\n" +
             "If prefix or suffix is different in the SBML file, use the -p or the -s options.";
 
+    @ParameterType(name=Text)
     @Option(name="-ci", usage="[1] number of the column where are the object ids")
-    protected int colid=1;
+    public int colid=1;
 
     @Option(name="-p", usage="[deactivated] To match the objects in the sbml file, adds the prefix R_ to reactions and M_ to metabolites")
-    protected Boolean p=false;
+    public Boolean p=false;
 
     @Option(name="-s", usage="[deactivated] To match the objects in the sbml file, adds the suffix _comparmentID to metabolites")
-    protected Boolean s=false;
+    public Boolean s=false;
 
-    @Option(name="-o", usage="[REACTION] Object type in the column id : REACTION;METABOLITE;PROTEIN;GENE;PATHWAY")
-    protected EntityType o= EntityType.REACTION;
+    @ParameterType(name=Text)
+    @Option(name="-o", usage="[REACTION] Object type in the column id : REACTION;METABOLITE;GENE;PATHWAY")
+    public EntityType o= EntityType.REACTION;
 
     /**
      * <p>Constructor for AbstractSbmlSetAny.</p>

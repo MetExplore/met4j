@@ -38,6 +38,8 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetFormulasFromFile;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 /**
@@ -48,8 +50,9 @@ import org.kohsuke.args4j.Option;
  */
 public class SbmlSetFormulasFromFile extends AbstractSbmlSetMetabolite {
 
+    @ParameterType(name= EnumParameterTypes.Integer)
     @Option(name="-cf", usage="[2] number of the column where are the formulas")
-    private int colformula=2;
+    public int colformula=2;
 
     /** {@inheritDoc} */
     @Override
@@ -105,12 +108,12 @@ public class SbmlSetFormulasFromFile extends AbstractSbmlSetMetabolite {
 
         if(!flag) {
             System.err.println("Error in SbmlSetFormula");
-            System.exit(0);
+            System.exit(1);
         }
 
         this.writeSbml(bn);
 
-        System.exit(1);
+        System.exit(0);
     }
 
 

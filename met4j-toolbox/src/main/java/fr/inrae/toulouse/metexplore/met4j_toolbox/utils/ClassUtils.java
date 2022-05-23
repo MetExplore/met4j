@@ -1,5 +1,5 @@
 /*
- * Copyright INRAE (2020)
+ * Copyright INRAE (2022)
  *
  * contact-metexplore@inrae.fr
  *
@@ -33,37 +33,29 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  */
+package fr.inrae.toulouse.metexplore.met4j_toolbox.utils;
 
-package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.kohsuke.args4j.Option;
+public class ClassUtils {
 
-/**
- * <p>Abstract AbstractSbmlSetMetabolite class.</p>
- *
- * @author lcottret
- * @version $Id: $Id
- */
-public abstract class AbstractSbmlSetMetabolite  extends AbstractSbmlSet{
+    public List<Class<?>> getAllSuperClasses(Class c) {
+        if(c == null)
+        {
+            return null;
+        }
 
-    public final String setDescription = "The ids must correspond between the tabulated file and the SBML file.\n" +
-            "If prefix or suffix is different in the SBML file, use the -p or the -s options.";
+        List<Class<?>> classes = new ArrayList<>();
+        Class<?> superclass = c.getSuperclass();
 
-    @Option(name="-ci", usage="[1] number of the column where are the metabolite ids")
-    public Integer colid=1;
+        while (superclass != null && superclass != Object.class) {
+            classes.add(superclass);
+            superclass = superclass.getSuperclass();
+        }
 
-    @Option(name="-p", usage="[deactivated] To match the objects in the sbml file, adds the prefix M_ to metabolite ids")
-    public Boolean p=false;
-
-    @Option(name="-s", usage="[deactivated] To match the objects in the sbml file, adds the suffix _comparmentID to metabolites")
-    public Boolean s=false;
-
-    /**
-     * <p>Constructor for AbstractSbmlSetMetabolite.</p>
-     */
-    public AbstractSbmlSetMetabolite()  {
-
-        super();
+        return classes;
 
     }
+
 }

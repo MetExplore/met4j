@@ -1,5 +1,5 @@
 /*
- * Copyright INRAE (2020)
+ * Copyright INRAE (2022)
  *
  * contact-metexplore@inrae.fr
  *
@@ -34,36 +34,8 @@
  *
  */
 
-package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
+package fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations;
 
-import org.kohsuke.args4j.Option;
-
-/**
- * <p>Abstract AbstractSbmlSetMetabolite class.</p>
- *
- * @author lcottret
- * @version $Id: $Id
- */
-public abstract class AbstractSbmlSetMetabolite  extends AbstractSbmlSet{
-
-    public final String setDescription = "The ids must correspond between the tabulated file and the SBML file.\n" +
-            "If prefix or suffix is different in the SBML file, use the -p or the -s options.";
-
-    @Option(name="-ci", usage="[1] number of the column where are the metabolite ids")
-    public Integer colid=1;
-
-    @Option(name="-p", usage="[deactivated] To match the objects in the sbml file, adds the prefix M_ to metabolite ids")
-    public Boolean p=false;
-
-    @Option(name="-s", usage="[deactivated] To match the objects in the sbml file, adds the suffix _comparmentID to metabolites")
-    public Boolean s=false;
-
-    /**
-     * <p>Constructor for AbstractSbmlSetMetabolite.</p>
-     */
-    public AbstractSbmlSetMetabolite()  {
-
-        super();
-
-    }
+public enum EnumFormats {
+    Csv, Fasta, Gml, Gsam, Sbml, Text, Tsv
 }

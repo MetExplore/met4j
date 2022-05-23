@@ -39,13 +39,21 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.kegg.Kegg2BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
+
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 
 public class Kegg2Sbml  extends AbstractMet4jApplication  {
 
     @Option(name="-org", usage="[] Kegg org id. Must be 3 letters (")
     public String org = "";
 
+    @Format(name= Sbml)
+    @ParameterType(name = OutputFile)
     @Option(name="-sbml", usage="[out.sbml] Out sbml file")
     public String sbml = "out.sbml";
 

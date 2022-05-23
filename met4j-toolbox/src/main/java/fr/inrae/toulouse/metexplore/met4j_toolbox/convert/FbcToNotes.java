@@ -46,12 +46,19 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.GroupPathwayWri
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.NotesWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.PackageWriter;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 import java.util.HashSet;
+
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 
 /**
  * <p>FbcToNotes class.</p>
@@ -61,9 +68,13 @@ import java.util.HashSet;
  */
 public class FbcToNotes extends AbstractMet4jApplication {
 
+    @Format(name= Sbml)
+    @ParameterType(name = InputFile)
     @Option(name = "-i", usage = "input file", required = true)
     public String inputPath = null;
 
+    @Format(name= Sbml)
+    @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output file", required = true)
     public String outputPath = null;
 
@@ -86,7 +97,7 @@ public class FbcToNotes extends AbstractMet4jApplication {
         } catch (CmdLineException e) {
             System.err.println("Error in arguments");
             parser.printUsage(System.err);
-            System.exit(0);
+            System.exit(1);
         }
 
         f.run();

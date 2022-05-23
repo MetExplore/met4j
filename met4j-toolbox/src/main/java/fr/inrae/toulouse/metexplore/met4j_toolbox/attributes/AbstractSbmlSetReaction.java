@@ -36,6 +36,8 @@
 
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 /**
@@ -49,11 +51,12 @@ public abstract class AbstractSbmlSetReaction extends AbstractSbmlSet {
     public final String setDescription = "The ids must correspond between the tabulated file and the SBML file.\n" +
             "If prefix R_ is present in the ids in the SBML file and not in the tabulated file, use the -p option.";
 
+    @ParameterType(name= EnumParameterTypes.Integer)
     @Option(name="-ci", usage="[1] number of the column where are the reaction ids")
-    protected int colid=1;
+    public int colid=1;
 
     @Option(name="-p", usage="[deactivated] To match the objects in the sbml file, adds the prefix R_ to reactions")
-    protected Boolean p=false;
+    public Boolean p=false;
 
     /**
      * <p>Constructor for AbstractSbmlSetReaction.</p>

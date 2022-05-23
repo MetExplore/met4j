@@ -22,31 +22,52 @@ import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.*;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+
 public class ExtractSubNetwork extends AbstractMet4jApplication {
 
+    @Format(name = Sbml)
+    @ParameterType(name = InputFile)
     @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
+
+    @Format(name = Text)
+    @ParameterType(name = InputFile)
     @Option(name = "-s", usage = "input sources txt file", required = true)
     public String sourcePath = null;
+
+    @Format(name = Text)
+    @ParameterType(name = InputFile)
     @Option(name = "-t", usage = "input targets txt file", required = true)
     public String targetPath = null;
+
+    @Format(name = Gml)
+    @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output gml file", required = true)
     public String outputPath = null;
 
-
+    @Format(name = Text)
+    @ParameterType(name = InputFile)
     @Option(name = "-sc", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore")
     public String sideCompoundFile = null;
 
     @Option(name = "-dw", aliases = {"--degreeWeights"}, usage = "penalize traversal of hubs by using degree square weighting", forbids = {"-cw", "-sw"})
     public Boolean degree = false;
+
+    @Format(name = Tsv)
+    @ParameterType(name = InputFile)
     @Option(name = "-cw", aliases = {"--customWeights"}, usage = "an optional file containing weights for compound pairs", forbids = {"-dw", "-sw"})
     public String weightFile = null;
+
     @Option(name = "-sw", aliases = {"--chemSimWeights"}, usage = "penalize traversal of non-relevant edges by using chemical similarity weighting", forbids = {"-dw", "-cw"})
     public Boolean chemicalSim = false;
 
@@ -55,6 +76,7 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
 
     @Option(name = "-k", usage = "Extract k-shortest paths", forbids = {"-st"})
     public int k = 1;
+
     @Option(name = "-st", aliases = {"--steinertree"}, usage = "Extract Steiner Tree", forbids = {"-k"})
     public boolean st = false;
 

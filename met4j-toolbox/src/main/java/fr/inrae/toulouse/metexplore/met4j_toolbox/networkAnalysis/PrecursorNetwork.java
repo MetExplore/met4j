@@ -41,12 +41,12 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
     @Option(name = "-o", usage = "output file: path to the .gml file where the results precursor network will be exported", required = true)
     public String output;
 
-    //oprtions
+    //options
     @ParameterType(name = InputFile)
     @Option(name = "-sc", aliases = {"--sides"}, usage = "an optional file containing list of ubiquitous compounds to be considered already available")
     public String sideCompoundFile = null;
     @ParameterType(name = InputFile)
-    @Option(name = "-ir", aliases = {"--ignore"}, usage = "an optional file containing list of reaction to ignore (forbid inclusion in scope")
+    @Option(name = "-ir", aliases = {"--ignore"}, usage = "an optional file containing list of reaction to ignore (forbid inclusion in scope)")
     public String reactionToIgnoreFile = null;
 
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
@@ -64,10 +64,10 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
         BioCollection<BioMetabolite> targets = mapper.map(targetsFilePath).stream()
                 .map(BioMetabolite.class::cast)
                 .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
-        BioCollection<BioMetabolite> bootstraps = mapper.map(sideCompoundFile).stream()
+        BioCollection<BioMetabolite> bootstraps = (sideCompoundFile==null) ? new BioCollection<>() : mapper.map(sideCompoundFile).stream()
                 .map(BioMetabolite.class::cast)
                 .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
-        BioCollection<BioReaction> forbidden = mapper.map(reactionToIgnoreFile).stream()
+        BioCollection<BioReaction> forbidden = (reactionToIgnoreFile==null) ? new BioCollection<>() : mapper.map(reactionToIgnoreFile).stream()
                 .map(BioReaction.class::cast)
                 .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
 

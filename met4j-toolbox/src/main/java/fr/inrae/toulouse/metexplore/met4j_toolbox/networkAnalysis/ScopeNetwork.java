@@ -72,17 +72,12 @@ public class ScopeNetwork extends AbstractMet4jApplication {
         BioCollection<BioMetabolite> seeds = mapper.map(seedsFilePath).stream()
                 .map(BioMetabolite.class::cast)
                 .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
-        BioCollection<BioMetabolite> bootstraps = mapper.map(sideCompoundFile).stream()
+        BioCollection<BioMetabolite> bootstraps = (sideCompoundFile==null) ? new BioCollection<>() : mapper.map(sideCompoundFile).stream()
                 .map(BioMetabolite.class::cast)
                 .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
-
-        BioCollection<BioReaction> forbidden = new BioCollection<>();
-
-        if (reactionToIgnoreFile != null) {
-            forbidden = mapper.map(reactionToIgnoreFile).stream()
+        BioCollection<BioReaction> forbidden = (reactionToIgnoreFile==null) ? new BioCollection<>() : mapper.map(reactionToIgnoreFile).stream()
                     .map(BioReaction.class::cast)
                     .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
-        }
 
         ScopeCompounds scopeComp = new ScopeCompounds(graph, seeds, bootstraps, forbidden);
         if (includeSides) scopeComp.includeBootstrapsInScope();

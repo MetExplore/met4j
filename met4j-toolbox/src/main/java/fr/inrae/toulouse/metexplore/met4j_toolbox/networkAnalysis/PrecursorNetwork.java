@@ -71,10 +71,14 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
                 .map(BioReaction.class::cast)
                 .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
 
-        fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.PrecursorNetwork precursorComp =
-                new fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.PrecursorNetwork(graph, bootstraps, targets, forbidden);
-        BipartiteGraph precursorNet = precursorComp.getPrecursorNetwork();
-        ExportGraph.toGml(precursorNet, output);
+        if(targets.isEmpty()){
+            System.err.println("no target available, computation aborted");
+        }else {
+            fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.PrecursorNetwork precursorComp =
+                    new fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.PrecursorNetwork(graph, bootstraps, targets, forbidden);
+            BipartiteGraph precursorNet = precursorComp.getPrecursorNetwork();
+            ExportGraph.toGml(precursorNet, output);
+        }
     }
 
     @Override

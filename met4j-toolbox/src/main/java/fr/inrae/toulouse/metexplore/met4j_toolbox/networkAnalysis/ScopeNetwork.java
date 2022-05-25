@@ -79,14 +79,18 @@ public class ScopeNetwork extends AbstractMet4jApplication {
                     .map(BioReaction.class::cast)
                     .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
 
-        ScopeCompounds scopeComp = new ScopeCompounds(graph, seeds, bootstraps, forbidden);
-        if (includeSides) scopeComp.includeBootstrapsInScope();
-        if (trace) scopeComp.trace();
-        BipartiteGraph scope = scopeComp.getScopeNetwork();
-        if (trace) {
-            ExportGraph.toGmlWithAttributes(scope, output, scopeComp.getExpansionSteps(), "step");
-        } else {
-            ExportGraph.toGml(scope, output);
+        if(seeds.isEmpty()){
+            System.err.println("no seed available, computation aborted");
+        }else {
+            ScopeCompounds scopeComp = new ScopeCompounds(graph, seeds, bootstraps, forbidden);
+            if (includeSides) scopeComp.includeBootstrapsInScope();
+            if (trace) scopeComp.trace();
+            BipartiteGraph scope = scopeComp.getScopeNetwork();
+            if (trace) {
+                ExportGraph.toGmlWithAttributes(scope, output, scopeComp.getExpansionSteps(), "step");
+            } else {
+                ExportGraph.toGml(scope, output);
+            }
         }
 
     }

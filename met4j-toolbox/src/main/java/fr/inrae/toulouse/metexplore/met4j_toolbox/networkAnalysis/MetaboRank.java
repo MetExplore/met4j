@@ -144,10 +144,12 @@ public class MetaboRank extends AbstractMet4jApplication {
         System.err.println("transition probabilities computed (reverse graph)");
 
         importSeeds(seedsFilePath);
-
-        compute();
-
-        printCompoundTable(output);
+        if(seeds.isEmpty()){
+            System.err.println("no seed available, computation aborted");
+        }else{
+            compute();
+            printCompoundTable(output);
+        }
         System.err.println("done.");
 
     }

@@ -51,7 +51,7 @@ public class NetworkSummary extends AbstractMet4jApplication {
     @Option(name = "-s", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore (recommended)")
     public String sideCompoundFile = null;
 
-    @Option(name = "-sd", aliases = {"--skipdist"}, usage = "skip full distance matrix computation (quick summary)", forbids = {"-w"})
+    @Option(name = "-sd", aliases = {"--skipdist"}, usage = "skip full distance matrix computation (quick summary)")
     public Boolean skipdist = false;
 
     @Option(name = "-d", aliases = {"--directed"}, usage = "use reaction direction for distances")
@@ -194,10 +194,11 @@ public class NetworkSummary extends AbstractMet4jApplication {
 
             Iterator<Map.Entry<BioMetabolite, Integer>> it = closeness.entrySet().iterator();
             fw.write("Top Closeness:\n");
-            for (int i = 0; i < 20; i++) {
+            int top = 20;
+            if(closeness.size() < top) top=closeness.size();
+            for (int i = 0; i < top; i++) {
                 Map.Entry<BioMetabolite, Integer> e = it.next();
                 fw.write("\t" + (e.getValue() + 1) + "\t" + e.getKey().getName() + "\t" + (closenessRaw.get(e.getKey()) * graph.vertexSet().size()) + "\n");
-
             }
 
 //            it = betweenness.entrySet().iterator();

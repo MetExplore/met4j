@@ -304,26 +304,16 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 				cg.addVertex(v);
 			}
 		}
-		for(V v1 : sources){
-			for(V v2: targets){
-				if(v1!=v2){
-					BioPath<V,E> sp = this.getShortest(v1, v2);
-					if(sp!=null){
-						PathEdge<V, E> e = new PathEdge<>(v1, v2, sp);
-						cg.addEdge(v1, v2, e);
-						if(weighted){
-//							double weightSum = 0;
-//							for(E edge : sp){
-//								weightSum+=g.getEdgeWeight(edge);
-//							}
-//							cg.setEdgeWeight(e, weightSum);
-							cg.setEdgeWeight(e,sp.getWeight());
-						}else{
-							cg.setEdgeWeight(e,sp.getLength());
-						}
-
-					}
-				}
+		List<BioPath<V,E>> shortestPaths = getShortestPathsUnionList(sources,targets);
+		for(BioPath<V,E> sp : shortestPaths){
+			V v1 = sp.getStartVertex();
+			V v2 = sp.getEndVertex();
+			PathEdge<V, E> e = new PathEdge<>(v1, v2, sp);
+			cg.addEdge(v1, v2, e);
+			if(weighted){
+				cg.setEdgeWeight(e,sp.getWeight());
+			}else{
+				cg.setEdgeWeight(e,sp.getLength());
 			}
 		}
 

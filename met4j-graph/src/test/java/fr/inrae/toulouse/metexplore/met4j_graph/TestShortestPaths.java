@@ -269,6 +269,22 @@ public class TestShortestPaths {
 		assertTrue("wrong path", Arrays.asList(expectedPath).containsAll(res));
 		assertTrue("wrong path", res.containsAll(Arrays.asList(expectedPath)));
 	}
+
+	@Test
+	public void testGetKShortestUndirected() {
+		ReactionEdge[] expectedPath = {ad, de, ab, eb};
+
+//		long start = System.nanoTime();
+		KShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> pathSearch = new KShortestPath<>(g, false);
+		List<BioPath<BioMetabolite,ReactionEdge>> kshort = pathSearch.getKShortest(g.getVertex("a"), g.getVertex("e"),2);
+		List<ReactionEdge> res = new ArrayList<>();
+		for(BioPath<BioMetabolite,ReactionEdge> p : kshort){
+			res.addAll(p.getEdgeList());
+		}
+
+		assertTrue("wrong path", Arrays.asList(expectedPath).containsAll(res));
+		assertTrue("wrong path", res.containsAll(Arrays.asList(expectedPath)));
+	}
 	
 	/**
 	 * Test the get k shortest union list.

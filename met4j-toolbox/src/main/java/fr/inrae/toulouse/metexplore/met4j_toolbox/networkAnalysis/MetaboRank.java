@@ -39,18 +39,17 @@ import fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalSimilarity.Fingerpri
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.EigenVectorCentrality;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.ReactionProbabilityWeight;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.SimilarityWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightUtils;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightsFromFile;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.*;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.GraphFilter;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.RankUtils;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
+import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
@@ -145,10 +144,12 @@ public class MetaboRank extends AbstractMet4jApplication {
         System.err.println("transition probabilities computed (reverse graph)");
 
         importSeeds(seedsFilePath);
-
-        compute();
-
-        printCompoundTable(output);
+        if(seeds.isEmpty()){
+            System.err.println("no seed available, computation aborted");
+        }else{
+            compute();
+            printCompoundTable(output);
+        }
         System.err.println("done.");
 
     }
@@ -228,15 +229,18 @@ public class MetaboRank extends AbstractMet4jApplication {
     }
 
     public void setEdgeWeights(CompoundGraph graph, String localFilePath) {
+        Boolean defaultWeight = (localFilePath==null || localFilePath.isEmpty() || localFilePath.isBlank());
         //import weights from file
-        WeightsFromFile<BioMetabolite, ReactionEdge, CompoundGraph> wp = new WeightsFromFile<>(localFilePath, true);
+        WeightingPolicy wp = (defaultWeight) ? new DefaultWeightPolicy() : new WeightsFromFile<>(localFilePath, true);
         //set weights to edges
         wp.setWeight(graph);
-        //remove weights below 0.0
-        int nb = GraphFilter.weightFilter(graph, 0.0, "<=");
-        System.err.println(nb + " edges removed");
-        //remove edges without NaN weight
-        WeightUtils.removeEdgeWithNaNWeight(graph);
+        if (!defaultWeight) {
+            //remove weights below 0.0
+            int nb = GraphFilter.weightFilter(graph, 0.0, "<=");
+            System.err.println(nb + " edges removed");
+            //remove edges without NaN weight
+            WeightUtils.removeEdgeWithNaNWeight(graph);
+        }
         //remove disconnected nodes
         graph.removeIsolatedNodes();
         System.err.println("weights computed.");

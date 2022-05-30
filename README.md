@@ -52,8 +52,9 @@ mvn clean install
 
 ## Usage
 
-Documentation for the library modules can be found in each module's own README.  
+User documentation for the library modules can be found in each module's own README.  
 Detailed code examples can be found at [here](https://forgemia.inra.fr/metexplore/tutorialmet4j).
+Javadoc can be found at [https://javadoc.io/doc/fr.inrae.toulouse.metexplore](https://javadoc.io/doc/fr.inrae.toulouse.metexplore)
 
 ## Contributing
 

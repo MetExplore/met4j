@@ -45,7 +45,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.compressed.PathEdge;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ManyToManyShortestPathsAlgorithm;
-import org.jgrapht.alg.shortestpath.BidirectionalDijkstraShortestPath;
 import org.jgrapht.alg.shortestpath.DijkstraManyToManyShortestPaths;
 import org.jgrapht.graph.AsUndirectedGraph;
 
@@ -60,6 +59,18 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	/** The graph. */
 	public final G g;
 
+	public boolean asUndirected = false;
+	public boolean isUndirected() {
+		return asUndirected;
+	}
+
+	public void asUndirected() {
+		this.asUndirected = true;
+	}
+	public void asDirected() {
+		this.asUndirected = false;
+	}
+
 	/**
 	 * Instantiates a new shortest paths computor.
 	 *
@@ -67,6 +78,11 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 */
 	public ShortestPath(G g) {
 		this.g=g;
+	}
+
+	public ShortestPath(G g, boolean directed) {
+		this.g=g;
+		asUndirected = !directed;
 	}
 
 	/**
@@ -79,6 +95,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @throws java.lang.IllegalArgumentException if any.
 	 */
 	public BioPath<V, E> getShortest(V start, V end) throws IllegalArgumentException{
+		if(asUndirected) return getShortestAsUndirected(start,end);
 		if(!g.containsVertex(start)){
 			throw(new IllegalArgumentException("Error: start node "+start.getId()+" not found in graph"));
 		}
@@ -142,7 +159,6 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 		return new BioPath<>(g, start, end, sp, weight);
 	}
 
-
 	/**
 	 * compute the shortest paths (or lightest paths if the graph is weighted) between 2 nodes as if the graph was undirected
 	 *
@@ -152,7 +168,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @throws java.lang.IllegalArgumentException if any.
 	 * @throws java.lang.IllegalArgumentException if any.
 	 */
-	public BioPath<V, E> getShortestAsUndirected(V start, V end) throws IllegalArgumentException{
+	private BioPath<V, E> getShortestAsUndirected(V start, V end) throws IllegalArgumentException{
 		if(!g.containsVertex(start)){
 			throw(new IllegalArgumentException("Error: start node "+start.getId()+" not found in graph"));
 		}
@@ -278,7 +294,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 		if(!g.vertexSet().containsAll(targetNodes)){
 			throw(new IllegalArgumentException("Error: end node not found in graph"));
 		}
-		DijkstraManyToManyShortestPaths<V,E> spComputor = new DijkstraManyToManyShortestPaths<>(g);
+		DijkstraManyToManyShortestPaths<V,E> spComputor = asUndirected ? new DijkstraManyToManyShortestPaths<>(new AsUndirectedGraph<V,E>(g)) : new DijkstraManyToManyShortestPaths<>(g);
 		ManyToManyShortestPathsAlgorithm.ManyToManyShortestPaths<V, E> paths = spComputor.getManyToManyPaths(startNodes,targetNodes);
 		List<BioPath<V,E>> outputPaths = new ArrayList<>();
 		for(V start : startNodes){

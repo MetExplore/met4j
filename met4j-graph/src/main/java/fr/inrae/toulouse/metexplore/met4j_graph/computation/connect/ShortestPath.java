@@ -44,6 +44,9 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compressed.CompressedGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compressed.PathEdge;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.interfaces.ManyToManyShortestPathsAlgorithm;
+import org.jgrapht.alg.shortestpath.DijkstraManyToManyShortestPaths;
 import org.jgrapht.alg.util.Pair;
 
 /**
@@ -269,12 +272,18 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @return the list of edges involved in the shortest path union
 	 */
 	public List<BioPath<V,E>> getShortestPathsUnionList(Set<V> startNodes, Set<V> targetNodes){
-		Collection<Pair<V,V>> pairs = prepareSPcomputation(startNodes,targetNodes);
-		if(pairs.isEmpty()) return new ArrayList<>();
-		return pairs.parallelStream()
-				.map(p -> this.getShortest(p.getFirst(),p.getSecond()))
-				.filter(Objects::nonNull)
-				.collect(Collectors.toList());
+		DijkstraManyToManyShortestPaths<V,E> spComputor = new DijkstraManyToManyShortestPaths<>(g);
+		ManyToManyShortestPathsAlgorithm.ManyToManyShortestPaths<V, E> paths = spComputor.getManyToManyPaths(startNodes,targetNodes);
+		List<BioPath<V,E>> outputPaths = new ArrayList<>();
+		for(V start : startNodes){
+			for(V end : targetNodes){
+				if(start!=end){
+					GraphPath<V, E> p = paths.getPath(start,end);
+					if(p!=null) outputPaths.add(new BioPath<>(p));
+				}
+			}
+		}
+		return outputPaths;
 	}
 
 	/**
@@ -384,18 +393,6 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 */
 	public List<BioPath<V,E>> getAllShortestPaths(){
 		return getShortestPathsUnionList(g.vertexSet());
-	}
-
-	private Collection<Pair<V,V>> prepareSPcomputation(Set<V> sources, Set<V> targets){
-		ArrayList<Pair<V,V>> pairs = new ArrayList<>();
-		for(V v1 : sources){
-			for(V v2 : targets){
-				if(v1!=v2){
-					pairs.add(new Pair<>(v1,v2));
-				}
-			}
-		}
-		return pairs;
 	}
 
 }

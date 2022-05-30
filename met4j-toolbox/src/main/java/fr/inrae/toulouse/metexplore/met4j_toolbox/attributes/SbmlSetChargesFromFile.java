@@ -38,6 +38,8 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetChargesFromFile;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 /**
@@ -48,8 +50,9 @@ import org.kohsuke.args4j.Option;
  */
 public class SbmlSetChargesFromFile extends AbstractSbmlSetMetabolite {
 
+    @ParameterType(name= EnumParameterTypes.Integer)
     @Option(name="-cc", usage="[2] number of the column where are the charges")
-    private int colcharge=2;
+    public int colcharge=2;
 
     /** {@inheritDoc} */
     @Override
@@ -63,7 +66,7 @@ public class SbmlSetChargesFromFile extends AbstractSbmlSetMetabolite {
         return this.getShortDescription()+"\n"+
                 "The charge must be a number. "+ this.setDescription+"\n" +
                 "The charge will be written in the SBML file in two locations:+\n" +
-                "- in the reaction notes (e.g. <p>charge: -1</p>\n" +
+                "- in the reaction notes (e.g. <p>charge: -1</p>)\n" +
                 "- as fbc attribute (e.g. fbc:charge=\"1\")";
     }
 
@@ -107,12 +110,12 @@ public class SbmlSetChargesFromFile extends AbstractSbmlSetMetabolite {
 
         if(!flag) {
             System.err.println("Error in "+this.getLabel());
-            System.exit(0);
+            System.exit(1);
         }
 
         this.writeSbml(bn);
 
-        System.exit(1);
+        System.exit(0);
     }
 
 }

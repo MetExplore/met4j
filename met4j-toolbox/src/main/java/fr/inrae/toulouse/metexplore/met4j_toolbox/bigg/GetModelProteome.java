@@ -37,6 +37,10 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.bigg;
 
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -65,10 +69,16 @@ import java.util.Set;
 public class GetModelProteome extends AbstractMet4jApplication {
 
     public String description = "Get proteome in fasta format of a model present in BIGG";
+
     @Option(name = "-m", usage = "[ex: iMM904] id of the BIGG model", required = true)
     public String modelId = "iMM904";
+
+    @Format(name= EnumFormats.Fasta)
+    @ParameterType(name= EnumParameterTypes.OutputFile)
     @Option(name = "-o", usage = "[proteome.fas] path of the output file")
     public String outputFile = "proteome.fas";
+
+
     private String baseUrl = "http://bigg.ucsd.edu/api/v2/models/";
 
     /**
@@ -86,7 +96,7 @@ public class GetModelProteome extends AbstractMet4jApplication {
         } catch (CmdLineException e) {
             System.err.println("Error in arguments");
             parser.printUsage(System.err);
-            System.exit(0);
+            System.exit(1);
         }
 
         f.run();
@@ -106,13 +116,13 @@ public class GetModelProteome extends AbstractMet4jApplication {
         } catch (MalformedURLException e) {
             e.printStackTrace();
             System.err.println("Malformed url : please check that the model id does not include spaces or odd characters");
-            System.exit(0);
+            System.exit(1);
         }
 
         Boolean check = this.checkConnection(urlGenes);
 
         if (!check) {
-            System.exit(0);
+            System.exit(1);
         }
 
         String jsonStringGenes = null;
@@ -121,7 +131,7 @@ public class GetModelProteome extends AbstractMet4jApplication {
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Problem when uploading genes");
-            System.exit(0);
+            System.exit(1);
         }
 
         Set<Sequence> sequences = null;
@@ -130,7 +140,7 @@ public class GetModelProteome extends AbstractMet4jApplication {
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Problem when reading genes json");
-            System.exit(0);
+            System.exit(1);
         }
 
         try {
@@ -138,7 +148,7 @@ public class GetModelProteome extends AbstractMet4jApplication {
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Problem when writing the fasta file");
-            System.exit(0);
+            System.exit(1);
         }
 
 

@@ -260,6 +260,9 @@ public class AnnotationParserTest {
 
 		assertEquals(refInchis, s1.getRefs());
 
+		System.err.println(s1.getInchi());
+
+		assertEquals("truc", s1.getInchi());
 	}
 
 }

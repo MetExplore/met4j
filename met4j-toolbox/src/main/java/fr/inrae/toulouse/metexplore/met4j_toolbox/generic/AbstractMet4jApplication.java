@@ -36,9 +36,39 @@
 
 package fr.inrae.toulouse.metexplore.met4j_toolbox.generic;
 
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.hibernate.validator.constraints.Range;
+
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>Abstract AbstractMet4jApplication class.</p>
@@ -47,6 +77,399 @@ import org.kohsuke.args4j.Option;
  * @version $Id: $Id
  */
 public abstract class AbstractMet4jApplication {
+
+    private ArrayList<HashMap<String, String>> options;
+
+    /**
+     * Inits the options from the field annotations
+     *
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     */
+    private void initOptions() throws IllegalArgumentException, IllegalAccessException {
+
+        options = new ArrayList<>();
+
+        // Browse each class field
+        for (Field f : this.getClass().getFields()) {
+
+            boolean isParameter = Arrays.stream(f.getDeclaredAnnotations()).anyMatch(a -> a instanceof Option);
+
+            if (isParameter) {
+
+                HashMap<String, String> map = new HashMap<>();
+
+                map.put("name", f.getName());
+
+
+                if (f.getType().isEnum()) {
+
+                    Enum<?> enumValue = (Enum<?>) f.get(this);
+
+                    Object[] possibleValues = enumValue.getDeclaringClass().getEnumConstants();
+
+                    String choices = "";
+                    int n = 0;
+
+                    for (Object object : possibleValues) {
+                        String choice = object.toString();
+
+                        if (n > 0) {
+                            choices += ",";
+                        }
+                        choices += choice;
+                        n++;
+                    }
+
+                    map.put("choices", choices);
+
+                    map.put("type", "select");
+
+                } else if (f.getType().getSimpleName().equals("String")) {
+                    map.put("type", "text");
+                } else if (f.getType().getSimpleName().equals("int")) {
+                    map.put("type", "text");
+                } else if (f.getType().getSimpleName().equalsIgnoreCase("double")) {
+                    map.put("type", "float");
+                } else if (f.getType().getSimpleName().equalsIgnoreCase("boolean")) {
+                    map.put("type", "boolean");
+                } else {
+                    map.put("type", f.getType().getSimpleName().toLowerCase());
+                }
+
+                String defaultValue = "";
+                if (f.get(this) != null) {
+                    defaultValue = f.get(this).toString();
+                }
+                map.put("default", defaultValue);
+
+                for (Annotation a : f.getDeclaredAnnotations()) {
+                    if (a instanceof Option) {
+                        Option option = (Option) a;
+
+                        map.put("label", option.usage());
+
+                        if (!option.metaVar().equals("")) {
+                            map.put("metaVar", option.metaVar());
+                        } else {
+                            map.put("metaVar", "");
+                        }
+
+                        map.put("argument", option.name());
+
+                        String optional = "true";
+                        if (option.required()) {
+                            optional = "false";
+                        }
+                        map.put("optional", optional);
+                    } else if (a instanceof Range) {
+                        Range option = (Range) a;
+
+                        map.put("min", Double.toString(option.min()));
+                        map.put("max", Double.toString(option.max()));
+
+                    } else if (a instanceof ParameterType) {
+                        map.put("type", ((ParameterType) a).name().toString().toLowerCase());
+                    } else if (a instanceof Format) {
+                        map.put("format", ((Format) a).name().toString().toLowerCase());
+                    }
+                }
+                options.add(map);
+            }
+        }
+    }
+
+    /**
+     * Prints the description of the application in json format
+     *
+     * @return a json representing the detailed description of the class and all
+     * the parameters available for it's main method
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     */
+    public String json() throws IllegalArgumentException, IllegalAccessException {
+
+        String json = "";
+
+        this.initOptions();
+
+        JSONArray parameters = new JSONArray();
+        parameters.addAll(options);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", new String(this.getLabel()));
+        jsonObject.put("description", new String(this.getLongDescription()));
+        jsonObject.put("short_description", new String(this.getShortDescription()));
+        jsonObject.put("java_class", this.getClass().getSimpleName());
+
+        String simplePackageName = this.getSimplePackageName();
+
+        jsonObject.put("package", simplePackageName);
+
+        jsonObject.put("parameters", parameters);
+
+        json = jsonObject.toJSONString();
+
+        return json;
+    }
+
+    public String getSimplePackageName() {
+        String packageName = this.getClass().getPackage().getName();
+
+        String tab[] = packageName.split("\\.");
+        String simplePackageName = tab[tab.length - 1];
+
+        return simplePackageName;
+    }
+
+
+    public void xmlGalaxyWrapper(String outputDirectory, GalaxyPackageType packageType, String version) throws ParserConfigurationException, XmlPullParserException, IOException, IllegalAccessException, TransformerException, SAXException {
+
+        String packageName = this.getSimplePackageName();
+
+        String className = this.getClass().getSimpleName();
+
+        File wrapperDirectory = new File(outputDirectory + "/" + packageName + "/" + className);
+
+        if (!wrapperDirectory.exists()) {
+            wrapperDirectory.mkdirs();
+        }
+
+        String fileName = wrapperDirectory.getAbsolutePath() + "/" + className + ".xml";
+
+        File file = new File(fileName);
+
+        Boolean testExists = false;
+
+        NodeList testList = null;
+
+        if (file.exists()) {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+
+            // optional, but recommended
+            // process XML securely, avoid attacks like XML External Entities (XXE)
+            dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+            // parse XML file
+            DocumentBuilder db = dbf.newDocumentBuilder();
+
+            Document doc = db.parse(file);
+
+            testList = doc.getElementsByTagName("test");
+
+            if (testList.getLength() > 0) {
+                testExists = true;
+            }
+        }
+
+        this.initOptions();
+
+        DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+
+        DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+
+        Document document = documentBuilder.newDocument();
+
+        Element root = document.createElement("tool");
+        root.setAttribute("id", "met4j_" + this.getLabel());
+        root.setAttribute("name", this.getLabel());
+        root.setAttribute("version", version);
+
+        Element description = document.createElement("description");
+        description.setTextContent(this.getShortDescription());
+        root.appendChild(description);
+
+        Element xrefs = document.createElement("xrefs");
+        Element xref = document.createElement("xref");
+        xref.setAttribute("type", "bio.tools");
+        xref.setTextContent("met4j");
+        xrefs.appendChild(xref);
+        root.appendChild(xrefs);
+
+        Element requirements = document.createElement("requirements");
+        root.appendChild(requirements);
+        Element container = document.createElement("container");
+
+        if (packageType.equals(GalaxyPackageType.Docker)) {
+            container.setAttribute("type", "docker");
+            container.setTextContent("metexplore/met4j:" + version);
+        } else if (packageType.equals(GalaxyPackageType.Singularity)) {
+            container.setAttribute("type", "singularity");
+            container.setTextContent("oras://registry.forgemia.inra.fr/metexplore/met4j/met4j-singularity:" + version);
+        }
+        requirements.appendChild(container);
+
+        Element command = document.createElement("command");
+        command.setAttribute("detect_errors", "exit_code");
+
+        String commandText = "";
+
+        commandText = "sh /usr/bin/met4j.sh " + packageName + "." + className;
+       /* if(packageType.equals(GalaxyPackageType.Docker)) {
+            commandText = "sh /usr/bin/met4j.sh " + packageName + "." + className;
+        }
+        else if(packageType.equals(GalaxyPackageType.Singularity)) {
+
+        }
+*/
+        Element inputElements = document.createElement("inputs");
+        List<HashMap<String, String>> inputOptions = getInputOptions();
+        for (HashMap<String, String> o : inputOptions) {
+
+            Element param = getParamFromOption(document, o);
+            inputElements.appendChild(param);
+
+            if (o.get("type").equalsIgnoreCase("boolean")) {
+                commandText += " " + "$" + o.get("name") + "\n";
+            } else {
+
+                if (o.get("optional").equals("true")) {
+                    if (o.get("type").startsWith("input")) {
+                        // commandText += "#if str($" + o.get("name") + ") != \"None\":\n";
+                        commandText += "#if str($" + o.get("name") + ") != 'None':\n";
+                    } else if (o.get("type").equalsIgnoreCase("Integer") || o.get("type").equalsIgnoreCase("Float")) {
+                        commandText += "#if str($" + o.get("name") + ") != 'nan':\n";
+                    } else {
+                        commandText += "#if str($" + o.get("name") + "):\n";
+                    }
+                }
+
+                commandText += " " + o.get("argument") + " " + "\"$" + o.get("name") + "\"\n";
+
+                if (o.get("optional").equals("true")) {
+                    commandText += "#end if\n";
+                }
+
+                if (o.get("type").startsWith("input")) {
+                    param.setAttribute("type", "data");
+                    param.setAttribute("format", o.get("format"));
+                } else {
+                    param.setAttribute("type", o.get("type"));
+                }
+
+                if (o.get("type").equals("text")) {
+                    Element sanitizer = document.createElement("sanitizer");
+                    sanitizer.setAttribute("invalid_char", "_");
+                    Element valid = document.createElement("valid");
+                    valid.setAttribute("initial", "string.printable");
+                    sanitizer.appendChild(valid);
+                    param.appendChild(sanitizer);
+                }
+
+                if (o.get("type").equals("select")) {
+                    String choices = o.get("choices");
+                    String[] tabChoices = choices.split(",");
+                    for (int i = 0; i < tabChoices.length; i++) {
+                        String choice = tabChoices[i];
+                        Element option = document.createElement("option");
+                        option.setAttribute("value", choice);
+                        if (choice.equals(o.get("default"))) {
+                            option.setAttribute("selected", "true");
+                        }
+                        option.setTextContent(choice);
+                        param.appendChild(option);
+                    }
+                }
+            }
+
+        }
+
+
+        Element outputElements = document.createElement("outputs");
+        List<HashMap<String, String>> outputOptions = getOutputOptions();
+
+        for (HashMap<String, String> o : outputOptions) {
+
+            Element param = getParamFromOption(document, o);
+            outputElements.appendChild(param);
+            commandText += " " + o.get("argument") + " " + "\"$" + o.get("name") + "\"\n";
+        }
+
+        Node cDataDescription = document.createCDATASection(commandText);
+        command.appendChild(cDataDescription);
+
+        root.appendChild(command);
+        root.appendChild(inputElements);
+        root.appendChild(outputElements);
+
+        if (testExists) {
+            Element tests = document.createElement("tests");
+            root.appendChild(tests);
+            for (int i = 0; i < testList.getLength(); i++) {
+                Node newNode = document.importNode(testList.item(i), true);
+                tests.appendChild(newNode);
+            }
+        }
+
+        Element help = document.createElement("help");
+        Node cHelp = document.createCDATASection(this.getLongDescription());
+        help.appendChild(cHelp);
+        root.appendChild(help);
+
+        document.appendChild(root);
+
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        DOMSource domSource = new DOMSource(document);
+        StreamResult streamResult = new StreamResult(new File(wrapperDirectory.getAbsolutePath() + "/" + className + ".xml"));
+
+        transformer.transform(domSource, streamResult);
+    }
+
+    private Element getParamFromOption(Document document, HashMap<String, String> o) {
+
+        Element param;
+        if (o.get("type").equals("outputfile")) {
+            param = document.createElement("data");
+            param.setAttribute("name", o.get("name"));
+            param.setAttribute("format", o.get("format"));
+        } else {
+            param = document.createElement("param");
+            param.setAttribute("name", o.get("name"));
+            param.setAttribute("label", o.get("label"));
+            param.setAttribute("argument", o.get("argument"));
+            param.setAttribute("value", o.get("default"));
+
+            if (!o.get("type").equalsIgnoreCase("boolean")) {
+                param.setAttribute("optional", o.get("optional"));
+            } else {
+                param.setAttribute("truevalue", o.get("argument"));
+                param.setAttribute("falsevalue", o.get(""));
+                param.setAttribute("type", "boolean");
+                param.setAttribute("checked", o.get("default"));
+            }
+        }
+        return param;
+    }
+
+
+    private List<HashMap<String, String>> getInputOptions() {
+        return this.options.stream().filter(o -> !o.containsKey("type") || !o.get("type").equals("outputfile")).collect(Collectors.toList());
+    }
+
+    private List<HashMap<String, String>> getOutputOptions() {
+        return this.options.stream().filter(o -> !o.containsKey("type") || o.get("type").equals("outputfile")).collect(Collectors.toList());
+    }
+
+    public static String getVersion() throws IOException, XmlPullParserException {
+        MavenXpp3Reader reader = new MavenXpp3Reader();
+        Model model;
+        if ((new File("pom.xml")).exists())
+            model = reader.read(new FileReader("pom.xml"));
+        else
+            model = reader.read(
+                    new InputStreamReader(
+                            AbstractMet4jApplication.class.getResourceAsStream(
+                                    "/META-INF/maven/fr.inrae.toulouse.metexplore/met4j-toolbox/pom.xml"
+                            )
+                    )
+            );
+
+        return model.getVersion().replace("-SNAPSHOT", "");
+    }
 
     /**
      * <p>getLabel.</p>
@@ -74,22 +497,20 @@ public abstract class AbstractMet4jApplication {
 
     /**
      * <p>printHeader.</p>
-     *
+     * <p>
      * Prints the label and the long description
      */
-    public void printLongHeader()
-    {
+    public void printLongHeader() {
         System.out.println(this.getLabel());
         System.out.println(this.getLongDescription());
     }
 
     /**
      * <p>printHeader.</p>
-     *
+     * <p>
      * Prints the label and the long description
      */
-    public void printShortHeader()
-    {
+    public void printShortHeader() {
         System.out.println(this.getLabel());
         System.out.println(this.getShortDescription());
     }
@@ -113,25 +534,27 @@ public abstract class AbstractMet4jApplication {
         try {
             parser.parseArgument(args);
         } catch (CmdLineException e) {
-            if(this.h == false) {
+            if (this.h == false) {
                 this.printShortHeader();
                 System.err.println("Error in arguments");
                 parser.printUsage(System.err);
-                System.exit(0);
-            }
-            else {
+                System.exit(1);
+            } else {
                 this.printLongHeader();
                 parser.printUsage(System.err);
-                System.exit(1);
+                System.exit(0);
             }
         }
 
-        if(this.h == true)
-        {
+        if (this.h == true) {
             this.printLongHeader();
             parser.printUsage(System.err);
-            System.exit(1);
+            System.exit(0);
         }
+    }
+
+    public enum GalaxyPackageType {
+        Docker, Singularity
     }
 
 }

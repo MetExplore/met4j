@@ -101,7 +101,7 @@ public class SetRefsFromFile extends AbstractSetAttributesFromFile {
 
         int n = 0;
 
-        if(! IdentifiersOrg.validIdentifiers.contains(ref)) {
+        if(! IdentifiersOrg.validIdentifiers.contains(ref.toLowerCase())) {
             System.err.println("Warning : the identifier "+ref+" is not a valid id in identifiers.org");
         }
 

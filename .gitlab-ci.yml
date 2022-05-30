@@ -3,6 +3,7 @@
 stages:
   - build
   - test
+  - package
   - deploy
   - build-containers
 
@@ -11,10 +12,34 @@ stages:
   image: docker:latest
   services:
     - docker:dind
+  script:
+    - if [ "$CI_COMMIT_BRANCH" = "master" ]; then docker build -t "$DOCKER_IMAGE:latest" .; fi
+    - if [ "$CI_COMMIT_BRANCH" = "master" ]; then docker push "$DOCKER_IMAGE:latest"; fi
+    - if [ "$CI_COMMIT_BRANCH" = "develop" -o "$CI_COMMIT_BRANCH" = "master" ]; then docker build -t "$DOCKER_IMAGE:$VERSION" .; fi
+    # version in lower case
+    - if [ "$CI_COMMIT_BRANCH" = "develop" -o "$CI_COMMIT_BRANCH" = "master" -a "$VERSION" != "$LOWER_CASE_VERSION" ]; then docker build -t "$DOCKER_IMAGE:$LOWER_CASE_VERSION" .; fi
+    - if [ "$CI_COMMIT_BRANCH" = "develop" -o "$CI_COMMIT_BRANCH" = "master" -a "$VERSION" != "$LOWER_CASE_VERSION" ]; then docker push "$DOCKER_IMAGE:$LOWER_CASE_VERSION"; fi
+    - docker build -t "$DOCKER_IMAGE:$CI_COMMIT_BRANCH" .
+    - docker push "$DOCKER_IMAGE:$CI_COMMIT_BRANCH"
+    # branch in lower case
+    - docker build -t "$DOCKER_IMAGE:$LOWER_CASE_COMMIT_BRANCH" .
+    - docker push "$DOCKER_IMAGE:$LOWER_CASE_COMMIT_BRANCH"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: always
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: always
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+      when: manual
+  needs:
+    - build
+    - package
 
 variables:
   MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
-  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
 
 cache:
   paths:
@@ -24,14 +49,44 @@ build:
   image: maven:3.6-adoptopenjdk-14
   stage: build
   script:
-    - mvn compile
+    - mvn $MAVEN_OPTS compile
+    - TRUEVERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+    - VERSION=$TRUEVERSION
+    - if [ "$CI_COMMIT_BRANCH" = "master" ]; then VERSION=${VERSION%"-SNAPSHOT"}; fi
+    - LOWER_CASE_VERSION=${VERSION,,}
+    - LOWER_CASE_COMMIT_BRANCH=${CI_COMMIT_BRANCH,,}
+    - echo "VERSION=$VERSION" >> build.env
+    - echo "TRUEVERSION=$TRUEVERSION" >> build.env
+    - echo "LOWER_CASE_VERSION=$LOWER_CASE_VERSION" >> build.env
+    - echo "LOWER_CASE_COMMIT_BRANCH=$LOWER_CASE_COMMIT_BRANCH" >> build.env
+  artifacts:
+    expire_in: 60 min
+    paths:
+      - target/
+      - "*/target"
+    reports:
+      dotenv: build.env
 
 test:
   image: maven:3.6-adoptopenjdk-14
   stage: test
   script:
-    - mvn clean test
+    - find . -name "*.class" -exec touch {} \+
+    - mvn $MAVEN_OPTS clean test
     - cat coverage/target/site/jacoco-aggregate/index.html | grep -o '<tfoot>.*</tfoot>'
+
+package:
+  image: maven:3.6-adoptopenjdk-14
+  stage: package
+  script:
+    - mvn $MAVEN_OPTS clean install -DskipTests=true
+    - cd met4j-toolbox
+    - mvn $MAVEN_OPTS package -DskipTests=true
+    - cd ..
+  artifacts:
+    expire_in: 60 min
+    paths:
+      - "met4j-toolbox/target/met4j-toolbox-$TRUEVERSION.jar"
 
 deploySnapshot:
   image: maven:3.6-adoptopenjdk-14
@@ -71,39 +126,35 @@ buildSingularity:
     entrypoint: [ "" ]
   script:
     - singularity build met4j-toolbox.sif met4j.singularity
-    - singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"$CI_COMMIT_TAG"
+    - if [ "$CI_COMMIT_BRANCH" = "master" ]; then singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"latest"; fi
+    - if [ "$CI_COMMIT_BRANCH" = "develop" -o "$CI_COMMIT_BRANCH" = "master" ]; then singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"$VERSION"; fi
+    # version in lower case
+    - if [ "$CI_COMMIT_BRANCH" = "develop" -o "$CI_COMMIT_BRANCH" = "master" -a "$VERSION" != "$LOWER_CASE_VERSION"]; then singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"$LOWER_CASE_VERSION"; fi
+    - singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"$CI_COMMIT_BRANCH"
+    # branch in lower case
+    - singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"$LOWER_CASE_COMMIT_BRANCH"
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: always
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: always
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
       when: manual
+  needs:
+    - build
+    - package
 
 buildDockerProdGitlab:
   extends: .template_docker
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  script:
-    - docker build -t "$CI_REGISTRY/metexplore/met4j/met4j-docker:latest" .
-    - docker push "$CI_REGISTRY/metexplore/met4j/met4j-docker:latest"
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-      when: manual
+    - DOCKER_IMAGE="$CI_REGISTRY/metexplore/met4j/met4j-docker"
+
 
 buildDockerProdDockerhub:
   extends: .template_docker
   before_script:
     - docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_PASSWORD" $DOCKERHUB_REGISTRY
-  script:
-    - docker build --pull -t "$DOCKERHUB_IMAGE:latest" .
-    - docker push "$DOCKERHUB_IMAGE:latest"
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-      when: manual
-
-
-
-
+    - DOCKER_IMAGE=$DOCKERHUB_IMAGE

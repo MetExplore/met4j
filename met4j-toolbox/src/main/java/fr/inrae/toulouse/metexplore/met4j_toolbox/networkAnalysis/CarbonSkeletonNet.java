@@ -19,6 +19,7 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.*;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
@@ -26,14 +27,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class CarbonSkeletonNet  extends AbstractMet4jApplication {
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.*;
 
+public class CarbonSkeletonNet extends AbstractMet4jApplication {
+
+    @Format(name = Sbml)
+    @ParameterType(name = InputFile)
     @Option(name = "-s", usage = "input SBML file", required = true)
     public String inputPath = null;
 
+    @Format(name = Gsam)
+    @ParameterType(name = InputFile)
     @Option(name = "-g", usage = "input GSAM file", required = true)
     public String inputAAM = null;
 
+    @Format(name = Gml)
+    @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output Graph file", required = true)
     public String outputPath = null;
 
@@ -87,26 +98,26 @@ public class CarbonSkeletonNet  extends AbstractMet4jApplication {
         System.out.println(" Done.");
 
         System.out.print("Processing atom mappings...");
-        AtomMappingWeightPolicy wp = ( fromIndexes ?
+        AtomMappingWeightPolicy wp = (fromIndexes ?
                 new AtomMappingWeightPolicy().fromConservedCarbonIndexes(inputAAM) :
                 new AtomMappingWeightPolicy().fromNumberOfConservedCarbons(inputAAM)
         );
         wp = wp.binarize()
-        .removeEdgeWithoutMapping()
-        .removeEdgesWithoutConservedCarbon();
+                .removeEdgeWithoutMapping()
+                .removeEdgesWithoutConservedCarbon();
 
         wp.setWeight(graph);
         System.out.println(" Done.");
 
         //invert graph as undirected (copy edge weight to reversed edge)
-       if(undirected){
-           System.out.print("Create Undirected...");
-           graph.asUndirected();
-           System.out.println(" Done.");
-       }
+        if (undirected) {
+            System.out.print("Create Undirected...");
+            graph.asUndirected();
+            System.out.println(" Done.");
+        }
 
         //merge compartment
-        if(mergeComp){
+        if (mergeComp) {
             System.out.print("Merging compartments...");
             VertexContraction vc = new VertexContraction();
             graph = vc.decompartmentalize(graph, new VertexContraction.MapByName());
@@ -114,10 +125,10 @@ public class CarbonSkeletonNet  extends AbstractMet4jApplication {
         }
 
         //remove single-carbon compounds
-        if(!keepSingleCarbon){
+        if (!keepSingleCarbon) {
             System.out.println("Skip compounds with less than two carbons detected...");
             HashSet<BioMetabolite> toRemove = new HashSet<>();
-            for(BioMetabolite n : graph.vertexSet()) {
+            for (BioMetabolite n : graph.vertexSet()) {
                 if (!graph.edgesOf(n).isEmpty()) {
                     String formula = n.getChemicalFormula();
                     try {
@@ -135,19 +146,19 @@ public class CarbonSkeletonNet  extends AbstractMet4jApplication {
         }
 
         //remove isolated nodes
-        if(removeIsolated){
+        if (removeIsolated) {
             System.out.println("Remove isolated nodes...");
             HashSet<BioMetabolite> nodes = new HashSet<>(graph.vertexSet());
             graph.removeIsolatedNodes();
             nodes.removeAll(graph.vertexSet());
-            for(BioMetabolite n : nodes){
+            for (BioMetabolite n : nodes) {
                 System.out.println("\tremoving " + n.getName());
             }
             System.out.println(" Done.");
         }
 
         //compute transitions probability from weights
-        if(computeWeight) {
+        if (computeWeight) {
             System.out.print("Compute transition matrix...");
             ReactionProbabilityWeight wp2 = new ReactionProbabilityWeight();
             wp2.setWeight(graph);
@@ -155,7 +166,7 @@ public class CarbonSkeletonNet  extends AbstractMet4jApplication {
         }
 
         //merge parallel edges
-        if(mergeEdges){
+        if (mergeEdges) {
             System.out.print("Merging edges...");
             EdgeMerger.mergeEdgesWithOverride(graph);
             System.out.println(" Done.");
@@ -163,11 +174,11 @@ public class CarbonSkeletonNet  extends AbstractMet4jApplication {
 
         //export graph
         System.out.print("Exporting...");
-        if(asMatrix){
+        if (asMatrix) {
             ComputeAdjacencyMatrix adjBuilder = new ComputeAdjacencyMatrix(graph);
-            if(!computeWeight) adjBuilder.parallelEdgeWeightsHandling((u, v) -> Math.max(u,v));
-            ExportMatrix.toCSV(this.outputPath,adjBuilder.getadjacencyMatrix());
-        }else{
+            if (!computeWeight) adjBuilder.parallelEdgeWeightsHandling((u, v) -> Math.max(u, v));
+            ExportMatrix.toCSV(this.outputPath, adjBuilder.getadjacencyMatrix());
+        } else {
             ExportGraph.toGmlWithAttributes(graph, this.outputPath, true);
         }
         System.out.println(" Done.");
@@ -175,7 +186,9 @@ public class CarbonSkeletonNet  extends AbstractMet4jApplication {
     }
 
     @Override
-    public String getLabel() {return this.getClass().getSimpleName();}
+    public String getLabel() {
+        return this.getClass().getSimpleName();
+    }
 
     @Override
     public String getLongDescription() {
@@ -187,6 +200,8 @@ public class CarbonSkeletonNet  extends AbstractMet4jApplication {
     }
 
     @Override
-    public String getShortDescription() {return "Create a carbon skeleton graph representation of a SBML file content, using GSAM atom-mapping file (see https://forgemia.inra.fr/metexplore/gsam)";}
+    public String getShortDescription() {
+        return "Create a carbon skeleton graph representation of a SBML file content, using GSAM atom-mapping file (see https://forgemia.inra.fr/metexplore/gsam)";
+    }
 }
 

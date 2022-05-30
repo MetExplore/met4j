@@ -13,27 +13,47 @@ import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Gml;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+
 public class ScopeNetwork extends AbstractMet4jApplication {
 
     //arguments
+    @Format(name = Sbml)
+    @ParameterType(name = InputFile)
     @Option(name = "-i", usage = "input SBML file: path to network used for computing scope, in sbml format.", required = true)
-    String sbmlFilePath;
+    public String sbmlFilePath;
+
+    @ParameterType(name = InputFile)
     @Option(name = "-s", aliases = {"--seeds"}, usage = "input seeds file: tabulated file containing node of interest ids", required = true)
-    String seedsFilePath;
+    public String seedsFilePath;
+
+    @Format(name = Gml)
+    @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output file: path to the .gml file where the results scope network will be exported", required = true)
-    String output;
+    public String output;
 
     //options
+    @ParameterType(name = InputFile)
     @Option(name = "-sc", aliases = {"--sides"}, usage = "an optional file containing list of ubiquitous side compounds to be considered available by default but ignored during expansion")
     public String sideCompoundFile = null;
+
     @Option(name = "-ssc", aliases = {"--showsides"}, usage = "show side compounds in output network", depends = {"-sc"})
     public boolean includeSides = false;
+
+    @ParameterType(name = InputFile)
     @Option(name = "-ir", aliases = {"--ignore"}, usage = "an optional file containing list of reaction to ignore (forbid inclusion in scope")
     public String reactionToIgnoreFile = null;
+
     @Option(name = "-t", aliases = {"--trace"}, usage = "trace inclusion step index for each node in output")
     public boolean trace = false;
 
@@ -52,26 +72,25 @@ public class ScopeNetwork extends AbstractMet4jApplication {
         BioCollection<BioMetabolite> seeds = mapper.map(seedsFilePath).stream()
                 .map(BioMetabolite.class::cast)
                 .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
-        BioCollection<BioMetabolite> bootstraps = mapper.map(sideCompoundFile).stream()
+        BioCollection<BioMetabolite> bootstraps = (sideCompoundFile==null) ? new BioCollection<>() : mapper.map(sideCompoundFile).stream()
                 .map(BioMetabolite.class::cast)
                 .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
-
-        BioCollection<BioReaction> forbidden = new BioCollection<>();
-
-        if (reactionToIgnoreFile != null) {
-            forbidden = mapper.map(reactionToIgnoreFile).stream()
+        BioCollection<BioReaction> forbidden = (reactionToIgnoreFile==null) ? new BioCollection<>() : mapper.map(reactionToIgnoreFile).stream()
                     .map(BioReaction.class::cast)
                     .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
-        }
 
-        ScopeCompounds scopeComp = new ScopeCompounds(graph, seeds, bootstraps, forbidden);
-        if (includeSides) scopeComp.includeBootstrapsInScope();
-        if (trace) scopeComp.trace();
-        BipartiteGraph scope = scopeComp.getScopeNetwork();
-        if (trace) {
-            ExportGraph.toGmlWithAttributes(scope, output, scopeComp.getExpansionSteps(), "step");
-        } else {
-            ExportGraph.toGml(scope, output);
+        if(seeds.isEmpty()){
+            System.err.println("no seed available, computation aborted");
+        }else {
+            ScopeCompounds scopeComp = new ScopeCompounds(graph, seeds, bootstraps, forbidden);
+            if (includeSides) scopeComp.includeBootstrapsInScope();
+            if (trace) scopeComp.trace();
+            BipartiteGraph scope = scopeComp.getScopeNetwork();
+            if (trace) {
+                ExportGraph.toGmlWithAttributes(scope, output, scopeComp.getExpansionSteps(), "step");
+            } else {
+                ExportGraph.toGml(scope, output);
+            }
         }
 
     }

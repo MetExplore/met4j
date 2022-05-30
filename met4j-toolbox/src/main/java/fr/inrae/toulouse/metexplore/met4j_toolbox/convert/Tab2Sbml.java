@@ -41,6 +41,10 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.network.Tab2BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
@@ -53,58 +57,72 @@ import java.io.IOException;
  */
 public class Tab2Sbml extends AbstractMet4jApplication {
 
-    @Option(name="-ci", usage="[1] number of the column where are the reaction ids")
-    public int colid=1;
+    @ParameterType(name = EnumParameterTypes.Integer)
+    @Option(name = "-ci", usage = "[1] number of the column where are the reaction ids")
+    public int colid = 1;
 
-    @Option(name="-cf", usage="[2] number of the column where are the reaction formulas")
-    public int colformula=2;
+    @ParameterType(name = EnumParameterTypes.Integer)
+    @Option(name = "-cf", usage = "[2] number of the column where are the reaction formulas")
+    public int colformula = 2;
 
-    @Option(name="-rp", usage="[deactivated] format the reaction ids in a Palsson way (R_***)")
-    public Boolean rp=false;
+    @Option(name = "-rp", usage = "[deactivated] format the reaction ids in a Palsson way (R_***)")
+    public Boolean rp = false;
 
-    @Option(name="-mp", usage="[deactivated] format the metabolite ids in a Palsson way (M_***_c)")
-    public Boolean mp=false;
+    @Option(name = "-mp", usage = "[deactivated] format the metabolite ids in a Palsson way (M_***_c)")
+    public Boolean mp = false;
 
-    @Option(name="-e", usage="[_b] flag to assign metabolite as external")
-    public String e="_b";
+    @Option(name = "-e", usage = "[_b] flag to assign metabolite as external")
+    public String e = "_b";
 
-    @Option(name="-i", usage="[-->] String for irreversible reaction")
-    public String i="-->";
+    @Option(name = "-i", usage = "[-->] String for irreversible reaction")
+    public String i = "-->";
 
-    @Option(name="-r", usage="[<==>] String for reversible reaction")
-    public String r="<==>";
+    @Option(name = "-r", usage = "[<==>] String for reversible reaction")
+    public String r = "<==>";
 
-    @Option(name="-sbml", usage="[out.sbml] Out sbml file")
+    @Format(name = EnumFormats.Sbml)
+    @ParameterType(name = EnumParameterTypes.OutputFile)
+    @Option(name = "-sbml", usage = "[out.sbml] Out sbml file")
     public String sbml = "out.sbml";
 
-    @Option(name="-in", usage="Tabulated file")
+    @Format(name = EnumFormats.Tsv)
+    @ParameterType(name = EnumParameterTypes.InputFile)
+    @Option(name = "-in", usage = "Tabulated file")
     public String in;
 
-    @Option(name="-id", usage="[NA] Model id written in the SBML file")
-    public String id="NA";
+    @Option(name = "-id", usage = "[NA] Model id written in the SBML file")
+    public String id = "NA";
 
-    @Option(name="-cpt", usage="[deactivated] Create compartment from metabolite suffixes. If this option is deactivated, only one compartment (the default compartment) will be created")
+    @Option(name = "-cpt", usage = "[deactivated] Create compartment from metabolite suffixes. If this option is deactivated, only one compartment (the default compartment) will be created")
     public Boolean createCompartment = false;
 
-    @Option(name="-dcpt", usage="[c] Default compartment")
+    @Option(name = "-dcpt", usage = "[c] Default compartment")
     public String defaultCompartment = "c";
 
-    @Option(name="-n", usage="[0] Number of lines to skip at the beginning of the tabulated file")
+
+    @ParameterType(name = EnumParameterTypes.Integer)
+    @Option(name = "-n", usage = "[0] Number of lines to skip at the beginning of the tabulated file")
     public int nSkip = 0;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getLabel() {
         return this.getClass().getSimpleName();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getLongDescription() {
         return this.getShortDescription();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getShortDescription() {
         return "Create a Sbml File from a tabulated file that contains the reaction ids and the formulas";
@@ -129,40 +147,40 @@ public class Tab2Sbml extends AbstractMet4jApplication {
 
     private void run() throws Met4jSbmlWriterException {
 
-            Tab2BioNetwork tb = new Tab2BioNetwork(this.id, this.colid-1,
-                    this.colformula-1,
-                    this.rp, this.mp, this.e, this.i, this.r, this.createCompartment,
-                    this.defaultCompartment, this.nSkip);
+        Tab2BioNetwork tb = new Tab2BioNetwork(this.id, this.colid - 1,
+                this.colformula - 1,
+                this.rp, this.mp, this.e, this.i, this.r, this.createCompartment,
+                this.defaultCompartment, this.nSkip);
 
 
-            String fileIn = this.in;
-            String sbmlFile = this.sbml;
+        String fileIn = this.in;
+        String sbmlFile = this.sbml;
 
-            Boolean flag = true;
-            try {
-                flag = tb.createReactionsFromFile(fileIn);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.err.println("Error in creating the network from "+fileIn);
-                return;
-            }
-
-            if(! flag) {
-                System.err.println("Error in creating the network from "+fileIn);
-                return;
-            }
-
-            BioNetwork bn = tb.getBioNetwork();
-
-            JsbmlWriter writer = new JsbmlWriter(sbmlFile, bn);
-            writer.write();
-
+        Boolean flag = true;
+        try {
+            flag = tb.createReactionsFromFile(fileIn);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error in creating the network from " + fileIn);
             return;
-
         }
 
+        if (!flag) {
+            System.err.println("Error in creating the network from " + fileIn);
+            return;
+        }
+
+        BioNetwork bn = tb.getBioNetwork();
+
+        JsbmlWriter writer = new JsbmlWriter(sbmlFile, bn);
+        writer.write();
+
+        return;
 
     }
+
+
+}
 
 
 

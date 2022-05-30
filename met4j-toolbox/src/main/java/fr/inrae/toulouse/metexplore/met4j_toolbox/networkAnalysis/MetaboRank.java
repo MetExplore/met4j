@@ -39,19 +39,21 @@ import fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalSimilarity.Fingerpri
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.EigenVectorCentrality;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.ReactionProbabilityWeight;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.SimilarityWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightUtils;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightsFromFile;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.*;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.GraphFilter;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.RankUtils;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
+import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 import java.io.*;
@@ -61,28 +63,46 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Tsv;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+
 /**
  * @author clement
  */
 public class MetaboRank extends AbstractMet4jApplication {
 
     //arguments
+    @Format(name = Sbml)
+    @ParameterType(name = InputFile)
     @Option(name = "-i", usage = "input SBML file: path to network used for computing centrality, in sbml format.", required = true)
-    String sbmlFilePath;
+    public String sbmlFilePath;
+
+    @Format(name = Tsv)
+    @ParameterType(name = InputFile)
     @Option(name = "-s", usage = "input seeds file: tabulated file containing node of interest ids and weight", required = true)
-    String seedsFilePath;
+    public String seedsFilePath;
+
+    @Format(name = Tsv)
+    @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output file: path to the file where the results will be exported", required = true)
-    String output;
+    public String output;
 
     //parameters
+    @Format(name = Tsv)
+    @ParameterType(name = InputFile)
     @Option(name = "-w", usage = "input edge weight file: (recommended) path to file containing edges' weights. Will be normalized as transition probabilities")
-    String edgeWeightsFilePaths;
+    public String edgeWeightsFilePaths;
+
     @Option(name = "-max", usage = "maximal number of iteration")
-    int maxNbOfIter = 15000;
+    public int maxNbOfIter = 15000;
+
     @Option(name = "-t", usage = "convergence tolerance")
-    double tolerance = 0.001;
+    public double tolerance = 0.001;
+
     @Option(name = "-d", usage = "damping factor")
-    double dampingFactor = 0.85;
+    public double dampingFactor = 0.85;
 
     //variables
     CompoundGraph firstGraph;
@@ -124,10 +144,12 @@ public class MetaboRank extends AbstractMet4jApplication {
         System.err.println("transition probabilities computed (reverse graph)");
 
         importSeeds(seedsFilePath);
-
-        compute();
-
-        printCompoundTable(output);
+        if(seeds.isEmpty()){
+            System.err.println("no seed available, computation aborted");
+        }else{
+            compute();
+            printCompoundTable(output);
+        }
         System.err.println("done.");
 
     }
@@ -207,15 +229,18 @@ public class MetaboRank extends AbstractMet4jApplication {
     }
 
     public void setEdgeWeights(CompoundGraph graph, String localFilePath) {
+        Boolean defaultWeight = (localFilePath==null || localFilePath.isEmpty() || localFilePath.isBlank());
         //import weights from file
-        WeightsFromFile<BioMetabolite, ReactionEdge, CompoundGraph> wp = new WeightsFromFile<>(localFilePath, true);
+        WeightingPolicy wp = (defaultWeight) ? new DefaultWeightPolicy() : new WeightsFromFile<>(localFilePath, true);
         //set weights to edges
         wp.setWeight(graph);
-        //remove weights below 0.0
-        int nb = GraphFilter.weightFilter(graph, 0.0, "<=");
-        System.err.println(nb + " edges removed");
-        //remove edges without NaN weight
-        WeightUtils.removeEdgeWithNaNWeight(graph);
+        if (!defaultWeight) {
+            //remove weights below 0.0
+            int nb = GraphFilter.weightFilter(graph, 0.0, "<=");
+            System.err.println(nb + " edges removed");
+            //remove edges without NaN weight
+            WeightUtils.removeEdgeWithNaNWeight(graph);
+        }
         //remove disconnected nodes
         graph.removeIsolatedNodes();
         System.err.println("weights computed.");

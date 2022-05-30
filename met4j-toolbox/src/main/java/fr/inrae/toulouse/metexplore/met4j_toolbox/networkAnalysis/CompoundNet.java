@@ -21,6 +21,10 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
@@ -31,19 +35,23 @@ import java.util.function.Function;
 
 public class CompoundNet extends AbstractMet4jApplication {
 
+    @Format(name= EnumFormats.Sbml)
+    @ParameterType(name= EnumParameterTypes.InputFile)
     @Option(name = "-s", usage = "input SBML file", required = true)
     public String inputPath = null;
 
+    @ParameterType(name= EnumParameterTypes.InputFile)
     @Option(name = "-sc", usage = "input Side compound file", required = false)
     public String inputSide = null;
 
+    @ParameterType(name= EnumParameterTypes.OutputFile)
     @Option(name = "-o", usage = "output Graph file", required = true)
     public String outputPath = null;
 
-    enum strategy {by_name,by_id}
+    enum strategy {no, by_name,by_id}
     @Option(name = "-mc", aliases = {"--mergecomp"}, usage = "merge compartments. " +
             "Use names if consistent and unambiguous across compartments, or identifiers if compartment suffix is present (id in form \"xxx_y\" with xxx as base identifier and y as compartment label).")
-    public strategy mergingStrat = null;
+    public strategy mergingStrat = strategy.no;
     public String idRegex = "^(\\w+)_\\w$";
 
     @Option(name = "-me", aliases = {"--simple"}, usage = "merge parallel edges to produce a simple graph", required = false)
@@ -52,9 +60,12 @@ public class CompoundNet extends AbstractMet4jApplication {
     @Option(name = "-ri", aliases = {"--removeIsolatedNodes"}, usage = "remove isolated nodes", required = false)
     public boolean removeIsolated = false;
 
-    @Option(name = "-dw", aliases = {"--degreeWeights"}, usage = "penalize traversal of hubs by using degree square weighting", forbids = {"-cw", "-sw"})
+    @Option(name = "-dw", aliases = {"--degreeWeights"}, usage = "penalize traversal of hubs by using degree square weighting", forbids = {"-cw"})
     public Boolean degree = false;
-    @Option(name = "-cw", aliases = {"--customWeights"}, usage = "an optional file containing weights for compound pairs", forbids = {"-dw", "-sw"})
+
+    @ParameterType(name=EnumParameterTypes.InputFile)
+    @Format(name=EnumFormats.Tsv)
+    @Option(name = "-cw", aliases = {"--customWeights"}, usage = "an optional file containing weights for compound pairs", forbids = {"-dw"})
     public String weightFile = null;
 
     @Option(name = "-un", aliases = {"--undirected"}, usage = "create as undirected", required = false)
@@ -120,7 +131,7 @@ public class CompoundNet extends AbstractMet4jApplication {
        }
 
         //merge compartment
-        if(mergingStrat!=null){
+        if(mergingStrat!=strategy.no){
             System.out.print("Merging compartments...");
             VertexContraction vc = new VertexContraction();
             VertexContraction.Mapper merger = mergingStrat.equals(strategy.by_name) ? new VertexContraction.MapByName() : new VertexContraction.MapByIdSubString(idRegex);

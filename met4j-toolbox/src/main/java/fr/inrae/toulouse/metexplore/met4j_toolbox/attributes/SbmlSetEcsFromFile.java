@@ -38,6 +38,8 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetEcsFromFile;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 /**
@@ -48,9 +50,9 @@ import org.kohsuke.args4j.Option;
  */
 public class SbmlSetEcsFromFile extends AbstractSbmlSetReaction {
 
-
+    @ParameterType(name= EnumParameterTypes.Integer)
     @Option(name="-cec", usage="[2] number of the column where are the ecs")
-    private int colec=2;
+    public int colec=2;
 
 
     /** {@inheritDoc} */
@@ -64,7 +66,7 @@ public class SbmlSetEcsFromFile extends AbstractSbmlSetReaction {
     public String getLongDescription() {
         return this.getShortDescription()+"\n"+this.setDescription+"\n" +
                 "The EC will be written in the SBML file in two locations:+\n" +
-                "- in the reaction notes (e.g. <p>EC_NUMBER: 2.4.2.14</p>\n" +
+                "- in the reaction notes (e.g. <p>EC_NUMBER: 2.4.2.14</p>)\n" +
                 "- as a reaction annotation (e.g. <rdf:li rdf:resource=\"http://identifiers.org/ec-code/2.4.2.14\"/>)";
     }
 
@@ -102,7 +104,7 @@ public class SbmlSetEcsFromFile extends AbstractSbmlSetReaction {
 
         if(!flag) {
             System.err.println("Error in setting ECs");
-            System.exit(0);
+            System.exit(1);
         }
 
         this.writeSbml(bn);

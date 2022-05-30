@@ -36,7 +36,6 @@
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.connect;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
@@ -46,8 +45,9 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.compressed.PathEdge;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ManyToManyShortestPathsAlgorithm;
+import org.jgrapht.alg.shortestpath.BidirectionalDijkstraShortestPath;
 import org.jgrapht.alg.shortestpath.DijkstraManyToManyShortestPaths;
-import org.jgrapht.alg.util.Pair;
+import org.jgrapht.graph.AsUndirectedGraph;
 
 /**
  * Class to use the shortest paths in a graph
@@ -272,6 +272,12 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 * @return the list of edges involved in the shortest path union
 	 */
 	public List<BioPath<V,E>> getShortestPathsUnionList(Set<V> startNodes, Set<V> targetNodes){
+		if(!g.vertexSet().containsAll(startNodes)){
+			throw(new IllegalArgumentException("Error: start node not found in graph"));
+		}
+		if(!g.vertexSet().containsAll(targetNodes)){
+			throw(new IllegalArgumentException("Error: end node not found in graph"));
+		}
 		DijkstraManyToManyShortestPaths<V,E> spComputor = new DijkstraManyToManyShortestPaths<>(g);
 		ManyToManyShortestPathsAlgorithm.ManyToManyShortestPaths<V, E> paths = spComputor.getManyToManyPaths(startNodes,targetNodes);
 		List<BioPath<V,E>> outputPaths = new ArrayList<>();

@@ -413,7 +413,7 @@ public class TestShortestPaths {
 		HashSet<BioMetabolite> noi = new HashSet<>();
 		noi.add(a);noi.add(b);noi.add(c);noi.add(d);noi.add(e);
 		ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> pathSearch = new ShortestPath<>(g);
-
+		g.setEdgeWeight(bc, 1000.0);
 		CompressedGraph<BioMetabolite, ReactionEdge, CompoundGraph> cg = pathSearch.getMetricClosureGraph(noi,noi,false);
 		
 		for(BioMetabolite e1 : noi){
@@ -427,7 +427,6 @@ public class TestShortestPaths {
 //						}
 						assertTrue("no link between two connected terminal node", cg.containsEdge(e1, e2));
 						assertEquals("wrong edge weight in Metric closure graph",path.getLength() , cg.getEdgeWeight(cg.getEdge(e1, e2)), Double.MIN_VALUE);
-						
 						assertTrue("wrong path",path.getEdgeList().containsAll(cg.getEdge(e1, e2).getPath().getEdgeList()));
 
 					}

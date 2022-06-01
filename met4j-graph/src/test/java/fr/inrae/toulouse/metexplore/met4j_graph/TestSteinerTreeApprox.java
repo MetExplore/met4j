@@ -60,9 +60,9 @@ public class TestSteinerTreeApprox {
 
 	public static CompoundGraph g;
 	
-	public static BioMetabolite a,b,c,d,e,f,x,y,z;
+	public static BioMetabolite a,b,c,d,e,f,x,y,z,w;
 	
-	public static ReactionEdge az,zb,ab,xb,bc,cx,yx,ay,ea,ey,xd,ed,fe,df;
+	public static ReactionEdge az,zb,ab,xb,bc,cx,yx,ay,ea,ey,xd,ed,fe,df,aw,dw;
 	 
 
 	@BeforeClass
@@ -77,6 +77,7 @@ public class TestSteinerTreeApprox {
 		x = new BioMetabolite("x"); g.addVertex(x);
 		y = new BioMetabolite("y"); g.addVertex(y);
 		z = new BioMetabolite("z"); g.addVertex(z);
+		w = new BioMetabolite("w"); g.addVertex(w);
 		az = new ReactionEdge(a,z,new BioReaction("az"));g.addEdge(a, z, az);g.setEdgeWeight(az, 2);
 		zb = new ReactionEdge(z,b,new BioReaction("zb"));g.addEdge(z, b, zb);g.setEdgeWeight(zb, 8);
 		ab = new ReactionEdge(a,b,new BioReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 9);
@@ -91,6 +92,8 @@ public class TestSteinerTreeApprox {
 		ed = new ReactionEdge(e,d,new BioReaction("ed"));g.addEdge(e, d, ed);g.setEdgeWeight(ed, 5);
 		fe = new ReactionEdge(f,e,new BioReaction("fe"));g.addEdge(f, e, fe);g.setEdgeWeight(fe, 8);
 		df = new ReactionEdge(d,f,new BioReaction("df"));g.addEdge(d, f, df);g.setEdgeWeight(df, 8);
+		aw = new ReactionEdge(a,w,new BioReaction("aw"));g.addEdge(a, w, aw);g.setEdgeWeight(aw, 2);
+		dw = new ReactionEdge(d,w,new BioReaction("dw"));g.addEdge(d, w, dw);g.setEdgeWeight(dw, 2);
 
 	}
 	
@@ -126,6 +129,21 @@ public class TestSteinerTreeApprox {
 			= new SteinerTreeApprox<>(g);
 		List<ReactionEdge> treeList = steinerComputer.getSteinerTreeList(noi,noi, true);
 		
+		assertNotNull("No path found", treeList);
+
+		assertTrue("wrong path",Arrays.asList(expectedPath).containsAll(treeList));
+	}
+
+	@Test
+	public void testSteinerTreeListUndirected(){
+		HashSet<BioMetabolite> noi = new HashSet<>();
+		noi.add(a);noi.add(b);noi.add(c);noi.add(d);noi.add(e);
+
+		ReactionEdge[] expectedPath = {ey, yx, ay, aw, dw, cx, xb};
+		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer
+				= new SteinerTreeApprox<>(g, true, false);
+		List<ReactionEdge> treeList = steinerComputer.getSteinerTreeList(noi,noi, true);
+
 		assertNotNull("No path found", treeList);
 
 		assertTrue("wrong path",Arrays.asList(expectedPath).containsAll(treeList));

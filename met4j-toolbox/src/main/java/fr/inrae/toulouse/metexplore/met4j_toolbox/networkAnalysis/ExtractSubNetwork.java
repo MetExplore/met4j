@@ -71,8 +71,8 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
     @Option(name = "-sw", aliases = {"--chemSimWeights"}, usage = "penalize traversal of non-relevant edges by using chemical similarity weighting", forbids = {"-dw", "-cw"})
     public Boolean chemicalSim = false;
 
-    //@Option(name = "-u", aliases = {"--undirected"}, usage = "Ignore reaction direction")
-    //public Boolean undirected = false;
+    @Option(name = "-u", aliases = {"--undirected"}, usage = "Ignore reaction direction")
+    public Boolean undirected = false;
 
     @Option(name = "-k", usage = "Extract k-shortest paths", forbids = {"-st"})
     public int k = 1;
@@ -128,15 +128,15 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
         };
         CompoundGraph subnet;
         if (st) {
-            SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> stComp = new SteinerTreeApprox<>(graph);
+            SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> stComp = new SteinerTreeApprox<>(graph,(degree || weightFile != null), !undirected);
             List<ReactionEdge> stEdges = stComp.getSteinerTreeList(sources, targets, (degree || weightFile != null));
             subnet = factory.createGraphFromEdgeList(stEdges);
         } else if (k > 1) {
-            KShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> kspComp = new KShortestPath<>(graph);
+            KShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> kspComp = new KShortestPath<>(graph, !undirected);
             List<BioPath<BioMetabolite, ReactionEdge>> kspPath = kspComp.getKShortestPathsUnionList(sources, targets, k);
             subnet = factory.createGraphFromPathList(kspPath);
         } else {
-            ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> spComp = new ShortestPath<>(graph);
+            ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> spComp = new ShortestPath<>(graph, !undirected);
             List<BioPath<BioMetabolite, ReactionEdge>> spPath = spComp.getShortestPathsUnionList(sources, targets);
             subnet = factory.createGraphFromPathList(spPath);
         }

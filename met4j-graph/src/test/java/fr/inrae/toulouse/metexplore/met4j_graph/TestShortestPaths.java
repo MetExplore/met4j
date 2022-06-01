@@ -169,23 +169,23 @@ public class TestShortestPaths {
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetUndirectedShortestNoStartException() {
-		ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> pathSearch = new ShortestPath<>(g);
-		BioPath<BioMetabolite,ReactionEdge> path = pathSearch.getShortestAsUndirected(new BioMetabolite("u"), c);
+		ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> pathSearch = new ShortestPath<>(g,false);
+		BioPath<BioMetabolite,ReactionEdge> path = pathSearch.getShortest(new BioMetabolite("u"), c);
 		System.out.println(path);
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void testGetUndirectedShortestNoTargetException() {
-		ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> pathSearch = new ShortestPath<>(g);
-		BioPath<BioMetabolite,ReactionEdge> path = pathSearch.getShortestAsUndirected(a, new BioMetabolite("u"));
+		ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> pathSearch = new ShortestPath<>(g,false);
+		BioPath<BioMetabolite,ReactionEdge> path = pathSearch.getShortest(a, new BioMetabolite("u"));
 		System.out.println(path);
 	}
 	
 	@Test
 	public void testGetShortestundirected() {
 		ReactionEdge[] expectedPath = {bc, ab};
-		ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> pathSearch = new ShortestPath<>(g);
-		BioPath<BioMetabolite,ReactionEdge> path = pathSearch.getShortestAsUndirected(c, a);
+		ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> pathSearch = new ShortestPath<>(g, false);
+		BioPath<BioMetabolite,ReactionEdge> path = pathSearch.getShortest(c, a);
 		assertNotNull(path);
 		List<ReactionEdge> sp = path.getEdgeList();
 		assertTrue("wrong path", Arrays.asList(expectedPath).containsAll(sp));
@@ -194,7 +194,7 @@ public class TestShortestPaths {
 		g.setEdgeWeight(bc, 1000.0);
 		g.setEdgeWeight(ab, 1000.0);
 		ReactionEdge[] expectedLightestPath = {fc, ef, de, ad};
-		BioPath<BioMetabolite,ReactionEdge> path2 =pathSearch.getShortestAsUndirected(c, a);
+		BioPath<BioMetabolite,ReactionEdge> path2 =pathSearch.getShortest(c, a);
 		assertNotNull(path2);
 		List<ReactionEdge> res = path2.getEdgeList();
 		assertTrue("wrong weighted path", Arrays.asList(expectedLightestPath).containsAll(res));
@@ -261,6 +261,22 @@ public class TestShortestPaths {
 //		long start = System.nanoTime();
 		KShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> pathSearch = new KShortestPath<>(g);
 		List<BioPath<BioMetabolite,ReactionEdge>> kshort = pathSearch.getKShortest(g.getVertex("a"), g.getVertex("c"),3);
+		List<ReactionEdge> res = new ArrayList<>();
+		for(BioPath<BioMetabolite,ReactionEdge> p : kshort){
+			res.addAll(p.getEdgeList());
+		}
+
+		assertTrue("wrong path", Arrays.asList(expectedPath).containsAll(res));
+		assertTrue("wrong path", res.containsAll(Arrays.asList(expectedPath)));
+	}
+
+	@Test
+	public void testGetKShortestUndirected() {
+		ReactionEdge[] expectedPath = {ad, de, ab, eb};
+
+//		long start = System.nanoTime();
+		KShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> pathSearch = new KShortestPath<>(g, false);
+		List<BioPath<BioMetabolite,ReactionEdge>> kshort = pathSearch.getKShortest(g.getVertex("a"), g.getVertex("e"),2);
 		List<ReactionEdge> res = new ArrayList<>();
 		for(BioPath<BioMetabolite,ReactionEdge> p : kshort){
 			res.addAll(p.getEdgeList());
@@ -413,7 +429,7 @@ public class TestShortestPaths {
 		HashSet<BioMetabolite> noi = new HashSet<>();
 		noi.add(a);noi.add(b);noi.add(c);noi.add(d);noi.add(e);
 		ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> pathSearch = new ShortestPath<>(g);
-
+		g.setEdgeWeight(bc, 1000.0);
 		CompressedGraph<BioMetabolite, ReactionEdge, CompoundGraph> cg = pathSearch.getMetricClosureGraph(noi,noi,false);
 		
 		for(BioMetabolite e1 : noi){
@@ -427,7 +443,6 @@ public class TestShortestPaths {
 //						}
 						assertTrue("no link between two connected terminal node", cg.containsEdge(e1, e2));
 						assertEquals("wrong edge weight in Metric closure graph",path.getLength() , cg.getEdgeWeight(cg.getEdge(e1, e2)), Double.MIN_VALUE);
-						
 						assertTrue("wrong path",path.getEdgeList().containsAll(cg.getEdge(e1, e2).getPath().getEdgeList()));
 
 					}
@@ -469,7 +484,7 @@ public class TestShortestPaths {
 		CompoundGraph g2 =new CompoundGraph(g);
 		ReactionEdge ab2 = new ReactionEdge(a,b,new BioReaction("ab"));g2.addEdge(a, b, ab2);g2.setEdgeWeight(ab2, 100000.0);
 		ReactionEdge ba = new ReactionEdge(b,a,new BioReaction("ab"));g2.addEdge(b, a, ba);g2.setEdgeWeight(ba, 100000.0);
-		ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> spComputor = new ShortestPath<>(g);
+		ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> spComputor = new ShortestPath<>(g, false);
 		ComputeAdjacencyMatrix builder = new ComputeAdjacencyMatrix(g2);
 		builder.asUndirected();
 		builder.parallelEdgeWeightsHandling((a,b)->Math.min(a,b));
@@ -484,7 +499,7 @@ public class TestShortestPaths {
 					assertEquals(0.0, res.get(a).get(b), Double.MIN_VALUE);
 				}else{
 					assertEquals(res.get(a).get(b), res.get(b).get(a));//check if symmetric
-					BioPath<BioMetabolite, ReactionEdge> sp = spComputor.getShortestAsUndirected(g.getVertex(a), g.getVertex(b));
+					BioPath<BioMetabolite, ReactionEdge> sp = spComputor.getShortest(g.getVertex(a), g.getVertex(b));
 					double weight = (sp==null) ? Double.POSITIVE_INFINITY : sp.getWeight();
 					assertEquals(weight, res.get(a).get(b), Double.MIN_VALUE);
 				}
@@ -497,7 +512,7 @@ public class TestShortestPaths {
 		CompoundGraph g2 =new CompoundGraph(g);
 		ReactionEdge ab2 = new ReactionEdge(a,b,new BioReaction("ab"));g2.addEdge(a, b, ab2);g2.setEdgeWeight(ab2, 100000.0);
 		ReactionEdge ba = new ReactionEdge(b,a,new BioReaction("ab"));g2.addEdge(b, a, ba);g2.setEdgeWeight(ba, 100000.0);
-		ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> spComputor = new ShortestPath<>(g);
+		ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> spComputor = new ShortestPath<>(g, false);
 		ComputeAdjacencyMatrix builder = new ComputeAdjacencyMatrix(g2);
 		builder.asUndirected();
 		builder.parallelEdgeWeightsHandling((a,b)->Math.min(a,b));
@@ -511,7 +526,7 @@ public class TestShortestPaths {
 					assertNull(res.get(a).get(b));
 				}else{
 					assertEquals(res.get(a).get(b).getLength(), res.get(b).get(a).getLength());//check if symmetric
-					BioPath<BioMetabolite, ReactionEdge> sp = spComputor.getShortestAsUndirected(g.getVertex(a), g.getVertex(b));
+					BioPath<BioMetabolite, ReactionEdge> sp = spComputor.getShortest(g.getVertex(a), g.getVertex(b));
 					double length = (sp==null) ? Double.POSITIVE_INFINITY : sp.getLength();
 					assertEquals(length, res.get(a).get(b).getLength(), Double.MIN_VALUE);
 				}

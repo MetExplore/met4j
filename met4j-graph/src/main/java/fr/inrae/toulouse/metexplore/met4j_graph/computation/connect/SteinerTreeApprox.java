@@ -63,6 +63,7 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 	
 	/** if the graph should be treated as weighted or not **/
 	public boolean weighted = true;
+	public boolean undirected = false;
 
 	/**
 	 * Instantiates a new steiner tree computor.
@@ -83,6 +84,12 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 		this.g=g;
 		this.weighted=weighted;
 	}
+
+	public SteinerTreeApprox(G g, boolean weighted, boolean directed) {
+		this.g=g;
+		this.weighted=weighted;
+		this.undirected=!directed;
+	}
 	
 	/**
 	 * Gets the steiner tree list.
@@ -102,7 +109,7 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 		terminal.removeAll(unfound);
 		
 		ArrayList<E> list = new ArrayList<>();
-		CompressedGraph<V, E, G> cg = (new ShortestPath<>(g)).getMetricClosureGraph(terminal, terminal, weighted);
+		CompressedGraph<V, E, G> cg = (new ShortestPath<>(g,!undirected)).getMetricClosureGraph(terminal, terminal, weighted);
 		KruskalMinimumSpanningTree<V, PathEdge<V,E>> kruskal = new KruskalMinimumSpanningTree<>(cg);
 		Set<PathEdge<V,E>> mst = kruskal.getSpanningTree().getEdges();
 		for(PathEdge<V,E> edge : mst){
@@ -137,7 +144,7 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 		endNodes.removeAll(unfound);
 		
 		ArrayList<E> list = new ArrayList<>();
-		DirectedWeightedMultigraph<V, PathEdge<V,E>> cg = (new ShortestPath<>(g)).getMetricClosureGraph(startNodes, endNodes, weighted);
+		DirectedWeightedMultigraph<V, PathEdge<V,E>> cg = (new ShortestPath<>(g,!undirected)).getMetricClosureGraph(startNodes, endNodes, weighted);
 		KruskalMinimumSpanningTree<V, PathEdge<V,E>> kruskal = new KruskalMinimumSpanningTree<>(cg);
 		Set<PathEdge<V,E>> mst = kruskal.getSpanningTree().getEdges();
 		for(PathEdge<V,E> edge : mst){

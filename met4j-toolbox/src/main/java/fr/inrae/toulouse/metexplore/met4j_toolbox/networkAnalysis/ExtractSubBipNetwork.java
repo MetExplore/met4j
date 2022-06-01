@@ -64,7 +64,7 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
 
     @Format(name = Text)
     @ParameterType(name = InputFile)
-    @Option(name = "-sc", aliases = {"--blokedReactions"}, usage = "a file containing list of blocked reactions to ignore")
+    @Option(name = "-br", aliases = {"--blokedReactions"}, usage = "a file containing list of blocked reactions to ignore")
     public String blkdReactionFile = null;
 
     @Format(name = Tsv)
@@ -86,41 +86,35 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
 
         //Graph processing: import side compounds
         System.err.println("importing side compounds...");
-        Mapper<BioMetabolite> mapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
-        BioCollection<BioMetabolite> sideCpds = mapper.map(sideCompoundFile);
-        if (mapper.getNumberOfSkippedEntries() > 0)
-            System.err.println(mapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
+        Mapper<BioMetabolite> cmapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
+        BioCollection<BioMetabolite> sideCpds = cmapper.map(sideCompoundFile);
+        if (cmapper.getNumberOfSkippedEntries() > 0)
+            System.err.println(cmapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
         System.err.println(sideCpds.size() + " side compounds ignored during graph build.");
 
         //Graph processing: import blocked reactions
-        System.err.println("importing blocked reactions...");
-        Mapper<BioReaction> mapper2 = new Mapper<>(network, BioNetwork::getReactionsView).skipIfNotFound();
-        BioCollection<BioReaction> blkdReactions = mapper2.map(blkdReactionFile);
-        if (mapper2.getNumberOfSkippedEntries() > 0)
-            System.err.println(mapper2.getNumberOfSkippedEntries() + " blocked reactions not found in network.");
-        System.err.println(blkdReactions.size() + " blocked reactions ignored during graph build.");
+        if(blkdReactionFile!=null){
+            System.err.println("importing blocked reactions...");
+            Mapper<BioReaction> rmapper = new Mapper<>(network, BioNetwork::getReactionsView).skipIfNotFound();
+            BioCollection<BioReaction> blkdReactions = rmapper.map(blkdReactionFile);
+            if (rmapper.getNumberOfSkippedEntries() > 0)
+                System.err.println(rmapper.getNumberOfSkippedEntries() + " blocked reactions not found in network.");
+            System.err.println(blkdReactions.size() + " blocked reactions ignored during graph build.");
+        }
 
         //get sources and targets
         System.err.println("extracting sources and targets");
-        Mapper<BioReaction> rmapper = new Mapper<>(network, BioNetwork::getReactionsView).skipIfNotFound();
-        Mapper<BioMetabolite> cmapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
-        BioCollection<BioMetabolite> cSource = cmapper.map(sourcePath);
-        BioCollection<BioReaction> rSource = rmapper.map(sourcePath);
-        HashSet<BioEntity> sources = new HashSet<>(rSource);
-        sources.addAll(cSource);
-        int skiped = rmapper.getNumberOfSkippedEntries()-cSource.size();
-        skiped = skiped + (cmapper.getNumberOfSkippedEntries()-rSource.size());
-        if (skiped > 0)
-            System.err.println(skiped + " source not found in network.");
+        BioCollection<BioEntity> entities = new BioCollection<>();
+        entities.addAll(network.getReactionsView());
+        entities.addAll(network.getMetabolitesView());
+        Mapper<BioEntity> mapper = new Mapper<>(network, (n -> entities)).skipIfNotFound();
+        HashSet<BioEntity> sources = new HashSet<>(mapper.map(sourcePath));
+        if (mapper.getNumberOfSkippedEntries() > 0)
+            System.err.println(mapper.getNumberOfSkippedEntries() + " source not found in network.");
 
-        BioCollection<BioMetabolite> cTarget = cmapper.map(targetPath);
-        BioCollection<BioReaction> rTarget = rmapper.map(targetPath);
-        HashSet<BioEntity> targets = new HashSet<>(rTarget);
-        targets.addAll(cTarget);
-        skiped = rmapper.getNumberOfSkippedEntries()-cTarget.size();
-        skiped = skiped + (cmapper.getNumberOfSkippedEntries()-rTarget.size());
-        if (skiped > 0)
-            System.err.println(skiped + " target not found in network.");
+        HashSet<BioEntity> targets = new HashSet<>(mapper.map(targetPath));
+        if (mapper.getNumberOfSkippedEntries() > 0)
+            System.err.println(mapper.getNumberOfSkippedEntries() + " target not found in network.");
 
         //Create reaction graph
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
@@ -174,14 +168,14 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
     @Override
     public String getLongDescription() {
         return this.getShortDescription() + "\n" +
-                "The subnetwork corresponds to part of the network that connects reactions from the first list to reactions from the second list.\n" +
+                "The subnetwork corresponds to part of the network that connects reactions and compounds from the first list to reactions and compounds from the second list.\n" +
                 "Sources and targets list can have elements in common. The connecting part can be defined as the union of shortest or k-shortest paths between sources and targets, " +
-                "or the Steiner tree connecting them. Contrary to compound graph, reaction graph often lacks weighting policy for edge relevance. In order to ensure appropriate " +
-                "network density, a list of side compounds to ignore for linking reactions must be provided. An optional edge weight file, if available, can also be used.";
+                "or the Steiner tree connecting them. Contrary to compound graph, bipartite graph often lacks weighting policy for edge relevance. In order to ensure appropriate " +
+                "network density, a list of side compounds and blocked reactions to ignore during path build must be provided. An optional edge weight file, if available, can also be used.";
     }
 
     @Override
     public String getShortDescription() {
-        return "Create a subnetwork from a GSMN in SBML format, and two files containing lists of reactions of interests ids, one per row, plus one file of the same format containing side compounds ids.";
+        return "Create a subnetwork from a GSMN in SBML format, and two files containing lists of compounds and/or reactions of interests ids, one per row, plus one file of the same format containing side compounds ids.";
     }
 }

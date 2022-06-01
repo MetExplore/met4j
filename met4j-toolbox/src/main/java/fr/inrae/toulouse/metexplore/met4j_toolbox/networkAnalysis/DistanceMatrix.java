@@ -13,6 +13,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
+import fr.inrae.toulouse.metexplore.met4j_mapping.Mapper;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
@@ -22,6 +23,7 @@ import org.kohsuke.args4j.Option;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Csv;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
@@ -41,8 +43,13 @@ public class DistanceMatrix extends AbstractMet4jApplication {
 
     @Format(name = EnumFormats.Text)
     @ParameterType(name = InputFile)
-    @Option(name = "-s", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore")
+    @Option(name = "-sc", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore")
     public String sideCompoundFile = null;
+
+    @Format(name = EnumFormats.Text)
+    @ParameterType(name = InputFile)
+    @Option(name = "-s", aliases = {"--sub"}, usage = "an optional file containing list of compounds of interest. The returned distance matrix contains only the corresponding rows and columns")
+    public String seedFile = null;
 
     @Option(name = "-dw", aliases = {"--degree"}, usage = "penalize traversal of hubs by using degree square weighting (-w must not be set)", forbids = {"-w"})
     public Boolean degree = false;
@@ -79,21 +86,12 @@ public class DistanceMatrix extends AbstractMet4jApplication {
         //Graph processing: side compound removal [optional]
         if (sideCompoundFile != null) {
             System.err.println("removing side compounds...");
-            BioCollection<BioMetabolite> sideCpds = new BioCollection<>();
-            BufferedReader fr = new BufferedReader(new FileReader(sideCompoundFile));
-            String line;
-            while ((line = fr.readLine()) != null) {
-                String sId = line.trim().split("\t")[0];
-                BioMetabolite s = network.getMetabolite(sId);
-                if (s != null) {
-                    sideCpds.add(s);
-                } else {
-                    System.err.println(sId + " side compound not found in network.");
-                }
-            }
-            fr.close();
+            Mapper<BioMetabolite> mapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
+            BioCollection<BioMetabolite> sideCpds = mapper.map(sideCompoundFile);
+            if (mapper.getNumberOfSkippedEntries() > 0)
+                System.err.println(mapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
             boolean removed = graph.removeAllVertices(sideCpds);
-            if (removed) System.err.println(sideCpds.size() + " compounds removed.");
+            System.err.println(sideCpds.size() + " side compounds ignored during graph build.");
         }
 
         //Graph processing: set weights [optional]
@@ -113,6 +111,25 @@ public class DistanceMatrix extends AbstractMet4jApplication {
         adjBuilder.parallelEdgeWeightsHandling((a, b) -> Math.min(a, b)); //keep lowest weight if parallel edges
         FloydWarshall matrixComputor = new FloydWarshall<>(graph, adjBuilder);
         BioMatrix distM = matrixComputor.getDistances();
+
+        //filter results
+        if(seedFile!=null){
+            System.err.println("filtering matrix...");
+            Mapper<BioMetabolite> mapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
+            BioCollection<BioMetabolite> seeds = mapper.map(seedFile);
+            if (mapper.getNumberOfSkippedEntries() > 0)
+                System.err.println(mapper.getNumberOfSkippedEntries() + "compounds of interest not found in network.");
+            ArrayList<Integer> seedRows = new ArrayList<>();
+            ArrayList<Integer> seedCols = new ArrayList<>();
+            for(BioMetabolite m : seeds){
+                seedRows.add(distM.getRowFromLabel(m.getId()));
+                seedCols.add(distM.getColumnFromLabel(m.getId()));
+            }
+            distM = distM.getSubMatrix(
+                    seedRows.stream().mapToInt(i -> i).toArray(),
+                    seedCols.stream().mapToInt(i -> i).toArray()
+            );
+        }
 
         //export results
         ExportMatrix.toCSV(outputPath, distM);

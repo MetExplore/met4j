@@ -216,13 +216,30 @@ public class EjmlMatrix implements BioMatrix{
 	@Override
 	public BioMatrix getSubMatrix(int[] rows, int[] cols) {
 		SimpleMatrix sub = new SimpleMatrix(rows.length, cols.length);
-		
+		HashMap<Integer,String> subColumnIndexMap = new HashMap<>();
+		HashMap<String,Integer> subColumnLabelMap = new HashMap<>();
+		HashMap<Integer,String> subRowIndexMap = new HashMap<>();
+		HashMap<String,Integer> subRowLabelMap = new HashMap<>();
 		for(int i=0; i<rows.length; i++){
+			subRowIndexMap.put(i, this.getRowLabel(rows[i]));
+			subRowLabelMap.put(this.getRowLabel(rows[i]),i);
 			for(int j=0; j<cols.length; j++){
 				sub.set(i, j, mat.get(rows[i], cols[j]));
+				subColumnIndexMap.put(j, this.getColumnLabel(cols[j]));
+				subColumnLabelMap.put(this.getColumnLabel(cols[j]),j);
 			}
-		}	
-		return new EjmlMatrix(sub);
+		}
+		BioMatrix subM = new EjmlMatrix(sub);
+		subM.setColumnIndexMap(subColumnIndexMap);
+		subM.setColumnLabelMap(subColumnLabelMap);
+		subM.setRowIndexMap(subRowIndexMap);
+		subM.setRowLabelMap(subRowLabelMap);
+
+		System.out.println(subColumnIndexMap);
+		System.out.println(subColumnLabelMap);
+		System.out.println(subRowIndexMap);
+		System.out.println(subRowLabelMap);
+		return subM;
 	}
 
 	/* (non-Javadoc)

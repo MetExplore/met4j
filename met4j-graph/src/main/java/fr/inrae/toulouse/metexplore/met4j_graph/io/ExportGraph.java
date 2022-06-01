@@ -317,7 +317,7 @@ public class ExportGraph {
 
 		try {
 			GmlExporter<V, E> gml
-				= new GmlExporter<>(V::getId);
+				= new GmlExporter<>();
 			gml.setParameter(GmlExporter.Parameter.EXPORT_EDGE_LABELS, true);
 			gml.setParameter(GmlExporter.Parameter.EXPORT_VERTEX_LABELS, true);
 			FileWriter fw = new FileWriter(new File(outputPath).getAbsoluteFile());
@@ -333,7 +333,7 @@ public class ExportGraph {
 	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> void toGmlWithAttributes(G graph, String outputPath, Map<V,?> att, String attName){
 		try {
 			GmlExporter<V, E> gml
-					= new GmlExporter<>(V::getId);
+					= new GmlExporter<>();
 			gml.setParameter(GmlExporter.Parameter.EXPORT_EDGE_LABELS, true);
 			gml.setParameter(GmlExporter.Parameter.EXPORT_VERTEX_LABELS, true);
 			gml.setParameter(GmlExporter.Parameter.EXPORT_CUSTOM_VERTEX_ATTRIBUTES, true);

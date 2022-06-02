@@ -74,6 +74,9 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
     @Option(name = "-u", aliases = {"--undirected"}, usage = "Ignore reaction direction")
     public Boolean undirected = false;
 
+    @Option(name = "-tab", aliases = {"--asTable"}, usage = "Export in tabulated file instead of .GML")
+    public Boolean asTable = false;
+
     @Option(name = "-k", usage = "Extract k-shortest paths", forbids = {"-st"})
     public int k = 1;
 
@@ -142,7 +145,11 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
         }
 
         //export sub-network
-        ExportGraph.toGmlWithAttributes(subnet, outputPath);
+        if(asTable){
+            ExportGraph.toTab(subnet, outputPath);
+        }else{
+            ExportGraph.toGmlWithAttributes(subnet, outputPath);
+        }
 
     }
 

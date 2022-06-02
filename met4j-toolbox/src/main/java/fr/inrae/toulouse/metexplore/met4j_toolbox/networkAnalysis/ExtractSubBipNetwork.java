@@ -55,6 +55,9 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
     @Option(name = "-u", aliases = {"--undirected"}, usage = "Ignore reaction direction")
     public Boolean undirected = false;
 
+    @Option(name = "-tab", aliases = {"--asTable"}, usage = "Export in tabulated file instead of .GML")
+    public Boolean asTable = false;
+
     @Format(name = Gml)
     @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output gml file", required = true)
@@ -157,7 +160,11 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
         }
 
         //export sub-network
-        ExportGraph.toGml(subnet, outputPath);
+        if(asTable){
+            ExportGraph.toTab(subnet, outputPath);
+        }else{
+            ExportGraph.toGml(subnet, outputPath);
+        }
 
     }
 

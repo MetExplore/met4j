@@ -52,6 +52,9 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
     @Option(name = "-t", usage = "input targets txt file", required = true)
     public String targetPath = null;
 
+    @Option(name = "-u", aliases = {"--undirected"}, usage = "Ignore reaction direction")
+    public Boolean undirected = false;
+
     @Format(name = Gml)
     @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output gml file", required = true)
@@ -90,16 +93,15 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
         BioCollection<BioMetabolite> sideCpds = cmapper.map(sideCompoundFile);
         if (cmapper.getNumberOfSkippedEntries() > 0)
             System.err.println(cmapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
-        System.err.println(sideCpds.size() + " side compounds ignored during graph build.");
 
         //Graph processing: import blocked reactions
+        BioCollection<BioReaction> blkdReactions = null;
         if(blkdReactionFile!=null){
             System.err.println("importing blocked reactions...");
             Mapper<BioReaction> rmapper = new Mapper<>(network, BioNetwork::getReactionsView).skipIfNotFound();
-            BioCollection<BioReaction> blkdReactions = rmapper.map(blkdReactionFile);
+            blkdReactions = rmapper.map(blkdReactionFile);
             if (rmapper.getNumberOfSkippedEntries() > 0)
                 System.err.println(rmapper.getNumberOfSkippedEntries() + " blocked reactions not found in network.");
-            System.err.println(blkdReactions.size() + " blocked reactions ignored during graph build.");
         }
 
         //get sources and targets
@@ -119,7 +121,12 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
         //Create reaction graph
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
         BipartiteGraph graph = builder.getBipartiteGraph();
-
+        boolean removed = graph.removeAllVertices(sideCpds);
+        if (removed) System.err.println(sideCpds.size() + " side compounds removed.");
+        if(blkdReactionFile!=null){
+            removed = graph.removeAllVertices(blkdReactions);
+            if (removed) System.err.println(blkdReactions.size() + " blocked reaction removed.");
+        }
         //Graph processing: set weights [optional]
         WeightingPolicy<BioEntity, BipartiteEdge, BipartiteGraph> wp = new DefaultWeightPolicy<>();
         if (weightFile != null) {
@@ -136,15 +143,15 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
         };
         BipartiteGraph subnet;
         if (st) {
-            SteinerTreeApprox<BioEntity, BipartiteEdge, BipartiteGraph> stComp = new SteinerTreeApprox<>(graph);
+            SteinerTreeApprox<BioEntity, BipartiteEdge, BipartiteGraph> stComp = new SteinerTreeApprox<>(graph, (weightFile != null), !undirected);
             List<BipartiteEdge> stEdges = stComp.getSteinerTreeList(sources, targets, (weightFile != null));
             subnet = factory.createGraphFromEdgeList(stEdges);
         } else if (k > 1) {
-            KShortestPath<BioEntity, BipartiteEdge, BipartiteGraph> kspComp = new KShortestPath<>(graph);
+            KShortestPath<BioEntity, BipartiteEdge, BipartiteGraph> kspComp = new KShortestPath<>(graph, !undirected);
             List<BioPath<BioEntity, BipartiteEdge>> kspPath = kspComp.getKShortestPathsUnionList(sources, targets, k);
             subnet = factory.createGraphFromPathList(kspPath);
         } else {
-            ShortestPath<BioEntity, BipartiteEdge, BipartiteGraph> spComp = new ShortestPath<>(graph);
+            ShortestPath<BioEntity, BipartiteEdge, BipartiteGraph> spComp = new ShortestPath<>(graph, !undirected);
             List<BioPath<BioEntity, BipartiteEdge>> spPath = spComp.getShortestPathsUnionList(sources, targets);
             subnet = factory.createGraphFromPathList(spPath);
         }

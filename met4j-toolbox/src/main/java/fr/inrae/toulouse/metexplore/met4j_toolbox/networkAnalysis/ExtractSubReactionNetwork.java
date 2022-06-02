@@ -43,6 +43,9 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
     @Option(name = "-s", usage = "input sources txt file", required = true)
     public String sourcePath = null;
 
+    @Option(name = "-u", aliases = {"--undirected"}, usage = "Ignore reaction direction")
+    public Boolean undirected = false;
+
     @Format(name = Text)
     @ParameterType(name = InputFile)
     @Option(name = "-t", usage = "input targets txt file", required = true)
@@ -113,15 +116,15 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
         };
         ReactionGraph subnet;
         if (st) {
-            SteinerTreeApprox<BioReaction, CompoundEdge, ReactionGraph> stComp = new SteinerTreeApprox<>(graph);
+            SteinerTreeApprox<BioReaction, CompoundEdge, ReactionGraph> stComp = new SteinerTreeApprox<>(graph, (weightFile != null), !undirected);
             List<CompoundEdge> stEdges = stComp.getSteinerTreeList(sources, targets, (weightFile != null));
             subnet = factory.createGraphFromEdgeList(stEdges);
         } else if (k > 1) {
-            KShortestPath<BioReaction, CompoundEdge, ReactionGraph> kspComp = new KShortestPath<>(graph);
+            KShortestPath<BioReaction, CompoundEdge, ReactionGraph> kspComp = new KShortestPath<>(graph, !undirected);
             List<BioPath<BioReaction, CompoundEdge>> kspPath = kspComp.getKShortestPathsUnionList(sources, targets, k);
             subnet = factory.createGraphFromPathList(kspPath);
         } else {
-            ShortestPath<BioReaction, CompoundEdge, ReactionGraph> spComp = new ShortestPath<>(graph);
+            ShortestPath<BioReaction, CompoundEdge, ReactionGraph> spComp = new ShortestPath<>(graph, !undirected);
             List<BioPath<BioReaction, CompoundEdge>> spPath = spComp.getShortestPathsUnionList(sources, targets);
             subnet = factory.createGraphFromPathList(spPath);
         }

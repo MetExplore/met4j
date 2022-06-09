@@ -1,8 +1,9 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.KShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.ShortestPath;
@@ -12,6 +13,8 @@ import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.We
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.CompoundEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
@@ -20,7 +23,8 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_mapping.Mapper;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.*;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
@@ -31,7 +35,7 @@ import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Enu
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 
-public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
+public class ExtractSubBipNetwork extends AbstractMet4jApplication {
 
     @Format(name = Sbml)
     @ParameterType(name = InputFile)
@@ -43,16 +47,16 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
     @Option(name = "-s", usage = "input sources txt file", required = true)
     public String sourcePath = null;
 
+    @Format(name = Text)
+    @ParameterType(name = InputFile)
+    @Option(name = "-t", usage = "input targets txt file", required = true)
+    public String targetPath = null;
+
     @Option(name = "-u", aliases = {"--undirected"}, usage = "Ignore reaction direction")
     public Boolean undirected = false;
 
     @Option(name = "-tab", aliases = {"--asTable"}, usage = "Export in tabulated file instead of .GML")
     public Boolean asTable = false;
-
-    @Format(name = Text)
-    @ParameterType(name = InputFile)
-    @Option(name = "-t", usage = "input targets txt file", required = true)
-    public String targetPath = null;
 
     @Format(name = Gml)
     @ParameterType(name = OutputFile)
@@ -63,6 +67,11 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
     @ParameterType(name = InputFile)
     @Option(name = "-sc", aliases = {"--side"}, usage = "a file containing list of side compounds to ignore", required = true)
     public String sideCompoundFile = null;
+
+    @Format(name = Text)
+    @ParameterType(name = InputFile)
+    @Option(name = "-br", aliases = {"--blokedReactions"}, usage = "a file containing list of blocked reactions to ignore")
+    public String blkdReactionFile = null;
 
     @Format(name = Tsv)
     @ParameterType(name = InputFile)
@@ -83,52 +92,70 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
 
         //Graph processing: import side compounds
         System.err.println("importing side compounds...");
-        Mapper<BioMetabolite> mapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
-        BioCollection<BioMetabolite> sideCpds = mapper.map(sideCompoundFile);
-        if (mapper.getNumberOfSkippedEntries() > 0)
-            System.err.println(mapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
-        System.err.println(sideCpds.size() + " side compounds ignored during graph build.");
+        Mapper<BioMetabolite> cmapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
+        BioCollection<BioMetabolite> sideCpds = cmapper.map(sideCompoundFile);
+        if (cmapper.getNumberOfSkippedEntries() > 0)
+            System.err.println(cmapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
+
+        //Graph processing: import blocked reactions
+        BioCollection<BioReaction> blkdReactions = null;
+        if(blkdReactionFile!=null){
+            System.err.println("importing blocked reactions...");
+            Mapper<BioReaction> rmapper = new Mapper<>(network, BioNetwork::getReactionsView).skipIfNotFound();
+            blkdReactions = rmapper.map(blkdReactionFile);
+            if (rmapper.getNumberOfSkippedEntries() > 0)
+                System.err.println(rmapper.getNumberOfSkippedEntries() + " blocked reactions not found in network.");
+        }
 
         //get sources and targets
         System.err.println("extracting sources and targets");
-        Mapper<BioReaction> rmapper = new Mapper<>(network, BioNetwork::getReactionsView).skipIfNotFound();
-        HashSet<BioReaction> sources = new HashSet<>(rmapper.map(sourcePath));
-        if (rmapper.getNumberOfSkippedEntries() > 0)
-            System.err.println(rmapper.getNumberOfSkippedEntries() + " source not found in network.");
-        HashSet<BioReaction> targets = new HashSet<>(rmapper.map(targetPath));
-        if (rmapper.getNumberOfSkippedEntries() > 0)
-            System.err.println(rmapper.getNumberOfSkippedEntries() + " target not found in network.");
+        BioCollection<BioEntity> entities = new BioCollection<>();
+        entities.addAll(network.getReactionsView());
+        entities.addAll(network.getMetabolitesView());
+        Mapper<BioEntity> mapper = new Mapper<>(network, (n -> entities)).skipIfNotFound();
+        HashSet<BioEntity> sources = new HashSet<>(mapper.map(sourcePath));
+        if (mapper.getNumberOfSkippedEntries() > 0)
+            System.err.println(mapper.getNumberOfSkippedEntries() + " source not found in network.");
+
+        HashSet<BioEntity> targets = new HashSet<>(mapper.map(targetPath));
+        if (mapper.getNumberOfSkippedEntries() > 0)
+            System.err.println(mapper.getNumberOfSkippedEntries() + " target not found in network.");
 
         //Create reaction graph
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
-        ReactionGraph graph = builder.getReactionGraph(sideCpds);
-
+        BipartiteGraph graph = builder.getBipartiteGraph();
+        boolean removed = graph.removeAllVertices(sideCpds);
+        if (removed) System.err.println(sideCpds.size() + " side compounds removed.");
+        if(blkdReactionFile!=null){
+            removed = graph.removeAllVertices(blkdReactions);
+            if (removed) System.err.println(blkdReactions.size() + " blocked reaction removed.");
+        }
         //Graph processing: set weights [optional]
-        WeightingPolicy<BioReaction, CompoundEdge, ReactionGraph> wp = new DefaultWeightPolicy<>();
+        WeightingPolicy<BioEntity, BipartiteEdge, BipartiteGraph> wp = new DefaultWeightPolicy<>();
         if (weightFile != null) {
             wp = new WeightsFromFile(weightFile, true);
         }
         wp.setWeight(graph);
 
         //extract sub-network
-        GraphFactory<BioReaction, CompoundEdge, ReactionGraph> factory = new GraphFactory<>() {
+        GraphFactory<BioEntity, BipartiteEdge, BipartiteGraph> factory = new GraphFactory<>() {
             @Override
-            public ReactionGraph createGraph() {
-                return new ReactionGraph();
+            public BipartiteGraph createGraph() {
+                return new BipartiteGraph();
             }
         };
-        ReactionGraph subnet;
+        BipartiteGraph subnet;
         if (st) {
-            SteinerTreeApprox<BioReaction, CompoundEdge, ReactionGraph> stComp = new SteinerTreeApprox<>(graph, (weightFile != null), !undirected);
-            List<CompoundEdge> stEdges = stComp.getSteinerTreeList(sources, targets, (weightFile != null));
+            SteinerTreeApprox<BioEntity, BipartiteEdge, BipartiteGraph> stComp = new SteinerTreeApprox<>(graph, (weightFile != null), !undirected);
+            List<BipartiteEdge> stEdges = stComp.getSteinerTreeList(sources, targets, (weightFile != null));
             subnet = factory.createGraphFromEdgeList(stEdges);
         } else if (k > 1) {
-            KShortestPath<BioReaction, CompoundEdge, ReactionGraph> kspComp = new KShortestPath<>(graph, !undirected);
-            List<BioPath<BioReaction, CompoundEdge>> kspPath = kspComp.getKShortestPathsUnionList(sources, targets, k);
+            KShortestPath<BioEntity, BipartiteEdge, BipartiteGraph> kspComp = new KShortestPath<>(graph, !undirected);
+            List<BioPath<BioEntity, BipartiteEdge>> kspPath = kspComp.getKShortestPathsUnionList(sources, targets, k);
             subnet = factory.createGraphFromPathList(kspPath);
         } else {
-            ShortestPath<BioReaction, CompoundEdge, ReactionGraph> spComp = new ShortestPath<>(graph, !undirected);
-            List<BioPath<BioReaction, CompoundEdge>> spPath = spComp.getShortestPathsUnionList(sources, targets);
+            ShortestPath<BioEntity, BipartiteEdge, BipartiteGraph> spComp = new ShortestPath<>(graph, !undirected);
+            List<BioPath<BioEntity, BipartiteEdge>> spPath = spComp.getShortestPathsUnionList(sources, targets);
             subnet = factory.createGraphFromPathList(spPath);
         }
 
@@ -136,13 +163,13 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
         if(asTable){
             ExportGraph.toTab(subnet, outputPath);
         }else{
-            ExportGraph.toGmlWithAttributes(subnet, outputPath);
+            ExportGraph.toGml(subnet, outputPath);
         }
 
     }
 
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
-        ExtractSubReactionNetwork app = new ExtractSubReactionNetwork();
+        ExtractSubBipNetwork app = new ExtractSubBipNetwork();
         app.parseArguments(args);
         app.run();
     }
@@ -155,14 +182,14 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
     @Override
     public String getLongDescription() {
         return this.getShortDescription() + "\n" +
-                "The subnetwork corresponds to part of the network that connects reactions from the first list to reactions from the second list.\n" +
+                "The subnetwork corresponds to part of the network that connects reactions and compounds from the first list to reactions and compounds from the second list.\n" +
                 "Sources and targets list can have elements in common. The connecting part can be defined as the union of shortest or k-shortest paths between sources and targets, " +
-                "or the Steiner tree connecting them. Contrary to compound graph, reaction graph often lacks weighting policy for edge relevance. In order to ensure appropriate " +
-                "network density, a list of side compounds to ignore for linking reactions must be provided. An optional edge weight file, if available, can also be used.";
+                "or the Steiner tree connecting them. Contrary to compound graph, bipartite graph often lacks weighting policy for edge relevance. In order to ensure appropriate " +
+                "network density, a list of side compounds and blocked reactions to ignore during path build must be provided. An optional edge weight file, if available, can also be used.";
     }
 
     @Override
     public String getShortDescription() {
-        return "Create a subnetwork from a GSMN in SBML format, and two files containing lists of reactions of interests ids, one per row, plus one file of the same format containing side compounds ids.";
+        return "Create a subnetwork from a GSMN in SBML format, and two files containing lists of compounds and/or reactions of interests ids, one per row, plus one file of the same format containing side compounds ids.";
     }
 }

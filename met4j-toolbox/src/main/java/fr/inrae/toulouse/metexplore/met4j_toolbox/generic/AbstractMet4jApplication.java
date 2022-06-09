@@ -70,6 +70,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+
 /**
  * <p>Abstract AbstractMet4jApplication class.</p>
  *
@@ -169,7 +171,11 @@ public abstract class AbstractMet4jApplication {
                         map.put("max", Double.toString(option.max()));
 
                     } else if (a instanceof ParameterType) {
-                        map.put("type", ((ParameterType) a).name().toString().toLowerCase());
+                        String parameterType = ((ParameterType) a).name().toString().toLowerCase();
+                        map.put("type", parameterType);
+                        if(parameterType.startsWith("output")) {
+                            map.put("output", "true");
+                        }
                     } else if (a instanceof Format) {
                         map.put("format", ((Format) a).name().toString().toLowerCase());
                     }

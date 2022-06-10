@@ -93,11 +93,12 @@ public class GenerateGalaxyFiles extends AbstractMet4jApplication {
             root.setAttribute("monitor", "true");
             toolConf.appendChild(root);
 
-            Element section = toolConf.createElement("section");
-            section.setAttribute("id", "met4j");
-            section.setAttribute("name", "met4j apps");
 
-            root.appendChild(section);
+            Element label = toolConf.createElement("label");
+            label.setAttribute("id", "met4j");
+            label.setAttribute("text", "MET4J");
+
+            root.appendChild(label);
 
             ResourceURLFilter filter = u -> {
 
@@ -168,11 +169,10 @@ public class GenerateGalaxyFiles extends AbstractMet4jApplication {
                         String packageName = (String) getPackageName.invoke(obj);
 
                         if(! packageName.equals(toolPackage)) {
-                            Element label = toolConf.createElement("label");
-                            label.setAttribute("id", packageName);
-                            label.setAttribute("text", "met4j "+packageName);
-                            label.setAttribute("version", "");
-                            section.appendChild(label);
+                            Element section = toolConf.createElement("section");
+                            section.setAttribute("id", packageName);
+                            section.setAttribute("name", packageName);
+                            root.appendChild(section);
                             toolPackage = packageName;
                         }
 
@@ -180,7 +180,7 @@ public class GenerateGalaxyFiles extends AbstractMet4jApplication {
 
                         tool.setAttribute("file", "met4j/" + packageName + "/" + className + "/" + className + ".xml");
 
-                        section.appendChild(tool);
+                        root.appendChild(tool);
 
                         n++;
                     } catch (InstantiationException e) {

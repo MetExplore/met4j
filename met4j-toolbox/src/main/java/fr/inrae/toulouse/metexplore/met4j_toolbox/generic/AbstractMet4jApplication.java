@@ -247,7 +247,10 @@ public abstract class AbstractMet4jApplication {
 
         Boolean testExists = false;
 
+        Boolean citationExists = false;
+
         NodeList testList = null;
+        NodeList citationList = null;
 
         if (file.exists()) {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -267,6 +270,14 @@ public abstract class AbstractMet4jApplication {
             if (testList.getLength() > 0) {
                 testExists = true;
             }
+
+            citationList = doc.getElementsByTagName("citation");
+
+            if (citationList.getLength() > 0) {
+                citationExists = true;
+            }
+
+
         }
 
         this.initOptions();
@@ -399,9 +410,10 @@ public abstract class AbstractMet4jApplication {
         root.appendChild(inputElements);
         root.appendChild(outputElements);
 
+        Element tests = document.createElement("tests");
+        root.appendChild(tests);
+
         if (testExists) {
-            Element tests = document.createElement("tests");
-            root.appendChild(tests);
             for (int i = 0; i < testList.getLength(); i++) {
                 Node newNode = document.importNode(testList.item(i), true);
                 tests.appendChild(newNode);
@@ -412,6 +424,16 @@ public abstract class AbstractMet4jApplication {
         Node cHelp = document.createCDATASection(this.getLongDescription());
         help.appendChild(cHelp);
         root.appendChild(help);
+
+        Element citations = document.createElement("citations");
+        root.appendChild(citations);
+
+        if (citationExists) {
+            for (int i = 0; i < citationList.getLength(); i++) {
+                Node newNode = document.importNode(testList.item(i), true);
+                citations.appendChild(newNode);
+            }
+        }
 
         document.appendChild(root);
 

@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.12.0
+
+### Features
+
+[met4j-toolbox] Subnetwork Extraction Improvement : 
+- bipartite graph compatibility
+- export as table
+- allows undirected case for paths and steiner tree computation 
+
+### Fixed
+[met4j-graph] shortest paths union and steiner tree optimization
+
+[met4j-graph] fix error in gml export causing import in igraph and cytoscape to fail
+
+[met4j-mathUtils] fix sub-matrix creation not retaining rows&columns labels
+
+[met4j-toolbox] Improvements of GenerateGalaxyFiles and GenerateJson
+
 ## 0.11.0
 
 ### Features

@@ -43,7 +43,9 @@ import org.apache.commons.lang3.ClassUtils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GenerateJson {
 
@@ -66,7 +68,8 @@ public class GenerateJson {
                 }
             };
 
-            String jsonStr = "{\"status\":\"true\",\"apps\":[";
+            //String jsonStr = "{\"status\":\"true\",\"apps\":[";
+            String jsonStr = "{\"status\":\"true\",\"packages\":[";
 
             String path = GenerateJson.class.getPackage().getName()
                     .replace(".", "/");
@@ -74,7 +77,11 @@ public class GenerateJson {
 
             int n = 0;
 
-            for (URL u : Resources.getResourceURLs(Resources.class, filter)) {
+            List<URL> sortedUrls = Resources.getResourceURLs(Resources.class, filter).stream().sorted(Comparator.comparing(URL::getPath)).collect(Collectors.toList());
+
+            String toolPackage = "";
+
+            for (URL u : sortedUrls) {
 
                 String entry = u.getFile();
                 int idx = entry.indexOf(path);
@@ -92,6 +99,19 @@ public class GenerateJson {
                     try {
                         Object obj = ctor.newInstance();
 
+                        Method getPackageName = obj.getClass().getMethod("getSimplePackageName");
+                        String packageName = (String) getPackageName.invoke(obj);
+
+                        if(! packageName.equals(toolPackage)) {
+                            n=0;
+                            if(toolPackage != "")
+                            {
+                                jsonStr += "]},";
+                            }
+                            toolPackage = packageName;
+                            jsonStr += "{\"name\":\""+packageName+"\",\"apps\":[";
+                        }
+
                         Method method = obj.getClass().getMethod("json");
                         if (n > 0) {
                             jsonStr += ",";
@@ -105,7 +125,7 @@ public class GenerateJson {
                 }
             }
 
-            jsonStr += "]}";
+            jsonStr += "]}]}";
 
             System.out.println(jsonStr);
 

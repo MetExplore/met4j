@@ -51,6 +51,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.FileWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -82,6 +83,12 @@ public class GenerateGalaxyFiles extends AbstractMet4jApplication {
 
         try {
 
+            String yamlContent = "---\n" +
+                    "install_repository_dependencies: true\n" +
+                    "install_resolver_dependencies: true\n" +
+                    "install_tool_dependencies: false\n" +
+                    "tools:\n";
+
             DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
 
             DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
@@ -93,11 +100,12 @@ public class GenerateGalaxyFiles extends AbstractMet4jApplication {
             root.setAttribute("monitor", "true");
             toolConf.appendChild(root);
 
-            Element section = toolConf.createElement("section");
-            section.setAttribute("id", "met4j");
-            section.setAttribute("name", "met4j apps");
 
-            root.appendChild(section);
+            Element label = toolConf.createElement("label");
+            label.setAttribute("id", "met4j");
+            label.setAttribute("text", "MET4J");
+
+            root.appendChild(label);
 
             ResourceURLFilter filter = u -> {
 
@@ -168,11 +176,10 @@ public class GenerateGalaxyFiles extends AbstractMet4jApplication {
                         String packageName = (String) getPackageName.invoke(obj);
 
                         if(! packageName.equals(toolPackage)) {
-                            Element label = toolConf.createElement("label");
-                            label.setAttribute("id", packageName);
-                            label.setAttribute("text", "met4j "+packageName);
-                            label.setAttribute("version", "");
-                            section.appendChild(label);
+                            Element section = toolConf.createElement("section");
+                            section.setAttribute("id", "met4j_"+packageName.toLowerCase());
+                            section.setAttribute("name", "Met4J - "+packageName);
+                            root.appendChild(section);
                             toolPackage = packageName;
                         }
 
@@ -180,7 +187,12 @@ public class GenerateGalaxyFiles extends AbstractMet4jApplication {
 
                         tool.setAttribute("file", "met4j/" + packageName + "/" + className + "/" + className + ".xml");
 
-                        section.appendChild(tool);
+                        root.appendChild(tool);
+
+                        yamlContent += "  - name: "+className+"\n";
+                        yamlContent += "    owner: metexplore\n";
+                        yamlContent += "    tool_panel_section_id: met4j_"+packageName.toLowerCase()+"\n";
+
 
                         n++;
                     } catch (InstantiationException e) {
@@ -198,6 +210,11 @@ public class GenerateGalaxyFiles extends AbstractMet4jApplication {
             StreamResult streamResult = new StreamResult(new File(outputDirectory + "/tool_conf.xml"));
 
             transformer.transform(domSource, streamResult);
+
+            File yamlFile = new File(outputDirectory + "/met4j.yml");
+            FileWriter fw = new FileWriter(yamlFile);
+            fw.write(yamlContent);
+            fw.close();
 
         } catch (Exception e) {
             e.printStackTrace();

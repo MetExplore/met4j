@@ -59,6 +59,11 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 	
 	/** The graph. */
 	public final G g;
+
+	public final boolean asUndirected;
+	public boolean isUndirected() {
+		return asUndirected;
+	}
 	
 	/**
 	 * Instantiates a new K-shortest paths computor.
@@ -67,7 +72,14 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 	 */
 	public KShortestPath(G g) {
 		this.g=g;
+		this.asUndirected=false;
 	}
+
+	public KShortestPath(G g, boolean directed) {
+		this.g=g;
+		this.asUndirected=!directed;
+	}
+
 	
 	/**
 	 * compute the list of edges from the union of all K-shortest paths between all nodes in a given set
@@ -110,7 +122,7 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 	 */
 	public List<BioPath<V,E>> getKShortest(V start, V end, int k){
 		List<BioPath<V,E>> kPaths = new ArrayList<>();
-		ShortestPath<V, E, G> sp = new ShortestPath<>(g);
+		ShortestPath<V, E, G> sp = new ShortestPath<>(g,!asUndirected);
 		BioPath<V,E> shortest = sp.getShortest(start, end);
 		if(shortest==null) return new ArrayList<>();
 		kPaths.add(shortest);

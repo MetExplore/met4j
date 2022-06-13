@@ -72,10 +72,10 @@ public class SbmlSetPathwaysFromFile extends AbstractSbmlSetReaction {
                 "Pathways will be written in the SBML file in two ways:" +
                 "- as reaction note (e.g. <p>SUBSYSTEM: purine_biosynthesis</p>)" +
                 "- as SBML group:\n" +
-                        "      <groups:group groups:id=\"purine_biosynthesis\" groups:kind=\"classification\" groups:name=\"purine_biosynthesis\">\n" +
-                        "        <groups:listOfMembers>\n" +
-                        "          <groups:member groups:idRef=\"R_GLUPRT\"/>\n" +
-                        "          <groups:member groups:idRef=\"R_RNDR1b\"/>\n...\n";
+                        "<groups:group groups:id=\"purine_biosynthesis\" groups:kind=\"classification\" groups:name=\"purine_biosynthesis\">\n" +
+                        " <groups:listOfMembers>\n" +
+                        "  <groups:member groups:idRef=\"R_GLUPRT\"/>\n" +
+                        "  <groups:member groups:idRef=\"R_RNDR1b\"/>\n...\n";
     }
 
     /** {@inheritDoc} */

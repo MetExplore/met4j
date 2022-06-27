@@ -14,7 +14,7 @@ Met4j is composed by three main modules:
 - [met4j-core](met4j-core/README.md): it's the key module which contains all the core 
 classes for handling metabolic networks
 - [met4j-io](met4j-io/README.md): for importing/exporting metabolic networks in several 
-formats (SBML, MetExploreXml, KEGG)
+formats (SBML, KEGG, TSV)
 - [met4j-graph](met4j-graph/README.md): for performing graph-based topological analysis of metabolic networks.  
 
 The package [met4j-toolbox](met4j-toolbox/README.md) contains high-level apps that can be run in command line by using either jar file or Singularity or Docker containers.
@@ -29,7 +29,7 @@ Install all modules :
 <dependency>
 <groupId>fr.inrae.toulouse.metexplore</groupId>
 <artifactId>met4j-toolbox</artifactId>
-<version>0.5.2</version>
+<version>0.12.0</version>
 </dependency>
 ```
 
@@ -38,7 +38,7 @@ or a specific module (example : met4j-core ):
 <dependency>
 <groupId>fr.inrae.toulouse.metexplore</groupId>
 <artifactId>met4j-core</artifactId>
-<version>0.5.2</version>
+<version>0.12.0</version>
 </dependency>
 ```
 
@@ -49,6 +49,8 @@ git clone https://forgemia.inra.fr/metexplore/met4j.git;
 cd met4j;
 mvn clean install 
 ```
+
+Read [met4j-toolbox](met4j-toolbox/README.md) to see how to get jar, Docker or Singularity packages containing all the met4-toolbox apps.
 
 ## Usage
 
@@ -67,6 +69,7 @@ Please make sure to update tests as appropriate.
 Issues or suggestions can be posted [here](https://forgemia.inra.fr/metexplore/met4j/-/issues).
 
 ## License
+
 Met4J is distributed under the open license [CeCILL-2.1](https://cecill.info/licences/Licence_CeCILL_V2.1-en.html) (compatible GNU-GPL).  
 
 

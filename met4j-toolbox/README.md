@@ -12,6 +12,10 @@ cd met4j-toolbox
 mvn clean package
 ```
 
+## Download executable jar from gitlab registry
+
+The executable jar is downloadable in the [met4j gitlab registry](https://forgemia.inra.fr/metexplore/met4j/-/packages).
+
 ## Usage
 The toolbox can be launched using
 ```
@@ -23,6 +27,11 @@ which will list all the contained applications that can be called using
 java -cp target/met4j-toolbox-<version>.jar <Package>.<App name> -h
 ```
 
+Log4j from jsbml can be very verbose. You can make it silent by adding this command :
+
+```console
+java -Dlog4j.configuration= -cp target/met4j-toolbox-<version>.jar ...
+```
 
 ## From singularity
 
@@ -130,6 +139,11 @@ sudo docker run -w /work -v /home/lcottret/work:/work \
  metexplore/met4j:latest sh /usr/bin/met4j.sh convert.Sbml2Tab \
  -in toy_model.xml -out toy_model.tsv
 ```
+
+### Galaxy instance
+
+[Galaxy](https://galaxyproject.org/) wrappers for met4j-toolbox apps are available in the [Galaxy toolshed](https://toolshed.g2.bx.psu.edu/) (master version) and in the [Galaxy test toolsdhed](https://testtoolshed.g2.bx.psu.edu/) (develop version).
+Wrappers launch the met4j singularity container, so the server where your Galaxy instance is hosted must have Singularity installed.
 
 ## Features
 <table>

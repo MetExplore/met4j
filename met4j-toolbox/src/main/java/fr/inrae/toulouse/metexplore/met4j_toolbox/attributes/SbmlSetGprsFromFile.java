@@ -71,12 +71,12 @@ public class SbmlSetGprsFromFile  extends AbstractSbmlSetReaction {
                 "(The GPR will be written in the SBML file in two locations:\n" +
                 "- in the reaction notes <p>GENE_ASSOCIATION: ( XC_0401 ) OR ( XC_3282 )</p>" +"\n" +
                 "- as fbc gene product association :" +
-                "       <fbc:geneProductAssociation>\n" +
-                "          <fbc:or>\n" +
-                "            <fbc:geneProductRef fbc:geneProduct=\"XC_3282\"/>\n" +
-                "            <fbc:geneProductRef fbc:geneProduct=\"XC_0401\"/>\n" +
-                "          </fbc:or>\n" +
-                "        </fbc:geneProductAssociation>\n";
+                "<fbc:geneProductAssociation>\n" +
+                " <fbc:or>\n" +
+                "  <fbc:geneProductRef fbc:geneProduct=\"XC_3282\"/>\n" +
+                "  <fbc:geneProductRef fbc:geneProduct=\"XC_0401\"/>\n" +
+                " </fbc:or>\n" +
+                "</fbc:geneProductAssociation>\n";
     }
 
     /** {@inheritDoc} */

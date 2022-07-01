@@ -12,6 +12,10 @@ cd met4j-toolbox
 mvn clean package
 ```
 
+## Download executable jar from gitlab registry
+
+The executable jar is downloadable in the [met4j gitlab registry](https://forgemia.inra.fr/metexplore/met4j/-/packages).
+
 ## Usage
 The toolbox can be launched using
 ```
@@ -23,6 +27,11 @@ which will list all the contained applications that can be called using
 java -cp target/met4j-toolbox-<version>.jar <Package>.<App name> -h
 ```
 
+Log4j from jsbml can be very verbose. You can make it silent by adding this command :
+
+```console
+java -Dlog4j.configuration= -cp target/met4j-toolbox-<version>.jar ...
+```
 
 ## From singularity
 

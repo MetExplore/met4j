@@ -93,6 +93,16 @@ BioMetabolite m = new BioMetabolite("m", "myMetabolite");
 network.add(m);
 ```
 
+##### Remove a BioMetabolite from a BioNetwork
+
+```java
+network.removeOnCascade(m);
+```
+
+Removing a metabolite causes the removal of other entities linked to it in the network.
+
+![Cascade of removals after removing a BioMetabolite from a BioNetwork](doc/images/removeMetabolite.png)
+_Cascade of removals after removing a BioMetabolite from a BioNetwork_
 
 #### The BioCompartment class
 
@@ -132,6 +142,19 @@ metabolites.add(m1, m2, m3);
 network.affectToCompartment(c, metabolites);
 ```
 
+##### Remove a BioMetabolite from a BioCompartment
+
+```java
+network.removeOnCascade(c);
+```
+
+Removing a BioCompartment causes the removal of other entities linked to it in the network.
+
+<img alt="Cascade of removals after removing a BioCompartment from a BioNetwork" src="doc/images/removeCompartment.png" width="50%" height="50%" />
+
+_Cascade of removals after removing a BioCompartment from a BioNetwork_
+
+
 #### The BioReaction class
 
 The BioReaction has these additional parameters:
@@ -157,9 +180,9 @@ Only reactions without left nor right reactants nor enzymes  can be added to a B
 network.add(r);
 ```
 
-##### Add a left reactant in a BioReaction
+##### Add a reactant in a BioReaction
 
-A reactant is a triplet BioMetabolite-stroichiometry-BioCompartment.
+A reactant is a triplet BioMetabolite-stoichiometry-BioCompartment.
 The BioCompartment and the BioMetabolite must be present in the BioNetwork and the BioMetabolite must be present in the BioCompartment.
 
 ```java
@@ -175,6 +198,18 @@ It's possible to add several reactants in a BioReaction if they are in the same 
 network.affectLeft(r, 1.0, c, m1, m2, m3);
 ```
 
+##### Remove a BioReaction from a BioNetwork
+
+```java
+network.removeOnCascade(r);
+```
+Removing a BioReaction causes the removal of other entities linked to it in the network.
+
+<img alt="Cascade of removals after removing a BioReaction from a BioNetwork" src="doc/images/removeReaction.png" width="50%" height="50%" />
+
+_Cascade of removals after removing a BioReaction from a BioNetwork_
+
+
 #### The BioGene class
 
 ##### Create a BioGene
@@ -188,6 +223,19 @@ BioGene g = new BioGene("g");
 ```java
 network.add(g);
 ```
+
+##### Remove a BioGene from a BioNetwork
+
+```java
+network.removeOnCascade(g);
+```
+
+Removing a BioGene causes the removal of other entities linked to it in the network.
+
+<img alt="Cascade of removals after removing a BioGene from a BioNetwork" src="doc/images/removeGene.png" width="50%" height="50%" />
+
+_Cascade of removals after removing a BioGene from a BioNetwork_
+
 
 #### The BioProtein class
 
@@ -214,6 +262,19 @@ Both BioProtein and BioGene must be present in the BioNetwork.
 ```java
 network.affectGeneProduct(p, g);
 ```
+
+##### Remove a BioProtein from a BioNetwork
+
+```java
+network.removeOnCascade(p);
+```
+
+Removing a BioProtein causes the removal of other entities linked to it in the network.
+
+<img alt="Cascade of removals after removing a BioProtein from a BioNetwork" src="doc/images/removeProtein.png" width="100%" height="100%" />
+
+_Cascade of removals after removing a BioProtein from a BioNetwork_
+
 
 #### The BioEnzyme class
 
@@ -269,6 +330,21 @@ enzymes.add(e1, e2)
 network.affectEnzyme(r, enzymes);
 ```
 
+
+##### Remove a BioEnzyme from a BioNetwork
+
+```java
+network.removeOnCascade(e);
+```
+
+Removing a BioEnzyme causes the removal of other entities linked to it in the network.
+
+<img alt="Cascade of removals after removing a BioEnzyme from a BioNetwork" src="doc/images/removeEnzyme.png" width="50%" height="50%" />
+
+_Cascade of removals after removing a BioEnzyme from a BioNetwork_
+
+
+
 #### The BioPathway class
 
 A BioPathway contains several BioReaction.
@@ -296,4 +372,10 @@ or
 ```java
 BioCollection<BioReaction> reactions = new BioCollection<>();
 network.affectToPathway(p, reactions);
+```
+
+##### Remove a BioPathway from a BioNetwork
+
+```java
+network.removeOnCascade(p);
 ```

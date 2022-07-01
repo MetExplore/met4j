@@ -88,6 +88,24 @@ package:
     paths:
       - "met4j-toolbox/target/met4j-toolbox-$TRUEVERSION.jar"
 
+deployJar:
+  stage: deploy
+  image: curlimages/curl:latest
+  script:
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file "met4j-toolbox/target/met4j-toolbox-$TRUEVERSION.jar" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/met4j-toolbox/$TRUEVERSION/met4j-toolbox.jar"'
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: always
+    - if: $CI_COMMIT_BRANCH == "develop"
+      when: always
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+      when: manual
+  needs:
+    - build
+    - package
+
 deploySnapshot:
   image: maven:3.6-adoptopenjdk-14
   stage: deploy
@@ -158,3 +176,6 @@ buildDockerProdDockerhub:
   before_script:
     - docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_PASSWORD" $DOCKERHUB_REGISTRY
     - DOCKER_IMAGE=$DOCKERHUB_IMAGE
+
+
+

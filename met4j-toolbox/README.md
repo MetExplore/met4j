@@ -131,6 +131,11 @@ sudo docker run -w /work -v /home/lcottret/work:/work \
  -in toy_model.xml -out toy_model.tsv
 ```
 
+### Galaxy instance
+
+[Galaxy](https://galaxyproject.org/) wrappers for met4j-toolbox apps are available in the [Galaxy toolshed](https://toolshed.g2.bx.psu.edu/) (master version) and in the [Galaxy test toolsdhed](https://testtoolshed.g2.bx.psu.edu/) (develop version).
+Wrappers launch the met4j singularity container, so the server where your Galaxy instance is hosted must have Singularity installed.
+
 ## Features
 <table>
 <thead><tr><th colspan="2">Package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes</th></tr></thead>

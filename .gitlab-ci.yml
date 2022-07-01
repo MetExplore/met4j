@@ -92,7 +92,7 @@ deployJar:
   stage: deploy
   image: curlimages/curl:latest
   script:
-    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file "met4j-toolbox/target/met4j-toolbox-$TRUEVERSION.jar" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/met4j-toolbox/$TRUEVERSION/met4j-toolbox.jar"'
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file "met4j-toolbox/target/met4j-toolbox-$VERSION.jar" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/met4j-toolbox/$TRUEVERSION/met4j-toolbox.jar"'
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
       when: always

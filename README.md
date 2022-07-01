@@ -66,7 +66,7 @@ Please make sure to update tests as appropriate.
 
 ## Issues
 
-Issues or suggestions can be posted [here](https://forgemia.inra.fr/metexplore/met4j/-/issues).
+Issues or suggestions can be posted [here](https://github.com/MetExplore/met4j/issues).
 
 ## License
 

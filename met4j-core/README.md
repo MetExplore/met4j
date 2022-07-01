@@ -104,6 +104,15 @@ Removing a metabolite causes the removal of other entities linked to it in the n
 ![Cascade of removals after removing a BioMetabolite from a BioNetwork](doc/images/removeMetabolite.png)
 _Cascade of removals after removing a BioMetabolite from a BioNetwork_
 
+##### Get the list of BioMetabolite
+
+```java
+BioCollection<BioMetabolite> metabolites = network.getMetabolitesView();
+```
+
+The returned BioCollection is in fact a copy of the list of BioMetabolite present 
+in the BioNetwork so that operations on this BioCollection does not affect the BioNetwork itself.
+
 #### The BioCompartment class
 
 A BioCompartment contains a BioCollection of BioEntity (most often BioMetabolite). This list is private, the only way to add BioEntity in a BioCompartment is to use BioNetwork methods.
@@ -142,7 +151,7 @@ metabolites.add(m1, m2, m3);
 network.affectToCompartment(c, metabolites);
 ```
 
-##### Remove a BioMetabolite from a BioCompartment
+##### Remove a BioCompartment from a BioNetwork
 
 ```java
 network.removeOnCascade(c);
@@ -153,6 +162,15 @@ Removing a BioCompartment causes the removal of other entities linked to it in t
 <img alt="Cascade of removals after removing a BioCompartment from a BioNetwork" src="doc/images/removeCompartment.png" width="50%" height="50%" />
 
 _Cascade of removals after removing a BioCompartment from a BioNetwork_
+
+##### Get the list of BioCompartment
+
+```java
+BioCollection<BioCompartment> compartments = network.getCompartmentsView();
+```
+
+The returned BioCollection is in fact a copy of the list of BioCompartment present
+in the BioNetwork so that operations on this BioCollection does not affect the BioNetwork itself.
 
 
 #### The BioReaction class
@@ -209,6 +227,16 @@ Removing a BioReaction causes the removal of other entities linked to it in the 
 
 _Cascade of removals after removing a BioReaction from a BioNetwork_
 
+##### Get the list of BioReaction
+
+```java
+BioCollection<BioReaction> reactions = network.getReactionsView();
+```
+
+The returned BioCollection is in fact a copy of the list of BioReaction present
+in the BioNetwork so that operations on this BioCollection does not affect the BioNetwork itself.
+
+
 
 #### The BioGene class
 
@@ -235,6 +263,15 @@ Removing a BioGene causes the removal of other entities linked to it in the netw
 <img alt="Cascade of removals after removing a BioGene from a BioNetwork" src="doc/images/removeGene.png" width="50%" height="50%" />
 
 _Cascade of removals after removing a BioGene from a BioNetwork_
+
+##### Get the list of BioGene
+
+```java
+BioCollection<BioGene> genes = network.getGenesView();
+```
+
+The returned BioCollection is in fact a copy of the list of BioGene present
+in the BioNetwork so that operations on this BioCollection does not affect the BioNetwork itself.
 
 
 #### The BioProtein class
@@ -274,6 +311,15 @@ Removing a BioProtein causes the removal of other entities linked to it in the n
 <img alt="Cascade of removals after removing a BioProtein from a BioNetwork" src="doc/images/removeProtein.png" width="100%" height="100%" />
 
 _Cascade of removals after removing a BioProtein from a BioNetwork_
+
+##### Get the list of BioProtein
+
+```java
+BioCollection<BioProtein> proteins = network.getProteinsView();
+```
+
+The returned BioCollection is in fact a copy of the list of BioProtein present
+in the BioNetwork so that operations on this BioCollection does not affect the BioNetwork itself.
 
 
 #### The BioEnzyme class
@@ -330,6 +376,15 @@ enzymes.add(e1, e2)
 network.affectEnzyme(r, enzymes);
 ```
 
+##### Get the list of BioEnzyme
+
+```java
+BioCollection<BioEnzyme> enzymes = network.getEnzymesView();
+```
+
+The returned BioCollection is in fact a copy of the list of BioEnzyme present
+in the BioNetwork so that operations on this BioCollection does not affect the BioNetwork itself.
+
 
 ##### Remove a BioEnzyme from a BioNetwork
 
@@ -379,3 +434,12 @@ network.affectToPathway(p, reactions);
 ```java
 network.removeOnCascade(p);
 ```
+
+##### Get the list of BioPathway
+
+```java
+BioCollection<BioPathway> pathways = network.getPathwaysView();
+```
+
+The returned BioCollection is in fact a copy of the list of BioPathway present
+in the BioNetwork so that operations on this BioCollection does not affect the BioNetwork itself.

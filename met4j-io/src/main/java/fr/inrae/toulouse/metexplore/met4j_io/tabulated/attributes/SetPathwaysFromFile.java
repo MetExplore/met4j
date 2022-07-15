@@ -40,9 +40,13 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
+
+import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isNa;
+import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
 
 /**
  * <p>SetPathwaysFromFile class.</p>
@@ -118,11 +122,11 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
 
             n++;
 
-            String pathwayIdsStr = this.getIdAttributeMap().get(id);
+            String pathwayIdsStr = this.getIdAttributeMap().get(id).trim();
 
             if(pathwayIdsStr.equals(""))
             {
-                pathwayIdsStr = "NA";
+                pathwayIdsStr = "No pathway";
             }
 
             // Pathways can be separated by "|";
@@ -134,7 +138,7 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
             BioCollection<BioPathway> oldPathways = this.bn.getPathwaysFromReaction(rxn);
 
             for(BioPathway p : oldPathways) {
-                this.bn.removeReactionFromPathway(rxn, p);
+                this.bn.removeOnCascade(p);
             }
 
             for (int i = 0; i < pathwayIds.length; i++) {
@@ -142,16 +146,20 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
                 String pathwayId = pathwayIds[i];
 
                 // Replace the not alphanumeric characters by "_"
-                pathwayId = pathwayId.replaceAll("[^A-Za-z0-9_-]", "_");
+                pathwayId = StringUtils.convertToSID(pathwayId.trim().
+                        replaceAll("[^A-Za-z0-9]+", "_")).toLowerCase();
 
-                BioPathway pathway;
-                if (this.bn.containsPathway(pathwayId)) {
-                    pathway = this.bn.getPathway(pathwayId);
-                } else {
-                    pathway = new BioPathway(pathwayId);
-                    this.bn.add(pathway);
+                if(! isVoid(pathwayId) && ! isNa(pathwayId)) {
+
+                    BioPathway pathway;
+                    if (this.bn.containsPathway(pathwayId)) {
+                        pathway = this.bn.getPathway(pathwayId);
+                    } else {
+                        pathway = new BioPathway(pathwayId);
+                        this.bn.add(pathway);
+                    }
+                    this.bn.affectToPathway(pathway, rxn);
                 }
-                this.bn.affectToPathway(pathway, rxn);
             }
         }
 

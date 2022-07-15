@@ -19,28 +19,28 @@ import java.util.*;
 
 public class ExtractSbmlAnnot extends AbstractMet4jApplication {
 
-    @Format(name= EnumFormats.Sbml)
-    @ParameterType(name= EnumParameterTypes.InputFile)
+    @Format(name = EnumFormats.Sbml)
+    @ParameterType(name = EnumParameterTypes.InputFile)
     @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
-    @Format(name= EnumFormats.Tsv)
-    @ParameterType(name= EnumParameterTypes.OutputFile)
+    @Format(name = EnumFormats.Tsv)
+    @ParameterType(name = EnumParameterTypes.OutputFile)
     @Option(name = "-o", usage = "output file path", required = true)
     public String outputPath = null;
 
-    enum entity { METABOLITE,REACTION,GENE}
+    enum entity {METABOLITE, REACTION, GENE}
 
-    @Option(name="-export", usage = "the type of entity to extract annotation, either metabolite, reaction, or gene", required = true)
+    @Option(name = "-export", usage = "the type of entity to extract annotation, either metabolite, reaction, or gene", required = true)
     public entity export = entity.METABOLITE;
 
-    @Option(name="-db", usage = "name of the referenced database to export annotations from, as listed in notes or identifiers.org base uri", required = true)
+    @Option(name = "-db", usage = "name of the referenced database to export annotations from, as listed in notes or identifiers.org base uri", required = true)
     public String db;
 
-    @Option(name="-uniq", usage = "keep only one identifier if multiple are referenced for the same entity", required = false)
+    @Option(name = "-uniq", usage = "keep only one identifier if multiple are referenced for the same entity", required = false)
     public Boolean uniq = false;
 
-    @Option(name="-skip", usage = "Skip entities without the selected annotations, by default output them with NA value", required = false)
+    @Option(name = "-skip", usage = "Skip entities without the selected annotations, by default output them with NA value", required = false)
     public Boolean skip = false;
 
     public String sep = "\t";
@@ -56,54 +56,74 @@ public class ExtractSbmlAnnot extends AbstractMet4jApplication {
 
     }
 
-    private void run() throws IOException, Met4jSbmlReaderException {
+    private void run() {
         //open file
-        FileWriter fw = new FileWriter(outputPath);
+        try {
+            FileWriter fw = null;
 
-        //read smbl
-        JsbmlReader reader = new JsbmlReader(this.inputPath);
-        BioNetwork network = reader.read();
+            fw = new FileWriter(outputPath);
 
-        BioCollection<? extends BioEntity> entities = new BioCollection<>();
-        if(export==entity.METABOLITE){
-            entities=network.getMetabolitesView();
-        }else if(export==entity.REACTION){
-            entities=network.getReactionsView();
-        }else if(export==entity.GENE){
-            entities=network.getGenesView();
-        }
+            //read smbl
+            JsbmlReader reader = new JsbmlReader(this.inputPath);
 
-        //write header
-        fw.write(export.name()+sep+db.toUpperCase()+"\n");
+            BioNetwork network = null;
+            try {
+                network = reader.read();
+            } catch (Met4jSbmlReaderException e) {
+                System.err.println("Error while reading the sbml file");
+                System.err.println(e.getMessage());
+                System.exit(1);
+            }
 
-        //export annotations
-                //keep track of successful export
-        int i = 0;
-        for(BioEntity e : entities){
+            BioCollection<? extends BioEntity> entities = new BioCollection<>();
+            if (export == entity.METABOLITE) {
+                entities = network.getMetabolitesView();
+            } else if (export == entity.REACTION) {
+                entities = network.getReactionsView();
+            } else if (export == entity.GENE) {
+                entities = network.getGenesView();
+            }
 
-            Set<BioRef> refSet = e.getRefs(db);
-            if(refSet!=null){
-                i+=1;
-                if(uniq)refSet=  new HashSet<BioRef>(Arrays.asList(refSet.iterator().next()));
-                for(BioRef ref : refSet){
+            //write header
+            fw.write(export.name() + sep + db.toUpperCase() + "\n");
+
+            //export annotations
+            //keep track of successful export
+            int i = 0;
+            for (BioEntity e : entities) {
+
+                Set<BioRef> refSet = e.getRefs(db);
+                if (refSet != null) {
+                    i += 1;
+                    if (uniq) refSet = new HashSet<BioRef>(Arrays.asList(refSet.iterator().next()));
+                    for (BioRef ref : refSet) {
+                        StringBuffer sb = new StringBuffer();
+                        sb.append(e.getId());
+                        sb.append(sep);
+                        sb.append(ref.getId());
+                        sb.append("\n");
+                        fw.write(sb.toString());
+                    }
+                } else if (!skip) {
                     StringBuffer sb = new StringBuffer();
                     sb.append(e.getId());
                     sb.append(sep);
-                    sb.append(ref.getId());
-                    sb.append("\n");
+                    sb.append("NA\n");
                     fw.write(sb.toString());
                 }
-            }else if(!skip){
-                StringBuffer sb = new StringBuffer();
-                sb.append(e.getId());
-                sb.append(sep);
-                sb.append("NA\n");
-                fw.write(sb.toString());
+
             }
 
+            fw.close();
+
+            System.out.println("annotations found for " + i + "/" + entities.size() + " " + export.name().toLowerCase() + ((i > 1) ? "s" : ""));
+
+        } catch (IOException e) {
+            System.err.println("Error while writing in the output file");
+            System.err.println(e.getMessage());
+            System.exit(1);
         }
-        fw.close();
-        System.out.println("annotations found for "+i+"/"+entities.size()+" "+export.name().toLowerCase()+((i>1)?"s":""));
+
 
     }
 

@@ -94,7 +94,6 @@ public class Sbml2Tab extends AbstractMet4jApplication {
     private void run() throws IOException, Met4jSbmlReaderException {
 
         String fileIn = this.in;
-        String fileOut = this.out;
 
         JsbmlReader reader = new JsbmlReader(fileIn);
         BioNetwork network = reader.read();

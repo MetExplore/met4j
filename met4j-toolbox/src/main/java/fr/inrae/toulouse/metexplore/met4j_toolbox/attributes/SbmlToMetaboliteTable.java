@@ -100,6 +100,7 @@ public class SbmlToMetaboliteTable extends AbstractMet4jApplication {
 
         } catch (IOException e) {
             System.err.println("Error while printing metabolites");
+            System.exit(1);
         }
 
 

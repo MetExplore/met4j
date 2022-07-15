@@ -690,7 +690,7 @@ public class BioNetworkTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAffectSubstrateInBazCompartment2() {
+    public void testAffectSubstrateInBadCompartment2() {
         BioReaction reaction = new BioReaction("reactionId");
         BioMetabolite metabolite = new BioMetabolite("metId");
         BioCompartment cpt = new BioCompartment("cptId");
@@ -720,6 +720,36 @@ public class BioNetworkTest {
         network.affectToCompartment(cpt2, metabolite);
         // The metabolite has been affected to an other compartment
         network.affectLeft(reaction, 1.0, cpt, metabolite);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAffectSubstrateWithBadSto() {
+        BioReaction reaction = new BioReaction("reactionId");
+        BioMetabolite metabolite = new BioMetabolite("metId");
+        BioCompartment cpt = new BioCompartment("cptId");
+        BioCompartment cpt2 = new BioCompartment("cptId2");
+
+        network.add(metabolite);
+        network.add(cpt);
+        network.add(reaction);
+        network.affectToCompartment(cpt2, metabolite);
+        // The metabolite has been affected to an other compartment
+        network.affectLeft(reaction, -5.0, cpt, metabolite);
+    }
+    @Test
+    public void testAffectSubstrateWithStoZero() {
+        BioReaction reaction = new BioReaction("reactionId");
+        BioMetabolite metabolite = new BioMetabolite("metId");
+        BioCompartment cpt = new BioCompartment("cptId");
+
+        network.add(metabolite);
+        network.add(cpt);
+        network.add(reaction);
+        network.affectToCompartment(cpt, metabolite);
+        // The metabolite has been affected to an other compartment
+        network.affectLeft(reaction, 0.0, cpt, metabolite);
+
+        assertEquals(0, reaction.getLeftReactants().size());
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -145,7 +145,7 @@ public class Tab2Sbml extends AbstractMet4jApplication {
 
     }
 
-    private void run() throws Met4jSbmlWriterException {
+    private void run() {
 
         Tab2BioNetwork tb = new Tab2BioNetwork(this.id, this.colid - 1,
                 this.colformula - 1,
@@ -162,18 +162,22 @@ public class Tab2Sbml extends AbstractMet4jApplication {
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error in creating the network from " + fileIn);
-            return;
+            System.exit(1);
         }
 
         if (!flag) {
             System.err.println("Error in creating the network from " + fileIn);
-            return;
+            System.exit(1);
         }
 
         BioNetwork bn = tb.getBioNetwork();
 
         JsbmlWriter writer = new JsbmlWriter(sbmlFile, bn);
-        writer.write();
+        try {
+            writer.write();
+        } catch (Met4jSbmlWriterException ex) {
+            System.exit(1);
+        }
 
         return;
 

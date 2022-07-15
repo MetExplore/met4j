@@ -15,8 +15,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.CompoundEdge;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
@@ -42,12 +40,12 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
     @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
-    @Format(name = Text)
+    @Format(name = Txt)
     @ParameterType(name = InputFile)
     @Option(name = "-s", usage = "input sources txt file", required = true)
     public String sourcePath = null;
 
-    @Format(name = Text)
+    @Format(name = Txt)
     @ParameterType(name = InputFile)
     @Option(name = "-t", usage = "input targets txt file", required = true)
     public String targetPath = null;
@@ -63,12 +61,12 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
     @Option(name = "-o", usage = "output gml file", required = true)
     public String outputPath = null;
 
-    @Format(name = Text)
+    @Format(name = Txt)
     @ParameterType(name = InputFile)
     @Option(name = "-sc", aliases = {"--side"}, usage = "a file containing list of side compounds to ignore", required = true)
     public String sideCompoundFile = null;
 
-    @Format(name = Text)
+    @Format(name = Txt)
     @ParameterType(name = InputFile)
     @Option(name = "-br", aliases = {"--blokedReactions"}, usage = "a file containing list of blocked reactions to ignore")
     public String blkdReactionFile = null;

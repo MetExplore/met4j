@@ -40,12 +40,12 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
     @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
-    @Format(name = Text)
+    @Format(name = Txt)
     @ParameterType(name = InputFile)
     @Option(name = "-s", usage = "input sources txt file", required = true)
     public String sourcePath = null;
 
-    @Format(name = Text)
+    @Format(name = Txt)
     @ParameterType(name = InputFile)
     @Option(name = "-t", usage = "input targets txt file", required = true)
     public String targetPath = null;
@@ -55,7 +55,7 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
     @Option(name = "-o", usage = "output gml file", required = true)
     public String outputPath = null;
 
-    @Format(name = Text)
+    @Format(name = Txt)
     @ParameterType(name = InputFile)
     @Option(name = "-sc", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore")
     public String sideCompoundFile = null;

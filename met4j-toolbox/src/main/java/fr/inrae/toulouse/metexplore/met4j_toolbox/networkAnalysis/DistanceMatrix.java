@@ -20,8 +20,6 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplicati
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.*;
 import org.kohsuke.args4j.Option;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -41,12 +39,12 @@ public class DistanceMatrix extends AbstractMet4jApplication {
     @Option(name = "-o", usage = "output Matrix file", required = true)
     public String outputPath = null;
 
-    @Format(name = EnumFormats.Text)
+    @Format(name = EnumFormats.Txt)
     @ParameterType(name = InputFile)
     @Option(name = "-sc", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore")
     public String sideCompoundFile = null;
 
-    @Format(name = EnumFormats.Text)
+    @Format(name = EnumFormats.Txt)
     @ParameterType(name = InputFile)
     @Option(name = "-s", aliases = {"--sub"}, usage = "an optional file containing list of compounds of interest. The returned distance matrix contains only the corresponding rows and columns")
     public String seedFile = null;

@@ -37,5 +37,5 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations;
 
 public enum EnumFormats {
-    Csv, Fasta, Gml, Gsam, Sbml, Text, Tsv
+    Csv, Fasta, Gml, Gsam, Sbml, Txt, Tsv
 }

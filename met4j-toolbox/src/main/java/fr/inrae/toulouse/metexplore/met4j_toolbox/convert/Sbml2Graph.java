@@ -28,7 +28,7 @@ public class Sbml2Graph extends AbstractMet4jApplication {
     @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
-    @Format(name = EnumFormats.Text)
+    @Format(name = EnumFormats.Txt)
     @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output Graph file", required = true)
     public String outputPath = null;

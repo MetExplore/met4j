@@ -54,14 +54,30 @@ public class ChokePoint extends AbstractMet4jApplication {
 
     }
 
-    public void run() throws IOException, Met4jSbmlReaderException {
+    public void run()  {
+
         //open file
-        FileWriter fw = new FileWriter(outputPath);
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(outputPath);
+        } catch (IOException e) {
+            System.err.println("Error while opening the output file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
         //import network
         System.err.println("reading SBML...");
         JsbmlReader reader = new JsbmlReader(this.inputPath);
-        BioNetwork network = reader.read();
+
+        BioNetwork network = null;
+        try {
+            network = reader.read();
+        } catch (Met4jSbmlReaderException e) {
+            System.err.println("Error while reading the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
         //Create compound graph
         System.err.println("Creating network...");
@@ -72,20 +88,27 @@ public class ChokePoint extends AbstractMet4jApplication {
         if (sideCompoundFile != null) {
             System.err.println("removing side compounds...");
             BioCollection<BioMetabolite> sideCpds = new BioCollection<>();
-            BufferedReader fr = new BufferedReader(new FileReader(sideCompoundFile));
-            String line;
-            while ((line = fr.readLine()) != null) {
-                String sId = line.trim().split("\t")[0];
-                BioMetabolite s = network.getMetabolite(sId);
-                if (s != null) {
-                    sideCpds.add(s);
-                } else {
-                    System.err.println(sId + " side compound not found in network.");
+
+            try {
+                BufferedReader fr = new BufferedReader(new FileReader(sideCompoundFile));
+                String line;
+                while ((line = fr.readLine()) != null) {
+                    String sId = line.trim().split("\t")[0];
+                    BioMetabolite s = network.getMetabolite(sId);
+                    if (s != null) {
+                        sideCpds.add(s);
+                    } else {
+                        System.err.println(sId + " side compound not found in network.");
+                    }
                 }
+                fr.close();
+                boolean removed = graph.removeAllVertices(sideCpds);
+                if (removed) System.err.println(sideCpds.size() + " compounds removed.");
+            } catch(IOException e) {
+                System.err.println("Error while reading the side compound file");
+                System.err.println(e.getMessage());
+                System.exit(1);
             }
-            fr.close();
-            boolean removed = graph.removeAllVertices(sideCpds);
-            if (removed) System.err.println(sideCpds.size() + " compounds removed.");
         }
 
         //Graph processing: set weights
@@ -98,11 +121,25 @@ public class ChokePoint extends AbstractMet4jApplication {
 
         //export results
         System.err.println("Export results...");
-        for (BioReaction r : choke) {
-            fw.write(r.getId() + "\t" + r.getName() + "\t" + BioReactionUtils.getEquation(r, false, false) + "\n");
+
+        try {
+            for (BioReaction r : choke) {
+                fw.write(r.getId() + "\t" + r.getName() + "\t" + BioReactionUtils.getEquation(r, false, false) + "\n");
+            }
+        } catch(IOException e) {
+            System.err.println("Error while writing the result file");
+            System.err.println(e.getMessage());
+            System.exit(1);
         }
         System.err.println("done.");
-        fw.close();
+
+        try {
+            fw.close();
+        } catch (IOException e) {
+            System.err.println("Error while closing the result file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
     }
 

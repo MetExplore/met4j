@@ -72,7 +72,7 @@ public class CarbonSkeletonNet extends AbstractMet4jApplication {
     @Option(name = "-i", aliases = {"--fromIndexes"}, usage = "Use GSAM output with carbon indexes", required = false)
     public boolean fromIndexes = false;
 
-    public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
+    public static void main(String[] args)  {
 
         CarbonSkeletonNet app = new CarbonSkeletonNet();
 
@@ -83,12 +83,21 @@ public class CarbonSkeletonNet extends AbstractMet4jApplication {
     }
 
 
-    public void run() throws IOException, Met4jSbmlReaderException {
+    public void run()  {
         System.out.print("Reading SBML...");
         JsbmlReader reader = new JsbmlReader(this.inputPath);
         ArrayList<PackageParser> pkgs = new ArrayList<>(Arrays.asList(
                 new NotesParser(false), new FBCParser(), new GroupPathwayParser()));
-        BioNetwork network = reader.read(pkgs);
+
+        BioNetwork network = null;
+        try {
+            network = reader.read(pkgs);
+        } catch (Met4jSbmlReaderException e) {
+            System.err.println("Error while reading the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
+
         System.out.println(" Done.");
 
 

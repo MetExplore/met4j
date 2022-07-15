@@ -61,7 +61,7 @@ public class DistanceMatrix extends AbstractMet4jApplication {
     public Boolean undirected = false;
 
 
-    public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
+    public static void main(String[] args) {
 
         DistanceMatrix app = new DistanceMatrix();
 
@@ -72,10 +72,18 @@ public class DistanceMatrix extends AbstractMet4jApplication {
     }
 
 
-    public void run() throws IOException, Met4jSbmlReaderException {
+    public void run() {
         //import network
         JsbmlReader reader = new JsbmlReader(this.inputPath);
-        BioNetwork network = reader.read();
+
+        BioNetwork network = null;
+        try {
+            network = reader.read();
+        } catch (Met4jSbmlReaderException e) {
+            System.err.println("Error while reading the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
         //Create compound graph
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
@@ -85,7 +93,14 @@ public class DistanceMatrix extends AbstractMet4jApplication {
         if (sideCompoundFile != null) {
             System.err.println("removing side compounds...");
             Mapper<BioMetabolite> mapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
-            BioCollection<BioMetabolite> sideCpds = mapper.map(sideCompoundFile);
+            BioCollection<BioMetabolite> sideCpds = null;
+            try {
+                sideCpds = mapper.map(sideCompoundFile);
+            } catch (IOException e) {
+                System.err.println("Error while reading the side compound file");
+                System.err.println(e.getMessage());
+                System.exit(1);
+            }
             if (mapper.getNumberOfSkippedEntries() > 0)
                 System.err.println(mapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
             boolean removed = graph.removeAllVertices(sideCpds);
@@ -114,7 +129,14 @@ public class DistanceMatrix extends AbstractMet4jApplication {
         if(seedFile!=null){
             System.err.println("filtering matrix...");
             Mapper<BioMetabolite> mapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
-            BioCollection<BioMetabolite> seeds = mapper.map(seedFile);
+            BioCollection<BioMetabolite> seeds = null;
+            try {
+                seeds = mapper.map(seedFile);
+            } catch (IOException e) {
+                System.err.println("Error while reading the seed file");
+                System.err.println(e.getMessage());
+                System.exit(1);
+            }
             if (mapper.getNumberOfSkippedEntries() > 0)
                 System.err.println(mapper.getNumberOfSkippedEntries() + "compounds of interest not found in network.");
             ArrayList<Integer> seedRows = new ArrayList<>();

@@ -86,7 +86,7 @@ public class FbcToNotes extends AbstractMet4jApplication {
      * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
      * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException if any.
      */
-    public static void main(String[] args) throws IOException, Met4jSbmlReaderException, Met4jSbmlWriterException {
+    public static void main(String[] args)  {
 
         FbcToNotes f = new FbcToNotes();
 
@@ -104,11 +104,18 @@ public class FbcToNotes extends AbstractMet4jApplication {
 
     }
 
-    private void run() throws IOException, Met4jSbmlReaderException, Met4jSbmlWriterException {
+    private void run() {
 
         JsbmlReader reader = new JsbmlReader(this.inputPath);
 
-        BioNetwork network = reader.read();
+        BioNetwork network = null;
+        try {
+            network = reader.read();
+        } catch (Met4jSbmlReaderException e) {
+            System.err.println("Error while reading the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
         JsbmlWriter writer = new JsbmlWriter(this.outputPath, network, 3, 1, false );
 
@@ -117,7 +124,13 @@ public class FbcToNotes extends AbstractMet4jApplication {
         pkgs.add(new GroupPathwayWriter());
         pkgs.add(new NotesWriter(false));
 
-        writer.write(pkgs);
+        try {
+            writer.write(pkgs);
+        } catch (Met4jSbmlWriterException e) {
+            System.err.println("Error while writing the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
     }
 

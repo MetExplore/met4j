@@ -85,9 +85,9 @@ public class GetModelProteome extends AbstractMet4jApplication {
      * <p>main.</p>
      *
      * @param args an array of {@link java.lang.String} objects.
-     * @throws java.net.ProtocolException if any.
      */
-    public static void main(String[] args) throws ProtocolException {
+    public static void main(String[] args)  {
+
         GetModelProteome f = new GetModelProteome();
         CmdLineParser parser = new CmdLineParser(f);
 
@@ -108,7 +108,7 @@ public class GetModelProteome extends AbstractMet4jApplication {
      *
      * @throws java.net.ProtocolException if any.
      */
-    public void run() throws ProtocolException {
+    public void run() {
 
         URL urlGenes = null;
         try {
@@ -119,7 +119,14 @@ public class GetModelProteome extends AbstractMet4jApplication {
             System.exit(1);
         }
 
-        Boolean check = this.checkConnection(urlGenes);
+        Boolean check = null;
+        try {
+            check = this.checkConnection(urlGenes);
+        } catch (ProtocolException e) {
+            System.err.println("Error while connecting to the BIGG url");
+            e.printStackTrace();
+            System.exit(1);
+        }
 
         if (!check) {
             System.exit(1);

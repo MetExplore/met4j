@@ -57,27 +57,55 @@ public class ScopeNetwork extends AbstractMet4jApplication {
     @Option(name = "-t", aliases = {"--trace"}, usage = "trace inclusion step index for each node in output")
     public boolean trace = false;
 
-    public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
+    public static void main(String[] args)  {
         ScopeNetwork app = new ScopeNetwork();
         app.parseArguments(args);
         app.run();
     }
 
 
-    public void run() throws IOException, Met4jSbmlReaderException {
+    public void run() {
         JsbmlReader in = new JsbmlReader(sbmlFilePath);
-        BipartiteGraph graph = (new Bionetwork2BioGraph(in.read())).getBipartiteGraph();
+        BipartiteGraph graph = null;
+        try {
+            graph = (new Bionetwork2BioGraph(in.read())).getBipartiteGraph();
+        } catch (Met4jSbmlReaderException e) {
+            System.err.println("Error while reading the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
         NodeMapping<BioEntity, BipartiteEdge, BipartiteGraph> mapper = new NodeMapping<>(graph).skipIfNotFound();
 
-        BioCollection<BioMetabolite> seeds = mapper.map(seedsFilePath).stream()
-                .map(BioMetabolite.class::cast)
-                .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
-        BioCollection<BioMetabolite> bootstraps = (sideCompoundFile==null) ? new BioCollection<>() : mapper.map(sideCompoundFile).stream()
-                .map(BioMetabolite.class::cast)
-                .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
-        BioCollection<BioReaction> forbidden = (reactionToIgnoreFile==null) ? new BioCollection<>() : mapper.map(reactionToIgnoreFile).stream()
-                    .map(BioReaction.class::cast)
+        BioCollection<BioMetabolite> seeds = null;
+        try {
+            seeds = mapper.map(seedsFilePath).stream()
+                    .map(BioMetabolite.class::cast)
                     .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
+        } catch (IOException e) {
+            System.err.println("Error while reading the seed file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
+        BioCollection<BioMetabolite> bootstraps = null;
+        try {
+            bootstraps = (sideCompoundFile==null) ? new BioCollection<>() : mapper.map(sideCompoundFile).stream()
+                    .map(BioMetabolite.class::cast)
+                    .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
+        } catch (IOException e) {
+            System.err.println("Error while reading the side compound file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
+        BioCollection<BioReaction> forbidden = null;
+        try {
+            forbidden = (reactionToIgnoreFile==null) ? new BioCollection<>() : mapper.map(reactionToIgnoreFile).stream()
+                        .map(BioReaction.class::cast)
+                        .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
+        } catch (IOException e) {
+            System.err.println("Error while reading the reactions-to-ignore file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
         if(seeds.isEmpty()){
             System.err.println("no seed available, computation aborted");

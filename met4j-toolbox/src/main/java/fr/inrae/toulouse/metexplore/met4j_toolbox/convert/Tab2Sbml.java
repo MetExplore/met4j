@@ -87,7 +87,7 @@ public class Tab2Sbml extends AbstractMet4jApplication {
 
     @Format(name = EnumFormats.Tsv)
     @ParameterType(name = EnumParameterTypes.InputFile)
-    @Option(name = "-in", usage = "Tabulated file")
+    @Option(name = "-in", usage = "Tabulated file", required = true)
     public String in;
 
     @Option(name = "-id", usage = "[NA] Model id written in the SBML file")

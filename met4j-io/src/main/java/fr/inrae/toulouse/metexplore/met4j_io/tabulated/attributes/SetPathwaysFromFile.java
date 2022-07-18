@@ -138,7 +138,7 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
             BioCollection<BioPathway> oldPathways = this.bn.getPathwaysFromReaction(rxn);
 
             for(BioPathway p : oldPathways) {
-                this.bn.removeOnCascade(p);
+                this.bn.removeReactionFromPathway(rxn, p);
             }
 
             for (int i = 0; i < pathwayIds.length; i++) {
@@ -163,6 +163,11 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
             }
         }
 
+        // remove empty pathways
+
+        this.bn.getPathwaysView().stream().
+                filter(bioPathway -> this.bn.getReactionsFromPathways(bioPathway).isEmpty())
+                .forEach(emptyPathway -> this.bn.removeOnCascade(emptyPathway));
 
         System.err.println(n + " reactions processed");
 

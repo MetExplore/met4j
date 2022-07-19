@@ -100,20 +100,14 @@ public class SbmlToMetaboliteTable extends AbstractMet4jApplication {
 
         } catch (IOException e) {
             System.err.println("Error while printing metabolites");
+            System.exit(1);
         }
 
 
     }
 
     BioNetwork readSbml() {
-        JsbmlReader reader = null;
-        try {
-            reader = new JsbmlReader(this.sbml);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Unable to read the sbml file " + this.sbml);
-            System.exit(1);
-        }
+        JsbmlReader reader = new JsbmlReader(this.sbml);
 
         BioNetwork bn = null;
         try {

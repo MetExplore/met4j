@@ -124,15 +124,22 @@ public class MetaboRank extends AbstractMet4jApplication {
     private HashMap<String, Double> globalVsPersonalizedPageRank;
     private HashMap<String, Double> globalVsPersonalizedCheiRank;
 
-    public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
+    public static void main(String[] args) {
         MetaboRank app = new MetaboRank();
         app.parseArguments(args);
         app.run();
     }
 
-    public void run() throws Met4jSbmlReaderException, IOException {
+    public void run() {
 
-        BioNetwork model = importModel(sbmlFilePath);
+        BioNetwork model = null;
+        try {
+            model = importModel(sbmlFilePath);
+        } catch (Met4jSbmlReaderException e) {
+            System.err.println("Error while reading the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
         createCompoundGraph(model);
         setEdgeWeights(firstGraph, edgeWeightsFilePaths);
 
@@ -159,7 +166,7 @@ public class MetaboRank extends AbstractMet4jApplication {
      * use default parameters for attributes value extraction from notes.
      *
      */
-    private BioNetwork importModel(String sbmlFilePath) throws IOException, Met4jSbmlReaderException {
+    private BioNetwork importModel(String sbmlFilePath) throws Met4jSbmlReaderException {
         JsbmlReader reader = new JsbmlReader(sbmlFilePath);
         BioNetwork model = reader.read();
         System.err.println("model imported.");
@@ -290,7 +297,9 @@ public class MetaboRank extends AbstractMet4jApplication {
             file.close();
 
         } catch (IOException e) {
+            System.err.println("Error while importing seeds");
             e.printStackTrace();
+            System.exit(1);
         }
         if (somme == 0.0) {
             for (String node : tmpSeeds.keySet()) {
@@ -439,7 +448,9 @@ public class MetaboRank extends AbstractMet4jApplication {
             }
             bw.close();
         } catch (IOException e1) {
-            e1.printStackTrace();
+            System.err.println("Error while writing compound table");
+            System.err.println(e1.getMessage());
+            System.exit(1);
         }
     }
 

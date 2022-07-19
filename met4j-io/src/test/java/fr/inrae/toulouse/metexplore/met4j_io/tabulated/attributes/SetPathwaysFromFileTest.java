@@ -78,6 +78,9 @@ public class SetPathwaysFromFileTest {
     @Test
     public void setAttributes() throws IOException {
 
+        // to test if the empty pathway is well removed after setPathways
+        network.add(new BioPathway("emptyPathway"));
+
         String line = "r\tp1";
 
         Boolean flag = setPathwaysFromFile.parseLine(line, 1);
@@ -106,6 +109,8 @@ public class SetPathwaysFromFileTest {
 
         assertTrue(network.containsPathway("p1"));
         assertTrue(network.containsPathway("p2"));
+
+        p = network.getPathway("p1");
 
         assertEquals(2, network.getReactionsFromPathways(p).size());
 

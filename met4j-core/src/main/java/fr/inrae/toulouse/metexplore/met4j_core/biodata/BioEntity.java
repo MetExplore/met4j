@@ -80,7 +80,7 @@ public abstract class BioEntity {
      * @param name String
      */
     public BioEntity(String id, String name) {
-        if (StringUtils.isVoid(id)) {
+        if (StringUtils.isVoid(id) || StringUtils.isNa(id)) {
             String newId = "_"+UUID.randomUUID().toString().replaceAll("-", "_");
             this.id = newId;
         } else {

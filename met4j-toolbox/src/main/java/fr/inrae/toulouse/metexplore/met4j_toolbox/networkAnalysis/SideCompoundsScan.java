@@ -70,7 +70,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
     public strategy mergingStrat = strategy.no;
 
 
-    public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
+    public static void main(String[] args) {
 
         SideCompoundsScan app = new SideCompoundsScan();
 
@@ -81,15 +81,21 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
     }
 
 
-    public void run() throws IOException, Met4jSbmlReaderException {
-        //open file
-        FileWriter fw = new FileWriter(outputPath);
+    public void run()  {
+
 
         //import network
         System.err.println("reading SBML...");
         System.err.println(inputPath);
         JsbmlReader reader = new JsbmlReader(this.inputPath);
-        BioNetwork network = reader.read();
+        BioNetwork network = null;
+        try {
+            network = reader.read();
+        } catch (Met4jSbmlReaderException e) {
+            System.err.println("Error while reading the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
         //Create compound graph
         System.err.println("Creating network...");
@@ -135,89 +141,97 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
             dt = degreeStats.getPercentile(degreePrecentile);
         }
 
-        //header
-        Boolean reportValue = (!noReportValue);
-        if (reportValue) {
-            StringBuffer l = new StringBuffer("ID\tNAME");
-            l.append("\tDEGREE");
-            if (!Double.isNaN(parallelEdge)) l.append("\tMAX_PARALLEL_EDGES");
-            if (flagInorganic) l.append("\tNO_CARBON_BOND");
-            if (flagNoFormula) l.append("\tVALID_CHEMICAL");
-            l.append("\tIS_SIDE\n");
-            fw.write(l.toString());
-        }
-
-        //if ids only, report side only
-        if (noReportValue) sideOnly = true;
-
-        int count = 0;
-        for (BioMetabolite v : graph.vertexSet()) {
-
-            boolean side = false;
-
-            //check degree
-            StringBuffer l = new StringBuffer(v.getId());
-            if (reportValue) l.append("\t" + v.getName());
-
-            int d = merge ? mergedDegree.get(getSharedId.apply(v)) : graph.degreeOf(v);
-            boolean sideFromDegree = (d >= degree);
-            if (sideFromDegree) side = true;
-            if (reportValue) l.append("\t" + d);
-
-            //check parallel edges
-            if (!Double.isNaN(parallelEdge)) {
-                int maxIpe = 0;
-                for(BioMetabolite n : graph.neighborListOf(v)){
-                    int e = graph.getAllEdges(v,n).size()+graph.getAllEdges(n,v).size();
-                    if(e>maxIpe) maxIpe=e;
-                }
-                boolean sideFromParallel = (maxIpe > parallelEdge);
-                if (sideFromParallel) side = true;
-                if (reportValue) l.append("\t" + maxIpe);
-            }
-
-            //check formula
-            if (flagInorganic || flagNoFormula) {
-                String formula = v.getChemicalFormula();
-                String inorganic = "?";
-                String validFormula = "true";
-                try{
-                    FormulaParser fp = new FormulaParser(formula);
-                    if (flagInorganic) {
-                        if (fp.isExpectedInorganic()) {
-                            inorganic = "true";
-                            side = true;
-                        } else {
-                            inorganic = "false";
-                        }
-                    }
-
-                }catch(IllegalArgumentException e){
-                    if(flagNoFormula){
-                        validFormula = "false";
-                        side = true;
-                    }
-
-                }
-                if (reportValue){
-                    if(flagInorganic) l.append("\t" + inorganic);
-                    if(flagNoFormula) l.append("\t" + validFormula);
-                }
-            }
-
-            if (reportValue) l.append("\t" + side);
-
-            if (!sideOnly || side) {
+        //open file
+        try {
+            FileWriter fw = new FileWriter(outputPath);
+            //header
+            Boolean reportValue = (!noReportValue);
+            if (reportValue) {
+                StringBuffer l = new StringBuffer("ID\tNAME");
+                l.append("\tDEGREE");
+                if (!Double.isNaN(parallelEdge)) l.append("\tMAX_PARALLEL_EDGES");
+                if (flagInorganic) l.append("\tNO_CARBON_BOND");
+                if (flagNoFormula) l.append("\tVALID_CHEMICAL");
+                l.append("\tIS_SIDE\n");
                 fw.write(l.toString());
-                fw.write("\n");
             }
-            if (side) count++;
-        }
 
-        fw.close();
-        System.err.println("done");
-        System.err.println("found " + count + " side compound among " + graph.vertexSet().size() + " compounds");
-        System.err.println(outputPath);
+            //if ids only, report side only
+            if (noReportValue) sideOnly = true;
+
+            int count = 0;
+            for (BioMetabolite v : graph.vertexSet()) {
+
+                boolean side = false;
+
+                //check degree
+                StringBuffer l = new StringBuffer(v.getId());
+                if (reportValue) l.append("\t" + v.getName());
+
+                int d = merge ? mergedDegree.get(getSharedId.apply(v)) : graph.degreeOf(v);
+                boolean sideFromDegree = (d >= degree);
+                if (sideFromDegree) side = true;
+                if (reportValue) l.append("\t" + d);
+
+                //check parallel edges
+                if (!Double.isNaN(parallelEdge)) {
+                    int maxIpe = 0;
+                    for (BioMetabolite n : graph.neighborListOf(v)) {
+                        int e = graph.getAllEdges(v, n).size() + graph.getAllEdges(n, v).size();
+                        if (e > maxIpe) maxIpe = e;
+                    }
+                    boolean sideFromParallel = (maxIpe > parallelEdge);
+                    if (sideFromParallel) side = true;
+                    if (reportValue) l.append("\t" + maxIpe);
+                }
+
+                //check formula
+                if (flagInorganic || flagNoFormula) {
+                    String formula = v.getChemicalFormula();
+                    String inorganic = "?";
+                    String validFormula = "true";
+                    try {
+                        FormulaParser fp = new FormulaParser(formula);
+                        if (flagInorganic) {
+                            if (fp.isExpectedInorganic()) {
+                                inorganic = "true";
+                                side = true;
+                            } else {
+                                inorganic = "false";
+                            }
+                        }
+
+                    } catch (IllegalArgumentException e) {
+                        if (flagNoFormula) {
+                            validFormula = "false";
+                            side = true;
+                        }
+
+                    }
+                    if (reportValue) {
+                        if (flagInorganic) l.append("\t" + inorganic);
+                        if (flagNoFormula) l.append("\t" + validFormula);
+                    }
+                }
+
+                if (reportValue) l.append("\t" + side);
+
+                if (!sideOnly || side) {
+                    fw.write(l.toString());
+                    fw.write("\n");
+                }
+                if (side) count++;
+            }
+
+            fw.close();
+            System.err.println("done");
+            System.err.println("found " + count + " side compound among " + graph.vertexSet().size() + " compounds");
+            System.err.println(outputPath);
+        } catch (IOException e) {
+            System.err.println("Error while writing the result file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
     }
 
     @Override

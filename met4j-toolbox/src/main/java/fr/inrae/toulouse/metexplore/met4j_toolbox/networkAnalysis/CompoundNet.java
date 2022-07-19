@@ -77,7 +77,7 @@ public class CompoundNet extends AbstractMet4jApplication {
     @Option(name = "-am", aliases = {"--asmatrix"}, usage = "export as matrix (implies simple graph conversion). Default export as GML file", required = false)
     public boolean asMatrix = false;
 
-    public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
+    public static void main(String[] args)  {
 
         CompoundNet app = new CompoundNet();
 
@@ -88,12 +88,21 @@ public class CompoundNet extends AbstractMet4jApplication {
     }
 
 
-    public void run() throws IOException, Met4jSbmlReaderException {
+    public void run() {
         System.out.print("Reading SBML...");
         JsbmlReader reader = new JsbmlReader(this.inputPath);
         ArrayList<PackageParser> pkgs = new ArrayList<>(Arrays.asList(
                 new NotesParser(false), new FBCParser(), new GroupPathwayParser()));
-        BioNetwork network = reader.read(pkgs);
+
+        BioNetwork network = null;
+
+        try {
+            network = reader.read(pkgs);
+        } catch (Met4jSbmlReaderException e) {
+            System.err.println("Error while reading the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
         System.out.println(" Done.");
 
 
@@ -106,7 +115,14 @@ public class CompoundNet extends AbstractMet4jApplication {
         if (inputSide != null) {
             System.err.println("removing side compounds...");
             NodeMapping<BioMetabolite, ReactionEdge, CompoundGraph> mapper = new NodeMapping<>(graph).skipIfNotFound();
-            BioCollection<BioMetabolite> sideCpds = mapper.map(inputSide);
+            BioCollection<BioMetabolite> sideCpds = null;
+            try {
+                sideCpds = mapper.map(inputSide);
+            } catch (IOException e) {
+                System.err.println("Error while reading the side compound file");
+                System.err.println(e.getMessage());
+                System.exit(1);
+            }
             boolean removed = graph.removeAllVertices(sideCpds);
             if (removed) System.err.println(sideCpds.size() + " compounds removed.");
         }

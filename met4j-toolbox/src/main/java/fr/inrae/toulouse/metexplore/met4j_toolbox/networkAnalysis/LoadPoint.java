@@ -11,7 +11,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
@@ -39,7 +38,7 @@ public class LoadPoint extends AbstractMet4jApplication {
     @Option(name = "-o", usage = "output results file", required = true)
     public String outputPath = null;
 
-    @Format(name = Text)
+    @Format(name = Txt)
     @ParameterType(name = InputFile)
     @Option(name = "-s", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore")
     public String sideCompoundFile = null;
@@ -47,7 +46,7 @@ public class LoadPoint extends AbstractMet4jApplication {
     @Option(name = "-k", aliases = {"--npath"}, usage = "Number of alternative paths to consider between a pair of connected metabolites")
     public int k = 1;
 
-    public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
+    public static void main(String[] args) {
 
         LoadPoint app = new LoadPoint();
 
@@ -57,14 +56,28 @@ public class LoadPoint extends AbstractMet4jApplication {
 
     }
 
-    public void run() throws IOException, Met4jSbmlReaderException {
+    public void run() {
         //open file
-        FileWriter fw = new FileWriter(outputPath);
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(outputPath);
+        } catch (IOException e) {
+            System.err.println("Error while opening the output file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
         //import network
         System.err.println("reading SBML...");
         JsbmlReader reader = new JsbmlReader(this.inputPath);
-        BioNetwork network = reader.read();
+        BioNetwork network = null;
+        try {
+            network = reader.read();
+        } catch (Met4jSbmlReaderException e) {
+            System.err.println("Error while reading the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
         //Create compound graph
         System.err.println("Creating network...");
@@ -75,18 +88,25 @@ public class LoadPoint extends AbstractMet4jApplication {
         if (sideCompoundFile != null) {
             System.err.println("removing side compounds...");
             BioCollection<BioMetabolite> sideCpds = new BioCollection<>();
-            BufferedReader fr = new BufferedReader(new FileReader(sideCompoundFile));
-            String line;
-            while ((line = fr.readLine()) != null) {
-                String sId = line.trim().split("\t")[0];
-                BioMetabolite s = network.getMetabolite(sId);
-                if (s != null) {
-                    sideCpds.add(s);
-                } else {
-                    System.err.println(sId + " side compound not found in network.");
+
+            try {
+                BufferedReader fr = new BufferedReader(new FileReader(sideCompoundFile));
+                String line;
+                while ((line = fr.readLine()) != null) {
+                    String sId = line.trim().split("\t")[0];
+                    BioMetabolite s = network.getMetabolite(sId);
+                    if (s != null) {
+                        sideCpds.add(s);
+                    } else {
+                        System.err.println(sId + " side compound not found in network.");
+                    }
                 }
+                fr.close();
+            } catch (IOException e) {
+                System.err.println("Error while reading the side compound file");
+                System.err.println(e.getMessage());
+                System.exit(1);
             }
-            fr.close();
             boolean removed = graph.removeAllVertices(sideCpds);
             if (removed) System.err.println(sideCpds.size() + " compounds removed.");
         }
@@ -102,12 +122,19 @@ public class LoadPoint extends AbstractMet4jApplication {
 
         //export results
         System.err.println("Export results...");
-        for (Map.Entry<BioMetabolite, Double> e : loads.entrySet()) {
-            BioMetabolite m = e.getKey();
-            fw.write(m.getId() + "\t" + m.getName() + "\t" + e.getValue() + "\n");
+
+        try {
+            for (Map.Entry<BioMetabolite, Double> e : loads.entrySet()) {
+                BioMetabolite m = e.getKey();
+                fw.write(m.getId() + "\t" + m.getName() + "\t" + e.getValue() + "\n");
+            }
+            fw.close();
+        } catch (IOException e) {
+            System.err.println("Error while writing the result file");
+            System.err.println(e.getMessage());
+            System.exit(1);
         }
         System.err.println("done.");
-        fw.close();
 
     }
 

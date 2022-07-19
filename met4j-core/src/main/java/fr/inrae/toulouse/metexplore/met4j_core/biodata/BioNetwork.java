@@ -791,6 +791,18 @@ public class BioNetwork extends BioEntity {
      */
     private void affectSideReaction(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, @NonNull BioReaction.Side side, @NonNull BioMetabolite metabolite) {
 
+        if(Double.isNaN(stoichiometry) || stoichiometry < 0.0) {
+            throw new IllegalArgumentException("Error in stoichiometry for the metabolite "+metabolite.getId()
+                    + " and the reaction "+reaction.getId()+ ", it should be strictly positive");
+        }
+
+        if(stoichiometry == 0.0) {
+            System.err.println("[WARNING] The stoichiometry for the metabolite "+metabolite.getId()
+                    + " and the reaction "+reaction.getId()+ "is null, it won't be added to the reaction");
+            return;
+        }
+
+
         BioReactant reactant = this.getReactant(metabolite, stoichiometry, localisation);
 
         if (reactant == null) {

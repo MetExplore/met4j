@@ -93,9 +93,8 @@ public class JsbmlReader {
      * Constructor
      *
      * @param filename the filename
-     * @throws java.io.IOException if any.
      */
-    public JsbmlReader(String filename) throws IOException {
+    public JsbmlReader(String filename) {
         this.filename = filename;
     }
 

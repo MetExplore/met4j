@@ -28,7 +28,7 @@ public class Sbml2Graph extends AbstractMet4jApplication {
     @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
-    @Format(name = EnumFormats.Text)
+    @Format(name = EnumFormats.Txt)
     @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output Graph file", required = true)
     public String outputPath = null;
@@ -48,7 +48,7 @@ public class Sbml2Graph extends AbstractMet4jApplication {
     @Option(name = "-gml", usage = "export in GML file", forbids = {"-tab"})
     public Boolean gml = true;
 
-    public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
+    public static void main(String[] args) {
 
         Sbml2Graph app = new Sbml2Graph();
 
@@ -59,11 +59,21 @@ public class Sbml2Graph extends AbstractMet4jApplication {
     }
 
 
-    public void run() throws IOException, Met4jSbmlReaderException {
+    public void run() {
         JsbmlReader reader = new JsbmlReader(this.inputPath);
         ArrayList<PackageParser> pkgs = new ArrayList<>(Arrays.asList(
                 new NotesParser(false), new FBCParser(), new GroupPathwayParser()));
-        BioNetwork network = reader.read(pkgs);
+
+        BioNetwork network = null;
+
+        try {
+            network = reader.read(pkgs);
+        } catch (Met4jSbmlReaderException e) {
+            System.err.println("Error while reading the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
+
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
 
         if (bipartite || reaction) {

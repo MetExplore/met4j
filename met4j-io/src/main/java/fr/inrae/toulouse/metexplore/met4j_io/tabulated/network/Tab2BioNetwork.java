@@ -483,6 +483,11 @@ public class Tab2BioNetwork {
      */
     private void initReactant(BioReaction reaction, String cpdId, Double coeff, Boolean rightSide, Boolean addCompartment) {
 
+        if(coeff <= 0.0) {
+            System.err.println("[WARNING] The coefficient for "+cpdId+ " in the reaction "+reaction.getId()+" is not valid, it should be strictly positive. It has not been added to the reaction.");
+            return;
+        }
+
         BioCompartment compartment = defaultCompartment;
 
         if (this.addCompartmentFromMetaboliteSuffix || addCompartment) {

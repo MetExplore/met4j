@@ -67,6 +67,19 @@ public class StringUtils {
 	}
 
 	/**
+	 * <p>isNa</p>
+	 *
+	 * @param in a String
+	 * @return true if in is null or empty or equals to multiple spaces, NULL, or null
+	 */
+	public static boolean isNa (String in) {
+		if(in == null) return false;
+		if(in.isEmpty()) return false;
+
+		return in.equalsIgnoreCase("na");
+	}
+
+	/**
 	 * From https://stackoverflow.com/questions/5439529/determine-if-a-string-is-an-integer-in-java/5439632#5439632
 	 *
 	 * @param s a String

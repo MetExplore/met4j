@@ -87,7 +87,7 @@ public class Tab2Sbml extends AbstractMet4jApplication {
 
     @Format(name = EnumFormats.Tsv)
     @ParameterType(name = EnumParameterTypes.InputFile)
-    @Option(name = "-in", usage = "Tabulated file")
+    @Option(name = "-in", usage = "Tabulated file", required = true)
     public String in;
 
     @Option(name = "-id", usage = "[NA] Model id written in the SBML file")
@@ -145,7 +145,7 @@ public class Tab2Sbml extends AbstractMet4jApplication {
 
     }
 
-    private void run() throws Met4jSbmlWriterException {
+    private void run() {
 
         Tab2BioNetwork tb = new Tab2BioNetwork(this.id, this.colid - 1,
                 this.colformula - 1,
@@ -162,18 +162,22 @@ public class Tab2Sbml extends AbstractMet4jApplication {
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error in creating the network from " + fileIn);
-            return;
+            System.exit(1);
         }
 
         if (!flag) {
             System.err.println("Error in creating the network from " + fileIn);
-            return;
+            System.exit(1);
         }
 
         BioNetwork bn = tb.getBioNetwork();
 
         JsbmlWriter writer = new JsbmlWriter(sbmlFile, bn);
-        writer.write();
+        try {
+            writer.write();
+        } catch (Met4jSbmlWriterException ex) {
+            System.exit(1);
+        }
 
         return;
 

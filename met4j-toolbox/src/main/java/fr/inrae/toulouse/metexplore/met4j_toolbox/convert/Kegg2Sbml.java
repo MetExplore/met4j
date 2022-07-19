@@ -37,6 +37,7 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.convert;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import fr.inrae.toulouse.metexplore.met4j_io.kegg.Kegg2BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
@@ -73,7 +74,7 @@ public class Kegg2Sbml  extends AbstractMet4jApplication  {
         return "Build a SBML file from KEGG organism-specific pathways. Uses Kegg API.";
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         Kegg2Sbml app = new Kegg2Sbml();
 
@@ -83,9 +84,16 @@ public class Kegg2Sbml  extends AbstractMet4jApplication  {
 
     }
 
-    private void run() throws Exception {
+    private void run() {
 
-        Kegg2BioNetwork k = new Kegg2BioNetwork(this.org, "reaction");
+        Kegg2BioNetwork k = null;
+        try {
+            k = new Kegg2BioNetwork(this.org, "reaction");
+        } catch (Exception e) {
+            System.err.println("Error when creating the converter Kegg2BioNetwork");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
         k.createBionetworkFromKegg();
 
@@ -93,7 +101,13 @@ public class Kegg2Sbml  extends AbstractMet4jApplication  {
 
         JsbmlWriter writer = new JsbmlWriter(this.sbml, network);
 
-        writer.write();
+        try {
+            writer.write();
+        } catch (Met4jSbmlWriterException e) {
+            System.err.println("Error while writing the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
     }
 }

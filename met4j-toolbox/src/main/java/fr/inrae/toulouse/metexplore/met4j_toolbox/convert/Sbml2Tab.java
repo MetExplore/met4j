@@ -91,16 +91,30 @@ public class Sbml2Tab extends AbstractMet4jApplication {
 
     }
 
-    private void run() throws IOException, Met4jSbmlReaderException {
+    private void run() {
 
         String fileIn = this.in;
-        String fileOut = this.out;
 
         JsbmlReader reader = new JsbmlReader(fileIn);
-        BioNetwork network = reader.read();
+
+        BioNetwork network = null;
+        try {
+            network = reader.read();
+        } catch (Met4jSbmlReaderException e) {
+            System.err.println("Error while reading the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
         BioNetwork2Tab bioNetwork2Tab = new BioNetwork2Tab(network, this.out, this.r, this.i);
-        bioNetwork2Tab.write();
+
+        try {
+            bioNetwork2Tab.write();
+        } catch (IOException e) {
+            System.err.println("Error while writing the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
         return;
 

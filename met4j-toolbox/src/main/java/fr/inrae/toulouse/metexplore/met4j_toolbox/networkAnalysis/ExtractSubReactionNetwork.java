@@ -38,7 +38,7 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
     @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
-    @Format(name = Text)
+    @Format(name = Txt)
     @ParameterType(name = InputFile)
     @Option(name = "-s", usage = "input sources txt file", required = true)
     public String sourcePath = null;
@@ -49,7 +49,7 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
     @Option(name = "-tab", aliases = {"--asTable"}, usage = "Export in tabulated file instead of .GML")
     public Boolean asTable = false;
 
-    @Format(name = Text)
+    @Format(name = Txt)
     @ParameterType(name = InputFile)
     @Option(name = "-t", usage = "input targets txt file", required = true)
     public String targetPath = null;
@@ -59,7 +59,7 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
     @Option(name = "-o", usage = "output gml file", required = true)
     public String outputPath = null;
 
-    @Format(name = Text)
+    @Format(name = Txt)
     @ParameterType(name = InputFile)
     @Option(name = "-sc", aliases = {"--side"}, usage = "a file containing list of side compounds to ignore", required = true)
     public String sideCompoundFile = null;
@@ -76,15 +76,29 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
     public boolean st = false;
 
 
-    public void run() throws IOException, Met4jSbmlReaderException {
+    public void run() {
         //import network
         JsbmlReader reader = new JsbmlReader(this.inputPath);
-        BioNetwork network = reader.read();
+        BioNetwork network = null;
+        try {
+            network = reader.read();
+        } catch (Met4jSbmlReaderException e) {
+            System.err.println("Error while reading the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
         //Graph processing: import side compounds
         System.err.println("importing side compounds...");
         Mapper<BioMetabolite> mapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
-        BioCollection<BioMetabolite> sideCpds = mapper.map(sideCompoundFile);
+        BioCollection<BioMetabolite> sideCpds = null;
+        try {
+            sideCpds = mapper.map(sideCompoundFile);
+        } catch (IOException e) {
+            System.err.println("Error while reading the side compound file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
         if (mapper.getNumberOfSkippedEntries() > 0)
             System.err.println(mapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
         System.err.println(sideCpds.size() + " side compounds ignored during graph build.");
@@ -92,10 +106,24 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
         //get sources and targets
         System.err.println("extracting sources and targets");
         Mapper<BioReaction> rmapper = new Mapper<>(network, BioNetwork::getReactionsView).skipIfNotFound();
-        HashSet<BioReaction> sources = new HashSet<>(rmapper.map(sourcePath));
+        HashSet<BioReaction> sources = null;
+        try {
+            sources = new HashSet<>(rmapper.map(sourcePath));
+        } catch (IOException e) {
+            System.err.println("Error while reading the source metabolite file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
         if (rmapper.getNumberOfSkippedEntries() > 0)
             System.err.println(rmapper.getNumberOfSkippedEntries() + " source not found in network.");
-        HashSet<BioReaction> targets = new HashSet<>(rmapper.map(targetPath));
+        HashSet<BioReaction> targets = null;
+        try {
+            targets = new HashSet<>(rmapper.map(targetPath));
+        } catch (IOException e) {
+            System.err.println("Error while reading the target metabolite file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
         if (rmapper.getNumberOfSkippedEntries() > 0)
             System.err.println(rmapper.getNumberOfSkippedEntries() + " target not found in network.");
 
@@ -141,7 +169,7 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
 
     }
 
-    public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
+    public static void main(String[] args)  {
         ExtractSubReactionNetwork app = new ExtractSubReactionNetwork();
         app.parseArguments(args);
         app.run();

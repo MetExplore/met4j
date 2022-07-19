@@ -41,10 +41,17 @@ public class ExtractPathways extends AbstractMet4jApplication {
     }
 
 
-    public void run() throws IOException, Met4jSbmlReaderException, Met4jSbmlWriterException {
+    public void run() {
         //read smbl
         JsbmlReader reader = new JsbmlReader(this.inputPath);
-        BioNetwork network = reader.read();
+        BioNetwork network = null;
+        try {
+            network = reader.read();
+        } catch (Met4jSbmlReaderException e) {
+            System.err.println("Error while converting the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
         System.out.println("Number of reactions in original network: "+network.getReactionsView().size());
         System.out.println("Number of species in original network: "+network.getMetabolitesView().size());
         System.out.println("Number of genes in original network: "+network.getGenesView().size());
@@ -85,7 +92,14 @@ public class ExtractPathways extends AbstractMet4jApplication {
 
         //export network
         JsbmlWriter w = new JsbmlWriter(outputPath, network);
-        w.write();
+
+        try {
+            w.write();
+        } catch (Met4jSbmlWriterException e) {
+            System.err.println("Error while writing the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
         System.err.println("network exported.");
         return;
     }

@@ -40,12 +40,12 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
     @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
-    @Format(name = Text)
+    @Format(name = Txt)
     @ParameterType(name = InputFile)
     @Option(name = "-s", usage = "input sources txt file", required = true)
     public String sourcePath = null;
 
-    @Format(name = Text)
+    @Format(name = Txt)
     @ParameterType(name = InputFile)
     @Option(name = "-t", usage = "input targets txt file", required = true)
     public String targetPath = null;
@@ -55,7 +55,7 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
     @Option(name = "-o", usage = "output gml file", required = true)
     public String outputPath = null;
 
-    @Format(name = Text)
+    @Format(name = Txt)
     @ParameterType(name = InputFile)
     @Option(name = "-sc", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore")
     public String sideCompoundFile = null;
@@ -84,10 +84,18 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
     public boolean st = false;
 
 
-    public void run() throws IOException, Met4jSbmlReaderException {
+    public void run() {
         //import network
         JsbmlReader reader = new JsbmlReader(this.inputPath);
-        BioNetwork network = reader.read();
+
+        BioNetwork network = null;
+        try {
+            network = reader.read();
+        } catch (Met4jSbmlReaderException e) {
+            System.err.println("Error while reading the SBML file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
         //Create compound graph
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
@@ -97,7 +105,14 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
         if (sideCompoundFile != null) {
             System.err.println("removing side compounds...");
             NodeMapping<BioMetabolite, ReactionEdge, CompoundGraph> mapper = new NodeMapping<>(graph).skipIfNotFound();
-            BioCollection<BioMetabolite> sideCpds = mapper.map(sideCompoundFile);
+            BioCollection<BioMetabolite> sideCpds = null;
+            try {
+                sideCpds = mapper.map(sideCompoundFile);
+            } catch (IOException e) {
+                System.err.println("Error while reading the side compound file");
+                System.err.println(e.getMessage());
+                System.exit(1);
+            }
             boolean removed = graph.removeAllVertices(sideCpds);
             if (removed) System.err.println(sideCpds.size() + " compounds removed.");
         }
@@ -105,8 +120,22 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
         //get sources and targets
         System.err.println("extracting sources and targets");
         NodeMapping<BioMetabolite, ReactionEdge, CompoundGraph> mapper = new NodeMapping<>(graph).throwErrorIfNotFound();
-        HashSet<BioMetabolite> sources = new HashSet<>(mapper.map(sourcePath));
-        HashSet<BioMetabolite> targets = new HashSet<>(mapper.map(targetPath));
+        HashSet<BioMetabolite> sources = null;
+        try {
+            sources = new HashSet<>(mapper.map(sourcePath));
+        } catch (IOException e) {
+            System.err.println("Error while reading the source metabolite file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
+        HashSet<BioMetabolite> targets = null;
+        try {
+            targets = new HashSet<>(mapper.map(targetPath));
+        } catch (IOException e) {
+            System.err.println("Error while reading the target metabolite file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
 
         //Graph processing: set weights [optional]
         WeightingPolicy<BioMetabolite, ReactionEdge, CompoundGraph> wp = new DefaultWeightPolicy<>();
@@ -153,7 +182,7 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
 
     }
 
-    public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
+    public static void main(String[] args) {
         ExtractSubNetwork app = new ExtractSubNetwork();
         app.parseArguments(args);
         app.run();

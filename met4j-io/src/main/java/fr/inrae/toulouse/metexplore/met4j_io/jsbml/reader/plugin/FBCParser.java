@@ -250,9 +250,6 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 			ReactionAttributes.setLowerBound(reaction,
 					this.flxNet.getListOfFluxBounds().get(rxnPlugin.getLowerFluxBound()));
 
-			ReactionAttributes.setLowerBound(reaction,
-					this.flxNet.getListOfFluxBounds().get(rxnPlugin.getLowerFluxBound()));
-
 			ReactionAttributes.setUpperBound(reaction,
 					this.flxNet.getListOfFluxBounds().get(rxnPlugin.getUpperFluxBound()));
 

@@ -50,10 +50,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 
 /**
- * <p>GroupPathwayParser class.</p>
+ * <p>Plugin to get pathway data from the groups SBML plugin</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class GroupPathwayParser implements PackageParser, PrimaryDataTag, ReaderSBML3Compatible {
 

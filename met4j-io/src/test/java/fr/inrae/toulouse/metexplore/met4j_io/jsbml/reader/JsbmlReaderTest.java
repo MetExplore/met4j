@@ -37,16 +37,13 @@
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.kegg.KeggApiMock;
 import org.junit.Test;
 import org.sbml.jsbml.SBMLDocument;
-import org.w3c.dom.Document;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 

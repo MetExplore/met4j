@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.1.0
+
+### Features
+
+[met4j-toolbox] Improve Met4J usability for Galaxy Workflow by adding utilities apps that exploit bioNetworks functions
+
+- decomposeSBML to get bioentities in sbml as list of ids
+- GetReactantsFromReactions to get list of metabolites from sbml + list of reactions
+- GetGenesFromReactions to get list of genes from sbml + list of reactions
+
 ## 1.0.1
 
 ### Fixed

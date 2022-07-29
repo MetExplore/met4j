@@ -71,8 +71,6 @@ import java.util.ArrayList;
  * This class is used to parse SBML level 3 FBC version 2 package.
  *
  * @author lcottret from bmerlet
- * @since 3.0
- * @version $Id: $Id
  */
 public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Compatible {
 
@@ -246,9 +244,6 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 			// System.err.println("out of recursion");
 			flxReaction.setReactionGeneAssociation(geneAssociation);
 			flxReaction.convertGeneAssociationstoComplexes(flxNet.getUnderlyingBionet());
-
-			ReactionAttributes.setLowerBound(reaction,
-					this.flxNet.getListOfFluxBounds().get(rxnPlugin.getLowerFluxBound()));
 
 			ReactionAttributes.setLowerBound(reaction,
 					this.flxNet.getListOfFluxBounds().get(rxnPlugin.getLowerFluxBound()));

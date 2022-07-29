@@ -86,7 +86,7 @@ package:
   artifacts:
     expire_in: 60 min
     paths:
-      - "met4j-toolbox/target/met4j-toolbox-$TRUEVERSION.jar"
+      - "met4j-toolbox/target/met4j-toolbox*.jar"
 
 deployJar:
   stage: deploy

@@ -58,14 +58,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.*;
 
 /**
- * This class is used to parse the annotation of every SBML element.
- * {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} are treated separately because they have specific
- * of annotations linked to them. {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment} are also separated
- * because they do not extend the {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity} class
+ * This class is used to parse the MIRIAM annotation of every SBML element.
  *
- * @author Benjamin
- * @version $Id: $Id
- * @since 3.0
+ * @author L.Cottret from B. Merlet
  */
 public class AnnotationParser implements PackageParser, AdditionalDataTag, ReaderSBML1Compatible, ReaderSBML2Compatible,
         ReaderSBML3Compatible {
@@ -217,7 +212,7 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
         String nonrdfAnnot = annot.getNonRDFannotationAsString();
         if (ent instanceof BioMetabolite && nonrdfAnnot != null && !nonrdfAnnot.isEmpty()) {
 
-            String specialInchiPattern = "InChI=([^<]+)";
+            String specialInchiPattern = "(?i)InChI=([^<]+)";
 
             m = Pattern.compile(specialInchiPattern, Pattern.DOTALL).matcher(nonrdfAnnot);
 

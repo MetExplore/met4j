@@ -36,6 +36,8 @@ stages:
   needs:
     - build
     - package
+  tags:
+    - stable
 
 variables:
   MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
@@ -66,6 +68,8 @@ build:
       - "*/target"
     reports:
       dotenv: build.env
+  tags:
+    - stable
 
 test:
   image: maven:3.6-adoptopenjdk-14
@@ -74,6 +78,8 @@ test:
     - find . -name "*.class" -exec touch {} \+
     - mvn $MAVEN_OPTS clean test
     - cat coverage/target/site/jacoco-aggregate/index.html | grep -o '<tfoot>.*</tfoot>'
+  tags:
+    - stable
 
 package:
   image: maven:3.6-adoptopenjdk-14
@@ -87,6 +93,8 @@ package:
     expire_in: 60 min
     paths:
       - "met4j-toolbox/target/met4j-toolbox*.jar"
+  tags:
+    - stable
 
 deployJar:
   stage: deploy
@@ -105,6 +113,8 @@ deployJar:
   needs:
     - build
     - package
+  tags:
+    - stable
 
 deploySnapshot:
   image: maven:3.6-adoptopenjdk-14
@@ -136,6 +146,8 @@ deployCentral:
     - mvn $MAVEN_CLI_OPTS release:perform -Darguments=-Dgpg.passphrase=${GPG_PASSPHRASE} -DlocalCheckout=true
   only:
     - master
+  tags:
+    - stable
 
 buildSingularity:
   stage: build-containers
@@ -163,12 +175,16 @@ buildSingularity:
   needs:
     - build
     - package
+  tags:
+    - stable
 
 buildDockerProdGitlab:
   extends: .template_docker
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - DOCKER_IMAGE="$CI_REGISTRY/metexplore/met4j/met4j-docker"
+  tags:
+    - stable
 
 
 buildDockerProdDockerhub:
@@ -176,6 +192,8 @@ buildDockerProdDockerhub:
   before_script:
     - docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_PASSWORD" $DOCKERHUB_REGISTRY
     - DOCKER_IMAGE=$DOCKERHUB_IMAGE
+  tags:
+    - stable
 
 
 

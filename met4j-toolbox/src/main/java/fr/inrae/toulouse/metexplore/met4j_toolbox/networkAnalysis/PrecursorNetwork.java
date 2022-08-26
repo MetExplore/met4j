@@ -49,6 +49,9 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
     @Option(name = "-ir", aliases = {"--ignore"}, usage = "an optional file containing list of reaction to ignore (forbid inclusion in scope)")
     public String reactionToIgnoreFile = null;
 
+    @Option(name = "-tab", aliases = {"--asTable"}, usage = "Export in tabulated file instead of .GML")
+    public Boolean asTable = false;
+
     public static void main(String[] args)  {
         PrecursorNetwork app = new PrecursorNetwork();
         app.parseArguments(args);
@@ -105,7 +108,11 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
             fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.PrecursorNetwork precursorComp =
                     new fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.PrecursorNetwork(graph, bootstraps, targets, forbidden);
             BipartiteGraph precursorNet = precursorComp.getPrecursorNetwork();
-            ExportGraph.toGml(precursorNet, output);
+            if(asTable){
+                ExportGraph.toTab(precursorNet, output);
+            }else{
+                ExportGraph.toGml(precursorNet, output);
+            }
         }
     }
 

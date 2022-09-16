@@ -106,6 +106,24 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 		}
 		return edgeList;
 	}
+
+	/**
+	 * Compute the reaction subgraph
+	 *
+	 * @param reaction the reaction to evaluate
+	 * @return the reaction subgraph
+	 */
+	public CompoundGraph getReactionSubGraph(BioReaction reaction) {
+		//Create graph for the reaction
+		CompoundGraph rSubGraph = new CompoundGraph();
+		//Create all possible edges between left and right reactants
+		for(ReactionEdge e : this.getEdgesFromReaction(reaction.getId())){
+			rSubGraph.addVertex(e.getV1());
+			rSubGraph.addVertex(e.getV2());
+			rSubGraph.addEdge(e);
+		}
+		return rSubGraph;
+	}
 	
 	/**
 	 * Gets the biochemical reaction list.

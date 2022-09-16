@@ -53,7 +53,7 @@ public class GraphOperation {
 	 * Instantiates a new graph operation.
 	 */
 	public GraphOperation() {}
-	
+
 	/**
 	 * compute the intersection of two graph.
 	 *
@@ -75,7 +75,7 @@ public class GraphOperation {
 		}
 		return i;
 	}
-	
+
 	/**
 	 * compute the union of two graph.
 	 *
@@ -103,7 +103,7 @@ public class GraphOperation {
 		}
 		return u;
 	}
-	
+
 	/**
 	 * compute the size of the intersect of two graph.
 	 *
@@ -121,7 +121,7 @@ public class GraphOperation {
 		}
 		return size;
 	}
-	
+
 	/**
 	 * compute the size of the union of two graph.
 	 *
@@ -135,7 +135,7 @@ public class GraphOperation {
 	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> int unionSize(G g1, G g2){
 		return g1.edgeSet().size()+g2.edgeSet().size()- intersectSize(g1, g2);
 	}
-	
+
 	/**
 	 * compute the order of the intersect of two graph.
 	 *
@@ -151,7 +151,7 @@ public class GraphOperation {
 		}
 		return order;
 	}
-	
+
 	/**
 	 * compute the order of the union of two graph.
 	 * @param <G> the graph class
@@ -163,5 +163,5 @@ public class GraphOperation {
 	public static <G extends BioGraph<? extends BioEntity, ? extends Edge<?>>> int unionOrder(G g1, G g2){
 		return g1.vertexSet().size()+g2.vertexSet().size()- intersectOrder(g1, g2);
 	}
-	
+
 }

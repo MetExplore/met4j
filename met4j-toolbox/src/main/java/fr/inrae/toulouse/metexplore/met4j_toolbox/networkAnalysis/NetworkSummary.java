@@ -18,7 +18,6 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -135,7 +134,7 @@ public class NetworkSummary extends AbstractMet4jApplication {
 
             //connectivity
             System.err.println("extract connected component...");
-            List<Set<BioMetabolite>> cc = GraphMeasure.getConnectedCompenent(graph);
+            List<Set<BioMetabolite>> cc = GraphMeasure.getConnectedComponents(graph);
             fw.write("Number of connected component:\t" + cc.size() + "\n");
             Map<Integer, Integer> ccSizes = cc.stream().collect(Collectors.groupingBy(Set::size))
                     .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, (e -> e.getValue().size())));

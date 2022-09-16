@@ -8,6 +8,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.Re
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.EdgeMerger;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.VertexContraction;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.GraphOperation;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
@@ -20,6 +21,8 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.*;
+
+import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;

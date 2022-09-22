@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -91,6 +92,35 @@ public class MapperTest {
             assertTrue("reaction in file not found", res.contains(a));
             assertTrue("reaction in file not found", res.contains(b));
             assertTrue("reaction in file not found", res.contains(c));
+        } catch (IOException e) {
+            Assert.fail("mapping failed");
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testMapper22(){
+        Mapper<BioMetabolite> m = new Mapper<>(bn, BioNetwork::getMetabolitesView)
+                .columnSeparator("\t")
+                .idColumn(2)
+                .skipHeader()
+                .skipIfNotFound();
+        try {
+            Map<BioMetabolite,List<String>> res = m.mapAttributes(r1);
+            assertEquals("wrong number of mapped entries", 3, res.size());
+            assertEquals("wrong number of skipped entries", 1, m.getNumberOfSkippedEntries());
+            assertTrue("reaction in file not found", res.keySet().contains(a));
+            assertTrue("reaction in file not found", res.keySet().contains(b));
+            assertTrue("reaction in file not found", res.keySet().contains(c));
+            assertEquals("Wrong number of attributes", 2,res.get(a).size());
+            assertEquals("Wrong number of attributes", 2,res.get(b).size());
+            assertEquals("Wrong number of attributes", 2,res.get(c).size());
+            assertEquals("Wrong attribute value", "A",res.get(a).get(0));
+            assertEquals("Wrong attribute value", "0.1",res.get(a).get(1));
+            assertEquals("Wrong attribute value", "B",res.get(b).get(0));
+            assertEquals("Wrong attribute value", "0.2",res.get(b).get(1));
+            assertEquals("Wrong attribute value", "C",res.get(c).get(0));
+            assertEquals("Wrong attribute value", "0.3",res.get(c).get(1));
         } catch (IOException e) {
             Assert.fail("mapping failed");
             e.printStackTrace();

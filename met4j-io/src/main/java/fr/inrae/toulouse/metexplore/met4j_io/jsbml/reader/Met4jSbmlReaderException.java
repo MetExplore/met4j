@@ -38,17 +38,9 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader;
 
 /**
  * <p>Met4jSbmlReaderException class.</p>
- *
  * @author lcottret
- * @version $Id: $Id
  */
 public class Met4jSbmlReaderException extends Exception {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	String message;
 	
 	/**
 	 * <p>Constructor for Met4jSbmlReaderException.</p>
@@ -56,7 +48,7 @@ public class Met4jSbmlReaderException extends Exception {
 	 * @param m a {@link java.lang.String} object.
 	 */
 	public Met4jSbmlReaderException(String m) {
-		this.message = m;
+		super(m);
 	}
 	
 	/**
@@ -65,7 +57,7 @@ public class Met4jSbmlReaderException extends Exception {
 	 * @return a {@link java.lang.String} object.
 	 */
 	public String toString() {
-	      return this.getClass().getSimpleName()+ "[" + message + "]";
+	      return this.getClass().getSimpleName()+ "[" + this.getMessage() + "]";
 	   }
 	
 }

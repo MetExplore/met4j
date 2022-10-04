@@ -10,7 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [met4j-toolbox] Add Apps to compute compound graph's classical weights (degree/chemical similarity)
 [met4j-graph] Add method to create RPAIRs-like tags on compound graph's edges
+## 1.1.1
 
+### Hotfix
+
+[met4j-io] Fix Met4JSbmlReaderException. Error messages will be more explicit.
 
 ## 1.1.0
 

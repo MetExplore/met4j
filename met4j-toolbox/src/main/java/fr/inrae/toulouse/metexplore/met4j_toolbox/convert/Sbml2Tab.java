@@ -101,6 +101,7 @@ public class Sbml2Tab extends AbstractMet4jApplication {
         try {
             network = reader.read();
         } catch (Met4jSbmlReaderException e) {
+            e.printStackTrace();
             System.err.println("Error while reading the SBML file");
             System.err.println(e.getMessage());
             System.exit(1);

@@ -132,7 +132,8 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 		this.parseListOfGeneProducts();
 		try {
 			this.parseFluxReactions();
-		} catch (Exception e) {
+		} catch (GeneSetException | Met4jSbmlReaderException e) {
+			e.printStackTrace();
 			throw new Met4jSbmlReaderException(e.getMessage());
 		}
 
@@ -226,7 +227,7 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 	 * <li>fbc:GeneProductAssociation
 	 * </ul>
 	 */
-	private void parseFluxReactions() throws Exception {
+	private void parseFluxReactions() throws Met4jSbmlReaderException, GeneSetException {
 
 		for (Reaction rxn : this.getFbcModel().getParent().getListOfReactions()) {
 

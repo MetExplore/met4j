@@ -54,6 +54,8 @@ public class SetNamesFromFileTest {
     private BioGene gene;
     private BioPathway pathway;
 
+    private BioCompartment compartment;
+
     @Before
     public void init() {
         network = new BioNetwork();
@@ -62,8 +64,9 @@ public class SetNamesFromFileTest {
         protein = new BioProtein("p");
         gene = new BioGene("g");
         pathway = new BioPathway("pathway");
+        compartment = new BioCompartment("cpt");
 
-        network.add(reaction, metabolite, protein, gene, pathway);
+        network.add(reaction, metabolite, protein, gene, pathway, compartment);
 
 
     }
@@ -163,6 +166,24 @@ public class SetNamesFromFileTest {
         setNamesFromFile.setAttributes();
 
         assertEquals("mypathway", pathway.getName());
+
+    }
+
+    @Test
+    public void setAttributesCompartment() throws IOException {
+
+        SetNamesFromFile setNamesFromFile = Mockito.spy(new SetNamesFromFile(0, 1, network, "", "", 0, false, false, EntityType.COMPARTMENT));
+        Mockito.doReturn(true).when(setNamesFromFile).parseAttributeFile();
+
+        String line = "cpt\tcompartment\n";
+
+        Boolean flag = setNamesFromFile.parseLine(line, 1);
+
+        assertTrue(flag);
+
+        setNamesFromFile.setAttributes();
+
+        assertEquals("compartment", compartment.getName());
 
     }
 

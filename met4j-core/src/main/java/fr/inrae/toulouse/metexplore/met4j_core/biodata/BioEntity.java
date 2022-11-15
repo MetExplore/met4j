@@ -109,8 +109,22 @@ public abstract class BioEntity {
      * @param e the original bioentity
      */
     public BioEntity(@NonNull BioEntity e) {
-        this.id = e.getId();
-        this.name = e.getName();
+        this(e.getId(), e.getName());
+        this.setSynonyms(new ArrayList<>(e.getSynonyms()));
+        this.setComment(e.getComment());
+        this.setRefs(new HashMap<>(e.getRefs()));
+        this.setAttributes(new HashMap<>(e.getAttributes()));
+    }
+
+    /**
+     * Deep copy with a new id
+     * <p>
+     * The refs and attributes are not deeply copied
+     *
+     * @param e the original bioentity
+     */
+    public BioEntity(@NonNull BioEntity e, String newId) {
+        this(newId, e.getName());
         this.setSynonyms(new ArrayList<>(e.getSynonyms()));
         this.setComment(e.getComment());
         this.setRefs(new HashMap<>(e.getRefs()));

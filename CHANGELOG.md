@@ -4,12 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Next Release
+
+### Features
+
+[met4j-toolbox] Add Apps to compute compound graph's classical weights (degree/chemical similarity)
+[met4j-toolbox] Add App to identify model seeds and targets
+[met4j-graph] Add method to create RPAIRs-like tags on compound graph's edges
+
+## 1.2.0
+
+[met4j-toolbox] Add App to set new ids to metabolic entities in a SBML file
+
 ## 1.1.1
 
 ### Hotfix
 
 [met4j-io] Fix Met4JSbmlReaderException. Error messages will be more explicit.
-
 
 ## 1.1.0
 

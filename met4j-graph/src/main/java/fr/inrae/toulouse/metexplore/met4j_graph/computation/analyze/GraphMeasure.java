@@ -49,6 +49,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.Comparator;
 
 /**
  * compute several measures of the level or connectivity, size or shape of a given graph using lazy builder to avoid redundant calculus
@@ -59,29 +61,29 @@ import java.util.Set;
  * @version $Id: $Id
  */
 public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
-	
+
 	/** The graph. */
 	private final BioGraph<V, E> g;
-	
+
 	/** The number of edges. */
 	private double numberOfEdges;
-	
+
 	/** The number of vertex. */
 	private final double numberOfVertex;
-	
+
 	/** The number of connected component. */
 	private Integer numberOfConnectedComp;
-	
+
 	/** The diameter. */
 	private Double diameter;
-	
+
 	/** The length. */
 	private Double length;
-	
+
 	/** if the graph is directed */
 	private boolean directed = true;
-	
-	
+
+
 	/**
 	 * Instantiates a new graph measure.
 	 *
@@ -92,7 +94,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
         this.numberOfEdges = Integer.valueOf(g.edgeSet().size()).doubleValue();
         this.numberOfVertex = Integer.valueOf(g.vertexSet().size()).doubleValue();
 	}
-	
+
 	/**
 	 * Get list of set of BioMetabolite, each BioMetabolite in a set belong to the same connected component
 	 * @param <V> vertex class
@@ -101,10 +103,82 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 * @param g the graph
 	 * @return the connected component
 	 */
-	public static <V extends BioEntity, E extends Edge<V>> List<Set<V>> getConnectedCompenent(BioGraph<V,E> g){
+	public static <V extends BioEntity, E extends Edge<V>> List<Set<V>> getConnectedComponents(BioGraph<V,E> g){
 		return new ConnectivityInspector<>(g).connectedSets();
 	}
-	
+	/**
+	 * Get a set of all vertices that are in the maximally connected component together with the specified vertex.
+	 * @param <V> vertex class
+	 * @param <E> edge class
+	 *
+	 * @param g the graph
+	 * @param t the target vertex
+	 * @return the set of all vertices maximally connected to the target vertex
+	 */
+	//public static <V extends BioEntity, E extends Edge<V>,  BioEntity<T>> Set<V>> getConnectedSetOf(BioGraph<V,E> g, Vertex <T>){
+	public static <V extends BioEntity, E extends Edge<V>> Set<V> getConnectedSetOf(BioGraph<V,E> g, V t){
+		return new ConnectivityInspector<>(g).connectedSetOf(t);
+	}
+
+	/**
+	 * Get the position of the component (ordered by size) for a given vertex
+	 * @param <V> vertex class
+	 * @param <E> edge class
+	 *
+	 * @param g the graph
+	 * @param t the target vertex
+	 * @return the component containing the vertex and output component ranking in the console.
+	 */
+	public static <V extends BioEntity, E extends Edge<V>> Set<V> isPartofNComponent(BioGraph<V,E> g, V t){
+		//init connectivity inspector
+		ConnectivityInspector CI  = new ConnectivityInspector<>(g);
+		//Sort the list of components by size
+		List<Set<V>> components = CI.connectedSets();
+		//sort with lambdafunction
+		Comparator<Set<V>> reversedComparator = (s1,s2) -> Integer.valueOf(s2.size()).compareTo(s1.size());
+		List<Set<V>> componentsReverseOrder = components.stream().sorted(reversedComparator).collect(Collectors.toList());
+		// Collections.sort(components,Comparator.reverseOrder());
+		//Get the set of all vertices maximally connected to the target vertex
+		Set<V> SetOfT = CI.connectedSetOf(t);
+		int counter = 0;
+		for(Set s:componentsReverseOrder){
+			counter++;
+			if (s.containsAll(SetOfT)){
+				if (counter == 1){
+					System.out.println("Metabolite "+t.getName()+" is part of the "+counter+" st component");
+				}else if (counter == 2){
+					System.out.println("Metabolite "+t.getName()+" is part of the "+counter+" nd component");
+				}else if (counter == 3){
+					System.out.println("Metabolite "+t.getName()+" is part of the "+counter+" rd component");
+				}else{
+					System.out.println("Metabolite "+t.getName()+" is part of the "+counter+" th component");
+				}
+				return s;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Get the number of edges of the provided component
+	 * @param <V> vertex class
+	 * @param <E> edge class
+	 *
+	 * @param g the graph
+	 * @param comp the connected component
+	 * @return the number of edges in this component
+	 */
+	public static <V extends BioEntity, E extends Edge<V>> Integer getNumberEdgesOfComponent(BioGraph<V,E> g, Set<V> comp){
+		Integer n_edges = 0;
+		for(V v1 : comp) {
+			for(V v2 : comp) {
+				if((v1 != v2) && (g.containsEdge(v1, v2))) {
+					n_edges++;
+				}
+			}
+		}
+		return n_edges;
+	}
+
 	/**
 	 * Gets the number of connected component
 	 *
@@ -112,10 +186,10 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	 */
 	public int getNumberOfConnectedComponent(){
 		if(numberOfConnectedComp !=null) return numberOfConnectedComp;
-        numberOfConnectedComp = getConnectedCompenent(g).size();
+        numberOfConnectedComp = getConnectedComponents(g).size();
 		return numberOfConnectedComp;
 	}
-	
+
 	/**
 	 * Gets the number of cycle.
 	 *
@@ -127,7 +201,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 		int numberOfVertex = g.vertexSet().size();
 		return numberOfEdges-numberOfVertex+numberOfConnectedComp;
 	}
-	
+
 	/**
 	 * Gets the diameter of the graph, i.e. the maximum length of a shortest path between two node in the graph
 	 * If the graph is disconnected, return the longest distance found in any connected component
@@ -155,7 +229,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 		int diameter = (int) distStats.getMax();
 		return diameter;
 	}
-	
+
 	/**
 	 * Gets the gamma index of the graph, i.e. the ratio between the observed number of edges and the expected maximal number of possible edge, as measure of the level of connectivity
 	 *
@@ -166,7 +240,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 		if(!directed) maxNumberOfEdges = maxNumberOfEdges*0.5;
 		return numberOfEdges /maxNumberOfEdges;
 	}
-	
+
 	/**
 	 * Gets the alpha index of the graph, i.e. the ratio between the observed number of cycle and the expected maximal number of possible cycle, as measure of the level of connectivity
 	 * cannot be computed on directed graph
@@ -179,7 +253,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 		double maxNumberOfCycle = (numberOfVertex *(numberOfVertex -1))*0.5 - (numberOfVertex -1);
 		return (numberOfEdges -(numberOfVertex -1))/maxNumberOfCycle;
 	}
-	
+
 	/**
 	 * Gets the beta index of the graph, i.e. the ratio between the number of edges and the number of vertex as measure of the level of connectivity
 	 *
@@ -188,7 +262,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	public double getBeta(){
 		return numberOfEdges / numberOfVertex;
 	}
-	
+
 	/**
 	 * Gets the total length of the graph, i.e. the sum of each edge weight
 	 *
@@ -202,7 +276,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 		}
 		return length;
 	}
-	
+
 	/**
 	 * Gets the eta index, i.e. the mean length of edges.
 	 *
@@ -211,7 +285,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	public double getEta(){
 		return getLength()/ numberOfEdges;
 	}
-	
+
 	/**
 	 * Gets the pi index, i.e. the ratio between the diameter of the graph and the total graph length.
 	 *
@@ -220,7 +294,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	public double getPi(){
 		return getDiameter()/ getLength();
 	}
-	
+
 	/**
 	 * get the overall closeness centralization index (OCCI), according to Freeman,L.C. (1979) Centrality in social networks: Conceptual clarification. Social Networks, 1, 215–239.
 	 *
@@ -233,24 +307,24 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 		PathBasedCentrality<V, E, BioGraph<V, E>> centralityComputor = new PathBasedCentrality<>(g);
 		Set<BioPath<V, E>> paths = centralityComputor.getAllShortestPaths();
 		Map<V, Double> closenessIndex = centralityComputor.getInCloseness(paths);
-		
+
 		double max = 0.0;
 		for(Double closeness : closenessIndex.values()){
 			if(closeness>max) max=closeness;
 		}
-		
+
 		double sum = 0.0;
 		for(Double closeness : closenessIndex.values()){
 			sum += (max - closeness);
 		}
 		//normalize centrality
 		sum = sum*(g.vertexSet().size()-1);
-		
+
 		double occi = (2* numberOfVertex - 3) * sum;
 		occi = occi/((numberOfVertex -1)*(numberOfVertex -2));
 		return occi;
 	}
-	
+
 	/**
 	 * get the overall closeness centralization index (OCCI), according to Freeman,L.C. (1979) Centrality in social networks: Conceptual clarification. Social Networks, 1, 215–239.
 	 *
@@ -263,23 +337,23 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	public double getOCCI(Set<BioPath<V, E>> validPaths){
 		PathBasedCentrality<V, E, BioGraph<V, E>> centralityComputor = new PathBasedCentrality<>(g);
 		Map<V, Double> closenessIndex = centralityComputor.getCloseness(validPaths);
-		
+
 		double max = 0.0;
 		for(Double closeness : closenessIndex.values()){
 			if(closeness>max) max=closeness;
 		}
-		
+
 		double sum = 0.0;
 		for(Double closeness : closenessIndex.values()){
 			sum += (max - closeness);
 		}
-		
+
 		double occi = (2* numberOfVertex - 3) * sum;
 		occi = (occi / ((numberOfVertex -1)*(numberOfVertex -2)));
-		
+
 		return occi;
 	}
-	
+
 	/**
 	 * adjust the edge count for multigraph. Edges having the same source and target will be counted as one edge.
 	 */
@@ -290,7 +364,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 		}
         this.numberOfEdges =links.size();
 	}
-	
+
 	/**
 	 * get whether or not the graph is considered as directed
 	 *
@@ -299,7 +373,7 @@ public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 	public boolean isDirected() {
 		return directed;
 	}
-	
+
 	/**
 	 * set whether or not the graph should be considered as directed
 	 * @param directed if the network should be considered as directed

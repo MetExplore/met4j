@@ -43,7 +43,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Collection;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -139,6 +139,32 @@ public class Mapper<E extends BioEntity> {
             E e = this.get(id);
             if(e!=null){
                 mapping.add(e);
+            }
+        }
+        breader.close();
+        return mapping;
+    }
+
+    /**
+     * From a tabulated file with one entity identifiers column and attributes columns, return a map with the corresponding entities instances found in the network as value
+     * and a list of attributes as value.
+     * @param reader the input stream holding identifiers
+     * @return a collection of matching entities
+     * @throws IOException
+     */
+    public Map<E, List<String>> mapAttributes(Reader reader) throws IOException {
+        this.skipped =0;
+        BufferedReader breader = new BufferedReader(reader);
+        HashMap<E, List<String>> mapping = new HashMap<>();
+        String line;
+        if(skipHeader) breader.readLine();
+        while ((line = breader.readLine()) != null) {
+            ArrayList<String> parsedLine = new ArrayList<String>(Arrays.asList(line.trim().split(sep)));
+            String id = parsedLine.get(col-1);
+            parsedLine.remove(col-1);
+            E e = this.get(id);
+            if(e!=null){
+                mapping.put(e,parsedLine);
             }
         }
         breader.close();

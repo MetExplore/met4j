@@ -57,6 +57,9 @@ public class ScopeNetwork extends AbstractMet4jApplication {
     @Option(name = "-t", aliases = {"--trace"}, usage = "trace inclusion step index for each node in output")
     public boolean trace = false;
 
+    @Option(name = "-tab", aliases = {"--asTable"}, usage = "Export in tabulated file instead of .GML")
+    public Boolean asTable = false;
+
     public static void main(String[] args)  {
         ScopeNetwork app = new ScopeNetwork();
         app.parseArguments(args);
@@ -114,10 +117,14 @@ public class ScopeNetwork extends AbstractMet4jApplication {
             if (includeSides) scopeComp.includeBootstrapsInScope();
             if (trace) scopeComp.trace();
             BipartiteGraph scope = scopeComp.getScopeNetwork();
-            if (trace) {
-                ExportGraph.toGmlWithAttributes(scope, output, scopeComp.getExpansionSteps(), "step");
-            } else {
-                ExportGraph.toGml(scope, output);
+            if(asTable){
+                ExportGraph.toTab(scope, output);
+            }else{
+                if (trace) {
+                    ExportGraph.toGmlWithAttributes(scope, output, scopeComp.getExpansionSteps(), "step");
+                } else {
+                    ExportGraph.toGml(scope, output);
+                }
             }
         }
 

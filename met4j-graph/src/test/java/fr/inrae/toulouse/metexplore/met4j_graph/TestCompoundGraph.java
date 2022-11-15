@@ -186,4 +186,20 @@ public class TestCompoundGraph {
 		assertEquals(0,cg.getEdgesFromCompartment(bn, comp2).size());
 		assertTrue(cg.getEdgesFromCompartment(bn, comp).contains(e1));
 	}
+
+
+	@Test
+	public void testGetReactionSubGraph() {
+		CompoundGraph gr1 = cg.getReactionSubGraph(r1);
+		assertEquals(2, gr1.vertexSet().size());
+		assertEquals(1, gr1.edgeSet().size());
+		assertTrue(gr1.containsVertex(v1));
+		assertTrue(gr1.containsVertex(v2));
+
+		CompoundGraph gr2 = cg.getReactionSubGraph(r2);
+		assertEquals(2, gr2.vertexSet().size());
+		assertEquals(1, gr2.edgeSet().size());
+		assertTrue(gr2.containsVertex(v2));
+		assertTrue(gr2.containsVertex(v3));
+	}
 }

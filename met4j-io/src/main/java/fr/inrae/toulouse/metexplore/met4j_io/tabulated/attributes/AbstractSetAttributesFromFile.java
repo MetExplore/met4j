@@ -80,13 +80,13 @@ public abstract class AbstractSetAttributesFromFile {
      *
      * @param colId      a int.
      * @param colAttr    : number of the attribute column
-     * @param bn         : BioNetwork
+     * @param bn         : {@link BioNetwork}
      * @param fileIn     : tabulated file containing the ids and the attributes
      * @param c          : comment character
-     * @param nSkip      a int.
+     * @param nSkip      a int. Number of lines to skip
      * @param entityType a {@link EntityType}
-     * @param p          a {@link Boolean} object.
-     * @param s          a {@link Boolean} object.
+     * @param p          a {@link Boolean} object : To match the objects in the sbml file, adds the prefix R_ to reactions and M_ to metabolites
+     * @param s          a {@link Boolean} object : To match the objects in the sbml file, adds the suffix _comparmentID to metabolite
      */
     public AbstractSetAttributesFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, EntityType entityType,
                                          Boolean p, Boolean s) {
@@ -104,24 +104,34 @@ public abstract class AbstractSetAttributesFromFile {
 
         this.entityType = entityType;
 
-        if (this.entityType.equals(EntityType.REACTION)) {
-            this.objectIds = bn.getReactionsView().getIds();
-        }
-
-        if (this.entityType.equals(EntityType.METABOLITE)) {
-            this.objectIds = bn.getMetabolitesView().getIds();
-        }
-
-        if (this.entityType.equals(EntityType.PROTEIN)) {
-            this.objectIds = bn.getProteinsView().getIds();
-        }
-
-        if (this.entityType.equals(EntityType.GENE)) {
-            this.objectIds = bn.getGenesView().getIds();
-        }
-
-        if (this.entityType.equals(EntityType.PATHWAY)) {
-            this.objectIds = bn.getPathwaysView().getIds();
+        switch (entityType) {
+            case REACTION: {
+                this.objectIds = bn.getReactionsView().getIds();
+                break;
+            }
+            case METABOLITE: {
+                this.objectIds = bn.getMetabolitesView().getIds();
+                break;
+            }
+            case PROTEIN: {
+                this.objectIds = bn.getProteinsView().getIds();
+                break;
+            }
+            case GENE: {
+                this.objectIds = bn.getGenesView().getIds();
+                break;
+            }
+            case COMPARTMENT: {
+                this.objectIds = bn.getCompartmentsView().getIds();
+                break;
+            }
+            case PATHWAY: {
+                this.objectIds = bn.getPathwaysView().getIds();
+                break;
+            }
+            default: {
+                throw new EntityTypeException("Entity "+entityType+" not recognized");
+            }
         }
 
         if (this.colId < 0) {

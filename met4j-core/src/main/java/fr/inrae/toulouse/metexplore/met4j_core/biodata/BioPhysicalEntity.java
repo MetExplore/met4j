@@ -73,4 +73,15 @@ public abstract class BioPhysicalEntity extends BioEntity {
 		super(p);
 	}
 
+	/**
+	 * Deep copy with a new Id
+	 *
+	 * @param p the original {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity}
+	 * @param id the new id
+	 */
+	public BioPhysicalEntity(BioPhysicalEntity p, String id)
+	{
+		super(p, id);
+	}
+
 }

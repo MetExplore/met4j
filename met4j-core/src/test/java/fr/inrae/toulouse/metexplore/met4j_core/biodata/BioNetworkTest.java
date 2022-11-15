@@ -2338,4 +2338,19 @@ public class BioNetworkTest {
     public void TestContainsBadEntityWithSameId() {
         this.network.containsEntityWithSameId(this.network);
     }
+
+    @Test
+    public void removeFromCompartment() {
+
+        this.addTestReactionToNetwork();
+
+        this.network.removeFromCompartment(cpt, s1, p1);
+
+        assertEquals(2, this.network.getCompartment("cpt").getComponents().size());
+
+        assertNull(this.network.getCompartment("cpt").getComponents().get("s1"));
+        assertNull(this.network.getCompartment("cpt").getComponents().get("p1"));
+
+    }
+
 }

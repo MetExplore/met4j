@@ -98,4 +98,14 @@ public class BioMetabolite extends BioPhysicalEntity {
         this.setChemicalFormula(metabolite.getChemicalFormula());
 
     }
+
+    public BioMetabolite(@NonNull BioMetabolite metabolite, String newId) {
+        super(metabolite, newId);
+
+        this.setInchi(metabolite.getInchi());
+        this.setSmiles(metabolite.getSmiles());
+        this.setCharge(metabolite.getCharge());
+        this.setMolecularWeight(metabolite.getMolecularWeight());
+        this.setChemicalFormula(metabolite.getChemicalFormula());
+    }
 }

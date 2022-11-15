@@ -1,5 +1,5 @@
 /*
- * Copyright INRAE (2020)
+ * Copyright INRAE (2022)
  *
  * contact-metexplore@inrae.fr
  *
@@ -33,51 +33,11 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  */
-package fr.inrae.toulouse.metexplore.met4j_core.biodata;
+package fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes;
 
-/**
- * <p>BioGene class.</p>
- *
- * @author lcottret
- * @version $Id: $Id
- */
-public class BioGene extends BioEntity {
+public class EntityTypeException extends RuntimeException {
 
-    /**
-     * Constructor
-     *
-     * @param id the id of the BioGene
-     */
-    public BioGene(String id) {
-        super(id);
+    public EntityTypeException(String errorMessage) {
+        super(errorMessage);
     }
-
-    /**
-     * Constructor
-     *
-     * @param id   the id of the BioGene
-     * @param name the name of the BioGene
-     */
-    public BioGene(String id, String name) {
-        super(id, name);
-    }
-
-    /**
-     * Copy of a gene
-     *
-     * @param gene the original gene
-     */
-    public BioGene(BioGene gene) {
-        super(gene);
-    }
-
-    /**
-     * Copy of a gene with a new Id
-     *
-     * @param gene the original gene
-     */
-    public BioGene(BioGene gene, String id) {
-        super(gene, id);
-    }
-
 }

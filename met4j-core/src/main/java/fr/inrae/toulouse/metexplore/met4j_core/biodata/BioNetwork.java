@@ -1277,6 +1277,17 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
+     * Remove a component from a compartment
+     * @param compartment
+     * @param entities
+     */
+    public void removeFromCompartment(@NonNull BioCompartment compartment, @NonNull BioEntity... entities) {
+        for(BioEntity ent : entities) {
+            compartment.getComponents().remove(ent);
+        }
+    }
+
+    /**
      * Return true if the entity is in the list of metabolites, reactions, genes,
      * pathways, proteins, etc...
      *

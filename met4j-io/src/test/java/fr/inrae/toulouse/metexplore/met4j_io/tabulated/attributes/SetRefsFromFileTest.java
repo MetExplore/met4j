@@ -54,6 +54,7 @@ public class SetRefsFromFileTest {
     private BioProtein protein;
     private BioPathway pathway;
     private BioGene gene;
+    private BioCompartment compartment;
 
     @Before
     public void init() {
@@ -63,8 +64,9 @@ public class SetRefsFromFileTest {
         protein = new BioProtein("p");
         pathway = new BioPathway("pathway");
         gene = new BioGene("g");
+        compartment = new BioCompartment("cpt");
 
-        network.add(reaction, metabolite, protein, pathway, gene);
+        network.add(reaction, metabolite, protein, pathway, gene, compartment);
     }
     
     @Test
@@ -154,6 +156,22 @@ public class SetRefsFromFileTest {
         assertTrue(pathway.getRefs().containsKey("refTest"));
         BioRef refRef = new BioRef("attributeTable", "refTest", "refValue", 1);
         assertTrue(pathway.getRefs().get("refTest").contains(refRef));
+    }
+
+    @Test
+    public void setAttributesCompartment() throws IOException {
+        SetRefsFromFile setRefsFromFile = Mockito.spy(new SetRefsFromFile(0, 1, network, "", "", 0, false, false, "refTest", EntityType.COMPARTMENT));
+        Mockito.doReturn(true).when(setRefsFromFile).parseAttributeFile();
+
+        String line = "cpt\trefValue";
+        Boolean flag = setRefsFromFile.parseLine(line, 1);
+
+        assertTrue(flag);
+
+        setRefsFromFile.setAttributes();
+        assertTrue(compartment.getRefs().containsKey("refTest"));
+        BioRef refRef = new BioRef("attributeTable", "refTest", "refValue", 1);
+        assertTrue(compartment.getRefs().get("refTest").contains(refRef));
     }
 
 }

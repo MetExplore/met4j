@@ -83,6 +83,19 @@ public class BioCompartment extends BioPhysicalEntity {
     }
 
     /**
+     * Copy of a compartment with a new id
+     * Do not copy the list of components
+     *
+     * @param compartment the original compartment
+     * @param id the new id
+     */
+    public BioCompartment(BioCompartment compartment, String id) {
+        super(compartment, id);
+
+        components = new BioCollection<>();
+    }
+
+    /**
      * <p>getComponentsView.</p>
      *
      * @return an unmodifiable {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of the components

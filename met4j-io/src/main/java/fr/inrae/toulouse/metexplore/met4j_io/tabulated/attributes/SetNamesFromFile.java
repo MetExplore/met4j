@@ -107,20 +107,36 @@ public class SetNamesFromFile extends AbstractSetAttributesFromFile {
 
             String name = this.getIdAttributeMap().get(id);
 
-            if(this.entityType.equals(EntityType.METABOLITE)) {
-                object = this.bn.getMetabolite(id);
-            }
-            else if(this.entityType.equals(EntityType.GENE)) {
-                object = this.bn.getGene(id);
-            }
-            else if(this.entityType.equals(EntityType.PROTEIN)) {
-                object = this.bn.getProtein(id);
-            }
-            else if(this.entityType.equals(EntityType.PATHWAY)) {
-                object = this.bn.getPathway(id);
-            }
-            else {
-                object = this.bn.getReaction(id);
+            switch (this.entityType) {
+                case METABOLITE:
+                {
+                    object = this.bn.getMetabolite(id);
+                    break;
+                }
+                case GENE: {
+                    object = this.bn.getGene(id);
+                    break;
+                }
+                case PROTEIN: {
+                    object = this.bn.getProtein(id);
+                    break;
+                }
+                case PATHWAY: {
+                    object = this.bn.getPathway(id);
+                    break;
+                }
+                case REACTION: {
+                    object = this.bn.getReaction(id);
+                    break;
+                }
+                case COMPARTMENT: {
+                    object = this.bn.getCompartment(id);
+                    break;
+                }
+                default: {
+                    throw new EntityTypeException("Entity type "+this.entityType+" is not recognized");
+                }
+
             }
 
             object.setName(name);

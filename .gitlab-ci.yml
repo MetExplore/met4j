@@ -19,8 +19,8 @@ stages:
     # version in lower case
     - if [ "$CI_COMMIT_BRANCH" = "develop" -o "$CI_COMMIT_BRANCH" = "master" -a "$VERSION" != "$LOWER_CASE_VERSION" ]; then docker build -t "$DOCKER_IMAGE:$LOWER_CASE_VERSION" .; fi
     - if [ "$CI_COMMIT_BRANCH" = "develop" -o "$CI_COMMIT_BRANCH" = "master" -a "$VERSION" != "$LOWER_CASE_VERSION" ]; then docker push "$DOCKER_IMAGE:$LOWER_CASE_VERSION"; fi
-    - docker build -t "$DOCKER_IMAGE:$CI_COMMIT_BRANCH" .
-    - docker push "$DOCKER_IMAGE:$CI_COMMIT_BRANCH"
+    - docker build -t "$DOCKER_IMAGE:$FORMATTED_COMMIT_BRANCH" .
+    - docker push "$DOCKER_IMAGE:$FORMATTED_COMMIT_BRANCH"
     # branch in lower case
     - docker build -t "$DOCKER_IMAGE:$LOWER_CASE_COMMIT_BRANCH" .
     - docker push "$DOCKER_IMAGE:$LOWER_CASE_COMMIT_BRANCH"
@@ -56,9 +56,12 @@ build:
     - VERSION=$TRUEVERSION
     - if [ "$CI_COMMIT_BRANCH" = "master" ]; then VERSION=${VERSION%"-SNAPSHOT"}; fi
     - LOWER_CASE_VERSION=${VERSION,,}
-    - LOWER_CASE_COMMIT_BRANCH=${CI_COMMIT_BRANCH,,}
+    # Replace / by _ in the name of the commit
+    - FORMATTED_COMMIT_BRANCH=${CI_COMMIT_BRANCH//\//_}
+    - LOWER_CASE_COMMIT_BRANCH=${FORMATTED_COMMIT_BRANCH,,}
     - echo "VERSION=$VERSION" >> build.env
     - echo "TRUEVERSION=$TRUEVERSION" >> build.env
+    - echo "FORMATTED_COMMIT_BRANCH=$FORMATTED_COMMIT_BRANCH" >> build.env
     - echo "LOWER_CASE_VERSION=$LOWER_CASE_VERSION" >> build.env
     - echo "LOWER_CASE_COMMIT_BRANCH=$LOWER_CASE_COMMIT_BRANCH" >> build.env
   artifacts:
@@ -162,7 +165,7 @@ buildSingularity:
     - if [ "$CI_COMMIT_BRANCH" = "develop" -o "$CI_COMMIT_BRANCH" = "master" ]; then singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"$VERSION"; fi
     # version in lower case
     - if [ "$CI_COMMIT_BRANCH" = "develop" -o "$CI_COMMIT_BRANCH" = "master" -a "$VERSION" != "$LOWER_CASE_VERSION"]; then singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"$LOWER_CASE_VERSION"; fi
-    - singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"$CI_COMMIT_BRANCH"
+    - singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"$FORMATTED_COMMIT_BRANCH"
     # branch in lower case
     - singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"$LOWER_CASE_COMMIT_BRANCH"
   rules:

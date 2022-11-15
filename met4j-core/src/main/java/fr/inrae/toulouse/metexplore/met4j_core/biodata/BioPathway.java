@@ -83,6 +83,17 @@ public class BioPathway extends BioEntity {
 	}
 
 	/**
+	 * Copy pathway attributes but not the reactions
+	 * Set new id
+	 *
+	 * @param pathway the original pathway
+	 */
+	public BioPathway(@NonNull BioPathway pathway, String id) {
+		super(pathway, id);
+		reactions = new BioCollection<>();
+	}
+
+	/**
 	 * Get reactions involved in the pathway
 	 *
 	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of pathways

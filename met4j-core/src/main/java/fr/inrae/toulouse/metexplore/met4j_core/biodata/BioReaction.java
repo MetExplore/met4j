@@ -106,7 +106,7 @@ public class BioReaction extends BioEntity {
 	}
 
 	/**
-	 * <p>Constructor for BioReaction.</p>
+	 * <p>Copy of a BioReaction (only atomic attributes, not left nor right).</p>
 	 *
 	 * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
 	 */
@@ -119,6 +119,22 @@ public class BioReaction extends BioEntity {
 		this.ecNumber = reaction.ecNumber;
 		this.reversible = reaction.reversible;
 	}
+
+	/**
+	 * <p>Copy of a BioReaction (only atomic attributes, not left nor right) with new id</p>
+	 *
+	 * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+	 */
+	public BioReaction(@NonNull BioReaction reaction, String id) {
+		super(reaction, id);
+		left = new BioCollection<>();
+		right = new BioCollection<>();
+		enzymes = new BioCollection<>();
+		this.spontaneous = reaction.spontaneous;
+		this.ecNumber = reaction.ecNumber;
+		this.reversible = reaction.reversible;
+	}
+
 
 	/**
 	 * <p>Getter for the field <code>ecNumber</code>.</p>

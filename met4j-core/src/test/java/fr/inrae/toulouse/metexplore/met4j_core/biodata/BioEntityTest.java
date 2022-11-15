@@ -59,7 +59,7 @@ import org.junit.Test;
 public class BioEntityTest {
 
 	public static BioRef ref;
-	public static BioEntity bioEntityTest;
+	public static BioEntityFake bioEntityTest;
 
 	public static void init() {
 		ref = new BioRef("origin", "dbName", "dbId", 1);
@@ -232,6 +232,14 @@ public class BioEntityTest {
 		bioEntityTest.getAttributes().put("test", "value");
 
 		assertEquals("value", bioEntityTest.getAttribute("test"));
+
+	}
+
+	@Test
+	public void copyWithNewId() {
+		BioEntityFake newEntity = new BioEntityFake(bioEntityTest, "newId");
+
+		assertEquals("newId", newEntity.getId());
 
 	}
 }

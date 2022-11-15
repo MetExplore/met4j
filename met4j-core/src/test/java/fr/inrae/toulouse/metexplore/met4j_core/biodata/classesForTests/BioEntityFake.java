@@ -49,4 +49,8 @@ public class BioEntityFake extends BioEntity {
 		super(id);
 	}
 
+	public BioEntityFake(BioEntityFake e, String id) {
+		super(e, id);
+	}
+
 }

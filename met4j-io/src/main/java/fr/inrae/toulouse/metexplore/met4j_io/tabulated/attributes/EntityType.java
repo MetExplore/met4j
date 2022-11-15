@@ -36,5 +36,5 @@
 package fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes;
 
 public enum EntityType {
-    REACTION, METABOLITE, GENE, PROTEIN, PATHWAY
+    REACTION, METABOLITE, GENE, PROTEIN, PATHWAY, COMPARTMENT
 }

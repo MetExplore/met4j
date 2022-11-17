@@ -94,6 +94,7 @@ public class SbmlSetIdsFromFile extends AbstractSbmlSetAny {
         try {
             flag = setter.setAttributes();
         } catch (Exception e) {
+            e.printStackTrace();
             flag=false;
         }
 

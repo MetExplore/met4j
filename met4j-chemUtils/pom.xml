@@ -22,12 +22,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.openscience.cdk</groupId>
             <artifactId>cdk-bundle</artifactId>
             <version>2.6</version>

@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Next Release
+
+### Features
+[met4j-toolbox] Add App to perform chemical names fuzzy mapping between datasets and models
+[met4j-mapping] Add classes for edit-distance based fuzzy search
+
 ## 1.2.0
 
 ### Features

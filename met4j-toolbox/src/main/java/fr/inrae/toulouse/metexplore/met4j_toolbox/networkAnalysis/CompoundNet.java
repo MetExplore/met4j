@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.function.Function;
 
 public class CompoundNet extends AbstractMet4jApplication {
 
@@ -128,7 +127,7 @@ public class CompoundNet extends AbstractMet4jApplication {
         }
 
         //Graph processing: set weights [optional]
-        WeightingPolicy<BioMetabolite, ReactionEdge, CompoundGraph> wp = new DefaultWeightPolicy<>();
+        WeightingPolicy<BioMetabolite, ReactionEdge, CompoundGraph> wp = new UnweightedPolicy<>();
         if (weightFile != null) {
             System.err.println("Setting edge weights...");
             wp = new WeightsFromFile(weightFile);

@@ -134,7 +134,7 @@ public class TestWeightingPolicy {
 	 */
 	@Test
 	public void testDefaultWeightPolicy() {
-		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new DefaultWeightPolicy<>();
+		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new UnweightedPolicy<>();
 		wp.setWeight(g);
 		double defautValue = 1.0;
 		for(ReactionEdge e : g.edgeSet()){

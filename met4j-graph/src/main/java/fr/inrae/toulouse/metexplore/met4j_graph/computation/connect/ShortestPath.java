@@ -39,9 +39,12 @@ import java.util.*;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPathUtils;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compressed.CompressedGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compressed.PathEdge;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ManyToManyShortestPathsAlgorithm;
@@ -279,6 +282,13 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 		return getShortestPathsUnionList(nodeOfInterest,nodeOfInterest);
 	}
 
+	/**
+	 * return all the shortest path in the given graph.
+	 * @return all the shortest path in the given graph.
+	 */
+	public List<BioPath<V,E>> getAllShortestPaths(){
+		return getShortestPathsUnionList(g.vertexSet());
+	}
 
 	/**
 	 * compute the list of edges from the union of all shortest paths between sources and target nodes
@@ -313,7 +323,7 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 *
 	 * @param sources the sources
 	 * @param targets the targets
-	 * @param weighted if the graph is weighted
+	 * @param weighted if the overall path weights should be used as edge weight, use length otherwise
 	 * @return the metric closure graph
 	 */
 	public CompressedGraph<V, E, G> getMetricClosureGraph(Set<V> sources, Set<V> targets, boolean weighted){
@@ -347,11 +357,10 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 *
 	 * @param sources the sources
 	 * @param targets the targets
-	 * @param weighted if the graph is weighted
 	 * @return the minimum shortest path distance
 	 */
-	public HashMap<V, Double> getMinSpDistance(Set<V> sources, Set<V> targets, boolean weighted){
-		CompressedGraph<V, E, G> closureGraph = getMetricClosureGraph(targets,sources,weighted);
+	public HashMap<V, Double> getMinSpDistance(Set<V> sources, Set<V> targets){
+		CompressedGraph<V, E, G> closureGraph = getMetricClosureGraph(targets,sources,true);
 		HashMap<V, Double> minSpDist = new HashMap<>();
 		for(V node : sources){
 			if(closureGraph.containsVertex(node)){
@@ -376,11 +385,10 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 *
 	 * @param sources the sources
 	 * @param targets the targets
-	 * @param weighted if the graph is weighted
 	 * @return the average shortest path distance
 	 */
-	public HashMap<V, Double> getAverageSpDistance(Set<V> sources, Set<V> targets, boolean weighted){
-		CompressedGraph<V, E, G> closureGraph = getMetricClosureGraph(targets,sources,weighted);
+	public HashMap<V, Double> getAverageSpDistance(Set<V> sources, Set<V> targets){
+		CompressedGraph<V, E, G> closureGraph = getMetricClosureGraph(targets,sources,true);
 		HashMap<V, Double> avgSpDist = new HashMap<>();
 		for(V node : sources){
 			if(closureGraph.containsVertex(node)){
@@ -400,11 +408,22 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	}
 
 	/**
-	 * return all the shortest path in the given graph.
-	 * @return all the shortest path in the given graph.
+	 * Get full shortest paths distance matrix
+	 * @return a distance matrix
 	 */
-	public List<BioPath<V,E>> getAllShortestPaths(){
-		return getShortestPathsUnionList(g.vertexSet());
+	public BioMatrix getShortestPathDistanceMatrix(){
+		return BioPathUtils.getDistanceMatrixFromPaths(this.getAllShortestPaths());
+	}
+
+	/**
+	 * Get shortest paths distance matrix from set of sources and targets
+	 * @param sources
+	 * @param targets
+	 * @return a distance matrix
+	 */
+	public BioMatrix getShortestPathDistanceMatrix(Set<V> sources, Set<V> targets){
+		List<BioPath<V, E>> paths = this.getShortestPathsUnionList(sources, targets);
+		return BioPathUtils.getDistanceMatrixFromPaths(sources,targets,paths);
 	}
 
 }

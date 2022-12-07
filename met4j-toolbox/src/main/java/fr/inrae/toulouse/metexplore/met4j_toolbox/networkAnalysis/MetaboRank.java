@@ -49,9 +49,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
@@ -238,7 +236,7 @@ public class MetaboRank extends AbstractMet4jApplication {
     public void setEdgeWeights(CompoundGraph graph, String localFilePath) {
         Boolean defaultWeight = (localFilePath==null || localFilePath.isEmpty() || localFilePath.isBlank());
         //import weights from file
-        WeightingPolicy wp = (defaultWeight) ? new DefaultWeightPolicy() : new WeightsFromFile<>(localFilePath, true);
+        WeightingPolicy wp = (defaultWeight) ? new UnweightedPolicy() : new WeightsFromFile<>(localFilePath, true);
         //set weights to edges
         wp.setWeight(graph);
         if (!defaultWeight) {

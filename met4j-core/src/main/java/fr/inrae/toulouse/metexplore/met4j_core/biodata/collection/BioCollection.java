@@ -37,6 +37,7 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata.collection;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -266,5 +267,4 @@ public class BioCollection<E extends BioEntity> implements Collection<E> {
 	public HashMap<String, E> getMapView() {
 		return new HashMap<>(this.entities);
 	}
-
 }

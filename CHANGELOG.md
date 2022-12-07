@@ -46,6 +46,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [met4j-toolbox][SbmlSetPathways] Format pathway id to avoid redundancies
 
+[met4j-graph] DefaultWeightPolicy class renamed UnweightedPolicy. Use weights option removed from shortest paths computation,
+now handled directly from graph to avoid conflict
+
 ## 1.0
 
 ### Features

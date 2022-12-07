@@ -9,7 +9,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.GraphLocalMe
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.GraphMeasure;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.RankUtils;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DefaultWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.UnweightedPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -84,7 +84,7 @@ public class NetworkSummary extends AbstractMet4jApplication {
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
         CompoundGraph graph = builder.getCompoundGraph();
 
-        WeightingPolicy wp = new DefaultWeightPolicy();
+        WeightingPolicy wp = new UnweightedPolicy();
         wp.setWeight(graph);
 
         //Graph processing: side compound removal

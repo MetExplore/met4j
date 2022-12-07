@@ -135,7 +135,7 @@ public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends Bi
 	@Override
 	public void setWeight(G g) {
 		if(missingAsNaN){
-			DefaultWeightPolicy wp = new DefaultWeightPolicy(Double.NaN);
+			UnweightedPolicy wp = new UnweightedPolicy(Double.NaN);
 			wp.setWeight(g);
 		}
 

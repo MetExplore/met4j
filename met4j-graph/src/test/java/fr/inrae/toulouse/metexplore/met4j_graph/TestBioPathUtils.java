@@ -41,14 +41,26 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.ShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPathUtils;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
+import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.UnweightedPolicy;
+
+import org.apache.bcel.generic.BREAKPOINT;
 import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
@@ -75,9 +87,9 @@ public class TestBioPathUtils {
 	/** The paths. */
 	public static Collection<BioPath<BioMetabolite, ReactionEdge>> testSet;
 	
-	
-	@BeforeClass
-	public static void init(){
+	//init a new graph for each test, because some tests need to modify its properties
+	@Before
+	public void init(){
 		
 		g = new CompoundGraph();
 		a = new BioMetabolite("a"); g.addVertex(a);
@@ -90,13 +102,13 @@ public class TestBioPathUtils {
 		
 		ab = new ReactionEdge(a,b,new BioReaction("ab"));g.addEdge(a, b, ab);g.setEdgeWeight(ab, 0);
 		bc = new ReactionEdge(b,c,new BioReaction("bc"));g.addEdge(b, c, bc);g.setEdgeWeight(bc, 100);
+		// bc = new ReactionEdge(b,c,new BioReaction("bc"));g.addEdge(b, c, bc);g.setEdgeWeight(bc, 0);
 		ad = new ReactionEdge(a,d,new BioReaction("ad"));g.addEdge(a, d, ad);g.setEdgeWeight(ad, 0);
 		de = new ReactionEdge(d,e,new BioReaction("de"));g.addEdge(d, e, de);g.setEdgeWeight(de, 0);
 		ef = new ReactionEdge(e,f,new BioReaction("ef"));g.addEdge(e, f, ef);g.setEdgeWeight(ef, 0);
 		fc = new ReactionEdge(f,c,new BioReaction("fc"));g.addEdge(f, c, fc);g.setEdgeWeight(fc, 1);
 		bh = new ReactionEdge(b,h,new BioReaction("bh"));g.addEdge(b, h, bh);g.setEdgeWeight(bh, 0);
 		hc = new ReactionEdge(h,c,new BioReaction("hc"));g.addEdge(h, c, hc);g.setEdgeWeight(hc, 10);
-		
 		List<ReactionEdge> abcList = new ArrayList<>();
 			abcList.add(ab);abcList.add(bc);
 		List<ReactionEdge> abhcList = new ArrayList<>();
@@ -184,6 +196,246 @@ public class TestBioPathUtils {
 		
 		assertEquals(expectedSet, filteredSet);
 	}
+
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
+
+	@Test
+	public void testGetDistanceMatrixFromPaths_undirected() {
+		//Switch to unweighted graph
+		UnweightedPolicy up = new UnweightedPolicy(1.0); 
+		up.setWeight(g);
+		Boolean undirected = true;
+		Set<BioMetabolite> nodes = new LinkedHashSet<>();
+		nodes.add(h);
+		nodes.add(f);
+		nodes.add(a);
+
+		ShortestPath matrixComputor = new ShortestPath<>(g, !undirected);
+		//Test that getDistanceMatrixFromPaths work well with a getAllShortest input
+		BioMatrix resMatrix = BioPathUtils.getDistanceMatrixFromPaths(matrixComputor.getAllShortestPaths());
+		//run tests
+		double expectedMatrixSum = 78;
+		double resultMatrixSum = 0;
+		assertEquals(g.vertexSet().size(),resMatrix.numRows());
+		assertEquals(g.vertexSet().size(),resMatrix.numCols());
+		for(int i=0; i<resMatrix.numRows();i++){
+			for(int j=0; j<resMatrix.numCols();j++){
+				if(i==j){
+					assertEquals(0,resMatrix.get(i,j),0);
+				}
+				if(resMatrix.get(i,j) != Double.POSITIVE_INFINITY){
+					resultMatrixSum = resultMatrixSum+resMatrix.get(i,j);
+				}
+				//randomly check some values
+				if((i==3) & (j==6)){
+					assertEquals(3,resMatrix.get(i,j),0);
+				}
+				if((i==1) & (j==3)){
+					assertEquals(2, resMatrix.get(i,j),0);
+				}
+				if((i==5) & (j==2)){
+					assertEquals(1,resMatrix.get(i,j),0);
+				}
+			}	
+		}
+		assertEquals(expectedMatrixSum,resultMatrixSum,0);
+		//Test that getDistanceMatrixFromPaths work well when given a list of nodes
+		resMatrix = BioPathUtils.getDistanceMatrixFromPaths(nodes,nodes,matrixComputor.getShortestPathsUnionList(nodes,nodes));
+		//run tests
+		expectedMatrixSum = 14;
+		resultMatrixSum = 0;
+		assertEquals(nodes.size(),resMatrix.numRows());
+		assertEquals(nodes.size(),resMatrix.numCols());
+		for(int i=0; i< resMatrix.numRows();i++){
+			for(int j=0; j< resMatrix.numCols();j++){
+				if(i==j){
+					assertEquals(0,resMatrix.get(i,j),0);
+				}
+				resultMatrixSum = resultMatrixSum+resMatrix.get(i,j);
+				//randomly check some values
+				if((i==0) & (j==1)){
+					assertEquals(2,resMatrix.get(i,j),0);
+				}
+				if((i==2) & (j==1)){
+					assertEquals(3, resMatrix.get(i,j),0);
+				}
+			}
+		}
+		assertEquals(expectedMatrixSum,resultMatrixSum,0);
+		//Test that getDistanceMatrixFromPaths work well when given a list of starting and ending nodes
+		Set<BioMetabolite> starts = new LinkedHashSet<>();
+		starts.add(a);
+		starts.add(b);
+		starts.add(f);
+		Set<BioMetabolite> ends = new LinkedHashSet<>();
+		ends.add(a);
+		ends.add(d);
+		resMatrix = BioPathUtils.getDistanceMatrixFromPaths(starts,ends,matrixComputor.getShortestPathsUnionList(starts,ends));
+		//run tests
+		expectedMatrixSum = 9;
+		resultMatrixSum = 0;
+		assertEquals(starts.size(),resMatrix.numRows());
+		assertEquals(ends.size(),resMatrix.numCols());
+		for(int i=0; i< resMatrix.numRows();i++){
+			for(int j=0; j< resMatrix.numCols();j++){
+				resultMatrixSum = resultMatrixSum+resMatrix.get(i,j);
+				//assert matrix equality
+				if((i==0) & (j==0)){
+					assertEquals(0,resMatrix.get(i,j),0);
+				}
+				if((i==0) & (j==1)){
+					assertEquals(1,resMatrix.get(i,j),0);
+				}
+				if((i==1) & (j==0)){
+					assertEquals(1,resMatrix.get(i,j),0);
+				}
+				if((i==1) & (j==1)){
+					assertEquals(2,resMatrix.get(i,j),0);
+				}
+				if((i==2) & (j==0)){
+					assertEquals(3, resMatrix.get(i,j),0);
+				}
+				if((i==2) & (j==1)){
+					assertEquals(2, resMatrix.get(i,j),0);
+				}
+			}	
+		}
+		assertEquals(expectedMatrixSum,resultMatrixSum,0);
+	}
+
+
+	@Test
+	public void testGetDistanceMatrixFromPaths_exception() {
+		//Add an unknown metabolite
+		BioMetabolite u = new BioMetabolite("u");
+		Boolean undirected = true;
+		Set<BioMetabolite> nodes = new LinkedHashSet<>();
+		nodes.add(h);
+		nodes.add(f);
+		nodes.add(u);
+		nodes.add(a);
+
+		ShortestPath matrixComputor = new ShortestPath<>(g, !undirected);
+		// In this case Exception raised by getShortest
+		exception.expect(IllegalArgumentException.class);
+		BioMatrix resMatrix = BioPathUtils.getDistanceMatrixFromPaths(nodes,nodes,matrixComputor.getShortestPathsUnionList(nodes,nodes));
+	}
+	@Test
+	public void testGetDistanceMatrixFromPaths_directed() {
+		//Switch to unweighted graph
+		UnweightedPolicy up = new UnweightedPolicy(1.0); 
+		up.setWeight(g); 
+		Boolean undirected = false;
+		Set<BioMetabolite> nodes = new LinkedHashSet<>();
+		nodes.add(h);
+		nodes.add(f);
+		nodes.add(a);
+		//compute sps
+		ShortestPath matrixComputor = new ShortestPath<>(g, !undirected);
+		//Test that getDistanceMatrixFromPaths work well with a getAllShortest input
+		BioMatrix resMatrix = BioPathUtils.getDistanceMatrixFromPaths(matrixComputor.getAllShortestPaths());
+		//run tests
+		double expectedMatrixSum = 24;
+		double resultMatrixSum = 0;
+		assertEquals(g.vertexSet().size(),resMatrix.numRows());
+		assertEquals(g.vertexSet().size(),resMatrix.numCols());
+		for(int i=0; i< resMatrix.numRows();i++){
+			for(int j=0; j< resMatrix.numCols();j++){
+				if(i==j){
+					assertEquals(0,resMatrix.get(i,j),0);
+				}
+				if(resMatrix.get(i,j) != Double.POSITIVE_INFINITY){
+					resultMatrixSum = resultMatrixSum+resMatrix.get(i,j);
+				}
+				//randomly check some values
+				if((i==3) & (j==6)){
+					assertEquals(Double.POSITIVE_INFINITY,resMatrix.get(i,j),0);
+				}
+				if((i==1) & (j==3)){
+					assertEquals(Double.POSITIVE_INFINITY, resMatrix.get(i,j),0);
+				}
+				if((i==5) & (j==2)){
+					assertEquals(1,resMatrix.get(i,j),0);
+				}
+			}	
+		}
+		assertEquals(expectedMatrixSum,resultMatrixSum,0);
+
+		//Test that getDistanceMatrixFromPaths work well when given a list of nodes
+		resMatrix = BioPathUtils.getDistanceMatrixFromPaths(nodes,nodes,matrixComputor.getShortestPathsUnionList(nodes,nodes));
+		//run tests
+		expectedMatrixSum = 5;
+		resultMatrixSum = 0;
+		assertEquals(nodes.size(),resMatrix.numRows());
+		assertEquals(nodes.size(),resMatrix.numCols());
+		for(int i=0; i< resMatrix.numRows();i++){
+			for(int j=0; j< resMatrix.numCols();j++){
+				if(i==j){
+					assertEquals(0,resMatrix.get(i,j),0);
+				}
+				if(resMatrix.get(i,j) != Double.POSITIVE_INFINITY){
+					resultMatrixSum = resultMatrixSum+resMatrix.get(i,j);
+				}
+				//randomly check some values
+				if((i==0) & (j==1)){
+					assertEquals(Double.POSITIVE_INFINITY,resMatrix.get(i,j),0);
+				}
+				if((i==2) & (j==0)){
+					assertEquals(2, resMatrix.get(i,j),0);
+				}
+				if((i==2) & (j==1)){
+					assertEquals(3, resMatrix.get(i,j),0);
+				}
+			}	
+		}
+		assertEquals(expectedMatrixSum,resultMatrixSum,0);
+		//Test that getDistanceMatrixFromPaths work well when given a list of starting and ending nodes
+		Set<BioMetabolite> starts = new LinkedHashSet<>();
+		starts.add(a);
+		starts.add(b);
+		starts.add(f);
+		Set<BioMetabolite> ends = new LinkedHashSet<>();
+		ends.add(a);
+		ends.add(d);
+		resMatrix = BioPathUtils.getDistanceMatrixFromPaths(starts,ends,matrixComputor.getShortestPathsUnionList(starts,ends));
+		//run tests
+		expectedMatrixSum = 1;
+		resultMatrixSum = 0;
+		assertEquals(starts.size(),resMatrix.numRows());
+		assertEquals(ends.size(),resMatrix.numCols());
+		for(int i=0; i< resMatrix.numRows();i++){
+			for(int j=0; j< resMatrix.numCols();j++){
+				if(resMatrix.get(i,j) != Double.POSITIVE_INFINITY){
+					resultMatrixSum = resultMatrixSum+resMatrix.get(i,j);
+				}
+				if((i==2) & (j==1)){
+					assertEquals(Double.POSITIVE_INFINITY, resMatrix.get(i,j),0);
+				}
+				//assert matrix equality
+				if((i==0) & (j==0)){
+					assertEquals(0,resMatrix.get(i,j),0);
+				}
+				if((i==0) & (j==1)){
+					assertEquals(1,resMatrix.get(i,j),0);
+				}
+				if((i==1) & (j==0)){
+					assertEquals(Double.POSITIVE_INFINITY,resMatrix.get(i,j),0);
+				}
+				if((i==1) & (j==1)){
+					assertEquals(Double.POSITIVE_INFINITY,resMatrix.get(i,j),0);
+				}
+				if((i==2) & (j==0)){
+					assertEquals(Double.POSITIVE_INFINITY, resMatrix.get(i,j),0);
+				}
+				if((i==2) & (j==1)){
+					assertEquals(Double.POSITIVE_INFINITY, resMatrix.get(i,j),0);
+				}
+			}	
+		}
+		assertEquals(expectedMatrixSum,resultMatrixSum,0);
+	}
+
 	
 	@Test
 	public void lengthFilter() {

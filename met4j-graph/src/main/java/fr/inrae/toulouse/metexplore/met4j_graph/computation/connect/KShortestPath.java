@@ -124,7 +124,7 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 		List<BioPath<V,E>> kPaths = new ArrayList<>();
 		ShortestPath<V, E, G> sp = new ShortestPath<>(g,!asUndirected);
 		BioPath<V,E> shortest = sp.getShortest(start, end);
-		if(shortest==null) return new ArrayList<>();
+		if(shortest==null || shortest.isEmpty()) return new ArrayList<>();
 		kPaths.add(shortest);
 //		List<ReactionEdge> sp = ShortestPath.getShortest(graph, start, end);
 //		if(sp==null || sp.isEmpty()) return new ArrayList<ReactionEdge>();
@@ -172,7 +172,7 @@ public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends Bio
 //				DijkstraShortestPath<V, ReactionEdge> dj2 = new DijkstraShortestPath<V, ReactionEdge>(graph, spur, end);
 //				if(dj2.getPath()!=null){
 				BioPath<V,E> spurPath = sp.getShortest(spur, end);
-				if(spurPath!=null){
+				if(spurPath!=null && !spurPath.isEmpty()){
 //					double weight2 = 0.0;
 //					for(ReactionEdge e : sp2){
 //						weight2+=graph.getEdgeWeight(e);

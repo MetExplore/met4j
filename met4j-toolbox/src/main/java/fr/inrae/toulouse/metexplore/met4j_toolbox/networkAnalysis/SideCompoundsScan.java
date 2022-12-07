@@ -3,7 +3,7 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis;
 import fr.inrae.toulouse.metexplore.met4j_chemUtils.FormulaParser;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DefaultWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.UnweightedPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.VertexContraction;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -104,7 +104,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
         network = null;
 
         //Graph processing: set weights
-        WeightingPolicy wp = new DefaultWeightPolicy();
+        WeightingPolicy wp = new UnweightedPolicy();
         wp.setWeight(graph);
 
 

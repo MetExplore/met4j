@@ -35,15 +35,10 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
@@ -255,6 +250,66 @@ public class BioPathUtils {
 			length.put(path, l);
 		}
 		return length;
+	}
+
+	/**
+	 * Create a square distance matrix, where rows and columns correspond to the ends of paths, and elements correspond
+	 * to path length or weight
+	 * @param shortestsPaths the set of paths
+	 * @return a square distance matrix
+	 */
+	public static <V extends BioEntity, E extends Edge<V>> BioMatrix getDistanceMatrixFromPaths(List<BioPath<V,E>> shortestsPaths){
+		//get labels in a defined order
+		HashSet<V> ends = new LinkedHashSet<V>();
+		for(int i = 0; i<shortestsPaths.size(); i++){
+			ends.add(shortestsPaths.get(i).getStartVertex());
+			ends.add(shortestsPaths.get(i).getEndVertex());
+		}
+		return(getDistanceMatrixFromPaths(ends,ends,shortestsPaths));
+	}
+
+	/**
+	 * Create a distance matrix, where each cell corresponds to paths length or weight
+	 * @param rows set of starting nodes corresponding to matrix rows
+	 * @param cols set of ending nodes corresponding to matrix columns
+	 * @param shortestsPaths the set of paths
+	 * @throws IllegalArgumentException if paths contains source not listed as row or ends not listed as column
+	 * @return a square distance matrix
+	 */
+	public static <V extends BioEntity, E extends Edge<V>> BioMatrix getDistanceMatrixFromPaths(Set<V> rows, Set<V>  cols, List<BioPath<V,E>> shortestsPaths) throws IllegalArgumentException{
+
+		//instanciate distanceMatrix
+		BioMatrix distMatrix = new EjmlMatrix(rows.size(),cols.size());
+		int i=0;
+		for(V r1 : rows){
+			distMatrix.setRowLabel(i,r1.getId());
+			int j=0;
+			for(V r2 : cols){
+				if(i==0) distMatrix.setColumnLabel(j,r2.getId());;
+				if(r1!=r2){
+					distMatrix.set(i, j, Double.POSITIVE_INFINITY);
+				}else{
+					distMatrix.set(i, j,0.0);
+				}
+				j++;
+			}
+			i++;
+		}
+		//get the label-index matching
+		HashMap<String,Integer> rowLabelMap = distMatrix.getRowLabelMap();
+		HashMap<String,Integer> columnLabelMap = distMatrix.getColumnLabelMap();
+		//fill the biomatrix
+		for(BioPath<V,E> bp:shortestsPaths) {
+			if(bp!=null && !bp.isEmpty()){
+				Double dist = bp.getWeight();
+				Integer i2 = rowLabelMap.get(bp.getStartVertex().getId());
+				Integer j2 = columnLabelMap.get(bp.getEndVertex().getId());
+				if(i2==null || j2==null) throw new IllegalArgumentException("path starting/ending node not found in row/columns list");
+				distMatrix.set(i2,j2, dist);
+			}
+		}
+
+		return distMatrix;
 	}
 	
 	/**

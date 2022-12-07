@@ -333,13 +333,13 @@ public class TestShortestPaths {
 		sources.add(c);
 		targets.add(a);
 		targets.add(d);
-		HashMap<BioMetabolite, Double> min = sp.getMinSpDistance(sources, targets, false);
+		HashMap<BioMetabolite, Double> min = sp.getMinSpDistance(sources, targets);
 		
 		assertNotNull(min);
 		assertTrue(min.containsKey(c));
 		assertEquals(2.0, min.get(c), Double.MIN_VALUE);
 		
-		HashMap<BioMetabolite, Double> min2 = sp.getMinSpDistance(sources, targets, true);
+		HashMap<BioMetabolite, Double> min2 = sp.getMinSpDistance(sources, targets);
 		
 		assertNotNull(min2);
 		assertTrue(min2.containsKey(c));
@@ -357,13 +357,13 @@ public class TestShortestPaths {
 		sources.add(c);
 		targets.add(a);
 		targets.add(d);
-		HashMap<BioMetabolite, Double> avg = sp.getAverageSpDistance(sources, targets, false);
+		HashMap<BioMetabolite, Double> avg = sp.getAverageSpDistance(sources, targets);
 		
 		assertNotNull(avg);
 		assertTrue(avg.containsKey(c));
 		assertEquals(2.5, avg.get(c), Double.MIN_VALUE);
 		
-		HashMap<BioMetabolite, Double> avg2 = sp.getAverageSpDistance(sources, targets, true);
+		HashMap<BioMetabolite, Double> avg2 = sp.getAverageSpDistance(sources, targets);
 		
 		assertNotNull(avg2);
 		assertTrue(avg2.containsKey(c));

@@ -50,7 +50,7 @@ public class FormulaParser {
      * @return false if the formula contains a radical or more than one carbon atom.
      */
     public boolean isExpectedInorganic(){
-        if(inorgaRegex==null) inorgaRegex = Pattern.compile(".*(R\\-?|\\*|C\\d).*");
+        if(inorgaRegex==null) inorgaRegex = Pattern.compile(".*(R\\-?|\\*|C[2-9]|C\\d\\d).*");
         return (!inorgaRegex.matcher(formula).matches());
     }
 

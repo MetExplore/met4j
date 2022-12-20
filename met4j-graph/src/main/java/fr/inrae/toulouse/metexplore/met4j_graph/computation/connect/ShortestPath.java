@@ -423,7 +423,11 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 	 */
 	public BioMatrix getShortestPathDistanceMatrix(Set<V> sources, Set<V> targets){
 		List<BioPath<V, E>> paths = this.getShortestPathsUnionList(sources, targets);
-		return BioPathUtils.getDistanceMatrixFromPaths(sources,targets,paths);
+		TreeSet<V> orderedSource = new TreeSet<>(Comparator.comparing(V::getId));
+		orderedSource.addAll(sources);
+		TreeSet<V> orderedTarget = new TreeSet<>(Comparator.comparing(V::getId));
+		orderedTarget.addAll(targets);
+		return BioPathUtils.getDistanceMatrixFromPaths(orderedSource,orderedTarget,paths);
 	}
 
 }

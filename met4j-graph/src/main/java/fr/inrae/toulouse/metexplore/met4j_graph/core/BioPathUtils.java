@@ -260,7 +260,7 @@ public class BioPathUtils {
 	 */
 	public static <V extends BioEntity, E extends Edge<V>> BioMatrix getDistanceMatrixFromPaths(List<BioPath<V,E>> shortestsPaths){
 		//get labels in a defined order
-		HashSet<V> ends = new LinkedHashSet<V>();
+		TreeSet<V> ends = new TreeSet<>(Comparator.comparing(V::getId));
 		for(int i = 0; i<shortestsPaths.size(); i++){
 			ends.add(shortestsPaths.get(i).getStartVertex());
 			ends.add(shortestsPaths.get(i).getEndVertex());

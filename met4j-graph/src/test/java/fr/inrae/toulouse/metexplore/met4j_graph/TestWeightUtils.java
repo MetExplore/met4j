@@ -106,6 +106,31 @@ public class TestWeightUtils {
 			g.setEdgeWeight(e, 0.0);
 		}
 	}
+
+	@Test
+	public void testProcess(){
+		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
+		abWeight=1;g.setEdgeWeight(ab, abWeight);
+		bcWeight=2;g.setEdgeWeight(bc, bcWeight);
+		adWeight=3;g.setEdgeWeight(ad, adWeight);
+		efWeight=4;g.setEdgeWeight(ef, efWeight);
+		bxWeight=5;g.setEdgeWeight(bx, bxWeight);
+		ebWeight=6;g.setEdgeWeight(eb, ebWeight);
+		deWeight=7;g.setEdgeWeight(de, deWeight);
+		fcWeight=8;g.setEdgeWeight(fc, fcWeight);
+		ycWeight=9;g.setEdgeWeight(yc, ycWeight);
+		WeightUtils.process(g, w -> StrictMath.pow(w, 2));
+
+		assertEquals("wrong weight after pow", 1, g.getEdgeWeight(ab),Double.MIN_VALUE);
+		assertEquals("wrong weight after pow", 9, g.getEdgeWeight(ad),Double.MIN_VALUE);
+		assertEquals("wrong weight after pow", 4, g.getEdgeWeight(bc),Double.MIN_VALUE);
+		assertEquals("wrong weight after pow", 25, g.getEdgeWeight(bx),Double.MIN_VALUE);
+		assertEquals("wrong weight after pow", 49, g.getEdgeWeight(de),Double.MIN_VALUE);
+		assertEquals("wrong weight after pow", 36, g.getEdgeWeight(eb),Double.MIN_VALUE);
+		assertEquals("wrong weight after pow", 16, g.getEdgeWeight(ef),Double.MIN_VALUE);
+		assertEquals("wrong weight after pow", 64, g.getEdgeWeight(fc),Double.MIN_VALUE);
+		assertEquals("wrong weight after pow", 81, g.getEdgeWeight(yc),Double.MIN_VALUE);
+	}
 	
 	/**
 	 * Test the weights inversion

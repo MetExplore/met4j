@@ -175,15 +175,42 @@ public class TestWeightingPolicy {
 		adWeight=efWeight=4;
 		bxWeight=1;
 		wp.setWeight(g);
-		assertEquals("wrong weight with probability weighting policy", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
-		assertEquals("wrong weight with probability weighting policy", adWeight, g.getEdgeWeight(ad),Double.MIN_VALUE);
-		assertEquals("wrong weight with probability weighting policy", bcWeight, g.getEdgeWeight(bc),Double.MIN_VALUE);
-		assertEquals("wrong weight with probability weighting policy", bxWeight, g.getEdgeWeight(bx),Double.MIN_VALUE);
-		assertEquals("wrong weight with probability weighting policy", deWeight, g.getEdgeWeight(de),Double.MIN_VALUE);
-		assertEquals("wrong weight with probability weighting policy", ebWeight, g.getEdgeWeight(eb),Double.MIN_VALUE);
-		assertEquals("wrong weight with probability weighting policy", efWeight, g.getEdgeWeight(ef),Double.MIN_VALUE);
-		assertEquals("wrong weight with probability weighting policy", fcWeight, g.getEdgeWeight(fc),Double.MIN_VALUE);
-		assertEquals("wrong weight with probability weighting policy", ycWeight, g.getEdgeWeight(yc),Double.MIN_VALUE);
+		assertEquals("wrong weight with degree weighting policy", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
+		assertEquals("wrong weight with degree weighting policy", adWeight, g.getEdgeWeight(ad),Double.MIN_VALUE);
+		assertEquals("wrong weight with degree weighting policy", bcWeight, g.getEdgeWeight(bc),Double.MIN_VALUE);
+		assertEquals("wrong weight with degree weighting policy", bxWeight, g.getEdgeWeight(bx),Double.MIN_VALUE);
+		assertEquals("wrong weight with degree weighting policy", deWeight, g.getEdgeWeight(de),Double.MIN_VALUE);
+		assertEquals("wrong weight with degree weighting policy", ebWeight, g.getEdgeWeight(eb),Double.MIN_VALUE);
+		assertEquals("wrong weight with degree weighting policy", efWeight, g.getEdgeWeight(ef),Double.MIN_VALUE);
+		assertEquals("wrong weight with degree weighting policy", fcWeight, g.getEdgeWeight(fc),Double.MIN_VALUE);
+		assertEquals("wrong weight with degree weighting policy", ycWeight, g.getEdgeWeight(yc),Double.MIN_VALUE);
+	}
+
+	@Test
+	public void testCustomWeightPolicy(){
+		WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> wp = new CustomWeightPolicy<BioMetabolite,ReactionEdge,CompoundGraph>(
+				e -> {
+					Double w = Double.valueOf(g.inDegreeOf(e.getV2()));
+					w += Double.valueOf(g.outDegreeOf(e.getV2()));
+					w = StrictMath.pow(w,2);
+					return w;
+				});
+		double abWeight,bcWeight,adWeight,efWeight,bxWeight,ebWeight,deWeight,fcWeight,ycWeight;
+		abWeight=ebWeight=16;
+		bcWeight=fcWeight=ycWeight=deWeight=9;
+		adWeight=efWeight=4;
+		bxWeight=1;
+		wp.setWeight(g);
+		assertEquals("wrong weight with custom weighting policy", abWeight, g.getEdgeWeight(ab),Double.MIN_VALUE);
+		assertEquals("wrong weight with custom weighting policy", adWeight, g.getEdgeWeight(ad),Double.MIN_VALUE);
+		assertEquals("wrong weight with custom weighting policy", bcWeight, g.getEdgeWeight(bc),Double.MIN_VALUE);
+		assertEquals("wrong weight with custom weighting policy", bxWeight, g.getEdgeWeight(bx),Double.MIN_VALUE);
+		assertEquals("wrong weight with custom weighting policy", deWeight, g.getEdgeWeight(de),Double.MIN_VALUE);
+		assertEquals("wrong weight with custom weighting policy", ebWeight, g.getEdgeWeight(eb),Double.MIN_VALUE);
+		assertEquals("wrong weight with custom weighting policy", efWeight, g.getEdgeWeight(ef),Double.MIN_VALUE);
+		assertEquals("wrong weight with custom weighting policy", fcWeight, g.getEdgeWeight(fc),Double.MIN_VALUE);
+		assertEquals("wrong weight with custom weighting policy", ycWeight, g.getEdgeWeight(yc),Double.MIN_VALUE);
+
 	}
 	
 	/**

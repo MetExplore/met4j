@@ -6,9 +6,11 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 // import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.FloydWarshall;
 // import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.ShortestPath;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.CustomWeightPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.UnweightedPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DegreeWeightPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightsFromFile;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -117,8 +119,23 @@ public class DistanceMatrix extends AbstractMet4jApplication {
         if (weightFile != null) {
             wp = new WeightsFromFile(weightFile, true);
         } else if (degree) {
-            int pow = 2;
-            wp = new DegreeWeightPolicy(pow);
+            if(!undirected){
+                int pow = 2;
+                wp = new DegreeWeightPolicy(pow);
+            }else{
+                //since degree weighting policy is not symmetric, for undirected case we create reversed edges, apply
+                //a corrected degree computation for each edge, and treat the graph as normal
+                graph.asUndirected();
+                undirected=false;
+                wp = new CustomWeightPolicy<BioMetabolite,ReactionEdge,CompoundGraph>(
+                        e -> {
+                            Double w = Double.valueOf(graph.inDegreeOf(e.getV2()));
+                            w += Double.valueOf(graph.outDegreeOf(e.getV2()));
+                            w = w/2;    //adjust for undirected doubled edges
+                            w = StrictMath.pow(w,2);
+                            return w;
+                        });
+            }
         }
         wp.setWeight(graph);
 

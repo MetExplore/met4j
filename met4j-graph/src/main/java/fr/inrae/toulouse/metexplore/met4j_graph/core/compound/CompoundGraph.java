@@ -220,23 +220,6 @@ public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 		return null;
 	}
 
-	@Override
-	/**
-	 * Handle graph as undirected by creating reverse edges for each existing edge. Do not duplicated edges for reversible reactions
-	 */
-	public void asUndirected(){
-		for(ReactionEdge e : new HashSet<>(this.edgeSet())){
-			if(e.getReaction()==null){
-				this.addEdge(reverseEdge(e));
-			}else if(!e.getReaction().isReversible()){
-				this.addEdge(reverseEdge(e));
-			}else if(this.getEdge(e.getV2(),e.getV1(),e.getReaction())==null){
-				this.addEdge(reverseEdge(e));
-			}
-		}
-	}
-	
-
 	/** {@inheritDoc} */
 	@Override
 	public ReactionEdge copyEdge(ReactionEdge edge) {

@@ -4,8 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Next version
 
+## 1.2.1
+
+### Features
+[met4j-toolbox] Add App to perform chemical names fuzzy mapping between datasets and models
+[met4j-mapping] Add classes for edit-distance based fuzzy search
+[met4j-graph] Add utilities to get distance matrix from paths
+[met4j-graph] More flexible weighting policy definition using lambdas
+
+### Fix
+[met4j-graph] Improve Shortest Paths union computing efficiency
+[met4j-graph] Fix use of weighted graphs as undirected. Reversed edges now bear same weight as their origin
 [met4j-io] Fix SetIdsFromFile : do not throw an exception when a new id is found twice
 
 
@@ -44,6 +54,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [met4j-toolbox] Better error handling
 
 [met4j-toolbox][SbmlSetPathways] Format pathway id to avoid redundancies
+
+[met4j-graph] DefaultWeightPolicy class renamed UnweightedPolicy. Use weights option removed from shortest paths computation,
+now handled directly from graph to avoid conflict
 
 ## 1.0
 

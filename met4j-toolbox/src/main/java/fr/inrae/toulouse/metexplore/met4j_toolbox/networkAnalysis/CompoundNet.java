@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.function.Function;
 
 public class CompoundNet extends AbstractMet4jApplication {
 
@@ -128,22 +127,34 @@ public class CompoundNet extends AbstractMet4jApplication {
         }
 
         //Graph processing: set weights [optional]
-        WeightingPolicy<BioMetabolite, ReactionEdge, CompoundGraph> wp = new DefaultWeightPolicy<>();
+        WeightingPolicy<BioMetabolite, ReactionEdge, CompoundGraph> wp = new UnweightedPolicy<>();
         if (weightFile != null) {
             System.err.println("Setting edge weights...");
             wp = new WeightsFromFile(weightFile);
-        } else if (degree) {
+        } else if (degree && !undirected) {
             System.err.println("Setting edge weights...");
             int pow = 2;
             wp = new DegreeWeightPolicy(pow);
         }
         wp.setWeight(graph);
+        System.out.println(" Done.");
 
         //invert graph as undirected (copy edge weight to reversed edge)
        if(undirected){
            System.out.print("Create Undirected...");
            graph.asUndirected();
            System.out.println(" Done.");
+           if(degree){
+               //since degree weighting policy is not symmetric, for undirected case we create reversed edges, apply
+               //a corrected degree computation for each edge, and treat the graph as normal
+               System.err.println("Setting edge weights (target degree)...");
+               int pow = 2;
+               wp = new DegreeWeightPolicy(1);
+               wp.setWeight(graph);
+               //adjust degree to ignore edges added for undirected case support
+               WeightUtils.process(graph, x -> StrictMath.pow((x/2),pow));
+               System.out.println(" Done.");
+           }
        }
 
         //merge compartment

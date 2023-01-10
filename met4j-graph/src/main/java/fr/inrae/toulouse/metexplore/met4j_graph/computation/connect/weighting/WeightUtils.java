@@ -40,6 +40,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.DoubleFunction;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
@@ -56,6 +57,20 @@ public class WeightUtils {
 	 * Instantiates a new weight utils.
 	 */
 	public WeightUtils() {
+	}
+
+	/**
+	 * Apply a function on every edge weight
+	 * @param g the graph
+	 * @param lambda a function that takes an edge weight (Double) and produce a Double
+	 * @param <E> Edge type
+	 * @param <G> Graph type
+	 */
+	public static <E extends Edge<?>, G extends BioGraph<?,E>> void process(G g, DoubleFunction<Double> lambda){
+		for(E e : g.edgeSet()){
+			double w = g.getEdgeWeight(e);
+			g.setEdgeWeight(e, lambda.apply(w));
+		}
 	}
 	
 	/**

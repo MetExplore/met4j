@@ -41,61 +41,34 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
- * The Class ProbabilityWeightPolicy use to set probability as edge weight (resulting in stochastic network)
+ * The default Weighting policy (each weight is set to 1.0).
  *
  * @author clement
  * @version $Id: $Id
  */
-public class ProbabilityWeightPolicy<V extends BioEntity, E extends Edge<V>,G extends BioGraph<V,E>>
+public class UnweightedPolicy<V extends BioEntity, E extends Edge<V>,G extends BioGraph<V,E>>
 	extends WeightingPolicy<V,E,G> {
-	
-	/** The weighting policy. */
-    final WeightingPolicy<V,E,G> wp;
-		
+
+	private Double defValue = 1.0;
+
 	/**
-	 * Instantiates a new probability weight policy.
+	 * Instantiates a new default weight policy.
 	 */
-	public ProbabilityWeightPolicy() {
-        this.wp = new UnweightedPolicy<>();
+	public UnweightedPolicy() {}
+
+	public UnweightedPolicy(Double defaultValue) {
+		this.defValue=defaultValue;
 	}
-	
-	/**
-	 * Instantiates a new probability weight policy.
-	 *
-	 * @param wp the initial weighting policy
-	 */
-	public ProbabilityWeightPolicy(WeightingPolicy<V,E,G> wp) {
-		this.wp=wp;
-	}
-	
+
 	/* (non-Javadoc)
-	 * @see parsebionet.computation.graphe.WeightingPolicy#setWeight(parsebionet.computation.graphe.G)
+	 * @see parsebionet.applications.graphe.WeightingPolicy#setWeight(parsebionet.applications.graphe.BioGraph)
 	 */
 	/** {@inheritDoc} */
 	@Override
 	public void setWeight(G g) {
-        wp.setWeight(g);
-        computeProba(g);
-
-	}
-	
-	/**
-	 * Computes the probability by normalizing edge weight by the sum of all edges outgoing from the same source.
-	 *
-	 * @param g the graph
-	 */
-	public void computeProba(G g){
-		
-		for(V v : g.vertexSet()){
-			double sum =0.0;
-			for(E e : g.outgoingEdgesOf(v)){
-				sum+=g.getEdgeWeight(e);
-			}
-			if(sum!=0.0){
-				for(E e : g.outgoingEdgesOf(v)){
-					g.setEdgeWeight(e, g.getEdgeWeight(e)/sum);
-				}
-			}
+		for(E e:g.edgeSet()){
+			g.setEdgeWeight(e, defValue);
 		}
 	}
+	
 }

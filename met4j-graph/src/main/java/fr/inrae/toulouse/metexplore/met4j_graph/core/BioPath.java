@@ -217,6 +217,25 @@ public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,
 	/** {@inheritDoc} */
 	@Override
 	public Iterator<E> iterator() {
+
+		if(this.getEdgeList()==null || this.getEdgeList().isEmpty()){
+			return new Iterator<E>() {
+				@Override
+				public boolean hasNext() {
+					return false;
+				}
+
+				@Override
+				public E next() {
+					return null;
+				}
+
+				@Override
+				public void remove() {
+					throw new UnsupportedOperationException();
+				}
+			};
+		}
 		Iterator<E> it = new Iterator<>() {
 
 			private final ArrayList<E> edgeList = new ArrayList<>(getEdgeList());

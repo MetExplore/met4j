@@ -7,7 +7,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.KShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.ShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.SteinerTreeApprox;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DefaultWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.UnweightedPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightsFromFile;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
@@ -132,7 +132,7 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
         ReactionGraph graph = builder.getReactionGraph(sideCpds);
 
         //Graph processing: set weights [optional]
-        WeightingPolicy<BioReaction, CompoundEdge, ReactionGraph> wp = new DefaultWeightPolicy<>();
+        WeightingPolicy<BioReaction, CompoundEdge, ReactionGraph> wp = new UnweightedPolicy<>();
         if (weightFile != null) {
             wp = new WeightsFromFile(weightFile, true);
         }

@@ -35,11 +35,12 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
+@Deprecated
 /**
  * The default Weighting policy (each weight is set to 1.0).
  *

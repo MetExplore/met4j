@@ -17,6 +17,10 @@ public class FormulaParserTest {
     public String f8 = "f02mu14$$$";
     public String f9 = "Ca(N O3)2";
     public String f10 = " ";
+    public String f11 = "CO2";
+    public String f12 = "C1O2";
+    public String f13 = "C15H21N5O14P2";
+    public String f14 = "C2H7N1O2S1";
 
     @Test
     public void testFormulaParser(){
@@ -48,6 +52,10 @@ public class FormulaParserTest {
         Assert.assertFalse((new FormulaParser(f4)).hasUndefinedPart());
         Assert.assertFalse((new FormulaParser(f5)).hasUndefinedPart());
         Assert.assertFalse((new FormulaParser(f6)).hasUndefinedPart());
+        Assert.assertFalse((new FormulaParser(f11)).hasUndefinedPart());
+        Assert.assertFalse((new FormulaParser(f12)).hasUndefinedPart());
+        Assert.assertFalse((new FormulaParser(f13)).hasUndefinedPart());
+        Assert.assertFalse((new FormulaParser(f14)).hasUndefinedPart());
     }
 
     @Test
@@ -58,6 +66,10 @@ public class FormulaParserTest {
         Assert.assertTrue((new FormulaParser(f4)).hasValidAtomSymbols());
         Assert.assertTrue((new FormulaParser(f5)).hasValidAtomSymbols());
         Assert.assertFalse((new FormulaParser(f6)).hasValidAtomSymbols());
+        Assert.assertTrue((new FormulaParser(f11)).hasValidAtomSymbols());
+        Assert.assertTrue((new FormulaParser(f12)).hasValidAtomSymbols());
+        Assert.assertTrue((new FormulaParser(f13)).hasValidAtomSymbols());
+        Assert.assertTrue((new FormulaParser(f14)).hasValidAtomSymbols());
     }
 
     @Test
@@ -68,6 +80,10 @@ public class FormulaParserTest {
         Assert.assertFalse((new FormulaParser(f4)).isExpectedInorganic());
         Assert.assertTrue((new FormulaParser(f5)).isExpectedInorganic());
         Assert.assertTrue((new FormulaParser(f6)).isExpectedInorganic());
+        Assert.assertTrue((new FormulaParser(f11)).isExpectedInorganic());
+        Assert.assertTrue((new FormulaParser(f12)).isExpectedInorganic());
+        Assert.assertFalse((new FormulaParser(f13)).isExpectedInorganic());
+        Assert.assertFalse((new FormulaParser(f14)).isExpectedInorganic());
     }
 
 }

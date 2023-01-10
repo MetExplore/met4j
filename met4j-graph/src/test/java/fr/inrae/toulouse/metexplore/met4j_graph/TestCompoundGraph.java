@@ -138,6 +138,9 @@ public class TestCompoundGraph {
 		cg.addEdgesFromReaction(bn,r3);
 		Assert.assertEquals(3, cg.vertexSet().size());
 		Assert.assertEquals(4, cg.edgeSet().size());
+		cg.removeEdge(cg.getEdge(v2,v3,r3));
+		Assert.assertEquals(3, cg.vertexSet().size());
+		Assert.assertEquals(3, cg.edgeSet().size());
 	}
 	
 	@Test
@@ -171,13 +174,20 @@ public class TestCompoundGraph {
 		assertTrue(g2.containsEdge(e2));
 		assertTrue(g2.containsVertex(v1));
 		assertTrue(g2.containsVertex(v2));
+		BioMetabolite v4 = new BioMetabolite("v4");
+		g2.addVertex(v4);
+		g2.addEdge(v3,v4,new ReactionEdge(v3,v4,new BioReaction("r4")));
+		Assert.assertEquals(cg.vertexSet().size()+1, g2.vertexSet().size());
+		Assert.assertEquals(cg.edgeSet().size()+1, g2.edgeSet().size());
+
 	}
 	
 	@Test
 	public void testAddEdge(){
-		CompoundGraph g2 = (CompoundGraph) cg.clone();
-		g2.addEdge(v3, v1);
-		Assert.assertEquals(3, g2.edgeSet().size());
+		cg.addEdge(v3, v1);
+		Assert.assertEquals(3, cg.edgeSet().size());
+		cg.removeEdge(v3,v1);
+		Assert.assertEquals(2, cg.edgeSet().size());
 	}
 
 	@Test
@@ -202,4 +212,40 @@ public class TestCompoundGraph {
 		assertTrue(gr2.containsVertex(v2));
 		assertTrue(gr2.containsVertex(v3));
 	}
+
+	@Test
+	public void testAsUndirected() {
+		cg.setEdgeWeight(e1,42);
+		CompoundGraph g2 = new CompoundGraph(cg);
+		g2.asUndirected();
+		Assert.assertEquals(cg.vertexSet().size(), g2.vertexSet().size());
+		Assert.assertEquals(cg.edgeSet().size()*2, g2.edgeSet().size());
+		for(ReactionEdge e : cg.edgeSet()){
+			assertTrue(g2.containsEdge(e.getV1(),e.getV2()));
+			assertTrue(g2.containsEdge(e.getV2(),e.getV1()));
+		}
+		assertEquals(42, g2.getEdgeWeight(g2.getEdge(v1, v2, r1)),Double.MIN_VALUE);
+		assertEquals(42, g2.getEdgeWeight(g2.getEdge(v2, v1, r1)),Double.MIN_VALUE);
+		cg.setEdgeWeight(e1,1.0);
+	}
+
+	@Test
+	public void testAsUndirected2() {
+		CompoundGraph g2 = new CompoundGraph(cg);
+		ReactionEdge e3 = new ReactionEdge(v2, v1, r1);
+		ReactionEdge e4 = new ReactionEdge(v3, v2, new BioReaction("r4"));
+		g2.addEdge(e3);	g2.setEdgeWeight(e3,42);
+		g2.addEdge(e4);
+		g2.asUndirected();
+
+		Assert.assertEquals(cg.vertexSet().size(), g2.vertexSet().size());
+		Assert.assertEquals(cg.edgeSet().size()*2+2, g2.edgeSet().size());
+		for(ReactionEdge e : cg.edgeSet()){
+			assertTrue(g2.containsEdge(e.getV1(),e.getV2()));
+			assertTrue(g2.containsEdge(e.getV2(),e.getV1()));
+		}
+		assertEquals(1.0, g2.getEdgeWeight(g2.getEdge(v1, v2, r1)),Double.MIN_VALUE);
+		assertEquals(42.0, g2.getEdgeWeight(g2.getEdge(v2, v1, r1)),Double.MIN_VALUE);
+	}
+
 }

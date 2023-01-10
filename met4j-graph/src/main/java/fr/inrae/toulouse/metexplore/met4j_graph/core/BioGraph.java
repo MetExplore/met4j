@@ -525,13 +525,15 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	}
 
 	/**
-	 * For each edges in the graph, create a copy with reversed source and target.
-	 * This makes this directed graph effectively undirected, but with twice the number of edges
+	 * For each edges in the graph, create a copy with reversed source and target (if not existing already).
+	 * This makes this directed graph effectively undirected, but with twice the number of edges.
+	 * Reversed edges keep the same weight as their origin.
 	 */
 	public void asUndirected(){
-
-		for(E e : new HashSet<>(this.edgeSet())){
-			this.addEdge(reverseEdge(e));
+		for(E edge : new HashSet<>(this.edgeSet())){
+			E reversedEdge = this.reverseEdge(edge);
+			this.addEdge(reversedEdge);
+			this.setEdgeWeight(reversedEdge, this.getEdgeWeight(edge));
 		}
 	}
 

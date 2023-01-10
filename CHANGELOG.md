@@ -10,9 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [met4j-toolbox] Add App to perform chemical names fuzzy mapping between datasets and models
 [met4j-mapping] Add classes for edit-distance based fuzzy search
 [met4j-graph] Add utilities to get distance matrix from paths
+[met4j-graph] More flexible weighting policy definition using lambdas
 
 ### Fix
 [met4j-graph] Improve Shortest Paths union computing efficiency
+[met4j-graph] Fix use of weighted graphs as undirected. Reversed edges now bear same weight as their origin
 
 ## 1.2.0
 

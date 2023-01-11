@@ -103,7 +103,7 @@ public class DistanceMatrix extends AbstractMet4jApplication {
                 System.exit(1);
             }
             boolean removed = graph.removeAllVertices(sideCpds);
-            System.err.println(sideCpds.size() + " side compounds ignored during graph build.");
+            if (removed) System.err.println(sideCpds.size() + " side compounds ignored during graph build.");
         }
 
         //Graph processing: set weights [optional]

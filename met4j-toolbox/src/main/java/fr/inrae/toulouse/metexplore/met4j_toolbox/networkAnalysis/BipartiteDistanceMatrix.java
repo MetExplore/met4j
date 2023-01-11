@@ -119,7 +119,7 @@ public class BipartiteDistanceMatrix extends AbstractMet4jApplication {
                 System.exit(1);
             }
             boolean removed = graph.removeAllVertices(sideCpds);
-            if(removed) Stream.of(sideCpds).forEach(removedNodes::addAll);
+            if(removed) removedNodes.addAll(sideCpds);
             if (metMapper.getNumberOfSkippedEntries() > 0)
             System.err.println(metMapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
             System.err.println(sideCpds.size() + " side compounds ignored during graph build.");
@@ -137,7 +137,7 @@ public class BipartiteDistanceMatrix extends AbstractMet4jApplication {
               System.exit(1);
           }
           boolean removed = graph.removeAllVertices(rList);
-          if(removed) Stream.of(rList).forEach(removedNodes::addAll);
+          if(removed) removedNodes.addAll(rList);
           if (rxnMapper.getNumberOfSkippedEntries() > 0)
           System.err.println(rxnMapper.getNumberOfSkippedEntries() + " reactions to exclude not found in network.");
           System.err.println(rList.size() + " reactions ignored during graph build.");
@@ -184,25 +184,18 @@ public class BipartiteDistanceMatrix extends AbstractMet4jApplication {
         }
         //full == square distance matrix of all pairwise comparisons between seeds
         if(full){
-            Set<BioEntity> seeds = new HashSet<BioEntity>();
-            //compute distance matrix
-            ShortestPath<BioEntity,BipartiteEdge,BipartiteGraph> matrixComputor = new ShortestPath<>(graph, !undirected);
-            Stream.of(metSeeds,rxnSeeds).forEach(seeds::addAll);
-            //clean the seed list
-            boolean removed = seeds.removeAll(removedNodes);
-            if(removed) System.err.println("One or more seed nodes removed due to being in the side compounds or reaction to exclude list");
-            distM = matrixComputor.getShortestPathDistanceMatrix(seeds,seeds);
-        }else{
-            //compute distance matrix
-            ShortestPath<BioEntity,BipartiteEdge,BipartiteGraph>  matrixComputor = new ShortestPath<>(graph, !undirected);
-            //clean metabolites seeds
-            boolean removedMets = metSeeds.removeAll(removedNodes);
-            if(removedMets) System.err.println("One or more seed nodes removed due to being in the side compounds list");
-            //clean reactions seeds
-            boolean removedRxns = rxnSeeds.removeAll(removedNodes);
-            if(removedRxns) System.err.println("One or more seed nodes removed due to being in the reaction to exclude list");
-            distM = matrixComputor.getShortestPathDistanceMatrix(metSeeds,rxnSeeds);
+            rxnSeeds.addAll(metSeeds);
+            metSeeds.addAll(rxnSeeds);
         }
+        //clean metabolites seeds
+        boolean removedMets = metSeeds.removeAll(removedNodes);
+        if(removedMets) System.err.println("One or more seed nodes removed due to being in the side compounds list");
+        //clean reactions seeds
+        boolean removedRxns = rxnSeeds.removeAll(removedNodes);
+        if(removedRxns) System.err.println("One or more seed nodes removed due to being in the reaction to exclude list");
+        //compute distance matrix
+        ShortestPath<BioEntity,BipartiteEdge,BipartiteGraph> matrixComputor = new ShortestPath<>(graph, !undirected);
+        distM = matrixComputor.getShortestPathDistanceMatrix(metSeeds,rxnSeeds);
         //export results
         ExportMatrix.toCSV(outputPath, distM);
 
@@ -216,15 +209,16 @@ public class BipartiteDistanceMatrix extends AbstractMet4jApplication {
     @Override
     public String getLongDescription() {
         return this.getShortDescription() + "\n" +
-                "The distance between two compounds is computed as the length of the shortest path connecting the two in the compound graph, " +
-                "where two compounds are linked if they are respectively substrate and product of the same reaction.\n" +
-                "An optional edge weighting can be used, turning the distances into the sum of edge weights in the lightest path, rather than the length of the shortest path." +
-                "The default weighting use target's degree squared. Alternatively, custom weighting can be provided in a file. In that case, edges without weight are ignored during path search.\n" +
+                "The distance between two nodes (metabolite or reaction) is computed as the length of the shortest path connecting the two in the bipartite graph, " +
+                "Bipartite graph are composed of two distinct sets of nodes and two nodes can be linked only if they are from distinct sets.\n" +
+                "Therefore a metabolite node can be linked to a reaction node if the metabolite is a substrate or product of the reaction.\n" + 
+                "An optional custom edge weighting can be used, turning the distances into the sum of edge weights in the lightest path, rather than the length of the shortest path." +
+                "Custom weighting can be provided in a file. In that case, edges without weight are ignored during path search.\n" +
                 "If no edge weighting is set, it is recommended to provide a list of side compounds to ignore during network traversal.";
     }
 
     @Override
     public String getShortDescription() {
-        return "Create a compound to compound distance matrix.";
+        return "Create a compound to reactions distance matrix.";
     }
 }

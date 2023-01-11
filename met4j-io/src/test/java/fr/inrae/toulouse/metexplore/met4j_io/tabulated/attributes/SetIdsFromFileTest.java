@@ -83,6 +83,22 @@ public class SetIdsFromFileTest {
 
         assertEquals(1, network.getProteinsView().size());
 
+        // Test when the gene is already present
+        network.add(new BioGene("g1"));
+
+        setIdsFromFile = Mockito.spy(new SetIdsFromFile(0, 1, network, "", "", 0, EntityType.GENE,false, false));
+
+        Mockito.doReturn(true).when(setIdsFromFile).parseAttributeFile();
+
+        flag = setIdsFromFile.parseLine(line, 1);
+
+        assertTrue(flag);
+
+        setIdsFromFile.setAttributes();
+
+        assertEquals(1, network.getGenesView().size());
+
+
     }
 
     @Test
@@ -136,6 +152,21 @@ public class SetIdsFromFileTest {
         assertTrue(e.getParticipantsView().stream().anyMatch(p -> p.getPhysicalEntity().equals(newMetabolite)));
         assertFalse(e.getParticipantsView().stream().anyMatch(p -> p.getPhysicalEntity().equals(metabolite)));
 
+        // Test when the metabolite is already present
+        network.add(new BioMetabolite("m1"));
+
+        setIdsFromFile = Mockito.spy(new SetIdsFromFile(0, 1, network, "", "", 0, EntityType.METABOLITE,false, false));
+
+        Mockito.doReturn(true).when(setIdsFromFile).parseAttributeFile();
+
+        flag = setIdsFromFile.parseLine(line, 1);
+
+        assertTrue(flag);
+
+        setIdsFromFile.setAttributes();
+
+        assertEquals(1, network.getMetabolitesView().size());
+
     }
 
     @Test
@@ -164,6 +195,21 @@ public class SetIdsFromFileTest {
         BioPathway newPathway = network.getPathway("pathway1");
         assertNotNull(newPathway);
         assertEquals(2, network.getReactionsFromPathways(newPathway).size());
+
+        // test when the pathway is already present
+        network.add(new BioPathway("p1"));
+
+        setIdsFromFile = Mockito.spy(new SetIdsFromFile(0, 1, network, "", "", 0, EntityType.PATHWAY,false, false));
+
+        Mockito.doReturn(true).when(setIdsFromFile).parseAttributeFile();
+
+        flag = setIdsFromFile.parseLine(line, 1);
+
+        assertTrue(flag);
+
+        setIdsFromFile.setAttributes();
+
+        assertEquals(1, network.getPathwaysView().size());
 
     }
 
@@ -212,6 +258,22 @@ public class SetIdsFromFileTest {
 
         assertEquals(1, newReaction.getLeftsView().size());
         assertEquals(1, newReaction.getRightsView().size());
+
+        // Check if the reaction is already in the network
+        this.network.add(new BioReaction("r1"));
+
+        setIdsFromFile = Mockito.spy(new SetIdsFromFile(0, 1, network, "", "", 0, EntityType.REACTION,false, false));
+
+        Mockito.doReturn(true).when(setIdsFromFile).parseAttributeFile();
+
+        flag = setIdsFromFile.parseLine(line, 1);
+
+        assertTrue(flag);
+
+        setIdsFromFile.setAttributes();
+
+        assertEquals(1, network.getReactionsView().size());
+
     }
 
     @Test
@@ -255,6 +317,21 @@ public class SetIdsFromFileTest {
 
         assertTrue(r1.getLeftReactantsView().stream().allMatch(reactant -> reactant.getLocation().equals(newCpt)));
         assertTrue(r1.getRightReactantsView().stream().allMatch(reactant -> reactant.getLocation().equals(newCpt)));
+
+        // Check if the compartment is already in the network
+        this.network.add(new BioCompartment("cpt"));
+
+        setIdsFromFile = Mockito.spy(new SetIdsFromFile(0, 1, network, "", "", 0, EntityType.COMPARTMENT,false, false));
+
+        Mockito.doReturn(true).when(setIdsFromFile).parseAttributeFile();
+
+        flag = setIdsFromFile.parseLine(line, 1);
+
+        assertTrue(flag);
+
+        setIdsFromFile.setAttributes();
+
+        assertEquals(1, this.network.getCompartmentsView().size());
 
     }
 }

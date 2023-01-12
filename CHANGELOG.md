@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [met4j-mapping] Add classes for edit-distance based fuzzy search
 [met4j-graph] Add utilities to get distance matrix from paths
 [met4j-graph] More flexible weighting policy definition using lambdas
+[met4j-toolbox] Add app to calculate the distance matrix on bipartite graphs
 
 ### Fix
 [met4j-graph] Improve Shortest Paths union computing efficiency

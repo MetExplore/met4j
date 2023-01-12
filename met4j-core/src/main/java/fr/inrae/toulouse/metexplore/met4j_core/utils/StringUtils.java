@@ -126,7 +126,11 @@ public class StringUtils {
 	 * @param formula a String to check
 	 * @return true if it looks like a chemical formula (e.g. CH3, C, (n)CH2O6)
 	 */
-	public static boolean checkMetaboliteFormula(@NonNull String formula) {
+	public static boolean checkMetaboliteFormula(String formula) {
+
+		if(formula == null) {
+			return false;
+		}
 		Matcher m = patternFormula.matcher(formula);
 		return m.matches();
 	}

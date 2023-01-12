@@ -565,7 +565,7 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
  -h                 : prints the help (default: false)
  -i VAL             : input SBML file
  -o VAL             : output Matrix file
- -s (--sub) VAL     : an optional file containing list of compounds of
+ -s (--seed) VAL    : an optional file containing list of compounds of
                       interest. The returned distance matrix contains only the
                       corresponding rows and columns
  -sc (--side) VAL   : an optional file containing list of side compounds to

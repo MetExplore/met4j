@@ -66,7 +66,7 @@ public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends D
 	 */
 	public final V getVertex(String bioEntityId){
 		for(V v : this.vertexSet()){
-			if(v.getId().equalsIgnoreCase(bioEntityId)){
+			if(v.getId().equals(bioEntityId)){
 				return v;
 			}
 		}

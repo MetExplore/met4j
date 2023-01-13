@@ -50,6 +50,8 @@ import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
@@ -77,18 +79,18 @@ public class MetaboRank extends AbstractMet4jApplication {
     @Option(name = "-i", usage = "input SBML file: path to network used for computing centrality, in sbml format.", required = true)
     public String sbmlFilePath;
 
-    @Format(name = Tsv)
+    @Format(name= EnumFormats.Tsv)
     @ParameterType(name = InputFile)
     @Option(name = "-s", usage = "input seeds file: tabulated file containing node of interest ids and weight", required = true)
     public String seedsFilePath;
 
-    @Format(name = Tsv)
+    @Format(name= EnumFormats.Tsv)
     @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output file: path to the file where the results will be exported", required = true)
     public String output;
 
     //parameters
-    @Format(name = Tsv)
+    @Format(name= EnumFormats.Tsv)
     @ParameterType(name = InputFile)
     @Option(name = "-w", usage = "input edge weight file: (recommended) path to file containing edges' weights. Will be normalized as transition probabilities")
     public String edgeWeightsFilePaths;

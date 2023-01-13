@@ -18,6 +18,7 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -43,10 +44,12 @@ public class NetworkSummary extends AbstractMet4jApplication {
     public String inputPath = null;
 
     @ParameterType(name = OutputFile)
+    @Format(name= EnumFormats.Txt)
     @Option(name = "-o", usage = "output report file", required = true)
     public String outputPath = null;
 
     @ParameterType(name = InputFile)
+    @Format(name= EnumFormats.Txt)
     @Option(name = "-s", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore (recommended)")
     public String sideCompoundFile = null;
 

@@ -43,6 +43,7 @@ import static org.junit.Assert.*;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.EdgeMerger;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.parallel.MergedGraph;
@@ -210,6 +211,19 @@ public class TestEdgeMerger {
 		Assert.assertEquals("Error while creating the initial graph", 10, g.edgeSet().size());
 		Assert.assertEquals("Wrong final number of edges", 8, g2.edgeSet().size());
 		Assert.assertTrue("Wrong edge kept", g2.containsEdge(ab3));
+	}
+
+	@Test
+	public void testMergeUndirected() {
+		CompoundGraph g4 = new CompoundGraph(g);
+		g4.setEdgeWeight(g4.getEdge(ba1.getV1(),ba1.getV2(),ba1.getReaction()),0.1);
+		g4.setEdgeWeight(g4.getEdge(ab1.getV1(),ab1.getV2(),ab1.getReaction()),2.0);
+		g4.setEdgeWeight(g4.getEdge(ab2.getV1(),ab2.getV2(),ab2.getReaction()),5.0);
+		g4.setEdgeWeight(g4.getEdge(ab3.getV1(),ab3.getV2(),ab3.getReaction()),10.0);
+		EdgeMerger.undirectedMergeEdgesWithOverride(g4, EdgeMerger.lowWeightFirst(g4));
+		Assert.assertEquals("Error while creating the initial graph", 10, g.edgeSet().size());
+		Assert.assertEquals("Wrong final number of edges", 5, g4.edgeSet().size());
+		Assert.assertTrue("Wrong edge kept", g4.containsEdge(ba1));
 	}
 
 }

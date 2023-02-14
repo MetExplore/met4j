@@ -196,13 +196,24 @@ public class Bionetwork2BioGraph {
 		}
 		return g;
 	}
-	
+
 	/**
-	 * Builds the graph.
+	 * Builds a pathway "seed" graph, where a directed edge exists between two pathways if one produces a sink that is a source of the other.
+	 * i.e. it constructs an overlap graph that is ignoring intermediary compounds and consider only inputs and outputs of pathways
 	 *
 	 * @return the pathway graph
 	 */
 	public PathwayGraph getPathwayGraph(){
+		return getPathwayGraph(new BioCollection<BioMetabolite>());
+	}
+
+	/**
+	 * Builds a pathway "seed" graph, where a directed edge exists between two pathways if one produces a sink that is a source of the other.
+	 * i.e. it constructs an overlap graph that is ignoring intermediary compounds and consider only inputs and outputs of pathways
+	 * @param cofactors a list of compounds to ignore for connecting pathways
+	 * @return
+	 */
+	public PathwayGraph getPathwayGraph(BioCollection<BioMetabolite> cofactors){
 
 		PathwayGraph g = new PathwayGraph();
 		HashMap<BioPathway,BioCollection<BioMetabolite>> pathwaysSources = new HashMap<>();
@@ -242,10 +253,43 @@ public class Bionetwork2BioGraph {
 							pathwaysSources.get(p2).stream()
 							.filter(m -> pathwaysProducts.get(p1).contains(m))
 							.collect(Collectors.toCollection(BioCollection::new));
+					connectors.removeAll(cofactors);
 					if(!connectors.isEmpty()) {
 						PathwayGraphEdge edge = new PathwayGraphEdge(p1, p2, connectors);
 						g.addEdge(p1, p2, edge);
 					}
+				}
+			}
+		}
+		return g;
+	}
+
+	/**
+	 * Builds a pathway "overlap" graph, where an undirected edge exists between two pathways they share a common compound.
+	 *
+	 * @param cofactors a list of compounds to ignore for connecting pathways
+	 * @return the pathway graph
+	 */
+	public PathwayGraph getPathwayOverlapGraph(BioCollection<BioMetabolite> cofactors){
+		PathwayGraph g = new PathwayGraph();
+		//add nodes
+		for(BioPathway p : bn.getPathwaysView()){
+			g.addVertex(p);
+		}
+		//create connections
+		ArrayList<BioPathway> plist = new ArrayList<>(bn.getPathwaysView());
+		for (int i = 0; i < plist.size()-1; i++){
+			for (int j = i+1; j < plist.size(); j++){
+				BioPathway p1 = plist.get(i);
+				BioPathway p2 = plist.get(j);
+				BioCollection<BioMetabolite> connectors = new BioCollection<>(bn.getMetabolitesFromPathway(p1));
+				connectors.retainAll(bn.getMetabolitesFromPathway(p2));
+				connectors.removeAll(cofactors);
+				if(!connectors.isEmpty()) {
+					PathwayGraphEdge edge = new PathwayGraphEdge(p1, p2, connectors);
+					g.addEdge(p1, p2, edge);
+					PathwayGraphEdge edger = new PathwayGraphEdge(p2, p1, connectors);
+					g.addEdge(p2, p1, edger);
 				}
 			}
 		}

@@ -43,6 +43,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
@@ -50,13 +51,10 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollections;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraphEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.CompoundEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
 import org.jgrapht.nio.Attribute;
@@ -329,19 +327,31 @@ public class ExportGraph {
 			e.printStackTrace();
 		}
 	}
-
 	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> void toGmlWithAttributes(G graph, String outputPath, Map<V,?> att, String attName){
+		toGmlWithAttributes(graph, outputPath, att, attName,false);
+	}
+
+	public static <V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> void toGmlWithAttributes(G graph, String outputPath, Map<V,?> att, String attName, boolean weight){
 		try {
 			GmlExporter<V, E> gml
 					= new GmlExporter<>();
 			gml.setParameter(GmlExporter.Parameter.EXPORT_EDGE_LABELS, true);
 			gml.setParameter(GmlExporter.Parameter.EXPORT_VERTEX_LABELS, true);
 			gml.setParameter(GmlExporter.Parameter.EXPORT_CUSTOM_VERTEX_ATTRIBUTES, true);
+			gml.setParameter(GmlExporter.Parameter.EXPORT_CUSTOM_EDGE_ATTRIBUTES, true);
 			gml.setVertexAttributeProvider(v -> {
 				Map<String, Attribute> att2 = new HashMap<>();
 				att2.put(attName, DefaultAttribute.createAttribute(att.get(v).toString()));
+				att2.put("Name",DefaultAttribute.createAttribute(v.getName()));
 				return att2;
 			});
+			if(weight){
+				gml.setEdgeAttributeProvider(e -> {
+					Map<String, Attribute> att3 = new HashMap<>();
+					att3.put("Weight", DefaultAttribute.createAttribute(graph.getEdgeWeight(e)));
+					return att3;
+				});
+			}
 
 			FileWriter fw = new FileWriter(new File(outputPath).getAbsoluteFile());
 			PrintWriter pw = new PrintWriter(fw);

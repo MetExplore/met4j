@@ -50,7 +50,7 @@ public class KeggServices {
     public KeggServices() {
         DefaultClientConfig config = new DefaultClientConfig();
         Client client = Client.create(config);
-        URI baseUri = UriBuilder.fromUri("http://rest.kegg.jp/").build();
+        URI baseUri = UriBuilder.fromUri("https://rest.kegg.jp/").build();
         this.webResource = client.resource(baseUri);
     }
 

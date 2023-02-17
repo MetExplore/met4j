@@ -40,7 +40,6 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import fr.inrae.toulouse.metexplore.met4j_io.kegg.Kegg2BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;

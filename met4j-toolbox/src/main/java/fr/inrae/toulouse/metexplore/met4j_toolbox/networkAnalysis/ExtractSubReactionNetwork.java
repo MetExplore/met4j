@@ -148,7 +148,7 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
         ReactionGraph subnet;
         if (st) {
             SteinerTreeApprox<BioReaction, CompoundEdge, ReactionGraph> stComp = new SteinerTreeApprox<>(graph, (weightFile != null), !undirected);
-            List<CompoundEdge> stEdges = stComp.getSteinerTreeList(sources, targets, (weightFile != null));
+            List<CompoundEdge> stEdges = stComp.getMetricClosureGraphMST(sources, targets, (weightFile != null));
             subnet = factory.createGraphFromEdgeList(stEdges);
         } else if (k > 1) {
             KShortestPath<BioReaction, CompoundEdge, ReactionGraph> kspComp = new KShortestPath<>(graph, !undirected);

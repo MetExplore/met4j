@@ -107,8 +107,8 @@ public class TestSteinerTreeApprox {
 		
 		ReactionEdge[] expectedPath = {ey, yx, ay, ed, cx, xb};
 		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer 
-			= new SteinerTreeApprox<>(g, true);
-		List<ReactionEdge> treeList = steinerComputer.getSteinerTreeList(noi, true);
+			= new SteinerTreeApprox<>(g);
+		List<ReactionEdge> treeList = steinerComputer.getMetricClosureGraphMST(noi, true);
 		
 		assertNotNull("No path found", treeList);
 
@@ -127,7 +127,7 @@ public class TestSteinerTreeApprox {
 		ReactionEdge[] expectedPath = {ey, yx, ay, ed, cx, xb};
 		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer 
 			= new SteinerTreeApprox<>(g);
-		List<ReactionEdge> treeList = steinerComputer.getSteinerTreeList(noi,noi, true);
+		List<ReactionEdge> treeList = steinerComputer.getMetricClosureGraphMST(noi,noi, true);
 		
 		assertNotNull("No path found", treeList);
 
@@ -141,26 +141,116 @@ public class TestSteinerTreeApprox {
 
 		ReactionEdge[] expectedPath = {ey, yx, ay, aw, dw, cx, xb};
 		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer
-				= new SteinerTreeApprox<>(g, true, false);
-		List<ReactionEdge> treeList = steinerComputer.getSteinerTreeList(noi,noi, true);
+				= new SteinerTreeApprox<>(g).undirected();
+		List<ReactionEdge> treeList = steinerComputer.getMetricClosureGraphMST(noi,noi, true);
 
 		assertNotNull("No path found", treeList);
 
 		assertTrue("wrong path",Arrays.asList(expectedPath).containsAll(treeList));
 	}
 
-//	/**
-//	 * Test the steiner tree sub graph.
-//	 */
-//	@Test
-//	public void testSteinerTreeSubGraph() {
-//		HashSet<BioMetabolite> noi = new HashSet<BioMetabolite>();
-//		noi.add(a);noi.add(b);noi.add(c);noi.add(d);noi.add(e);
-//		
-//		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer 
-//			= new SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph>(g, true);
-//		CompoundGraph subGraph = steinerComputer.getSteinerTree(noi, true);
-//		assertEquals(6, subGraph.edgeSet().size());
-//		assertEquals(7, subGraph.vertexSet().size());
-//	}
+	/**
+	 * Test the steiner tree sub graph.
+	 */
+	@Test
+	public void testSteinerTreeSubGraph() {
+		HashSet<BioMetabolite> noi = new HashSet<BioMetabolite>();
+		noi.add(a);noi.add(b);noi.add(c);noi.add(d);noi.add(e);
+
+		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer
+			= new SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph>(g);
+		CompoundGraph subGraph = steinerComputer.getSteinerTree(noi, CompoundGraph.getFactory());
+		assertEquals(6, subGraph.edgeSet().size());
+		assertEquals(7, subGraph.vertexSet().size());
+		assertTrue(subGraph.containsEdge(ey));
+		assertTrue(subGraph.containsEdge(yx));
+		assertTrue(subGraph.containsEdge(ay));
+		assertTrue(subGraph.containsEdge(ed));
+		assertTrue(subGraph.containsEdge(cx));
+		assertTrue(subGraph.containsEdge(xb));
+	}
+
+	/**
+	 * Test the steiner tree sub graph.
+	 */
+	@Test
+	public void testSteinerTreeSubGraphII() {
+		HashSet<BioMetabolite> noi = new HashSet<BioMetabolite>();
+		noi.add(a);noi.add(b);noi.add(c);noi.add(d);noi.add(e);
+
+		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer
+				= new SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph>(g).undirected().skipPruning();
+		CompoundGraph subGraph = steinerComputer.getSteinerTree(noi, CompoundGraph.getFactory());
+		assertEquals(7, subGraph.edgeSet().size());
+		assertEquals(8, subGraph.vertexSet().size());
+		assertTrue(subGraph.containsEdge(ey));
+		assertTrue(subGraph.containsEdge(yx));
+		assertTrue(subGraph.containsEdge(ay));
+		assertTrue(subGraph.containsEdge(aw));
+		assertTrue(subGraph.containsEdge(dw));
+		assertTrue(subGraph.containsEdge(cx));
+		assertTrue(subGraph.containsEdge(xb));
+	}
+
+
+	/**
+	 * Test the steiner tree sub graph.
+	 */
+	@Test
+	public void testSteinerTreeSubGraphIII() {
+		try {
+			HashSet<BioMetabolite> noi = new HashSet<BioMetabolite>();
+
+			noi.add(b);
+			noi.add(c);
+			noi.add(e);
+			noi.add(f);
+			g.setEdgeWeight(fe, 1000);
+			g.setEdgeWeight(ed, 1000);
+			g.setEdgeWeight(ey, 2);
+			g.setEdgeWeight(df, 1);
+			g.setEdgeWeight(yx, 2);
+			g.setEdgeWeight(xd, 1);
+			g.setEdgeWeight(xb, 2);
+			g.setEdgeWeight(cx, 1);
+			g.setEdgeWeight(bc, 2.5);
+
+			SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer
+					= new SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph>(g).skipPruning();
+			CompoundGraph subGraph = steinerComputer.getSteinerTree(noi, CompoundGraph.getFactory());
+
+			assertEquals(7, subGraph.edgeSet().size());
+			assertEquals(7, subGraph.vertexSet().size());
+			assertTrue(subGraph.containsEdge(ey));
+			assertTrue(subGraph.containsEdge(yx));
+			assertTrue(subGraph.containsEdge(xb));
+			assertTrue(subGraph.containsEdge(cx));
+			assertTrue(subGraph.containsEdge(xd));
+			assertTrue(subGraph.containsEdge(df));
+			assertTrue(subGraph.containsEdge(bc));
+
+			steinerComputer = new SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph>(g);
+			subGraph = steinerComputer.getSteinerTree(noi, CompoundGraph.getFactory());
+
+			assertEquals(6, subGraph.edgeSet().size());
+			assertEquals(7, subGraph.vertexSet().size());
+			assertTrue(subGraph.containsEdge(ey));
+			assertTrue(subGraph.containsEdge(yx));
+			assertTrue(subGraph.containsEdge(xb));
+			assertTrue(subGraph.containsEdge(cx));
+			assertTrue(subGraph.containsEdge(xd));
+			assertTrue(subGraph.containsEdge(df));
+		} finally {
+			g.setEdgeWeight(fe, 8);
+			g.setEdgeWeight(ed, 5);
+			g.setEdgeWeight(ey, 2);
+			g.setEdgeWeight(df, 8);
+			g.setEdgeWeight(yx, 1);
+			g.setEdgeWeight(xd, 6);
+			g.setEdgeWeight(xb, 4);
+			g.setEdgeWeight(cx, 3);
+			g.setEdgeWeight(bc, 8);
+		}
+
+	}
 }

@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Set;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
 import org.jgrapht.alg.spanning.KruskalMinimumSpanningTree;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
@@ -57,13 +58,14 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
  * @version $Id: $Id
  */
 public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V ,E>>{
-	
+
 	/** The graph. */
 	public final G g;
-	
+
 	/** if the graph should be treated as weighted or not **/
 	public boolean weighted = true;
 	public boolean undirected = false;
+	public boolean pruning = true;
 
 	/**
 	 * Instantiates a new steiner tree computor.
@@ -73,24 +75,30 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 	public SteinerTreeApprox(G g) {
 		this.g=g;
 	}
-	
-	/**
-	 * Instantiates a new steiner tree computor.
-	 *
-	 * @param g the graph
-	 * @param weighted if the graph should be treated as weighted
-	 */
-	public SteinerTreeApprox(G g, boolean weighted) {
-		this.g=g;
-		this.weighted=weighted;
+
+	public SteinerTreeApprox skipPruning() {
+		this.pruning = false;
+		return this;
 	}
 
-	public SteinerTreeApprox(G g, boolean weighted, boolean directed) {
-		this.g=g;
-		this.weighted=weighted;
-		this.undirected=!directed;
+	/**
+	 * Use path length rather than sum of edge weights for metric closure graph computation
+	 * @return
+	 */
+	public SteinerTreeApprox usePathLength() {
+		this.weighted = false;
+		return this;
 	}
-	
+
+	/**
+	 * Treat the graph as undirected
+	 * @return
+	 */
+	public SteinerTreeApprox undirected() {
+		this.undirected = true;
+		return this;
+	}
+
 	/**
 	 * Gets the steiner tree list.
 	 *
@@ -98,7 +106,7 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 	 * @param weighted if the graph is weighted
 	 * @return the steiner tree list
 	 */
-	public List<E> getSteinerTreeList(Set<V> terminal, boolean weighted){
+	public List<E> getMetricClosureGraphMST(Set<V> terminal, boolean weighted){
 		Collection<V> unfound = new HashSet<>();
 		for(V v:terminal){
 			if(!g.containsVertex(v)) {
@@ -107,7 +115,7 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 			}
 		}
 		terminal.removeAll(unfound);
-		
+
 		ArrayList<E> list = new ArrayList<>();
 		CompressedGraph<V, E, G> cg = (new ShortestPath<>(g,!undirected)).getMetricClosureGraph(terminal, terminal, weighted);
 		KruskalMinimumSpanningTree<V, PathEdge<V,E>> kruskal = new KruskalMinimumSpanningTree<>(cg);
@@ -117,16 +125,16 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 		}
 		return list;
 	}
-	
+
 	/**
-	 * Gets the steiner tree list.
+	 * Gets the steiner tree edge list as .
 	 *
 	 * @param startNodes the targets list
 	 * @param endNodes the targets list
 	 * @param weighted if the graph is weighted
 	 * @return the steiner tree list
 	 */
-	public List<E> getSteinerTreeList(Set<V> startNodes, Set<V> endNodes, boolean weighted){
+	public List<E> getMetricClosureGraphMST(Set<V> startNodes, Set<V> endNodes, boolean weighted){
 		Collection<V> unfound = new HashSet<>();
 		for(V v:startNodes){
 			if(!g.containsVertex(v)) {
@@ -142,7 +150,7 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 			}
 		}
 		endNodes.removeAll(unfound);
-		
+
 		ArrayList<E> list = new ArrayList<>();
 		DirectedWeightedMultigraph<V, PathEdge<V,E>> cg = (new ShortestPath<>(g,!undirected)).getMetricClosureGraph(startNodes, endNodes, weighted);
 		KruskalMinimumSpanningTree<V, PathEdge<V,E>> kruskal = new KruskalMinimumSpanningTree<>(cg);
@@ -151,6 +159,38 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 			list.addAll(edge.getPath().getEdgeList());
 		}
 		return list;
+	}
+
+	/**
+	 * Gets the steiner tree.
+	 *
+	 * @param startNodes the targets list
+	 * @param endNodes the targets list
+	 * @return the steiner tree
+	 */
+	public G getSteinerTree(Set<V> startNodes, Set<V> endNodes, GraphFactory<V,E,G> graphFactory){
+		List<E> edgeList = getMetricClosureGraphMST(startNodes, endNodes, weighted);
+		G g2 = graphFactory.createGraphFromEdgeList(edgeList);
+		if(pruning) pruning(g2);
+		return g2;
+	}
+
+	/**
+	 * Gets the steiner tree.
+	 *
+	 * @param targetNodes the targets list
+	 * @return the steiner tree
+	 */
+	public G getSteinerTree(Set<V> targetNodes, GraphFactory<V,E,G> graphFactory){
+		return getSteinerTree(targetNodes,targetNodes,graphFactory);
+	}
+
+	private void pruning(G g2){
+		KruskalMinimumSpanningTree<V, E> kruskal = new KruskalMinimumSpanningTree<>(g2);
+		Set<E> mst = kruskal.getSpanningTree().getEdges();
+		Set<E> edges = new HashSet<>(g2.edgeSet());
+		edges.removeAll(mst);
+		g2.removeAllEdges(edges);
 	}
 
 }

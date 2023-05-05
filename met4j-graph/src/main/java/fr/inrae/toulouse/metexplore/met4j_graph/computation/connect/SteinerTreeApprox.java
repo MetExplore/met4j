@@ -91,33 +91,6 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 	}
 
 	/**
-	 * Ignore last pruning set, producing the lightest union of shortest paths, not guaranteeing the absence of cycle
-	 * @return
-	 */
-	public SteinerTreeApprox skipPruning() {
-		this.pruning = false;
-		return this;
-	}
-
-	/**
-	 * Use path length rather than sum of edge weights for metric closure graph computation
-	 * @return
-	 */
-	public SteinerTreeApprox usePathLength() {
-		this.weighted = false;
-		return this;
-	}
-
-	/**
-	 * Treat the graph as undirected
-	 * @return
-	 */
-	public SteinerTreeApprox undirected() {
-		this.undirected = true;
-		return this;
-	}
-
-	/**
 	 * Gets the lightest union of shortest paths connecting all nodes in set
 	 * Which correspond to the minimum spanning tree of the metric closure graph
 	 * @param terminal the targets list

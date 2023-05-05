@@ -141,7 +141,7 @@ public class TestSteinerTreeApprox {
 
 		ReactionEdge[] expectedPath = {ey, yx, ay, aw, dw, cx, xb};
 		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer
-				= new SteinerTreeApprox<>(g).undirected();
+				= new SteinerTreeApprox<>(g,true,false,true);
 		List<ReactionEdge> treeList = steinerComputer.getLightestUnionOfShortestPaths(noi,noi);
 
 		assertNotNull("No path found", treeList);
@@ -179,7 +179,7 @@ public class TestSteinerTreeApprox {
 		noi.add(a);noi.add(b);noi.add(c);noi.add(d);noi.add(e);
 
 		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer
-				= new SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph>(g).undirected().skipPruning();
+				= new SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph>(g,true,false,false);
 		CompoundGraph subGraph = steinerComputer.getSteinerTree(noi, CompoundGraph.getFactory());
 		assertEquals(7, subGraph.edgeSet().size());
 		assertEquals(8, subGraph.vertexSet().size());
@@ -216,7 +216,7 @@ public class TestSteinerTreeApprox {
 			g.setEdgeWeight(bc, 2.5);
 
 			SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer
-					= new SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph>(g).skipPruning();
+					= new SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph>(g,true,true,false);
 			CompoundGraph subGraph = steinerComputer.getSteinerTree(noi, CompoundGraph.getFactory());
 
 			assertEquals(7, subGraph.edgeSet().size());

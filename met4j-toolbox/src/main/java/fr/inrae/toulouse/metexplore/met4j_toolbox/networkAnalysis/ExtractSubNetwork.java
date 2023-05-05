@@ -160,8 +160,8 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
         };
         CompoundGraph subnet;
         if (st) {
-            SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> stComp = new SteinerTreeApprox<>(graph,(degree || weightFile != null), !undirected);
-            List<ReactionEdge> stEdges = stComp.getMetricClosureGraphMST(sources, targets, (degree || weightFile != null));
+            SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> stComp = new SteinerTreeApprox<>(graph,(degree || weightFile != null), !undirected, false);
+            List<ReactionEdge> stEdges = stComp.getLightestUnionOfShortestPaths(sources, targets);
             subnet = factory.createGraphFromEdgeList(stEdges);
         } else if (k > 1) {
             KShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> kspComp = new KShortestPath<>(graph, !undirected);

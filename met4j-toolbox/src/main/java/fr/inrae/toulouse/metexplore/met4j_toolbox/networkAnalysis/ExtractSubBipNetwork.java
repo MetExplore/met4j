@@ -181,8 +181,8 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
         };
         BipartiteGraph subnet;
         if (st) {
-            SteinerTreeApprox<BioEntity, BipartiteEdge, BipartiteGraph> stComp = new SteinerTreeApprox<>(graph, (weightFile != null), !undirected);
-            List<BipartiteEdge> stEdges = stComp.getMetricClosureGraphMST(sources, targets, (weightFile != null));
+            SteinerTreeApprox<BioEntity, BipartiteEdge, BipartiteGraph> stComp = new SteinerTreeApprox<>(graph, (weightFile != null), !undirected, false);
+            List<BipartiteEdge> stEdges = stComp.getLightestUnionOfShortestPaths(sources, targets);
             subnet = factory.createGraphFromEdgeList(stEdges);
         } else if (k > 1) {
             KShortestPath<BioEntity, BipartiteEdge, BipartiteGraph> kspComp = new KShortestPath<>(graph, !undirected);

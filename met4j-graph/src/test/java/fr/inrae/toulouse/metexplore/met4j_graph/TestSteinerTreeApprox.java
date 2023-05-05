@@ -108,7 +108,7 @@ public class TestSteinerTreeApprox {
 		ReactionEdge[] expectedPath = {ey, yx, ay, ed, cx, xb};
 		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer 
 			= new SteinerTreeApprox<>(g);
-		List<ReactionEdge> treeList = steinerComputer.getMetricClosureGraphMST(noi, true);
+		List<ReactionEdge> treeList = steinerComputer.getLightestUnionOfShortestPaths(noi);
 		
 		assertNotNull("No path found", treeList);
 
@@ -127,7 +127,7 @@ public class TestSteinerTreeApprox {
 		ReactionEdge[] expectedPath = {ey, yx, ay, ed, cx, xb};
 		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer 
 			= new SteinerTreeApprox<>(g);
-		List<ReactionEdge> treeList = steinerComputer.getMetricClosureGraphMST(noi,noi, true);
+		List<ReactionEdge> treeList = steinerComputer.getLightestUnionOfShortestPaths(noi,noi);
 		
 		assertNotNull("No path found", treeList);
 
@@ -142,7 +142,7 @@ public class TestSteinerTreeApprox {
 		ReactionEdge[] expectedPath = {ey, yx, ay, aw, dw, cx, xb};
 		SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> steinerComputer
 				= new SteinerTreeApprox<>(g).undirected();
-		List<ReactionEdge> treeList = steinerComputer.getMetricClosureGraphMST(noi,noi, true);
+		List<ReactionEdge> treeList = steinerComputer.getLightestUnionOfShortestPaths(noi,noi);
 
 		assertNotNull("No path found", treeList);
 

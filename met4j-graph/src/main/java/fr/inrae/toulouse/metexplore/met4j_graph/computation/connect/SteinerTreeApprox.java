@@ -76,6 +76,24 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 		this.g=g;
 	}
 
+	/**
+	 * Instantiates a new steiner tree computor.
+	 * @param g the graph
+	 * @param useWeights consider edge weights sum rather than path length (default = true)
+	 * @param useEdgeDirection consider edge direction in path search (default = true)
+	 * @param prune prune union of shortest paths to remove cycle (default = true)
+	 */
+	public SteinerTreeApprox(G g, boolean useWeights, boolean useEdgeDirection, boolean prune) {
+		this.g=g;
+		this.weighted = useWeights;
+		this.undirected = !useEdgeDirection;
+		this.pruning = prune;
+	}
+
+	/**
+	 * Ignore last pruning set, producing the lightest union of shortest paths, not guaranteeing the absence of cycle
+	 * @return
+	 */
 	public SteinerTreeApprox skipPruning() {
 		this.pruning = false;
 		return this;
@@ -100,13 +118,12 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 	}
 
 	/**
-	 * Gets the steiner tree list.
-	 *
+	 * Gets the lightest union of shortest paths connecting all nodes in set
+	 * Which correspond to the minimum spanning tree of the metric closure graph
 	 * @param terminal the targets list
-	 * @param weighted if the graph is weighted
 	 * @return the steiner tree list
 	 */
-	public List<E> getMetricClosureGraphMST(Set<V> terminal, boolean weighted){
+	public List<E> getLightestUnionOfShortestPaths(Set<V> terminal){
 		Collection<V> unfound = new HashSet<>();
 		for(V v:terminal){
 			if(!g.containsVertex(v)) {
@@ -127,14 +144,14 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 	}
 
 	/**
-	 * Gets the steiner tree edge list as .
+	 * Gets the lightest union of shortest paths connecting all nodes in set
+	 * Which correspond to the minimum spanning tree of the metric closure graph
 	 *
 	 * @param startNodes the targets list
 	 * @param endNodes the targets list
-	 * @param weighted if the graph is weighted
 	 * @return the steiner tree list
 	 */
-	public List<E> getMetricClosureGraphMST(Set<V> startNodes, Set<V> endNodes, boolean weighted){
+	public List<E> getLightestUnionOfShortestPaths(Set<V> startNodes, Set<V> endNodes){
 		Collection<V> unfound = new HashSet<>();
 		for(V v:startNodes){
 			if(!g.containsVertex(v)) {
@@ -169,7 +186,7 @@ public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends
 	 * @return the steiner tree
 	 */
 	public G getSteinerTree(Set<V> startNodes, Set<V> endNodes, GraphFactory<V,E,G> graphFactory){
-		List<E> edgeList = getMetricClosureGraphMST(startNodes, endNodes, weighted);
+		List<E> edgeList = getLightestUnionOfShortestPaths(startNodes, endNodes);
 		G g2 = graphFactory.createGraphFromEdgeList(edgeList);
 		if(pruning) pruning(g2);
 		return g2;

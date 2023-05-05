@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fix
 [met4j-graph] expand handled attributes for gml export
-
+[met4j-graph] fix steiner Tree aproximation, add pruning step to avoid cycles
 
 ## 1.2.1
 

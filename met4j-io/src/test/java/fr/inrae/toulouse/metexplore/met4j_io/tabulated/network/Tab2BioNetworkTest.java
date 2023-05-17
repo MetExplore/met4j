@@ -74,16 +74,32 @@ public class Tab2BioNetworkTest {
 
     @Test
     public void testBadFormulaLeft() {
-        String line = "  \tm1 + 2 a m2 -> m3 + m4\n";
+        String line = "r\tm1 + 2 a m2 -> m3 + m4\n";
 
         assertFalse(app.testLine(line, 1));
     }
 
     @Test
     public void testBadFormulaRight() {
-        String line = "  \tm1 + 2 m2 -> m3  m4\n";
+        String line = "r\tm1 + 2 m2 -> m3  m4\n";
 
         assertFalse(app.testLine(line, 1));
+    }
+
+    @Test
+    public void testEmptyRight() {
+        // Must accept empty right (exchange reaction)
+        String line = "r\tm1 + 2 m2 ->\n";
+
+        assertTrue(app.testLine(line, 1));
+    }
+
+    @Test
+    public void testEmptyLeft() {
+        // Must accept empty right (exchange reaction)
+        String line = "r\t-> m1 + 2 m2\n";
+
+        assertTrue(app.testLine(line, 1));
     }
 
     @Test

@@ -37,7 +37,10 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.tabulated.network;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
@@ -50,7 +53,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -154,9 +156,14 @@ public class Tab2BioNetwork {
         while ((line = br.readLine()) != null) {
             nLines++;
 
-            Boolean flagLine = this.testLine(line, nLines);
+            try {
+                Boolean flagLine = this.testLine(line, nLines);
 
-            if (!flagLine) {
+                if (!flagLine) {
+                    flag = false;
+                }
+            } catch (Exception error) {
+                System.err.println("Unexpected error line " + nLines);
                 flag = false;
             }
         }
@@ -350,28 +357,38 @@ public class Tab2BioNetwork {
 
             String leftString = tabFormula[0].trim();
 
+            if (!leftString.isEmpty()) {
 
-            List<String> lefts = new ArrayList<>();
+
+                List<String> lefts = new ArrayList<>();
 
 
-            if (!leftString.equals("")) {
-                lefts = Arrays.asList(leftString.split(" \\+"));
+                if (!leftString.equals("")) {
+                    lefts = Arrays.asList(leftString.split(" \\+"));
+                }
+
+                for (String cpdId : lefts) {
+                    parseReactant(reaction, compartmentId, cpdId, false);
+                }
+
             }
 
-            String rightString = tabFormula[1].trim();
+            if (tabFormula.length > 1) {
 
-            List<String> rights = new ArrayList<>();
+                String rightString = tabFormula[1].trim();
 
-            if (!rightString.equals("")) {
-                rights = Arrays.asList(rightString.split(" \\+ "));
-            }
+                if (!rightString.isEmpty()) {
 
-            for (String cpdId : lefts) {
-                parseReactant(reaction, compartmentId, cpdId, false);
-            }
+                    List<String> rights = new ArrayList<>();
 
-            for (String cpdId : rights) {
-                parseReactant(reaction, compartmentId, cpdId, true);
+                    if (!rightString.equals("")) {
+                        rights = Arrays.asList(rightString.split(" \\+ "));
+                    }
+
+                    for (String cpdId : rights) {
+                        parseReactant(reaction, compartmentId, cpdId, true);
+                    }
+                }
             }
 
         }
@@ -380,6 +397,7 @@ public class Tab2BioNetwork {
 
     /**
      * Parse
+     *
      * @param reaction
      * @param compartmentId
      * @param cpdId
@@ -406,7 +424,7 @@ public class Tab2BioNetwork {
             cpdId = cpdId.replace(matcherCpd.group(1), "_" + matcherCpd.group(2));
             addCompartment = true;
         } else {
-            if (!compartmentId.equals("") ) {
+            if (!compartmentId.equals("")) {
                 addCompartment = true;
                 cpdId = cpdId + "_" + compartmentId;
             }
@@ -460,9 +478,14 @@ public class Tab2BioNetwork {
 
             nLines++;
 
-            Boolean flagLine = this.parseLine(line, nLines);
+            try {
+                Boolean flagLine = this.parseLine(line, nLines);
 
-            if (!flagLine) {
+                if (!flagLine) {
+                    flag = false;
+                }
+            } catch (Exception e) {
+                System.err.println("Unexpected error line " + nLines + " (" + e.getMessage() + ")");
                 flag = false;
             }
         }
@@ -483,8 +506,8 @@ public class Tab2BioNetwork {
      */
     private void initReactant(BioReaction reaction, String cpdId, Double coeff, Boolean rightSide, Boolean addCompartment) {
 
-        if(coeff <= 0.0) {
-            System.err.println("[WARNING] The coefficient for "+cpdId+ " in the reaction "+reaction.getId()+" is not valid, it should be strictly positive. It has not been added to the reaction.");
+        if (coeff <= 0.0) {
+            System.err.println("[WARNING] The coefficient for " + cpdId + " in the reaction " + reaction.getId() + " is not valid, it should be strictly positive. It has not been added to the reaction.");
             return;
         }
 
@@ -507,9 +530,8 @@ public class Tab2BioNetwork {
                 compartment = new BioCompartment(compartmentId, compartmentId);
                 this.bioNetwork.add(compartment);
             }
-        }
-        else {
-            if(! this.bioNetwork.contains(compartment)) {
+        } else {
+            if (!this.bioNetwork.contains(compartment)) {
                 this.bioNetwork.add(compartment);
             }
         }

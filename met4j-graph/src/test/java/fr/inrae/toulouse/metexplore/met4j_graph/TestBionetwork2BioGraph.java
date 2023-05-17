@@ -271,4 +271,75 @@ public class TestBionetwork2BioGraph {
 
 	}
 
+	@Test
+	public void testGetPathwayOverlapGraph(){
+		PathwayGraph g = builder.getPathwayOverlapGraph(new BioCollection<>());
+		Assert.assertEquals("wrong number of vertices",4, g.vertexSet().size());
+		Assert.assertEquals("wrong number of edges",10, g.edgeSet().size());
+
+		Assert.assertEquals("wrong in-degree of compound "+p1.getId(), 2, g.inDegreeOf(p1));
+		Assert.assertEquals("wrong out-degree of compound "+p1.getId(), 2, g.outDegreeOf(p1));
+		Assert.assertEquals("wrong in-degree of compound "+p2.getId(), 2, g.inDegreeOf(p2));
+		Assert.assertEquals("wrong out-degree of compound "+p2.getId(), 2, g.outDegreeOf(p2));
+		Assert.assertEquals("wrong in-degree of compound "+p3.getId(), 3, g.inDegreeOf(p3));
+		Assert.assertEquals("wrong out-degree of compound "+p3.getId(), 3, g.outDegreeOf(p3));
+		Assert.assertEquals("wrong in-degree of compound "+p4.getId(), 3, g.inDegreeOf(p4));
+		Assert.assertEquals("wrong out-degree of compound "+p4.getId(), 3, g.outDegreeOf(p4));
+
+		Assert.assertEquals("wrong compound connecting pathway", 3,g.getEdge(p3,p1).getConnectingCompounds().size());
+		Assert.assertEquals("wrong compound connecting pathway", g.getEdge(p1,p3).getConnectingCompounds(),g.getEdge(p3,p1).getConnectingCompounds());
+		assertTrue("wrong compound connecting pathway", g.getEdge(p3,p1).getConnectingCompounds().contains(a));
+		assertTrue("wrong compound connecting pathway", g.getEdge(p3,p1).getConnectingCompounds().contains(b));
+		assertTrue("wrong compound connecting pathway", g.getEdge(p3,p1).getConnectingCompounds().contains(e));
+		Assert.assertEquals("wrong compound connecting pathway", 2,g.getEdge(p3,p4).getConnectingCompounds().size());
+		Assert.assertEquals("wrong compound connecting pathway", g.getEdge(p4,p3).getConnectingCompounds(),g.getEdge(p3,p4).getConnectingCompounds());
+		assertTrue("wrong compound connecting pathway", g.getEdge(p3,p4).getConnectingCompounds().contains(b));
+		assertTrue("wrong compound connecting pathway", g.getEdge(p3,p4).getConnectingCompounds().contains(c));
+		Assert.assertEquals("wrong compound connecting pathway", 2,g.getEdge(p1,p4).getConnectingCompounds().size());
+		Assert.assertEquals("wrong compound connecting pathway", g.getEdge(p4,p1).getConnectingCompounds(),g.getEdge(p1,p4).getConnectingCompounds());
+		assertTrue("wrong compound connecting pathway", g.getEdge(p1,p4).getConnectingCompounds().contains(b));
+		assertTrue("wrong compound connecting pathway", g.getEdge(p1,p4).getConnectingCompounds().contains(h));
+		Assert.assertEquals("wrong compound connecting pathway", 1,g.getEdge(p2,p3).getConnectingCompounds().size());
+		Assert.assertEquals("wrong compound connecting pathway", g.getEdge(p3,p2).getConnectingCompounds(),g.getEdge(p2,p3).getConnectingCompounds());
+		assertTrue("wrong compound connecting pathway", g.getEdge(p2,p3).getConnectingCompounds().contains(f));
+		Assert.assertEquals("wrong compound connecting pathway", 1,g.getEdge(p2,p4).getConnectingCompounds().size());
+		Assert.assertEquals("wrong compound connecting pathway", g.getEdge(p4,p2).getConnectingCompounds(),g.getEdge(p2,p4).getConnectingCompounds());
+		assertTrue("wrong compound connecting pathway", g.getEdge(p2,p4).getConnectingCompounds().contains(d));
+	}
+
+	@Test
+	public void testGetPathwayOverlapGraphII(){
+		BioCollection<BioMetabolite> sides = new BioCollection<>();
+		sides.add(f);
+		PathwayGraph g = builder.getPathwayOverlapGraph(sides);
+		Assert.assertEquals("wrong number of vertices",4, g.vertexSet().size());
+		Assert.assertEquals("wrong number of edges",8, g.edgeSet().size());
+
+		Assert.assertEquals("wrong in-degree of compound "+p1.getId(), 2, g.inDegreeOf(p1));
+		Assert.assertEquals("wrong out-degree of compound "+p1.getId(), 2, g.outDegreeOf(p1));
+		Assert.assertEquals("wrong in-degree of compound "+p2.getId(), 1, g.inDegreeOf(p2));
+		Assert.assertEquals("wrong out-degree of compound "+p2.getId(), 1, g.outDegreeOf(p2));
+		Assert.assertEquals("wrong in-degree of compound "+p3.getId(), 2, g.inDegreeOf(p3));
+		Assert.assertEquals("wrong out-degree of compound "+p3.getId(), 2, g.outDegreeOf(p3));
+		Assert.assertEquals("wrong in-degree of compound "+p4.getId(), 3, g.inDegreeOf(p4));
+		Assert.assertEquals("wrong out-degree of compound "+p4.getId(), 3, g.outDegreeOf(p4));
+
+		Assert.assertEquals("wrong compound connecting pathway", 3,g.getEdge(p3,p1).getConnectingCompounds().size());
+		Assert.assertEquals("wrong compound connecting pathway", g.getEdge(p1,p3).getConnectingCompounds(),g.getEdge(p3,p1).getConnectingCompounds());
+		assertTrue("wrong compound connecting pathway", g.getEdge(p3,p1).getConnectingCompounds().contains(a));
+		assertTrue("wrong compound connecting pathway", g.getEdge(p3,p1).getConnectingCompounds().contains(b));
+		assertTrue("wrong compound connecting pathway", g.getEdge(p3,p1).getConnectingCompounds().contains(e));
+		Assert.assertEquals("wrong compound connecting pathway", 2,g.getEdge(p3,p4).getConnectingCompounds().size());
+		Assert.assertEquals("wrong compound connecting pathway", g.getEdge(p4,p3).getConnectingCompounds(),g.getEdge(p3,p4).getConnectingCompounds());
+		assertTrue("wrong compound connecting pathway", g.getEdge(p3,p4).getConnectingCompounds().contains(b));
+		assertTrue("wrong compound connecting pathway", g.getEdge(p3,p4).getConnectingCompounds().contains(c));
+		Assert.assertEquals("wrong compound connecting pathway", 2,g.getEdge(p1,p4).getConnectingCompounds().size());
+		Assert.assertEquals("wrong compound connecting pathway", g.getEdge(p4,p1).getConnectingCompounds(),g.getEdge(p1,p4).getConnectingCompounds());
+		assertTrue("wrong compound connecting pathway", g.getEdge(p1,p4).getConnectingCompounds().contains(b));
+		assertTrue("wrong compound connecting pathway", g.getEdge(p1,p4).getConnectingCompounds().contains(h));
+		Assert.assertEquals("wrong compound connecting pathway", 1,g.getEdge(p2,p4).getConnectingCompounds().size());
+		Assert.assertEquals("wrong compound connecting pathway", g.getEdge(p4,p2).getConnectingCompounds(),g.getEdge(p2,p4).getConnectingCompounds());
+		assertTrue("wrong compound connecting pathway", g.getEdge(p2,p4).getConnectingCompounds().contains(d));
+	}
+
 }

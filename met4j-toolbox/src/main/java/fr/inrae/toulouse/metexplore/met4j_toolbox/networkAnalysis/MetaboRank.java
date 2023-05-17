@@ -38,6 +38,7 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis;
 import fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalSimilarity.FingerprintBuilder;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.EigenVectorCentrality;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.*;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.GraphFilter;
@@ -47,9 +48,12 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import org.kohsuke.args4j.Option;
@@ -77,21 +81,26 @@ public class MetaboRank extends AbstractMet4jApplication {
     @Option(name = "-i", usage = "input SBML file: path to network used for computing centrality, in sbml format.", required = true)
     public String sbmlFilePath;
 
-    @Format(name = Tsv)
+    @Format(name= EnumFormats.Tsv)
     @ParameterType(name = InputFile)
     @Option(name = "-s", usage = "input seeds file: tabulated file containing node of interest ids and weight", required = true)
     public String seedsFilePath;
 
-    @Format(name = Tsv)
+    @Format(name= EnumFormats.Tsv)
     @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output file: path to the file where the results will be exported", required = true)
     public String output;
 
     //parameters
-    @Format(name = Tsv)
+    @Format(name= EnumFormats.Tsv)
     @ParameterType(name = InputFile)
     @Option(name = "-w", usage = "input edge weight file: (recommended) path to file containing edges' weights. Will be normalized as transition probabilities")
     public String edgeWeightsFilePaths;
+
+    @ParameterType(name= EnumParameterTypes.InputFile)
+    @Format(name= EnumFormats.Txt)
+    @Option(name = "-sc", usage = "input Side compound file", required = false)
+    public String inputSide = null;
 
     @Option(name = "-max", usage = "maximal number of iteration")
     public int maxNbOfIter = 15000;
@@ -183,6 +192,22 @@ public class MetaboRank extends AbstractMet4jApplication {
     private void createCompoundGraph(BioNetwork model) {
         firstGraph = new Bionetwork2BioGraph(model).getCompoundGraph();
         System.err.println("compound graph created.");
+
+        //Graph processing: side compound removal [optional]
+        if (inputSide != null) {
+            System.err.println("removing side compounds...");
+            NodeMapping<BioMetabolite, ReactionEdge, CompoundGraph> mapper = new NodeMapping<>(firstGraph).skipIfNotFound();
+            BioCollection<BioMetabolite> sideCpds = null;
+            try {
+                sideCpds = mapper.map(inputSide);
+            } catch (IOException e) {
+                System.err.println("Error while reading the side compound file");
+                System.err.println(e.getMessage());
+                System.exit(1);
+            }
+            boolean removed = firstGraph.removeAllVertices(sideCpds);
+            if (removed) System.err.println(sideCpds.size() + " compounds removed.");
+        }
     }
 
 

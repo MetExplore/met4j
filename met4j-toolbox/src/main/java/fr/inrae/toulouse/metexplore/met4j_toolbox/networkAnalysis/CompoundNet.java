@@ -40,10 +40,12 @@ public class CompoundNet extends AbstractMet4jApplication {
     public String inputPath = null;
 
     @ParameterType(name= EnumParameterTypes.InputFile)
+    @Format(name= EnumFormats.Txt)
     @Option(name = "-sc", usage = "input Side compound file", required = false)
     public String inputSide = null;
 
     @ParameterType(name= EnumParameterTypes.OutputFile)
+    @Format(name= EnumFormats.Gml)
     @Option(name = "-o", usage = "output Graph file", required = true)
     public String outputPath = null;
 

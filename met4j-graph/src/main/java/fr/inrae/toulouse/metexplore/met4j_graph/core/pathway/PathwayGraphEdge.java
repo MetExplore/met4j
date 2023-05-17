@@ -40,6 +40,8 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
+import java.util.stream.Collectors;
+
 /**
  * The edge Class linking two {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}, linked by {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
  *
@@ -114,6 +116,11 @@ public class PathwayGraphEdge extends Edge<BioPathway>{
      */
     public void removeConnectingCompounds(BioMetabolite e){
         connectingCompounds.remove(e);
+    }
+
+    @Override
+    public String toString(){
+        return connectingCompounds.stream().map(BioMetabolite::getId).collect(Collectors.joining(","));
     }
 
 }

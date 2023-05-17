@@ -63,14 +63,14 @@ import java.util.stream.Collectors;
 public class GenerateGalaxyFiles extends AbstractMet4jApplication {
 
 
-    @Option(name = "-o", usage = "output directory where the galaxy wrappers and the tool_conf.xml will be written", required = true)
+    @Option(name = "-o", usage = "output directory where the galaxy wrappers and the tool_conf.xml will be written (directory tools of the Galaxy directory", required = true)
     public String outputDirectory;
 
     @Option(name = "-p", usage = "Package type", required = false)
     public GalaxyPackageType packageType = GalaxyPackageType.Singularity;
 
     @Option(name = "-v", usage = "Met4j version", required = false)
-    public String version = "latest";
+    public String version = "MET4J_VERSION_TEST";
 
     public static void main(String[] args) {
 

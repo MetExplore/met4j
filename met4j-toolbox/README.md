@@ -448,27 +448,44 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
 <table>
 <thead><tr><th colspan="2">Package fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis</th></tr></thead>
 <tbody>
-<tr><td>CarbonSkeletonNet</td><td>Create a carbon skeleton graph representation of a SBML file content, using GSAM atom-mapping file (see https://forgemia.inra.fr/metexplore/gsam)<details><summary><small>more</small></summary>Metabolic networks used for quantitative analysis often contain links that are irrelevant for graph-based structural analysis. For example, inclusion of side compounds or modelling artifacts such as 'biomass' nodes. Focusing on links between compounds that share parts of their carbon skeleton allows to avoid many transitions involving side compounds, and removes entities without defined chemical structure. This app produce a Carbon Skeleton Network relevant for graph-based analysis of metabolism, in GML or matrix format, from a SBML and an GSAM atom mapping file. GSAM (see https://forgemia.inra.fr/metexplore/gsam) perform atom mapping at genome-scale level using the Reaction Decoder Tool (https://github.com/asad/ReactionDecoder) and allows to compute the number of conserved atoms of a given type between reactants.This app also enable Markov-chain based analysis of metabolic networks by computing reaction-normalized transition probabilities on the Carbon Skeleton Network.<br/><br/><pre><code> -am (--asmatrix)            : export as matrix (implies simple graph
-                               conversion). Default export as GML file
-                               (default: false)
- -g VAL                      : input GSAM file
- -h                          : prints the help (default: false)
- -i (--fromIndexes)          : Use GSAM output with carbon indexes (default:
-                               false)
- -ks (--keepSingleCarbon)    : keep edges involving single-carbon compounds,
-                               such as CO2 (requires formulas in SBML)
-                               (default: false)
- -mc (--nocomp)              : merge compartments (requires unique compound
-                               names that are consistent across compartments)
-                               (default: false)
- -me (--simple)              : merge parallel edges to produce a simple graph
-                               (default: false)
- -o VAL                      : output Graph file
- -ri (--removeIsolatedNodes) : remove isolated nodes (default: false)
- -s VAL                      : input SBML file
- -tp (--transitionproba)     : set transition probability as weight (default:
-                               false)
- -un (--undirected)          : create as undirected (default: false)
+<tr><td>BipartiteDistanceMatrix</td><td>Create a compound to reactions distance matrix.<details><summary><small>more</small></summary>Create a compound to reactions distance matrix.<br/>The distance between two nodes (metabolite or reaction) is computed as the length of the shortest path connecting the two in the bipartite graph, Bipartite graph are composed of two distinct sets of nodes and two nodes can be linked only if they are from distinct sets.<br/>Therefore a metabolite node can be linked to a reaction node if the metabolite is a substrate or product of the reaction.<br/>An optional custom edge weighting can be used, turning the distances into the sum of edge weights in the lightest path, rather than the length of the shortest path.Custom weighting can be provided in a file. In that case, edges without weight are ignored during path search.<br/>If no edge weighting is set, it is recommended to provide a list of side compounds to ignore during network traversal.<br/><br/><pre><code> -f (--full)          : compute full pairwise matrix from both reactions and
+                        compounds lists (default: false)
+ -h                   : prints the help (default: false)
+ -i VAL               : input SBML file
+ -m (--mets) VAL      : an optional file containing list of compounds of
+                        interest.
+ -o VAL               : output Matrix file
+ -r (--rxns) VAL      : an optional file containing list of reactions of
+                        interest.
+ -re (--rExclude) VAL : an optional file containing list of reactions to ignore
+ -sc (--side) VAL     : an optional file containing list of side compounds to
+                        ignore
+ -u (--undirected)    : Ignore reaction direction (default: false)
+ -w (--weights) VAL   : an optional file containing weights for compound pairs
+</code></pre></details></td></tr>
+<tr><td>CarbonSkeletonNet</td><td>Create a carbon skeleton graph representation of a SBML file content, using GSAM atom-mapping file (see https://forgemia.inra.fr/metexplore/gsam)<details><summary><small>more</small></summary>Metabolic networks used for quantitative analysis often contain links that are irrelevant for graph-based structural analysis. For example, inclusion of side compounds or modelling artifacts such as 'biomass' nodes. Focusing on links between compounds that share parts of their carbon skeleton allows to avoid many transitions involving side compounds, and removes entities without defined chemical structure. This app produce a Carbon Skeleton Network relevant for graph-based analysis of metabolism, in GML or matrix format, from a SBML and an GSAM atom mapping file. GSAM (see https://forgemia.inra.fr/metexplore/gsam) perform atom mapping at genome-scale level using the Reaction Decoder Tool (https://github.com/asad/ReactionDecoder) and allows to compute the number of conserved atoms of a given type between reactants.This app also enable Markov-chain based analysis of metabolic networks by computing reaction-normalized transition probabilities on the Carbon Skeleton Network.<br/><br/><pre><code> -am (--asmatrix)             : export as matrix (implies simple graph
+                                conversion). Default export as GML file
+                                (default: false)
+ -g VAL                       : input GSAM file
+ -h                           : prints the help (default: false)
+ -i (--fromIndexes)           : Use GSAM output with carbon indexes (default:
+                                false)
+ -ks (--keepSingleCarbon)     : keep edges involving single-carbon compounds,
+                                such as CO2 (requires formulas in SBML)
+                                (default: false)
+ -main (--onlyMainTransition) : Compute RPAIRS-like tags and keep only main
+                                transitions for each reaction (default: false)
+ -mc (--nocomp)               : merge compartments (requires unique compound
+                                names that are consistent across compartments)
+                                (default: false)
+ -me (--simple)               : merge parallel edges to produce a simple graph
+                                (default: false)
+ -o VAL                       : output Graph file
+ -ri (--removeIsolatedNodes)  : remove isolated nodes (default: false)
+ -s VAL                       : input SBML file
+ -tp (--transitionproba)      : set transition probability as weight (default:
+                                false)
+ -un (--undirected)           : create as undirected (default: false)
 </code></pre></details></td></tr>
 <tr><td>ChemSimilarityWeighting</td><td>Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity.<details><summary><small>more</small></summary>Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity.Chemical similarity has been proposed as edge weight for finding meaningful paths in metabolic networks, using shortest (lightest) path search. See McSha et al. 2003 (https://doi.org/10.1093/bioinformatics/btg217), Rahman et al. 2005 (https://doi.org/10.1093/bioinformatics/bti116) and Pertusi et al. 2014 (https://doi.org/10.1093/bioinformatics/btu760)<br/><br/><pre><code> -d (--asDist)                          : Use distance rather than similarity
                                           (default: false)
@@ -651,6 +668,22 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
  -sd (--skipdist) : skip full distance matrix computation (quick summary)
                     (default: false)
 </code></pre></details></td></tr>
+<tr><td>PathwayNet</td><td>Creation of a Pathway Network representation of a SBML file content<details><summary><small>more</small></summary>Genome-scale metabolic networks are often partitioned into metabolic pathways. Pathways are frequently considered independently despite frequent coupling in their activity due to shared metabolites. In order to decipher the interconnections linking overlapping pathways, this app proposes the creation of "Pathway Network", where two pathways are linked if they share compounds.<br/><br/><pre><code> -am (--asmatrix)             : export as matrix (implies simple graph
+                                conversion). Default export as GML file
+                                (default: false)
+ -cw (--customWeights) VAL    : an optional file containing weights for pathway
+                                pairs
+ -h                           : prints the help (default: false)
+ -ncw (--connectorWeights)    : set number of connecting compounds as weight
+                                (default: false)
+ -o VAL                       : output Graph file
+ -oss (--onlySourcesAndSinks) : consider only metabolites that are source or
+                                sink in the pathway (i.e non-intermediary
+                                compounds) (default: false)
+ -ri (--removeIsolatedNodes)  : remove isolated nodes (default: false)
+ -s VAL                       : input SBML file
+ -sc VAL                      : input Side compound file (recommended)
+</code></pre></details></td></tr>
 <tr><td>PrecursorNetwork</td><td>Perform a network expansion from a set of compound targets to create a precursor network.<details><summary><small>more</small></summary>Perform a network expansion from a set of compound targets to create a precursor network.<br/>The precursor network of a set of compounds (targets) refer to the sub-part of a metabolic network from which a target can be reachedThe network expansion process consist of adding a reaction to the network if any of its products are either a targets or a substrate of a previously added reaction<br/><br/><pre><code> -h                 : prints the help (default: false)
  -i VAL             : input SBML file: path to network used for computing
                       scope, in sbml format.
@@ -734,6 +767,18 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
  -uf (--undefinedFormula)            : flag as side compound any compounds with
                                        no valid chemical formula (default:
                                        false)
+</code></pre></details></td></tr>
+</tbody>
+</table>
+<table>
+<thead><tr><th colspan="2">Package fr.inrae.toulouse.metexplore.met4j_toolbox.reconstruction</th></tr></thead>
+<tbody>
+<tr><td>SbmlCheckBalance</td><td>Check balance of all the reactions in a SBML.<details><summary><small>more</small></summary>Check balance of all the reactions in a SBML.<br/>A reaction is balanced if all its reactants have a chemical formula with a good syntax and if the quantity of each atom is the same in both sides of the reaction.<br/>For each reaction, indicates if the reaction is balanced, the list of the atoms and the sum of their quantity, and the list of the metabolites that don't have a correct chemical formula.<br/><br/><pre><code> -h        : prints the help (default: false)
+ -out VAL  : [checkBalances.tsv] Output tabulated file (1st col: reaction id,
+             2nd col: boolean indicating if the reaction is balanced, 3rd col:
+             atom balances, 4th col: metabolites with bad formula (default:
+             checkBalances.tsv)
+ -sbml VAL : Original sbml file
 </code></pre></details></td></tr>
 </tbody>
 </table>

@@ -36,6 +36,7 @@
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.transform;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.google.common.primitives.Doubles;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
@@ -240,5 +241,37 @@ public class EdgeMerger {
 		};
 	}
 
-
+	/**
+	 * Merge parallel and reversed edges, keep only one. This can be used to avoid edge duplications during undirected graph export
+	 *
+	 * @param g a G object.
+	 * @param comparator a {@link java.util.Comparator} object.
+	 * @param <V> a V object.
+	 * @param <E> a E object.
+	 * @param <G> a G object.
+	 */
+	public static <V extends BioEntity,E extends Edge<V>, G extends BioGraph<V,E>> void undirectedMergeEdgesWithOverride(G g, Comparator<E> comparator){
+		List<List<E>> mergingGroups = new ArrayList<>();
+		Set<E> visited = new HashSet<>();
+		for(E edge : g.edgeSet()){
+			if(!visited.contains(edge)){
+				Double w = g.getEdgeWeight(edge);
+				List<E> parallelAndReversed=new ArrayList<>();
+				//get parallel edges
+				parallelAndReversed.addAll(g.getAllEdges(edge.getV1(), edge.getV2()));
+				//get reversed edges
+				parallelAndReversed.addAll(g.getAllEdges(edge.getV2(), edge.getV1()));
+				//set ignore edges in merging group during next iterations.
+				visited.addAll(parallelAndReversed);
+				mergingGroups.add(parallelAndReversed);
+			}
+		}
+		for(List<E> mergingGroup : mergingGroups){
+			//get 'best' edge
+			if(comparator!=null) mergingGroup.sort(comparator);
+			mergingGroup.remove(0);
+			//remove other edges
+			g.removeAllEdges(mergingGroup);
+		}
+	}
 }

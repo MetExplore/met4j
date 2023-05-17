@@ -12,6 +12,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
@@ -33,6 +34,7 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
     public String sbmlFilePath;
 
     @ParameterType(name = InputFile)
+    @Format(name= EnumFormats.Txt)
     @Option(name = "-t", aliases = {"--targets"}, usage = "input target file: tabulated file containing node of interest ids", required = true)
     public String targetsFilePath;
 
@@ -43,9 +45,11 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
 
     //options
     @ParameterType(name = InputFile)
+    @Format(name= EnumFormats.Txt)
     @Option(name = "-sc", aliases = {"--sides"}, usage = "an optional file containing list of ubiquitous compounds to be considered already available")
     public String sideCompoundFile = null;
     @ParameterType(name = InputFile)
+    @Format(name= EnumFormats.Txt)
     @Option(name = "-ir", aliases = {"--ignore"}, usage = "an optional file containing list of reaction to ignore (forbid inclusion in scope)")
     public String reactionToIgnoreFile = null;
 

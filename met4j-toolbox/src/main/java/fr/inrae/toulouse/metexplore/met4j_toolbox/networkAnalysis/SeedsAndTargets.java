@@ -30,10 +30,12 @@ public class SeedsAndTargets extends AbstractMet4jApplication {
     public String inputPath = null;
 
     @ParameterType(name= EnumParameterTypes.InputFile)
+    @Format(name= EnumFormats.Txt)
     @Option(name = "-sc", aliases = {"--sideFile"}, usage = "input Side compound file", required = false)
     public String inputSide = null;
 
     @ParameterType(name= EnumParameterTypes.OutputFile)
+    @Format(name= EnumFormats.Tsv)
     @Option(name = "-o", aliases = {"--output"}, usage = "output seeds file", required = true)
     public String outputPath = null;
 

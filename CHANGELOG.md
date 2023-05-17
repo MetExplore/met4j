@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.3.0
+
+### Features
+[met4j-toolbox] New app for pathway-networks creation (compound overlap or source/sink intersection)
+[met4j-graph] Added undirected graph simplification method for export
+
+### Fix
+[met4j-graph] expand handled attributes for gml export
+[met4j-graph] fix steiner Tree aproximation, add pruning step to avoid cycles
+[met4j-io] Fix Tab2Sbml : allows empty side in reactions
+
+## 1.2.2
+
+### Fix
+[met4j-io] Fix Kegg2BioNetwork: change http to https 
 
 ## 1.2.1
 
@@ -12,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [met4j-mapping] Add classes for edit-distance based fuzzy search
 [met4j-graph] Add utilities to get distance matrix from paths
 [met4j-graph] More flexible weighting policy definition using lambdas
+[met4j-toolbox] Add app to calculate the distance matrix on bipartite graphs
 
 ### Fix
 [met4j-graph] Improve Shortest Paths union computing efficiency

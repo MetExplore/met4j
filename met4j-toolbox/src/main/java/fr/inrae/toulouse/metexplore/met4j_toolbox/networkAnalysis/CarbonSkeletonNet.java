@@ -4,6 +4,7 @@ import fr.inrae.toulouse.metexplore.met4j_chemUtils.FormulaParser;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.AtomMappingWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.RPAIRSlikePolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.ReactionProbabilityWeight;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.EdgeMerger;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.VertexContraction;
@@ -72,6 +73,9 @@ public class CarbonSkeletonNet extends AbstractMet4jApplication {
     @Option(name = "-am", aliases = {"--asmatrix"}, usage = "export as matrix (implies simple graph conversion). Default export as GML file", required = false)
     public boolean asMatrix = false;
 
+    @Option(name = "-main", aliases = {"--onlyMainTransition"}, usage = "Compute RPAIRS-like tags and keep only main transitions for each reaction", required = false)
+    public boolean main = false;
+
     @Option(name = "-i", aliases = {"--fromIndexes"}, usage = "Use GSAM output with carbon indexes", required = false)
     public boolean fromIndexes = false;
 
@@ -118,8 +122,15 @@ public class CarbonSkeletonNet extends AbstractMet4jApplication {
                 .removeEdgeWithoutMapping()
                 .removeEdgesWithoutConservedCarbon();
 
-        wp.setWeight(graph);
-        System.out.println(" Done.");
+        if(main){
+            RPAIRSlikePolicy rwp = new RPAIRSlikePolicy(wp)
+                    .removeSideTransitions()
+                    .removeSpuriousTransitions();
+            rwp.setWeight(graph);
+        }else{
+            wp.setWeight(graph);
+            System.out.println("Done.");
+        }
 
         //invert graph as undirected (copy edge weight to reversed edge)
         if (undirected) {

@@ -3,22 +3,18 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-// import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.FloydWarshall;
-// import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.ShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.CustomWeightPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.UnweightedPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DegreeWeightPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightsFromFile;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-import fr.inrae.toulouse.metexplore.met4j_mapping.Mapper;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
@@ -27,7 +23,6 @@ import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Csv;
@@ -99,7 +94,7 @@ public class DistanceMatrix extends AbstractMet4jApplication {
         //Graph processing: side compound removal [optional]
         if (sideCompoundFile != null) {
             System.err.println("removing side compounds...");
-            Mapper<BioMetabolite> mapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
+            NodeMapping mapper = new NodeMapping<>(graph).skipIfNotFound();
             BioCollection<BioMetabolite> sideCpds = null;
             try {
                 sideCpds = mapper.map(sideCompoundFile);
@@ -108,10 +103,8 @@ public class DistanceMatrix extends AbstractMet4jApplication {
                 System.err.println(e.getMessage());
                 System.exit(1);
             }
-            if (mapper.getNumberOfSkippedEntries() > 0)
-                System.err.println(mapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
             boolean removed = graph.removeAllVertices(sideCpds);
-            System.err.println(sideCpds.size() + " side compounds ignored during graph build.");
+            if (removed) System.err.println(sideCpds.size() + " side compounds ignored during graph build.");
         }
 
         //Graph processing: set weights [optional]
@@ -148,7 +141,7 @@ public class DistanceMatrix extends AbstractMet4jApplication {
             distM = matrixComputor.getShortestPathDistanceMatrix();
         }else{
             System.err.println("filtering matrix...");
-            Mapper<BioMetabolite> mapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
+            NodeMapping mapper = new NodeMapping<>(graph).skipIfNotFound();
             Set<BioMetabolite> seeds = null;
             try {
                 seeds = new LinkedHashSet<BioMetabolite>(mapper.map(seedFile));
@@ -160,7 +153,6 @@ public class DistanceMatrix extends AbstractMet4jApplication {
             //compute distance matrix
             ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> matrixComputor = new ShortestPath<>(graph, !undirected);
             //get SPs
-            List<BioPath<BioMetabolite, ReactionEdge>> sps = matrixComputor.getShortestPathsUnionList(seeds);
             distM = matrixComputor.getShortestPathDistanceMatrix(seeds,seeds);
         }
         //export results

@@ -37,7 +37,10 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.tabulated.network;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
@@ -50,7 +53,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -154,9 +156,14 @@ public class Tab2BioNetwork {
         while ((line = br.readLine()) != null) {
             nLines++;
 
-            Boolean flagLine = this.testLine(line, nLines);
+            try {
+                Boolean flagLine = this.testLine(line, nLines);
 
-            if (!flagLine) {
+                if (!flagLine) {
+                    flag = false;
+                }
+            } catch (Exception error) {
+                System.err.println("Unexpected error line " + nLines);
                 flag = false;
             }
         }
@@ -258,6 +265,11 @@ public class Tab2BioNetwork {
                     rights = rightString.split(" \\+ ");
                 }
 
+                if (lefts.length == 0 && rights.length == 0) {
+                    System.err.println("Error line " + nLines + " : reaction must have hat least one reactant (" + formula + ")");
+                    flag = false;
+                }
+
                 for (String cpdId : lefts) {
 
                     cpdId = cpdId.trim();
@@ -303,10 +315,6 @@ public class Tab2BioNetwork {
 
             String id = tab[this.colId].trim();
 
-//				id = id.replaceAll("[^A-Za-z0-9_]", "_");
-
-//				id = StringUtils.sbmlEncode(id);
-
             String formula = tab[this.colFormula];
 
             BioReaction reaction;
@@ -318,7 +326,6 @@ public class Tab2BioNetwork {
 
             reaction = new BioReaction(reactionId);
 
-            this.bioNetwork.add(reaction);
 
             // in some palsson files, the compartment is specified at the beginning of the formula :
             // [c] : g3p + nad + pi <==> 13dpg + h + nadh
@@ -330,9 +337,6 @@ public class Tab2BioNetwork {
             if (matcher.matches()) {
                 String occurence = matcher.group(1);
 
-                //String[] tabOcc = occurence.split(":");
-
-                //compartmentId = tabOcc[0].replace("[", "").replace("]", "").trim();
                 compartmentId = matcher.group(2);
 
                 formula = formula.replace(occurence, "");
@@ -350,21 +354,34 @@ public class Tab2BioNetwork {
 
             String leftString = tabFormula[0].trim();
 
-
             List<String> lefts = new ArrayList<>();
-
-
-            if (!leftString.equals("")) {
-                lefts = Arrays.asList(leftString.split(" \\+"));
-            }
-
-            String rightString = tabFormula[1].trim();
-
             List<String> rights = new ArrayList<>();
 
-            if (!rightString.equals("")) {
-                rights = Arrays.asList(rightString.split(" \\+ "));
+            if (!leftString.isEmpty()) {
+
+                if (!leftString.equals("")) {
+                    lefts = Arrays.asList(leftString.split(" \\+"));
+                }
             }
+
+            if (tabFormula.length > 1) {
+
+                String rightString = tabFormula[1].trim();
+
+                if (!rightString.isEmpty()) {
+
+                    if (!rightString.equals("")) {
+                        rights = Arrays.asList(rightString.split(" \\+ "));
+                    }
+                }
+            }
+
+            if (lefts.size() == 0 && rights.size() == 0) {
+                System.err.println("Error line " + nLines + " : the reaction must have at least one reactant");
+                return false;
+            }
+
+            this.bioNetwork.add(reaction);
 
             for (String cpdId : lefts) {
                 parseReactant(reaction, compartmentId, cpdId, false);
@@ -380,6 +397,7 @@ public class Tab2BioNetwork {
 
     /**
      * Parse
+     *
      * @param reaction
      * @param compartmentId
      * @param cpdId
@@ -406,7 +424,7 @@ public class Tab2BioNetwork {
             cpdId = cpdId.replace(matcherCpd.group(1), "_" + matcherCpd.group(2));
             addCompartment = true;
         } else {
-            if (!compartmentId.equals("") ) {
+            if (!compartmentId.equals("")) {
                 addCompartment = true;
                 cpdId = cpdId + "_" + compartmentId;
             }
@@ -460,9 +478,14 @@ public class Tab2BioNetwork {
 
             nLines++;
 
-            Boolean flagLine = this.parseLine(line, nLines);
+            try {
+                Boolean flagLine = this.parseLine(line, nLines);
 
-            if (!flagLine) {
+                if (!flagLine) {
+                    flag = false;
+                }
+            } catch (Exception e) {
+                System.err.println("Unexpected error line " + nLines + " (" + e.getMessage() + ")");
                 flag = false;
             }
         }
@@ -483,8 +506,8 @@ public class Tab2BioNetwork {
      */
     private void initReactant(BioReaction reaction, String cpdId, Double coeff, Boolean rightSide, Boolean addCompartment) {
 
-        if(coeff <= 0.0) {
-            System.err.println("[WARNING] The coefficient for "+cpdId+ " in the reaction "+reaction.getId()+" is not valid, it should be strictly positive. It has not been added to the reaction.");
+        if (coeff <= 0.0) {
+            System.err.println("[WARNING] The coefficient for " + cpdId + " in the reaction " + reaction.getId() + " is not valid, it should be strictly positive. It has not been added to the reaction.");
             return;
         }
 
@@ -507,9 +530,8 @@ public class Tab2BioNetwork {
                 compartment = new BioCompartment(compartmentId, compartmentId);
                 this.bioNetwork.add(compartment);
             }
-        }
-        else {
-            if(! this.bioNetwork.contains(compartment)) {
+        } else {
+            if (!this.bioNetwork.contains(compartment)) {
                 this.bioNetwork.add(compartment);
             }
         }

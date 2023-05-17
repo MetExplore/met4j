@@ -265,6 +265,11 @@ public class Tab2BioNetwork {
                     rights = rightString.split(" \\+ ");
                 }
 
+                if (lefts.length == 0 && rights.length == 0) {
+                    System.err.println("Error line " + nLines + " : reaction must have hat least one reactant (" + formula + ")");
+                    flag = false;
+                }
+
                 for (String cpdId : lefts) {
 
                     cpdId = cpdId.trim();
@@ -310,10 +315,6 @@ public class Tab2BioNetwork {
 
             String id = tab[this.colId].trim();
 
-//				id = id.replaceAll("[^A-Za-z0-9_]", "_");
-
-//				id = StringUtils.sbmlEncode(id);
-
             String formula = tab[this.colFormula];
 
             BioReaction reaction;
@@ -325,7 +326,6 @@ public class Tab2BioNetwork {
 
             reaction = new BioReaction(reactionId);
 
-            this.bioNetwork.add(reaction);
 
             // in some palsson files, the compartment is specified at the beginning of the formula :
             // [c] : g3p + nad + pi <==> 13dpg + h + nadh
@@ -337,9 +337,6 @@ public class Tab2BioNetwork {
             if (matcher.matches()) {
                 String occurence = matcher.group(1);
 
-                //String[] tabOcc = occurence.split(":");
-
-                //compartmentId = tabOcc[0].replace("[", "").replace("]", "").trim();
                 compartmentId = matcher.group(2);
 
                 formula = formula.replace(occurence, "");
@@ -357,20 +354,14 @@ public class Tab2BioNetwork {
 
             String leftString = tabFormula[0].trim();
 
+            List<String> lefts = new ArrayList<>();
+            List<String> rights = new ArrayList<>();
+
             if (!leftString.isEmpty()) {
-
-
-                List<String> lefts = new ArrayList<>();
-
 
                 if (!leftString.equals("")) {
                     lefts = Arrays.asList(leftString.split(" \\+"));
                 }
-
-                for (String cpdId : lefts) {
-                    parseReactant(reaction, compartmentId, cpdId, false);
-                }
-
             }
 
             if (tabFormula.length > 1) {
@@ -379,16 +370,25 @@ public class Tab2BioNetwork {
 
                 if (!rightString.isEmpty()) {
 
-                    List<String> rights = new ArrayList<>();
-
                     if (!rightString.equals("")) {
                         rights = Arrays.asList(rightString.split(" \\+ "));
                     }
-
-                    for (String cpdId : rights) {
-                        parseReactant(reaction, compartmentId, cpdId, true);
-                    }
                 }
+            }
+
+            if (lefts.size() == 0 && rights.size() == 0) {
+                System.err.println("Error line " + nLines + " : the reaction must have at least one reactant");
+                return false;
+            }
+
+            this.bioNetwork.add(reaction);
+
+            for (String cpdId : lefts) {
+                parseReactant(reaction, compartmentId, cpdId, false);
+            }
+
+            for (String cpdId : rights) {
+                parseReactant(reaction, compartmentId, cpdId, true);
             }
 
         }

@@ -74,14 +74,38 @@ public class Tab2BioNetworkTest {
 
     @Test
     public void testBadFormulaLeft() {
-        String line = "  \tm1 + 2 a m2 -> m3 + m4\n";
+        String line = "r\tm1 + 2 a m2 -> m3 + m4\n";
 
         assertFalse(app.testLine(line, 1));
     }
 
     @Test
     public void testBadFormulaRight() {
-        String line = "  \tm1 + 2 m2 -> m3  m4\n";
+        String line = "r\tm1 + 2 m2 -> m3  m4\n";
+
+        assertFalse(app.testLine(line, 1));
+    }
+
+    @Test
+    public void testEmptyRight() {
+        // Must accept empty right (exchange reaction)
+        String line = "r\tm1 + 2 m2 ->\n";
+
+        assertTrue(app.testLine(line, 1));
+    }
+
+    @Test
+    public void testEmptyLeft() {
+        // Must accept empty right (exchange reaction)
+        String line = "r\t-> m1 + 2 m2\n";
+
+        assertTrue(app.testLine(line, 1));
+    }
+
+    @Test
+    public void testEmptyLeftAndRight() {
+        // Must have at least one reactant
+        String line = "r\t-> \n";
 
         assertFalse(app.testLine(line, 1));
     }
@@ -170,14 +194,42 @@ public class Tab2BioNetworkTest {
     }
 
     @Test
-    public void parseLineEmptySide() {
+    public void parseLineEmptySides() {
         String line = "r\t <-> ";
 
-        app.parseLine(line, 1);
+        Boolean flag = app.parseLine(line, 1);
+
+        assertFalse(flag);
+
+        BioNetwork network = app.getBioNetwork();
+        assertEquals(0, network.getReactionsView().size());
+        assertEquals(0, network.getMetabolitesView().size());
+    }
+
+    @Test
+    public void parseLineEmptyLeftSide() {
+        String line = "r\t <-> s2";
+
+        Boolean flag = app.parseLine(line, 1);
+
+        assertTrue(flag);
 
         BioNetwork network = app.getBioNetwork();
         assertEquals(1, network.getReactionsView().size());
-        assertEquals(0, network.getMetabolitesView().size());
+        assertEquals(1, network.getMetabolitesView().size());
+    }
+
+    @Test
+    public void parseLineEmptyRightSide() {
+        String line = "r\tm1 <->";
+
+        Boolean flag = app.parseLine(line, 1);
+
+        assertTrue(flag);
+
+        BioNetwork network = app.getBioNetwork();
+        assertEquals(1, network.getReactionsView().size());
+        assertEquals(1, network.getMetabolitesView().size());
     }
 
     @Test

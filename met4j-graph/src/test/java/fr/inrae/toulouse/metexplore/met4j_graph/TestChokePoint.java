@@ -57,8 +57,8 @@ public class TestChokePoint {
 
 	public static CompoundGraph cg;
 	public static BipartiteGraph bg;
-	public static BioMetabolite v1,v2,v3,v4;
-	public static BioReaction r1,r2,r3;
+	public static BioMetabolite v1,v2,v3,v4,v5,v6,v7;
+	public static BioReaction r1,r2,r3,r4,r5;
 	public static BioNetwork bn;
 	public static BioCompartment comp;
 	
@@ -73,6 +73,9 @@ public class TestChokePoint {
 		v2 = new BioMetabolite("v2");bn.add(v2);bn.affectToCompartment(comp, v2);
 		v3 = new BioMetabolite("v3");bn.add(v3);bn.affectToCompartment(comp, v3);
 		v4 = new BioMetabolite("v4");bn.add(v4);bn.affectToCompartment(comp, v4);
+		v5 = new BioMetabolite("v5");bn.add(v5);bn.affectToCompartment(comp, v5);
+		v6 = new BioMetabolite("v6");bn.add(v6);bn.affectToCompartment(comp, v6);
+		v7 = new BioMetabolite("v7");bn.add(v7);bn.affectToCompartment(comp, v7);
 		
 		r1 = new BioReaction("r1");bn.add(r1);
 		bn.affectLeft(r1, 1.0, comp, v1);
@@ -87,7 +90,19 @@ public class TestChokePoint {
 		r3 = new BioReaction("r3");bn.add(r3);
 		bn.affectLeft(r3, 1.0, comp, v2);
 		bn.affectLeft(r3, 1.0, comp, v3);
+		bn.affectLeft(r3, 1.0, comp, v6);
 		bn.affectRight(r3, 1.0, comp, v4);
+
+		r4 = new BioReaction("r4");bn.add(r4);
+		bn.affectLeft(r4, 1.0, comp, v2);
+		bn.affectLeft(r4, 1.0, comp, v3);
+		bn.affectLeft(r4, 1.0, comp, v5);
+		bn.affectRight(r4, 1.0, comp, v6);
+
+		r5 = new BioReaction("r5");bn.add(r5);
+		r5.setReversible(true);
+		bn.affectLeft(r4, 1.0, comp, v6);
+		bn.affectRight(r4, 1.0, comp, v7);
 
 		
 		ReactionEdge e1 = new ReactionEdge(v1, v2, r1);
@@ -96,18 +111,34 @@ public class TestChokePoint {
 		ReactionEdge e4 = new ReactionEdge(v1, v3, r2);
 		ReactionEdge e5 = new ReactionEdge(v2, v4, r3);
 		ReactionEdge e6 = new ReactionEdge(v3, v4, r3);
+		ReactionEdge e7 = new ReactionEdge(v5, v6, r4);
+		ReactionEdge e8 = new ReactionEdge(v2, v6, r4);
+		ReactionEdge e9 = new ReactionEdge(v3, v6, r4);
+		ReactionEdge e10 = new ReactionEdge(v6, v4, r3);
+		ReactionEdge e11 = new ReactionEdge(v6, v7, r5);
+		ReactionEdge e12 = new ReactionEdge(v7, v6, r5);
+
 		
 		cg.addVertex(v1);
 		cg.addVertex(v2);
 		cg.addVertex(v3);
 		cg.addVertex(v4);
+		cg.addVertex(v5);
+		cg.addVertex(v6);
+		cg.addVertex(v7);
 		cg.addEdge(v1, v2, e1);
 		cg.addEdge(v1, v3, e2);
 		cg.addEdge(v1, v2, e3);
 		cg.addEdge(v1, v3, e4);
 		cg.addEdge(v2, v4, e5);
 		cg.addEdge(v3, v4, e6);
-		
+		cg.addEdge(v5, v6, e7);
+		cg.addEdge(v2, v6, e8);
+		cg.addEdge(v3, v6, e9);
+		cg.addEdge(v6, v4, e10);
+		cg.addEdge(v6, v7, e11);
+		cg.addEdge(v7, v6, e12);
+
 		BipartiteEdge be1 = new BipartiteEdge(v1, r1);
 		BipartiteEdge be2 = new BipartiteEdge(v1, r2);
 		BipartiteEdge be3 = new BipartiteEdge(v2, r3);
@@ -117,14 +148,28 @@ public class TestChokePoint {
 		BipartiteEdge be7 = new BipartiteEdge(r2, v2);
 		BipartiteEdge be8 = new BipartiteEdge(r2, v3);
 		BipartiteEdge be9 = new BipartiteEdge(r3, v4);
-		
+		BipartiteEdge be10 = new BipartiteEdge(v2, r4);
+		BipartiteEdge be11 = new BipartiteEdge(v3, r4);
+		BipartiteEdge be12 = new BipartiteEdge(v5, r4);
+		BipartiteEdge be13 = new BipartiteEdge(r4, v6);
+		BipartiteEdge be14 = new BipartiteEdge(v6, r5);
+		BipartiteEdge be15 = new BipartiteEdge(v7, r5);
+		BipartiteEdge be16 = new BipartiteEdge(r5, v6);
+		BipartiteEdge be17 = new BipartiteEdge(r5, v7);
+
+
 		bg.addVertex(v1);
 		bg.addVertex(v2);
 		bg.addVertex(v3);
 		bg.addVertex(v4);
+		bg.addVertex(v5);
+		bg.addVertex(v6);
+		bg.addVertex(v7);
 		bg.addVertex(r1);
 		bg.addVertex(r2);
 		bg.addVertex(r3);
+		bg.addVertex(r4);
+		bg.addVertex(r5);
 		bg.addEdge(v1, r1, be1);
 		bg.addEdge(v1, r2, be2);
 		bg.addEdge(v2, r3, be3);
@@ -134,21 +179,33 @@ public class TestChokePoint {
 		bg.addEdge(r2, v2, be7);
 		bg.addEdge(r2, v3, be8);
 		bg.addEdge(r3, v4, be9);
+		bg.addEdge(v2, r4, be10);
+		bg.addEdge(v3, r4, be11);
+		bg.addEdge(v5, r4, be12);
+		bg.addEdge(r4, v6, be13);
+		bg.addEdge(v6, r5, be14);
+		bg.addEdge(v7, r5, be15);
+		bg.addEdge(r5, v6, be16);
+		bg.addEdge(r5, v7, be17);
 
 	}
 	
 	@Test
 	public void testGetChokePointFromCompoundGraph() {
 		HashSet<BioReaction> cp = ChokePoint.getChokePoint(cg);
-		assertEquals(1, cp.size());
+		assertEquals(3, cp.size());
 		assertTrue(cp.contains(r3));
+		assertTrue(cp.contains(r4));
+		assertTrue(cp.contains(r5));
 	}
 	
 	@Test
 	public void testGetChokePointFromBipartiteGraph() {
 		HashSet<BioReaction> cp = ChokePoint.getChokePoint(bg);
-		assertEquals(1, cp.size());
+		assertEquals(3, cp.size());
 		assertTrue(cp.contains(r3));
+		assertTrue(cp.contains(r4));
+		assertTrue(cp.contains(r5));
 	}
 	
 }

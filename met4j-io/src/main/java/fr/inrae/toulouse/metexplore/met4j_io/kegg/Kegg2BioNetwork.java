@@ -241,7 +241,8 @@ public class Kegg2BioNetwork {
                 throw new Exception("[met4j-io][Kegg2BioNetwork] Invalid format in pathway data : " + line);
             }
 
-            String dbId = this.simplifyId(pathwayData[0].substring(5));
+            //String dbId = this.simplifyId(pathwayData[0].substring(5));
+            String dbId = pathwayData[0];
             String name = pathwayData[1];
             this.pathwayList.put(dbId, name);
         }

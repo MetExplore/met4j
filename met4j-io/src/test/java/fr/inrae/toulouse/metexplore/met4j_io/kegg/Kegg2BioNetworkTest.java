@@ -315,8 +315,8 @@ public class Kegg2BioNetworkTest {
 
     @Test
     public void createNetworkPathways() throws Exception {
-        String pathwayList = "path:bpa00000\tFake pathway without reactions\n" +
-                "path:bpa00020\tCitrate cycle (TCA cycle)2\n";
+        String pathwayList = "bpa00000\tFake pathway without reactions\n" +
+                "bpa00020\tCitrate cycle (TCA cycle)2\n";
 
         doReturn(pathwayList).when(keggServices).getKeggPathwayEntries(anyString());
         doReturn(KeggApiMock.noReactionPathwayKgml).when(keggServices).getKgml("bpa00000");
@@ -390,7 +390,7 @@ public class Kegg2BioNetworkTest {
         reactions.add("R00209");
         reactions.add("R00109");
 
-        String pathwayList = "path:bpa0\tFake pathway\n";
+        String pathwayList = "bpa0\tFake pathway\n";
 
         doReturn(pathwayList).when(keggServices).getKeggPathwayEntries(anyString());
         doReturn(KeggApiMock.fakeKgml).when(keggServices).getKgml("bpa0");
@@ -443,7 +443,7 @@ public class Kegg2BioNetworkTest {
         reactions.add("R00209");
         reactions.add("R00109");
 
-        String pathwayList = "path:bpa0\tFake pathway\n";
+        String pathwayList = "bpa0\tFake pathway\n";
 
         doReturn(pathwayList).when(keggServices).getKeggPathwayEntries(anyString());
         doReturn(KeggApiMock.fakeKgml).when(keggServices).getKgml("bpa0");

@@ -1,12 +1,4 @@
-FROM debian:stable-slim
-
-RUN export DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update \
-&& apt-get upgrade -y \
-&& apt-get install -y openjdk-11-jre maven \
-&& apt-get clean \
-&& apt-get purge
+FROM adoptopenjdk:11-jdk-hotspot
 
 RUN mkdir -p /opt/bin
 

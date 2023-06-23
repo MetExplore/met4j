@@ -208,7 +208,7 @@ public class TestSteinerTreeApprox {
 			g.setEdgeWeight(fe, 1000);
 			g.setEdgeWeight(ed, 1000);
 			g.setEdgeWeight(ey, 2);
-			g.setEdgeWeight(df, 1);
+			g.setEdgeWeight(df, 2);
 			g.setEdgeWeight(yx, 2);
 			g.setEdgeWeight(xd, 1);
 			g.setEdgeWeight(xb, 2);

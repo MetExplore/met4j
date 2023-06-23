@@ -37,6 +37,7 @@ package fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -64,17 +65,14 @@ public class ChokePoint {
 	public static HashSet<BioReaction> getChokePoint(CompoundGraph g){
 		HashSet<BioReaction> chokePoints = new HashSet<>();
 		for(BioMetabolite v : g.vertexSet()){
-			Set<ReactionEdge> in = g.incomingEdgesOf(v);
-			Set<ReactionEdge> out = g.outgoingEdgesOf(v);
+			Set<BioReaction> in = g.incomingEdgesOf(v).stream().map(ReactionEdge::getReaction).collect(Collectors.toSet());
+			Set<BioReaction> out = g.outgoingEdgesOf(v).stream().map(ReactionEdge::getReaction).collect(Collectors.toSet());
 			if(in.size() == 1 ){
-				ReactionEdge choke = in.iterator().next();
-				chokePoints.add(choke.getReaction());
+				chokePoints.add(in.iterator().next());
 			}else if(out.size() == 1 ){
-				ReactionEdge choke = out.iterator().next();
-				chokePoints.add(choke.getReaction());
+				chokePoints.add(out.iterator().next());
 			}
 		}
-		
 		return chokePoints;
 	}
 	

@@ -227,7 +227,11 @@ public class PathBasedCentrality<V extends BioEntity,E extends Edge<V>, G extend
 					cc+=d;
 				}
 			}
-			closeness.put(vertex, 1.0/cc);
+			if(cc==0.0){
+				closeness.put(vertex, 0.0);
+			}else{
+				closeness.put(vertex, 1.0/cc);
+			}
 		}
 
 		return closeness;

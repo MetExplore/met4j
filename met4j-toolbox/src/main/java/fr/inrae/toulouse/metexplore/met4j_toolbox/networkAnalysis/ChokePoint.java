@@ -38,11 +38,6 @@ public class ChokePoint extends AbstractMet4jApplication {
     @Option(name = "-o", usage = "output results file", required = true)
     public String outputPath = null;
 
-    @Format(name = Txt)
-    @ParameterType(name = InputFile)
-    @Option(name = "-s", aliases = {"--side"}, usage = "an optional file containing list of side compounds to ignore")
-    public String sideCompoundFile = null;
-
 
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
 
@@ -84,39 +79,8 @@ public class ChokePoint extends AbstractMet4jApplication {
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
         CompoundGraph graph = builder.getCompoundGraph();
 
-        //Graph processing: side compound removal [optional]
-        if (sideCompoundFile != null) {
-            System.err.println("removing side compounds...");
-            BioCollection<BioMetabolite> sideCpds = new BioCollection<>();
-
-            try {
-                BufferedReader fr = new BufferedReader(new FileReader(sideCompoundFile));
-                String line;
-                while ((line = fr.readLine()) != null) {
-                    String sId = line.trim().split("\t")[0];
-                    BioMetabolite s = network.getMetabolite(sId);
-                    if (s != null) {
-                        sideCpds.add(s);
-                    } else {
-                        System.err.println(sId + " side compound not found in network.");
-                    }
-                }
-                fr.close();
-                boolean removed = graph.removeAllVertices(sideCpds);
-                if (removed) System.err.println(sideCpds.size() + " compounds removed.");
-            } catch(IOException e) {
-                System.err.println("Error while reading the side compound file");
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
-        }
-
-        //Graph processing: set weights
-        WeightingPolicy wp = new UnweightedPolicy();
-        wp.setWeight(graph);
-
-        //compute loads
-        System.err.println("Computing load points...");
+        //compute choke points
+        System.err.println("Computing choke points...");
         HashSet<BioReaction> choke = fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.ChokePoint.getChokePoint(graph);
 
         //export results
@@ -150,7 +114,7 @@ public class ChokePoint extends AbstractMet4jApplication {
 
     @Override
     public String getLongDescription() {
-        return this.getShortDescription() + "\nLoad points constitute an indicator of lethality and can help identifying drug target " +
+        return this.getShortDescription() + "\nChoke points constitute an indicator of lethality and can help identifying drug target " +
                 "Choke points are reactions that are required to consume or produce one compound. Targeting of choke point can lead to the accumulation or the loss of some metabolites, thus choke points constitute an indicator of lethality and can help identifying drug target \n" +
                 "See : Syed Asad Rahman, Dietmar Schomburg; Observing local and global properties of metabolic pathways: ‘load points’ and ‘choke points’ in the metabolic networks. Bioinformatics 2006; 22 (14): 1767-1774. doi: 10.1093/bioinformatics/btl181";
     }

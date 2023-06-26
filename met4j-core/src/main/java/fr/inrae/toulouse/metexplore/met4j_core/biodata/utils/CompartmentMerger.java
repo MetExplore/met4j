@@ -176,9 +176,6 @@ public class CompartmentMerger {
         //remove reactions that create loops
         removeLoops();
 
-        //remove redundant reactions?
-        //TODO
-
         return merged;
     }
 

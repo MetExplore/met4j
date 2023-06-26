@@ -34,7 +34,7 @@ public class SBMLwizard extends AbstractMet4jApplication {
 
     @ParameterType(name = EnumParameterTypes.InputFile)
     @Format(name = EnumFormats.Txt)
-    @Option(name = "-rc", usage = "remove compounds from input identifier file", required = false)
+    @Option(name = "-rc", usage = "file containing identifiers of compounds to remove from the metabolic network", required = false)
     public String inputSide = null;
 
     @Option(name = "-ric", aliases = {"--noIsolated"}, usage = "remove isolated compounds (not involved in any reaction)")
@@ -42,7 +42,7 @@ public class SBMLwizard extends AbstractMet4jApplication {
 
     @ParameterType(name = EnumParameterTypes.InputFile)
     @Format(name = EnumFormats.Txt)
-    @Option(name = "-rr", usage = "remove reaction from input identifier file", required = false)
+    @Option(name = "-rr", usage = "file containing identifiers of reactions to remove from the metabolic network", required = false)
     public String inputReactions = null;
 
     @ParameterType(name = EnumParameterTypes.OutputFile)
@@ -55,8 +55,8 @@ public class SBMLwizard extends AbstractMet4jApplication {
 
     enum strategy {no, by_name, by_id}
 
-    @Option(name = "-mc", aliases = {"--mergecomp"}, usage = "merge compartments. " +
-            "Use names if consistent and unambiguous across compartments, or identifiers if compartment suffix is present (id in form \"xxx_y\" with xxx as base identifier and y as compartment label).")
+    @Option(name = "-mc", aliases = {"--mergecomp"}, usage = "merge compartments using the provided strategy. " +
+            "No merge by default. \"by_name\" can be used if names are consistent and unambiguous across compartments, \"by_id\" can be used if compartment suffix is present in compounds identifiers (id in form \"xxx_y\" with xxx as base identifier and y as compartment label).")
     public strategy mergingStrat = strategy.no;
 
     @Option(name = "-rdr", aliases = {"--noDuplicated"}, usage = "remove duplicated reactions (same reactants, same GPR)")
@@ -106,7 +106,7 @@ public class SBMLwizard extends AbstractMet4jApplication {
         //side compound removal [optional]
         if (inputSide != null) {
             BioCollection<BioMetabolite> sideCpds = new BioCollection<>();
-            System.err.println("removing side compounds...");
+            System.out.println("removing side compounds...");
             Mapper<BioMetabolite> cmapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
 
             try {
@@ -117,18 +117,18 @@ public class SBMLwizard extends AbstractMet4jApplication {
                 System.exit(1);
             }
             if (cmapper.getNumberOfSkippedEntries() > 0)
-                System.err.println(cmapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
+                System.out.println(cmapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
 
             for(BioMetabolite sc : sideCpds){
                 network.removeOnCascade(sc);
             }
-            System.err.println(sideCpds.size() + " side compounds removed from network.");
+            System.out.println(sideCpds.size() + " side compounds removed from network.");
         }
 
         //irrelevant reaction removal [optional]
         if (inputReactions != null) {
             BioCollection<BioReaction> sideRxns = new BioCollection<>();
-            System.err.println("removing side reaction...");
+            System.out.println("removing side reaction...");
             Mapper<BioReaction> rmapper = new Mapper<>(network, BioNetwork::getReactionsView).skipIfNotFound();
 
             try {
@@ -139,17 +139,17 @@ public class SBMLwizard extends AbstractMet4jApplication {
                 System.exit(1);
             }
             if (rmapper.getNumberOfSkippedEntries() > 0)
-                System.err.println(rmapper.getNumberOfSkippedEntries() + " reactions not found in network.");
+                System.out.println(rmapper.getNumberOfSkippedEntries() + " reactions not found in network.");
 
             for(BioReaction r : sideRxns){
                 network.removeOnCascade(r);
             }
-            System.err.println(sideRxns.size() + " irrelevant reactions removed from network.");
+            System.out.println(sideRxns.size() + " irrelevant reactions removed from network.");
         }
 
         //removal of reactions that cannot hold flux in any condition
         if(removeNoFlux){
-            System.err.println("removing reaction with closed flux bound...");
+            System.out.println("removing reaction with closed flux bound...");
             BioCollection<BioReaction> toRemove = new BioCollection<>();
             for(BioReaction r : network.getReactionsView()){
                 if(ReactionAttributes.getLowerBound(r).value==0.0 &&
@@ -159,12 +159,12 @@ public class SBMLwizard extends AbstractMet4jApplication {
             }
 
             network.removeOnCascade(toRemove);
-            System.err.println(toRemove.size() + " \"closed\" reactions removed from network.");
+            System.out.println(toRemove.size() + " \"closed\" reactions removed from network.");
         }
 
         //exchange reaction removal
         if(exchangeCompToRemove!=null){
-            System.err.println("removing external compartment...");
+            System.out.println("removing external compartment...");
             BioCompartment exchange = network.getCompartment(exchangeCompToRemove);
             if(exchange==null){
                 System.err.println("Exchange compartment not found, please check provided identifier");
@@ -174,43 +174,43 @@ public class SBMLwizard extends AbstractMet4jApplication {
                     network.removeOnCascade(e);
                     n++;
                 }
-                System.err.println(n + " external species removed from network.");
+                System.out.println(n + " external species removed from network.");
             }
         }
 
 
         //remove compounds not in any reactions
         if(removeIsolated){
-            System.err.println("removing isolated compounds...");
+            System.out.println("removing isolated compounds...");
             int n = network.getMetabolitesView().size();
             BioNetworkUtils.removeNotConnectedMetabolites(network);
-            System.err.println((n-network.getMetabolitesView().size())+" isolated compounds removed from network.");
+            System.out.println((n-network.getMetabolitesView().size())+" isolated compounds removed from network.");
         }
 
         //merge compartment
         BioNetwork newNetwork;
         if (mergingStrat == strategy.by_id) {
-            System.err.print("Merging compartments...");
+            System.out.print("Merging compartments...");
             CompartmentMerger merger = new CompartmentMerger()
                     .usePalssonIdentifierConvention();
             newNetwork = merger.merge(network);
-            System.err.println(" Done.");
+            System.out.println(" Done.");
         }else if (mergingStrat != strategy.by_name) {
-            System.err.print("Merging compartments...");
+            System.out.print("Merging compartments...");
             CompartmentMerger merger = new CompartmentMerger()
                     .setGetUniqIdFunction(BioMetabolite::getName);
             newNetwork = merger.merge(network);
-            System.err.println(" Done.");
+            System.out.println(" Done.");
         }else{
             newNetwork = network;
         }
 
         //remove duplicated reactions
         if(removeDuplicated){
-            System.err.println("removing duplicated reactions...");
+            System.out.println("removing duplicated reactions...");
             int n = network.getReactionsView().size();
             BioNetworkUtils.removeDuplicatedReactions(newNetwork,true);
-            System.err.println((n-network.getMetabolitesView().size())+" duplicated reactions removed from network.");
+            System.out.println((n-network.getMetabolitesView().size())+" duplicated reactions removed from network.");
         }
 
         //print info
@@ -236,7 +236,7 @@ public class SBMLwizard extends AbstractMet4jApplication {
 
     @Override
     public String getLongDescription() {
-        return "General SBML model processing including compound removal (such as side compounds or isolated compounds), reaction removal (ex. blocked or exchange reaction), and compartments merging";
+        return "General SBML model processing including compound removal (such as side compounds or isolated compounds), reaction removal (ex. blocked or exchange reaction), and compartment merging";
     }
 
     @Override

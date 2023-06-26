@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Next Release
+
+[met4j-toolbox] New app for general SBML model processing including compound removal (such as side compounds or isolated compounds), reaction removal (ex. blocked or exchange reaction), and compartment merging
+[met4j-core] Added a class to create, from a network with multiple compartments, a new network with a single compartment, avoiding duplicated compounds.
+[met4j-core] Added utility method to remove duplicated reactions
+
 ## 1.3.1
 
 [met4j-io] Fix Kegg import

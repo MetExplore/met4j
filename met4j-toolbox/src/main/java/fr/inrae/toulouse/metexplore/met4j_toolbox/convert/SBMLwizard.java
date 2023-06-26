@@ -195,7 +195,7 @@ public class SBMLwizard extends AbstractMet4jApplication {
                     .usePalssonIdentifierConvention();
             newNetwork = merger.merge(network);
             System.out.println(" Done.");
-        }else if (mergingStrat != strategy.by_name) {
+        }else if (mergingStrat == strategy.by_name) {
             System.out.print("Merging compartments...");
             CompartmentMerger merger = new CompartmentMerger()
                     .setGetUniqIdFunction(BioMetabolite::getName);
@@ -208,9 +208,9 @@ public class SBMLwizard extends AbstractMet4jApplication {
         //remove duplicated reactions
         if(removeDuplicated){
             System.out.println("removing duplicated reactions...");
-            int n = network.getReactionsView().size();
+            int n = newNetwork.getReactionsView().size();
             BioNetworkUtils.removeDuplicatedReactions(newNetwork,true);
-            System.out.println((n-network.getMetabolitesView().size())+" duplicated reactions removed from network.");
+            System.out.println((n-newNetwork.getReactionsView().size())+" duplicated reactions removed from network.");
         }
 
         //print info

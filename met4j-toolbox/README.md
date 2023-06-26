@@ -151,9 +151,10 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
 <tbody>
 <tr><td>GenerateGalaxyFiles</td><td>Create the galaxy file tree containing met4j-toolbox app wrappers<details><summary><small>more</small></summary>Create the galaxy file tree containing met4j-toolbox app wrappers<br/>Creates a directory for each app with inside the galaxy xml wrapper.<br/><br/><pre><code> -h                        : prints the help (default: false)
  -o VAL                    : output directory where the galaxy wrappers and the
-                             tool_conf.xml will be written
+                             tool_conf.xml will be written (directory tools of
+                             the Galaxy directory
  -p [Docker | Singularity] : Package type (default: Singularity)
- -v VAL                    : Met4j version (default: latest)
+ -v VAL                    : Met4j version (default: MET4J_VERSION_TEST)
 </code></pre></details></td></tr>
 </tbody>
 </table>
@@ -388,6 +389,37 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
  -org VAL  : [] Kegg org id. Must be 3 letters ( (default: )
  -sbml VAL : [out.sbml] Out sbml file (default: out.sbml)
 </code></pre></details></td></tr>
+<tr><td>SBMLwizard</td><td>General SBML model processing<details><summary><small>more</small></summary>General SBML model processing including compound removal (such as side compounds or isolated compounds), reaction removal (ex. blocked or exchange reaction), and compartment merging<br/><br/><pre><code> -h                                     : prints the help (default: false)
+ -mc (--mergecomp) [no | by_name |      : merge compartments using the provided
+ by_id]                                   strategy. No merge by default.
+                                          "by_name" can be used if names are
+                                          consistent and unambiguous across
+                                          compartments, "by_id" can be used if
+                                          compartment suffix is present in
+                                          compounds identifiers (id in form
+                                          "xxx_y" with xxx as base identifier
+                                          and y as compartment label).
+                                          (default: no)
+ -o VAL                                 : output SBML file
+ -r0 (--noFlux)                         : remove reactions with lower and upper
+                                          flux bounds both set to 0.0 (default:
+                                          false)
+ -rEX (--removeExchange) VAL            : remove exchange reactions and species
+                                          from given exchange compartment
+                                          identifier
+ -rc VAL                                : file containing identifiers of
+                                          compounds to remove from the
+                                          metabolic network
+ -rdr (--noDuplicated)                  : remove duplicated reactions (same
+                                          reactants, same GPR) (default: false)
+ -ric (--noIsolated)                    : remove isolated compounds (not
+                                          involved in any reaction) (default:
+                                          false)
+ -rr VAL                                : file containing identifiers of
+                                          reactions to remove from the
+                                          metabolic network
+ -s VAL                                 : input SBML file
+</code></pre></details></td></tr>
 <tr><td>Sbml2Graph</td><td>Create a graph representation of a SBML file content, and export it in graph file format.<details><summary><small>more</small></summary>Create a graph representation of a SBML file content, and export it in graph file format.<br/>The graph can be either a compound graph or a bipartite graph, and can be exported in gml or tabulated file format.<br/><br/><pre><code> -b (--bipartite) : create bipartite graph (default: false)
  -c (--compound)  : create compound graph (default: true)
  -gml             : export in GML file (default: true)
@@ -522,10 +554,9 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
                                           (default: false)
  -un (--undirected)                     : create as undirected (default: false)
 </code></pre></details></td></tr>
-<tr><td>ChokePoint</td><td>Compute the Choke points of a metabolic network.<details><summary><small>more</small></summary>Compute the Choke points of a metabolic network.<br/>Load points constitute an indicator of lethality and can help identifying drug target Choke points are reactions that are required to consume or produce one compound. Targeting of choke point can lead to the accumulation or the loss of some metabolites, thus choke points constitute an indicator of lethality and can help identifying drug target <br/>See : Syed Asad Rahman, Dietmar Schomburg; Observing local and global properties of metabolic pathways: ‘load points’ and ‘choke points’ in the metabolic networks. Bioinformatics 2006; 22 (14): 1767-1774. doi: 10.1093/bioinformatics/btl181<br/><br/><pre><code> -h              : prints the help (default: false)
- -i VAL          : input SBML file
- -o VAL          : output results file
- -s (--side) VAL : an optional file containing list of side compounds to ignore
+<tr><td>ChokePoint</td><td>Compute the Choke points of a metabolic network.<details><summary><small>more</small></summary>Compute the Choke points of a metabolic network.<br/>Choke points constitute an indicator of lethality and can help identifying drug target Choke points are reactions that are required to consume or produce one compound. Targeting of choke point can lead to the accumulation or the loss of some metabolites, thus choke points constitute an indicator of lethality and can help identifying drug target <br/>See : Syed Asad Rahman, Dietmar Schomburg; Observing local and global properties of metabolic pathways: ‘load points’ and ‘choke points’ in the metabolic networks. Bioinformatics 2006; 22 (14): 1767-1774. doi: 10.1093/bioinformatics/btl181<br/><br/><pre><code> -h     : prints the help (default: false)
+ -i VAL : input SBML file
+ -o VAL : output results file
 </code></pre></details></td></tr>
 <tr><td>CompoundNet</td><td>Advanced creation of a compound graph representation of a SBML file content<details><summary><small>more</small></summary>Metabolic networks used for quantitative analysis often contain links that are irrelevant for graph-based structural analysis. For example, inclusion of side compounds or modelling artifacts such as 'biomass' nodes.<br/>While Carbon Skeleton Graph offer a relevant alternative topology for graph-based analysis, it requires compounds' structure information, usually not provided in model, and difficult to retrieve for model with sparse cross-reference annotations.<br/>In contrary to the SBML2Graph app that performs a raw conversion of the SBML content, the present app propose a fine-tuned creation of compound graph from predefined list of side compounds and degree² weighting to get relevant structure without structural data.This app also enable Markov-chain based analysis of metabolic networks by computing reaction-normalized transition probabilities on the network.<br/><br/><pre><code> -am (--asmatrix)                       : export as matrix (implies simple
                                           graph conversion). Default export as
@@ -647,17 +678,18 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
  -o VAL          : output results file
  -s (--side) VAL : an optional file containing list of side compounds to ignore
 </code></pre></details></td></tr>
-<tr><td>MetaboRank</td><td>Compute the MetaboRank, a custom personalized PageRank for metabolic network.<details><summary><small>more</small></summary>Compute the MetaboRank, a custom personalized PageRank for metabolic network.<br/>The MetaboRank takes a metabolic network and a list of compounds of interest, and provide a score of relevance for all of the other compounds in the network.<br/>The MetaboRank can, from metabolomics results, be used to fuel a recommender system highlighting interesting compounds to investigate, retrieve missing identification and drive literature mining.<br/>It is a two dimensional centrality computed from personalized PageRank and CheiRank, with special transition probability and normalization to handle the specificities of metabolic networks.<br/>See publication for more information: Frainay et al. MetaboRank: network-based recommendation system to interpret and enrich metabolomics results, Bioinformatics (35-2), https://doi.org/10.1093/bioinformatics/bty577<br/><br/><pre><code> -d N   : damping factor (default: 0.85)
- -h     : prints the help (default: false)
- -i VAL : input SBML file: path to network used for computing centrality, in
-          sbml format.
- -max N : maximal number of iteration (default: 15000)
- -o VAL : output file: path to the file where the results will be exported
- -s VAL : input seeds file: tabulated file containing node of interest ids and
-          weight
- -t N   : convergence tolerance (default: 0.001)
- -w VAL : input edge weight file: (recommended) path to file containing edges'
-          weights. Will be normalized as transition probabilities
+<tr><td>MetaboRank</td><td>Compute the MetaboRank, a custom personalized PageRank for metabolic network.<details><summary><small>more</small></summary>Compute the MetaboRank, a custom personalized PageRank for metabolic network.<br/>The MetaboRank takes a metabolic network and a list of compounds of interest, and provide a score of relevance for all of the other compounds in the network.<br/>The MetaboRank can, from metabolomics results, be used to fuel a recommender system highlighting interesting compounds to investigate, retrieve missing identification and drive literature mining.<br/>It is a two dimensional centrality computed from personalized PageRank and CheiRank, with special transition probability and normalization to handle the specificities of metabolic networks.<br/>See publication for more information: Frainay et al. MetaboRank: network-based recommendation system to interpret and enrich metabolomics results, Bioinformatics (35-2), https://doi.org/10.1093/bioinformatics/bty577<br/><br/><pre><code> -d N    : damping factor (default: 0.85)
+ -h      : prints the help (default: false)
+ -i VAL  : input SBML file: path to network used for computing centrality, in
+           sbml format.
+ -max N  : maximal number of iteration (default: 15000)
+ -o VAL  : output file: path to the file where the results will be exported
+ -s VAL  : input seeds file: tabulated file containing node of interest ids and
+           weight
+ -sc VAL : input Side compound file
+ -t N    : convergence tolerance (default: 0.001)
+ -w VAL  : input edge weight file: (recommended) path to file containing edges'
+           weights. Will be normalized as transition probabilities
 </code></pre></details></td></tr>
 <tr><td>NetworkSummary</td><td>Create a report summarizing several graph measures characterising the structure of the network.<details><summary><small>more</small></summary>Use a metabolic network in SBML file and an optional list of side compounds, and produce a report summarizing several graph measures characterising the structure of the network.This includes (non-exhaustive list): size and order, connectivity, density, degree distribution, shortest paths length, top centrality nodes...<br/><br/><pre><code> -d (--directed)  : use reaction direction for distances (default: false)
  -h               : prints the help (default: false)

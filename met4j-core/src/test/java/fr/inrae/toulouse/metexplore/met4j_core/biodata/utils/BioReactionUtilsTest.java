@@ -121,6 +121,41 @@ public class BioReactionUtilsTest {
 
 	}
 
+	/**
+	 * Test method for
+	 * {@link BioReactionUtils#areRedundant(BioNetwork, BioReaction, BioReaction)}.
+	 */
+	@Test
+	public void testAreRedundantCheckGPR() {
+
+		BioReaction r2 = new BioReaction("r2");
+		r2.setReversible(false);
+		network.add(r2);
+
+		network.affectLeft(r2, 1.0, c, m1);
+		network.affectRight(r2, 2.0, c, m2);
+		network.affectRight(r2, 1.5, c, m3);
+
+		network.affectGeneProduct(p1, g1);
+		network.affectGeneProduct(p2, g1);
+		network.affectGeneProduct(p3, g1);
+
+		network.affectSubUnit(e1, 1.0, p1);
+		network.affectSubUnit(e1, 1.0, p2);
+		network.affectSubUnit(e2, 1.0, p3);
+
+		network.affectEnzyme(r1, e1);
+		network.affectEnzyme(r1, e2);
+
+		assertTrue("r1 and r2 must be identified as redundant", BioReactionUtils.areRedundant(network, r1, r2, false));
+		assertFalse("r1 and r2 must be identified as not redundant, considering GPR", BioReactionUtils.areRedundant(network, r1, r2, true));
+
+		network.affectEnzyme(r2, e1);
+		network.affectEnzyme(r2, e2);
+		assertTrue("r1 and r2 must be identified as redundant, considering GPR", BioReactionUtils.areRedundant(network, r1, r2, true));
+		
+	}
+
 	@Test
 	public void testAreRedundantReversible() {
 

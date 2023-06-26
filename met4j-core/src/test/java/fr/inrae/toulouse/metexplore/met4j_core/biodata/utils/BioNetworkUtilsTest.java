@@ -95,6 +95,31 @@ public class BioNetworkUtilsTest {
     }
 
     @Test
+    public void testRemoveDuplicatedReactions(){
+        BioNetwork network = miniNetwork();
+        BioReaction r3 = new BioReaction("R3");
+        network.add(r3);
+        network.affectLeft(r3, 2.0, c1, m1);
+        network.affectRight(r3, 1.0, c1, m2);
+
+        BioNetworkUtils.removeDuplicatedReactions(network,false);
+        assertFalse("Duplicated reaction not removed",network.containsReaction("R3"));
+
+        r3 = new BioReaction("R3");
+        network.add(r3);
+        network.affectLeft(r3, 2.0, c1, m1);
+        network.affectRight(r3, 1.0, c1, m2);
+
+        BioNetworkUtils.removeDuplicatedReactions(network,true);
+        assertTrue("Non-duplicated reaction (considering GPR) removed",network.containsReaction("R3"));
+
+        network.affectEnzyme(r3, enzyme1);
+        
+        BioNetworkUtils.removeDuplicatedReactions(network,true);
+        assertFalse("Duplicated reaction (considering GPR)  not removed",network.containsReaction("R3"));
+    }
+
+    @Test
     public void removeNotConnectedMetabolites() {
 
         BioNetwork network = new BioNetwork();

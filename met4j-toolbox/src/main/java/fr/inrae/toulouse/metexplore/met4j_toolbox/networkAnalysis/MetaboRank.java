@@ -61,14 +61,14 @@ import org.kohsuke.args4j.Option;
 import java.io.*;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.IntStream;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Tsv;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * @author clement
@@ -111,6 +111,7 @@ public class MetaboRank extends AbstractMet4jApplication {
     @Option(name = "-d", usage = "damping factor")
     public double dampingFactor = 0.85;
 
+
     //variables
     CompoundGraph firstGraph;
     CompoundGraph reverseGraph;
@@ -130,6 +131,8 @@ public class MetaboRank extends AbstractMet4jApplication {
     //results holder
     private HashMap<String, Double> globalVsPersonalizedPageRank;
     private HashMap<String, Double> globalVsPersonalizedCheiRank;
+
+    HashMap<String, Integer> finalRank;
 
     public static void main(String[] args) {
         MetaboRank app = new MetaboRank();
@@ -363,6 +366,8 @@ public class MetaboRank extends AbstractMet4jApplication {
         globalVsPersonalizedPageRank = computeGlobalVsPersonalized(globalPageRankScore, pageRankScore);
         globalVsPersonalizedCheiRank = computeGlobalVsPersonalized(globalCheiRankScore, cheiRankScore);
 
+        finalRank = computeFinalRank(globalVsPersonalizedPageRank,globalVsPersonalizedCheiRank);
+
     }
 
     public HashMap<String, Double> computeScore(CompoundGraph graph, double dampingFactor, int maxNbOfIter, double tolerance) {
@@ -423,10 +428,36 @@ public class MetaboRank extends AbstractMet4jApplication {
         return globalVsPersoRatio;
     }
 
+    public HashMap<String, Integer> computeFinalRank(HashMap<String, Double> globalVsPersonalizedPageRank, HashMap<String, Double> globalVsPersonalizedCheiRank) {
+        HashMap<String, Integer> pr = getRankFromScore(globalVsPersonalizedPageRank, seeds.keySet());
+        HashMap<String, Integer> cr = getRankFromScore(globalVsPersonalizedCheiRank, seeds.keySet());
+
+        Comparator<String> compWithTieBreaking = new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                int result = Math.min(pr.get(s1),cr.get(s1)) - Math.min(pr.get(s2),cr.get(s2));
+                if (result == 0)
+                    result = Math.max(pr.get(s1),cr.get(s1)) - Math.max(pr.get(s2),cr.get(s2));
+                if (result == 0)
+                    result = pr.get(s1)-pr.get(s2);
+                return result;
+            }
+        };
+
+        ArrayList<String> list = new ArrayList<>(pr.keySet());
+        list.sort(compWithTieBreaking);
+
+        return IntStream.range(0, list.size())
+                .boxed()
+                .collect(toMap(list::get, i -> i, (prev, next) -> next, HashMap::new));
+
+    }
+
+
     public void printCompoundTable(String output) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(output, true));
-            bw.write("Compound ID\tName\tFormula\tHMDB\tSeed\tglobal PageRank\tglobal CheiRank\tPageRank\tCheiRank\tPageRank*\tCheiRank*");
+            bw.write("Compound ID\tName\tFormula\tSeed\tglobal PageRank\tglobal CheiRank\tPageRank\tCheiRank\tPageRank*\tCheiRank*\tFinalRank");
             bw.newLine();
             for (BioMetabolite compound : firstGraph.vertexSet()) {
 
@@ -461,9 +492,9 @@ public class MetaboRank extends AbstractMet4jApplication {
                     double globalVsPersoCR = globalVsPersonalizedCheiRank.get(compound.getId());
                     bw.write(df.format(globalVsPersoPR) + "\t");
                     bw.write(df.format(globalVsPersoCR) + "\t");
+                    bw.write(Integer.toString(1+finalRank.get(compound.getId())));
                 } else {
-                    bw.write("NA\t");
-                    bw.write("NA\t");
+                    bw.write("NA\tNA\tNA");
                 }
 
                 bw.newLine();
@@ -488,6 +519,7 @@ public class MetaboRank extends AbstractMet4jApplication {
                 "The MetaboRank takes a metabolic network and a list of compounds of interest, and provide a score of relevance for all of the other compounds in the network.\n" +
                 "The MetaboRank can, from metabolomics results, be used to fuel a recommender system highlighting interesting compounds to investigate, retrieve missing identification and drive literature mining.\n" +
                 "It is a two dimensional centrality computed from personalized PageRank and CheiRank, with special transition probability and normalization to handle the specificities of metabolic networks.\n" +
+                "For convenience, a one dimensional centrality rank is also computed from the highest rank from PageRank or CheiRank, and using lowest rank as tie-breaker.\n" +
                 "See publication for more information: Frainay et al. MetaboRank: network-based recommendation system to interpret and enrich metabolomics results, Bioinformatics (35-2), https://doi.org/10.1093/bioinformatics/bty577";
     }
 

@@ -1,12 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>met4j</artifactId>
-        <groupId>fr.inrae.toulouse.metexplore</groupId>
-        <version>1.4.0</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>fr.inrae.toulouse.metexplore</groupId>
+        <artifactId>met4j</artifactId>
+        <version>1.3.1-SNAPSHOT</version>
+    </parent>
+
+
+    <artifactId>met4j-mathUtils</artifactId>
+    <packaging>jar</packaging>
+
+    <name>met4j-mathUtils</name>
+    <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -14,23 +21,16 @@
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
-    <artifactId>met4j-mapping</artifactId>
     <dependencies>
         <dependency>
-            <groupId>fr.inrae.toulouse.metexplore</groupId>
-            <artifactId>met4j-core</artifactId>
-            <version>1.4.0</version>
+            <groupId>org.ejml</groupId>
+            <artifactId>all</artifactId>
+            <version>0.30</version>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
-            <version>1.8</version>
-            <scope>compile</scope>
+            <groupId>com.googlecode.matrix-toolkits-java</groupId>
+            <artifactId>mtj</artifactId>
+            <version>1.0.4</version>
         </dependency>
     </dependencies>
 
@@ -61,6 +61,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>

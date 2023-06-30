@@ -59,10 +59,11 @@ public class BioReactionUtils {
      * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
      * @param r1      a first {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
      * @param r2      a second {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @return true if the substrates and the products have the same id
+     * @param checkSameGPR  if reactions should be considered non-redundant if they share same reactants but have different GPR
+     * @return true if the two reactions are redundant (same reactants and optionally same GPR)
      * @throws java.lang.IllegalArgumentException if one of the reaction is not in the network
      */
-    public static Boolean areRedundant(@NonNull BioNetwork network, @NonNull BioReaction r1, @NonNull BioReaction r2) {
+    public static Boolean areRedundant(@NonNull BioNetwork network, @NonNull BioReaction r1, @NonNull BioReaction r2, boolean checkSameGPR) {
 
 
         if (!network.contains(r1)) {
@@ -88,18 +89,33 @@ public class BioReactionUtils {
                 rightR1.containsAll(rightR2) &&
                 rightR2.containsAll(rightR1);
 
-        if (!r1.isReversible()) {
-            return flag1;
-        } else {
+        if (r1.isReversible()) {
             Boolean flag2 = rightR1.containsAll(leftR2) &&
                     leftR2.containsAll(rightR1) &&
                     leftR1.containsAll(rightR2) &&
                     rightR2.containsAll(leftR1);
 
-            return flag1 || flag2;
+            flag1 = (flag1 || flag2);
         }
 
+        if(flag1 && checkSameGPR){
+            return BioReactionUtils.getGPR(network, r1).equals(BioReactionUtils.getGPR(network, r2));
+        }
+        return flag1;
 
+    }
+
+    /**
+     * Comparison of two reactions
+     *
+     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
+     * @param r1      a first {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param r2      a second {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @return true if the substrates and the products have the same id
+     * @throws java.lang.IllegalArgumentException if one of the reaction is not in the network
+     */
+    public static Boolean areRedundant(@NonNull BioNetwork network, @NonNull BioReaction r1, @NonNull BioReaction r2) {
+        return areRedundant(network, r1, r2, false);
     }
 
 

@@ -30,7 +30,7 @@ Install all modules :
 <dependency>
 <groupId>fr.inrae.toulouse.metexplore</groupId>
 <artifactId>met4j-toolbox</artifactId>
-<version>0.12.0</version>
+<version>1.4.0</version>
 </dependency>
 ```
 
@@ -39,7 +39,7 @@ or a specific module (example : met4j-core ):
 <dependency>
 <groupId>fr.inrae.toulouse.metexplore</groupId>
 <artifactId>met4j-core</artifactId>
-<version>0.12.0</version>
+<version>1.4.0</version>
 </dependency>
 ```
 

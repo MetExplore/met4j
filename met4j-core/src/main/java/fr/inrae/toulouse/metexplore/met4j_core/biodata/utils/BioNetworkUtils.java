@@ -104,6 +104,27 @@ public class BioNetworkUtils {
         }
     }
 
+    /**
+     * Remove from a network all duplicated reactions
+     *
+     * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}
+     * @param checkSameGPR if reactions should be considered non-redundant if they share same reactants but have different GPR
+     */
+    public static void removeDuplicatedReactions(@NonNull BioNetwork network, boolean checkSameGPR) {
+        //1- for each reaction, create an id from equation and, optionally, GPR
+        //2- put id-reaction pairs in map, each new reaction overrides its duplicates, if any
+        //3- remove from network all reactions not in map
+        HashMap<String,BioReaction> indexedReaction = new HashMap<>();
+        BioCollection<BioReaction> toRemove = new BioCollection<>(network.getReactionsView());
+        for (BioReaction r : network.getReactionsView()){
+            String uniqId = BioReactionUtils.getEquation(r,false,true);
+            if(checkSameGPR) uniqId = uniqId+BioReactionUtils.getGPR(network,r);
+            indexedReaction.put(uniqId,r);
+        }
+        toRemove.removeAll(indexedReaction.values());
+        network.removeOnCascade(toRemove);
+    }
+
     public static void deepCopy(BioNetwork networkIn, BioNetwork networkOut) {
         deepCopy(networkIn, networkOut, true, false);
     }

@@ -1,5 +1,6 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
@@ -26,6 +27,7 @@ import org.kohsuke.args4j.Option;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
@@ -64,6 +66,11 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
     @Option(name = "-sc", aliases = {"--side"}, usage = "a file containing list of side compounds to ignore", required = true)
     public String sideCompoundFile = null;
 
+    @Format(name = EnumFormats.Txt)
+    @ParameterType(name = InputFile)
+    @Option(name = "-re", aliases = {"--rExclude"}, usage = "an optional file containing list of reactions to ignore")
+    public String rExclude = null;
+
     @Format(name = Tsv)
     @ParameterType(name = InputFile)
     @Option(name = "-cw", aliases = {"--customWeights"}, usage = "an optional file containing weights for reactions pairs")
@@ -88,48 +95,69 @@ public class ExtractSubReactionNetwork extends AbstractMet4jApplication {
             System.exit(1);
         }
 
+        //Instantiate nodes to remove and mappers
+        Set<BioEntity> removedNodes = new HashSet<>();
+        Mapper<BioMetabolite> metMapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
+        Mapper<BioReaction> rxnMapper = new Mapper<>(network, BioNetwork::getReactionsView).skipIfNotFound();
+
         //Graph processing: import side compounds
         System.err.println("importing side compounds...");
-        Mapper<BioMetabolite> mapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
         BioCollection<BioMetabolite> sideCpds = null;
         try {
-            sideCpds = mapper.map(sideCompoundFile);
+            sideCpds = metMapper.map(sideCompoundFile);
         } catch (IOException e) {
             System.err.println("Error while reading the side compound file");
             System.err.println(e.getMessage());
             System.exit(1);
         }
-        if (mapper.getNumberOfSkippedEntries() > 0)
-            System.err.println(mapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
+        if (metMapper.getNumberOfSkippedEntries() > 0)
+            System.err.println(metMapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
         System.err.println(sideCpds.size() + " side compounds ignored during graph build.");
 
         //get sources and targets
         System.err.println("extracting sources and targets");
-        Mapper<BioReaction> rmapper = new Mapper<>(network, BioNetwork::getReactionsView).skipIfNotFound();
         HashSet<BioReaction> sources = null;
         try {
-            sources = new HashSet<>(rmapper.map(sourcePath));
+            sources = new HashSet<>(rxnMapper.map(sourcePath));
         } catch (IOException e) {
             System.err.println("Error while reading the source metabolite file");
             System.err.println(e.getMessage());
             System.exit(1);
         }
-        if (rmapper.getNumberOfSkippedEntries() > 0)
-            System.err.println(rmapper.getNumberOfSkippedEntries() + " source not found in network.");
+        if (rxnMapper.getNumberOfSkippedEntries() > 0)
+            System.err.println(rxnMapper.getNumberOfSkippedEntries() + " source not found in network.");
         HashSet<BioReaction> targets = null;
         try {
-            targets = new HashSet<>(rmapper.map(targetPath));
+            targets = new HashSet<>(rxnMapper.map(targetPath));
         } catch (IOException e) {
             System.err.println("Error while reading the target metabolite file");
             System.err.println(e.getMessage());
             System.exit(1);
         }
-        if (rmapper.getNumberOfSkippedEntries() > 0)
-            System.err.println(rmapper.getNumberOfSkippedEntries() + " target not found in network.");
+        if (rxnMapper.getNumberOfSkippedEntries() > 0)
+            System.err.println(rxnMapper.getNumberOfSkippedEntries() + " target not found in network.");
 
         //Create reaction graph
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
         ReactionGraph graph = builder.getReactionGraph(sideCpds);
+
+        //Graph processing: reactions removal [optional]
+        if (rExclude != null) {
+            System.err.println("removing reactions to exclude...");
+            BioCollection<BioReaction> rList = null;
+            try {
+                rList = rxnMapper.map(rExclude);
+            } catch (IOException e) {
+                System.err.println("Error while reading the reaction to ignore file");
+                System.err.println(e.getMessage());
+                System.exit(1);
+            }
+            boolean removed = graph.removeAllVertices(rList);
+            if(removed) removedNodes.addAll(rList);
+            if (rxnMapper.getNumberOfSkippedEntries() > 0)
+            System.err.println(rxnMapper.getNumberOfSkippedEntries() + " reactions to exclude not found in network.");
+            System.err.println(rList.size() + " reactions ignored during graph build.");
+        }
 
         //Graph processing: set weights [optional]
         WeightingPolicy<BioReaction, CompoundEdge, ReactionGraph> wp = new UnweightedPolicy<>();

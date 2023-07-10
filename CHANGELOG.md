@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Next Release
 
 
+[met4j-graph] Overload getReactionGraph to be able to provide a list of reactions to exclude
+
+[met4j-toolbox] New app to compute the reaction graph distance matrix
+
 
 ## 1.4.0
 

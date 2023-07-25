@@ -35,19 +35,15 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class to compute the eigen vector centrality of each vertex in a BioGraph.
@@ -134,17 +130,27 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 	/**
 	 * Gets a map with all nodes id as key and global page rank
 	 *
-	 * @param d the damping factor
+	 * @param dampingFactor the damping factor
 	 * @return the map with node identifier and corresponding centrality
 	 */
-	public HashMap<String, Double> computePageRank(double d){
+	public HashMap<String, Double> computePageRank(double dampingFactor){
 		BioMatrix tmp = adjacencyMatrix.copy();
-		addJumpProb(adjacencyMatrix.getRowLabelMap().keySet(),d);
+		addJumpProb(adjacencyMatrix.getRowLabelMap().keySet(),1-dampingFactor);
 		HashMap<String, Double> result = computeEigenVectorCentrality();
 		adjacencyMatrix = tmp;
 		return result;
 	}
 
+	public HashMap<String, Double> computePowerMethodPageRank(double dampingFactor, int maxNbOfIter, double tolerance){
+		BioMatrix tmp = adjacencyMatrix.copy();
+		Set<String> allNodes = adjacencyMatrix.getRowLabelMap().keySet();
+		addJumpProb(allNodes,1 - dampingFactor);
+		Map<String, Double> seeds = allNodes.stream().collect(Collectors.toMap(k -> k, k -> 1.0 / allNodes.size()));
+
+		HashMap<String, Double> result = powerIteration(seeds, maxNbOfIter, tolerance);
+		adjacencyMatrix = tmp;
+		return result;
+	}
 
 	/**
 	 * add a constant probability to "jump" (i.e. go to another node without necessarily following an edge) to defined set of node
@@ -329,7 +335,7 @@ public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G ext
 	 * @param tol the tolerance, if the max delta between two iteration is below this value, the result is returned
 	 * @return map with node id as key and eigen vector centrality as value
 	 */
-	public HashMap<String, Double> powerIteration(HashMap<String, Double> seeds, int maxIter, double tol){
+	public HashMap<String, Double> powerIteration(Map<String, Double> seeds, int maxIter, double tol){
 		BioMatrix rank = new EjmlMatrix(1, adjacencyMatrix.numCols());
 		for(Map.Entry<String,Integer> entry : adjacencyMatrix.getRowLabelMap().entrySet()){
 			String e = entry.getKey();

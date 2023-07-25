@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [met4j-toolbox] New app to compute the reaction graph distance matrix
 
+[met4j-toolbox] New app to perform topology-based pathway analysis
 
 ## 1.4.0
 

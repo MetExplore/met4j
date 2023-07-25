@@ -663,6 +663,8 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
  -i VAL                    : input SBML file
  -k N                      : Extract k-shortest paths (default: 1)
  -o VAL                    : output gml file
+ -re (--rExclude) VAL      : an optional file containing list of reactions to
+                             ignore
  -s VAL                    : input sources txt file
  -sc (--side) VAL          : a file containing list of side compounds to ignore
  -st (--steinertree)       : Extract Steiner Tree (default: false)
@@ -728,6 +730,19 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
  -t (--targets) VAL : input target file: tabulated file containing node of
                       interest ids
  -tab (--asTable)   : Export in tabulated file instead of .GML (default: false)
+</code></pre></details></td></tr>
+<tr><td>ReactionDistanceMatrix</td><td>Create a reaction to reaction distance matrix.<details><summary><small>more</small></summary>Create a reaction to reaction distance matrix.<br/>The distance between two reactions is computed as the length of the shortest path connecting the two in the reaction graph, where two reactions are linked if they produce a metabolite consumed by the other or the other way around.<br/>An optional edge weighting can be used, turning the distances into the sum of edge weights in the lightest path, rather than the length of the shortest path.The default weighting use target's degree squared. Alternatively, custom weighting can be provided in a file. In that case, edges without weight are ignored during path search.<br/>If no edge weighting is set, it is recommended to provide a list of side compounds to ignore during network traversal.<br/><br/><pre><code> -dw (--degree)       : penalize traversal of hubs by using degree square
+                        weighting (-w must not be set) (default: false)
+ -h                   : prints the help (default: false)
+ -i VAL               : input SBML file
+ -o VAL               : output Matrix file
+ -re (--rExclude) VAL : an optional file containing list of reactions to ignore
+ -s (--seeds) VAL     : an optional file containing list of reactions of
+                        interest.
+ -sc (--side) VAL     : an optional file containing list of side compounds to
+                        ignore
+ -u (--undirected)    : Ignore reaction direction (default: false)
+ -w (--weights) VAL   : an optional file containing weights for compound pairs
 </code></pre></details></td></tr>
 <tr><td>ScopeNetwork</td><td>Perform a network expansion from a set of compound seeds to create a scope network<details><summary><small>more</small></summary>Perform a network expansion from a set of compound seeds to create a scope network<br/>The scope of a set of compounds (seed) refer to the maximal metabolic network that can be extended from them,where the extension process consist of adding a reaction to the network if and only if all of its substrates are either a seed or a product of a previously added reaction<br/>For more information, see Handorf, Ebenhöh and Heinrich (2005). *Expanding metabolic networks: scopes of compounds, robustness, and evolution.* Journal of molecular evolution, 61(4), 498-512. (https://doi.org/10.1007/s00239-005-0027-1)<br/><br/><pre><code> -h                 : prints the help (default: false)
  -i VAL             : input SBML file: path to network used for computing
@@ -799,6 +814,35 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
  -uf (--undefinedFormula)            : flag as side compound any compounds with
                                        no valid chemical formula (default:
                                        false)
+</code></pre></details></td></tr>
+<tr><td>TopologicalPathwayAnalysis</td><td>Run a Topological Pathway Analysis to identify key pathways based on topological properties of its constituting compounds.<details><summary><small>more</small></summary>Run a Topological Pathway Analysis (TPA) to identify key pathways based on topological properties of its mapped compounds. From a list of compounds of interest, the app compute their betweenness centrality (which quantifies how often a compound acts as a intermediary along the shortest paths between pairs of other compounds in the network, which, if high, suggest a critical role in the overall flow within the network). Each pathway is scored according to the summed centrality of its metabolites found in the dataset. Alternatively to the betweenness, one can make use of the out-degree (the number of outgoing link, i.e. number of direct metabolic product) as a criterion of importance. TPA is complementary to statistical enrichment analysis to ensures a more meaningful interpretation of the data, by taking into account the influence of identified compounds on the structure of the pathways.<br/><br/><pre><code> -cw (--customWeights) VAL              : an optional file containing weights
+                                          for compound pairs, taken into
+                                          account for betweenness computation.
+                                          Edges not found in file will be
+                                          removed
+ -h                                     : prints the help (default: false)
+ -mc (--mergecomp) [no | by_name |      : merge compartments. Use names if
+ by_id]                                   consistent and unambiguous across
+                                          compartments, or identifiers if
+                                          compartment suffix is present (id in
+                                          form "xxx_y" with xxx as base
+                                          identifier and y as compartment
+                                          label). (default: no)
+ -noi VAL                               : file containing the list of
+                                          metabolites of interests (one per
+                                          line)
+ -o VAL                                 : output result file (Gml format)
+ -out (--outDegree)                     : use out-degree as scoring function
+                                          instead of betweenness (faster
+                                          computation) (default: false)
+ -ri (--removeIsolatedNodes)            : remove isolated nodes (default: false)
+ -s VAL                                 : input SBML file
+ -sc VAL                                : input Side compound file (recommended)
+ -un (--undirected)                     : the compound graph built from the
+                                          metabolic network and used for
+                                          computations will undirected, i.e.
+                                          the reaction directions won't be
+                                          taken into account (default: false)
 </code></pre></details></td></tr>
 </tbody>
 </table>

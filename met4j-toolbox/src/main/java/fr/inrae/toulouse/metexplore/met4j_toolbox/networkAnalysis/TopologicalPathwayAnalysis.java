@@ -45,8 +45,8 @@ public class TopologicalPathwayAnalysis extends AbstractMet4jApplication {
     public String inputSide = null;
 
     @ParameterType(name= EnumParameterTypes.OutputFile)
-    @Format(name= EnumFormats.Gml)
-    @Option(name = "-o", usage = "output result file (Gml format)", required = true)
+    @Format(name= EnumFormats.Tsv)
+    @Option(name = "-o", usage = "output result file (tsv format)", required = true)
     public String outputPath = null;
 
     enum strategy {no, by_name,by_id}

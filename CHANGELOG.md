@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [met4j-toolbox] New app to perform topology-based pathway analysis
 
+[met4j-toolbox] New app to perform over-representation based pathway analysis
+
+
 ## 1.4.0
 
 [met4j-toolbox] New app for general SBML model processing including compound removal (such as side compounds or isolated compounds), reaction removal (ex. blocked or exchange reaction), and compartment merging  

@@ -475,6 +475,22 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
  -skip N       : [0] Number of lines to skip at the beginning of the compound
                  file (default: 0)
 </code></pre></details></td></tr>
+<tr><td>ORApathwayEnrichment</td><td>Perform Over Representation Analysis for Pathway Enrichment, using one-tailed exact Fisher Test.<br/>The fisher exact test compute the probability p to randomly get the given set of value. <br/>This version compute the probability to get at least the given overlap between the given set and the given modality :<br/>Sum the hypergeometric probability with increasing target/query intersection cardinality.<br/><br/>The hypergeometric probability is computed from the following contingency table entries.<br/>(value in cells correspond to the marginal totals of each intersection groups)<br/>				Query	!Query<br/>	Target		a		b<br/>	!Target		c		d<br/><br/>The probability of obtaining the set of value is computed as following:<br/>p = ((a+b)!(c+d)!(a+c)!(b+d)!)/(a!b!c!d!(a+b+c+d)!)<br/><br/>The obtained p-value is then adjusted for multiple testing using one of the following methods:<br/> - Bonferroni: adjusted p-value = p*n<br/> - Benjamini-Hochberg: adjusted p-value = p*n/k<br/> - Holm-Bonferroni: adjusted p-value = p*(n+1-k)<br/>n : number of tests; k : pvalue rank<details><summary><small>more</small></summary>Perform Over Representation Analysis for Pathway Enrichment, using one-tailed exact Fisher Test.<br/><br/><pre><code> -c (--correction) [Bonferroni |        : Method for multiple testing p-value
+ BenjaminiHochberg | HolmBonferroni]      adjustment. (default: BenjaminiHochber
+                                          g)
+ -h                                     : prints the help (default: false)
+ -i (--data) VAL                        : Input data : Compounds of interest
+                                          file, as one SBML specie identifier
+                                          per line
+ -o (--output) VAL                      : Output file : tabulated file with
+                                          pathway identifier, pathway name,
+                                          adjusted p-value.
+ -s (--sbml) VAL                        : Input model : SBML file with pathway
+                                          annotation
+ -th (--threshold) N                    : threshold to select significant
+                                          pathways. No filtering if <=0
+                                          (default: 0.0)
+</code></pre></details></td></tr>
 </tbody>
 </table>
 <table>
@@ -831,7 +847,7 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
  -noi VAL                               : file containing the list of
                                           metabolites of interests (one per
                                           line)
- -o VAL                                 : output result file (Gml format)
+ -o VAL                                 : output result file (tsv format)
  -out (--outDegree)                     : use out-degree as scoring function
                                           instead of betweenness (faster
                                           computation) (default: false)

@@ -141,9 +141,10 @@ public class TestBionetwork2BioGraph {
 	@Test
 	public void testGetReactionGraph() {
 		ReactionGraph g = builder.getReactionGraph();
+		System.out.println(g.vertexSet().size());
+		System.out.println(g.getAllEdges(r1,r2));
 		assertEquals("wrong number of vertices",7, g.vertexSet().size());
 		assertEquals("wrong number of edges",9, g.edgeSet().size());
-		
 		assertEquals("wrong in-degree of reaction "+r1.getId(), 1,g.inDegreeOf(r1));
 		assertEquals("wrong out-degree of reaction "+r1.getId(), 3, g.outDegreeOf(r1));
 		assertEquals("wrong in-degree of reaction "+r2.getId(), 3, g.inDegreeOf(r2));
@@ -178,6 +179,51 @@ public class TestBionetwork2BioGraph {
 		assertEquals("wrong out-degree of reaction "+r4.getId(), 0, g.outDegreeOf(r4));
 		assertEquals("wrong in-degree of reaction "+r5.getId(), 1, g.inDegreeOf(r5));
 		assertEquals("wrong out-degree of reaction "+r5.getId(), 2, g.outDegreeOf(r5));
+		assertEquals("wrong in-degree of reaction "+r6.getId(), 0, g.inDegreeOf(r6));
+		assertEquals("wrong out-degree of reaction "+r6.getId(), 0, g.outDegreeOf(r6));
+		assertEquals("wrong in-degree of reaction "+r7.getId(), 0, g.inDegreeOf(r7));
+		assertEquals("wrong out-degree of reaction "+r7.getId(), 0, g.outDegreeOf(r7));
+	}
+
+	@Test
+	public void testGetReactionGraph3() {
+		BioCollection<BioMetabolite> cofactors = new BioCollection<>();
+		BioCollection<BioReaction> rexclude = new BioCollection<>();
+		cofactors.add(a,h);
+		rexclude.add(r6,r7);
+		ReactionGraph g = builder.getReactionGraph(cofactors,rexclude);
+		System.out.println(g.vertexSet());
+		assertEquals("wrong number of vertices",5, g.vertexSet().size());
+		assertEquals("wrong number of edges",7, g.edgeSet().size());
+		assertEquals("wrong in-degree of reaction "+r1.getId(), 0,g.inDegreeOf(r1));
+		assertEquals("wrong out-degree of reaction "+r1.getId(), 2, g.outDegreeOf(r1));
+		assertEquals("wrong in-degree of reaction "+r2.getId(), 2, g.inDegreeOf(r2));
+		assertEquals("wrong out-degree of reaction "+r2.getId(), 0, g.outDegreeOf(r2));
+		assertEquals("wrong in-degree of reaction "+r3.getId(), 2, g.inDegreeOf(r3));
+		assertEquals("wrong out-degree of reaction "+r3.getId(), 3, g.outDegreeOf(r3));
+		assertEquals("wrong in-degree of reaction "+r4.getId(), 2, g.inDegreeOf(r4));
+		assertEquals("wrong out-degree of reaction "+r4.getId(), 0, g.outDegreeOf(r4));
+		assertEquals("wrong in-degree of reaction "+r5.getId(), 1, g.inDegreeOf(r5));
+		assertEquals("wrong out-degree of reaction "+r5.getId(), 2, g.outDegreeOf(r5));
+	}
+
+	@Test
+	public void testGetReactionGraph4() {
+		BioCollection<BioMetabolite> cofactors = new BioCollection<>();
+		BioCollection<BioReaction> rexclude = new BioCollection<>();
+		rexclude.add(r2);
+		ReactionGraph g = builder.getReactionGraph(cofactors,rexclude);
+		System.out.println(g.vertexSet());
+		assertEquals("wrong number of vertices",6, g.vertexSet().size());
+		assertEquals("wrong number of edges",6, g.edgeSet().size());
+		assertEquals("wrong in-degree of reaction "+r1.getId(), 1,g.inDegreeOf(r1));
+		assertEquals("wrong out-degree of reaction "+r1.getId(), 1, g.outDegreeOf(r1));
+		assertEquals("wrong in-degree of reaction "+r3.getId(), 2, g.inDegreeOf(r3));
+		assertEquals("wrong out-degree of reaction "+r3.getId(), 2, g.outDegreeOf(r3));
+		assertEquals("wrong in-degree of reaction "+r4.getId(), 2, g.inDegreeOf(r4));
+		assertEquals("wrong out-degree of reaction "+r4.getId(), 0, g.outDegreeOf(r4));
+		assertEquals("wrong in-degree of reaction "+r5.getId(), 1, g.inDegreeOf(r5));
+		assertEquals("wrong out-degree of reaction "+r5.getId(), 3, g.outDegreeOf(r5));
 		assertEquals("wrong in-degree of reaction "+r6.getId(), 0, g.inDegreeOf(r6));
 		assertEquals("wrong out-degree of reaction "+r6.getId(), 0, g.outDegreeOf(r6));
 		assertEquals("wrong in-degree of reaction "+r7.getId(), 0, g.inDegreeOf(r7));

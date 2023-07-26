@@ -160,8 +160,55 @@ public class Bionetwork2BioGraph {
 		}));
 		return g;
 	}
+	/**
+	 * Builds the graph.
+	 *
+	 * @param cofactors a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} object.
+	 * @param rExclude a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} object.
+	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph} object.
+	 */
+	public ReactionGraph getReactionGraph(BioCollection<BioMetabolite> cofactors, BioCollection<BioReaction> rExclude){
 
-	
+		ReactionGraph g = new ReactionGraph();
+		HashMap<BioMetabolite,BioCollection<BioReaction>> consumingReaction = new HashMap<>();
+		HashMap<BioMetabolite,BioCollection<BioReaction>> productingReaction = new HashMap<>();
+		BioCollection<BioReaction> bionetReactions = bn.getReactionsView();
+		bionetReactions.removeAll(rExclude);
+
+		for(BioReaction r : bionetReactions){
+			if(!r.getLeftsView().isEmpty() && !r.getRightsView().isEmpty()) {
+				g.addVertex(r);
+				r.getLeftsView()
+						.forEach(s -> {
+							consumingReaction.computeIfAbsent(s, k -> new BioCollection<>()).add(r);
+							if (r.isReversible()) {
+								productingReaction.computeIfAbsent(s, k -> new BioCollection<>()).add(r);
+							}
+						});
+				r.getRightsView()
+						.forEach(p -> {
+							productingReaction.computeIfAbsent(p, k -> new BioCollection<>()).add(r);
+							if (r.isReversible()) {
+								consumingReaction.computeIfAbsent(p, k -> new BioCollection<>()).add(r);
+							}
+						});
+			}
+		}
+		
+		consumingReaction.keySet().removeAll(cofactors);
+		productingReaction.keySet().removeAll(cofactors);
+
+		consumingReaction.keySet().retainAll(productingReaction.keySet());
+
+		consumingReaction.forEach((c, sources) -> sources.forEach((r1) -> {
+			productingReaction.get(c).forEach(r2 -> {
+
+				if(r1!=r2) g.addEdge(r2,r1,new CompoundEdge(r2,r1,c));
+
+			});
+		}));
+		return g;
+	}
 	/**
 	 * <p>getBipartiteGraph.</p>
 	 *

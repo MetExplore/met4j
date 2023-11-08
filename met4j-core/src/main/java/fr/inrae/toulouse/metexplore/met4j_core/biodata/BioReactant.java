@@ -36,8 +36,8 @@
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import lombok.Getter;
+import lombok.NonNull;
 
-import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -61,7 +61,7 @@ public class BioReactant extends BioParticipant {
 	 * @param stoichiometry stoichiometric coefficient
 	 * @param location a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
 	 */
-	protected BioReactant(@Nonnull BioMetabolite metabolite, Double stoichiometry, @Nonnull BioCompartment location) {
+	protected BioReactant(@NonNull BioMetabolite metabolite, Double stoichiometry, @NonNull BioCompartment location) {
 		super(metabolite.getId()+"__"+stoichiometry+"__"+location.getId(), metabolite, stoichiometry);
 		this.location = location;
 	}

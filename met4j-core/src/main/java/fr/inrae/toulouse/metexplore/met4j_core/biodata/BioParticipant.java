@@ -37,7 +37,8 @@
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
 import lombok.Getter;
-import javax.annotation.Nonnull;
+import lombok.NonNull;
+
 import java.util.Objects;
 
 /**
@@ -61,7 +62,7 @@ public abstract class BioParticipant extends BioEntity {
 	 * @param quantity number of units of physicalEntity
 	 */
 
-	public BioParticipant(String id, @Nonnull BioPhysicalEntity physicalEntity, Double quantity) {
+	public BioParticipant(String id, @NonNull BioPhysicalEntity physicalEntity, Double quantity) {
 		super(id);
 		this.physicalEntity=physicalEntity;
 		if(Double.isNaN(quantity) || Double.isInfinite(quantity) || quantity <= 0)

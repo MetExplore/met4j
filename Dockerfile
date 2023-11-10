@@ -1,4 +1,6 @@
-FROM adoptopenjdk:11-jdk-hotspot
+FROM eclipse-temurin:17-jdk-alpine
+
+RUN apk update && apk add maven
 
 RUN mkdir -p /opt/bin
 

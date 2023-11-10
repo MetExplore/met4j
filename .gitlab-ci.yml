@@ -48,8 +48,10 @@ cache:
     - .m2/repository/
 
 build:
-  image: maven:3.6-adoptopenjdk-14
+  image: eclipse-temurin:17-jdk-alpine
   stage: build
+  before_script:
+    - apk update && apk add maven
   script:
     - mvn $MAVEN_OPTS compile
     - TRUEVERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
@@ -75,8 +77,10 @@ build:
     - stable
 
 test:
-  image: maven:3.6-adoptopenjdk-14
+  image: eclipse-temurin:17-jdk-alpine
   stage: test
+  before_script:
+    - apk update && apk add maven
   script:
     - find . -name "*.class" -exec touch {} \+
     - mvn $MAVEN_OPTS clean test
@@ -87,8 +91,10 @@ test:
   
 
 package:
-  image: maven:3.6-adoptopenjdk-14
+  image: eclipse-temurin:17-jdk-alpine
   stage: package
+  before_script:
+    - apk update && apk add maven
   script:
     - mvn $MAVEN_OPTS clean install -DskipTests=true
     - cd met4j-toolbox
@@ -122,17 +128,20 @@ deployJar:
     - stable
 
 deploySnapshot:
-  image: maven:3.6-adoptopenjdk-14
+  image: eclipse-temurin:17-jdk-alpine
   stage: deploy
+  before_script:
+    - apk update && apk add maven
   script:
     - mvn $MAVEN_CLI_OPTS deploy -Dmaven.test.skip=true
   only:
     - develop
 
 deployCentral:
-  image: maven:3.6-adoptopenjdk-14
+  image: eclipse-temurin:17-jdk-alpine
   stage: deploy
   before_script:
+    - apk update && apk add maven
     - 'which ssh-agent || ( apt-get update -qy && apt-get install openssh-client -qqy )'
     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)

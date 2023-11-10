@@ -38,15 +38,12 @@ package fr.inrae.toulouse.metexplore.met4j_io.annotations;
 
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.attributes.SbmlAnnotation;
-import org.apache.xalan.trace.GenerateEvent;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein;
 
 import java.util.HashSet;
 import java.util.Set;

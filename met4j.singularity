@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: adoptopenjdk:11-jdk-hotspot
+From: eclipse-temurin:17-jdk-alpine
 
 %runscript
     if [ $# -lt 1 ] 
@@ -24,7 +24,7 @@ mvn package
     Maintainer Ludovic.Cottret@inrae.fr
     
 %post
-
+    apk update && apk add maven
     cd /usr/bin && ln -s /opt/bin/met4j.sh
 
 %environment

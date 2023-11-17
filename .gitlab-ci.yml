@@ -153,8 +153,11 @@ deployCentral:
     - export GPG_TTY=$(tty)
     - gpg -v --batch --import <(echo "${GPG_PRIVATE_KEY}")
   script:
-    - mvn $MAVEN_CLI_OPTS release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true -DscmCommentPrefix="[skip ci]" -DupdateWorkingCopyVersions=false -DpushChanges=false
-    - mvn $MAVEN_CLI_OPTS release:perform -Darguments=-Dgpg.passphrase=${GPG_PASSPHRASE} -DlocalCheckout=true
+    - git config --global user.email "$env:GITLAB_USER_EMAIL"
+    - git config --global user.name "$env:GITLAB_USER_NAME"
+    - git checkout -B "$CI_COMMIT_REF_NAME"
+    - mvn $MAVEN_CLI_OPTS release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true -DscmCommentPrefix="[skip ci]" -DupdateWorkingCopyVersions=false -DpushChanges=false -DskipTests
+    - mvn $MAVEN_CLI_OPTS release:perform -Darguments=-Dgpg.passphrase=${GPG_PASSPHRASE} -DlocalCheckout=true -DskipTests -Dmaven.test.skip=true
   only:
     - master
   tags:

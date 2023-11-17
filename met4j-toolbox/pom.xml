@@ -5,7 +5,7 @@
     <parent>
         <groupId>fr.inrae.toulouse.metexplore</groupId>
         <artifactId>met4j</artifactId>
-        <version>1.5.0-SNAPSHOT</version>
+        <version>1.5.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>met4j-toolbox</artifactId>
@@ -27,37 +27,37 @@
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-chemUtils</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>1.5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-io</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>1.5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-core</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>1.5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-mathUtils</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>1.5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-graph</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>1.5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-mapping</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>1.5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>
             <artifactId>met4j-reconstruction</artifactId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>1.5.1-SNAPSHOT</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
         <dependency>

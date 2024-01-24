@@ -36,10 +36,11 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML1Compatible;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags.ReaderSBML2Compatible;
@@ -49,13 +50,10 @@ import org.sbml.jsbml.CVTerm;
 import org.sbml.jsbml.Model;
 import org.sbml.jsbml.UniqueNamedSBase;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.*;
+import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
 
 /**
  * This class is used to parse the MIRIAM annotation of every SBML element.
@@ -88,11 +86,11 @@ public class AnnotationParser implements PackageParser, AdditionalDataTag, Reade
     /**
      * The default annotation pattern:
      * <ul>
-     * <li>http://identifiers.org/([^/]+)/(.*)
+     * <li>http://identifiers.org/([^/]+)[/:](.*)
      * </ul>
      * The first parenthesis group is
      */
-    public static final String defaultAnnotationPattern = "https?://identifiers.org/([^/]+)/(.*)";
+    public static final String defaultAnnotationPattern = "https?://identifiers.org/([^/]+)[/:](.*)";
 
     /**
      * Constructor

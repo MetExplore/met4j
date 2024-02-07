@@ -91,6 +91,11 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 	 */
 	public FBCModelPlugin fbcModel;
 
+	/**
+	 * Indicates if the genes are parsed or not
+	 */
+	public Boolean parseGenes = true;
+
 	/** {@inheritDoc} */
 	@Override
 	public String getAssociatedPackageName() {
@@ -101,6 +106,17 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 	@Override
 	public boolean isPackageUseableOnModel(Model model) {
 		return model.isPackageURIEnabled(PackageNamespace);
+	}
+
+
+	public FBCParser(Boolean parseGenes) {
+
+        this.parseGenes = parseGenes;
+    }
+
+	public FBCParser() {
+
+		this.parseGenes = true;
 	}
 
 	/**
@@ -129,7 +145,10 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 		this.setStrictFromFbcModel();
 
 		this.parseParameters();
-		this.parseListOfGeneProducts();
+
+		if(parseGenes) {
+			this.parseListOfGeneProducts();
+		}
 		try {
 			this.parseFluxReactions();
 		} catch (GeneSetException | Met4jSbmlReaderException e) {
@@ -239,7 +258,7 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 			GeneAssociation geneAssociation = new GeneAssociation();
 
 			// System.err.println(rxn.getId());
-			if (rxnPlugin.isSetGeneProductAssociation()) {
+			if (parseGenes && rxnPlugin.isSetGeneProductAssociation()) {
 				geneAssociation = this.computeGeneAssocations(rxnPlugin.getGeneProductAssociation().getAssociation());
 			}
 			// System.err.println("out of recursion");

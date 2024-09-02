@@ -48,25 +48,19 @@ cache:
     - .m2/repository/
 
 build:
-  image: eclipse-temurin:17-jdk-alpine
+  image: eclipse-temurin:17.0.12_7-jdk
   stage: build
   before_script:
-    - apk update && apk add maven
+    - apt-get update && apt-get install -y maven
   script:
     - mvn $MAVEN_OPTS compile
     - TRUEVERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-    - echo "TRUEVERSION:$TRUEVERSION"
     - VERSION=$TRUEVERSION
-    - echo "VERSION:$VERSION"
     - if [ "$CI_COMMIT_BRANCH" = "master" ]; then VERSION=${VERSION%"-SNAPSHOT"}; fi
-    - echo "VERSION:$VERSION"
     - LOWER_CASE_VERSION=${VERSION,,}
-    - echo "LOWER_CASE_VERSION:$LOWER_CASE_VERSION"
     # Replace / by _ in the name of the commit
     - FORMATTED_COMMIT_BRANCH=${CI_COMMIT_BRANCH//\//_}
-    - echo "FORMATTED_COMMIT_BRANCH:$FORMATTED_COMMIT_BRANCH"
     - LOWER_CASE_COMMIT_BRANCH=${FORMATTED_COMMIT_BRANCH,,}
-    - echo "LOWER_CASE_COMMIT_BRANCH:$LOWER_CASE_COMMIT_BRANCH"
     - echo "VERSION=$VERSION" >> build.env
     - echo "TRUEVERSION=$TRUEVERSION" >> build.env
     - echo "FORMATTED_COMMIT_BRANCH=$FORMATTED_COMMIT_BRANCH" >> build.env
@@ -83,10 +77,10 @@ build:
     - stable
 
 test:
-  image: eclipse-temurin:17-jdk-alpine
+  image: eclipse-temurin:17.0.12_7-jdk
   stage: test
   before_script:
-    - apk update && apk add maven
+    - apt-get update && apt-get install -y maven
   script:
     - find . -name "*.class" -exec touch {} \+
     - mvn $MAVEN_OPTS clean test
@@ -97,10 +91,10 @@ test:
   
 
 package:
-  image: eclipse-temurin:17-jdk-alpine
+  image: eclipse-temurin:17.0.12_7-jdk
   stage: package
   before_script:
-    - apk update && apk add maven
+    - apt-get update && apt-get install -y maven
   script:
     - mvn $MAVEN_OPTS clean install -DskipTests=true
     - cd met4j-toolbox
@@ -134,20 +128,20 @@ deployJar:
     - stable
 
 deploySnapshot:
-  image: eclipse-temurin:17-jdk-alpine
+  image: eclipse-temurin:17.0.12_7-jdk
   stage: deploy
   before_script:
-    - apk update && apk add maven
+    - apt-get update && apt-get install -y maven
   script:
     - mvn $MAVEN_CLI_OPTS deploy -Dmaven.test.skip=true
   only:
     - develop
 
 deployCentral:
-  image: eclipse-temurin:17-jdk-alpine
+  image: eclipse-temurin:17.0.12_7-jdk
   stage: deploy
   before_script:
-    - apk update && apk add maven
+    - apt-get update && apt-get install -y maven
     - 'which ssh-agent || ( apt-get update -qy && apt-get install openssh-client -qqy )'
     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)

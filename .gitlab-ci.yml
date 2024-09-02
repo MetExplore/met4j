@@ -53,7 +53,6 @@ build:
   before_script:
     - apt-get update && apt-get install -y maven
   script:
-    - #!/bin/bash
     - mvn $MAVEN_OPTS compile
     - TRUEVERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
     - echo "TRUEVERSION:$TRUEVERSION"

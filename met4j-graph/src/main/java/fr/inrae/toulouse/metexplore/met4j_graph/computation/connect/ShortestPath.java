@@ -310,13 +310,8 @@ public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGr
 		for(V start : startNodes){
 			for(V end : targetNodes){
 				if(start!=end){
-					try{
-						GraphPath<V, E> p = paths.getPath(start,end);
-						if(p!=null) outputPaths.add(new BioPath<>(p));
-					}catch(NullPointerException e){
-						//Handle JGraphT error which will be fixed in the next release (1.5.2).
-						//See https://github.com/jgrapht/jgrapht/issues/1053
-					}
+					GraphPath<V, E> p = paths.getPath(start,end);
+					if(p!=null) outputPaths.add(new BioPath<>(p));
 				}
 			}
 		}

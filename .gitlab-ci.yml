@@ -86,7 +86,7 @@ test:
   image: eclipse-temurin:17.0.12_7-jdk
   stage: test
   before_script:
-    - apk update && apk add maven
+    - apt-get update && apt-get install -y maven
   script:
     - find . -name "*.class" -exec touch {} \+
     - mvn $MAVEN_OPTS clean test
@@ -100,7 +100,7 @@ package:
   image: eclipse-temurin:17.0.12_7-jdk
   stage: package
   before_script:
-    - apk update && apk add maven
+    - apt-get update && apt-get install -y maven
   script:
     - mvn $MAVEN_OPTS clean install -DskipTests=true
     - cd met4j-toolbox
@@ -137,7 +137,7 @@ deploySnapshot:
   image: eclipse-temurin:17.0.12_7-jdk
   stage: deploy
   before_script:
-    - apk update && apk add maven
+    - apt-get update && apt-get install -y maven
   script:
     - mvn $MAVEN_CLI_OPTS deploy -Dmaven.test.skip=true
   only:
@@ -147,7 +147,7 @@ deployCentral:
   image: eclipse-temurin:17.0.12_7-jdk
   stage: deploy
   before_script:
-    - apk update && apk add maven
+    - apt-get update && apt-get install -y maven
     - 'which ssh-agent || ( apt-get update -qy && apt-get install openssh-client -qqy )'
     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)

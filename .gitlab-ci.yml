@@ -48,10 +48,10 @@ cache:
     - .m2/repository/
 
 build:
-  image: eclipse-temurin:17-jdk-alpine
+  image: eclipse-temurin:17.0.12_7-jdk
   stage: build
   before_script:
-    - apk update && apk add maven
+    - apt-get update && apt-get install -y maven
   script:
     - #!/bin/bash
     - mvn $MAVEN_OPTS compile
@@ -84,7 +84,7 @@ build:
     - stable
 
 test:
-  image: eclipse-temurin:17-jdk-alpine
+  image: eclipse-temurin:17.0.12_7-jdk
   stage: test
   before_script:
     - apk update && apk add maven
@@ -98,7 +98,7 @@ test:
   
 
 package:
-  image: eclipse-temurin:17-jdk-alpine
+  image: eclipse-temurin:17.0.12_7-jdk
   stage: package
   before_script:
     - apk update && apk add maven
@@ -135,7 +135,7 @@ deployJar:
     - stable
 
 deploySnapshot:
-  image: eclipse-temurin:17-jdk-alpine
+  image: eclipse-temurin:17.0.12_7-jdk
   stage: deploy
   before_script:
     - apk update && apk add maven
@@ -145,7 +145,7 @@ deploySnapshot:
     - develop
 
 deployCentral:
-  image: eclipse-temurin:17-jdk-alpine
+  image: eclipse-temurin:17.0.12_7-jdk
   stage: deploy
   before_script:
     - apk update && apk add maven

@@ -37,11 +37,15 @@
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBCParser;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 import org.junit.Test;
 import org.sbml.jsbml.SBMLDocument;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.doReturn;
@@ -65,7 +69,30 @@ public class JsbmlReaderTest {
 
         assertEquals(3, network.getReactionsView().size());
 
+        assertEquals(2, network.getGenesView().size());
+
         // Other tests are done on JsbmlToBioNetwork
+
+    }
+
+    @Test
+    public void readWithoutGenes() throws IOException, XMLStreamException, Met4jSbmlReaderException {
+
+        JsbmlReader reader = spy(new JsbmlReader("test"));
+
+        SbmlDocMock docMockGenerator  = new SbmlDocMock();
+        SBMLDocument doc = docMockGenerator.doc;
+
+        doReturn(doc).when(reader).sbmlRead();
+
+        BioNetwork network = reader.read(new ArrayList<PackageParser>(Arrays.asList(new FBCParser(false))));
+
+        assertNotNull(network);
+
+        assertEquals(3, network.getReactionsView().size());
+
+        assertEquals(0, network.getGenesView().size());
+
 
     }
 

@@ -245,7 +245,7 @@ public class StringUtils {
 //        	
 //        	codes.add(new Integer(str));
         	
-        	int[] codesInt = new int []{new Integer(str)};
+        	int[] codesInt = new int []{Integer.valueOf(str)};
         	
         	String specialCharacter = new String(codesInt,0, codesInt.length);
         	

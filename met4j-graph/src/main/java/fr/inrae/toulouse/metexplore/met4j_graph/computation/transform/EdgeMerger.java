@@ -35,15 +35,13 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.transform;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import com.google.common.primitives.Doubles;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.parallel.MergedGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.parallel.MetaEdge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+
+import java.util.*;
 
 /**
  * Class used to merges parallel edges.
@@ -222,7 +220,7 @@ public class EdgeMerger {
 		return new Comparator<E>() {
 			@Override
 			public int compare(E e1, E e2) {
-				return Doubles.compare(
+				return Double.compare(
 						g.getEdgeWeight(e2),
 						g.getEdgeWeight(e1)
 				);
@@ -233,7 +231,7 @@ public class EdgeMerger {
 		return new Comparator<E>() {
 			@Override
 			public int compare(E e1, E e2) {
-				return Doubles.compare(
+				return Double.compare(
 						g.getEdgeWeight(e1),
 						g.getEdgeWeight(e2)
 				);

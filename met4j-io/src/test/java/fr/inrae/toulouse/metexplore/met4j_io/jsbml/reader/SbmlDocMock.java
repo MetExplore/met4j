@@ -35,9 +35,13 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader;
 
+import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
 import org.sbml.jsbml.*;
+import org.sbml.jsbml.ext.fbc.*;
 
 import javax.xml.stream.XMLStreamException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SbmlDocMock {
 
@@ -51,7 +55,7 @@ public class SbmlDocMock {
 
     public SbmlDocMock() {
 
-        doc = new SBMLDocument(3, 1);
+        doc = new SBMLDocument(3, 2);
 
         model = doc.createModel();
 
@@ -83,6 +87,21 @@ public class SbmlDocMock {
         m1.setInitialAmount(2.0);
         m2.setInitialAmount(3.0);
 
+        // Create genes
+        FBCModelPlugin fbcModel = (FBCModelPlugin)  model.getPlugin("http://www.sbml.org/sbml/level3/version1/fbc/version2");
+        GeneProduct gene1 = fbcModel.createGeneProduct();
+        gene1.setId("g1");
+        gene1.setName("g1");
+        gene1.setLabel("g1");
+
+        fbcModel.addGeneProduct(gene1);
+
+        GeneProduct gene2 = fbcModel.createGeneProduct();
+        gene2.setId("g2");
+        gene2.setName("g2");
+        gene2.setLabel("g2");
+
+        fbcModel.addGeneProduct(gene2);
 
         r1 = model.createReaction("r1");
         r1.setName("name1");
@@ -90,7 +109,21 @@ public class SbmlDocMock {
 
         r1.setSBOTerm("SBO:0000167");
 
+        GeneProductRef geneRef1 = new GeneProductRef();
+        geneRef1.setGeneProduct(StringUtils.convertToSID("g1"));
+
+        FBCReactionPlugin rxnPlugin = (FBCReactionPlugin) r1.getPlugin("fbc");
+        GeneProductAssociation GPA = rxnPlugin.createGeneProductAssociation();
+        GPA.setAssociation(geneRef1);
+
         r2 = model.createReaction("r2");
+
+        GeneProductRef geneRef2 = new GeneProductRef();
+        geneRef2.setGeneProduct(StringUtils.convertToSID("g2"));
+
+        FBCReactionPlugin rxn2Plugin = (FBCReactionPlugin) r2.getPlugin("fbc");
+        GeneProductAssociation GPA2 = rxnPlugin.createGeneProductAssociation();
+        GPA.setAssociation(geneRef2);
 
         SpeciesReference m1Ref = new SpeciesReference(m1);
         m1Ref.setStoichiometry(2.0);

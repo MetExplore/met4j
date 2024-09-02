@@ -67,9 +67,9 @@ public class SimilarityComputor {
 		if(fingerprint1.size()!=fingerprint2.size()) throw new IllegalArgumentException("bitSets must have the same size");
 		BitSet intersect = (BitSet) fingerprint1.clone();
 		intersect.and(fingerprint2);
-		double a = new Integer(fingerprint1.cardinality()).doubleValue();
-		double b = new Integer(fingerprint2.cardinality()).doubleValue();
-		double c = new Integer(intersect.cardinality()).doubleValue();
+		double a = Integer.valueOf(fingerprint1.cardinality()).doubleValue();
+		double b = Integer.valueOf(fingerprint2.cardinality()).doubleValue();
+		double c = Integer.valueOf(intersect.cardinality()).doubleValue();
 		double dist = c/(a+b-c);
 		return dist;
 	}
@@ -89,9 +89,9 @@ public class SimilarityComputor {
 		if(fingerprint1.size()!=fingerprint2.size()) throw new IllegalArgumentException("bitSets must have the same size");
 		BitSet intersect = (BitSet) fingerprint1.clone();
 		intersect.and(fingerprint2);
-		double a = new Integer(fingerprint1.cardinality()).doubleValue();
-		double b = new Integer(fingerprint2.cardinality()).doubleValue();
-		double c = new Integer(intersect.cardinality()).doubleValue();
+		double a = Integer.valueOf(fingerprint1.cardinality()).doubleValue();
+		double b = Integer.valueOf(fingerprint2.cardinality()).doubleValue();
+		double c = Integer.valueOf(intersect.cardinality()).doubleValue();
 		double dist = (2*c)/(a+b);
 		return dist;
 	}
@@ -111,9 +111,9 @@ public class SimilarityComputor {
 		if(fingerprint1.size()!=fingerprint2.size()) throw new IllegalArgumentException("bitSets must have the same size");
 		BitSet intersect = (BitSet) fingerprint1.clone();
 		intersect.and(fingerprint2);
-		double a = new Integer(fingerprint1.cardinality()).doubleValue();
-		double b = new Integer(fingerprint2.cardinality()).doubleValue();
-		double c = new Integer(intersect.cardinality()).doubleValue();
+		double a = Integer.valueOf(fingerprint1.cardinality()).doubleValue();
+		double b = Integer.valueOf(fingerprint2.cardinality()).doubleValue();
+		double c = Integer.valueOf(intersect.cardinality()).doubleValue();
 		double dist = c/(Math.sqrt(a*b));
 		return dist;
 	}
@@ -133,9 +133,9 @@ public class SimilarityComputor {
 		if(fingerprint1.size()!=fingerprint2.size()) throw new IllegalArgumentException("bitSets must have the same size");
 		BitSet intersect = (BitSet) fingerprint1.clone();
 		intersect.and(fingerprint2);
-		double a = new Integer(fingerprint1.cardinality()).doubleValue();
-		double b = new Integer(fingerprint2.cardinality()).doubleValue();
-		double c = new Integer(intersect.cardinality()).doubleValue();
+		double a = Integer.valueOf(fingerprint1.cardinality()).doubleValue();
+		double b = Integer.valueOf(fingerprint2.cardinality()).doubleValue();
+		double c = Integer.valueOf(intersect.cardinality()).doubleValue();
 		double dist = a+b-(2*c);
 		return dist;
 	}
@@ -154,9 +154,9 @@ public class SimilarityComputor {
 		if(fingerprint1.size()!=fingerprint2.size()) throw new IllegalArgumentException("bitSets must have the same size");
 		BitSet intersect = (BitSet) fingerprint1.clone();
 		intersect.and(fingerprint2);
-		double a = new Integer(fingerprint1.cardinality()).doubleValue();
-		double b = new Integer(fingerprint2.cardinality()).doubleValue();
-		double c = new Integer(intersect.cardinality()).doubleValue();
+		double a = Integer.valueOf(fingerprint1.cardinality()).doubleValue();
+		double b = Integer.valueOf(fingerprint2.cardinality()).doubleValue();
+		double c = Integer.valueOf(intersect.cardinality()).doubleValue();
 		double dist = Math.sqrt(a+b-(2*c));
 		return dist;
 	}
@@ -177,9 +177,9 @@ public class SimilarityComputor {
 		if(fingerprint1.size()!=fingerprint2.size()) throw new IllegalArgumentException("bitSets must have the same size");
 		BitSet intersect = (BitSet) fingerprint1.clone();
 		intersect.and(fingerprint2);
-		double a = new Integer(fingerprint1.cardinality()).doubleValue();
-		double b = new Integer(fingerprint2.cardinality()).doubleValue();
-		double c = new Integer(intersect.cardinality()).doubleValue();
+		double a = Integer.valueOf(fingerprint1.cardinality()).doubleValue();
+		double b = Integer.valueOf(fingerprint2.cardinality()).doubleValue();
+		double c = Integer.valueOf(intersect.cardinality()).doubleValue();
 		double dist = (a+b-(2*c))/(a+b-c);
 		return dist;
 	}
@@ -198,7 +198,7 @@ public class SimilarityComputor {
 		if(fingerprint1.size()!=fingerprint2.size()) throw new IllegalArgumentException("bitSets must have the same size");
 		BitSet xor = (BitSet) fingerprint1.clone();
 		xor.xor(fingerprint2);
-		return new Integer(xor.cardinality()).doubleValue();
+		return Integer.valueOf(xor.cardinality()).doubleValue();
 	}
 	
 	

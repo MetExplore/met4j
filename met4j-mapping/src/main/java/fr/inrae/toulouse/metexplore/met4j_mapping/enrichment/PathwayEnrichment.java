@@ -246,7 +246,7 @@ public class PathwayEnrichment {
         for(BioPathway p : pvalues.keySet()){
             double pval = pvalues.get(p);
             double adjPval = pval*pvalues.size();
-            adjPvalues.put(p, new Double(adjPval));
+            adjPvalues.put(p, Double.valueOf(adjPval));
         }
         return adjPvalues;
     }
@@ -265,7 +265,7 @@ public class PathwayEnrichment {
             BioPathway p = orderedPaths.get(k);
             double pval = pvalues.get(p);
             double adjPval = pval*pvalues.size()/(k+1);
-            adjPvalues.put(p, new Double(adjPval));
+            adjPvalues.put(p, Double.valueOf(adjPval));
         }
         return adjPvalues;
     }
@@ -284,7 +284,7 @@ public class PathwayEnrichment {
             BioPathway p = orderedPaths.get(k);
             double pval = pvalues.get(p);
             double adjPval = pval*(pvalues.size()+1-(k+1));
-            adjPvalues.put(p, new Double(adjPval));
+            adjPvalues.put(p, Double.valueOf(adjPval));
         }
         return adjPvalues;
     }

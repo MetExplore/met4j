@@ -42,7 +42,6 @@ stages:
 variables:
   MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
-  SHELL: /bin/bash
 
 cache:
   paths:
@@ -54,6 +53,7 @@ build:
   before_script:
     - apk update && apk add maven
   script:
+    - #!/bin/bash
     - mvn $MAVEN_OPTS compile
     - TRUEVERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
     - echo "TRUEVERSION:$TRUEVERSION"

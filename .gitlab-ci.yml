@@ -141,7 +141,7 @@ deployCentral:
   image: eclipse-temurin:17.0.12_7-jdk
   stage: deploy
   before_script:
-    - apt-get update && apt-get install -y maven
+    - apt-get update && apt-get install -y maven git
     - 'which ssh-agent || ( apt-get update -qy && apt-get install openssh-client -qqy )'
     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)

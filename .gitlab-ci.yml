@@ -166,7 +166,7 @@ deployCentral:
 buildSingularity:
   stage: build-containers
   image:
-    name: quay.io/singularity/singularity:v3.4.0
+    name: quay.io/singularity/singularity:v3.11.5-slim
     entrypoint: [ "" ]
   script:
     - singularity build met4j-toolbox.sif met4j.singularity

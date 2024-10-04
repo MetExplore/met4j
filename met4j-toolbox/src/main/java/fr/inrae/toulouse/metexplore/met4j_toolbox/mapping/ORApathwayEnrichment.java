@@ -184,12 +184,12 @@ public class ORApathwayEnrichment extends AbstractMet4jApplication {
     }
 
     @Override
-    public String getLongDescription() {
+    public String getShortDescription() {
         return "Perform Over Representation Analysis for Pathway Enrichment, using one-tailed exact Fisher Test.";
     }
 
     @Override
-    public String getShortDescription() {
+    public String getLongDescription() {
         return "Perform Over Representation Analysis for Pathway Enrichment, using one-tailed exact Fisher Test.\n" +
                 "The fisher exact test compute the probability p to randomly get the given set of value. \n" +
                 "This version compute the probability to get at least the given overlap between the given set and the given modality :\n" +

@@ -111,6 +111,7 @@ sudo docker pull metexplore/met4j:develop
 If you want to build by yourself the docker image:
 
 ```console
+mvn clean install
 cd met4j-toolbox
 mvn package
 cd ../
@@ -120,7 +121,15 @@ sudo docker build -t metexplore/met4j:myversion .
 
 To list all the apps:
 ```console
-sudo docker run metexplore/met4j:latest met4j.sh
+sudo docker run metexplore/met4j:latest
+```
+
+To run an app, you have to specify the full name of the app, 
+with the last part of the package name and the app name separated by a dot.
+For instance:
+
+```console
+sudo docker run metexplore/met4j:latest convert.Tab2Sbml -h
 ```
 
 Don't forget to map volumes when you want to process local files.
@@ -128,16 +137,8 @@ Example:
 
 ```console
 sudo docker run -v /home/lcottret/work:/work \
- metexplore/met4j:latest met4j.sh convert.Sbml2Tab \
+ metexplore/met4j:latest convert.Sbml2Tab \
  -in /work/toy_model.xml -out /work/toy_model.tsv
-```
-
-If you change the working directory, you have to specify "sh /usr/bin/met4j.sh":
-
-```console
-sudo docker run -w /work -v /home/lcottret/work:/work \
- metexplore/met4j:latest sh /usr/bin/met4j.sh convert.Sbml2Tab \
- -in toy_model.xml -out toy_model.tsv
 ```
 
 ### Galaxy instance

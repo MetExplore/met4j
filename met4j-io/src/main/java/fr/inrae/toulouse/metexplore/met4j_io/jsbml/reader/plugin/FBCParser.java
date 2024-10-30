@@ -218,11 +218,10 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 	private void parseListOfGeneProducts() {
 		for (GeneProduct geneProd : this.getFbcModel().getListOfGeneProducts()) {
 			String geneId = geneProd.getId();
-			String geneName = geneProd.getName();
+			String geneName = geneProd.getName() != null ? geneProd.getName() :
+					(geneProd.getLabel() != null ? geneProd.getLabel() : geneProd.getId());
 
 			BioGene gene = new BioGene(geneId, geneName);
-
-			gene.setName(geneProd.getLabel());
 
 			this.getFlxNet().getUnderlyingBionet().add(gene);
 

@@ -45,6 +45,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.stream.XMLStreamException;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import org.junit.Before;
@@ -242,9 +243,20 @@ public class FBCParserTest {
 		rxn2Plugin = (FBCReactionPlugin) rSbml2.getPlugin("fbc");
 		rxn3Plugin = (FBCReactionPlugin) rSbml3.getPlugin("fbc");
 
-		plugin.addGeneProduct(new GeneProduct("g1"));
-		plugin.addGeneProduct(new GeneProduct("g2"));
-		plugin.addGeneProduct(new GeneProduct("g3"));
+		GeneProduct g1 = new GeneProduct("g1");
+		g1.setLabel("g1Label");
+		g1.setName("g1Name");
+
+		GeneProduct g2 = new GeneProduct("g2");
+		g2.setLabel("g2Label");
+		// G2 Does not have name
+
+		GeneProduct g3 = new GeneProduct("g3");
+		// G3 does not have neither name or label
+
+		plugin.addGeneProduct(g1);
+		plugin.addGeneProduct(g2);
+		plugin.addGeneProduct(g3);
 
 		GeneProductRef p1 = new GeneProductRef("g1ref");
 		p1.setGeneProduct("g1");
@@ -279,6 +291,22 @@ public class FBCParserTest {
 		parser.setFbcModel(plugin);
 
 		parser.parseModel(model, network);
+
+		BioGene bioGene1 = network.getGenesView().get("g1");
+		assertNotNull(bioGene1);
+		assertEquals("g1", bioGene1.getId());
+		assertEquals("g1Name", bioGene1.getName());
+
+		BioGene bioGene2 = network.getGenesView().get("g2");
+		assertNotNull(bioGene2);
+		assertEquals("g2", bioGene2.getId());
+		assertEquals("g2Label", bioGene2.getName());
+
+		BioGene bioGene3 = network.getGenesView().get("g3");
+		assertNotNull(bioGene3);
+		assertEquals("g3", bioGene3.getId());
+		assertEquals("g3", bioGene3.getName());
+
 
 		String ga1 = BioReactionUtils.getGPR(network, r1, false);
 

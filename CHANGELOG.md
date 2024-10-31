@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Next Release
 
-
+[met4j-io] Fix protein/gene names in FBC parser
 
 
 ## 1.5.0

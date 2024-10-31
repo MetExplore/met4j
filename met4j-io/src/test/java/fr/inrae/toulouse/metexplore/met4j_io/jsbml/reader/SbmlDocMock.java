@@ -91,15 +91,15 @@ public class SbmlDocMock {
         FBCModelPlugin fbcModel = (FBCModelPlugin)  model.getPlugin("http://www.sbml.org/sbml/level3/version1/fbc/version2");
         GeneProduct gene1 = fbcModel.createGeneProduct();
         gene1.setId("g1");
-        gene1.setName("g1");
-        gene1.setLabel("g1");
+        gene1.setName("G1_name");
+        gene1.setLabel("G1_label");
 
         fbcModel.addGeneProduct(gene1);
 
         GeneProduct gene2 = fbcModel.createGeneProduct();
         gene2.setId("g2");
-        gene2.setName("g2");
-        gene2.setLabel("g2");
+        gene2.setName("G2_name");
+        gene2.setLabel("G2_label");
 
         fbcModel.addGeneProduct(gene2);
 

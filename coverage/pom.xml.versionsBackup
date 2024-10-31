@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright INRAE (2022)
+  ~ Copyright INRAE (2021)
   ~
   ~ contact-metexplore@inrae.fr
   ~
@@ -37,36 +37,57 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>met4j</artifactId>
-        <groupId>fr.inrae.toulouse.metexplore</groupId>
-        <version>1.5.5-SNAPSHOT</version>
-    </parent>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+    http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>met4j-reconstruction</artifactId>
-    <packaging>jar</packaging>
+    <parent>
+        <groupId>fr.inrae.toulouse.metexplore</groupId>
+        <artifactId>met4j</artifactId>
+        <version>1.5.4-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-    <name>met4j-reconstruction</name>
-    <url>http://maven.apache.org</url>
+    <artifactId>coverage</artifactId>
+    <name>coverage</name>
+    <description>Compute aggregated test code coverage</description>
 
     <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>fr.inrae.toulouse.metexplore</groupId>
-            <artifactId>met4j-io</artifactId>
-            <version>1.5.5-SNAPSHOT</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>met4j-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>met4j-io</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>met4j-graph</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>met4j-mapping</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>met4j-reconstruction</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
@@ -77,23 +98,22 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.11</version>
                 <executions>
-                    <!-- to avoid bugs in some situations -->
                     <execution>
-                        <id>default-prepare-agent</id>
+                        <id>report-aggregate</id>
+                        <phase>test</phase>
                         <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-
-                    <!-- create report during maven verify phase -->
-                    <execution>
-                        <id>report</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>report</goal>
+                            <goal>report-aggregate</goal>
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+                </configuration>
             </plugin>
         </plugins>
     </build>

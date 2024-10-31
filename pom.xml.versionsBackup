@@ -5,7 +5,7 @@
 
     <groupId>fr.inrae.toulouse.metexplore</groupId>
     <artifactId>met4j</artifactId>
-    <version>1.5.5-SNAPSHOT</version>
+    <version>1.5.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>met4j</name>

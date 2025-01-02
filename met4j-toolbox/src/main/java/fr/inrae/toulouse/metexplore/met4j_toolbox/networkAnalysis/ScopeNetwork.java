@@ -17,9 +17,12 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormat
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Gml;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
@@ -144,12 +147,18 @@ public class ScopeNetwork extends AbstractMet4jApplication {
         return this.getShortDescription() + "\n" +
                 "The scope of a set of compounds (seed) refer to the maximal metabolic network that can be extended from them," +
                 "where the extension process consist of adding a reaction to the network if and only if all of its substrates " +
-                "are either a seed or a product of a previously added reaction\n" +
-                "For more information, see Handorf, Ebenhöh and Heinrich (2005). *Expanding metabolic networks: scopes of compounds, robustness, and evolution.* Journal of molecular evolution, 61(4), 498-512. (https://doi.org/10.1007/s00239-005-0027-1)";
+                "are either a seed or a product of a previously added reaction";
     }
 
     @Override
     public String getShortDescription() {
         return "Perform a network expansion from a set of compound seeds to create a scope network";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        Set<Doi> dois = new HashSet<>();
+        dois.add(new Doi("https://doi.org/10.1007/s00239-005-0027-1"));
+        return dois;
     }
 }

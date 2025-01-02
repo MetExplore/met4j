@@ -40,7 +40,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetChargesFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
+
+import java.util.Set;
 
 /**
  * <p>SbmlSetChargesFromFile class.</p>
@@ -75,6 +78,11 @@ public class SbmlSetChargesFromFile extends AbstractSbmlSetMetabolite {
     public String getShortDescription() {
         return "Set charge to network metabolites from a tabulated file " +
                 "containing the metabolite ids and the formulas";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 
     /**

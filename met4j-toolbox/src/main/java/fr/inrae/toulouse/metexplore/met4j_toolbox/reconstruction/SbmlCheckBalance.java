@@ -45,6 +45,7 @@ import fr.inrae.toulouse.metexplore.met4j_reconstruction.check.balance.ReactionB
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
 import java.io.FileWriter;
@@ -155,4 +156,10 @@ public class SbmlCheckBalance extends AbstractMet4jApplication {
     public String getShortDescription() {
         return "Check balance of all the reactions in a SBML.";
     }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
+    }
+
 }

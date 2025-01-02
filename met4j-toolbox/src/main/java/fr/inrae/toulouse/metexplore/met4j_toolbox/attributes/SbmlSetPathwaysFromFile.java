@@ -40,7 +40,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetPathwaysFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
+
+import java.util.Set;
 
 /**
  * <p>SbmlSetPathwaysFromFile class.</p>
@@ -82,6 +85,11 @@ public class SbmlSetPathwaysFromFile extends AbstractSbmlSetReaction {
     @Override
     public String getShortDescription() {
         return "Set pathway to reactions in a network from a tabulated file containing the reaction ids and the pathways";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 
     /**

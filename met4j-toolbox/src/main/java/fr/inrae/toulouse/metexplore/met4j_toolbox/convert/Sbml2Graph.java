@@ -11,11 +11,13 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderExcepti
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.*;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.*;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
@@ -120,6 +122,11 @@ public class Sbml2Graph extends AbstractMet4jApplication {
     @Override
     public String getShortDescription() {
         return "Create a graph representation of a SBML file content, and export it in graph file format.";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 
 }

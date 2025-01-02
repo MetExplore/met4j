@@ -21,6 +21,7 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplicati
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.kohsuke.args4j.Option;
 
@@ -250,6 +251,11 @@ public class NetworkSummary extends AbstractMet4jApplication {
     @Override
     public String getShortDescription() {
         return "Create a report summarizing several graph measures characterising the structure of the network.";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 
 }

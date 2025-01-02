@@ -35,6 +35,8 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_toolbox;
 
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.ResourceURLFilter;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Resources;
 import org.kohsuke.args4j.CmdLineParser;
@@ -52,6 +54,8 @@ import java.util.Set;
 
 /**
  * generate doc by creating a html table with name and description of each app
+ *
+ * Be careful, network is needed to crete the references from dois
  *
  * @author cfrainay
  * @version $Id: $Id
@@ -252,11 +256,7 @@ public class GenerateDoc {
         return baos.toString(java.nio.charset.StandardCharsets.UTF_8);
     }
 
-    /**
-     * <p>main.</p>
-     *
-     * @param args an array of {@link java.lang.String} objects.
-     */
+
     public static void main(String[] args) {
 
         try {
@@ -288,45 +288,59 @@ public class GenerateDoc {
 
                 Class<?> myClass = Class.forName(entry.replace('/', '.'));
 
+                if (AbstractMet4jApplication.class.isAssignableFrom(myClass)) {
 
-                try {
-                    myClass.getMethod("main", String[].class);
-                    Constructor<?> ctor = myClass.getConstructor();
-
-                    Object obj = ctor.newInstance();
-
-                    String packageName = myClass.getPackageName();
-                    String id = myClass.getCanonicalName();
-
-                    if (!apps.containsKey(packageName)) {
-                        apps.put(packageName, new HashMap<>());
-                    }
-                    String desc = "";
                     try {
-                        Object labelo = myClass.getMethod("getLabel").invoke(obj);
-                        String label = labelo !=null ? (String) labelo : "";
-                        Object spo = myClass.getMethod("getShortDescription").invoke(obj);
-                        String sp = spo !=null ? (String) spo : "";
-                        sp=sp.replaceAll("\n","<br/>");
-                        Object lpo = myClass.getMethod("getLongDescription").invoke(obj);
-                        String lp = lpo !=null ? (String) lpo : "";
-                        lp=lp.replaceAll("\n\r?","<br/>");
-                        String us =getUsage(obj);
-                        desc += "<tr><td>"+
-                                label +
-                                "</td><td>" +
-                                sp+"<details><summary><small>more</small></summary>" +
-                                lp+"<br/><br/>" +
-                                "<pre><code>"+us+"</code></pre>" +
-                                "</details>"+
-                                "</td></tr>";
+                        myClass.getMethod("main", String[].class);
+                        Constructor<?> ctor = myClass.getConstructor();
 
-                        apps.get(packageName).put(id, desc);
-                    } catch (Exception e) {
-                        System.err.println("no description set for "+id);
+                        Object obj = ctor.newInstance();
+
+                        String packageName = myClass.getPackageName();
+                        String id = myClass.getCanonicalName();
+
+                        if (!apps.containsKey(packageName)) {
+                            apps.put(packageName, new HashMap<>());
+                        }
+                        String desc = "";
+                        try {
+                            Object labelo = myClass.getMethod("getLabel").invoke(obj);
+                            String label = labelo != null ? (String) labelo : "";
+                            Object spo = myClass.getMethod("getShortDescription").invoke(obj);
+                            String sp = spo != null ? (String) spo : "";
+                            sp = sp.replaceAll("\n", "<br/>");
+                            Object lpo = myClass.getMethod("getLongDescription").invoke(obj);
+                            String lp = lpo != null ? (String) lpo : "";
+                            lp = lp.replaceAll("\n\r?", "<br/>");
+
+                            Set<Doi> dois = (Set<Doi>) myClass.getMethod("getDois").invoke(obj);
+
+                            if (dois.size() > 0) {
+
+                                lp += "<br/><br/>References:<br/>";
+                                for (Doi doiInfo : dois) {
+                                    lp += "<a href=\"https://doi.org/" + doiInfo.getDoi() + "\">" + doiInfo.getAbbreviatedReference() + "</a><br/>";
+                                }
+                            }
+
+                            String us = getUsage(obj);
+                            desc += "<tr><td>" +
+                                    label +
+                                    "</td><td>" +
+                                    sp + "<details><summary><small>more</small></summary>" +
+                                    lp + "<br/><br/>" +
+                                    "<pre><code>" + us + "</code></pre>" +
+                                    "</details>" +
+                                    "</td></tr>";
+
+                            apps.get(packageName).put(id, desc);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            System.err.println("no description set for " + id);
+                        }
+                    } catch (Exception e1) {
+                        //method not set
                     }
-                } catch (Exception e1) {
-                    //method not set
                 }
 
             }

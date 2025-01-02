@@ -49,12 +49,14 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplicati
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
@@ -153,6 +155,10 @@ public class FbcToNotes extends AbstractMet4jApplication {
         return "Convert FBC package annotations to sbml notes";
     }
 
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
+    }
 
 
 }

@@ -25,60 +25,53 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormat
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 public class CompoundNet extends AbstractMet4jApplication {
 
-    @Format(name= EnumFormats.Sbml)
-    @ParameterType(name= EnumParameterTypes.InputFile)
+    @Format(name = EnumFormats.Sbml)
+    @ParameterType(name = EnumParameterTypes.InputFile)
     @Option(name = "-s", usage = "input SBML file", required = true)
     public String inputPath = null;
 
-    @ParameterType(name= EnumParameterTypes.InputFile)
-    @Format(name= EnumFormats.Txt)
+    @ParameterType(name = EnumParameterTypes.InputFile)
+    @Format(name = EnumFormats.Txt)
     @Option(name = "-sc", usage = "input Side compound file", required = false)
     public String inputSide = null;
 
-    @ParameterType(name= EnumParameterTypes.OutputFile)
-    @Format(name= EnumFormats.Gml)
+    @ParameterType(name = EnumParameterTypes.OutputFile)
+    @Format(name = EnumFormats.Gml)
     @Option(name = "-o", usage = "output Graph file", required = true)
     public String outputPath = null;
-
-    enum strategy {no, by_name,by_id}
     @Option(name = "-mc", aliases = {"--mergecomp"}, usage = "merge compartments. " +
             "Use names if consistent and unambiguous across compartments, or identifiers if compartment suffix is present (id in form \"xxx_y\" with xxx as base identifier and y as compartment label).")
     public strategy mergingStrat = strategy.no;
     public String idRegex = "^(\\w+)_\\w$";
-
     @Option(name = "-me", aliases = {"--simple"}, usage = "merge parallel edges to produce a simple graph", required = false)
     public boolean mergeEdges = false;
-
     @Option(name = "-ri", aliases = {"--removeIsolatedNodes"}, usage = "remove isolated nodes", required = false)
     public boolean removeIsolated = false;
-
     @Option(name = "-dw", aliases = {"--degreeWeights"}, usage = "penalize traversal of hubs by using degree square weighting", forbids = {"-cw"})
     public Boolean degree = false;
-
-    @ParameterType(name=EnumParameterTypes.InputFile)
-    @Format(name=EnumFormats.Tsv)
+    @ParameterType(name = EnumParameterTypes.InputFile)
+    @Format(name = EnumFormats.Tsv)
     @Option(name = "-cw", aliases = {"--customWeights"}, usage = "an optional file containing weights for compound pairs", forbids = {"-dw"})
     public String weightFile = null;
-
     @Option(name = "-un", aliases = {"--undirected"}, usage = "create as undirected", required = false)
     public boolean undirected = false;
-
     @Option(name = "-tp", aliases = {"--transitionproba"}, usage = "set weight as random walk transition probability, normalized by reaction", required = false)
     public boolean computeWeight = false;
-
     @Option(name = "-am", aliases = {"--asmatrix"}, usage = "export as matrix (implies simple graph conversion). Default export as GML file", required = false)
     public boolean asMatrix = false;
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
 
         CompoundNet app = new CompoundNet();
 
@@ -87,7 +80,6 @@ public class CompoundNet extends AbstractMet4jApplication {
         app.run();
 
     }
-
 
     public void run() {
         System.out.print("Reading SBML...");
@@ -142,25 +134,25 @@ public class CompoundNet extends AbstractMet4jApplication {
         System.out.println(" Done.");
 
         //invert graph as undirected (copy edge weight to reversed edge)
-       if(undirected){
-           System.out.print("Create Undirected...");
-           graph.asUndirected();
-           System.out.println(" Done.");
-           if(degree){
-               //since degree weighting policy is not symmetric, for undirected case we create reversed edges, apply
-               //a corrected degree computation for each edge, and treat the graph as normal
-               System.err.println("Setting edge weights (target degree)...");
-               int pow = 2;
-               wp = new DegreeWeightPolicy(1);
-               wp.setWeight(graph);
-               //adjust degree to ignore edges added for undirected case support
-               WeightUtils.process(graph, x -> StrictMath.pow((x/2),pow));
-               System.out.println(" Done.");
-           }
-       }
+        if (undirected) {
+            System.out.print("Create Undirected...");
+            graph.asUndirected();
+            System.out.println(" Done.");
+            if (degree) {
+                //since degree weighting policy is not symmetric, for undirected case we create reversed edges, apply
+                //a corrected degree computation for each edge, and treat the graph as normal
+                System.err.println("Setting edge weights (target degree)...");
+                int pow = 2;
+                wp = new DegreeWeightPolicy(1);
+                wp.setWeight(graph);
+                //adjust degree to ignore edges added for undirected case support
+                WeightUtils.process(graph, x -> StrictMath.pow((x / 2), pow));
+                System.out.println(" Done.");
+            }
+        }
 
         //merge compartment
-        if(mergingStrat!=strategy.no){
+        if (mergingStrat != strategy.no) {
             System.out.print("Merging compartments...");
             VertexContraction vc = new VertexContraction();
             VertexContraction.Mapper merger = mergingStrat.equals(strategy.by_name) ? new VertexContraction.MapByName() : new VertexContraction.MapByIdSubString(idRegex);
@@ -169,19 +161,19 @@ public class CompoundNet extends AbstractMet4jApplication {
         }
 
         //remove isolated nodes
-        if(removeIsolated){
+        if (removeIsolated) {
             System.out.println("Remove isolated nodes...");
             HashSet<BioMetabolite> nodes = new HashSet<>(graph.vertexSet());
             graph.removeIsolatedNodes();
             nodes.removeAll(graph.vertexSet());
-            for(BioMetabolite n : nodes){
+            for (BioMetabolite n : nodes) {
                 System.out.println("\tremoving " + n.getName());
             }
             System.out.println(" Done.");
         }
 
         //compute transitions probability from weights
-        if(computeWeight) {
+        if (computeWeight) {
             System.out.print("Compute transition matrix...");
             ReactionProbabilityWeight wp2 = new ReactionProbabilityWeight();
             wp2.setWeight(graph);
@@ -189,7 +181,7 @@ public class CompoundNet extends AbstractMet4jApplication {
         }
 
         //merge parallel edges
-        if(mergeEdges){
+        if (mergeEdges) {
             System.out.print("Merging edges...");
             EdgeMerger.mergeEdgesWithOverride(graph);
             System.out.println(" Done.");
@@ -197,29 +189,41 @@ public class CompoundNet extends AbstractMet4jApplication {
 
         //export graph
         System.out.print("Exporting...");
-        if(asMatrix){
+        if (asMatrix) {
             ComputeAdjacencyMatrix adjBuilder = new ComputeAdjacencyMatrix(graph);
-            if(!computeWeight) adjBuilder.parallelEdgeWeightsHandling((u, v) -> Math.max(u,v));
-            ExportMatrix.toCSV(this.outputPath,adjBuilder.getadjacencyMatrix());
-        }else{
+            if (!computeWeight) adjBuilder.parallelEdgeWeightsHandling((u, v) -> Math.max(u, v));
+            ExportMatrix.toCSV(this.outputPath, adjBuilder.getadjacencyMatrix());
+        } else {
             ExportGraph.toGmlWithAttributes(graph, this.outputPath, true);
         }
         System.out.println(" Done.");
-        return;
     }
 
     @Override
-    public String getLabel() {return this.getClass().getSimpleName();}
+    public String getLabel() {
+        return this.getClass().getSimpleName();
+    }
 
     @Override
     public String getLongDescription() {
         return "Metabolic networks used for quantitative analysis often contain links that are irrelevant for graph-based structural analysis. For example, inclusion of side compounds or modelling artifacts such as 'biomass' nodes.\n" +
                 "While Carbon Skeleton Graph offer a relevant alternative topology for graph-based analysis, it requires compounds' structure information, usually not provided in model, and difficult to retrieve for model with sparse cross-reference annotations.\n" +
-                "In contrary to the SBML2Graph app that performs a raw conversion of the SBML content, the present app propose a fine-tuned creation of compound graph from predefined list of side compounds and degree² weighting to get relevant structure without structural data."+
+                "In contrary to the SBML2Graph app that performs a raw conversion of the SBML content, the present app propose a fine-tuned creation of compound graph from predefined list of side compounds and degree² weighting to get relevant structure without structural data." +
                 "This app also enable Markov-chain based analysis of metabolic networks by computing reaction-normalized transition probabilities on the network.";
     }
 
     @Override
-    public String getShortDescription() {return "Advanced creation of a compound graph representation of a SBML file content";}
+    public String getShortDescription() {
+        return "Advanced creation of a compound graph representation of a SBML file content";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
+    }
+
+    enum strategy {no, by_name, by_id}
+
+
 }
 

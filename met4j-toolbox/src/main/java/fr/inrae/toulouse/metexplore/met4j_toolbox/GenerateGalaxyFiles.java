@@ -57,7 +57,6 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GenerateGalaxyFiles extends AbstractMet4jApplication {

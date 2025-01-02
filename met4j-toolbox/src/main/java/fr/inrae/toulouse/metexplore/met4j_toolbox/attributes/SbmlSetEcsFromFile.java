@@ -40,7 +40,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetEcsFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
+
+import java.util.Set;
 
 /**
  * <p>SbmlSetEcsFromFile class.</p>
@@ -73,6 +76,11 @@ public class SbmlSetEcsFromFile extends AbstractSbmlSetReaction {
     @Override
     public String getShortDescription() {
         return "Set EC numbers to reactions from a tabulated file containing the reaction ids and the EC";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 
     /**

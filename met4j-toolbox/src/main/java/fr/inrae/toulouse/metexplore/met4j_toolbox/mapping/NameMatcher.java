@@ -10,13 +10,11 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormat
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Tsv;
@@ -184,5 +182,10 @@ public class NameMatcher extends AbstractMet4jApplication {
                 "and a list of chemical names in a dataset. A harmonization processing is performed on chemical names with " +
                 "substitutions of common patterns among synonyms, in order to create aliases on which classical fuzzy " +
                 "matching can be run efficiently.";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 }

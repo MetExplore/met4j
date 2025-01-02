@@ -40,7 +40,10 @@ import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetIdsFromFile
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetNamesFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
+
+import java.util.Set;
 
 public class SbmlSetIdsFromFile extends AbstractSbmlSetAny {
 
@@ -65,6 +68,11 @@ public class SbmlSetIdsFromFile extends AbstractSbmlSetAny {
     @Override
     public String getShortDescription() {
         return "Set new ids to network objects from a tabulated file containing the old ids and the new ids";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 
     /**

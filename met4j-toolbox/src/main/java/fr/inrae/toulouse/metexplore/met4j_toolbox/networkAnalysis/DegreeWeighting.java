@@ -4,9 +4,12 @@ import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.De
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.EdgeWeighting;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * App that provides tabulated compound graph edge list, with one column with target's degree.
@@ -41,12 +44,18 @@ public class DegreeWeighting extends EdgeWeighting {
     public String getLongDescription() {
         return "Provides tabulated compound graph edge list, with one column with target's degree." +
                 "Degree has been proposed as edge weight for finding meaningful paths in metabolic networks," +
-                " using shortest (lightest) path search. See Croes et al. 2006 (https://doi.org/10.1016/j.jmb.2005.09.079) and" +
-                " Croes et al. 2005 (https://doi.org/10.1093/nar/gki437)";
+                " using shortest (lightest) path search.";
     }
 
     @Override
     public String getShortDescription() {
         return "Provides tabulated compound graph edge list, with one column with target's degree.";
+    }
+
+    @Override
+    public Set<Doi> getDois()  {
+        Set<Doi> dois = new HashSet<>();
+        dois.add(new Doi("https://doi.org/10.1016/j.jmb.2005.09.079"));
+        return dois;
     }
 }

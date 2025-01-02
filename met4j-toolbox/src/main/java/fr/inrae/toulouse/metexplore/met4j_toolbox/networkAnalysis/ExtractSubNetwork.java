@@ -23,11 +23,13 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.*;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
@@ -199,18 +201,24 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
                 "The subnetwork correspond to part of the network that connects compounds from the first list to compounds from the second list.\n" +
                 "Sources and targets list can have elements in common. The connecting part can be defined as the union of shortest or k-shortest paths between sources and targets, " +
                 "or the Steiner tree connecting them. The relevance of considered path can be increased by weighting the edges using degree squared, chemical similarity (require InChI or SMILES annotations) or any provided weighting.\n" +
-                "\nSee previous works on subnetwork extraction for parameters recommendations:" +
-                "Frainay, C., & Jourdan, F. Computational methods to identify metabolic sub-networks based on metabolomic profiles. Bioinformatics 2016;1–14. https://doi.org/10.1093/bib/bbv115\n" +
-                "Faust, K., Croes, D., & van Helden, J. Prediction of metabolic pathways from genome-scale metabolic networks. Bio Systems 2011;105(2), 109–121. https://doi.org/10.1016/j.biosystems.2011.05.004\n" +
-                "Croes D, Couche F, Wodak SJ, et al. Metabolic PathFinding: inferring relevant pathways in biochemical networks. Nucleic Acids Res 2005;33:W326–30.\n" +
-                "Croes D, Couche F, Wodak SJ, et al. Inferring meaningful pathways in weighted metabolic networks. J Mol Biol 2006; 356:222–36.\n" +
-                "Rahman SA, Advani P, Schunk R, et al. Metabolic pathway analysis web service (Pathway Hunter Tool at CUBIC). Bioinformatics 2005;21:1189–93.\n" +
-                "Pertusi DA, Stine AE, Broadbelt LJ, et al. Efficient searching and annotation of metabolic networks using chemical similarity. Bioinformatics 2014;1–9.\n" +
-                "McShan DC, Rao S, Shah I. PathMiner: predicting metabolic pathways by heuristic search. Bioinformatics 2003;19:1692–8.\n";
+                "\nSee previous works on subnetwork extraction for parameters recommendations.";
     }
 
     @Override
     public String getShortDescription() {
         return "Create a subnetwork from a GSMN in SBML format, and two files containing lists of compounds of interests ids, one per row.";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        Set<Doi> dois = new HashSet<>();
+        dois.add(new Doi("https://doi.org/10.1093/bib/bbv115"));
+        dois.add(new Doi("https://doi.org/10.1016/j.biosystems.2011.05.004"));
+        dois.add(new Doi("https://doi.org/10.1093/nar/gki437"));
+        dois.add(new Doi("https://doi.org/10.1093/bioinformatics/bti116"));
+        dois.add(new Doi("https://doi.org/10.1016/j.jmb.2005.09.079"));
+        dois.add(new Doi("https://doi.org/10.1093/bioinformatics/btg217"));
+        dois.add(new Doi("https://doi.org/10.1093/bioinformatics/btu760"));
+        return dois;
     }
 }

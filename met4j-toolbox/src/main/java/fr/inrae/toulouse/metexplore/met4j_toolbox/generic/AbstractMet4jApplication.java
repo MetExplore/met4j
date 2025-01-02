@@ -38,16 +38,16 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.generic;
 
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.hibernate.validator.constraints.Range;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
-import org.hibernate.validator.constraints.Range;
-
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -58,19 +58,20 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
-
-import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 
 /**
  * <p>Abstract AbstractMet4jApplication class.</p>
@@ -81,6 +82,26 @@ import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Enu
 public abstract class AbstractMet4jApplication {
 
     private ArrayList<HashMap<String, String>> options;
+
+    @Option(name = "-h", usage = "prints the help", required = false)
+    private Boolean h = false;
+
+    public static String getVersion() throws IOException, XmlPullParserException {
+        MavenXpp3Reader reader = new MavenXpp3Reader();
+        Model model;
+        if ((new File("pom.xml")).exists())
+            model = reader.read(new FileReader("pom.xml"));
+        else
+            model = reader.read(
+                    new InputStreamReader(
+                            AbstractMet4jApplication.class.getResourceAsStream(
+                                    "/META-INF/maven/fr.inrae.toulouse.metexplore/met4j-toolbox/pom.xml"
+                            )
+                    )
+            );
+
+        return model.getVersion().replace("-SNAPSHOT", "");
+    }
 
     /**
      * Inits the options from the field annotations
@@ -146,8 +167,7 @@ public abstract class AbstractMet4jApplication {
                 map.put("default", defaultValue);
 
                 for (Annotation a : f.getDeclaredAnnotations()) {
-                    if (a instanceof Option) {
-                        Option option = (Option) a;
+                    if (a instanceof Option option) {
 
                         map.put("label", option.usage());
 
@@ -164,8 +184,7 @@ public abstract class AbstractMet4jApplication {
                             optional = "false";
                         }
                         map.put("optional", optional);
-                    } else if (a instanceof Range) {
-                        Range option = (Range) a;
+                    } else if (a instanceof Range option) {
 
                         map.put("min", Double.toString(option.min()));
                         map.put("max", Double.toString(option.max()));
@@ -173,7 +192,7 @@ public abstract class AbstractMet4jApplication {
                     } else if (a instanceof ParameterType) {
                         String parameterType = ((ParameterType) a).name().toString().toLowerCase();
                         map.put("type", parameterType);
-                        if(parameterType.startsWith("output")) {
+                        if (parameterType.startsWith("output")) {
                             map.put("output", "true");
                         }
                     } else if (a instanceof Format) {
@@ -203,9 +222,9 @@ public abstract class AbstractMet4jApplication {
         parameters.addAll(options);
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name", new String(this.getLabel()));
-        jsonObject.put("description", new String(this.getLongDescription()));
-        jsonObject.put("short_description", new String(this.getShortDescription()));
+        jsonObject.put("name", this.getLabel());
+        jsonObject.put("description", this.getLongDescription());
+        jsonObject.put("short_description", this.getShortDescription());
         jsonObject.put("java_class", this.getClass().getSimpleName());
 
         String simplePackageName = this.getSimplePackageName();
@@ -222,12 +241,11 @@ public abstract class AbstractMet4jApplication {
     public String getSimplePackageName() {
         String packageName = this.getClass().getPackage().getName();
 
-        String tab[] = packageName.split("\\.");
+        String[] tab = packageName.split("\\.");
         String simplePackageName = tab[tab.length - 1];
 
         return simplePackageName;
     }
-
 
     public void xmlGalaxyWrapper(String outputDirectory, GalaxyPackageType packageType, String version) throws ParserConfigurationException, XmlPullParserException, IOException, IllegalAccessException, TransformerException, SAXException {
 
@@ -251,6 +269,8 @@ public abstract class AbstractMet4jApplication {
 
         NodeList testList = null;
         NodeList citationList = null;
+        Node citationsTag = null;
+
 
         if (file.exists()) {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -272,11 +292,14 @@ public abstract class AbstractMet4jApplication {
             }
 
             citationList = doc.getElementsByTagName("citation");
+            NodeList citationsTags = doc.getElementsByTagName("citations");
 
-            if (citationList.getLength() > 0) {
-                citationExists = true;
+
+            if (citationsTags.getLength() == 0) {
+                citationsTag = citationsTags.item(0);
+            } else {
+                citationsTag = doc.createElement("citations");
             }
-
 
         }
 
@@ -425,14 +448,15 @@ public abstract class AbstractMet4jApplication {
         help.appendChild(cHelp);
         root.appendChild(help);
 
+
         Element citations = document.createElement("citations");
         root.appendChild(citations);
 
-        if (citationExists) {
-            for (int i = 0; i < citationList.getLength(); i++) {
-                Node newNode = document.importNode(testList.item(i), true);
-                citations.appendChild(newNode);
-            }
+        for (Doi doi : this.getDois()) {
+            Element citation = document.createElement("citation");
+            citation.setAttribute("type", "doi");
+            citation.setTextContent(doi.getDoi());
+            citations.appendChild(citation);
         }
 
         document.appendChild(root);
@@ -473,30 +497,12 @@ public abstract class AbstractMet4jApplication {
         return param;
     }
 
-
     private List<HashMap<String, String>> getInputOptions() {
         return this.options.stream().filter(o -> !o.containsKey("type") || !o.get("type").equals("outputfile")).collect(Collectors.toList());
     }
 
     private List<HashMap<String, String>> getOutputOptions() {
         return this.options.stream().filter(o -> !o.containsKey("type") || o.get("type").equals("outputfile")).collect(Collectors.toList());
-    }
-
-    public static String getVersion() throws IOException, XmlPullParserException {
-        MavenXpp3Reader reader = new MavenXpp3Reader();
-        Model model;
-        if ((new File("pom.xml")).exists())
-            model = reader.read(new FileReader("pom.xml"));
-        else
-            model = reader.read(
-                    new InputStreamReader(
-                            AbstractMet4jApplication.class.getResourceAsStream(
-                                    "/META-INF/maven/fr.inrae.toulouse.metexplore/met4j-toolbox/pom.xml"
-                            )
-                    )
-            );
-
-        return model.getVersion().replace("-SNAPSHOT", "");
     }
 
     /**
@@ -520,8 +526,7 @@ public abstract class AbstractMet4jApplication {
      */
     public abstract String getShortDescription();
 
-    @Option(name = "-h", usage = "prints the help", required = false)
-    private Boolean h = false;
+    public abstract Set<Doi> getDois();
 
     /**
      * <p>printHeader.</p>
@@ -562,7 +567,7 @@ public abstract class AbstractMet4jApplication {
         try {
             parser.parseArgument(args);
         } catch (CmdLineException e) {
-            if (this.h == false) {
+            if (!this.h) {
                 this.printShortHeader();
                 System.err.println("Error in arguments");
                 parser.printUsage(System.err);
@@ -574,7 +579,7 @@ public abstract class AbstractMet4jApplication {
             }
         }
 
-        if (this.h == true) {
+        if (this.h) {
             this.printLongHeader();
             parser.printUsage(System.err);
             System.exit(0);

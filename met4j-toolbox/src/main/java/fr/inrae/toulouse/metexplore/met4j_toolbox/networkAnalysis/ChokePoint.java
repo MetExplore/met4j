@@ -14,6 +14,7 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderExcepti
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
 import java.io.BufferedReader;
@@ -21,6 +22,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
@@ -115,12 +117,18 @@ public class ChokePoint extends AbstractMet4jApplication {
     @Override
     public String getLongDescription() {
         return this.getShortDescription() + "\nChoke points constitute an indicator of lethality and can help identifying drug target " +
-                "Choke points are reactions that are required to consume or produce one compound. Targeting of choke point can lead to the accumulation or the loss of some metabolites, thus choke points constitute an indicator of lethality and can help identifying drug target \n" +
-                "See : Syed Asad Rahman, Dietmar Schomburg; Observing local and global properties of metabolic pathways: ‘load points’ and ‘choke points’ in the metabolic networks. Bioinformatics 2006; 22 (14): 1767-1774. doi: 10.1093/bioinformatics/btl181";
+                "Choke points are reactions that are required to consume or produce one compound. Targeting of choke point can lead to the accumulation or the loss of some metabolites, thus choke points constitute an indicator of lethality and can help identifying drug target.";
     }
 
     @Override
     public String getShortDescription() {
         return "Compute the Choke points of a metabolic network.";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        Set<Doi> dois = new HashSet<>();
+        dois.add(new Doi("https://doi.org/10.1093/bioinformatics/btl181"));
+        return dois;
     }
 }

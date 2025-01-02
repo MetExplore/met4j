@@ -45,9 +45,11 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormat
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * <p>Sbml2Tab class.</p>
@@ -143,5 +145,10 @@ public class Sbml2Tab extends AbstractMet4jApplication {
     @Override
     public String getShortDescription() {
         return "Create a tabulated file from a SBML file";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 }

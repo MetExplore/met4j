@@ -9,20 +9,24 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_mapping.Mapper;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.EdgeWeighting;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * App that provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity
  */
 public class ChemSimilarityWeighting extends EdgeWeighting {
 
-    enum strategy {EState,Extended,KlekotaRoth,MACCS,PubChem};
+    enum strategy {EState, Extended, KlekotaRoth, MACCS, PubChem}
+
     @Option(name = "-f", aliases = {"--fingerprint"}, usage = "The chemical fingerprint to use", required = false)
     public strategy type = strategy.Extended;
 
@@ -37,41 +41,46 @@ public class ChemSimilarityWeighting extends EdgeWeighting {
     @Override
     public WeightingPolicy setWeightingPolicy() {
         SimilarityWeightPolicy wp = new SimilarityWeightPolicy();
-        switch(type){
-            case EState: wp.setFingerprintType(FingerprintBuilder.ESTATE);
-            case Extended: wp.setFingerprintType(FingerprintBuilder.EXTENDED);
-            case KlekotaRoth: wp.setFingerprintType(FingerprintBuilder.KLEKOTAROTH);
-            case MACCS: wp.setFingerprintType(FingerprintBuilder.MACCS);
-            case PubChem: wp.setFingerprintType(FingerprintBuilder.PUBCHEM);
+        switch (type) {
+            case EState:
+                wp.setFingerprintType(FingerprintBuilder.ESTATE);
+            case Extended:
+                wp.setFingerprintType(FingerprintBuilder.EXTENDED);
+            case KlekotaRoth:
+                wp.setFingerprintType(FingerprintBuilder.KLEKOTAROTH);
+            case MACCS:
+                wp.setFingerprintType(FingerprintBuilder.MACCS);
+            case PubChem:
+                wp.setFingerprintType(FingerprintBuilder.PUBCHEM);
         }
         wp.useDistance(dist);
         return wp;
     }
 
     @Override
-    public BioNetwork processNetwork(BioNetwork bn){
-        if(inchiFile!=null){
+    public BioNetwork processNetwork(BioNetwork bn) {
+        if (inchiFile != null) {
             Mapper m = new Mapper<>(bn, BioNetwork::getMetabolitesView)
                     .columnSeparator("\t")
                     .idColumn(1)
                     .skipIfNotFound();
             try {
                 Map<BioMetabolite, List<String>> att = m.mapAttributes(new BufferedReader(new FileReader(inchiFile)));
-                for(Map.Entry<BioMetabolite, List<String>> entry : att.entrySet()){
+                for (Map.Entry<BioMetabolite, List<String>> entry : att.entrySet()) {
                     entry.getKey().setInchi(entry.getValue().get(0));
                 }
             } catch (IOException e) {
                 System.err.println("Error reading InChI file");
                 throw new RuntimeException(e);
             }
-        } else if (smileFile!=null) {
+        } else if (smileFile != null) {
             Mapper m = new Mapper<>(bn, BioNetwork::getMetabolitesView)
                     .columnSeparator("\t")
                     .idColumn(1)
                     .skipIfNotFound();
             try {
                 Map<BioMetabolite, List<String>> att = m.mapAttributes(new BufferedReader(new FileReader(smileFile)));
-                for(Map.Entry<BioMetabolite, List<String>> entry : att.entrySet()){
+                for (Map.Entry<BioMetabolite, List<String>> entry : att.entrySet()) {
                     entry.getKey().setSmiles(entry.getValue().get(0));
                 }
             } catch (IOException e) {
@@ -81,13 +90,13 @@ public class ChemSimilarityWeighting extends EdgeWeighting {
         }
         int s = 0;
         int i = 0;
-        for(BioMetabolite m : bn.getMetabolitesView()){
-            if(!StringUtils.isVoid(m.getSmiles())) s++;
-            if(!StringUtils.isVoid(m.getInchi())) i++;
+        for (BioMetabolite m : bn.getMetabolitesView()) {
+            if (!StringUtils.isVoid(m.getSmiles())) s++;
+            if (!StringUtils.isVoid(m.getInchi())) i++;
         }
-        System.out.println(s+"/"+bn.getMetabolitesView().size()+" metabolites with SMILE");
-        System.out.println(i+"/"+bn.getMetabolitesView().size()+" metabolites with InChI");
-        if((i+s)==0){
+        System.out.println(s + "/" + bn.getMetabolitesView().size() + " metabolites with SMILE");
+        System.out.println(i + "/" + bn.getMetabolitesView().size() + " metabolites with InChI");
+        if ((i + s) == 0) {
             System.err.println("Error: no chemical structure provided, unable to compute chemical similarity");
             System.exit(1);
         }
@@ -113,12 +122,20 @@ public class ChemSimilarityWeighting extends EdgeWeighting {
     public String getLongDescription() {
         return "Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity." +
                 "Chemical similarity has been proposed as edge weight for finding meaningful paths in metabolic networks," +
-                " using shortest (lightest) path search. See McSha et al. 2003 (https://doi.org/10.1093/bioinformatics/btg217)," +
-                " Rahman et al. 2005 (https://doi.org/10.1093/bioinformatics/bti116) and Pertusi et al. 2014 (https://doi.org/10.1093/bioinformatics/btu760)";
+                " using shortest (lightest) path search.";
     }
 
     @Override
     public String getShortDescription() {
         return "Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity.";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        Set<Doi> dois = new HashSet<>();
+        dois.add(new Doi("https://doi.org/10.1093/bioinformatics/btg217"));
+        dois.add(new Doi("https://doi.org/10.1093/bioinformatics/bti116"));
+        dois.add(new Doi("https://doi.org/10.1093/bioinformatics/btu760"));
+        return dois;
     }
 }

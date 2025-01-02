@@ -23,6 +23,7 @@ import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.*;
 
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.args4j.Option;
 
@@ -30,6 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
@@ -225,6 +227,10 @@ public class CarbonSkeletonNet extends AbstractMet4jApplication {
     @Override
     public String getShortDescription() {
         return "Create a carbon skeleton graph representation of a SBML file content, using GSAM atom-mapping file (see https://forgemia.inra.fr/metexplore/gsam)";
+    }
+
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 }
 

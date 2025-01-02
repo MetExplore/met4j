@@ -56,6 +56,7 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormat
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
 import java.io.*;
@@ -520,11 +521,19 @@ public class MetaboRank extends AbstractMet4jApplication {
                 "The MetaboRank can, from metabolomics results, be used to fuel a recommender system highlighting interesting compounds to investigate, retrieve missing identification and drive literature mining.\n" +
                 "It is a two dimensional centrality computed from personalized PageRank and CheiRank, with special transition probability and normalization to handle the specificities of metabolic networks.\n" +
                 "For convenience, a one dimensional centrality rank is also computed from the highest rank from PageRank or CheiRank, and using lowest rank as tie-breaker.\n" +
-                "See publication for more information: Frainay et al. MetaboRank: network-based recommendation system to interpret and enrich metabolomics results, Bioinformatics (35-2), https://doi.org/10.1093/bioinformatics/bty577";
+                "See publication for more information.";
     }
 
     @Override
     public String getShortDescription() {
         return "Compute the MetaboRank, a custom personalized PageRank for metabolic network.";
     }
+
+    @Override
+    public Set<Doi> getDois() {
+        Set<Doi> dois = new HashSet<>();
+        dois.add(new Doi("https://doi.org/10.1093/bioinformatics/bty577"));
+        return dois;
+    }
+
 }

@@ -23,14 +23,12 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormat
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public class TopologicalPathwayAnalysis extends AbstractMet4jApplication {
 
@@ -227,5 +225,10 @@ public class TopologicalPathwayAnalysis extends AbstractMet4jApplication {
 
     @Override
     public String getShortDescription() {return "Run a Topological Pathway Analysis to identify key pathways based on topological properties of its constituting compounds.";}
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
+    }
 }
 

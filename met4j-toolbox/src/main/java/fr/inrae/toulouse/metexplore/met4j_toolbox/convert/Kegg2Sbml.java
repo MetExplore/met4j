@@ -42,7 +42,10 @@ import fr.inrae.toulouse.metexplore.met4j_io.kegg.Kegg2BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
+
+import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
@@ -71,6 +74,11 @@ public class Kegg2Sbml  extends AbstractMet4jApplication  {
     @Override
     public String getShortDescription() {
         return "Build a SBML file from KEGG organism-specific pathways. Uses Kegg API.";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 
     public static void main(String[] args) {

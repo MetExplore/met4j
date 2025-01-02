@@ -45,11 +45,13 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormat
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
 
 /**
  * <p>SbmlToMetaboliteTable class.</p>
@@ -141,4 +143,8 @@ public class SbmlToMetaboliteTable extends AbstractMet4jApplication {
         return "Create a tabulated file with metabolite attributes from a SBML file";
     }
 
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
+    }
 }

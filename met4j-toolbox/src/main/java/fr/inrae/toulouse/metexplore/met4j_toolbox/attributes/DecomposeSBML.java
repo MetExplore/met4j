@@ -8,11 +8,13 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormat
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
 
 public class DecomposeSBML extends AbstractMet4jApplication {
 
@@ -131,4 +133,11 @@ public class DecomposeSBML extends AbstractMet4jApplication {
     public String getShortDescription() {
         return "Parse SBML to render list of composing entities: metabolites, reactions, genes and others.";
     }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
+    }
+
+
 }

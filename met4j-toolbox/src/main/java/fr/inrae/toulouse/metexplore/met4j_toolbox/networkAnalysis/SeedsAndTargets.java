@@ -17,10 +17,13 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormat
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SeedsAndTargets extends AbstractMet4jApplication {
 
@@ -202,5 +205,12 @@ public class SeedsAndTargets extends AbstractMet4jApplication {
     @Override
     public String getShortDescription() {
         return "Identify exogenously acquired compounds, producible compounds exogenously available and/or dead ends metabolites from metabolic network topology";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        Set<Doi> dois = new HashSet<>();
+        dois.add(new Doi("https://doi.org/10.1073/pnas.0806162105"));
+        return dois;
     }
 }

@@ -41,6 +41,7 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormat
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -351,5 +352,10 @@ public class GetModelProteome extends AbstractMet4jApplication {
     @Override
     public String getShortDescription() {
         return description;
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 }

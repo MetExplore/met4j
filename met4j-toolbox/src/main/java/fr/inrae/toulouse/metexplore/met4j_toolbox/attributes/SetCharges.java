@@ -51,7 +51,7 @@ import java.util.Set;
  * @author lcottret
  * @version $Id: $Id
  */
-public class SbmlSetChargesFromFile extends AbstractSbmlSetMetabolite {
+public class SetCharges extends AbstractSbmlSetMetabolite {
 
     @ParameterType(name= EnumParameterTypes.Integer)
     @Option(name="-cc", usage="[2] number of the column where are the charges")
@@ -69,20 +69,20 @@ public class SbmlSetChargesFromFile extends AbstractSbmlSetMetabolite {
         return this.getShortDescription()+"\n"+
                 "The charge must be a number. "+ this.setDescription+"\n" +
                 "The charge will be written in the SBML file in two locations:+\n" +
-                "- in the reaction notes (e.g. <p>charge: -1</p>)\n" +
+                "- in the reaction notes (e.g. charge: -1)\n" +
                 "- as fbc attribute (e.g. fbc:charge=\"1\")";
     }
 
     /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Set charge to network metabolites from a tabulated file " +
-                "containing the metabolite ids and the formulas";
+        return "Set charge to metabolites in a SBML file from a tabulated file " +
+                "containing the metabolite ids and the charges";
     }
 
     @Override
     public Set<Doi> getDois() {
-        return Set.of();
+        return Set.of(new Doi("https://doi.org/10.1515/jib-2017-0082"));
     }
 
     /**
@@ -92,7 +92,7 @@ public class SbmlSetChargesFromFile extends AbstractSbmlSetMetabolite {
      */
     public static void main(String[] args) {
 
-        SbmlSetChargesFromFile app = new SbmlSetChargesFromFile();
+        SetCharges app = new SetCharges();
 
         app.parseArguments(args);
 
@@ -107,7 +107,7 @@ public class SbmlSetChargesFromFile extends AbstractSbmlSetMetabolite {
         SetChargesFromFile sgff = new SetChargesFromFile(this.colid-1, this.colcharge-1,
                 bn, this.tab, this.c, this.nSkip, this.p, this.s);
 
-        Boolean flag = true;
+        Boolean flag;
 
         try {
             flag = sgff.setAttributes();

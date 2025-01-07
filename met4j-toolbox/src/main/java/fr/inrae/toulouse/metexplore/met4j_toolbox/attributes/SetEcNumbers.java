@@ -37,26 +37,26 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetGprsFromFile;
+import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetEcsFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
-import java.io.IOException;
 import java.util.Set;
 
 /**
- * <p>SbmlSetGprsFromFile class.</p>
+ * <p>SbmlSetEcsFromFile class.</p>
  *
  * @author lcottret
  * @version $Id: $Id
  */
-public class SbmlSetGprsFromFile  extends AbstractSbmlSetReaction {
+public class SetEcNumbers extends AbstractSbmlSetReaction {
 
     @ParameterType(name= EnumParameterTypes.Integer)
-    @Option(name="-cgpr", usage="[2] number of the column where are the gprs")
-    public int colgpr=2;
+    @Option(name="-cec", usage="[2] number of the column where are the ecs")
+    public int colec=2;
+
 
     /** {@inheritDoc} */
     @Override
@@ -67,71 +67,55 @@ public class SbmlSetGprsFromFile  extends AbstractSbmlSetReaction {
     /** {@inheritDoc} */
     @Override
     public String getLongDescription() {
-        return this.getShortDescription()+"\n" +
-                this.setDescription +"\n" +
-                "GPR must be written in a cobra way in the tabulated file as described in Schellenberger et al 2011 Nature Protocols 6(9):1290-307\n"+
-                "(The GPR will be written in the SBML file in two locations:\n" +
-                "- in the reaction notes <p>GENE_ASSOCIATION: ( XC_0401 ) OR ( XC_3282 )</p>" +"\n" +
-                "- as fbc gene product association :" +
-                "<fbc:geneProductAssociation>\n" +
-                " <fbc:or>\n" +
-                "  <fbc:geneProductRef fbc:geneProduct=\"XC_3282\"/>\n" +
-                "  <fbc:geneProductRef fbc:geneProduct=\"XC_0401\"/>\n" +
-                " </fbc:or>\n" +
-                "</fbc:geneProductAssociation>\n";
+        return this.getShortDescription()+"\n"+this.setDescription+"\n" +
+                "The EC will be written in the SBML file in two locations:\n" +
+                "- in the reaction HTML notes (e.g. EC_NUMBER: 2.4.2.14)\n" +
+                "- as a reaction MIRIAM annotation (see https://pubmed.ncbi.nlm.nih.gov/16333295/) with ec-code identifiers link (https://registry.identifiers.org/registry/ec-code)";
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way";
+        return "Set EC numbers to reactions in a SBML file from a tabulated file containing the reaction ids and the EC numbers";
     }
 
     @Override
     public Set<Doi> getDois() {
-        return Set.of();
+        return Set.of(new Doi("https://doi.org/10.1038/nbt1156"));
     }
 
     /**
      * <p>main.</p>
      *
      * @param args an array of {@link java.lang.String} objects.
-     * @throws java.io.IOException if any.
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
+        SetEcNumbers app = new SetEcNumbers();
 
-        SbmlSetGprsFromFile s = new SbmlSetGprsFromFile();
+        app.parseArguments(args);
 
-        s.parseArguments(args);
-
-        s.run();
+        app.run();
     }
 
     private void run() {
-
         BioNetwork bn = this.readSbml();
 
-        SetGprsFromFile sgff = new SetGprsFromFile(this.colid-1, this.colgpr-1, bn, this.tab, this.c, this.nSkip, this.p, false);
+        SetEcsFromFile sgff = new SetEcsFromFile(this.colid-1, this.colec-1, bn, this.tab,
+                this.c, this.nSkip, this.p, false);
 
-        Boolean flag = true;
+        Boolean flag ;
 
         try {
             flag = sgff.setAttributes();
         } catch (Exception e) {
-            e.printStackTrace();
             flag=false;
         }
 
         if(!flag) {
-            System.err.println("Error in setting gene associations");
+            System.err.println("Error in setting ECs");
             System.exit(1);
         }
 
         this.writeSbml(bn);
 
-        System.exit(0);
-
     }
-
-
 }

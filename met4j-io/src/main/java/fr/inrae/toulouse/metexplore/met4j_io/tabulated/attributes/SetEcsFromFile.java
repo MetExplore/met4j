@@ -126,7 +126,7 @@ public class SetEcsFromFile extends AbstractSetAttributesFromFile {
 
         }
 
-        System.err.println(n + " reactions processed");
+        System.out.println(n + " reactions processed");
 
         return flag;
 

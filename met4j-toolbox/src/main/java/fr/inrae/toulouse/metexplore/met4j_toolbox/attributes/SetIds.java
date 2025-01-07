@@ -37,7 +37,6 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetIdsFromFile;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetNamesFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
@@ -45,7 +44,7 @@ import org.kohsuke.args4j.Option;
 
 import java.util.Set;
 
-public class SbmlSetIdsFromFile extends AbstractSbmlSetAny {
+public class SetIds extends AbstractSbmlSetAny {
 
     @ParameterType(name= EnumParameterTypes.Integer)
     @Option(name="-cnew", usage="[2] number of the column where are the new ids")
@@ -67,7 +66,7 @@ public class SbmlSetIdsFromFile extends AbstractSbmlSetAny {
     /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Set new ids to network objects from a tabulated file containing the old ids and the new ids";
+        return "Set new ids to network objects in a SBML file from a tabulated file containing the old ids and the new ids";
     }
 
     @Override
@@ -82,7 +81,7 @@ public class SbmlSetIdsFromFile extends AbstractSbmlSetAny {
      */
     public static void main(String[] args) {
 
-        SbmlSetIdsFromFile app = new SbmlSetIdsFromFile();
+        SetIds app = new SetIds();
 
         app.parseArguments(args);
 
@@ -97,7 +96,7 @@ public class SbmlSetIdsFromFile extends AbstractSbmlSetAny {
         SetIdsFromFile setter = new SetIdsFromFile(this.colid-1, this.colname-1,
                 bn, this.tab, this.c, this.nSkip, this.o, this.p, this.s);
 
-        Boolean flag = true;
+        Boolean flag;
 
         try {
             flag = setter.setAttributes();

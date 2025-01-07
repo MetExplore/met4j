@@ -2,8 +2,6 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.mapping;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_mapping.fuzzyMatching.ChemicalNameMatcher;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
@@ -11,6 +9,7 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParame
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.*;
@@ -23,7 +22,7 @@ import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Enu
 public class NameMatcher extends AbstractMet4jApplication {
 
 
-    @Option(name = "-nMatch", usage = "[1] Number of match to return per name")
+    @Option(name = "-nMatch", usage = "[1] Number of matchs to return per name")
     public int n = 1;
 
     @Option(name = "-skip", usage = "[0] Number of lines to skip at the beginning of the compound file")
@@ -34,7 +33,7 @@ public class NameMatcher extends AbstractMet4jApplication {
 
     @Format(name = Sbml)
     @ParameterType(name = InputFile)
-    @Option(name = "-sbml", usage = "Original sbml file", required = true)
+    @Option(name = "-i", usage = "Original sbml file", required = true)
     public String sbml;
 
     @ParameterType(name = InputFile)
@@ -42,9 +41,9 @@ public class NameMatcher extends AbstractMet4jApplication {
     @Option(name = "-compound", usage = "Compound file containing one column with compound names to search among the SBML entries", required = true)
     public String input;
 
-    @ParameterType(name= EnumParameterTypes.OutputFile)
-    @Format(name= EnumFormats.Tsv)
-    @Option(name = "-o", usage = "Output file", required=true)
+    @ParameterType(name = EnumParameterTypes.OutputFile)
+    @Format(name = EnumFormats.Tsv)
+    @Option(name = "-o", usage = "Output tabulated file", required = true)
     public String outputFile;
 
     @ParameterType(name = EnumParameterTypes.Text)
@@ -55,29 +54,25 @@ public class NameMatcher extends AbstractMet4jApplication {
     @Option(name = "-sep", usage = "[\\t] separator in the compound file to split the colmumns.")
     public String sep = "\t";
 
+    public static void main(String[] args) {
+        NameMatcher app = new NameMatcher();
 
+        app.parseArguments(args);
 
-
+        app.run();
+    }
 
     /**
      * <p>readSbml.</p>
      *
      * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
      */
-    protected Map<String,List<String>> readSbml() {
-        JsbmlReader reader = new JsbmlReader(this.sbml);
+    protected Map<String, List<String>> readSbml() {
 
-        BioNetwork bn = null;
-        Map<String,List<String>> names = new HashMap<>();
-        try {
-            bn = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            e.printStackTrace();
-            System.err.println("Problem while reading the sbml file " + this.sbml);
-            System.exit(1);
-        }
+        BioNetwork bn = IOUtils.readSbml(this.sbml);
+        Map<String, List<String>> names = new HashMap<>();
 
-        for(BioMetabolite m : bn.getMetabolitesView()){
+        for (BioMetabolite m : bn.getMetabolitesView()) {
             names.computeIfAbsent(m.getName(), k -> new ArrayList<>()).add(m.getId());
         }
         return names;
@@ -92,8 +87,8 @@ public class NameMatcher extends AbstractMet4jApplication {
             int i = 0;
             while ((line = fr.readLine()) != null) {
                 i++;
-                if(i>nSkip && !line.startsWith(comment)){
-                    String name = line.trim().split(sep)[col-1];
+                if (i > nSkip && !line.startsWith(comment)) {
+                    String name = line.trim().split(sep)[col - 1];
                     //TODO add check
                     names.add(name);
                 }
@@ -109,16 +104,8 @@ public class NameMatcher extends AbstractMet4jApplication {
 
     }
 
-    public static void main(String[] args) {
-        NameMatcher app = new NameMatcher();
-
-        app.parseArguments(args);
-
-        app.run();
-    }
-
     private void run() {
-        Map<String,List<String>> modelNames = this.readSbml();
+        Map<String, List<String>> modelNames = this.readSbml();
         List<String> queries = this.readFile();
         ChemicalNameMatcher matcher = new ChemicalNameMatcher.Builder(modelNames.keySet())
                 .DefaultProcessing()
@@ -128,19 +115,16 @@ public class NameMatcher extends AbstractMet4jApplication {
 
             writer.println("input Name\tSBML Name\tSBML ID");
 
-            for(String query : queries){
-                List<String> resList= matcher.getMatches(query,Double.valueOf(query.length()),n);
-                if(resList.isEmpty()){
-                    StringBuffer sb = new StringBuffer(query);
-                    sb.append("\tNA\tNA");
-                    writer.println(sb);
-                }else{
-                    for(String res : resList){
-                        StringBuffer sb = new StringBuffer(query);
-                        sb.append("\t");
-                        sb.append(res);
-                        sb.append("\t");
-                        sb.append(String.join(",",modelNames.get(res)));
+            for (String query : queries) {
+                List<String> resList = matcher.getMatches(query, Double.valueOf(query.length()), n);
+                if (resList.isEmpty()) {
+                    writer.println(query + "\tNA\tNA");
+                } else {
+                    for (String res : resList) {
+                        String sb = query + "\t" +
+                                res +
+                                "\t" +
+                                String.join(",", modelNames.get(res));
                         writer.println(sb);
                     }
                 }

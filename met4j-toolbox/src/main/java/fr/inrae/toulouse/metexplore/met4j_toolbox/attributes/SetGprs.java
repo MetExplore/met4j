@@ -1,5 +1,5 @@
 /*
- * Copyright INRAE (2021)
+ * Copyright INRAE (2020)
  *
  * contact-metexplore@inrae.fr
  *
@@ -33,81 +33,99 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  */
-package fr.inrae.toulouse.metexplore.met4j_toolbox.convert;
+
+package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
-import fr.inrae.toulouse.metexplore.met4j_io.kegg.Kegg2BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetGprsFromFile;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
+import java.io.IOException;
 import java.util.Set;
 
-import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
-import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+/**
+ * <p>SbmlSetGprsFromFile class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
+public class SetGprs extends AbstractSbmlSetReaction {
 
-public class Kegg2Sbml  extends AbstractMet4jApplication  {
+    @ParameterType(name= EnumParameterTypes.Integer)
+    @Option(name="-cgpr", usage="[2] number of the column where are the gprs")
+    public int colgpr=2;
 
-    @Option(name="-org", usage="[] Kegg org id. Must be 3 letters (")
-    public String org = "";
-
-    @Format(name= Sbml)
-    @ParameterType(name = OutputFile)
-    @Option(name="-o", usage="[out.sbml] Out sbml file")
-    public String sbml = "out.sbml";
-
+    /** {@inheritDoc} */
     @Override
     public String getLabel() {
         return this.getClass().getSimpleName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getLongDescription() {
         return this.getShortDescription()+"\n" +
-                "Errors returned by this program could be due to Kegg API dysfunctions or limitations. Try later if this problem occurs.";
+                this.setDescription +"\n" +
+                "GPR must be written in a cobra way in the tabulated file as described in Schellenberger et al 2011 Nature Protocols 6(9):1290-307\n"+
+                "(The GPR will be written in the SBML file in two locations:\n" +
+                "- in the reaction html notes (GENE_ASSOCIATION: ( XC_0401 ) OR ( XC_3282 ))" +"\n" +
+                "- as fbc gene product association (see FBC package specifications: https://doi.org/10.1515/jib-2017-0082)";
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Build a SBML file from KEGG organism-specific pathways. Uses Kegg API.";
+        return "Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way";
     }
 
     @Override
     public Set<Doi> getDois() {
-        return Set.of();
+        return Set.of(new Doi("https://doi.org/10.1515/jib-2017-0082"), new Doi("10.1038/nprot.2011.308"));
     }
 
-    public static void main(String[] args) {
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     * @throws java.io.IOException if any.
+     */
+    public static void main(String[] args) throws IOException {
 
-        Kegg2Sbml app = new Kegg2Sbml();
+        SetGprs s = new SetGprs();
 
-        app.parseArguments(args);
+        s.parseArguments(args);
 
-        app.run();
-
+        s.run();
     }
 
     private void run() {
 
-        Kegg2BioNetwork k = null;
+        BioNetwork bn = this.readSbml();
+
+        SetGprsFromFile sgff = new SetGprsFromFile(this.colid-1, this.colgpr-1, bn, this.tab, this.c, this.nSkip, this.p, false);
+
+        Boolean flag;
+
         try {
-            k = new Kegg2BioNetwork(this.org, "reaction");
+            flag = sgff.setAttributes();
         } catch (Exception e) {
-            System.err.println("Error when creating the converter Kegg2BioNetwork");
-            System.err.println(e.getMessage());
+            e.printStackTrace();
+            flag=false;
+        }
+
+        if(!flag) {
+            System.err.println("Error in setting gene associations");
             System.exit(1);
         }
 
-        k.createBionetworkFromKegg();
+        this.writeSbml(bn);
 
-        BioNetwork network = k.getNetwork();
-
-        IOUtils.writeSbml(network, this.sbml);
+        System.exit(0);
 
     }
+
+
 }

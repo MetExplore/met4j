@@ -1,5 +1,5 @@
 /*
- * Copyright INRAE (2020)
+ * Copyright INRAE (2021)
  *
  * contact-metexplore@inrae.fr
  *
@@ -37,7 +37,7 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetFormulasFromFile;
+import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetRefsFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
@@ -46,16 +46,19 @@ import org.kohsuke.args4j.Option;
 import java.util.Set;
 
 /**
- * <p>SbmlSetFormulasFromFile class.</p>
+ * <p>SbmlSetRefsFromFile class.</p>
  *
  * @author lcottret
  * @version $Id: $Id
  */
-public class SbmlSetFormulasFromFile extends AbstractSbmlSetMetabolite {
+public class SetReferences extends AbstractSbmlSetAny {
 
     @ParameterType(name= EnumParameterTypes.Integer)
-    @Option(name="-cf", usage="[2] number of the column where are the formulas")
-    public int colformula=2;
+    @Option(name="-cr", usage="[2] number of the column where are the references")
+    public int colRef=2;
+
+    @Option(name="-ref", usage="Name of the reference. Must exist in identifiers.org (https://registry.identifiers.org/registry)", required = true)
+    public String ref=null;
 
     /** {@inheritDoc} */
     @Override
@@ -66,21 +69,21 @@ public class SbmlSetFormulasFromFile extends AbstractSbmlSetMetabolite {
     /** {@inheritDoc} */
     @Override
     public String getLongDescription() {
-        return this.getShortDescription()+"\n"+this.setDescription+"\n" +
-                "The formula will be written in the SBML file in two locations:+\n" +
-                "- in the metabolite notes (e.g. <p>formula: C16H29O2</p>\n\n" +
-                "- as a fbc attribute (e.g. fbc:chemicalFormula=\"C16H29O2\")";
+        return this.getShortDescription()+"\n" +
+                "Reference name given as parameter (-ref) must correspond to an existing id in the " +
+                "registry of identifiers.org (https://registry.identifiers.org/registry)\n" +
+                "The corresponding key:value pair will be written as metabolite or reaction MIRIAM annotation (see https://pubmed.ncbi.nlm.nih.gov/16333295/)";
     }
 
     /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Set Formula to network metabolites from a tabulated file containing the metabolite ids and the formulas";
+        return "Add references to network objects in a SBML file from a tabulated file containing the metabolite ids and the references";
     }
 
     @Override
     public Set<Doi> getDois() {
-        return Set.of();
+        return Set.of(new Doi("https://doi.org/10.1038/nbt1156"));
     }
 
     /**
@@ -90,7 +93,7 @@ public class SbmlSetFormulasFromFile extends AbstractSbmlSetMetabolite {
      */
     public static void main(String[] args) {
 
-        SbmlSetFormulasFromFile app = new SbmlSetFormulasFromFile();
+        SetReferences app = new SetReferences();
 
         app.parseArguments(args);
 
@@ -99,23 +102,22 @@ public class SbmlSetFormulasFromFile extends AbstractSbmlSetMetabolite {
     }
 
     private void run() {
-
         BioNetwork bn = this.readSbml();
 
-        SetFormulasFromFile sgff = new SetFormulasFromFile(this.colid-1, this.colformula-1,
-                bn, this.tab, this.c, this.nSkip, this.p, this.s);
+        SetRefsFromFile s = new SetRefsFromFile(this.colid-1, this.colRef-1,
+                bn, this.tab, this.c, this.nSkip, this.p, this.s, this.ref, this.o);
 
-        Boolean flag = true;
+        Boolean flag;
 
         try {
-            flag = sgff.setAttributes();
+            flag = s.setAttributes();
         } catch (Exception e) {
             e.printStackTrace();
             flag=false;
         }
 
         if(!flag) {
-            System.err.println("Error in SbmlSetFormula");
+            System.err.println("Error in "+this.getLabel());
             System.exit(1);
         }
 
@@ -123,6 +125,4 @@ public class SbmlSetFormulasFromFile extends AbstractSbmlSetMetabolite {
 
         System.exit(0);
     }
-
-
 }

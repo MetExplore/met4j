@@ -142,7 +142,7 @@ public class SetNamesFromFile extends AbstractSetAttributesFromFile {
             object.setName(name);
         }
 
-        System.err.println(n+" attributions");
+        System.out.println(n+" attributions");
 
         return flag;
 

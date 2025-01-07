@@ -8,16 +8,13 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
@@ -27,6 +24,7 @@ import java.util.Set;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.getMetabolitesFromFile;
 
 public class LoadPoint extends AbstractMet4jApplication {
 
@@ -70,47 +68,20 @@ public class LoadPoint extends AbstractMet4jApplication {
         }
 
         //import network
-        System.err.println("reading SBML...");
-        JsbmlReader reader = new JsbmlReader(this.inputPath);
-        BioNetwork network = null;
-        try {
-            network = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        System.out.println("reading SBML...");
+        BioNetwork network = IOUtils.readSbml(inputPath);
 
         //Create compound graph
-        System.err.println("Creating network...");
+        System.out.println("Creating network...");
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
         CompoundGraph graph = builder.getCompoundGraph();
 
         //Graph processing: side compound removal [optional]
         if (sideCompoundFile != null) {
-            System.err.println("removing side compounds...");
-            BioCollection<BioMetabolite> sideCpds = new BioCollection<>();
-
-            try {
-                BufferedReader fr = new BufferedReader(new FileReader(sideCompoundFile));
-                String line;
-                while ((line = fr.readLine()) != null) {
-                    String sId = line.trim().split("\t")[0];
-                    BioMetabolite s = network.getMetabolite(sId);
-                    if (s != null) {
-                        sideCpds.add(s);
-                    } else {
-                        System.err.println(sId + " side compound not found in network.");
-                    }
-                }
-                fr.close();
-            } catch (IOException e) {
-                System.err.println("Error while reading the side compound file");
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
+            System.out.println("removing side compounds...");
+            BioCollection<BioMetabolite> sideCpds = getMetabolitesFromFile(sideCompoundFile, network, "side compounds");
             boolean removed = graph.removeAllVertices(sideCpds);
-            if (removed) System.err.println(sideCpds.size() + " compounds removed.");
+            if (removed) System.out.println(sideCpds.size() + " compounds removed.");
         }
 
         //Graph processing: set weights
@@ -118,12 +89,12 @@ public class LoadPoint extends AbstractMet4jApplication {
         wp.setWeight(graph);
 
         //compute loads
-        System.err.println("Computing load points...");
+        System.out.println("Computing load points...");
         fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.LoadPoint computor = new fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.LoadPoint<BioMetabolite, ReactionEdge, CompoundGraph>(graph);
         HashMap<BioMetabolite, Double> loads = computor.getLoads(k);
 
         //export results
-        System.err.println("Export results...");
+        System.out.println("Export results...");
 
         try {
             for (Map.Entry<BioMetabolite, Double> e : loads.entrySet()) {
@@ -136,7 +107,7 @@ public class LoadPoint extends AbstractMet4jApplication {
             System.err.println(e.getMessage());
             System.exit(1);
         }
-        System.err.println("done.");
+        System.out.println("done.");
 
     }
 
@@ -160,11 +131,11 @@ public class LoadPoint extends AbstractMet4jApplication {
 
     @Override
     public String getShortDescription() {
-        return "Compute the Load points of a metabolic network. Load points constitute an indicator of lethality and can help identifying drug target.";
+        return "Compute the Load points of a metabolic network. Load points constitute an indicator of lethality and can help identifying drug targets.";
     }
 
     @Override
     public Set<Doi> getDois() {
-        return Set.of();
+        return Set.of(new Doi("https://doi.org/10.1093/bioinformatics/btl181"));
     }
 }

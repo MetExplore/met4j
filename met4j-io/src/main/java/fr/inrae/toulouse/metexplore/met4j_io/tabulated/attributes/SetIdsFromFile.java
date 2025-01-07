@@ -117,7 +117,7 @@ public class SetIdsFromFile extends AbstractSetAttributesFromFile {
             }
         }
 
-        System.err.println(n + " entities processed");
+        System.out.println(n + " entities processed");
 
         return true;
     }

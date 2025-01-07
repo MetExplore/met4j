@@ -1,4 +1,40 @@
-package fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis;
+/*
+ * Copyright INRAE (2025)
+ *
+ * contact-metexplore@inrae.fr
+ *
+ * This software is a computer program whose purpose is to [describe
+ * functionalities and technical features of your software].
+ *
+ * This software is governed by the CeCILL license under French law and
+ * abiding by the rules of distribution of free software.  You can  use,
+ * modify and/ or redistribute the software under the terms of the CeCILL
+ * license as circulated by CEA, CNRS and INRIA at the following URL
+ * "https://cecill.info/licences/Licence_CeCILL_V2.1-en.html".
+ *
+ * As a counterpart to the access to the source code and  rights to copy,
+ * modify and redistribute granted by the license, users are provided only
+ * with a limited warranty  and the software's author,  the holder of the
+ * economic rights,  and the successive licensors  have only  limited
+ * liability.
+ *
+ * In this respect, the user's attention is drawn to the risks associated
+ * with loading,  using,  modifying and/or developing or reproducing the
+ * software by the user in light of its specific status of free software,
+ * that may mean  that it is complicated to manipulate,  and  that  also
+ * therefore means  that it is reserved for developers  and  experienced
+ * professionals having in-depth computer knowledge. Users are therefore
+ * encouraged to load and test the software's suitability as regards their
+ * requirements in conditions enabling the security of their systems and/or
+ * data to be ensured and,  more generally, to use and operate it in the
+ * same conditions as regards security.
+ *
+ * The fact that you are presently reading this means that you have had
+ * knowledge of the CeCILL license and that you accept its terms.
+ *
+ */
+
+package fr.inrae.toulouse.metexplore.met4j_toolbox.convert;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
@@ -14,13 +50,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraphEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBCParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.GroupPathwayParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
-import fr.inrae.toulouse.metexplore.met4j_mapping.Mapper;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
@@ -28,49 +57,54 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParame
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public class PathwayNet extends AbstractMet4jApplication {
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.GROUPS;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.getMetabolitesFromFile;
 
-    @Format(name= EnumFormats.Sbml)
-    @ParameterType(name= EnumParameterTypes.InputFile)
-    @Option(name = "-s", usage = "input SBML file", required = true)
+public class Sbml2PathwayNet extends AbstractMet4jApplication {
+
+    @Format(name = EnumFormats.Sbml)
+    @ParameterType(name = EnumParameterTypes.InputFile)
+    @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
-    @ParameterType(name= EnumParameterTypes.InputFile)
-    @Format(name= EnumFormats.Txt)
-    @Option(name = "-sc", usage = "input Side compound file (recommended)", required = false)
+    @ParameterType(name = EnumParameterTypes.InputFile)
+    @Format(name = EnumFormats.Txt)
+    @Option(name = "-sc", usage = "input Side compound file (recommended)")
     public String inputSide = null;
 
-    @ParameterType(name= EnumParameterTypes.OutputFile)
-    @Format(name= EnumFormats.Gml)
+    @ParameterType(name = EnumParameterTypes.OutputFile)
+    @Format(name = EnumFormats.Txt) // Txt because it can be a matrix or a GML file
     @Option(name = "-o", usage = "output Graph file", required = true)
     public String outputPath = null;
 
-    @Option(name = "-ri", aliases = {"--removeIsolatedNodes"}, usage = "remove isolated nodes", required = false)
+    @Option(name = "-ri", aliases = {"--removeIsolatedNodes"}, usage = "remove isolated nodes")
     public boolean removeIsolated = false;
 
-    @Option(name = "-oss", aliases = {"--onlySourcesAndSinks"}, usage = "consider only metabolites that are source or sink in the pathway (i.e non-intermediary compounds)", required = false)
+    @Option(name = "-oss", aliases = {"--onlySourcesAndSinks"}, usage = "consider only metabolites that are source or sink in the pathway (i.e non-intermediary compounds)")
     public boolean onlySourcesAndSinks = false;
 
-    @ParameterType(name=EnumParameterTypes.InputFile)
-    @Format(name=EnumFormats.Tsv)
+    @ParameterType(name = EnumParameterTypes.InputFile)
+    @Format(name = EnumFormats.Tsv)
     @Option(name = "-cw", aliases = {"--customWeights"}, usage = "an optional file containing weights for pathway pairs", forbids = {"-ncw"})
     public String weightFile = null;
 
     @Option(name = "-ncw", aliases = {"--connectorWeights"}, usage = "set number of connecting compounds as weight", forbids = {"-cw"})
     public Boolean connectors = false;
 
-    @Option(name = "-am", aliases = {"--asmatrix"}, usage = "export as matrix (implies simple graph conversion). Default export as GML file", required = false)
+    @Option(name = "-am", aliases = {"--asmatrix"}, usage = "export as matrix (implies simple graph conversion). Default export as GML file")
     public boolean asMatrix = false;
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
 
-        PathwayNet app = new PathwayNet();
+        Sbml2PathwayNet app = new Sbml2PathwayNet();
 
         app.parseArguments(args);
 
@@ -81,39 +115,16 @@ public class PathwayNet extends AbstractMet4jApplication {
 
     public void run() {
         System.out.print("Reading SBML...");
-        JsbmlReader reader = new JsbmlReader(this.inputPath);
-        ArrayList<PackageParser> pkgs = new ArrayList<>(Arrays.asList(
-                new NotesParser(false), new FBCParser(), new GroupPathwayParser()));
-
-        BioNetwork network = null;
-
-        try {
-            network = reader.read(pkgs);
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        BioNetwork network = IOUtils.readSbml(this.inputPath, GROUPS);
         System.out.println(" Done.");
 
         //Graph processing: side compound removal [optional]
         BioCollection<BioMetabolite> sideCpds = new BioCollection<>();
         if (inputSide != null) {
-            System.err.println("importing side compounds...");
-            Mapper<BioMetabolite> cmapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
-
-            try {
-                sideCpds = cmapper.map(inputSide);
-            } catch (IOException e) {
-                System.err.println("Error while reading the side compound file");
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
-            if (cmapper.getNumberOfSkippedEntries() > 0)
-                System.err.println(cmapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
+            sideCpds = getMetabolitesFromFile(inputSide, network, "side compounds");
         }
 
-        System.out.print("Buildinig Network...");
+        System.out.print("Building Graph...");
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
         PathwayGraph graph = onlySourcesAndSinks ? builder.getPathwayGraph(sideCpds) : builder.getPathwayOverlapGraph(sideCpds);
         System.out.println(" Done.");
@@ -121,7 +132,7 @@ public class PathwayNet extends AbstractMet4jApplication {
         //Graph processing: set weights [optional]
         WeightingPolicy<BioPathway, PathwayGraphEdge, PathwayGraph> wp = new UnweightedPolicy<>();
         if (weightFile != null) {
-            System.err.println("Setting edge weights...");
+            System.out.println("Setting edge weights...");
             wp = new WeightsFromFile(weightFile);
         } else if (connectors) {
             wp = new CustomWeightPolicy<>(e -> Double.valueOf(e.getConnectingCompounds().size()));
@@ -130,12 +141,12 @@ public class PathwayNet extends AbstractMet4jApplication {
         System.out.println(" Done.");
 
         //remove isolated nodes
-        if(removeIsolated){
+        if (removeIsolated) {
             System.out.println("Remove isolated nodes...");
             HashSet<BioPathway> nodes = new HashSet<>(graph.vertexSet());
             graph.removeIsolatedNodes();
             nodes.removeAll(graph.vertexSet());
-            for(BioPathway n : nodes){
+            for (BioPathway n : nodes) {
                 System.out.println("\tremoving " + n.getName());
             }
             System.out.println(" Done.");
@@ -143,33 +154,36 @@ public class PathwayNet extends AbstractMet4jApplication {
 
         //export graph
         System.out.print("Exporting...");
-        if(asMatrix){
+        if (asMatrix) {
             ComputeAdjacencyMatrix adjBuilder = new ComputeAdjacencyMatrix(graph);
-            ExportMatrix.toCSV(this.outputPath,adjBuilder.getadjacencyMatrix());
-        }else{
-            if (!onlySourcesAndSinks) EdgeMerger.undirectedMergeEdgesWithOverride(graph,null);
+            ExportMatrix.toCSV(this.outputPath, adjBuilder.getadjacencyMatrix());
+        } else {
+            if (!onlySourcesAndSinks) EdgeMerger.undirectedMergeEdgesWithOverride(graph, null);
             BioNetwork finalNetwork = network;
-            Map<BioPathway,Integer> size = graph.vertexSet().stream()
+            Map<BioPathway, Integer> size = graph.vertexSet().stream()
                     .collect(Collectors.toMap(p -> p, p -> finalNetwork.getMetabolitesFromPathway(p).size()));
-            ExportGraph.toGmlWithAttributes(graph, this.outputPath, size, "size",true);
+            ExportGraph.toGmlWithAttributes(graph, this.outputPath, size, "size", true);
         }
         System.out.println(" Done.");
-        return;
     }
 
     @Override
-    public String getLabel() {return this.getClass().getSimpleName();}
+    public String getLabel() {
+        return this.getClass().getSimpleName();
+    }
 
     @Override
     public String getLongDescription() {
-        return "Genome-scale metabolic networks are often partitioned into metabolic pathways. Pathways are frequently " +
+        return this.getShortDescription() + "\nGenome-scale metabolic networks are often partitioned into metabolic pathways. Pathways are frequently " +
                 "considered independently despite frequent coupling in their activity due to shared metabolites. In " +
                 "order to decipher the interconnections linking overlapping pathways, this app proposes the creation of " +
                 "\"Pathway Network\", where two pathways are linked if they share compounds.";
     }
 
     @Override
-    public String getShortDescription() {return "Creation of a Pathway Network representation of a SBML file content";}
+    public String getShortDescription() {
+        return "Creation of a Pathway Network representation of a SBML file content";
+    }
 
     @Override
     public Set<Doi> getDois() {

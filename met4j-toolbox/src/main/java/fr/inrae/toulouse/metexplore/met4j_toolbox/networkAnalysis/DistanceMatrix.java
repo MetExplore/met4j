@@ -5,21 +5,22 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.ShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.CustomWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.UnweightedPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DegreeWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.UnweightedPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightsFromFile;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.*;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
@@ -28,7 +29,9 @@ import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Csv;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
-import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.*;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.getMetabolitesFromFile;
 
 public class DistanceMatrix extends AbstractMet4jApplication {
 
@@ -77,16 +80,7 @@ public class DistanceMatrix extends AbstractMet4jApplication {
 
     public void run() {
         //import network
-        JsbmlReader reader = new JsbmlReader(this.inputPath);
-
-        BioNetwork network = null;
-        try {
-            network = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        BioNetwork network = IOUtils.readSbml(this.inputPath);
 
         //Create compound graph
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
@@ -94,18 +88,10 @@ public class DistanceMatrix extends AbstractMet4jApplication {
 
         //Graph processing: side compound removal [optional]
         if (sideCompoundFile != null) {
-            System.err.println("removing side compounds...");
-            NodeMapping mapper = new NodeMapping<>(graph).skipIfNotFound();
-            BioCollection<BioMetabolite> sideCpds = null;
-            try {
-                sideCpds = mapper.map(sideCompoundFile);
-            } catch (IOException e) {
-                System.err.println("Error while reading the side compound file");
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
+            System.out.println("removing side compounds...");
+            BioCollection<BioMetabolite> sideCpds = getMetabolitesFromFile(sideCompoundFile, network, "side compounds");
             boolean removed = graph.removeAllVertices(sideCpds);
-            if (removed) System.err.println(sideCpds.size() + " side compounds ignored during graph build.");
+            if (removed) System.out.println(sideCpds.size() + " side compounds ignored during graph build.");
         }
 
         //Graph processing: set weights [optional]
@@ -113,20 +99,20 @@ public class DistanceMatrix extends AbstractMet4jApplication {
         if (weightFile != null) {
             wp = new WeightsFromFile(weightFile, true);
         } else if (degree) {
-            if(!undirected){
+            if (!undirected) {
                 int pow = 2;
                 wp = new DegreeWeightPolicy(pow);
-            }else{
+            } else {
                 //since degree weighting policy is not symmetric, for undirected case we create reversed edges, apply
                 //a corrected degree computation for each edge, and treat the graph as normal
                 graph.asUndirected();
-                undirected=false;
-                wp = new CustomWeightPolicy<BioMetabolite,ReactionEdge,CompoundGraph>(
+                undirected = false;
+                wp = new CustomWeightPolicy<BioMetabolite, ReactionEdge, CompoundGraph>(
                         e -> {
                             Double w = Double.valueOf(graph.inDegreeOf(e.getV2()));
                             w += Double.valueOf(graph.outDegreeOf(e.getV2()));
-                            w = w/2;    //adjust for undirected doubled edges
-                            w = StrictMath.pow(w,2);
+                            w = w / 2;    //adjust for undirected doubled edges
+                            w = StrictMath.pow(w, 2);
                             return w;
                         });
             }
@@ -135,12 +121,12 @@ public class DistanceMatrix extends AbstractMet4jApplication {
 
         //init BioMatrix
         BioMatrix distM = null;
-        if(seedFile == null){
+        if (seedFile == null) {
             //compute distance matrix
             ShortestPath matrixComputor = new ShortestPath<>(graph, !undirected);
             //get All SPs
             distM = matrixComputor.getShortestPathDistanceMatrix();
-        }else{
+        } else {
             System.err.println("filtering matrix...");
             NodeMapping mapper = new NodeMapping<>(graph).skipIfNotFound();
             Set<BioMetabolite> seeds = null;
@@ -154,7 +140,7 @@ public class DistanceMatrix extends AbstractMet4jApplication {
             //compute distance matrix
             ShortestPath<BioMetabolite, ReactionEdge, CompoundGraph> matrixComputor = new ShortestPath<>(graph, !undirected);
             //get SPs
-            distM = matrixComputor.getShortestPathDistanceMatrix(seeds,seeds);
+            distM = matrixComputor.getShortestPathDistanceMatrix(seeds, seeds);
         }
         //export results
         ExportMatrix.toCSV(outputPath, distM);

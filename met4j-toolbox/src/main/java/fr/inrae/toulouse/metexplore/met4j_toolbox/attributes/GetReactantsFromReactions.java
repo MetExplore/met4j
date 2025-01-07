@@ -11,6 +11,7 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParame
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.FileWriter;
@@ -32,20 +33,22 @@ public class GetReactantsFromReactions extends AbstractMet4jApplication {
     public String reactionFile;
 
     @ParameterType(name= EnumParameterTypes.Text)
-    @Option(name = "-sep", usage = "Separator in reaction file", required = false)
+    @Option(name = "-sep", usage = "Separator in reaction file")
     public String sep = "\t";
+
     @ParameterType(name= EnumParameterTypes.Boolean)
-    @Option(name = "-header", usage = "Skip reaction file header", required = false)
+    @Option(name = "-header", usage = "Skip reaction file header")
     public boolean hasHeader = false;
+
     @ParameterType(name= EnumParameterTypes.Integer)
-    @Option(name = "-col", usage = "Column number in reaction file (first as 1)", required = false)
+    @Option(name = "-col", usage = "Column number in reaction file (first as 1)")
     public int i=1;
 
     @ParameterType(name= EnumParameterTypes.Boolean)
-    @Option(name = "-s", aliases = {"--substrates"}, usage = "Extract substrates only", required = false)
+    @Option(name = "-s", aliases = {"--substrates"}, usage = "Extract substrates only")
     public Boolean printSubstrates = false;
     @ParameterType(name= EnumParameterTypes.Boolean)
-    @Option(name = "-p", aliases = {"--products"}, usage = "Extract products only", required = false)
+    @Option(name = "-p", aliases = {"--products"}, usage = "Extract products only")
     public Boolean printProducts = false;
 
     @ParameterType(name= EnumParameterTypes.OutputFile)
@@ -72,30 +75,20 @@ public class GetReactantsFromReactions extends AbstractMet4jApplication {
 
         //read SBML, create bionetwork
         String fileIn = this.sbml;
-        JsbmlReader reader = new JsbmlReader(fileIn);
-        BioNetwork network = null;
-        try {
-            network = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        BioNetwork network = IOUtils.readSbml(fileIn);
 
         //Import Reaction File
         BioCollection<BioReaction> input = new BioCollection<>();
         try {
             BioNetwork finalNetwork = network;
-            Mapper map = new Mapper(finalNetwork, bioNetwork -> {
-                return finalNetwork.getReactionsView();
-            })
+            Mapper map = new Mapper(finalNetwork, bioNetwork -> finalNetwork.getReactionsView())
                     .columnSeparator(sep)
                     .idColumn(i)
                     .skipIfNotFound();
             if(hasHeader) map = map.skipHeader();
             input = map.map(reactionFile);
-            System.err.println(input.size()+" reactions mapped");
-            System.err.println(map.getNumberOfSkippedEntries()+" reactions not found in model");
+            System.out.println(input.size()+" reactions mapped");
+            System.out.println(map.getNumberOfSkippedEntries()+" reactions not found in model");
         } catch (IOException e) {
             System.err.println("Error while reading the Reaction file");
             System.err.println(e.getMessage());
@@ -130,15 +123,15 @@ public class GetReactantsFromReactions extends AbstractMet4jApplication {
 
     @Override
     public String getLongDescription() {
-        return "Get reactants lists from a list of reactions and a GSMN. Output a tab-separated file " +
+        return "Get reactant lists from a list of reactions and a Sbml file. Output a tab-separated file " +
                 "with one row per reactant, reaction identifiers in first column, reactant identifiers in second column. " +
                 "It can provides substrates, products, or both (by default). In the case of reversible reactions, " +
-                "all reactants are considered both substrates and products";
+                "all reactants are considered as both substrates and products";
     }
 
     @Override
     public String getShortDescription() {
-        return "Get reactants lists from a list of reactions and a GSMN.";
+        return "Get reactant lists from a list of reactions and a SBML file.";
     }
 
     @Override

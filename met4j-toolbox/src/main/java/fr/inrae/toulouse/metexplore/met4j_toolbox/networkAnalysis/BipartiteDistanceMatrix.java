@@ -12,24 +12,26 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_mapping.Mapper;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.*;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Csv;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
-import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.*;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.getMetabolitesFromFile;
 
 public class BipartiteDistanceMatrix extends AbstractMet4jApplication {
 
@@ -88,16 +90,9 @@ public class BipartiteDistanceMatrix extends AbstractMet4jApplication {
 
     public void run() {
         //import network
-        JsbmlReader reader = new JsbmlReader(this.inputPath);
-
-        BioNetwork network = null;
-        try {
-            network = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        System.out.print("Reading SBML...");
+        BioNetwork network = IOUtils.readSbml(this.inputPath);
+        System.out.println(" Done.");
 
         //Create bipartite graph
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
@@ -110,39 +105,32 @@ public class BipartiteDistanceMatrix extends AbstractMet4jApplication {
 
         //Graph processing: side compound removal [optional]
         if (sideCompoundFile != null) {
-            System.err.println("removing side compounds...");
-            BioCollection<BioMetabolite> sideCpds = null;
-            try {
-                sideCpds = metMapper.map(sideCompoundFile);
-            } catch (IOException e) {
-                System.err.println("Error while reading the side compound file");
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
+            System.out.println("removing side compounds...");
+            BioCollection<BioMetabolite> sideCpds = getMetabolitesFromFile(sideCompoundFile, network, "side compounds");
+
             boolean removed = graph.removeAllVertices(sideCpds);
-            if(removed) removedNodes.addAll(sideCpds);
-            if (metMapper.getNumberOfSkippedEntries() > 0)
-            System.err.println(metMapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
-            System.err.println(sideCpds.size() + " side compounds ignored during graph build.");
+            if (removed) removedNodes.addAll(sideCpds);
+
+            System.out.println(sideCpds.size() + " side compounds ignored during graph build.");
         }
 
         //Graph processing: reactions removal [optional]
         if (rExclude != null) {
-          System.err.println("removing reactions to exclude...");
-          BioCollection<BioReaction> rList = null;
-          try {
-            rList = rxnMapper.map(rExclude);
-          } catch (IOException e) {
-              System.err.println("Error while reading the reaction to ignore file");
-              System.err.println(e.getMessage());
-              System.exit(1);
-          }
-          boolean removed = graph.removeAllVertices(rList);
-          if(removed) removedNodes.addAll(rList);
-          if (rxnMapper.getNumberOfSkippedEntries() > 0)
-          System.err.println(rxnMapper.getNumberOfSkippedEntries() + " reactions to exclude not found in network.");
-          System.err.println(rList.size() + " reactions ignored during graph build.");
-      }
+            System.out.println("removing reactions to exclude...");
+            BioCollection<BioReaction> rList = null;
+            try {
+                rList = rxnMapper.map(rExclude);
+            } catch (IOException e) {
+                System.err.println("Error while reading the reaction to ignore file");
+                System.err.println(e.getMessage());
+                System.exit(1);
+            }
+            boolean removed = graph.removeAllVertices(rList);
+            if (removed) removedNodes.addAll(rList);
+            if (rxnMapper.getNumberOfSkippedEntries() > 0)
+                System.err.println(rxnMapper.getNumberOfSkippedEntries() + " reactions to exclude not found in network.");
+            System.out.println(rList.size() + " reactions ignored during graph build.");
+        }
 
         //Graph processing: set weights [optional]
         WeightingPolicy wp = new UnweightedPolicy();
@@ -155,15 +143,15 @@ public class BipartiteDistanceMatrix extends AbstractMet4jApplication {
         BioMatrix distM = null;
         Set<BioEntity> metSeeds = null;
         Set<BioEntity> rxnSeeds = null;
-        
+
         //If both seed files are missing, then compute on complete graphs
         //If metabolite's seed file is missing, use the list of all metabolites nodes
         // If metabolites's reaction file is missing, use the list of all reactions nodes
 
         //Note cannot use mapper because bionetwork is not updated
-        if(metFile == null){
+        if (metFile == null) {
             metSeeds = new HashSet<BioEntity>(graph.compoundVertexSet());
-        }else{
+        } else {
             try {
                 metSeeds = new HashSet<>(metMapper.map(metFile));
             } catch (IOException e) {
@@ -172,9 +160,9 @@ public class BipartiteDistanceMatrix extends AbstractMet4jApplication {
                 System.exit(1);
             }
         }
-        if(rxnFile == null){
+        if (rxnFile == null) {
             rxnSeeds = new HashSet<BioEntity>(graph.reactionVertexSet());
-        }else{ 
+        } else {
             try {
                 rxnSeeds = new HashSet<>(rxnMapper.map(rxnFile));
             } catch (IOException e) {
@@ -184,19 +172,20 @@ public class BipartiteDistanceMatrix extends AbstractMet4jApplication {
             }
         }
         //full == square distance matrix of all pairwise comparisons between seeds
-        if(full){
+        if (full) {
             rxnSeeds.addAll(metSeeds);
             metSeeds.addAll(rxnSeeds);
         }
         //clean metabolites seeds
         boolean removedMets = metSeeds.removeAll(removedNodes);
-        if(removedMets) System.err.println("One or more seed nodes removed due to being in the side compounds list");
+        if (removedMets) System.err.println("One or more seed nodes removed due to being in the side compounds list");
         //clean reactions seeds
         boolean removedRxns = rxnSeeds.removeAll(removedNodes);
-        if(removedRxns) System.err.println("One or more seed nodes removed due to being in the reaction to exclude list");
+        if (removedRxns)
+            System.err.println("One or more seed nodes removed due to being in the reaction to exclude list");
         //compute distance matrix
-        ShortestPath<BioEntity,BipartiteEdge,BipartiteGraph> matrixComputor = new ShortestPath<>(graph, !undirected);
-        distM = matrixComputor.getShortestPathDistanceMatrix(metSeeds,rxnSeeds);
+        ShortestPath<BioEntity, BipartiteEdge, BipartiteGraph> matrixComputor = new ShortestPath<>(graph, !undirected);
+        distM = matrixComputor.getShortestPathDistanceMatrix(metSeeds, rxnSeeds);
         //export results
         ExportMatrix.toCSV(outputPath, distM);
 
@@ -211,8 +200,8 @@ public class BipartiteDistanceMatrix extends AbstractMet4jApplication {
     public String getLongDescription() {
         return this.getShortDescription() + "\n" +
                 "The distance between two nodes (metabolite or reaction) is computed as the length of the shortest path connecting the two in the bipartite graph, " +
-                "Bipartite graph are composed of two distinct sets of nodes and two nodes can be linked only if they are from distinct sets.\n" +
-                "Therefore a metabolite node can be linked to a reaction node if the metabolite is a substrate or product of the reaction.\n" + 
+                "Bipartite graphs are composed of two distinct sets of nodes and two nodes can be linked only if they are from distinct sets.\n" +
+                "Therefore a metabolite node can be linked to a reaction node if the metabolite is a substrate or product of the reaction.\n" +
                 "An optional custom edge weighting can be used, turning the distances into the sum of edge weights in the lightest path, rather than the length of the shortest path." +
                 "Custom weighting can be provided in a file. In that case, edges without weight are ignored during path search.\n" +
                 "If no edge weighting is set, it is recommended to provide a list of side compounds to ignore during network traversal.";

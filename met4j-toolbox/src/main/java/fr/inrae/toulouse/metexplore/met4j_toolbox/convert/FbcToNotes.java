@@ -37,8 +37,6 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.convert;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.AnnotationWriter;
@@ -46,21 +44,21 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.GroupPathwayWri
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.NotesWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.PackageWriter;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.*;
 
 /**
  * <p>FbcToNotes class.</p>
@@ -72,12 +70,12 @@ public class FbcToNotes extends AbstractMet4jApplication {
 
     @Format(name= Sbml)
     @ParameterType(name = InputFile)
-    @Option(name = "-i", usage = "input file", required = true)
+    @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
     @Format(name= Sbml)
     @ParameterType(name = OutputFile)
-    @Option(name = "-o", usage = "output file", required = true)
+    @Option(name = "-o", usage = "output SBML file", required = true)
     public String outputPath = null;
 
     /**
@@ -108,16 +106,7 @@ public class FbcToNotes extends AbstractMet4jApplication {
 
     private void run() {
 
-        JsbmlReader reader = new JsbmlReader(this.inputPath);
-
-        BioNetwork network = null;
-        try {
-            network = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        BioNetwork network = IOUtils.readSbml(this.inputPath, FBC, GROUPS, ANNOTATIONS);
 
         JsbmlWriter writer = new JsbmlWriter(this.outputPath, network, 3, 1, false );
 
@@ -146,18 +135,18 @@ public class FbcToNotes extends AbstractMet4jApplication {
     /** {@inheritDoc} */
     @Override
     public String getLongDescription() {
-        return this.getShortDescription();
+        return this.getShortDescription() + " (see https://www.degruyter.com/document/doi/10.1515/jib-2017-0082/html)";
     }
 
     /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Convert FBC package annotations to sbml notes";
+        return "Convert FBC package annotations to sbml html notes";
     }
 
     @Override
     public Set<Doi> getDois() {
-        return Set.of();
+        return Set.of(new Doi("https://doi.org/10.1515/jib-2017-0082"));
     }
 
 

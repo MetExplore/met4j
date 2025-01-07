@@ -37,8 +37,7 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetNamesFromFile;
+import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetPathwaysFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
@@ -47,16 +46,20 @@ import org.kohsuke.args4j.Option;
 import java.util.Set;
 
 /**
- * <p>SbmlSetNamesFromFile class.</p>
+ * <p>SbmlSetPathwaysFromFile class.</p>
  *
  * @author lcottret
  * @version $Id: $Id
  */
-public class SbmlSetNamesFromFile extends AbstractSbmlSetAny {
+public class SetPathways extends AbstractSbmlSetReaction {
 
     @ParameterType(name= EnumParameterTypes.Integer)
-    @Option(name="-cname", usage="[2] number of the column where are the names")
-    public int colname=2;
+    @Option(name="-cp", usage="[2] number of the column where are the pathways")
+    public int colp=2;
+
+    @Option(name="-sep", usage="[|] Separator of pathways in the tabulated file")
+    public String sep = "|";
+
 
     /** {@inheritDoc} */
     @Override
@@ -68,18 +71,21 @@ public class SbmlSetNamesFromFile extends AbstractSbmlSetAny {
     @Override
     public String getLongDescription() {
         return this.getShortDescription()+"\n" +
-                this.setDescription+"\n";
+                this.setDescription+"\n" +
+                "Pathways will be written in the SBML file in two ways:" +
+                "- as reaction note (e.g. SUBSYSTEM: purine_biosynthesis)" +
+                "- as SBML group (see Group package specifications: https://pmc.ncbi.nlm.nih.gov/articles/PMC5451322/)";
     }
 
     /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Set names to network objects from a tabulated file containing the object ids and the names";
+        return "Set pathway to reactions in a network from a tabulated file containing the reaction ids and the pathways";
     }
 
     @Override
     public Set<Doi> getDois() {
-        return Set.of();
+        return Set.of(new Doi("https://doi.org/10.1515/jib-2016-290"));
     }
 
     /**
@@ -89,7 +95,7 @@ public class SbmlSetNamesFromFile extends AbstractSbmlSetAny {
      */
     public static void main(String[] args) {
 
-        SbmlSetNamesFromFile app = new SbmlSetNamesFromFile();
+        SetPathways app = new SetPathways();
 
         app.parseArguments(args);
 
@@ -101,10 +107,10 @@ public class SbmlSetNamesFromFile extends AbstractSbmlSetAny {
 
         BioNetwork bn = this.readSbml();
 
-        SetNamesFromFile sgff = new SetNamesFromFile(this.colid-1, this.colname-1,
-                bn, this.tab, this.c, this.nSkip, this.p, this.s, this.o);
+        SetPathwaysFromFile sgff = new SetPathwaysFromFile(this.colid-1, this.colp-1, bn, this.tab,
+                this.c, this.nSkip, this.p, false, this.sep);
 
-        Boolean flag = true;
+        Boolean flag;
 
         try {
             flag = sgff.setAttributes();
@@ -113,17 +119,15 @@ public class SbmlSetNamesFromFile extends AbstractSbmlSetAny {
         }
 
         if(!flag) {
-            System.err.println("Error in SbmlSetNames");
+            System.err.println("Error in "+this.getLabel());
             System.exit(1);
         }
 
 
         this.writeSbml(bn);
 
-        System.exit(0);
-
-
     }
+
 
 
 }

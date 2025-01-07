@@ -171,7 +171,7 @@ public class Tab2BioNetwork {
         if (flag == false) {
             System.err.println("Input file badly formatted");
         } else {
-            System.err.println("The input file looks good and contains " + reactions.size() + " reactions");
+            System.out.println("The input file looks good and contains " + reactions.size() + " reactions");
         }
 
         in.close();
@@ -492,7 +492,7 @@ public class Tab2BioNetwork {
 
         br.close();
 
-        System.err.println(bioNetwork.getReactionsView().size() + " reactions, " + bioNetwork.getMetabolitesView().size() + " metabolites and " + this.bioNetwork.getCompartmentsView().size() + " compartments created");
+        System.out.println(bioNetwork.getReactionsView().size() + " reactions, " + bioNetwork.getMetabolitesView().size() + " metabolites and " + this.bioNetwork.getCompartmentsView().size() + " compartments created");
 
         return flag;
     }

@@ -25,18 +25,24 @@ import java.util.Set;
  */
 public class ChemSimilarityWeighting extends EdgeWeighting {
 
-    enum strategy {EState, Extended, KlekotaRoth, MACCS, PubChem}
-
     @Option(name = "-f", aliases = {"--fingerprint"}, usage = "The chemical fingerprint to use", required = false)
     public strategy type = strategy.Extended;
-
     @Option(name = "-sm", aliases = {"--smileFile"}, usage = "If not present in SBML's annotations, get structure from a tabulated file with first column as compound id and second column as SMILE string, no header. Ignored if inchi file is provided", required = false)
     public String smileFile;
     @Option(name = "-in", aliases = {"--inchiFile"}, usage = "If not present in SBML's annotations, get structure from a tabulated file with first column as compound id and second column as InChI string, no header.", required = false)
     public String inchiFile;
-
     @Option(name = "-d", aliases = {"--asDist"}, usage = "Use distance rather than similarity", required = false)
     public boolean dist = false;
+
+    public static void main(String[] args) throws Met4jSbmlReaderException, IOException {
+
+        ChemSimilarityWeighting app = new ChemSimilarityWeighting();
+
+        app.parseArguments(args);
+
+        app.run();
+
+    }
 
     @Override
     public WeightingPolicy setWeightingPolicy() {
@@ -103,16 +109,6 @@ public class ChemSimilarityWeighting extends EdgeWeighting {
         return bn;
     }
 
-    public static void main(String[] args) throws Met4jSbmlReaderException, IOException {
-
-        ChemSimilarityWeighting app = new ChemSimilarityWeighting();
-
-        app.parseArguments(args);
-
-        app.run();
-
-    }
-
     @Override
     public String getLabel() {
         return this.getClass().getSimpleName();
@@ -120,7 +116,7 @@ public class ChemSimilarityWeighting extends EdgeWeighting {
 
     @Override
     public String getLongDescription() {
-        return "Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity." +
+        return this.getShortDescription() +
                 "Chemical similarity has been proposed as edge weight for finding meaningful paths in metabolic networks," +
                 " using shortest (lightest) path search.";
     }
@@ -138,4 +134,6 @@ public class ChemSimilarityWeighting extends EdgeWeighting {
         dois.add(new Doi("https://doi.org/10.1093/bioinformatics/btu760"));
         return dois;
     }
+
+    enum strategy {EState, Extended, KlekotaRoth, MACCS, PubChem}
 }

@@ -42,7 +42,7 @@ public class DegreeWeighting extends EdgeWeighting {
 
     @Override
     public String getLongDescription() {
-        return "Provides tabulated compound graph edge list, with one column with target's degree." +
+        return this.getShortDescription() +
                 "Degree has been proposed as edge weight for finding meaningful paths in metabolic networks," +
                 " using shortest (lightest) path search.";
     }

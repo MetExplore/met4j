@@ -132,7 +132,7 @@ public class Doi {
             this.detailsRetrieved = true;
 
         } catch (Exception e) {
-            System.err.println("Doi not reachable");
+            System.err.println("Doi "+doi+" not reachable");
         }
     }
 

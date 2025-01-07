@@ -5,13 +5,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.utils.BioNetworkUtils;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.utils.CompartmentMerger;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBCParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.GroupPathwayParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import fr.inrae.toulouse.metexplore.met4j_mapping.Mapper;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
@@ -20,23 +13,25 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParame
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Set;
 
-public class SBMLwizard extends AbstractMet4jApplication {
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.ALL;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.getMetabolitesFromFile;
+
+public class SbmlWizard extends AbstractMet4jApplication {
 
     @Format(name = EnumFormats.Sbml)
     @ParameterType(name = EnumParameterTypes.InputFile)
-    @Option(name = "-s", usage = "input SBML file", required = true)
+    @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
     @ParameterType(name = EnumParameterTypes.InputFile)
     @Format(name = EnumFormats.Txt)
-    @Option(name = "-rc", usage = "file containing identifiers of compounds to remove from the metabolic network", required = false)
+    @Option(name = "-rc", usage = "file containing identifiers of compounds to remove from the metabolic network")
     public String inputSide = null;
 
     @Option(name = "-ric", aliases = {"--noIsolated"}, usage = "remove isolated compounds (not involved in any reaction)")
@@ -44,7 +39,7 @@ public class SBMLwizard extends AbstractMet4jApplication {
 
     @ParameterType(name = EnumParameterTypes.InputFile)
     @Format(name = EnumFormats.Txt)
-    @Option(name = "-rr", usage = "file containing identifiers of reactions to remove from the metabolic network", required = false)
+    @Option(name = "-rr", usage = "file containing identifiers of reactions to remove from the metabolic network")
     public String inputReactions = null;
 
     @ParameterType(name = EnumParameterTypes.OutputFile)
@@ -65,12 +60,12 @@ public class SBMLwizard extends AbstractMet4jApplication {
     public boolean removeDuplicated;
 
 
-    @Option(name = "-rEX", aliases = {"--removeExchange"}, usage = "remove exchange reactions and species from given exchange compartment identifier", required = false)
+    @Option(name = "-rEX", aliases = {"--removeExchange"}, usage = "remove exchange reactions and species from given exchange compartment identifier")
     public String exchangeCompToRemove;
 
     public static void main(String[] args) throws Met4jSbmlWriterException, IOException {
 
-        SBMLwizard app = new SBMLwizard();
+        SbmlWizard app = new SbmlWizard();
 
         app.parseArguments(args);
 
@@ -81,19 +76,8 @@ public class SBMLwizard extends AbstractMet4jApplication {
 
     public void run() throws Met4jSbmlWriterException, IOException {
         System.out.print("Reading SBML...");
-        JsbmlReader reader = new JsbmlReader(this.inputPath);
-        ArrayList<PackageParser> pkgs = new ArrayList<>(Arrays.asList(
-                new NotesParser(false), new FBCParser(), new GroupPathwayParser()));
 
-        BioNetwork network = null;
-
-        try {
-            network = reader.read(pkgs);
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        BioNetwork network = IOUtils.readSbml(inputPath, ALL);
         System.out.println(" Done.");
 
         //print info
@@ -107,19 +91,9 @@ public class SBMLwizard extends AbstractMet4jApplication {
 
         //side compound removal [optional]
         if (inputSide != null) {
-            BioCollection<BioMetabolite> sideCpds = new BioCollection<>();
             System.out.println("removing side compounds...");
-            Mapper<BioMetabolite> cmapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
 
-            try {
-                sideCpds = cmapper.map(inputSide);
-            } catch (IOException e) {
-                System.err.println("Error while reading the side compound file");
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
-            if (cmapper.getNumberOfSkippedEntries() > 0)
-                System.out.println(cmapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
+            BioCollection<BioMetabolite> sideCpds = getMetabolitesFromFile(inputSide, network, "side compounds");
 
             for(BioMetabolite sc : sideCpds){
                 network.removeOnCascade(sc);
@@ -151,7 +125,7 @@ public class SBMLwizard extends AbstractMet4jApplication {
 
         //removal of reactions that cannot hold flux in any condition
         if(removeNoFlux){
-            System.out.println("removing reaction with closed flux bound...");
+            System.out.println("removing reaction with null flux bounds...");
             BioCollection<BioReaction> toRemove = new BioCollection<>();
             for(BioReaction r : network.getReactionsView()){
                 if(ReactionAttributes.getLowerBound(r).value==0.0 &&
@@ -226,9 +200,8 @@ public class SBMLwizard extends AbstractMet4jApplication {
 
         //export network
         System.out.print("Exporting...");
-        new JsbmlWriter(outputPath,newNetwork).write();
+        IOUtils.writeSbml(newNetwork, outputPath);
         System.out.println(" Done.");
-        return;
     }
 
     @Override

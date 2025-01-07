@@ -1,5 +1,5 @@
 /*
- * Copyright INRAE (2021)
+ * Copyright INRAE (2020)
  *
  * contact-metexplore@inrae.fr
  *
@@ -37,8 +37,7 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetChargesFromFile;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetRefsFromFile;
+import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetFormulasFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
@@ -47,19 +46,16 @@ import org.kohsuke.args4j.Option;
 import java.util.Set;
 
 /**
- * <p>SbmlSetRefsFromFile class.</p>
+ * <p>SbmlSetFormulasFromFile class.</p>
  *
  * @author lcottret
  * @version $Id: $Id
  */
-public class SbmlSetRefsFromFile extends AbstractSbmlSetAny {
+public class SetChemicalFormulas extends AbstractSbmlSetMetabolite {
 
     @ParameterType(name= EnumParameterTypes.Integer)
-    @Option(name="-cr", usage="[2] number of the column where are the references")
-    public int colRef=2;
-
-    @Option(name="-ref", usage="Name of the ref. Must exist in identifiers.org", required = true)
-    public String ref=null;
+    @Option(name="-cf", usage="[2] number of the column where are the formulas")
+    public int colformula=2;
 
     /** {@inheritDoc} */
     @Override
@@ -70,21 +66,21 @@ public class SbmlSetRefsFromFile extends AbstractSbmlSetAny {
     /** {@inheritDoc} */
     @Override
     public String getLongDescription() {
-        return this.getShortDescription()+"\n" +
-                "Reference name given as parameter (-ref) must correspond to an existing id the " +
-                "registry of  identifiers.org (https://registry.identifiers.org/registry)\n" +
-                "The corresponding key:value pair will be written as metabolite or reaction annotation";
+        return this.getShortDescription()+"\n"+this.setDescription+"\n" +
+                "The formula will be written in the SBML file in two locations:+\n" +
+                "- in the metabolite HTML notes (e.g. formula: C16H29O2)\n" +
+                "- as a fbc attribute (e.g. fbc:chemicalFormula=\"C16H29O2\")";
     }
 
     /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Add refs to network objects from a tabulated file containing the metabolite ids and the formulas";
+        return "Set Formula to network metabolites from a tabulated file containing the metabolite ids and the formulas";
     }
 
     @Override
     public Set<Doi> getDois() {
-        return Set.of();
+        return Set.of(new Doi("https://doi.org/10.1515/jib-2017-0082"));
     }
 
     /**
@@ -94,7 +90,7 @@ public class SbmlSetRefsFromFile extends AbstractSbmlSetAny {
      */
     public static void main(String[] args) {
 
-        SbmlSetRefsFromFile app = new SbmlSetRefsFromFile();
+        SetChemicalFormulas app = new SetChemicalFormulas();
 
         app.parseArguments(args);
 
@@ -103,22 +99,23 @@ public class SbmlSetRefsFromFile extends AbstractSbmlSetAny {
     }
 
     private void run() {
+
         BioNetwork bn = this.readSbml();
 
-        SetRefsFromFile s = new SetRefsFromFile(this.colid-1, this.colRef-1,
-                bn, this.tab, this.c, this.nSkip, this.p, this.s, this.ref, this.o);
+        SetFormulasFromFile sgff = new SetFormulasFromFile(this.colid-1, this.colformula-1,
+                bn, this.tab, this.c, this.nSkip, this.p, this.s);
 
         Boolean flag = true;
 
         try {
-            flag = s.setAttributes();
+            flag = sgff.setAttributes();
         } catch (Exception e) {
             e.printStackTrace();
             flag=false;
         }
 
         if(!flag) {
-            System.err.println("Error in "+this.getLabel());
+            System.err.println("Error while setting formulas");
             System.exit(1);
         }
 
@@ -126,4 +123,6 @@ public class SbmlSetRefsFromFile extends AbstractSbmlSetAny {
 
         System.exit(0);
     }
+
+
 }

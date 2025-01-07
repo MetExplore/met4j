@@ -7,9 +7,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.KShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.ShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.SteinerTreeApprox;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.UnweightedPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DegreeWeightPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.SimilarityWeightPolicy;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.UnweightedPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightsFromFile;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
@@ -19,11 +19,11 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.*;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
@@ -34,6 +34,7 @@ import java.util.Set;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.getMetabolitesFromFile;
 
 public class ExtractSubNetwork extends AbstractMet4jApplication {
 
@@ -85,19 +86,15 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
     @Option(name = "-st", aliases = {"--steinertree"}, usage = "Extract Steiner Tree", forbids = {"-k"})
     public boolean st = false;
 
+    public static void main(String[] args) {
+        ExtractSubNetwork app = new ExtractSubNetwork();
+        app.parseArguments(args);
+        app.run();
+    }
 
     public void run() {
         //import network
-        JsbmlReader reader = new JsbmlReader(this.inputPath);
-
-        BioNetwork network = null;
-        try {
-            network = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        BioNetwork network = IOUtils.readSbml(this.inputPath);
 
         //Create compound graph
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
@@ -106,17 +103,9 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
         //Graph processing: side compound removal [optional]
         if (sideCompoundFile != null) {
             System.err.println("removing side compounds...");
-            NodeMapping<BioMetabolite, ReactionEdge, CompoundGraph> mapper = new NodeMapping<>(graph).skipIfNotFound();
-            BioCollection<BioMetabolite> sideCpds = null;
-            try {
-                sideCpds = mapper.map(sideCompoundFile);
-            } catch (IOException e) {
-                System.err.println("Error while reading the side compound file");
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
+            BioCollection<BioMetabolite> sideCpds = getMetabolitesFromFile(sideCompoundFile, network, "side compounds");
             boolean removed = graph.removeAllVertices(sideCpds);
-            if (removed) System.err.println(sideCpds.size() + " compounds removed.");
+            if (removed) System.out.println(sideCpds.size() + " compounds removed.");
         }
 
         //get sources and targets
@@ -162,7 +151,7 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
         };
         CompoundGraph subnet;
         if (st) {
-            SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> stComp = new SteinerTreeApprox<>(graph,(degree || weightFile != null), !undirected, false);
+            SteinerTreeApprox<BioMetabolite, ReactionEdge, CompoundGraph> stComp = new SteinerTreeApprox<>(graph, (degree || weightFile != null), !undirected, false);
             List<ReactionEdge> stEdges = stComp.getLightestUnionOfShortestPaths(sources, targets);
             subnet = factory.createGraphFromEdgeList(stEdges);
         } else if (k > 1) {
@@ -176,18 +165,12 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
         }
 
         //export sub-network
-        if(asTable){
+        if (asTable) {
             ExportGraph.toTab(subnet, outputPath);
-        }else{
+        } else {
             ExportGraph.toGmlWithAttributes(subnet, outputPath);
         }
 
-    }
-
-    public static void main(String[] args) {
-        ExtractSubNetwork app = new ExtractSubNetwork();
-        app.parseArguments(args);
-        app.run();
     }
 
     @Override
@@ -198,7 +181,7 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
     @Override
     public String getLongDescription() {
         return this.getShortDescription() + "\n" +
-                "The subnetwork correspond to part of the network that connects compounds from the first list to compounds from the second list.\n" +
+                "The subnetwork corresponds to the part of the network that connects compounds from the first list to compounds from the second list.\n" +
                 "Sources and targets list can have elements in common. The connecting part can be defined as the union of shortest or k-shortest paths between sources and targets, " +
                 "or the Steiner tree connecting them. The relevance of considered path can be increased by weighting the edges using degree squared, chemical similarity (require InChI or SMILES annotations) or any provided weighting.\n" +
                 "\nSee previous works on subnetwork extraction for parameters recommendations.";
@@ -206,7 +189,7 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
 
     @Override
     public String getShortDescription() {
-        return "Create a subnetwork from a GSMN in SBML format, and two files containing lists of compounds of interests ids, one per row.";
+        return "Create a subnetwork from a metabolic network in SBML format, and two files containing lists of compounds of interests ids, one per row.";
     }
 
     @Override

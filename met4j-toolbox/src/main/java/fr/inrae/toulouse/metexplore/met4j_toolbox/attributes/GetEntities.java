@@ -1,14 +1,13 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.FileWriter;
@@ -16,7 +15,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Set;
 
-public class DecomposeSBML extends AbstractMet4jApplication {
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.*;
+
+public class GetEntities extends AbstractMet4jApplication {
 
 
     @ParameterType(name= EnumParameterTypes.InputFile)
@@ -25,23 +26,27 @@ public class DecomposeSBML extends AbstractMet4jApplication {
     public String sbml;
 
     @ParameterType(name= EnumParameterTypes.Boolean)
-    @Option(name = "-m", aliases = {"--metabolites"}, usage = "Extract Metabolites", required = false)
+    @Option(name = "-m", aliases = {"--metabolites"}, usage = "Extract Metabolites")
     public Boolean printMetabolites = false;
+    
     @ParameterType(name= EnumParameterTypes.Boolean)
-    @Option(name = "-r", aliases = {"--reactions"}, usage = "Extract Reactions", required = false)
+    @Option(name = "-r", aliases = {"--reactions"}, usage = "Extract Reactions")
     public Boolean printReactions = false;
+
     @ParameterType(name= EnumParameterTypes.Boolean)
-    @Option(name = "-c", aliases = {"--compartments"}, usage = "Extract Compartments", required = false)
+    @Option(name = "-c", aliases = {"--compartments"}, usage = "Extract Compartments")
     public Boolean printCompartments = false;
+
     @ParameterType(name= EnumParameterTypes.Boolean)
-    @Option(name = "-p", aliases = {"--pathways"}, usage = "Extract Pathways", required = false)
+    @Option(name = "-p", aliases = {"--pathways"}, usage = "Extract Pathways")
     public Boolean printPathways = false;
+
     @ParameterType(name= EnumParameterTypes.Boolean)
-    @Option(name = "-g", aliases = {"--genes"}, usage = "Extract Genes", required = false)
+    @Option(name = "-g", aliases = {"--genes"}, usage = "Extract Genes")
     public Boolean printGenes = false;
 
     @ParameterType(name= EnumParameterTypes.Boolean)
-    @Option(name = "-nt", aliases = {"--noTypeCol"}, usage = "Do not output type column", required = false)
+    @Option(name = "-nt", aliases = {"--noTypeCol"}, usage = "Do not write type column")
     public Boolean noTypeCol = false;
 
     @ParameterType(name= EnumParameterTypes.OutputFile)
@@ -55,7 +60,7 @@ public class DecomposeSBML extends AbstractMet4jApplication {
      * @param args an array of {@link java.lang.String} objects.
      */
     public static void main(String[] args) {
-        DecomposeSBML app = new DecomposeSBML();
+        GetEntities app = new GetEntities();
         app.parseArguments(args);
         app.run();
     }
@@ -66,15 +71,7 @@ public class DecomposeSBML extends AbstractMet4jApplication {
     public void run() {
 
         String fileIn = this.sbml;
-        JsbmlReader reader = new JsbmlReader(fileIn);
-        BioNetwork network = null;
-        try {
-            network = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        BioNetwork network = IOUtils.readSbml(fileIn, FBC, NOTES, GROUPS);
 
         //default case: everything printed
         if(!(printMetabolites|printReactions|printPathways|printGenes|printCompartments)){
@@ -123,15 +120,15 @@ public class DecomposeSBML extends AbstractMet4jApplication {
 
     @Override
     public String getLongDescription() {
-        return "Parse SBML to render list of composing entities: metabolites, reactions, genes, pathways and compartments. " +
-                "The output file is a tsv with two columns, one with entities identifiers, and one with the entity type. " +
-                "If no entity type is selected, by default all of them are taken into account. " +
-                "Only identifiers are written, attributes can be extracted from dedicated apps or from the SBML2Tab.";
+        return this.getShortDescription() +
+                "The output file is a tabulated file with two columns, one with entity identifiers, and one with the entity type. " +
+                "If no entity type is selected, all of them are returned by default. " +
+                "Only identifiers are written, attributes can be extracted from dedicated apps or from the Sbml2Tab app.";
     }
 
     @Override
     public String getShortDescription() {
-        return "Parse SBML to render list of composing entities: metabolites, reactions, genes and others.";
+        return "Parse a SBML file to return a list of entities composing the network: metabolites, reactions, genes and others.";
     }
 
     @Override

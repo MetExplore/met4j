@@ -104,7 +104,7 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
      */
     public Boolean setAttributes() throws IOException {
 
-        Boolean flag = true;
+        Boolean flag;
 
         try {
             flag = this.parseAttributeFile();
@@ -169,7 +169,7 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
                 filter(bioPathway -> this.bn.getReactionsFromPathways(bioPathway).isEmpty())
                 .forEach(emptyPathway -> this.bn.removeOnCascade(emptyPathway));
 
-        System.err.println(n + " reactions processed");
+        System.out.println(n + " reactions processed");
 
         return flag;
 

@@ -65,7 +65,7 @@ public abstract class AbstractSbmlSetAny extends AbstractSbmlSet {
     public Boolean s=false;
 
     @ParameterType(name=Text)
-    @Option(name="-o", usage="[REACTION] Object type in the column id : REACTION;METABOLITE;GENE;PATHWAY")
+    @Option(name="-t", usage="[REACTION] Object type in the column id : REACTION;METABOLITE;GENE;PATHWAY")
     public EntityType o= EntityType.REACTION;
 
     /**

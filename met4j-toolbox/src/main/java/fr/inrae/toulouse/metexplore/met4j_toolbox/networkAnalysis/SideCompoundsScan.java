@@ -8,27 +8,28 @@ import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.VertexCont
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.kohsuke.args4j.Option;
 
 import java.io.FileWriter;
 import java.io.IOException;
-
-import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
-import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Tsv;
-import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
-import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Tsv;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.FBC;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.NOTES;
 
 /**
  *
@@ -42,35 +43,32 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
 
     @Format(name = Tsv)
     @ParameterType(name = OutputFile)
-    @Option(name = "-o", usage = "output Side-Compounds file", required = true)
+    @Option(name = "-o", usage = "output file containing the side compounds", required = true)
     public String outputPath = null;
 
-    @Option(name = "-s", aliases = {"--onlySides"}, usage = "output compounds flagged as side-Compounds only")
+    @Option(name = "-s", aliases = {"--onlySides"}, usage = "output compounds flagged as side compounds only")
     public boolean sideOnly = false;
 
-    @Option(name = "-id", aliases = {"--onlyIds"}, usage = "do not report values in output, export ids list of compounds flagged as side-Compounds, allowing piping results")
+    @Option(name = "-id", aliases = {"--onlyIds"}, usage = "do not report values in output, export ids of compounds flagged as side compounds, allowing piping results")
     public boolean noReportValue = false;
 
-    @Option(name = "-d", aliases = {"--degree"}, usage = "flag as side compounds any compounds with degree above threshold", forbids = {"-dp"})
+    @Option(name = "-d", aliases = {"--degree"}, usage = "flag as side compounds any compound with degree above threshold", forbids = {"-dp"})
     public int degree = 400;
 
     @Option(name = "-dp", aliases = {"--degreep"}, usage = "flag as side compounds the top x% of compounds according to their degree", forbids = {"-d"})
     public double degreePrecentile = Double.NaN;
 
-    @Option(name = "-cc", aliases = {"--noCarbonSkeleton"}, usage = "flag as side compound any compounds with less than 2 carbons in formula")
+    @Option(name = "-cc", aliases = {"--noCarbonSkeleton"}, usage = "flag as side compound any compound with less than 2 carbons in formula")
     public Boolean flagInorganic = false;
 
-    @Option(name = "-uf", aliases = {"--undefinedFormula"}, usage = "flag as side compound any compounds with no valid chemical formula")
+    @Option(name = "-uf", aliases = {"--undefinedFormula"}, usage = "flag as side compound any compound with no valid chemical formula")
     public Boolean flagNoFormula = false;
 
     @Option(name = "-nc", aliases = {"--neighborCoupling"}, usage = "flag as side compound any compound with a number of parallel edges shared with a neighbor above the given threshold")
     public double parallelEdge = Double.NaN;
-
-    enum strategy {no, by_name,by_id}
-    @Option(name = "-m", aliases = {"--merge"}, usage = "Degree is shared between compounds in different compartments. " +
+    @Option(name = "-m", aliases = {"--merge"}, usage = "degree is shared between compounds in different compartments. " +
             "Use names if consistent and unambiguous across compartments, or identifiers if compartment suffix is present (id in form \"xxx_y\" with xxx as base identifier and y as compartment label).")
     public strategy mergingStrat = strategy.no;
-
 
     public static void main(String[] args) {
 
@@ -82,28 +80,17 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
 
     }
 
-
-    public void run()  {
+    public void run() {
 
 
         //import network
-        System.err.println("reading SBML...");
-        System.err.println(inputPath);
-        JsbmlReader reader = new JsbmlReader(this.inputPath);
-        BioNetwork network = null;
-        try {
-            network = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        System.out.println("reading SBML...");
+        BioNetwork network = IOUtils.readSbml(this.inputPath, FBC, NOTES);
 
         //Create compound graph
-        System.err.println("Creating network...");
+        System.out.println("Creating network...");
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
         CompoundGraph graph = builder.getCompoundGraph();
-        network = null;
 
         //Graph processing: set weights
         WeightingPolicy wp = new UnweightedPolicy();
@@ -112,14 +99,15 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
 
         //perform scan
         //------------
-        System.err.println("Scaning...");
+        System.out.println("Scaning...");
 
         //if merging compartment
         Map<String, Integer> mergedDegree = new HashMap<>();
-        Boolean merge = (mergingStrat!=strategy.no);
-        Function<BioMetabolite,String> getSharedId = BioMetabolite::getName;
-        if(merge){
-            if(mergingStrat.equals(strategy.by_id)) getSharedId = (new VertexContraction.MapByIdSubString("^(\\w+)_\\w$"))::commonField;
+        Boolean merge = (mergingStrat != strategy.no);
+        Function<BioMetabolite, String> getSharedId = BioMetabolite::getName;
+        if (merge) {
+            if (mergingStrat.equals(strategy.by_id))
+                getSharedId = (new VertexContraction.MapByIdSubString("^(\\w+)_\\w$"))::commonField;
 
             mergedDegree = graph.vertexSet().stream().collect(
                     Collectors.groupingBy(
@@ -134,9 +122,9 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
         double dt = degree;
         if (!Double.isNaN(degreePrecentile)) {
             for (BioMetabolite v : graph.vertexSet()) {
-                if (merge){
+                if (merge) {
                     degreeStats.addValue(mergedDegree.get(getSharedId.apply(v)));
-                }else{
+                } else {
                     degreeStats.addValue(graph.degreeOf(v));
                 }
             }
@@ -226,9 +214,8 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
             }
 
             fw.close();
-            System.err.println("done");
-            System.err.println("found " + count + " side compound among " + graph.vertexSet().size() + " compounds");
-            System.err.println(outputPath);
+            System.out.println("done");
+            System.out.println("found " + count + " side compound among " + graph.vertexSet().size() + " compounds");
         } catch (IOException e) {
             System.err.println("Error while writing the result file");
             System.err.println(e.getMessage());
@@ -252,7 +239,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
                 "- *Degree*: Compounds with an uncommonly high number of neighbors can betray a lack of process specificity.  \n" +
                 "High degree compounds typically include water and most main cofactors (CoA, ATP, NADPH...) but can also include central compounds such as pyruvate or acetyl-CoA  \n" +
                 "- *Neighbor Coupling*: Similar to degree, this criteria assume that side compounds are involved in many reactions, but in pairs with other side compounds.\n" +
-                "Therefore, the transition from ATP to ADP will appear multiple time in the network, creating redundant 'parallel edges' between these two neighbors.\n" +
+                "Therefore, the transition from ATP to ADP will appear multiple times in the network, creating redundant 'parallel edges' between these two neighbors.\n" +
                 "Being tightly coupled to another compound through a high number of redundant edges, can point out cofactors while keeping converging pathways' products with high degree like pyruvate aside.  \n" +
                 "- *Carbon Count*: Metabolic \"waste\", or degradation end-product such as ammonia or carbon dioxide are usually considered as side compounds.\n" +
                 "Most of them are inorganic compound, another ill-defined concept, sometimes defined as compound lacking C-C or C-H bonds. Since chemical structure is rarely available " +
@@ -265,11 +252,13 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
 
     @Override
     public String getShortDescription() {
-        return "Scan a network to identify side-compounds.";
+        return "Scan a network to identify side compounds.";
     }
 
     @Override
     public Set<Doi> getDois() {
         return Set.of();
     }
+
+    enum strategy {no, by_name, by_id}
 }

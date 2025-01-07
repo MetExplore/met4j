@@ -1,4 +1,40 @@
-package fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis;
+/*
+ * Copyright INRAE (2025)
+ *
+ * contact-metexplore@inrae.fr
+ *
+ * This software is a computer program whose purpose is to [describe
+ * functionalities and technical features of your software].
+ *
+ * This software is governed by the CeCILL license under French law and
+ * abiding by the rules of distribution of free software.  You can  use,
+ * modify and/ or redistribute the software under the terms of the CeCILL
+ * license as circulated by CEA, CNRS and INRIA at the following URL
+ * "https://cecill.info/licences/Licence_CeCILL_V2.1-en.html".
+ *
+ * As a counterpart to the access to the source code and  rights to copy,
+ * modify and redistribute granted by the license, users are provided only
+ * with a limited warranty  and the software's author,  the holder of the
+ * economic rights,  and the successive licensors  have only  limited
+ * liability.
+ *
+ * In this respect, the user's attention is drawn to the risks associated
+ * with loading,  using,  modifying and/or developing or reproducing the
+ * software by the user in light of its specific status of free software,
+ * that may mean  that it is complicated to manipulate,  and  that  also
+ * therefore means  that it is reserved for developers  and  experienced
+ * professionals having in-depth computer knowledge. Users are therefore
+ * encouraged to load and test the software's suitability as regards their
+ * requirements in conditions enabling the security of their systems and/or
+ * data to be ensured and,  more generally, to use and operate it in the
+ * same conditions as regards security.
+ *
+ * The fact that you are presently reading this means that you have had
+ * knowledge of the CeCILL license and that you accept its terms.
+ *
+ */
+
+package fr.inrae.toulouse.metexplore.met4j_toolbox.convert;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
@@ -12,13 +48,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBCParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.GroupPathwayParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
@@ -26,54 +55,64 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParame
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CompoundNet extends AbstractMet4jApplication {
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.FBC;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.NOTES;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.getMetabolitesFromFile;
+
+public class Sbml2CompoundGraph extends AbstractMet4jApplication {
 
     @Format(name = EnumFormats.Sbml)
     @ParameterType(name = EnumParameterTypes.InputFile)
-    @Option(name = "-s", usage = "input SBML file", required = true)
+    @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
     @ParameterType(name = EnumParameterTypes.InputFile)
     @Format(name = EnumFormats.Txt)
-    @Option(name = "-sc", usage = "input Side compound file", required = false)
+    @Option(name = "-sc", usage = "input Side compound file")
     public String inputSide = null;
 
     @ParameterType(name = EnumParameterTypes.OutputFile)
-    @Format(name = EnumFormats.Gml)
-    @Option(name = "-o", usage = "output Graph file", required = true)
+    @Format(name = EnumFormats.Txt)
+    @Option(name = "-o", usage = "output Graph file (GML or matrix format, see -am parameter)", required = true)
     public String outputPath = null;
+
     @Option(name = "-mc", aliases = {"--mergecomp"}, usage = "merge compartments. " +
             "Use names if consistent and unambiguous across compartments, or identifiers if compartment suffix is present (id in form \"xxx_y\" with xxx as base identifier and y as compartment label).")
     public strategy mergingStrat = strategy.no;
     public String idRegex = "^(\\w+)_\\w$";
-    @Option(name = "-me", aliases = {"--simple"}, usage = "merge parallel edges to produce a simple graph", required = false)
+
+    @Option(name = "-me", aliases = {"--simple"}, usage = "merge parallel edges to produce a simple graph")
     public boolean mergeEdges = false;
-    @Option(name = "-ri", aliases = {"--removeIsolatedNodes"}, usage = "remove isolated nodes", required = false)
+
+    @Option(name = "-ri", aliases = {"--removeIsolatedNodes"}, usage = "remove isolated nodes")
     public boolean removeIsolated = false;
+
     @Option(name = "-dw", aliases = {"--degreeWeights"}, usage = "penalize traversal of hubs by using degree square weighting", forbids = {"-cw"})
     public Boolean degree = false;
+
     @ParameterType(name = EnumParameterTypes.InputFile)
     @Format(name = EnumFormats.Tsv)
     @Option(name = "-cw", aliases = {"--customWeights"}, usage = "an optional file containing weights for compound pairs", forbids = {"-dw"})
     public String weightFile = null;
-    @Option(name = "-un", aliases = {"--undirected"}, usage = "create as undirected", required = false)
+
+    @Option(name = "-un", aliases = {"--undirected"}, usage = "create as undirected")
     public boolean undirected = false;
-    @Option(name = "-tp", aliases = {"--transitionproba"}, usage = "set weight as random walk transition probability, normalized by reaction", required = false)
+
+    @Option(name = "-tp", aliases = {"--transitionproba"}, usage = "set weight as random walk transition probability, normalized by reaction")
     public boolean computeWeight = false;
-    @Option(name = "-am", aliases = {"--asmatrix"}, usage = "export as matrix (implies simple graph conversion). Default export as GML file", required = false)
+
+    @Option(name = "-am", aliases = {"--asmatrix"}, usage = "export as matrix (implies simple graph conversion). Default export as GML file")
     public boolean asMatrix = false;
 
     public static void main(String[] args) {
 
-        CompoundNet app = new CompoundNet();
+        Sbml2CompoundGraph app = new Sbml2CompoundGraph();
 
         app.parseArguments(args);
 
@@ -83,50 +122,29 @@ public class CompoundNet extends AbstractMet4jApplication {
 
     public void run() {
         System.out.print("Reading SBML...");
-        JsbmlReader reader = new JsbmlReader(this.inputPath);
-        ArrayList<PackageParser> pkgs = new ArrayList<>(Arrays.asList(
-                new NotesParser(false), new FBCParser(), new GroupPathwayParser()));
-
-        BioNetwork network = null;
-
-        try {
-            network = reader.read(pkgs);
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        BioNetwork network = IOUtils.readSbml(inputPath, FBC, NOTES );
         System.out.println(" Done.");
 
-
-        System.out.print("Buildinig Network...");
+        System.out.print("Building Network...");
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
         CompoundGraph graph = builder.getCompoundGraph();
         System.out.println(" Done.");
 
         //Graph processing: side compound removal [optional]
         if (inputSide != null) {
-            System.err.println("removing side compounds...");
-            NodeMapping<BioMetabolite, ReactionEdge, CompoundGraph> mapper = new NodeMapping<>(graph).skipIfNotFound();
-            BioCollection<BioMetabolite> sideCpds = null;
-            try {
-                sideCpds = mapper.map(inputSide);
-            } catch (IOException e) {
-                System.err.println("Error while reading the side compound file");
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
+            System.out.println("removing side compounds...");
+            BioCollection<BioMetabolite> sideCpds = getMetabolitesFromFile(inputSide, network, "side compounds");
             boolean removed = graph.removeAllVertices(sideCpds);
-            if (removed) System.err.println(sideCpds.size() + " compounds removed.");
+            if (removed) System.out.println(sideCpds.size() + " compounds removed.");
         }
 
         //Graph processing: set weights [optional]
         WeightingPolicy<BioMetabolite, ReactionEdge, CompoundGraph> wp = new UnweightedPolicy<>();
         if (weightFile != null) {
-            System.err.println("Setting edge weights...");
+            System.out.println("Setting edge weights...");
             wp = new WeightsFromFile(weightFile);
         } else if (degree && !undirected) {
-            System.err.println("Setting edge weights...");
+            System.out.println("Setting edge weights...");
             int pow = 2;
             wp = new DegreeWeightPolicy(pow);
         }
@@ -141,7 +159,7 @@ public class CompoundNet extends AbstractMet4jApplication {
             if (degree) {
                 //since degree weighting policy is not symmetric, for undirected case we create reversed edges, apply
                 //a corrected degree computation for each edge, and treat the graph as normal
-                System.err.println("Setting edge weights (target degree)...");
+                System.out.println("Setting edge weights (target degree)...");
                 int pow = 2;
                 wp = new DegreeWeightPolicy(1);
                 wp.setWeight(graph);
@@ -208,8 +226,8 @@ public class CompoundNet extends AbstractMet4jApplication {
     public String getLongDescription() {
         return "Metabolic networks used for quantitative analysis often contain links that are irrelevant for graph-based structural analysis. For example, inclusion of side compounds or modelling artifacts such as 'biomass' nodes.\n" +
                 "While Carbon Skeleton Graph offer a relevant alternative topology for graph-based analysis, it requires compounds' structure information, usually not provided in model, and difficult to retrieve for model with sparse cross-reference annotations.\n" +
-                "In contrary to the SBML2Graph app that performs a raw conversion of the SBML content, the present app propose a fine-tuned creation of compound graph from predefined list of side compounds and degree² weighting to get relevant structure without structural data." +
-                "This app also enable Markov-chain based analysis of metabolic networks by computing reaction-normalized transition probabilities on the network.";
+                "In contrary to the Sbml2Graph app that performs a raw conversion of the SBML content, the present app propose a fine-tuned creation of compound graph from predefined list of side compounds and degree weighting to get relevant structure without structural data." +
+                "This app also enables Markov-chain based analysis of metabolic networks by computing reaction-normalized transition probabilities on the network.";
     }
 
     @Override

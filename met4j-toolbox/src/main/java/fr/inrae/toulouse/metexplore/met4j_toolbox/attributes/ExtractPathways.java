@@ -2,9 +2,7 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
@@ -12,10 +10,14 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParame
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 import java.util.Set;
+
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.GROUPS;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.NOTES;
 
 public class ExtractPathways extends AbstractMet4jApplication {
 
@@ -44,27 +46,19 @@ public class ExtractPathways extends AbstractMet4jApplication {
 
 
     public void run() {
-        //read smbl
-        JsbmlReader reader = new JsbmlReader(this.inputPath);
-        BioNetwork network = null;
-        try {
-            network = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while converting the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        // read smbl
+        BioNetwork network = IOUtils.readSbml(this.inputPath, GROUPS, NOTES);
+
         System.out.println("Number of reactions in original network: "+network.getReactionsView().size());
         System.out.println("Number of species in original network: "+network.getMetabolitesView().size());
         System.out.println("Number of genes in original network: "+network.getGenesView().size());
 
-
-        //get all reactions & metabolites
+        // get all reactions & metabolites
         BioCollection<BioReaction> reactions = new BioCollection<>(network.getReactionsView());
         BioCollection<BioMetabolite> metabolites = new BioCollection<>(network.getMetabolitesView());
         BioCollection<BioGene> genes = new BioCollection<>(network.getGenesView());
 
-        //get pathways
+        // get pathways
         BioCollection<BioPathway> pathways = new BioCollection<>();
         for(String id : pathwayId.split("\\+")){
             BioPathway pathway = network.getPathwaysView().get(id);
@@ -78,13 +72,13 @@ public class ExtractPathways extends AbstractMet4jApplication {
             }
         }
 
-        //remove pathway's reactions and metabolites from list
+        // remove pathway's reactions and metabolites from list
         BioCollection<BioReaction> pathwaysReactions = network.getReactionsFromPathways(pathways);
         reactions.removeAll(pathwaysReactions);
         metabolites.removeAll(network.getMetabolitesFromReactions(pathwaysReactions));
         genes.removeAll(network.getGenesFromReactions(pathwaysReactions));
 
-        //remove remaining reactions
+        // remove remaining reactions
         network.removeOnCascade(reactions);
         network.removeOnCascade(metabolites);
         network.removeOnCascade(genes);
@@ -92,16 +86,9 @@ public class ExtractPathways extends AbstractMet4jApplication {
         System.out.println("Number of species in network: "+network.getMetabolitesView().size());
         System.out.println("Number of genes in network: "+network.getGenesView().size());
 
-        //export network
-        JsbmlWriter w = new JsbmlWriter(outputPath, network);
+        // export network
+        IOUtils.writeSbml(network, this.outputPath);
 
-        try {
-            w.write();
-        } catch (Met4jSbmlWriterException e) {
-            System.err.println("Error while writing the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
         System.err.println("network exported.");
         return;
     }
@@ -113,12 +100,12 @@ public class ExtractPathways extends AbstractMet4jApplication {
 
     @Override
     public String getLongDescription() {
-        return "\"Extract pathway(s) from GSMN: From a SBML file, Create a sub-network SBML file including only a selection of pathways";
+        return this.getShortDescription();
     }
 
     @Override
     public String getShortDescription() {
-        return "Extract pathway(s) from GSMN";
+        return "Extract pathway(s) from a SBML file and create a sub-network SBML file";
     }
 
     @Override

@@ -48,15 +48,13 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.*;
@@ -66,9 +64,9 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
-import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Tsv;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.getMetabolitesFromFile;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -82,24 +80,24 @@ public class MetaboRank extends AbstractMet4jApplication {
     @Option(name = "-i", usage = "input SBML file: path to network used for computing centrality, in sbml format.", required = true)
     public String sbmlFilePath;
 
-    @Format(name= EnumFormats.Tsv)
+    @Format(name = EnumFormats.Tsv)
     @ParameterType(name = InputFile)
     @Option(name = "-s", usage = "input seeds file: tabulated file containing node of interest ids and weight", required = true)
     public String seedsFilePath;
 
-    @Format(name= EnumFormats.Tsv)
+    @Format(name = EnumFormats.Tsv)
     @ParameterType(name = OutputFile)
     @Option(name = "-o", usage = "output file: path to the file where the results will be exported", required = true)
     public String output;
 
     //parameters
-    @Format(name= EnumFormats.Tsv)
+    @Format(name = EnumFormats.Tsv)
     @ParameterType(name = InputFile)
     @Option(name = "-w", usage = "input edge weight file: (recommended) path to file containing edges' weights. Will be normalized as transition probabilities")
     public String edgeWeightsFilePaths;
 
-    @ParameterType(name= EnumParameterTypes.InputFile)
-    @Format(name= EnumFormats.Txt)
+    @ParameterType(name = EnumParameterTypes.InputFile)
+    @Format(name = EnumFormats.Txt)
     @Option(name = "-sc", usage = "input Side compound file", required = false)
     public String inputSide = null;
 
@@ -128,12 +126,10 @@ public class MetaboRank extends AbstractMet4jApplication {
     HashMap<String, Double> globalCheiRankScore;
     HashMap<String, Integer> globalPageRank;
     HashMap<String, Integer> globalCheiRank;
-
+    HashMap<String, Integer> finalRank;
     //results holder
     private HashMap<String, Double> globalVsPersonalizedPageRank;
     private HashMap<String, Double> globalVsPersonalizedCheiRank;
-
-    HashMap<String, Integer> finalRank;
 
     public static void main(String[] args) {
         MetaboRank app = new MetaboRank();
@@ -143,14 +139,9 @@ public class MetaboRank extends AbstractMet4jApplication {
 
     public void run() {
 
-        BioNetwork model = null;
-        try {
-            model = importModel(sbmlFilePath);
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        System.out.println("reading SBML...");
+        BioNetwork model = IOUtils.readSbml(sbmlFilePath);
+
         createCompoundGraph(model);
         setEdgeWeights(firstGraph, edgeWeightsFilePaths);
 
@@ -162,28 +153,15 @@ public class MetaboRank extends AbstractMet4jApplication {
         System.err.println("transition probabilities computed (reverse graph)");
 
         importSeeds(seedsFilePath);
-        if(seeds.isEmpty()){
+        if (seeds.isEmpty()) {
             System.err.println("no seed available, computation aborted");
-        }else{
+        } else {
             compute();
             printCompoundTable(output);
         }
-        System.err.println("done.");
+        System.out.println("done.");
 
     }
-
-    /*
-     * CREATE MODEL FROM SBML FILE
-     * use default parameters for attributes value extraction from notes.
-     *
-     */
-    private BioNetwork importModel(String sbmlFilePath) throws Met4jSbmlReaderException {
-        JsbmlReader reader = new JsbmlReader(sbmlFilePath);
-        BioNetwork model = reader.read();
-        System.err.println("model imported.");
-        return model;
-    }
-
 
     /*
      * CREATE COMPOUND GRAPH
@@ -195,22 +173,14 @@ public class MetaboRank extends AbstractMet4jApplication {
      */
     private void createCompoundGraph(BioNetwork model) {
         firstGraph = new Bionetwork2BioGraph(model).getCompoundGraph();
-        System.err.println("compound graph created.");
+        System.out.println("compound graph created.");
 
         //Graph processing: side compound removal [optional]
         if (inputSide != null) {
-            System.err.println("removing side compounds...");
-            NodeMapping<BioMetabolite, ReactionEdge, CompoundGraph> mapper = new NodeMapping<>(firstGraph).skipIfNotFound();
-            BioCollection<BioMetabolite> sideCpds = null;
-            try {
-                sideCpds = mapper.map(inputSide);
-            } catch (IOException e) {
-                System.err.println("Error while reading the side compound file");
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
+            System.out.println("removing side compounds...");
+            BioCollection<BioMetabolite> sideCpds = getMetabolitesFromFile(inputSide, model, "side compounds");
             boolean removed = firstGraph.removeAllVertices(sideCpds);
-            if (removed) System.err.println(sideCpds.size() + " compounds removed.");
+            if (removed) System.out.println(sideCpds.size() + " compounds removed.");
         }
     }
 
@@ -230,7 +200,7 @@ public class MetaboRank extends AbstractMet4jApplication {
             }
         };
         reverseGraph = factory.reverse(firstGraph);
-        System.err.println("reverse graph created.");
+        System.out.println("reverse graph created.");
     }
 
 
@@ -259,11 +229,11 @@ public class MetaboRank extends AbstractMet4jApplication {
         wp.setWeight(graph);
         WeightUtils.removeEdgeWithNaNWeight(graph);
         wp.noStructFilter(graph);
-        System.err.println("weights computed.");
+        System.out.println("weights computed.");
     }
 
     public void setEdgeWeights(CompoundGraph graph, String localFilePath) {
-        Boolean defaultWeight = (localFilePath==null || localFilePath.isEmpty() || localFilePath.isBlank());
+        Boolean defaultWeight = (localFilePath == null || localFilePath.isEmpty() || localFilePath.isBlank());
         //import weights from file
         WeightingPolicy wp = (defaultWeight) ? new UnweightedPolicy() : new WeightsFromFile<>(localFilePath, true);
         //set weights to edges
@@ -277,7 +247,7 @@ public class MetaboRank extends AbstractMet4jApplication {
         }
         //remove disconnected nodes
         graph.removeIsolatedNodes();
-        System.err.println("weights computed.");
+        System.out.println("weights computed.");
     }
 
 
@@ -338,8 +308,8 @@ public class MetaboRank extends AbstractMet4jApplication {
             }
         }
 
-        System.err.println("seeds file imported");
-        System.err.println(seeds.size() + " seeds");
+        System.out.println("seeds file imported");
+        System.out.println(seeds.size() + " seeds");
     }
 
     public void compute() {
@@ -347,27 +317,27 @@ public class MetaboRank extends AbstractMet4jApplication {
         globalPageRankScore = computeScore(firstGraph, dampingFactor, maxNbOfIter, tolerance);
         globalPageRank = getRankFromScore(globalPageRankScore, null);
         normalizeScore(globalPageRankScore);
-        System.err.println("global pageRank computed");
+        System.out.println("global pageRank computed");
 
         globalCheiRankScore = computeScore(reverseGraph, dampingFactor, maxNbOfIter, tolerance);
         globalCheiRank = getRankFromScore(globalCheiRankScore, null);
         normalizeScore(globalCheiRankScore);
-        System.err.println("global cheiRank computed");
+        System.out.println("global cheiRank computed");
 
         pageRankScore = computeScore(firstGraph, dampingFactor, seeds, maxNbOfIter, tolerance);
         pageRank = getRankFromScore(pageRankScore, seeds.keySet());
         normalizeScore(pageRankScore);
-        System.err.println("pageRank computed");
+        System.out.println("pageRank computed");
 
         cheiRankScore = computeScore(reverseGraph, dampingFactor, seeds, maxNbOfIter, tolerance);
         cheiRank = getRankFromScore(cheiRankScore, seeds.keySet());
         normalizeScore(cheiRankScore);
-        System.err.println("cheiRank computed");
+        System.out.println("cheiRank computed");
 
         globalVsPersonalizedPageRank = computeGlobalVsPersonalized(globalPageRankScore, pageRankScore);
         globalVsPersonalizedCheiRank = computeGlobalVsPersonalized(globalCheiRankScore, cheiRankScore);
 
-        finalRank = computeFinalRank(globalVsPersonalizedPageRank,globalVsPersonalizedCheiRank);
+        finalRank = computeFinalRank(globalVsPersonalizedPageRank, globalVsPersonalizedCheiRank);
 
     }
 
@@ -436,11 +406,11 @@ public class MetaboRank extends AbstractMet4jApplication {
         Comparator<String> compWithTieBreaking = new Comparator<String>() {
             @Override
             public int compare(String s1, String s2) {
-                int result = Math.min(pr.get(s1),cr.get(s1)) - Math.min(pr.get(s2),cr.get(s2));
+                int result = Math.min(pr.get(s1), cr.get(s1)) - Math.min(pr.get(s2), cr.get(s2));
                 if (result == 0)
-                    result = Math.max(pr.get(s1),cr.get(s1)) - Math.max(pr.get(s2),cr.get(s2));
+                    result = Math.max(pr.get(s1), cr.get(s1)) - Math.max(pr.get(s2), cr.get(s2));
                 if (result == 0)
-                    result = pr.get(s1)-pr.get(s2);
+                    result = pr.get(s1) - pr.get(s2);
                 return result;
             }
         };
@@ -493,7 +463,7 @@ public class MetaboRank extends AbstractMet4jApplication {
                     double globalVsPersoCR = globalVsPersonalizedCheiRank.get(compound.getId());
                     bw.write(df.format(globalVsPersoPR) + "\t");
                     bw.write(df.format(globalVsPersoCR) + "\t");
-                    bw.write(Integer.toString(1+finalRank.get(compound.getId())));
+                    bw.write(Integer.toString(1 + finalRank.get(compound.getId())));
                 } else {
                     bw.write("NA\tNA\tNA");
                 }

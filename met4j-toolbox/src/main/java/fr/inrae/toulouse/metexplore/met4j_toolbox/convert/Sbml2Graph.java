@@ -105,7 +105,6 @@ public class Sbml2Graph extends AbstractMet4jApplication {
                 ExportGraph.toTab(graph, this.outputPath);
             }
         }
-        return;
     }
 
     @Override
@@ -116,7 +115,7 @@ public class Sbml2Graph extends AbstractMet4jApplication {
     @Override
     public String getLongDescription() {
         return this.getShortDescription() + "\n" +
-                "The graph can be either a compound graph or a bipartite graph, and can be exported in gml or tabulated file format.";
+                "The graph can be either a compound graph, a reaction graph or a bipartite graph, and can be exported in gml or tabulated file format.";
     }
 
     @Override
@@ -126,7 +125,7 @@ public class Sbml2Graph extends AbstractMet4jApplication {
 
     @Override
     public Set<Doi> getDois() {
-        return Set.of();
+        return Set.of(new Doi("https://doi.org/10.1109/tcbb.2008.79"));
     }
 
 }

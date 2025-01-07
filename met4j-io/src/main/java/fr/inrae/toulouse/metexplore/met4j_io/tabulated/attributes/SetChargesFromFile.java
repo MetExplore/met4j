@@ -129,7 +129,7 @@ public class SetChargesFromFile extends AbstractSetAttributesFromFile {
         }
 
 
-        System.err.println(n + " attributions");
+        System.out.println(n + " attributions");
 
         return flag;
 

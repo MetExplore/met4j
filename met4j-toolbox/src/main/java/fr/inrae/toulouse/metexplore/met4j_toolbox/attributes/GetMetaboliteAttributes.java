@@ -36,29 +36,82 @@
 
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetPathwaysFromFile;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Set;
 
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.*;
+
 /**
- * <p>SbmlSetPathwaysFromFile class.</p>
+ * <p>SbmlToMetaboliteTable class.</p>
  *
  * @author lcottret
  * @version $Id: $Id
  */
-public class SbmlSetPathwaysFromFile extends AbstractSbmlSetReaction {
+public class GetMetaboliteAttributes extends AbstractMet4jApplication {
 
-    @ParameterType(name= EnumParameterTypes.Integer)
-    @Option(name="-cp", usage="[2] number of the column where are the pathways")
-    public int colp=2;
+    @ParameterType(name= EnumParameterTypes.InputFile)
+    @Format(name= EnumFormats.Sbml)
+    @Option(name = "-i", usage = "Input SBML file", required = true)
+    public String sbml;
 
-    @Option(name="-sep", usage="[|] Separator of pathways in the tabulated file")
-    public String sep = "|";
+    @ParameterType(name= EnumParameterTypes.OutputFile)
+    @Format(name= EnumFormats.Tsv)
+    @Option(name = "-o", usage = "Output file", required=true)
+    public String outputFile;
+
+    /**
+     * <p>main.</p>
+     *
+     * @param args an array of {@link java.lang.String} objects.
+     */
+    public static void main(String[] args) {
+        GetMetaboliteAttributes app = new GetMetaboliteAttributes();
+
+        app.parseArguments(args);
+
+        app.run();
+    }
+
+    /**
+     * <p>run.</p>
+     */
+    public void run() {
+
+        BioNetwork network = this.readSbml();
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(this.outputFile, false))) {
+
+            writer.println("id\tname\tformula\tcharge\tsmiles\tinchi");
+
+            for (BioMetabolite metabolite : network.getMetabolitesView()) {
+                writer.println(metabolite.getId() + "\t" + metabolite.getName() + "\t"
+                        +metabolite.getChemicalFormula() + "\t"+metabolite.getCharge()+"\t"+metabolite.getSmiles()+"\t"+metabolite.getInchi());
+            }
+
+        } catch (IOException e) {
+            System.err.println("Error while printing metabolites");
+            System.exit(1);
+        }
+
+
+    }
+
+    BioNetwork readSbml() {
+        return IOUtils.readSbml(this.sbml, NOTES, FBC, ANNOTATIONS);
+    }
 
 
     /** {@inheritDoc} */
@@ -70,68 +123,17 @@ public class SbmlSetPathwaysFromFile extends AbstractSbmlSetReaction {
     /** {@inheritDoc} */
     @Override
     public String getLongDescription() {
-        return this.getShortDescription()+"\n" +
-                this.setDescription+"\n" +
-                "Pathways will be written in the SBML file in two ways:" +
-                "- as reaction note (e.g. <p>SUBSYSTEM: purine_biosynthesis</p>)" +
-                "- as SBML group:\n" +
-                        "<groups:group groups:id=\"purine_biosynthesis\" groups:kind=\"classification\" groups:name=\"purine_biosynthesis\">\n" +
-                        " <groups:listOfMembers>\n" +
-                        "  <groups:member groups:idRef=\"R_GLUPRT\"/>\n" +
-                        "  <groups:member groups:idRef=\"R_RNDR1b\"/>\n...\n";
+        return this.getShortDescription();
     }
 
     /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Set pathway to reactions in a network from a tabulated file containing the reaction ids and the pathways";
+        return "Create a tabulated file with metabolite attributes from a SBML file";
     }
 
     @Override
     public Set<Doi> getDois() {
         return Set.of();
     }
-
-    /**
-     * <p>main.</p>
-     *
-     * @param args an array of {@link java.lang.String} objects.
-     */
-    public static void main(String[] args) {
-
-        SbmlSetPathwaysFromFile app = new SbmlSetPathwaysFromFile();
-
-        app.parseArguments(args);
-
-        app.run();
-
-    }
-
-    private void run() {
-
-        BioNetwork bn = this.readSbml();
-
-        SetPathwaysFromFile sgff = new SetPathwaysFromFile(this.colid-1, this.colp-1, bn, this.tab,
-                this.c, this.nSkip, this.p, false, this.sep);
-
-        Boolean flag = true;
-
-        try {
-            flag = sgff.setAttributes();
-        } catch (Exception e) {
-            flag=false;
-        }
-
-        if(!flag) {
-            System.err.println("Error in "+this.getLabel());
-            System.exit(1);
-        }
-
-
-        this.writeSbml(bn);
-
-    }
-
-
-
 }

@@ -20,3 +20,5 @@ met4j-core/src/main/java/fr/inra/toulouse/metexplore/met4j_core/Test\.java
 
 dependency-reduced-pom.xml
 *.sif
+
+*.versionsBackup

@@ -4,8 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Next Release
+## 2.0.0
 
+[met4j-toolbox] harmonization of the apps' parameters and names (check for compatibility issues)
+[met4j-toolbox] improved documentation
+[met4j-toolbox] add citation information to apps
+[met4j-toolbox][reconstruction] add a new app to create community networks
+
+[met4j-core] add support for meta-networks (community networks, holobionts, multi-organ model etc.)
+
+[met4j-graph] Improve graph export:
+    - added a utility class for apps exporting graphs, removing duplicated code
+    - parameterizable export for handling custom attributes
+    - harmonization and support for all graph types
+    - node table export in apps
+    - tabulated as default (check for compatibility issues)
 [met4j-io] Fix protein/gene names in FBC parser
 
 

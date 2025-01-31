@@ -35,9 +35,9 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core.compressed;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * <p>PathEdge class.</p>

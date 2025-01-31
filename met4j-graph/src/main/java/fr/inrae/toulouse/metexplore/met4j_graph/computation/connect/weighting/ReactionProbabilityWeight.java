@@ -35,14 +35,14 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**

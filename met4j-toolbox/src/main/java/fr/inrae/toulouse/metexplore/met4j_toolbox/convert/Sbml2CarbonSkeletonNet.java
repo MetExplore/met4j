@@ -44,12 +44,10 @@ import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.RP
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.ReactionProbabilityWeight;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.EdgeMerger;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.VertexContraction;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
-import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.GraphOutPut;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
@@ -64,7 +62,7 @@ import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Enu
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.*;
 
-public class Sbml2CarbonSkeletonNet extends AbstractMet4jApplication {
+public class Sbml2CarbonSkeletonNet extends AbstractMet4jApplication implements GraphOutPut{
 
     @Format(name = Sbml)
     @ParameterType(name = InputFile)
@@ -75,11 +73,6 @@ public class Sbml2CarbonSkeletonNet extends AbstractMet4jApplication {
     @ParameterType(name = InputFile)
     @Option(name = "-g", usage = "input GSAM file", required = true)
     public String inputAAM = null;
-
-    @Format(name = Txt)
-    @ParameterType(name = OutputFile)
-    @Option(name = "-o", usage = "output Graph file (Gml or Matrix format, see -am parameter))", required = true)
-    public String outputPath = null;
 
     @Option(name = "-ks", aliases = {"--keepSingleCarbon"}, usage = "keep edges involving single-carbon compounds, such as CO2 (requires formulas in SBML)")
     public boolean keepSingleCarbon = false;
@@ -99,8 +92,14 @@ public class Sbml2CarbonSkeletonNet extends AbstractMet4jApplication {
     @Option(name = "-tp", aliases = {"--transitionproba"}, usage = "set transition probability as weight")
     public boolean computeWeight = false;
 
-    @Option(name = "-am", aliases = {"--asmatrix"}, usage = "export as matrix (implies simple graph conversion). Default export as GML file")
-    public boolean asMatrix = false;
+    @Option(name = "-f", aliases = {"--format"}, usage = "Format of the exported graph" +
+            "Tabulated edge list by default (source id \t edge type \t target id). Other options include GML, JsonGraph, and tabulated node list (label \t node id \t node type).")
+    public GraphOutPut.formatEnum format = GraphOutPut.formatEnum.tab;
+
+    @Format(name = Txt)
+    @ParameterType(name = OutputFile)
+    @Option(name = "-o", usage = "output file: path to the tabulated file where the resulting network will be exported", required = true)
+    public String output;
 
     @Option(name = "-main", aliases = {"--onlyMainTransition"}, usage = "Compute RPAIRS-like tags and keep only main transitions for each reaction")
     public boolean main = false;
@@ -214,15 +213,11 @@ public class Sbml2CarbonSkeletonNet extends AbstractMet4jApplication {
             System.out.println(" Done.");
         }
 
+        System.out.println(graph.vertexSet().size()+ " nodes and "+graph.edgeSet().size()+" edges created.");
+
         //export graph
         System.out.print("Exporting...");
-        if (asMatrix) {
-            ComputeAdjacencyMatrix adjBuilder = new ComputeAdjacencyMatrix(graph);
-            if (!computeWeight) adjBuilder.parallelEdgeWeightsHandling((u, v) -> Math.max(u, v));
-            ExportMatrix.toCSV(this.outputPath, adjBuilder.getadjacencyMatrix());
-        } else {
-            ExportGraph.toGmlWithAttributes(graph, this.outputPath, true);
-        }
+        this.exportGraph(graph, format, output, computeWeight, "Shared_Carbons");
         System.out.println(" Done.");
     }
 

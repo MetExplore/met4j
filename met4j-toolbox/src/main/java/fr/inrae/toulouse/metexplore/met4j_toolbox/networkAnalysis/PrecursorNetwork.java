@@ -8,9 +8,9 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.GraphOutPut;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
@@ -22,11 +22,12 @@ import java.io.IOException;
 import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Tsv;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Txt;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 
-public class PrecursorNetwork extends AbstractMet4jApplication {
+public class PrecursorNetwork extends AbstractMet4jApplication implements GraphOutPut{
 
     //arguments
     @Format(name = Sbml)
@@ -39,11 +40,6 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
     @Option(name = "-t", aliases = {"--targets"}, usage = "input target file: tabulated file containing node of interest ids", required = true)
     public String targetsFilePath;
 
-    @Format(name = Txt) // Because the output is a tabulated file or a GML file
-    @ParameterType(name = OutputFile)
-    @Option(name = "-o", usage = "output file: path to the .gml file where the results precursor network will be exported", required = true)
-    public String output;
-
     //options
     @ParameterType(name = InputFile)
     @Format(name = EnumFormats.Txt)
@@ -54,8 +50,14 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
     @Option(name = "-ir", aliases = {"--ignore"}, usage = "an optional file containing list of reaction to ignore (forbid inclusion in scope)")
     public String reactionToIgnoreFile = null;
 
-    @Option(name = "-tab", aliases = {"--asTable"}, usage = "export in tabulated file instead of .GML")
-    public Boolean asTable = false;
+    @Option(name = "-f", aliases = {"--format"}, usage = "Format of the exported graph" +
+            "Tabulated edge list by default (source id \t edge type \t target id). Other options include GML, JsonGraph, and tabulated node list (label \t node id \t node type).")
+    public GraphOutPut.formatEnum format = GraphOutPut.formatEnum.tab;
+
+    @Format(name = Txt)
+    @ParameterType(name = OutputFile)
+    @Option(name = "-o", usage = "output file: path to the tabulated file where the resulting network will be exported", required = true)
+    public String output;
 
     public static void main(String[] args) {
         PrecursorNetwork app = new PrecursorNetwork();
@@ -109,11 +111,7 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
             fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.PrecursorNetwork precursorComp =
                     new fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.PrecursorNetwork(graph, bootstraps, targets, forbidden);
             BipartiteGraph precursorNet = precursorComp.getPrecursorNetwork();
-            if (asTable) {
-                ExportGraph.toTab(precursorNet, output);
-            } else {
-                ExportGraph.toGml(precursorNet, output);
-            }
+            this.exportGraph(precursorNet, format, output);
         }
     }
 

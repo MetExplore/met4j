@@ -35,13 +35,12 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core;
 
-import java.util.*;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import java.util.*;
 
 /**
  * A utility class used to filter list of paths, according to various criterion such as length, weight, presence/absence of a given vertex or edges ...

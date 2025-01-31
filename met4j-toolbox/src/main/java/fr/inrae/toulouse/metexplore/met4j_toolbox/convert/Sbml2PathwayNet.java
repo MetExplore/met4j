@@ -44,14 +44,13 @@ import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.Cu
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.UnweightedPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.WeightsFromFile;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.EdgeMerger;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraphEdge;
+import fr.inrae.toulouse.metexplore.met4j_graph.io.AttributeExporter;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
-import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.GraphOutPut;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
@@ -61,14 +60,12 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.GROUPS;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.getMetabolitesFromFile;
 
-public class Sbml2PathwayNet extends AbstractMet4jApplication {
+public class Sbml2PathwayNet extends AbstractMet4jApplication implements GraphOutPut{
 
     @Format(name = EnumFormats.Sbml)
     @ParameterType(name = EnumParameterTypes.InputFile)
@@ -99,8 +96,11 @@ public class Sbml2PathwayNet extends AbstractMet4jApplication {
     @Option(name = "-ncw", aliases = {"--connectorWeights"}, usage = "set number of connecting compounds as weight", forbids = {"-cw"})
     public Boolean connectors = false;
 
-    @Option(name = "-am", aliases = {"--asmatrix"}, usage = "export as matrix (implies simple graph conversion). Default export as GML file")
-    public boolean asMatrix = false;
+    @Option(name = "-f", aliases = {"--format"}, usage = "Format of the exported graph" +
+            "Tabulated edge list by default (source id \t edge type \t target id). Other options include GML, JsonGraph, and tabulated node list (label \t node id \t node type).")
+    public GraphOutPut.formatEnum format = GraphOutPut.formatEnum.tab;
+
+    private BioNetwork finalNetwork;
 
     public static void main(String[] args) {
 
@@ -154,17 +154,19 @@ public class Sbml2PathwayNet extends AbstractMet4jApplication {
 
         //export graph
         System.out.print("Exporting...");
-        if (asMatrix) {
-            ComputeAdjacencyMatrix adjBuilder = new ComputeAdjacencyMatrix(graph);
-            ExportMatrix.toCSV(this.outputPath, adjBuilder.getadjacencyMatrix());
-        } else {
-            if (!onlySourcesAndSinks) EdgeMerger.undirectedMergeEdgesWithOverride(graph, null);
-            BioNetwork finalNetwork = network;
-            Map<BioPathway, Integer> size = graph.vertexSet().stream()
-                    .collect(Collectors.toMap(p -> p, p -> finalNetwork.getMetabolitesFromPathway(p).size()));
-            ExportGraph.toGmlWithAttributes(graph, this.outputPath, size, "size", true);
-        }
+        finalNetwork = network;
+        if(format != formatEnum.matrix && !onlySourcesAndSinks) EdgeMerger.undirectedMergeEdgesWithOverride(graph,null);
+        this.exportGraph(graph, format, outputPath);
         System.out.println(" Done.");
+    }
+
+    @Override
+    public AttributeExporter getAttributeExporter() {
+        return new AttributeExporter()
+                .exportName()
+                .exportType()
+                .exportReversible()
+                .exportNodeAttribute("size", p -> finalNetwork.getMetabolitesFromPathway((BioPathway) p).size());
     }
 
     @Override

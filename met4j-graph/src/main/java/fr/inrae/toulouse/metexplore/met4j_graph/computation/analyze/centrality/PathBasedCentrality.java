@@ -35,18 +35,17 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.ShortestPath;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.ShortestPath;
-
-import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 
 /**
  * The Class used to compute several centrality measure and other classical vertex' global measures

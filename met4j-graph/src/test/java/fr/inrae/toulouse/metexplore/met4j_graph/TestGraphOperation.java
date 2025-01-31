@@ -35,18 +35,18 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph;
 
-import static org.junit.Assert.*;
-
-import java.util.Arrays;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.GraphOperation;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *  Test {@link GraphOperation}

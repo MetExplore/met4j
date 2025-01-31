@@ -35,17 +35,12 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.connect;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.heuristic.AStarHeuristic;
-
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+
+import java.util.*;
 
 /**
  * implementation of the A* algorithm (shortest path with estimated remaining distance computed at each step)

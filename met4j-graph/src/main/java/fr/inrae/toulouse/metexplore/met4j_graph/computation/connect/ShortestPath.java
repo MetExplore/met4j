@@ -35,8 +35,7 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.connect;
 
-import java.util.*;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPathUtils;
@@ -44,12 +43,12 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compressed.CompressedGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compressed.PathEdge;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
-import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ManyToManyShortestPathsAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraManyToManyShortestPaths;
 import org.jgrapht.graph.AsUndirectedGraph;
+
+import java.util.*;
 
 /**
  * Class to use the shortest paths in a graph

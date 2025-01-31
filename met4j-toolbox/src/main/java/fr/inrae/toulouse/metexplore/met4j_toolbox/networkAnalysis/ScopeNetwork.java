@@ -9,9 +9,9 @@ import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.ScopeCompoun
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.GraphOutPut;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
@@ -24,11 +24,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Tsv;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Txt;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 
-public class ScopeNetwork extends AbstractMet4jApplication {
+public class ScopeNetwork extends AbstractMet4jApplication implements GraphOutPut {
 
     //arguments
     @Format(name = Sbml)
@@ -40,11 +41,6 @@ public class ScopeNetwork extends AbstractMet4jApplication {
     @Format(name = EnumFormats.Txt)
     @Option(name = "-s", aliases = {"--seeds"}, usage = "input seeds file: tabulated file containing node of interest ids", required = true)
     public String seedsFilePath;
-
-    @Format(name = Txt) // Because the output is a tabulated file or a GML file
-    @ParameterType(name = OutputFile)
-    @Option(name = "-o", usage = "output file: path to the .gml file or tabulated file (see -asTable parameter) where the results scope network will be exported", required = true)
-    public String output;
 
     //options
     @ParameterType(name = InputFile)
@@ -63,8 +59,16 @@ public class ScopeNetwork extends AbstractMet4jApplication {
     @Option(name = "-t", aliases = {"--trace"}, usage = "trace inclusion step index for each node in output")
     public boolean trace = false;
 
-    @Option(name = "-tab", aliases = {"--asTable"}, usage = "Export in tabulated file instead of .GML")
-    public Boolean asTable = false;
+    @Option(name = "-f", aliases = {"--format"}, usage = "Format of the exported graph" +
+            "Tabulated edge list by default (source id \t edge type \t target id). Other options include GML, JsonGraph, and tabulated node list (label \t node id \t node type).")
+    public GraphOutPut.formatEnum format = GraphOutPut.formatEnum.tab;
+
+    @Format(name = Txt)
+    @ParameterType(name = OutputFile)
+    @Option(name = "-o", usage = "output file: path to the tabulated file where the resulting network will be exported", required = true)
+    public String output;
+
+
 
     public static void main(String[] args) {
         ScopeNetwork app = new ScopeNetwork();
@@ -119,15 +123,8 @@ public class ScopeNetwork extends AbstractMet4jApplication {
             if (includeSides) scopeComp.includeBootstrapsInScope();
             if (trace) scopeComp.trace();
             BipartiteGraph scope = scopeComp.getScopeNetwork();
-            if (asTable) {
-                ExportGraph.toTab(scope, output);
-            } else {
-                if (trace) {
-                    ExportGraph.toGmlWithAttributes(scope, output, scopeComp.getExpansionSteps(), "step");
-                } else {
-                    ExportGraph.toGml(scope, output);
-                }
-            }
+            //export sub-network
+            this.exportGraph(scope, format, output, trace, "step");
         }
 
     }

@@ -35,10 +35,11 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.io;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
@@ -47,7 +48,11 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraphEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.CompoundEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 
 /**

@@ -36,21 +36,17 @@
 
 package fr.inrae.toulouse.metexplore.met4j_graph;
 
-import static org.junit.Assert.*;
-
-import java.util.HashMap;
-import java.util.HashSet;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.CompoundEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import java.util.HashMap;
+import java.util.HashSet;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TestReactionGraph {
 

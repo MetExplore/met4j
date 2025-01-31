@@ -36,11 +36,9 @@
 package fr.inrae.toulouse.metexplore.met4j_graph.core.pathway;
 
 
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
-
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
 
 /**
  * The Class PathwayGraph allow to build a directed graph representing connections between pathways in a bionetwork.

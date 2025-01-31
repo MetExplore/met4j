@@ -1,16 +1,18 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.convert;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.*;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBCParser;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.GroupPathwayParser;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.*;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.GraphOutPut;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
@@ -19,21 +21,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
-import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 
-public class Sbml2Graph extends AbstractMet4jApplication {
+public class Sbml2Graph extends AbstractMet4jApplication implements GraphOutPut {
 
     @Format(name = Sbml)
     @ParameterType(name = InputFile)
     @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
-
-    @Format(name = EnumFormats.Txt)
-    @ParameterType(name = OutputFile)
-    @Option(name = "-o", usage = "output Graph file", required = true)
-    public String outputPath = null;
 
     @Option(name = "-b", aliases = {"--bipartite"}, usage = "create bipartite graph", forbids = {"-c", "-r"})
     public Boolean bipartite = false;
@@ -44,13 +41,16 @@ public class Sbml2Graph extends AbstractMet4jApplication {
     @Option(name = "-r", aliases = {"--reaction"}, usage = "create reaction graph", forbids = {"-c", "-b"})
     public Boolean reaction = false;
 
-    @Option(name = "-tab", usage = "export in tabulated file", forbids = {"-gml"})
-    public Boolean tab = false;
+    @Option(name = "-f", aliases = {"--format"}, usage = "Format of the exported graph" +
+            "Tabulated edge list by default (source id \t edge type \t target id). Other options include GML, JsonGraph, and tabulated node list (label \t node id \t node type).")
+    public GraphOutPut.formatEnum format = GraphOutPut.formatEnum.tab;
 
-    @Option(name = "-gml", usage = "export in GML file", forbids = {"-tab"})
-    public Boolean gml = true;
+    @Format(name = Txt)
+    @ParameterType(name = OutputFile)
+    @Option(name = "-o", usage = "output file: path to the tabulated file where the resulting network will be exported", required = true)
+    public String output;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         Sbml2Graph app = new Sbml2Graph();
 
@@ -61,7 +61,7 @@ public class Sbml2Graph extends AbstractMet4jApplication {
     }
 
 
-    public void run() {
+    public void run() throws IOException {
         JsbmlReader reader = new JsbmlReader(this.inputPath);
         ArrayList<PackageParser> pkgs = new ArrayList<>(Arrays.asList(
                 new NotesParser(false), new FBCParser(), new GroupPathwayParser()));
@@ -77,34 +77,21 @@ public class Sbml2Graph extends AbstractMet4jApplication {
         }
 
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
-
+        BioGraph graph = null;
         if (bipartite || reaction) {
             compound = false;
         }
-        if (tab) gml = false;
 
         if (compound) {
-            CompoundGraph graph = builder.getCompoundGraph();
-            if (gml) {
-                ExportGraph.toGml(graph, this.outputPath);
-            } else {
-                ExportGraph.toTab(graph, this.outputPath);
-            }
+            graph = builder.getCompoundGraph();
         } else if (bipartite) {
-            BipartiteGraph graph = builder.getBipartiteGraph();
-            if (gml) {
-                ExportGraph.toGml(graph, this.outputPath);
-            } else {
-                ExportGraph.toTab(graph, this.outputPath);
-            }
+            graph = builder.getBipartiteGraph();
         } else {
-            ReactionGraph graph = builder.getReactionGraph();
-            if (gml) {
-                ExportGraph.toGml(graph, this.outputPath);
-            } else {
-                ExportGraph.toTab(graph, this.outputPath);
-            }
+            graph = builder.getReactionGraph();
         }
+
+        this.exportGraph(graph, format, output);
+        return;
     }
 
     @Override

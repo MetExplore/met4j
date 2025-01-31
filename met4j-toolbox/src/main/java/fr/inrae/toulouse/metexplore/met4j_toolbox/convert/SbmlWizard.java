@@ -31,16 +31,26 @@ public class SbmlWizard extends AbstractMet4jApplication {
 
     @ParameterType(name = EnumParameterTypes.InputFile)
     @Format(name = EnumFormats.Txt)
-    @Option(name = "-rc", usage = "file containing identifiers of compounds to remove from the metabolic network")
+    @Option(name = "-rc", aliases = {"--removeC"}, usage = "file containing identifiers of compounds to remove from the metabolic network")
     public String inputSide = null;
+
+    @ParameterType(name = EnumParameterTypes.InputFile)
+    @Format(name = EnumFormats.Txt)
+    @Option(name = "-kc", aliases = {"--retainC"}, usage = "file containing identifiers of compounds to keep from the metabolic network")
+    public String toKeepC = null;
 
     @Option(name = "-ric", aliases = {"--noIsolated"}, usage = "remove isolated compounds (not involved in any reaction)")
     public boolean removeIsolated;
 
     @ParameterType(name = EnumParameterTypes.InputFile)
     @Format(name = EnumFormats.Txt)
-    @Option(name = "-rr", usage = "file containing identifiers of reactions to remove from the metabolic network")
+    @Option(name = "-rr",aliases = {"--removeR"}, usage = "file containing identifiers of reactions to remove from the metabolic network")
     public String inputReactions = null;
+
+    @ParameterType(name = EnumParameterTypes.InputFile)
+    @Format(name = EnumFormats.Txt)
+    @Option(name = "-kr", aliases = {"--retainR"}, usage = "file containing identifiers of reactions to keep from the metabolic network")
+    public String toKeepR = null;
 
     @ParameterType(name = EnumParameterTypes.OutputFile)
     @Format(name = EnumFormats.Sbml)
@@ -89,6 +99,31 @@ public class SbmlWizard extends AbstractMet4jApplication {
         System.out.println("\tprotein:\t"+network.getProteinsView().size());
         System.out.println("\tpathway:\t"+network.getPathwaysView().size()+"\n\n");
 
+
+        //retain compounds
+        if (toKeepC != null) {
+            BioCollection<BioMetabolite> toKeep = new BioCollection<>();
+            System.out.println("retaining compounds...");
+            Mapper<BioMetabolite> cmapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
+
+            try {
+                toKeep = cmapper.map(toKeepC);
+            } catch (IOException e) {
+                System.err.println("Error while reading the compounds to keep file");
+                System.err.println(e.getMessage());
+                System.exit(1);
+            }
+            if (cmapper.getNumberOfSkippedEntries() > 0)
+                System.out.println(cmapper.getNumberOfSkippedEntries() + " compounds not found in network.");
+
+            for(BioMetabolite c : network.getMetabolitesView()){
+                if(!toKeep.contains(c)){
+                    network.removeOnCascade(c);
+                }
+            }
+            System.out.println(toKeep.size() + " compounds retained in network.");
+        }
+
         //side compound removal [optional]
         if (inputSide != null) {
             System.out.println("removing side compounds...");
@@ -99,6 +134,30 @@ public class SbmlWizard extends AbstractMet4jApplication {
                 network.removeOnCascade(sc);
             }
             System.out.println(sideCpds.size() + " side compounds removed from network.");
+        }
+
+        //retain reactions
+        if(toKeepR != null){
+            BioCollection<BioReaction> toKeep = new BioCollection<>();
+            System.out.println("retaining reactions...");
+            Mapper<BioReaction> rmapper = new Mapper<>(network, BioNetwork::getReactionsView).skipIfNotFound();
+
+            try {
+                toKeep = rmapper.map(toKeepR);
+            } catch (IOException e) {
+                System.err.println("Error while reading the reactions to keep file");
+                System.err.println(e.getMessage());
+                System.exit(1);
+            }
+            if (rmapper.getNumberOfSkippedEntries() > 0)
+                System.out.println(rmapper.getNumberOfSkippedEntries() + " reactions not found in network.");
+
+            for(BioReaction r : network.getReactionsView()){
+                if(!toKeep.contains(r)){
+                    network.removeOnCascade(r);
+                }
+            }
+            System.out.println(toKeep.size() + " reactions retained in network.");
         }
 
         //irrelevant reaction removal [optional]

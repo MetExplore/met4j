@@ -35,11 +35,11 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.utils;
 
-import java.io.Serializable;
-import java.util.*;
-
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
+
+import java.io.Serializable;
+import java.util.*;
 
 
 /**

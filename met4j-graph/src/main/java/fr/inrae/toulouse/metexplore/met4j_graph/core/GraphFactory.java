@@ -35,14 +35,9 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+
+import java.util.*;
 
 /**
  * <p>Abstract GraphFactory class.</p>

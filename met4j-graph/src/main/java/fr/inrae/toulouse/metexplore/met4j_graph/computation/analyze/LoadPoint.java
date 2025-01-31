@@ -35,23 +35,16 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-
-
-
-
-
-
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.KShortestPath;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.PathBasedCentrality;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.KShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Class to compute load points, i.e. hotspot in metabolic networks.

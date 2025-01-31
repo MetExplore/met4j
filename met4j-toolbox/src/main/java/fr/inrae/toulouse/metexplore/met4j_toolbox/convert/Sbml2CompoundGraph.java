@@ -43,13 +43,14 @@ import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.*;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.EdgeMerger;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.VertexContraction;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.GraphOutPut;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
@@ -61,11 +62,14 @@ import org.kohsuke.args4j.Option;
 import java.util.HashSet;
 import java.util.Set;
 
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Tsv;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Txt;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.FBC;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.NOTES;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.getMetabolitesFromFile;
 
-public class Sbml2CompoundGraph extends AbstractMet4jApplication {
+public class Sbml2CompoundGraph extends AbstractMet4jApplication implements GraphOutPut {
 
     @Format(name = EnumFormats.Sbml)
     @ParameterType(name = EnumParameterTypes.InputFile)
@@ -76,11 +80,6 @@ public class Sbml2CompoundGraph extends AbstractMet4jApplication {
     @Format(name = EnumFormats.Txt)
     @Option(name = "-sc", usage = "input Side compound file")
     public String inputSide = null;
-
-    @ParameterType(name = EnumParameterTypes.OutputFile)
-    @Format(name = EnumFormats.Txt)
-    @Option(name = "-o", usage = "output Graph file (GML or matrix format, see -am parameter)", required = true)
-    public String outputPath = null;
 
     @Option(name = "-mc", aliases = {"--mergecomp"}, usage = "merge compartments. " +
             "Use names if consistent and unambiguous across compartments, or identifiers if compartment suffix is present (id in form \"xxx_y\" with xxx as base identifier and y as compartment label).")
@@ -107,8 +106,14 @@ public class Sbml2CompoundGraph extends AbstractMet4jApplication {
     @Option(name = "-tp", aliases = {"--transitionproba"}, usage = "set weight as random walk transition probability, normalized by reaction")
     public boolean computeWeight = false;
 
-    @Option(name = "-am", aliases = {"--asmatrix"}, usage = "export as matrix (implies simple graph conversion). Default export as GML file")
-    public boolean asMatrix = false;
+    @Option(name = "-f", aliases = {"--format"}, usage = "Format of the exported graph" +
+            "Tabulated edge list by default (source id \t edge type \t target id). Other options include GML, JsonGraph, and tabulated node list (label \t node id \t node type).")
+    public GraphOutPut.formatEnum format = GraphOutPut.formatEnum.tab;
+
+    @Format(name = Txt)
+    @ParameterType(name = OutputFile)
+    @Option(name = "-o", usage = "output file: path to the tabulated file where the resulting network will be exported", required = true)
+    public String output;
 
     public static void main(String[] args) {
 
@@ -207,14 +212,15 @@ public class Sbml2CompoundGraph extends AbstractMet4jApplication {
 
         //export graph
         System.out.print("Exporting...");
-        if (asMatrix) {
-            ComputeAdjacencyMatrix adjBuilder = new ComputeAdjacencyMatrix(graph);
-            if (!computeWeight) adjBuilder.parallelEdgeWeightsHandling((u, v) -> Math.max(u, v));
-            ExportMatrix.toCSV(this.outputPath, adjBuilder.getadjacencyMatrix());
-        } else {
-            ExportGraph.toGmlWithAttributes(graph, this.outputPath, true);
-        }
+        this.exportGraph(graph, format, output, computeWeight, "weight");
         System.out.println(" Done.");
+    }
+
+    @Override
+    public void exportToMatrix(BioGraph graph, String outputPath){
+        ComputeAdjacencyMatrix<BioMetabolite, ReactionEdge, CompoundGraph> adjBuilder = new ComputeAdjacencyMatrix<>(graph);
+        if(!computeWeight) adjBuilder.parallelEdgeWeightsHandling(Math::max);
+        ExportMatrix.toCSV(outputPath,adjBuilder.getadjacencyMatrix());
     }
 
     @Override

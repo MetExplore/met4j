@@ -42,7 +42,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class TestVertexContraction {
     public static CompoundGraph g;

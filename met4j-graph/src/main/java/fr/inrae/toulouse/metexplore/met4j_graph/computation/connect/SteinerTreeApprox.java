@@ -35,21 +35,16 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.connect;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.compressed.CompressedGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.compressed.PathEdge;
 import org.jgrapht.alg.spanning.KruskalMinimumSpanningTree;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.compressed.CompressedGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.compressed.PathEdge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import java.util.*;
 
 /**
  * Class to compute approximation of Steiner Tree (minimum cost tree between nodes of interest), using minimum spanning tree

@@ -36,19 +36,18 @@
 
 package fr.inrae.toulouse.metexplore.met4j_graph;
 
-import static org.junit.Assert.*;
-
-import java.util.Set;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
+import java.util.Set;
+
+import static org.junit.Assert.*;
 
 public class TestBipartiteGraph {
 

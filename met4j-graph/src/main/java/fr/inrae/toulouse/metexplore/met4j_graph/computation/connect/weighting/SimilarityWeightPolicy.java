@@ -35,18 +35,18 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting;
 
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
+import fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalSimilarity.FingerprintBuilder;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollections;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.similarity.SimilarityComputor;
-import fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalSimilarity.FingerprintBuilder;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollections;
+
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The Chemical Similarity weighting policy.

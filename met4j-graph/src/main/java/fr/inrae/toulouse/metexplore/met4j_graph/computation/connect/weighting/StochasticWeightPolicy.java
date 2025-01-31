@@ -35,16 +35,16 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-
-import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * The Stochastic weighting policy based on chemical similarity.

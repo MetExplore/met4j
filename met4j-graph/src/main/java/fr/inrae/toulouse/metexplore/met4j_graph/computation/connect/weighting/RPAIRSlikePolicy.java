@@ -5,14 +5,14 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.GraphMeasure;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.GraphFilter;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Weighting policy that mimic RPAIRS's now discontinued tags. Define Main and Side transitions within each reaction.

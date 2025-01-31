@@ -4,7 +4,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;

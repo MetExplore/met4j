@@ -2,31 +2,34 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.ScopeCompounds;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.GraphOutPut;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
-import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Gml;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Tsv;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Txt;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 
-public class ScopeNetwork extends AbstractMet4jApplication {
+public class ScopeNetwork extends AbstractMet4jApplication implements GraphOutPut {
 
     //arguments
     @Format(name = Sbml)
@@ -35,18 +38,13 @@ public class ScopeNetwork extends AbstractMet4jApplication {
     public String sbmlFilePath;
 
     @ParameterType(name = InputFile)
-    @Format(name= EnumFormats.Txt)
+    @Format(name = EnumFormats.Txt)
     @Option(name = "-s", aliases = {"--seeds"}, usage = "input seeds file: tabulated file containing node of interest ids", required = true)
     public String seedsFilePath;
 
-    @Format(name = Gml)
-    @ParameterType(name = OutputFile)
-    @Option(name = "-o", usage = "output file: path to the .gml file where the results scope network will be exported", required = true)
-    public String output;
-
     //options
     @ParameterType(name = InputFile)
-    @Format(name= EnumFormats.Txt)
+    @Format(name = EnumFormats.Txt)
     @Option(name = "-sc", aliases = {"--sides"}, usage = "an optional file containing list of ubiquitous side compounds to be considered available by default but ignored during expansion")
     public String sideCompoundFile = null;
 
@@ -54,17 +52,25 @@ public class ScopeNetwork extends AbstractMet4jApplication {
     public boolean includeSides = false;
 
     @ParameterType(name = InputFile)
-    @Format(name= EnumFormats.Txt)
+    @Format(name = EnumFormats.Txt)
     @Option(name = "-ir", aliases = {"--ignore"}, usage = "an optional file containing list of reaction to ignore (forbid inclusion in scope")
     public String reactionToIgnoreFile = null;
 
     @Option(name = "-t", aliases = {"--trace"}, usage = "trace inclusion step index for each node in output")
     public boolean trace = false;
 
-    @Option(name = "-tab", aliases = {"--asTable"}, usage = "Export in tabulated file instead of .GML")
-    public Boolean asTable = false;
+    @Option(name = "-f", aliases = {"--format"}, usage = "Format of the exported graph" +
+            "Tabulated edge list by default (source id \t edge type \t target id). Other options include GML, JsonGraph, and tabulated node list (label \t node id \t node type).")
+    public GraphOutPut.formatEnum format = GraphOutPut.formatEnum.tab;
 
-    public static void main(String[] args)  {
+    @Format(name = Txt)
+    @ParameterType(name = OutputFile)
+    @Option(name = "-o", usage = "output file: path to the tabulated file where the resulting network will be exported", required = true)
+    public String output;
+
+
+
+    public static void main(String[] args) {
         ScopeNetwork app = new ScopeNetwork();
         app.parseArguments(args);
         app.run();
@@ -72,15 +78,11 @@ public class ScopeNetwork extends AbstractMet4jApplication {
 
 
     public void run() {
-        JsbmlReader in = new JsbmlReader(sbmlFilePath);
-        BipartiteGraph graph = null;
-        try {
-            graph = (new Bionetwork2BioGraph(in.read())).getBipartiteGraph();
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+
+        System.out.println("reading SBML...");
+        BioNetwork network = IOUtils.readSbml(sbmlFilePath);
+        BipartiteGraph graph = (new Bionetwork2BioGraph(network)).getBipartiteGraph();
+
         NodeMapping<BioEntity, BipartiteEdge, BipartiteGraph> mapper = new NodeMapping<>(graph).skipIfNotFound();
 
         BioCollection<BioMetabolite> seeds = null;
@@ -95,7 +97,7 @@ public class ScopeNetwork extends AbstractMet4jApplication {
         }
         BioCollection<BioMetabolite> bootstraps = null;
         try {
-            bootstraps = (sideCompoundFile==null) ? new BioCollection<>() : mapper.map(sideCompoundFile).stream()
+            bootstraps = (sideCompoundFile == null) ? new BioCollection<>() : mapper.map(sideCompoundFile).stream()
                     .map(BioMetabolite.class::cast)
                     .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
         } catch (IOException e) {
@@ -105,31 +107,24 @@ public class ScopeNetwork extends AbstractMet4jApplication {
         }
         BioCollection<BioReaction> forbidden = null;
         try {
-            forbidden = (reactionToIgnoreFile==null) ? new BioCollection<>() : mapper.map(reactionToIgnoreFile).stream()
-                        .map(BioReaction.class::cast)
-                        .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
+            forbidden = (reactionToIgnoreFile == null) ? new BioCollection<>() : mapper.map(reactionToIgnoreFile).stream()
+                    .map(BioReaction.class::cast)
+                    .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
         } catch (IOException e) {
             System.err.println("Error while reading the reactions-to-ignore file");
             System.err.println(e.getMessage());
             System.exit(1);
         }
 
-        if(seeds.isEmpty()){
+        if (seeds.isEmpty()) {
             System.err.println("no seed available, computation aborted");
-        }else {
+        } else {
             ScopeCompounds scopeComp = new ScopeCompounds(graph, seeds, bootstraps, forbidden);
             if (includeSides) scopeComp.includeBootstrapsInScope();
             if (trace) scopeComp.trace();
             BipartiteGraph scope = scopeComp.getScopeNetwork();
-            if(asTable){
-                ExportGraph.toTab(scope, output);
-            }else{
-                if (trace) {
-                    ExportGraph.toGmlWithAttributes(scope, output, scopeComp.getExpansionSteps(), "step");
-                } else {
-                    ExportGraph.toGml(scope, output);
-                }
-            }
+            //export sub-network
+            this.exportGraph(scope, format, output, trace, "step");
         }
 
     }
@@ -144,12 +139,18 @@ public class ScopeNetwork extends AbstractMet4jApplication {
         return this.getShortDescription() + "\n" +
                 "The scope of a set of compounds (seed) refer to the maximal metabolic network that can be extended from them," +
                 "where the extension process consist of adding a reaction to the network if and only if all of its substrates " +
-                "are either a seed or a product of a previously added reaction\n" +
-                "For more information, see Handorf, Ebenhöh and Heinrich (2005). *Expanding metabolic networks: scopes of compounds, robustness, and evolution.* Journal of molecular evolution, 61(4), 498-512. (https://doi.org/10.1007/s00239-005-0027-1)";
+                "are either a seed or a product of a previously added reaction";
     }
 
     @Override
     public String getShortDescription() {
         return "Perform a network expansion from a set of compound seeds to create a scope network";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        Set<Doi> dois = new HashSet<>();
+        dois.add(new Doi("https://doi.org/10.1007/s00239-005-0027-1"));
+        return dois;
     }
 }

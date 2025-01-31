@@ -38,18 +38,21 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
+
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.*;
 
 /**
  * <p>SbmlToMetaboliteTable class.</p>
@@ -57,11 +60,11 @@ import java.io.PrintWriter;
  * @author lcottret
  * @version $Id: $Id
  */
-public class SbmlToMetaboliteTable extends AbstractMet4jApplication {
+public class GetMetaboliteAttributes extends AbstractMet4jApplication {
 
     @ParameterType(name= EnumParameterTypes.InputFile)
     @Format(name= EnumFormats.Sbml)
-    @Option(name = "-s", usage = "Sbml file", required = true)
+    @Option(name = "-i", usage = "Input SBML file", required = true)
     public String sbml;
 
     @ParameterType(name= EnumParameterTypes.OutputFile)
@@ -75,7 +78,7 @@ public class SbmlToMetaboliteTable extends AbstractMet4jApplication {
      * @param args an array of {@link java.lang.String} objects.
      */
     public static void main(String[] args) {
-        SbmlToMetaboliteTable app = new SbmlToMetaboliteTable();
+        GetMetaboliteAttributes app = new GetMetaboliteAttributes();
 
         app.parseArguments(args);
 
@@ -107,19 +110,7 @@ public class SbmlToMetaboliteTable extends AbstractMet4jApplication {
     }
 
     BioNetwork readSbml() {
-        JsbmlReader reader = new JsbmlReader(this.sbml);
-
-        BioNetwork bn = null;
-        try {
-            bn = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            e.printStackTrace();
-            System.err.println("Problem while reading the sbml file " + this.sbml);
-            System.exit(1);
-        }
-
-        return bn;
-
+        return IOUtils.readSbml(this.sbml, NOTES, FBC, ANNOTATIONS);
     }
 
 
@@ -141,4 +132,8 @@ public class SbmlToMetaboliteTable extends AbstractMet4jApplication {
         return "Create a tabulated file with metabolite attributes from a SBML file";
     }
 
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
+    }
 }

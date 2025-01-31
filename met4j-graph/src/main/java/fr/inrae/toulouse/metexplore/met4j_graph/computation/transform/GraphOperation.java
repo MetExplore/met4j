@@ -35,10 +35,10 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.transform;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * Provide static method to compute some basic set operation on graph such as union or interesct.

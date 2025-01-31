@@ -39,11 +39,10 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core;
 
-import java.util.HashMap;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import java.util.HashMap;
 
 /**
  * <p>Abstract Edge class.</p>

@@ -36,22 +36,21 @@
 
 package fr.inrae.toulouse.metexplore.met4j_graph;
 
-import static org.junit.Assert.*;
-
-import java.util.Set;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.GraphSampler;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
-import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
+import java.util.Set;
+
+import static org.junit.Assert.*;
 
 public class TestGraphSampler {
 	

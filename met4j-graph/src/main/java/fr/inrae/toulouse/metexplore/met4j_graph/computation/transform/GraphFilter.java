@@ -35,16 +35,15 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.transform;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-
-import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-
-import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 
 

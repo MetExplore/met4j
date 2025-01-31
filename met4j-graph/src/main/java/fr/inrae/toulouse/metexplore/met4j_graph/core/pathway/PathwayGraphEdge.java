@@ -35,10 +35,10 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core.pathway;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 import java.util.stream.Collectors;
 

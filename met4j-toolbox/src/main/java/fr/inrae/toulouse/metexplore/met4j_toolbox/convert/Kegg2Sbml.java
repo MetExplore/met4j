@@ -42,7 +42,11 @@ import fr.inrae.toulouse.metexplore.met4j_io.kegg.Kegg2BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
+
+import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
@@ -54,7 +58,7 @@ public class Kegg2Sbml  extends AbstractMet4jApplication  {
 
     @Format(name= Sbml)
     @ParameterType(name = OutputFile)
-    @Option(name="-sbml", usage="[out.sbml] Out sbml file")
+    @Option(name="-o", usage="[out.sbml] Out sbml file")
     public String sbml = "out.sbml";
 
     @Override
@@ -71,6 +75,11 @@ public class Kegg2Sbml  extends AbstractMet4jApplication  {
     @Override
     public String getShortDescription() {
         return "Build a SBML file from KEGG organism-specific pathways. Uses Kegg API.";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 
     public static void main(String[] args) {
@@ -98,15 +107,7 @@ public class Kegg2Sbml  extends AbstractMet4jApplication  {
 
         BioNetwork network = k.getNetwork();
 
-        JsbmlWriter writer = new JsbmlWriter(this.sbml, network);
-
-        try {
-            writer.write();
-        } catch (Met4jSbmlWriterException e) {
-            System.err.println("Error while writing the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        IOUtils.writeSbml(network, this.sbml);
 
     }
 }

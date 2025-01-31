@@ -35,16 +35,16 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.utils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * Provide graph random sampling method on edges or vertex (with or without scope or defined compartment)

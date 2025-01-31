@@ -36,6 +36,7 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox;
 
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.ResourceURLFilter;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Resources;
 import org.apache.commons.lang3.ClassUtils;
@@ -240,4 +241,10 @@ public class GenerateGalaxyFiles extends AbstractMet4jApplication {
     public String getShortDescription() {
         return "Create the galaxy file tree containing met4j-toolbox app wrappers";
     }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
+    }
+
 }

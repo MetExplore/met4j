@@ -36,12 +36,12 @@
 
 package fr.inrae.toulouse.metexplore.met4j_graph.io;
 
-import java.io.FileWriter;
-import java.io.IOException;
-
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * <p>BioGraph2Sif class.</p>

@@ -37,22 +37,29 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetChargesFromFile;
+import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetPathwaysFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
+import java.util.Set;
+
 /**
- * <p>SbmlSetChargesFromFile class.</p>
+ * <p>SbmlSetPathwaysFromFile class.</p>
  *
  * @author lcottret
  * @version $Id: $Id
  */
-public class SbmlSetChargesFromFile extends AbstractSbmlSetMetabolite {
+public class SetPathways extends AbstractSbmlSetReaction {
 
     @ParameterType(name= EnumParameterTypes.Integer)
-    @Option(name="-cc", usage="[2] number of the column where are the charges")
-    public int colcharge=2;
+    @Option(name="-cp", usage="[2] number of the column where are the pathways")
+    public int colp=2;
+
+    @Option(name="-sep", usage="[|] Separator of pathways in the tabulated file")
+    public String sep = "|";
+
 
     /** {@inheritDoc} */
     @Override
@@ -63,18 +70,22 @@ public class SbmlSetChargesFromFile extends AbstractSbmlSetMetabolite {
     /** {@inheritDoc} */
     @Override
     public String getLongDescription() {
-        return this.getShortDescription()+"\n"+
-                "The charge must be a number. "+ this.setDescription+"\n" +
-                "The charge will be written in the SBML file in two locations:+\n" +
-                "- in the reaction notes (e.g. <p>charge: -1</p>)\n" +
-                "- as fbc attribute (e.g. fbc:charge=\"1\")";
+        return this.getShortDescription()+"\n" +
+                this.setDescription+"\n" +
+                "Pathways will be written in the SBML file in two ways:" +
+                "- as reaction note (e.g. SUBSYSTEM: purine_biosynthesis)" +
+                "- as SBML group (see Group package specifications: https://pmc.ncbi.nlm.nih.gov/articles/PMC5451322/)";
     }
 
     /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Set charge to network metabolites from a tabulated file " +
-                "containing the metabolite ids and the formulas";
+        return "Set pathway to reactions in a network from a tabulated file containing the reaction ids and the pathways";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of(new Doi("https://doi.org/10.1515/jib-2016-290"));
     }
 
     /**
@@ -84,7 +95,7 @@ public class SbmlSetChargesFromFile extends AbstractSbmlSetMetabolite {
      */
     public static void main(String[] args) {
 
-        SbmlSetChargesFromFile app = new SbmlSetChargesFromFile();
+        SetPathways app = new SetPathways();
 
         app.parseArguments(args);
 
@@ -96,15 +107,14 @@ public class SbmlSetChargesFromFile extends AbstractSbmlSetMetabolite {
 
         BioNetwork bn = this.readSbml();
 
-        SetChargesFromFile sgff = new SetChargesFromFile(this.colid-1, this.colcharge-1,
-                bn, this.tab, this.c, this.nSkip, this.p, this.s);
+        SetPathwaysFromFile sgff = new SetPathwaysFromFile(this.colid-1, this.colp-1, bn, this.tab,
+                this.c, this.nSkip, this.p, false, this.sep);
 
-        Boolean flag = true;
+        Boolean flag;
 
         try {
             flag = sgff.setAttributes();
         } catch (Exception e) {
-            e.printStackTrace();
             flag=false;
         }
 
@@ -113,9 +123,11 @@ public class SbmlSetChargesFromFile extends AbstractSbmlSetMetabolite {
             System.exit(1);
         }
 
+
         this.writeSbml(bn);
 
-        System.exit(0);
     }
+
+
 
 }

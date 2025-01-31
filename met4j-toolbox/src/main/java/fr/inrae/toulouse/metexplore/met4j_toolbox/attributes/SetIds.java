@@ -1,5 +1,5 @@
 /*
- * Copyright INRAE (2021)
+ * Copyright INRAE (2022)
  *
  * contact-metexplore@inrae.fr
  *
@@ -33,30 +33,22 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  */
-
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetChargesFromFile;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetRefsFromFile;
+import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetIdsFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
-/**
- * <p>SbmlSetRefsFromFile class.</p>
- *
- * @author lcottret
- * @version $Id: $Id
- */
-public class SbmlSetRefsFromFile extends AbstractSbmlSetAny {
+import java.util.Set;
+
+public class SetIds extends AbstractSbmlSetAny {
 
     @ParameterType(name= EnumParameterTypes.Integer)
-    @Option(name="-cr", usage="[2] number of the column where are the references")
-    public int colRef=2;
-
-    @Option(name="-ref", usage="Name of the ref. Must exist in identifiers.org", required = true)
-    public String ref=null;
+    @Option(name="-cnew", usage="[2] number of the column where are the new ids")
+    public int colname=2;
 
     /** {@inheritDoc} */
     @Override
@@ -68,15 +60,18 @@ public class SbmlSetRefsFromFile extends AbstractSbmlSetAny {
     @Override
     public String getLongDescription() {
         return this.getShortDescription()+"\n" +
-                "Reference name given as parameter (-ref) must correspond to an existing id the " +
-                "registry of  identifiers.org (https://registry.identifiers.org/registry)\n" +
-                "The corresponding key:value pair will be written as metabolite or reaction annotation";
+                this.setDescription+"\n";
     }
 
     /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Add refs to network objects from a tabulated file containing the metabolite ids and the formulas";
+        return "Set new ids to network objects in a SBML file from a tabulated file containing the old ids and the new ids";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 
     /**
@@ -86,7 +81,7 @@ public class SbmlSetRefsFromFile extends AbstractSbmlSetAny {
      */
     public static void main(String[] args) {
 
-        SbmlSetRefsFromFile app = new SbmlSetRefsFromFile();
+        SetIds app = new SetIds();
 
         app.parseArguments(args);
 
@@ -95,15 +90,16 @@ public class SbmlSetRefsFromFile extends AbstractSbmlSetAny {
     }
 
     private void run() {
+
         BioNetwork bn = this.readSbml();
 
-        SetRefsFromFile s = new SetRefsFromFile(this.colid-1, this.colRef-1,
-                bn, this.tab, this.c, this.nSkip, this.p, this.s, this.ref, this.o);
+        SetIdsFromFile setter = new SetIdsFromFile(this.colid-1, this.colname-1,
+                bn, this.tab, this.c, this.nSkip, this.o, this.p, this.s);
 
-        Boolean flag = true;
+        Boolean flag;
 
         try {
-            flag = s.setAttributes();
+            flag = setter.setAttributes();
         } catch (Exception e) {
             e.printStackTrace();
             flag=false;
@@ -117,5 +113,8 @@ public class SbmlSetRefsFromFile extends AbstractSbmlSetAny {
         this.writeSbml(bn);
 
         System.exit(0);
+
+
     }
+
 }

@@ -16,24 +16,29 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
+import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
 import fr.inrae.toulouse.metexplore.met4j_mapping.Mapper;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.GraphOutPut;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.getMetabolitesFromFile;
 
-public class ExtractSubBipNetwork extends AbstractMet4jApplication {
+public class ExtractSubBipNetwork extends AbstractMet4jApplication implements GraphOutPut{
 
     @Format(name = Sbml)
     @ParameterType(name = InputFile)
@@ -52,14 +57,6 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
 
     @Option(name = "-u", aliases = {"--undirected"}, usage = "Ignore reaction direction")
     public Boolean undirected = false;
-
-    @Option(name = "-tab", aliases = {"--asTable"}, usage = "Export in tabulated file instead of .GML")
-    public Boolean asTable = false;
-
-    @Format(name = Gml)
-    @ParameterType(name = OutputFile)
-    @Option(name = "-o", usage = "output gml file", required = true)
-    public String outputPath = null;
 
     @Format(name = Txt)
     @ParameterType(name = InputFile)
@@ -82,39 +79,34 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
     @Option(name = "-st", aliases = {"--steinertree"}, usage = "Extract Steiner Tree", forbids = {"-k"})
     public boolean st = false;
 
+    @Option(name = "-f", aliases = {"--format"}, usage = "Format of the exported graph" +
+            "Tabulated edge list by default (source id \t edge type \t target id). Other options include GML, JsonGraph, and tabulated node list (label \t node id \t node type).")
+    public GraphOutPut.formatEnum format = GraphOutPut.formatEnum.tab;
+
+    @Format(name = Txt) // Txt because it can be gml or tab
+    @ParameterType(name = OutputFile)
+    @Option(name = "-o", usage = "output file: path to the tabulated file where the resulting network will be exported", required = true)
+    public String output;
+
+    public static void main(String[] args) {
+        ExtractSubBipNetwork app = new ExtractSubBipNetwork();
+        app.parseArguments(args);
+        app.run();
+    }
 
     public void run() {
         //import network
-        JsbmlReader reader = new JsbmlReader(this.inputPath);
-
-        BioNetwork network = null;
-        try {
-            network = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        System.out.println("reading SBML...");
+        BioNetwork network = IOUtils.readSbml(this.inputPath);
 
         //Graph processing: import side compounds
-        System.err.println("importing side compounds...");
-        Mapper<BioMetabolite> cmapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
-        BioCollection<BioMetabolite> sideCpds = null;
-
-        try {
-            sideCpds = cmapper.map(sideCompoundFile);
-        } catch (IOException e) {
-            System.err.println("Error while reading the side compound file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
-        if (cmapper.getNumberOfSkippedEntries() > 0)
-            System.err.println(cmapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
+        System.out.println("importing side compounds...");
+        BioCollection<BioMetabolite> sideCpds = getMetabolitesFromFile(sideCompoundFile, network, "side compounds");
 
         //Graph processing: import blocked reactions
         BioCollection<BioReaction> blkdReactions = null;
-        if(blkdReactionFile!=null){
-            System.err.println("importing blocked reactions...");
+        if (blkdReactionFile != null) {
+            System.out.println("importing blocked reactions...");
             Mapper<BioReaction> rmapper = new Mapper<>(network, BioNetwork::getReactionsView).skipIfNotFound();
 
             try {
@@ -129,7 +121,7 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
         }
 
         //get sources and targets
-        System.err.println("extracting sources and targets");
+        System.out.println("extracting sources and targets");
         BioCollection<BioEntity> entities = new BioCollection<>();
         entities.addAll(network.getReactionsView());
         entities.addAll(network.getMetabolitesView());
@@ -154,16 +146,16 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
             System.exit(1);
         }
         if (mapper.getNumberOfSkippedEntries() > 0)
-            System.err.println(mapper.getNumberOfSkippedEntries() + " target not found in network.");
+            System.err.println(mapper.getNumberOfSkippedEntries() + " targets not found in network.");
 
         //Create reaction graph
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
         BipartiteGraph graph = builder.getBipartiteGraph();
         boolean removed = graph.removeAllVertices(sideCpds);
         if (removed) System.err.println(sideCpds.size() + " side compounds removed.");
-        if(blkdReactionFile!=null){
+        if (blkdReactionFile != null) {
             removed = graph.removeAllVertices(blkdReactions);
-            if (removed) System.err.println(blkdReactions.size() + " blocked reaction removed.");
+            if (removed) System.err.println(blkdReactions.size() + " blocked reactions removed.");
         }
         //Graph processing: set weights [optional]
         WeightingPolicy<BioEntity, BipartiteEdge, BipartiteGraph> wp = new UnweightedPolicy<>();
@@ -195,18 +187,8 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
         }
 
         //export sub-network
-        if(asTable){
-            ExportGraph.toTab(subnet, outputPath);
-        }else{
-            ExportGraph.toGml(subnet, outputPath);
-        }
+        this.exportGraph(subnet,format, output);
 
-    }
-
-    public static void main(String[] args) {
-        ExtractSubBipNetwork app = new ExtractSubBipNetwork();
-        app.parseArguments(args);
-        app.run();
     }
 
     @Override
@@ -217,7 +199,7 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
     @Override
     public String getLongDescription() {
         return this.getShortDescription() + "\n" +
-                "The subnetwork corresponds to part of the network that connects reactions and compounds from the first list to reactions and compounds from the second list.\n" +
+                "The subnetwork corresponds to the part of the network that connects reactions and compounds from the first list to reactions and compounds from the second list.\n" +
                 "Sources and targets list can have elements in common. The connecting part can be defined as the union of shortest or k-shortest paths between sources and targets, " +
                 "or the Steiner tree connecting them. Contrary to compound graph, bipartite graph often lacks weighting policy for edge relevance. In order to ensure appropriate " +
                 "network density, a list of side compounds and blocked reactions to ignore during path build must be provided. An optional edge weight file, if available, can also be used.";
@@ -225,6 +207,11 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
 
     @Override
     public String getShortDescription() {
-        return "Create a subnetwork from a GSMN in SBML format, and two files containing lists of compounds and/or reactions of interests ids, one per row, plus one file of the same format containing side compounds ids.";
+        return "Create a subnetwork from a metabolic network in SBML format, and two files containing lists of compounds and/or reactions of interests ids, one per row, plus one file of the same format containing side compounds ids.";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 }

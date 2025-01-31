@@ -2,30 +2,32 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.GraphOutPut;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
-import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
+import java.util.Set;
 
-import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Gml;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Tsv;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Txt;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 
-public class PrecursorNetwork extends AbstractMet4jApplication {
+public class PrecursorNetwork extends AbstractMet4jApplication implements GraphOutPut{
 
     //arguments
     @Format(name = Sbml)
@@ -34,29 +36,30 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
     public String sbmlFilePath;
 
     @ParameterType(name = InputFile)
-    @Format(name= EnumFormats.Txt)
+    @Format(name = EnumFormats.Txt)
     @Option(name = "-t", aliases = {"--targets"}, usage = "input target file: tabulated file containing node of interest ids", required = true)
     public String targetsFilePath;
 
-    @Format(name = Gml)
-    @ParameterType(name = OutputFile)
-    @Option(name = "-o", usage = "output file: path to the .gml file where the results precursor network will be exported", required = true)
-    public String output;
-
     //options
     @ParameterType(name = InputFile)
-    @Format(name= EnumFormats.Txt)
+    @Format(name = EnumFormats.Txt)
     @Option(name = "-sc", aliases = {"--sides"}, usage = "an optional file containing list of ubiquitous compounds to be considered already available")
     public String sideCompoundFile = null;
     @ParameterType(name = InputFile)
-    @Format(name= EnumFormats.Txt)
+    @Format(name = EnumFormats.Txt)
     @Option(name = "-ir", aliases = {"--ignore"}, usage = "an optional file containing list of reaction to ignore (forbid inclusion in scope)")
     public String reactionToIgnoreFile = null;
 
-    @Option(name = "-tab", aliases = {"--asTable"}, usage = "Export in tabulated file instead of .GML")
-    public Boolean asTable = false;
+    @Option(name = "-f", aliases = {"--format"}, usage = "Format of the exported graph" +
+            "Tabulated edge list by default (source id \t edge type \t target id). Other options include GML, JsonGraph, and tabulated node list (label \t node id \t node type).")
+    public GraphOutPut.formatEnum format = GraphOutPut.formatEnum.tab;
 
-    public static void main(String[] args)  {
+    @Format(name = Txt)
+    @ParameterType(name = OutputFile)
+    @Option(name = "-o", usage = "output file: path to the tabulated file where the resulting network will be exported", required = true)
+    public String output;
+
+    public static void main(String[] args) {
         PrecursorNetwork app = new PrecursorNetwork();
         app.parseArguments(args);
         app.run();
@@ -64,15 +67,11 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
 
 
     public void run() {
-        JsbmlReader in = new JsbmlReader(sbmlFilePath);
-        BipartiteGraph graph = null;
-        try {
-            graph = (new Bionetwork2BioGraph(in.read())).getBipartiteGraph();
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+
+        BioNetwork network = IOUtils.readSbml(sbmlFilePath);
+
+        BipartiteGraph graph = (new Bionetwork2BioGraph(network)).getBipartiteGraph();
+
         NodeMapping<BioEntity, BipartiteEdge, BipartiteGraph> mapper = new NodeMapping<>(graph).skipIfNotFound();
 
         BioCollection<BioMetabolite> targets = null;
@@ -87,7 +86,7 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
         }
         BioCollection<BioMetabolite> bootstraps = null;
         try {
-            bootstraps = (sideCompoundFile==null) ? new BioCollection<>() : mapper.map(sideCompoundFile).stream()
+            bootstraps = (sideCompoundFile == null) ? new BioCollection<>() : mapper.map(sideCompoundFile).stream()
                     .map(BioMetabolite.class::cast)
                     .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
         } catch (IOException e) {
@@ -97,7 +96,7 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
         }
         BioCollection<BioReaction> forbidden = null;
         try {
-            forbidden = (reactionToIgnoreFile==null) ? new BioCollection<>() : mapper.map(reactionToIgnoreFile).stream()
+            forbidden = (reactionToIgnoreFile == null) ? new BioCollection<>() : mapper.map(reactionToIgnoreFile).stream()
                     .map(BioReaction.class::cast)
                     .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
         } catch (IOException e) {
@@ -106,17 +105,13 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
             System.exit(1);
         }
 
-        if(targets.isEmpty()){
+        if (targets.isEmpty()) {
             System.err.println("no target available, computation aborted");
-        }else {
+        } else {
             fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.PrecursorNetwork precursorComp =
                     new fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.PrecursorNetwork(graph, bootstraps, targets, forbidden);
             BipartiteGraph precursorNet = precursorComp.getPrecursorNetwork();
-            if(asTable){
-                ExportGraph.toTab(precursorNet, output);
-            }else{
-                ExportGraph.toGml(precursorNet, output);
-            }
+            this.exportGraph(precursorNet, format, output);
         }
     }
 
@@ -136,5 +131,10 @@ public class PrecursorNetwork extends AbstractMet4jApplication {
     @Override
     public String getShortDescription() {
         return "Perform a network expansion from a set of compound targets to create a precursor network.";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 }

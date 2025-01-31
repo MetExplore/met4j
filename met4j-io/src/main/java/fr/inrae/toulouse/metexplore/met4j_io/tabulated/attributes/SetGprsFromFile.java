@@ -88,7 +88,7 @@ public class SetGprsFromFile extends AbstractSetAttributesFromFile {
      */
     public Boolean setAttributes() throws IOException {
 
-        Boolean flag = true;
+        Boolean flag;
 
         try {
             flag = this.parseAttributeFile();
@@ -118,7 +118,7 @@ public class SetGprsFromFile extends AbstractSetAttributesFromFile {
             }
         }
 
-        System.err.println(this.getIdAttributeMap().size()+" gene associations created");
+        System.out.println(this.getIdAttributeMap().size()+" gene associations created");
 
         return flag;
 

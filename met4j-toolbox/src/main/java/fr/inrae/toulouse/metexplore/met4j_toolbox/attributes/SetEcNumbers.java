@@ -1,5 +1,5 @@
 /*
- * Copyright INRAE (2022)
+ * Copyright INRAE (2020)
  *
  * contact-metexplore@inrae.fr
  *
@@ -33,20 +33,30 @@
  * knowledge of the CeCILL license and that you accept its terms.
  *
  */
+
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetIdsFromFile;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetNamesFromFile;
+import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetEcsFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
-public class SbmlSetIdsFromFile extends AbstractSbmlSetAny {
+import java.util.Set;
+
+/**
+ * <p>SbmlSetEcsFromFile class.</p>
+ *
+ * @author lcottret
+ * @version $Id: $Id
+ */
+public class SetEcNumbers extends AbstractSbmlSetReaction {
 
     @ParameterType(name= EnumParameterTypes.Integer)
-    @Option(name="-cnew", usage="[2] number of the column where are the new ids")
-    public int colname=2;
+    @Option(name="-cec", usage="[2] number of the column where are the ecs")
+    public int colec=2;
+
 
     /** {@inheritDoc} */
     @Override
@@ -57,14 +67,20 @@ public class SbmlSetIdsFromFile extends AbstractSbmlSetAny {
     /** {@inheritDoc} */
     @Override
     public String getLongDescription() {
-        return this.getShortDescription()+"\n" +
-                this.setDescription+"\n";
+        return this.getShortDescription()+"\n"+this.setDescription+"\n" +
+                "The EC will be written in the SBML file in two locations:\n" +
+                "- in the reaction HTML notes (e.g. EC_NUMBER: 2.4.2.14)\n" +
+                "- as a reaction MIRIAM annotation (see https://pubmed.ncbi.nlm.nih.gov/16333295/) with ec-code identifiers link (https://registry.identifiers.org/registry/ec-code)";
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Set new ids to network objects from a tabulated file containing the old ids and the new ids";
+        return "Set EC numbers to reactions in a SBML file from a tabulated file containing the reaction ids and the EC numbers";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of(new Doi("https://doi.org/10.1038/nbt1156"));
     }
 
     /**
@@ -73,41 +89,33 @@ public class SbmlSetIdsFromFile extends AbstractSbmlSetAny {
      * @param args an array of {@link java.lang.String} objects.
      */
     public static void main(String[] args) {
-
-        SbmlSetIdsFromFile app = new SbmlSetIdsFromFile();
+        SetEcNumbers app = new SetEcNumbers();
 
         app.parseArguments(args);
 
         app.run();
-
     }
 
     private void run() {
-
         BioNetwork bn = this.readSbml();
 
-        SetIdsFromFile setter = new SetIdsFromFile(this.colid-1, this.colname-1,
-                bn, this.tab, this.c, this.nSkip, this.o, this.p, this.s);
+        SetEcsFromFile sgff = new SetEcsFromFile(this.colid-1, this.colec-1, bn, this.tab,
+                this.c, this.nSkip, this.p, false);
 
-        Boolean flag = true;
+        Boolean flag ;
 
         try {
-            flag = setter.setAttributes();
+            flag = sgff.setAttributes();
         } catch (Exception e) {
-            e.printStackTrace();
             flag=false;
         }
 
         if(!flag) {
-            System.err.println("Error in "+this.getLabel());
+            System.err.println("Error in setting ECs");
             System.exit(1);
         }
 
         this.writeSbml(bn);
 
-        System.exit(0);
-
-
     }
-
 }

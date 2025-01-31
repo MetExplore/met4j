@@ -40,7 +40,10 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetFormulasFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
+
+import java.util.Set;
 
 /**
  * <p>SbmlSetFormulasFromFile class.</p>
@@ -48,7 +51,7 @@ import org.kohsuke.args4j.Option;
  * @author lcottret
  * @version $Id: $Id
  */
-public class SbmlSetFormulasFromFile extends AbstractSbmlSetMetabolite {
+public class SetChemicalFormulas extends AbstractSbmlSetMetabolite {
 
     @ParameterType(name= EnumParameterTypes.Integer)
     @Option(name="-cf", usage="[2] number of the column where are the formulas")
@@ -65,7 +68,7 @@ public class SbmlSetFormulasFromFile extends AbstractSbmlSetMetabolite {
     public String getLongDescription() {
         return this.getShortDescription()+"\n"+this.setDescription+"\n" +
                 "The formula will be written in the SBML file in two locations:+\n" +
-                "- in the metabolite notes (e.g. <p>formula: C16H29O2</p>\n\n" +
+                "- in the metabolite HTML notes (e.g. formula: C16H29O2)\n" +
                 "- as a fbc attribute (e.g. fbc:chemicalFormula=\"C16H29O2\")";
     }
 
@@ -75,6 +78,11 @@ public class SbmlSetFormulasFromFile extends AbstractSbmlSetMetabolite {
         return "Set Formula to network metabolites from a tabulated file containing the metabolite ids and the formulas";
     }
 
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of(new Doi("https://doi.org/10.1515/jib-2017-0082"));
+    }
+
     /**
      * <p>main.</p>
      *
@@ -82,7 +90,7 @@ public class SbmlSetFormulasFromFile extends AbstractSbmlSetMetabolite {
      */
     public static void main(String[] args) {
 
-        SbmlSetFormulasFromFile app = new SbmlSetFormulasFromFile();
+        SetChemicalFormulas app = new SetChemicalFormulas();
 
         app.parseArguments(args);
 
@@ -107,7 +115,7 @@ public class SbmlSetFormulasFromFile extends AbstractSbmlSetMetabolite {
         }
 
         if(!flag) {
-            System.err.println("Error in SbmlSetFormula");
+            System.err.println("Error while setting formulas");
             System.exit(1);
         }
 

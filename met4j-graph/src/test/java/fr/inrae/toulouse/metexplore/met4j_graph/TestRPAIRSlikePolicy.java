@@ -1,19 +1,14 @@
 package fr.inrae.toulouse.metexplore.met4j_graph;
 
-import fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalSimilarity.FingerprintBuilder;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.AtomMappingWeightPolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.DefaultWeightPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting.RPAIRSlikePolicy;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openscience.cdk.exception.CDKException;
-import org.openscience.cdk.similarity.Tanimoto;
 
 import java.util.HashMap;
 import java.util.HashSet;

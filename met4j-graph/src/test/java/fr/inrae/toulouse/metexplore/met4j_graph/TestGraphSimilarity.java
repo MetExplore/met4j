@@ -36,16 +36,15 @@
 
 package fr.inrae.toulouse.metexplore.met4j_graph;
 
-import static org.junit.Assert.*;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.GraphSimilarity;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import static org.junit.Assert.assertEquals;
 
 public class TestGraphSimilarity {
 	

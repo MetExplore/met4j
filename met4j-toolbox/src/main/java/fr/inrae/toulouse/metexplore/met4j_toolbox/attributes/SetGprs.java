@@ -40,9 +40,11 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetGprsFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * <p>SbmlSetGprsFromFile class.</p>
@@ -50,7 +52,7 @@ import java.io.IOException;
  * @author lcottret
  * @version $Id: $Id
  */
-public class SbmlSetGprsFromFile  extends AbstractSbmlSetReaction {
+public class SetGprs extends AbstractSbmlSetReaction {
 
     @ParameterType(name= EnumParameterTypes.Integer)
     @Option(name="-cgpr", usage="[2] number of the column where are the gprs")
@@ -69,20 +71,19 @@ public class SbmlSetGprsFromFile  extends AbstractSbmlSetReaction {
                 this.setDescription +"\n" +
                 "GPR must be written in a cobra way in the tabulated file as described in Schellenberger et al 2011 Nature Protocols 6(9):1290-307\n"+
                 "(The GPR will be written in the SBML file in two locations:\n" +
-                "- in the reaction notes <p>GENE_ASSOCIATION: ( XC_0401 ) OR ( XC_3282 )</p>" +"\n" +
-                "- as fbc gene product association :" +
-                "<fbc:geneProductAssociation>\n" +
-                " <fbc:or>\n" +
-                "  <fbc:geneProductRef fbc:geneProduct=\"XC_3282\"/>\n" +
-                "  <fbc:geneProductRef fbc:geneProduct=\"XC_0401\"/>\n" +
-                " </fbc:or>\n" +
-                "</fbc:geneProductAssociation>\n";
+                "- in the reaction html notes (GENE_ASSOCIATION: ( XC_0401 ) OR ( XC_3282 ))" +"\n" +
+                "- as fbc gene product association (see FBC package specifications: https://doi.org/10.1515/jib-2017-0082)";
     }
 
     /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
         return "Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of(new Doi("https://doi.org/10.1515/jib-2017-0082"), new Doi("10.1038/nprot.2011.308"));
     }
 
     /**
@@ -93,7 +94,7 @@ public class SbmlSetGprsFromFile  extends AbstractSbmlSetReaction {
      */
     public static void main(String[] args) throws IOException {
 
-        SbmlSetGprsFromFile s = new SbmlSetGprsFromFile();
+        SetGprs s = new SetGprs();
 
         s.parseArguments(args);
 
@@ -106,7 +107,7 @@ public class SbmlSetGprsFromFile  extends AbstractSbmlSetReaction {
 
         SetGprsFromFile sgff = new SetGprsFromFile(this.colid-1, this.colgpr-1, bn, this.tab, this.c, this.nSkip, this.p, false);
 
-        Boolean flag = true;
+        Boolean flag;
 
         try {
             flag = sgff.setAttributes();

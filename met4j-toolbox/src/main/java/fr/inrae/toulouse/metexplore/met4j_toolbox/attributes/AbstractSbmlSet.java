@@ -37,17 +37,14 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.*;
 import org.kohsuke.args4j.Option;
-
-import java.io.IOException;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.*;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.*;
 
 /**
  * <p>Abstract AbstractSbmlSet class.</p>
@@ -62,17 +59,17 @@ public abstract class AbstractSbmlSet extends AbstractMet4jApplication {
 
     @Format(name = Sbml)
     @ParameterType(name = OutputFile)
-    @Option(name = "-out", usage = "[out.sbml] Out sbml file")
+    @Option(name = "-o", usage = "[out.sbml] SBML output file")
     public String out = "out.sbml";
 
     @Format(name = Sbml)
     @ParameterType(name = InputFile)
-    @Option(name = "-sbml", usage = "Original sbml file", required = true)
+    @Option(name = "-i", usage = "Original SBML file", required = true)
     public String sbml;
 
     @ParameterType(name = InputFile)
     @Format(name = Tsv)
-    @Option(name = "-tab", usage = "Tabulated file")
+    @Option(name = "-tab", usage = "Input Tabulated file")
     public String tab;
 
     @ParameterType(name = EnumParameterTypes.Text)
@@ -91,19 +88,7 @@ public abstract class AbstractSbmlSet extends AbstractMet4jApplication {
      * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
      */
     protected BioNetwork readSbml() {
-        JsbmlReader reader = new JsbmlReader(this.sbml);
-
-        BioNetwork bn = null;
-        try {
-            bn = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            e.printStackTrace();
-            System.err.println("Problem while reading the sbml file " + this.sbml);
-            System.exit(1);
-        }
-
-        return bn;
-
+        return IOUtils.readSbml(this.sbml, ALL);
     }
 
     /**
@@ -112,15 +97,7 @@ public abstract class AbstractSbmlSet extends AbstractMet4jApplication {
      * @param network a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
      */
     protected void writeSbml(BioNetwork network) {
-        JsbmlWriter writer = new JsbmlWriter(this.out, network);
-
-        try {
-            writer.write();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Error in writing the sbml file");
-            System.exit(1);
-        }
+        IOUtils.writeSbml(network, this.out);
     }
 
 

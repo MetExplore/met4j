@@ -41,6 +41,7 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormat
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -66,9 +67,9 @@ import java.util.Set;
  * @author lcottret
  * @version $Id: $Id
  */
-public class GetModelProteome extends AbstractMet4jApplication {
+public class GetBiggModelProteome extends AbstractMet4jApplication {
 
-    public String description = "Get proteome in fasta format of a model present in BIGG";
+    public String description = "Get proteome in fasta format of a model present in the BIGG database";
 
     @Option(name = "-m", usage = "[ex: iMM904] id of the BIGG model", required = true)
     public String modelId = "iMM904";
@@ -88,7 +89,7 @@ public class GetModelProteome extends AbstractMet4jApplication {
      */
     public static void main(String[] args)  {
 
-        GetModelProteome f = new GetModelProteome();
+        GetBiggModelProteome f = new GetBiggModelProteome();
         CmdLineParser parser = new CmdLineParser(f);
 
         try {
@@ -158,8 +159,6 @@ public class GetModelProteome extends AbstractMet4jApplication {
             System.exit(1);
         }
 
-
-        return;
     }
 
 
@@ -329,9 +328,6 @@ public class GetModelProteome extends AbstractMet4jApplication {
 
         writer.close();
 
-        return;
-
-
     }
 
 
@@ -351,5 +347,10 @@ public class GetModelProteome extends AbstractMet4jApplication {
     @Override
     public String getShortDescription() {
         return description;
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of(new Doi("doi:10.1093/nar/gkv1049"));
     }
 }

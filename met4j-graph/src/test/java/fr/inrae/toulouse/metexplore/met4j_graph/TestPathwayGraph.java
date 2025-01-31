@@ -36,19 +36,15 @@
 
 package fr.inrae.toulouse.metexplore.met4j_graph;
 
-import static org.junit.Assert.*;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraphEdge;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraphEdge;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TestPathwayGraph {
 

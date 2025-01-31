@@ -45,9 +45,12 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormat
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * <p>Tab2Sbml class.</p>
@@ -74,20 +77,20 @@ public class Tab2Sbml extends AbstractMet4jApplication {
     @Option(name = "-e", usage = "[_b] flag to assign metabolite as external")
     public String e = "_b";
 
-    @Option(name = "-i", usage = "[-->] String for irreversible reaction")
+    @Option(name = "-irr", usage = "[-->] String for irreversible reaction")
     public String i = "-->";
 
-    @Option(name = "-r", usage = "[<==>] String for reversible reaction")
+    @Option(name = "-rev", usage = "[<==>] String for reversible reaction")
     public String r = "<==>";
 
     @Format(name = EnumFormats.Sbml)
     @ParameterType(name = EnumParameterTypes.OutputFile)
-    @Option(name = "-sbml", usage = "[out.sbml] Out sbml file")
+    @Option(name = "-o", usage = "[out.sbml] Out sbml file")
     public String sbml = "out.sbml";
 
     @Format(name = EnumFormats.Tsv)
     @ParameterType(name = EnumParameterTypes.InputFile)
-    @Option(name = "-in", usage = "Tabulated file", required = true)
+    @Option(name = "-i", usage = "Tabulated file", required = true)
     public String in;
 
     @Option(name = "-id", usage = "[NA] Model id written in the SBML file")
@@ -126,6 +129,11 @@ public class Tab2Sbml extends AbstractMet4jApplication {
     @Override
     public String getShortDescription() {
         return "Create a Sbml File from a tabulated file that contains the reaction ids and the formulas";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 
     /**
@@ -172,12 +180,7 @@ public class Tab2Sbml extends AbstractMet4jApplication {
 
         BioNetwork bn = tb.getBioNetwork();
 
-        JsbmlWriter writer = new JsbmlWriter(sbmlFile, bn);
-        try {
-            writer.write();
-        } catch (Met4jSbmlWriterException ex) {
-            System.exit(1);
-        }
+        IOUtils.writeSbml(bn, sbmlFile);
 
         return;
 

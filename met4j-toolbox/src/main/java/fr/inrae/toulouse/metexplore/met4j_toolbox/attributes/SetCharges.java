@@ -37,23 +37,25 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetNamesFromFile;
+import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetChargesFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
+import java.util.Set;
+
 /**
- * <p>SbmlSetNamesFromFile class.</p>
+ * <p>SbmlSetChargesFromFile class.</p>
  *
  * @author lcottret
  * @version $Id: $Id
  */
-public class SbmlSetNamesFromFile extends AbstractSbmlSetAny {
+public class SetCharges extends AbstractSbmlSetMetabolite {
 
     @ParameterType(name= EnumParameterTypes.Integer)
-    @Option(name="-cname", usage="[2] number of the column where are the names")
-    public int colname=2;
+    @Option(name="-cc", usage="[2] number of the column where are the charges")
+    public int colcharge=2;
 
     /** {@inheritDoc} */
     @Override
@@ -64,14 +66,23 @@ public class SbmlSetNamesFromFile extends AbstractSbmlSetAny {
     /** {@inheritDoc} */
     @Override
     public String getLongDescription() {
-        return this.getShortDescription()+"\n" +
-                this.setDescription+"\n";
+        return this.getShortDescription()+"\n"+
+                "The charge must be a number. "+ this.setDescription+"\n" +
+                "The charge will be written in the SBML file in two locations:+\n" +
+                "- in the reaction notes (e.g. charge: -1)\n" +
+                "- as fbc attribute (e.g. fbc:charge=\"1\")";
     }
 
     /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Set names to network objects from a tabulated file containing the object ids and the names";
+        return "Set charge to metabolites in a SBML file from a tabulated file " +
+                "containing the metabolite ids and the charges";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of(new Doi("https://doi.org/10.1515/jib-2017-0082"));
     }
 
     /**
@@ -81,7 +92,7 @@ public class SbmlSetNamesFromFile extends AbstractSbmlSetAny {
      */
     public static void main(String[] args) {
 
-        SbmlSetNamesFromFile app = new SbmlSetNamesFromFile();
+        SetCharges app = new SetCharges();
 
         app.parseArguments(args);
 
@@ -93,29 +104,26 @@ public class SbmlSetNamesFromFile extends AbstractSbmlSetAny {
 
         BioNetwork bn = this.readSbml();
 
-        SetNamesFromFile sgff = new SetNamesFromFile(this.colid-1, this.colname-1,
-                bn, this.tab, this.c, this.nSkip, this.p, this.s, this.o);
+        SetChargesFromFile sgff = new SetChargesFromFile(this.colid-1, this.colcharge-1,
+                bn, this.tab, this.c, this.nSkip, this.p, this.s);
 
-        Boolean flag = true;
+        Boolean flag;
 
         try {
             flag = sgff.setAttributes();
         } catch (Exception e) {
+            e.printStackTrace();
             flag=false;
         }
 
         if(!flag) {
-            System.err.println("Error in SbmlSetNames");
+            System.err.println("Error in "+this.getLabel());
             System.exit(1);
         }
-
 
         this.writeSbml(bn);
 
         System.exit(0);
-
-
     }
-
 
 }

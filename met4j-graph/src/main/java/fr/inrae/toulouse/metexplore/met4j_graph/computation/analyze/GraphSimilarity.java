@@ -35,11 +35,10 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.transform.EdgeMerger;
-
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 
 /**

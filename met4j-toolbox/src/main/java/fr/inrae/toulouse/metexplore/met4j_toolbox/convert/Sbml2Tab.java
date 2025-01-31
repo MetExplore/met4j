@@ -45,9 +45,15 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormat
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
+import org.checkerframework.checker.units.qual.N;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
+import java.util.Set;
+
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.*;
 
 /**
  * <p>Sbml2Tab class.</p>
@@ -57,20 +63,20 @@ import java.io.IOException;
  */
 public class Sbml2Tab extends AbstractMet4jApplication {
 
-    @Option(name = "-i", usage = "[-->] String for irreversible reaction")
+    @Option(name = "-irr", usage = "[-->] String for irreversible reaction")
     public String i = "-->";
 
-    @Option(name = "-r", usage = "[<==>] String for reversible reaction")
+    @Option(name = "-rev", usage = "[<==>] String for reversible reaction")
     public String r = "<==>";
 
     @Format(name = EnumFormats.Tsv)
     @ParameterType(name = EnumParameterTypes.OutputFile)
-    @Option(name = "-out", usage = "[out.tsv] Tabulated file")
+    @Option(name = "-o", usage = "[out.tsv] Tabulated file")
     public String out = "out.tsv";
 
     @ParameterType(name = EnumParameterTypes.InputFile)
     @Format(name = EnumFormats.Sbml)
-    @Option(name = "-in", usage = "Sbml file", required = true)
+    @Option(name = "-i", usage = "Sbml file", required = true)
     public String in;
 
 
@@ -95,17 +101,7 @@ public class Sbml2Tab extends AbstractMet4jApplication {
 
         String fileIn = this.in;
 
-        JsbmlReader reader = new JsbmlReader(fileIn);
-
-        BioNetwork network = null;
-        try {
-            network = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            e.printStackTrace();
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        BioNetwork network = IOUtils.readSbml(fileIn, ALL);
 
         BioNetwork2Tab bioNetwork2Tab = new BioNetwork2Tab(network, this.out, this.r, this.i);
 
@@ -116,8 +112,6 @@ public class Sbml2Tab extends AbstractMet4jApplication {
             System.err.println(e.getMessage());
             System.exit(1);
         }
-
-        return;
 
     }
 
@@ -142,6 +136,11 @@ public class Sbml2Tab extends AbstractMet4jApplication {
      */
     @Override
     public String getShortDescription() {
-        return "Create a tabulated file from a SBML file";
+        return "Create a tabulated file listing reaction attributes from a SBML file";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 }

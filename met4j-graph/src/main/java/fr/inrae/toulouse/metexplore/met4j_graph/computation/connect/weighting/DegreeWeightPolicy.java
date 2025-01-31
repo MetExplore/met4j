@@ -35,10 +35,10 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.weighting;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 
 /**
  * The Class DegreeWeightPolicy which set as edge weight the target node's degree to the power of n.

@@ -37,14 +37,13 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.reconstruction;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.utils.BioReactionUtils;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-
 import fr.inrae.toulouse.metexplore.met4j_reconstruction.check.balance.NetworkBalanceAnalysis;
 import fr.inrae.toulouse.metexplore.met4j_reconstruction.check.balance.ReactionBalanceAnalysis;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.FileWriter;
@@ -57,12 +56,14 @@ import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Enu
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Tsv;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.FBC;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.NOTES;
 
 public class SbmlCheckBalance extends AbstractMet4jApplication {
 
     @Format(name = Sbml)
     @ParameterType(name = InputFile)
-    @Option(name = "-sbml", usage = "Original sbml file", required = true)
+    @Option(name = "-i", usage = "Input Sbml file", required = true)
     public String sbml;
 
     @Format(name = Tsv)
@@ -74,22 +75,22 @@ public class SbmlCheckBalance extends AbstractMet4jApplication {
 
     public static void main(String[] args) {
         SbmlCheckBalance app = new SbmlCheckBalance();
-        
+
         app.parseArguments(args);
-        
+
         app.run();
     }
 
     private void run() {
 
-        BioNetwork network = this.readSbml();
+        BioNetwork network = IOUtils.readSbml(this.sbml, FBC, NOTES);
 
         analysis = new NetworkBalanceAnalysis(network);
 
         try {
             this.writeResults();
         } catch (IOException e) {
-           e.printStackTrace();
+            e.printStackTrace();
             System.err.println("[MET4J ERROR] Error while writing the results");
         }
 
@@ -109,31 +110,10 @@ public class SbmlCheckBalance extends AbstractMet4jApplication {
             Set<String> metabolitesWithBadFormula = balance.getMetabolitesWithBadFormula().getIds();
             String formula = BioReactionUtils.getEquation(balance.getReaction(), false, true);
 
-            writer.write(id + "\t" + balance.isBalanced() + "\t" + balance.isExchange() + "\t" + formula +"\t" + atomBalances + "\t" + (metabolitesWithBadFormula.size() > 0 ? metabolitesWithBadFormula : "") + "\n");
+            writer.write(id + "\t" + balance.isBalanced() + "\t" + balance.isExchange() + "\t" + formula + "\t" + atomBalances + "\t" + (metabolitesWithBadFormula.size() > 0 ? metabolitesWithBadFormula : "") + "\n");
         }
 
         writer.close();
-
-    }
-
-    /**
-     * <p>readSbml.</p>
-     *
-     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
-     */
-    private BioNetwork readSbml() {
-        JsbmlReader reader = new JsbmlReader(this.sbml);
-
-        BioNetwork bn = null;
-        try {
-            bn = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            e.printStackTrace();
-            System.err.println("Problem while reading the sbml file " + this.sbml);
-            System.exit(1);
-        }
-
-        return bn;
 
     }
 
@@ -144,7 +124,7 @@ public class SbmlCheckBalance extends AbstractMet4jApplication {
 
     @Override
     public String getLongDescription() {
-        return this.getShortDescription()+"\n"+
+        return this.getShortDescription() + "\n" +
                 "A reaction is balanced if all its reactants have a chemical formula with a good syntax and if the " +
                 "quantity of each atom is the same in both sides of the reaction.\n" +
                 "For each reaction, indicates if the reaction is balanced, the list of the atoms and the sum of their quantity, and the list of the metabolites " +
@@ -155,4 +135,10 @@ public class SbmlCheckBalance extends AbstractMet4jApplication {
     public String getShortDescription() {
         return "Check balance of all the reactions in a SBML.";
     }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
+    }
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright INRAE (2020)
+ * Copyright INRAE (2021)
  *
  * contact-metexplore@inrae.fr
  *
@@ -37,26 +37,28 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetPathwaysFromFile;
+import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetRefsFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
+import java.util.Set;
+
 /**
- * <p>SbmlSetPathwaysFromFile class.</p>
+ * <p>SbmlSetRefsFromFile class.</p>
  *
  * @author lcottret
  * @version $Id: $Id
  */
-public class SbmlSetPathwaysFromFile extends AbstractSbmlSetReaction {
+public class SetReferences extends AbstractSbmlSetAny {
 
     @ParameterType(name= EnumParameterTypes.Integer)
-    @Option(name="-cp", usage="[2] number of the column where are the pathways")
-    public int colp=2;
+    @Option(name="-cr", usage="[2] number of the column where are the references")
+    public int colRef=2;
 
-    @Option(name="-sep", usage="[|] Separator of pathways in the tabulated file")
-    public String sep = "|";
-
+    @Option(name="-ref", usage="Name of the reference. Must exist in identifiers.org (https://registry.identifiers.org/registry)", required = true)
+    public String ref=null;
 
     /** {@inheritDoc} */
     @Override
@@ -68,20 +70,20 @@ public class SbmlSetPathwaysFromFile extends AbstractSbmlSetReaction {
     @Override
     public String getLongDescription() {
         return this.getShortDescription()+"\n" +
-                this.setDescription+"\n" +
-                "Pathways will be written in the SBML file in two ways:" +
-                "- as reaction note (e.g. <p>SUBSYSTEM: purine_biosynthesis</p>)" +
-                "- as SBML group:\n" +
-                        "<groups:group groups:id=\"purine_biosynthesis\" groups:kind=\"classification\" groups:name=\"purine_biosynthesis\">\n" +
-                        " <groups:listOfMembers>\n" +
-                        "  <groups:member groups:idRef=\"R_GLUPRT\"/>\n" +
-                        "  <groups:member groups:idRef=\"R_RNDR1b\"/>\n...\n";
+                "Reference name given as parameter (-ref) must correspond to an existing id in the " +
+                "registry of identifiers.org (https://registry.identifiers.org/registry)\n" +
+                "The corresponding key:value pair will be written as metabolite or reaction MIRIAM annotation (see https://pubmed.ncbi.nlm.nih.gov/16333295/)";
     }
 
     /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Set pathway to reactions in a network from a tabulated file containing the reaction ids and the pathways";
+        return "Add references to network objects in a SBML file from a tabulated file containing the metabolite ids and the references";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of(new Doi("https://doi.org/10.1038/nbt1156"));
     }
 
     /**
@@ -91,7 +93,7 @@ public class SbmlSetPathwaysFromFile extends AbstractSbmlSetReaction {
      */
     public static void main(String[] args) {
 
-        SbmlSetPathwaysFromFile app = new SbmlSetPathwaysFromFile();
+        SetReferences app = new SetReferences();
 
         app.parseArguments(args);
 
@@ -100,17 +102,17 @@ public class SbmlSetPathwaysFromFile extends AbstractSbmlSetReaction {
     }
 
     private void run() {
-
         BioNetwork bn = this.readSbml();
 
-        SetPathwaysFromFile sgff = new SetPathwaysFromFile(this.colid-1, this.colp-1, bn, this.tab,
-                this.c, this.nSkip, this.p, false, this.sep);
+        SetRefsFromFile s = new SetRefsFromFile(this.colid-1, this.colRef-1,
+                bn, this.tab, this.c, this.nSkip, this.p, this.s, this.ref, this.o);
 
-        Boolean flag = true;
+        Boolean flag;
 
         try {
-            flag = sgff.setAttributes();
+            flag = s.setAttributes();
         } catch (Exception e) {
+            e.printStackTrace();
             flag=false;
         }
 
@@ -119,11 +121,8 @@ public class SbmlSetPathwaysFromFile extends AbstractSbmlSetReaction {
             System.exit(1);
         }
 
-
         this.writeSbml(bn);
 
+        System.exit(0);
     }
-
-
-
 }

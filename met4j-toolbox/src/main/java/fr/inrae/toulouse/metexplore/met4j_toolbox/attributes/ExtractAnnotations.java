@@ -4,20 +4,24 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioRef;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
-public class ExtractSbmlAnnot extends AbstractMet4jApplication {
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.ANNOTATIONS;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.NOTES;
+
+public class ExtractAnnotations extends AbstractMet4jApplication {
 
     @Format(name = EnumFormats.Sbml)
     @ParameterType(name = EnumParameterTypes.InputFile)
@@ -48,7 +52,7 @@ public class ExtractSbmlAnnot extends AbstractMet4jApplication {
 
     public static void main(String[] args) throws IOException, Met4jSbmlReaderException {
 
-        ExtractSbmlAnnot app = new ExtractSbmlAnnot();
+        ExtractAnnotations app = new ExtractAnnotations();
 
         app.parseArguments(args);
 
@@ -64,16 +68,7 @@ public class ExtractSbmlAnnot extends AbstractMet4jApplication {
             fw = new FileWriter(outputPath);
 
             //read smbl
-            JsbmlReader reader = new JsbmlReader(this.inputPath);
-
-            BioNetwork network = null;
-            try {
-                network = reader.read();
-            } catch (Met4jSbmlReaderException e) {
-                System.err.println("Error while reading the sbml file");
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
+            BioNetwork network = IOUtils.readSbml(this.inputPath, ANNOTATIONS, NOTES);
 
             BioCollection<? extends BioEntity> entities = new BioCollection<>();
             if (export == entity.METABOLITE) {
@@ -138,11 +133,16 @@ public class ExtractSbmlAnnot extends AbstractMet4jApplication {
                 "The references are exported as a tabulated file with one column with the SBML compound, " +
                 "reaction or gene identifiers, and one column with the corresponding database identifier." +
                 "The name of the targeted database need to be provided under the same form than the one used " +
-                "in the notes field or the identifiers.org uri";
+                "in the notes field or the identifiers.org uri.";
     }
 
     @Override
     public String getShortDescription() {
         return "Extract databases' references from SBML annotations or notes.";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 }

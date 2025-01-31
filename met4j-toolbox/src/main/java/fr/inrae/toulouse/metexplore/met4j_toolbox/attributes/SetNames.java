@@ -37,23 +37,25 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.attributes;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetEcsFromFile;
+import fr.inrae.toulouse.metexplore.met4j_io.tabulated.attributes.SetNamesFromFile;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.kohsuke.args4j.Option;
 
+import java.util.Set;
+
 /**
- * <p>SbmlSetEcsFromFile class.</p>
+ * <p>SbmlSetNamesFromFile class.</p>
  *
  * @author lcottret
  * @version $Id: $Id
  */
-public class SbmlSetEcsFromFile extends AbstractSbmlSetReaction {
+public class SetNames extends AbstractSbmlSetAny {
 
     @ParameterType(name= EnumParameterTypes.Integer)
-    @Option(name="-cec", usage="[2] number of the column where are the ecs")
-    public int colec=2;
-
+    @Option(name="-cname", usage="[2] number of the column where are the names")
+    public int colname=2;
 
     /** {@inheritDoc} */
     @Override
@@ -64,15 +66,19 @@ public class SbmlSetEcsFromFile extends AbstractSbmlSetReaction {
     /** {@inheritDoc} */
     @Override
     public String getLongDescription() {
-        return this.getShortDescription()+"\n"+this.setDescription+"\n" +
-                "The EC will be written in the SBML file in two locations:\n" +
-                "- in the reaction notes (e.g. <p>EC_NUMBER: 2.4.2.14</p>)\n" +
-                "- as a reaction annotation (e.g. <rdf:li rdf:resource=\"http://identifiers.org/ec-code/2.4.2.14\"/>)";
+        return this.getShortDescription()+"\n" +
+                this.setDescription+"\n";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getShortDescription() {
+        return "Set names to network objects in a SBML file from a tabulated file containing the object ids and the names";
     }
 
     @Override
-    public String getShortDescription() {
-        return "Set EC numbers to reactions from a tabulated file containing the reaction ids and the EC";
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 
     /**
@@ -81,20 +87,23 @@ public class SbmlSetEcsFromFile extends AbstractSbmlSetReaction {
      * @param args an array of {@link java.lang.String} objects.
      */
     public static void main(String[] args) {
-        SbmlSetEcsFromFile app = new SbmlSetEcsFromFile();
+
+        SetNames app = new SetNames();
 
         app.parseArguments(args);
 
         app.run();
+
     }
 
     private void run() {
+
         BioNetwork bn = this.readSbml();
 
-        SetEcsFromFile sgff = new SetEcsFromFile(this.colid-1, this.colec-1, bn, this.tab,
-                this.c, this.nSkip, this.p, false);
+        SetNamesFromFile sgff = new SetNamesFromFile(this.colid-1, this.colname-1,
+                bn, this.tab, this.c, this.nSkip, this.p, this.s, this.o);
 
-        Boolean flag = true;
+        Boolean flag;
 
         try {
             flag = sgff.setAttributes();
@@ -103,11 +112,17 @@ public class SbmlSetEcsFromFile extends AbstractSbmlSetReaction {
         }
 
         if(!flag) {
-            System.err.println("Error in setting ECs");
+            System.err.println("Error in SbmlSetNames");
             System.exit(1);
         }
 
+
         this.writeSbml(bn);
 
+        System.exit(0);
+
+
     }
+
+
 }

@@ -87,7 +87,7 @@ public class SetRefsFromFile extends AbstractSetAttributesFromFile {
      */
     public Boolean setAttributes() throws IOException {
 
-        Boolean flag = true;
+        Boolean flag;
 
         try {
             flag = this.parseAttributeFile();
@@ -144,7 +144,7 @@ public class SetRefsFromFile extends AbstractSetAttributesFromFile {
             object.addRef(new BioRef("attributesTable", this.ref, this.getIdAttributeMap().get(id), 1));
         }
 
-        System.err.println(n+" attributions");
+        System.out.println(n+" attributions");
 
         return flag;
 

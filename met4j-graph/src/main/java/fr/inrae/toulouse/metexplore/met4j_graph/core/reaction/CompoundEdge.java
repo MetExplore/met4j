@@ -35,11 +35,11 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core.reaction;
 
-import java.util.Objects;
-
-import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
+
+import java.util.Objects;
 
 /**
  * The edge Class linking two {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}, associated with a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}

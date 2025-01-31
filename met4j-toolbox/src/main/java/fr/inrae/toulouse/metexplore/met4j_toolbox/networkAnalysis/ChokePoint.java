@@ -14,6 +14,8 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderExcepti
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.BufferedReader;
@@ -21,7 +23,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Set;
 
+import static fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.ChokePoint.getChokePoint;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.*;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
@@ -35,7 +39,7 @@ public class ChokePoint extends AbstractMet4jApplication {
 
     @Format(name = Tsv)
     @ParameterType(name = OutputFile)
-    @Option(name = "-o", usage = "output results file", required = true)
+    @Option(name = "-o", usage = "output result file", required = true)
     public String outputPath = null;
 
 
@@ -62,29 +66,21 @@ public class ChokePoint extends AbstractMet4jApplication {
         }
 
         //import network
-        System.err.println("reading SBML...");
-        JsbmlReader reader = new JsbmlReader(this.inputPath);
+        System.out.println("reading SBML...");
+        BioNetwork network = IOUtils.readSbml(this.inputPath);
 
-        BioNetwork network = null;
-        try {
-            network = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
 
         //Create compound graph
-        System.err.println("Creating network...");
+        System.out.println("Creating network...");
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
         CompoundGraph graph = builder.getCompoundGraph();
 
         //compute choke points
-        System.err.println("Computing choke points...");
-        HashSet<BioReaction> choke = fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.ChokePoint.getChokePoint(graph);
+        System.out.println("Computing choke points...");
+        HashSet<BioReaction> choke = getChokePoint(graph);
 
         //export results
-        System.err.println("Export results...");
+        System.out.println("Export results...");
 
         try {
             for (BioReaction r : choke) {
@@ -95,7 +91,7 @@ public class ChokePoint extends AbstractMet4jApplication {
             System.err.println(e.getMessage());
             System.exit(1);
         }
-        System.err.println("done.");
+        System.out.println("done.");
 
         try {
             fw.close();
@@ -114,13 +110,19 @@ public class ChokePoint extends AbstractMet4jApplication {
 
     @Override
     public String getLongDescription() {
-        return this.getShortDescription() + "\nChoke points constitute an indicator of lethality and can help identifying drug target " +
-                "Choke points are reactions that are required to consume or produce one compound. Targeting of choke point can lead to the accumulation or the loss of some metabolites, thus choke points constitute an indicator of lethality and can help identifying drug target \n" +
-                "See : Syed Asad Rahman, Dietmar Schomburg; Observing local and global properties of metabolic pathways: ‘load points’ and ‘choke points’ in the metabolic networks. Bioinformatics 2006; 22 (14): 1767-1774. doi: 10.1093/bioinformatics/btl181";
+        return this.getShortDescription() + "\n"+
+                "Choke points are reactions that are required to consume or produce one compound. Targeting of choke point can lead to the accumulation or the loss of some metabolites, thus choke points constitute an indicator of lethality and can help identifying drug target.";
     }
 
     @Override
     public String getShortDescription() {
         return "Compute the Choke points of a metabolic network.";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        Set<Doi> dois = new HashSet<>();
+        dois.add(new Doi("https://doi.org/10.1093/bioinformatics/btl181"));
+        return dois;
     }
 }

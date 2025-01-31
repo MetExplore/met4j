@@ -35,15 +35,15 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.utils;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
+
 import java.util.Arrays;
 import java.util.Set;
 import java.util.function.DoubleBinaryOperator;
-
-import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
-import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
 
 /**
  * The adjacency Matrix computor.

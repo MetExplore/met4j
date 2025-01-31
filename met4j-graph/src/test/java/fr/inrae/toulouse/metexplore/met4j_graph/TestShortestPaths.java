@@ -35,35 +35,28 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.PathBasedCentrality;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.FloydWarshall;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.KShortestPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.ShortestPath;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.PathBasedCentrality;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.compressed.CompressedGraph;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.compressed.CompressedGraph;
-import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.junit.Assert.*;
 
 /**
  * Test {@link ShortestPath}

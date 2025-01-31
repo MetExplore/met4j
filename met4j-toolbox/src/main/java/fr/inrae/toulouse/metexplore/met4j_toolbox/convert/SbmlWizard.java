@@ -5,13 +5,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.utils.BioNetworkUtils;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.utils.CompartmentMerger;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBCParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.GroupPathwayParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.NotesParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import fr.inrae.toulouse.metexplore.met4j_mapping.Mapper;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
@@ -19,31 +12,45 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormat
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Set;
 
-public class SBMLwizard extends AbstractMet4jApplication {
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.ALL;
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.getMetabolitesFromFile;
+
+public class SbmlWizard extends AbstractMet4jApplication {
 
     @Format(name = EnumFormats.Sbml)
     @ParameterType(name = EnumParameterTypes.InputFile)
-    @Option(name = "-s", usage = "input SBML file", required = true)
+    @Option(name = "-i", usage = "input SBML file", required = true)
     public String inputPath = null;
 
     @ParameterType(name = EnumParameterTypes.InputFile)
     @Format(name = EnumFormats.Txt)
-    @Option(name = "-rc", usage = "file containing identifiers of compounds to remove from the metabolic network", required = false)
+    @Option(name = "-rc", aliases = {"--removeC"}, usage = "file containing identifiers of compounds to remove from the metabolic network")
     public String inputSide = null;
+
+    @ParameterType(name = EnumParameterTypes.InputFile)
+    @Format(name = EnumFormats.Txt)
+    @Option(name = "-kc", aliases = {"--retainC"}, usage = "file containing identifiers of compounds to keep from the metabolic network")
+    public String toKeepC = null;
 
     @Option(name = "-ric", aliases = {"--noIsolated"}, usage = "remove isolated compounds (not involved in any reaction)")
     public boolean removeIsolated;
 
     @ParameterType(name = EnumParameterTypes.InputFile)
     @Format(name = EnumFormats.Txt)
-    @Option(name = "-rr", usage = "file containing identifiers of reactions to remove from the metabolic network", required = false)
+    @Option(name = "-rr",aliases = {"--removeR"}, usage = "file containing identifiers of reactions to remove from the metabolic network")
     public String inputReactions = null;
+
+    @ParameterType(name = EnumParameterTypes.InputFile)
+    @Format(name = EnumFormats.Txt)
+    @Option(name = "-kr", aliases = {"--retainR"}, usage = "file containing identifiers of reactions to keep from the metabolic network")
+    public String toKeepR = null;
 
     @ParameterType(name = EnumParameterTypes.OutputFile)
     @Format(name = EnumFormats.Sbml)
@@ -63,12 +70,12 @@ public class SBMLwizard extends AbstractMet4jApplication {
     public boolean removeDuplicated;
 
 
-    @Option(name = "-rEX", aliases = {"--removeExchange"}, usage = "remove exchange reactions and species from given exchange compartment identifier", required = false)
+    @Option(name = "-rEX", aliases = {"--removeExchange"}, usage = "remove exchange reactions and species from given exchange compartment identifier")
     public String exchangeCompToRemove;
 
     public static void main(String[] args) throws Met4jSbmlWriterException, IOException {
 
-        SBMLwizard app = new SBMLwizard();
+        SbmlWizard app = new SbmlWizard();
 
         app.parseArguments(args);
 
@@ -79,19 +86,8 @@ public class SBMLwizard extends AbstractMet4jApplication {
 
     public void run() throws Met4jSbmlWriterException, IOException {
         System.out.print("Reading SBML...");
-        JsbmlReader reader = new JsbmlReader(this.inputPath);
-        ArrayList<PackageParser> pkgs = new ArrayList<>(Arrays.asList(
-                new NotesParser(false), new FBCParser(), new GroupPathwayParser()));
 
-        BioNetwork network = null;
-
-        try {
-            network = reader.read(pkgs);
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        BioNetwork network = IOUtils.readSbml(inputPath, ALL);
         System.out.println(" Done.");
 
         //print info
@@ -103,26 +99,65 @@ public class SBMLwizard extends AbstractMet4jApplication {
         System.out.println("\tprotein:\t"+network.getProteinsView().size());
         System.out.println("\tpathway:\t"+network.getPathwaysView().size()+"\n\n");
 
-        //side compound removal [optional]
-        if (inputSide != null) {
-            BioCollection<BioMetabolite> sideCpds = new BioCollection<>();
-            System.out.println("removing side compounds...");
+
+        //retain compounds
+        if (toKeepC != null) {
+            BioCollection<BioMetabolite> toKeep = new BioCollection<>();
+            System.out.println("retaining compounds...");
             Mapper<BioMetabolite> cmapper = new Mapper<>(network, BioNetwork::getMetabolitesView).skipIfNotFound();
 
             try {
-                sideCpds = cmapper.map(inputSide);
+                toKeep = cmapper.map(toKeepC);
             } catch (IOException e) {
-                System.err.println("Error while reading the side compound file");
+                System.err.println("Error while reading the compounds to keep file");
                 System.err.println(e.getMessage());
                 System.exit(1);
             }
             if (cmapper.getNumberOfSkippedEntries() > 0)
-                System.out.println(cmapper.getNumberOfSkippedEntries() + " side compounds not found in network.");
+                System.out.println(cmapper.getNumberOfSkippedEntries() + " compounds not found in network.");
+
+            for(BioMetabolite c : network.getMetabolitesView()){
+                if(!toKeep.contains(c)){
+                    network.removeOnCascade(c);
+                }
+            }
+            System.out.println(toKeep.size() + " compounds retained in network.");
+        }
+
+        //side compound removal [optional]
+        if (inputSide != null) {
+            System.out.println("removing side compounds...");
+
+            BioCollection<BioMetabolite> sideCpds = getMetabolitesFromFile(inputSide, network, "side compounds");
 
             for(BioMetabolite sc : sideCpds){
                 network.removeOnCascade(sc);
             }
             System.out.println(sideCpds.size() + " side compounds removed from network.");
+        }
+
+        //retain reactions
+        if(toKeepR != null){
+            BioCollection<BioReaction> toKeep = new BioCollection<>();
+            System.out.println("retaining reactions...");
+            Mapper<BioReaction> rmapper = new Mapper<>(network, BioNetwork::getReactionsView).skipIfNotFound();
+
+            try {
+                toKeep = rmapper.map(toKeepR);
+            } catch (IOException e) {
+                System.err.println("Error while reading the reactions to keep file");
+                System.err.println(e.getMessage());
+                System.exit(1);
+            }
+            if (rmapper.getNumberOfSkippedEntries() > 0)
+                System.out.println(rmapper.getNumberOfSkippedEntries() + " reactions not found in network.");
+
+            for(BioReaction r : network.getReactionsView()){
+                if(!toKeep.contains(r)){
+                    network.removeOnCascade(r);
+                }
+            }
+            System.out.println(toKeep.size() + " reactions retained in network.");
         }
 
         //irrelevant reaction removal [optional]
@@ -149,7 +184,7 @@ public class SBMLwizard extends AbstractMet4jApplication {
 
         //removal of reactions that cannot hold flux in any condition
         if(removeNoFlux){
-            System.out.println("removing reaction with closed flux bound...");
+            System.out.println("removing reaction with null flux bounds...");
             BioCollection<BioReaction> toRemove = new BioCollection<>();
             for(BioReaction r : network.getReactionsView()){
                 if(ReactionAttributes.getLowerBound(r).value==0.0 &&
@@ -224,9 +259,8 @@ public class SBMLwizard extends AbstractMet4jApplication {
 
         //export network
         System.out.print("Exporting...");
-        new JsbmlWriter(outputPath,newNetwork).write();
+        IOUtils.writeSbml(newNetwork, outputPath);
         System.out.println(" Done.");
-        return;
     }
 
     @Override
@@ -242,5 +276,10 @@ public class SBMLwizard extends AbstractMet4jApplication {
     @Override
     public String getShortDescription() {
         return "General SBML model processing";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        return Set.of();
     }
 }

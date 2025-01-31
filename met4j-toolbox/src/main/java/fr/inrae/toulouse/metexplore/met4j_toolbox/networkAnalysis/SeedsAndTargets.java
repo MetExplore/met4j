@@ -7,73 +7,72 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.SourcesAndSinks;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+
+import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.getMetabolitesFromFile;
 
 public class SeedsAndTargets extends AbstractMet4jApplication {
 
-    @Format(name= EnumFormats.Sbml)
-    @ParameterType(name= EnumParameterTypes.InputFile)
+    @Format(name = EnumFormats.Sbml)
+    @ParameterType(name = EnumParameterTypes.InputFile)
     @Option(name = "-i", aliases = {"--inputSBML"}, usage = "input SBML file", required = true)
     public String inputPath = null;
 
-    @ParameterType(name= EnumParameterTypes.InputFile)
-    @Format(name= EnumFormats.Txt)
-    @Option(name = "-sc", aliases = {"--sideFile"}, usage = "input Side compound file", required = false)
+    @ParameterType(name = EnumParameterTypes.InputFile)
+    @Format(name = EnumFormats.Txt)
+    @Option(name = "-sc", aliases = {"--sideFile"}, usage = "input side compound file")
     public String inputSide = null;
 
-    @ParameterType(name= EnumParameterTypes.OutputFile)
-    @Format(name= EnumFormats.Tsv)
+    @ParameterType(name = EnumParameterTypes.OutputFile)
+    @Format(name = EnumFormats.Tsv)
     @Option(name = "-o", aliases = {"--output"}, usage = "output seeds file", required = true)
     public String outputPath = null;
 
-    @ParameterType(name= EnumParameterTypes.Text)
-    @Option(name = "-c", aliases = {"--comp"}, usage = "Selected compartment(s), as model identifiers, separated by \"+\" sign if more than one", required = false)
+    @ParameterType(name = EnumParameterTypes.Text)
+    @Option(name = "-c", aliases = {"--comp"}, usage = "selected compartment(s), as model identifiers, separated by \"+\" sign if more than one")
     public String comp = null;
 
-    @ParameterType(name= EnumParameterTypes.Boolean)
-    @Option(name = "-s", aliases = {"--seeds"}, usage = "export seeds", required = false)
+    @ParameterType(name = EnumParameterTypes.Boolean)
+    @Option(name = "-s", aliases = {"--seeds"}, usage = "export seeds")
     public boolean source = false;
 
-    @ParameterType(name= EnumParameterTypes.Boolean)
-    @Option(name = "-t", aliases = {"--targets"}, usage = "export targets", required = false)
+    @ParameterType(name = EnumParameterTypes.Boolean)
+    @Option(name = "-t", aliases = {"--targets"}, usage = "export targets")
     public boolean sink = false;
 
-    @ParameterType(name= EnumParameterTypes.Boolean)
-    @Option(name = "-!s", aliases = {"--notSeed"}, usage = "export nodes that are not seed", required = false)
+    @ParameterType(name = EnumParameterTypes.Boolean)
+    @Option(name = "-!s", aliases = {"--notSeed"}, usage = "export nodes that are not seeds")
     public boolean notsource = false;
 
-    @ParameterType(name= EnumParameterTypes.Boolean)
-    @Option(name = "-!t", aliases = {"--notTarget"}, usage = "export nodes that are not targets", required = false)
+    @ParameterType(name = EnumParameterTypes.Boolean)
+    @Option(name = "-!t", aliases = {"--notTarget"}, usage = "export nodes that are not targets")
     public boolean notsink = false;
 
-    @ParameterType(name= EnumParameterTypes.Boolean)
-    @Option(name = "-is", aliases = {"--keepIsolated"}, usage = "do not ignore isolated nodes, consider isolated both seed and target", required = false)
+    @ParameterType(name = EnumParameterTypes.Boolean)
+    @Option(name = "-is", aliases = {"--keepIsolated"}, usage = "do not ignore isolated nodes, consider isolated both seeds and targets")
     public boolean keepIsolated = false;
 
-    @ParameterType(name= EnumParameterTypes.Boolean)
-    @Option(name = "-B", aliases = {"--useBorensteinAlg"}, usage = "use Borenstein Algorithm. Please cite Borenstein et al. 2008 Large-scale reconstruction and phylogenetic analysis of metabolic environments https://doi.org/10.1073/pnas.0806162105). ignore internal option", required = false)
+    @ParameterType(name = EnumParameterTypes.Boolean)
+    @Option(name = "-B", aliases = {"--useBorensteinAlg"}, usage = "use Borenstein Algorithm. Please cite Borenstein et al. 2008 Large-scale reconstruction and phylogenetic analysis of metabolic environments https://doi.org/10.1073/pnas.0806162105), ignore internal option")
     public boolean useBorensteinAlg = false;
 
 
-    @ParameterType(name= EnumParameterTypes.Boolean)
-    @Option(name = "-in", aliases = {"--internal"}, usage = "if an external compartment is defined, adjust degree by considering internal counterpart", required = false)
+    @ParameterType(name = EnumParameterTypes.Boolean)
+    @Option(name = "-in", aliases = {"--internal"}, usage = "if an external compartment is defined, adjust degree by considering internal counterpart")
     public boolean useInternal = false;
-
-
-
 
 
     public static void main(String[] args) {
@@ -98,36 +97,20 @@ public class SeedsAndTargets extends AbstractMet4jApplication {
         }
 
         //import network
-        System.err.println("reading SBML...");
-        JsbmlReader reader = new JsbmlReader(this.inputPath);
-        BioNetwork network = null;
-        try {
-            network = reader.read();
-        } catch (Met4jSbmlReaderException e) {
-            System.err.println("Error while reading the SBML file");
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+        System.out.println("reading SBML...");
+        BioNetwork network = IOUtils.readSbml(this.inputPath);
 
         //Create compound graph
-        System.err.println("Creating network...");
+        System.out.println("Creating graph...");
         Bionetwork2BioGraph builder = new Bionetwork2BioGraph(network);
         CompoundGraph graph = builder.getCompoundGraph();
 
         //Graph processing: side compound removal [optional]
         if (inputSide != null) {
-            System.err.println("removing side compounds...");
-            NodeMapping<BioMetabolite, ReactionEdge, CompoundGraph> mapper = new NodeMapping<>(graph).skipIfNotFound();
-            BioCollection<BioMetabolite> sideCpds = null;
-            try {
-                sideCpds = mapper.map(inputSide);
-            } catch (IOException e) {
-                System.err.println("Error while reading the side compound file");
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
+            System.out.println("removing side compounds...");
+            BioCollection<BioMetabolite> sideCpds = getMetabolitesFromFile(inputSide, network, "side compounds");
             boolean removed = graph.removeAllVertices(sideCpds);
-            if (removed) System.err.println(sideCpds.size() + " compounds removed.");
+            if (removed) System.out.println(sideCpds.size() + " compounds removed.");
         }
 
         //compute seeds and targets
@@ -154,45 +137,46 @@ public class SeedsAndTargets extends AbstractMet4jApplication {
             System.err.println(e.getMessage());
             System.exit(1);
         }
-        System.err.println("done.");
+        System.out.println("done.");
 
 
     }
 
-    private BioCollection<BioMetabolite> getCandidates(BioNetwork network, CompoundGraph graph){
+    private BioCollection<BioMetabolite> getCandidates(BioNetwork network, CompoundGraph graph) {
         //Select Candidates
         BioCollection<BioMetabolite> compoundSet = new BioCollection<>();
-        if(comp!=null){
+        if (comp != null) {
             //for each "external" (available) compartment
-            for(String id : comp.split("\\+")){
+            for (String id : comp.split("\\+")) {
                 BioCompartment c = network.getCompartmentsView().get(id);
-                if(c!=null){
+                if (c != null) {
                     //add compound graph nodes belonging to external compartment as candidate
-                    for(BioEntity e : c.getComponentsView()){
-                        if(graph.vertexSet().contains(e)) compoundSet.add((BioMetabolite) e);
+                    for (BioEntity e : c.getComponentsView()) {
+                        if (graph.vertexSet().contains(e)) compoundSet.add((BioMetabolite) e);
                     }
-                }else{
-                    System.out.println("Error: Compartment "+id+" not found in network, please check sbml file.");
+                } else {
+                    System.out.println("Error: Compartment " + id + " not found in network, please check sbml file.");
                 }
             }
-        }else{
+        } else {
             compoundSet.addAll(graph.vertexSet());
         }
         return compoundSet;
     }
 
 
-
     @Override
-    public String getLabel() {return this.getClass().getSimpleName();}
+    public String getLabel() {
+        return this.getClass().getSimpleName();
+    }
 
     @Override
     public String getLongDescription() {
-        return "Identify exogenously acquired compounds, producible compounds exogenously available and/or dead ends metabolites from metabolic network topology. " +
-                "Metabolic seeds and targets are useful for identifying medium requirements and metabolic capability, and thus enable analysis of metabolic ties within communities of organisms.\n" +
+        return this.getShortDescription() +
+                "\nMetabolic seeds and targets are useful for identifying medium requirements and metabolic capability, and thus enable analysis of metabolic ties within communities of organisms.\n" +
                 "This application can use seed definition and SCC-based detection algorithm by Borenstein et al. or, alternatively, degree-based sink and source detection with compartment adjustment.\n" +
                 "The first method (see Borenstein et al. 2008 Large-scale reconstruction and phylogenetic analysis of metabolic environments https://doi.org/10.1073/pnas.0806162105) " +
-                "consider strongly connected components rather than individual nodes, thus, members of cycles can be considered as seed. " +
+                "consider strongly connected components rather than individual nodes, thus, members of cycles can be considered as seeds. " +
                 "A sink from an external compartment can however be connected to a non sink internal counterpart, thus highlighting what could end up in the external compartment rather than what must be exported.\n" +
                 "The second approach is neighborhood based and identify sources and sinks. Since \"real\" sinks and sources in intracellular compartment(s) may be involved in transport/exchange reactions " +
                 "reversible by default, thus not allowing extracellular source or sink, an option allows to take " +
@@ -201,6 +185,13 @@ public class SeedsAndTargets extends AbstractMet4jApplication {
 
     @Override
     public String getShortDescription() {
-        return "Identify exogenously acquired compounds, producible compounds exogenously available and/or dead ends metabolites from metabolic network topology";
+        return "Identify exogenously acquired compounds, exogenously available producible compounds and/or dead ends metabolites from metabolic network topology";
+    }
+
+    @Override
+    public Set<Doi> getDois() {
+        Set<Doi> dois = new HashSet<>();
+        dois.add(new Doi("https://doi.org/10.1073/pnas.0806162105"));
+        return dois;
     }
 }

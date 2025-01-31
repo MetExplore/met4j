@@ -35,7 +35,18 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph;
 
-import static org.junit.Assert.*;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.MtjMatrix;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -45,19 +56,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
-import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.EjmlMatrix;
-import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
-import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.MtjMatrix;
+import static org.junit.Assert.*;
 
 /**
  * The Matrix related classes : {@link ExportMatrix}, {@link ComputeAdjacencyMatrix}, {@link BioMatrix}

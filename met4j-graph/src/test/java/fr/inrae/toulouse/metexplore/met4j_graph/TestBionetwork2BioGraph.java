@@ -36,19 +36,18 @@
 
 package fr.inrae.toulouse.metexplore.met4j_graph;
 
-import static org.junit.Assert.*;
-
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inrae.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraph;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.pathway.PathwayGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
+import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
+import static org.junit.Assert.*;
 
 public class TestBionetwork2BioGraph {
 	/** The graph. */
@@ -141,8 +140,6 @@ public class TestBionetwork2BioGraph {
 	@Test
 	public void testGetReactionGraph() {
 		ReactionGraph g = builder.getReactionGraph();
-		System.out.println(g.vertexSet().size());
-		System.out.println(g.getAllEdges(r1,r2));
 		assertEquals("wrong number of vertices",7, g.vertexSet().size());
 		assertEquals("wrong number of edges",9, g.edgeSet().size());
 		assertEquals("wrong in-degree of reaction "+r1.getId(), 1,g.inDegreeOf(r1));

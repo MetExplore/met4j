@@ -35,12 +35,12 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.heuristic;
 
-import java.util.BitSet;
-import java.util.HashMap;
-
 import fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalSimilarity.FingerprintBuilder;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.similarity.SimilarityComputor;
+
+import java.util.BitSet;
+import java.util.HashMap;
 
 /**
  * The A* heuristic using chemical similarity

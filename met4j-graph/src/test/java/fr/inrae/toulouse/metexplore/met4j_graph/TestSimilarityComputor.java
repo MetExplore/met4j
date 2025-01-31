@@ -35,14 +35,13 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph;
 
-import static org.junit.Assert.*;
-
-import java.util.BitSet;
-
+import fr.inrae.toulouse.metexplore.met4j_mathUtils.similarity.SimilarityComputor;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import fr.inrae.toulouse.metexplore.met4j_mathUtils.similarity.SimilarityComputor;
+import java.util.BitSet;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test {@link SimilarityComputor}

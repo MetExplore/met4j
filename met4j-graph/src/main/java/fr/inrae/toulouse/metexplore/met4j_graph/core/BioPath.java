@@ -35,15 +35,15 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.GraphWalk;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 
 
 /**

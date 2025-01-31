@@ -35,12 +35,12 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_graph.core.parallel;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
-import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 
 /**
  * Edges that represent a set of sub-edges

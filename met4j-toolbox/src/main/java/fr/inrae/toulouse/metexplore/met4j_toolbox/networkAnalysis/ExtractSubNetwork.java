@@ -17,9 +17,9 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
-import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.NodeMapping;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.GraphOutPut;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
@@ -36,7 +36,7 @@ import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Enu
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.getMetabolitesFromFile;
 
-public class ExtractSubNetwork extends AbstractMet4jApplication {
+public class ExtractSubNetwork extends AbstractMet4jApplication implements GraphOutPut{
 
     @Format(name = Sbml)
     @ParameterType(name = InputFile)
@@ -52,11 +52,6 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
     @ParameterType(name = InputFile)
     @Option(name = "-t", usage = "input targets txt file", required = true)
     public String targetPath = null;
-
-    @Format(name = Gml)
-    @ParameterType(name = OutputFile)
-    @Option(name = "-o", usage = "output gml file", required = true)
-    public String outputPath = null;
 
     @Format(name = Txt)
     @ParameterType(name = InputFile)
@@ -77,14 +72,20 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
     @Option(name = "-u", aliases = {"--undirected"}, usage = "Ignore reaction direction")
     public Boolean undirected = false;
 
-    @Option(name = "-tab", aliases = {"--asTable"}, usage = "Export in tabulated file instead of .GML")
-    public Boolean asTable = false;
-
     @Option(name = "-k", usage = "Extract k-shortest paths", forbids = {"-st"})
     public int k = 1;
 
     @Option(name = "-st", aliases = {"--steinertree"}, usage = "Extract Steiner Tree", forbids = {"-k"})
     public boolean st = false;
+
+    @Option(name = "-f", aliases = {"--format"}, usage = "Format of the exported graph" +
+            "Tabulated edge list by default (source id \t edge type \t target id). Other options include GML, JsonGraph, and tabulated node list (label \t node id \t node type).")
+    public GraphOutPut.formatEnum format = GraphOutPut.formatEnum.tab;
+
+    @Format(name = Txt)
+    @ParameterType(name = OutputFile)
+    @Option(name = "-o", usage = "output file: path to the tabulated file where the resulting network will be exported", required = true)
+    public String output;
 
     public static void main(String[] args) {
         ExtractSubNetwork app = new ExtractSubNetwork();
@@ -165,11 +166,7 @@ public class ExtractSubNetwork extends AbstractMet4jApplication {
         }
 
         //export sub-network
-        if (asTable) {
-            ExportGraph.toTab(subnet, outputPath);
-        } else {
-            ExportGraph.toGmlWithAttributes(subnet, outputPath);
-        }
+        this.exportGraph(subnet, format, output, ((weightFile != null)||(degree)||(chemicalSim)),"weight");
 
     }
 

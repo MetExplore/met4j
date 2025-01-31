@@ -16,9 +16,12 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.ExportGraph;
 import fr.inrae.toulouse.metexplore.met4j_mapping.Mapper;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.GraphOutPut;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
@@ -35,7 +38,7 @@ import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Enu
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.getMetabolitesFromFile;
 
-public class ExtractSubBipNetwork extends AbstractMet4jApplication {
+public class ExtractSubBipNetwork extends AbstractMet4jApplication implements GraphOutPut{
 
     @Format(name = Sbml)
     @ParameterType(name = InputFile)
@@ -54,14 +57,6 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
 
     @Option(name = "-u", aliases = {"--undirected"}, usage = "Ignore reaction direction")
     public Boolean undirected = false;
-
-    @Option(name = "-tab", aliases = {"--asTable"}, usage = "Export in tabulated file instead of .GML")
-    public Boolean asTable = false;
-
-    @Format(name = Gml)
-    @ParameterType(name = OutputFile)
-    @Option(name = "-o", usage = "output gml file", required = true)
-    public String outputPath = null;
 
     @Format(name = Txt)
     @ParameterType(name = InputFile)
@@ -83,6 +78,15 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
 
     @Option(name = "-st", aliases = {"--steinertree"}, usage = "Extract Steiner Tree", forbids = {"-k"})
     public boolean st = false;
+
+    @Option(name = "-f", aliases = {"--format"}, usage = "Format of the exported graph" +
+            "Tabulated edge list by default (source id \t edge type \t target id). Other options include GML, JsonGraph, and tabulated node list (label \t node id \t node type).")
+    public GraphOutPut.formatEnum format = GraphOutPut.formatEnum.tab;
+
+    @Format(name = Txt) // Txt because it can be gml or tab
+    @ParameterType(name = OutputFile)
+    @Option(name = "-o", usage = "output file: path to the tabulated file where the resulting network will be exported", required = true)
+    public String output;
 
     public static void main(String[] args) {
         ExtractSubBipNetwork app = new ExtractSubBipNetwork();
@@ -183,11 +187,7 @@ public class ExtractSubBipNetwork extends AbstractMet4jApplication {
         }
 
         //export sub-network
-        if (asTable) {
-            ExportGraph.toTab(subnet, outputPath);
-        } else {
-            ExportGraph.toGml(subnet, outputPath);
-        }
+        this.exportGraph(subnet,format, output);
 
     }
 

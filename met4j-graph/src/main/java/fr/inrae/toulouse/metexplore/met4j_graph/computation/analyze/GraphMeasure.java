@@ -36,8 +36,8 @@
 package fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
-import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.FloydWarshall;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.analyze.centrality.PathBasedCentrality;
+import fr.inrae.toulouse.metexplore.met4j_graph.computation.connect.FloydWarshall;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioPath;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
@@ -45,12 +45,8 @@ import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.BioMatrix;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.Comparator;
 
 /**
  * compute several measures of the level or connectivity, size or shape of a given graph using lazy builder to avoid redundant calculus

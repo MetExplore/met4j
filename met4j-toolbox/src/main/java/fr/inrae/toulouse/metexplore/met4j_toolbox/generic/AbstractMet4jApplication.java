@@ -383,7 +383,10 @@ public abstract class AbstractMet4jApplication {
 
                 if (o.get("type").startsWith("input")) {
                     param.setAttribute("type", "data");
-                    param.setAttribute("format", o.get("format"));
+                    if (o.containsKey("format"))
+                        param.setAttribute("format", o.get("format"));
+                    else
+                        param.setAttribute("format", "txt");
                 } else {
                     param.setAttribute("type", o.get("type"));
                 }

@@ -31,6 +31,8 @@ public class CreateMetaNetwork extends AbstractMet4jApplication {
     @ParameterType(name = InputFile)
     @Option(name = "-n1", aliases = {"--network1"}, usage = "input SBML file: path to first network, in sbml format.", required = true)
     public String sbml1FilePath;
+
+    @Format(name = Sbml)
     @ParameterType(name = InputFile)
     @Option(name = "-n2", aliases = {"--network2"}, usage = "input SBML file: path to second network, in sbml format.", required = true)
     public String sbml2FilePath;

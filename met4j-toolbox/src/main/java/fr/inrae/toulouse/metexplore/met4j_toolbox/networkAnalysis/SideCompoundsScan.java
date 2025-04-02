@@ -128,7 +128,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
                     degreeStats.addValue(graph.degreeOf(v));
                 }
             }
-            dt = degreeStats.getPercentile(degreePrecentile);
+            dt = degreeStats.getPercentile(100-degreePrecentile);
         }
 
         //open file

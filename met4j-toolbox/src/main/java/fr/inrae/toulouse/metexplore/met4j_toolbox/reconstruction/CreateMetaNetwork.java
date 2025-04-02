@@ -159,7 +159,15 @@ public class CreateMetaNetwork extends AbstractMet4jApplication {
                 };
                 break;
             case by_id:
-                getSharedIdFunction = BioEntity::getId;
+                getSharedIdFunction = entity -> {
+                    String id = entity.getId();
+                    for (String prefix : alias.values()) {
+                        if (id.startsWith(prefix)) {
+                            return id.substring(prefix.length());
+                        }
+                    }
+                    return id;
+                };
                 break;
             case by_name:
                 getSharedIdFunction = BioEntity::getName;

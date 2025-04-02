@@ -137,7 +137,7 @@ deploySnapshot:
   only:
     - develop
 
-deployCentral:
+.template_deployCentral:
   image: eclipse-temurin:17.0.12_7-jdk
   stage: deploy
   before_script:
@@ -152,14 +152,30 @@ deployCentral:
     - 'which gpg || ( apt-get update -qy && apt-get install gnupg -qqy )'
     - export GPG_TTY=$(tty)
     - gpg -v --batch --import <(echo "${GPG_PRIVATE_KEY}")
-  script:
     - git config --global user.email "$env:GITLAB_USER_EMAIL"
     - git config --global user.name "$env:GITLAB_USER_NAME"
     - git checkout -B "$CI_COMMIT_REF_NAME"
+  script:
+    - mvn $MAVEN_CLI_OPTS release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true -DscmCommentPrefix="[skip ci]" -DupdateWorkingCopyVersions=false -DpushChanges=false -DskipTests
+    - mvn $MAVEN_CLI_OPTS release:perform -Darguments=-Dgpg.passphrase=${GPG_PASSPHRASE} -DlocalCheckout=true -DskipTests -Dmaven.test.skip=true
+  tags:
+    - stable
+
+deployCentral:
+  extends: .template_deployCentral
+  script:
     - mvn $MAVEN_CLI_OPTS release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true -DscmCommentPrefix="[skip ci]" -DupdateWorkingCopyVersions=false -DpushChanges=false -DskipTests
     - mvn $MAVEN_CLI_OPTS release:perform -Darguments=-Dgpg.passphrase=${GPG_PASSPHRASE} -DlocalCheckout=true -DskipTests -Dmaven.test.skip=true
   only:
     - master
+  tags:
+    - stable
+
+deployCentralDryRun:
+  extends: .template_deployCentral
+  script:
+    - mvn $MAVEN_CLI_OPTS release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true -DscmCommentPrefix="[skip ci]" -DupdateWorkingCopyVersions=false -DpushChanges=false -DskipTests -DdryRun
+    - mvn $MAVEN_CLI_OPTS release:perform -Darguments=-Dgpg.passphrase=${GPG_PASSPHRASE} -DlocalCheckout=true -DskipTests -Dmaven.test.skip=true -DdryRun
   tags:
     - stable
 

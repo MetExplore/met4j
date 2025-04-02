@@ -88,7 +88,7 @@ test:
   coverage: '/Total.*?([0-9]{1,3})%/'
   tags:
     - stable
-  
+
 
 package:
   image: eclipse-temurin:17.0.12_7-jdk
@@ -141,8 +141,8 @@ deploySnapshot:
   image: eclipse-temurin:17.0.12_7-jdk
   stage: deploy
   before_script:
-    - echo "GPG_PRIVATE_KEY is set to: $GPG_PRIVATE_KEY"
-    - echo "GPG_PASSPHRASE is set to: $GPG_PASSPHRASE"
+    - echo "GPG_PRIVATE_KEY is set to:$GPG_PRIVATE_KEY"
+    - echo "GPG_PRIVATE_KEY is set to:$GPG_PRIVATE_KEY"
     - apt-get update && apt-get install -y maven git
     - 'which ssh-agent || ( apt-get update -qy && apt-get install openssh-client -qqy )'
     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
@@ -177,6 +177,7 @@ deployCentralDryRun:
     - mvn $MAVEN_CLI_OPTS release:perform -Darguments=-Dgpg.passphrase=${GPG_PASSPHRASE} -DlocalCheckout=true -DskipTests -Dmaven.test.skip=true -DdryRun
   tags:
     - stable
+
 
 buildSingularity:
   stage: build-containers
@@ -223,6 +224,3 @@ buildDockerProdDockerhub:
     - DOCKER_IMAGE=$DOCKERHUB_IMAGE
   tags:
     - stable
-
-
-

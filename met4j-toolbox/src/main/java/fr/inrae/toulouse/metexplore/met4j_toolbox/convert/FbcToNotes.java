@@ -82,9 +82,6 @@ public class FbcToNotes extends AbstractMet4jApplication {
      * <p>main.</p>
      *
      * @param args an array of {@link java.lang.String} objects.
-     * @throws java.io.IOException if any.
-     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException if any.
-     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException if any.
      */
     public static void main(String[] args)  {
 
@@ -110,7 +107,7 @@ public class FbcToNotes extends AbstractMet4jApplication {
 
         JsbmlWriter writer = new JsbmlWriter(this.outputPath, network, 3, 1, false );
 
-        HashSet<PackageWriter> pkgs = new HashSet();
+        HashSet<PackageWriter> pkgs = new HashSet<>();
         pkgs.add(new AnnotationWriter());
         pkgs.add(new GroupPathwayWriter());
         pkgs.add(new NotesWriter(false));
@@ -135,7 +132,9 @@ public class FbcToNotes extends AbstractMet4jApplication {
     /** {@inheritDoc} */
     @Override
     public String getLongDescription() {
-        return this.getShortDescription() + " (see https://www.degruyter.com/document/doi/10.1515/jib-2017-0082/html)";
+        return this.getShortDescription() + "\n" +
+                "Convert FBC package annotations to sbml html notes." +
+                "Be careful, the app reads only fbc annotations, the existing html notes will be overwritten.\n";
     }
 
     /** {@inheritDoc} */

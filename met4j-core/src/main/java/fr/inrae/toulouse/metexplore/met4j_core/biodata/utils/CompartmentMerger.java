@@ -187,7 +187,7 @@ public class CompartmentMerger {
         }else{
             merged.setName(name);
         }
-        merged.addCompartment(uniqComp);
+        merged.add(uniqComp);
         //update metadata
         merged.setSynonyms(new ArrayList<>(original.getSynonyms()));
         merged.setComment(original.getComment());

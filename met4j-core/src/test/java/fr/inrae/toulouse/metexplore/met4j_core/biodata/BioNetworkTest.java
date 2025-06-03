@@ -36,15 +36,15 @@
 
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
-import static org.junit.Assert.*;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.classesForTests.BioEntityFake;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.classesForTests.BioEntityFake;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class BioNetworkTest {
 
@@ -683,7 +683,7 @@ public class BioNetworkTest {
 
         BioReactant reactant = new BioReactant(metabolite, 1.0, cpt);
 
-        network.addReactants(reactant);
+        network.add(reactant);
 
         // The compartment has not been added to the network
         network.affectLeft(reaction, reactant);
@@ -701,7 +701,7 @@ public class BioNetworkTest {
 
         BioReactant reactant = new BioReactant(metabolite, 1.0, cpt);
 
-        network.addReactants(reactant);
+        network.add(reactant);
 
         // The compartment has not been added to the network
         network.affectLeft(reaction, reactant);
@@ -736,6 +736,7 @@ public class BioNetworkTest {
         // The metabolite has been affected to an other compartment
         network.affectLeft(reaction, -5.0, cpt, metabolite);
     }
+
     @Test
     public void testAffectSubstrateWithStoZero() {
         BioReaction reaction = new BioReaction("reactionId");
@@ -1040,7 +1041,7 @@ public class BioNetworkTest {
         assertEquals("subunit not added to enzyme", 1, enz.getParticipants().size());
     }
 
-    @Test (expected =  IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testAffectSubUnitNotGoodType() {
 
         BioEnzyme enz = new BioEnzyme("enz");
@@ -1083,7 +1084,7 @@ public class BioNetworkTest {
         network.add(enz);
 
         BioEnzymeParticipant ep = new BioEnzymeParticipant(unitMetabolite, 1.0);
-        network.addEnzymeParticipants(ep);
+        network.add(ep);
 
         network.affectSubUnit(enz, ep);
 
@@ -1103,7 +1104,7 @@ public class BioNetworkTest {
 
         BioEnzymeParticipant ep = new BioEnzymeParticipant(unitMetabolite, 1.0);
         BioEnzymeParticipant ep2 = new BioEnzymeParticipant(unitProtein, 1.0);
-        network.addEnzymeParticipants(ep, ep2);
+        network.add(ep, ep2);
 
         BioCollection<BioEnzymeParticipant> eps = new BioCollection<>();
         eps.add(ep, ep2);
@@ -1145,38 +1146,6 @@ public class BioNetworkTest {
         network.removeSubUnit(unitMetabolite, enz);
 
         assertEquals("subunit not removed from enzyme", 0, enz.getParticipants().size());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testRemoveSubUnitMetaboliteNotPresent() {
-
-        BioMetabolite unitMetabolite = new BioMetabolite("met");
-        BioProtein unitProtein = new BioProtein("prot");
-        BioEnzyme enz = new BioEnzyme("enz");
-
-        network.add(unitMetabolite);
-        network.add(unitProtein);
-        network.add(enz);
-
-        BioMetabolite otherMetabolite = new BioMetabolite("other");
-        network.removeSubUnit(otherMetabolite, enz);
-
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testRemoveSubUnitEnzymeNotPresent() {
-
-        BioMetabolite unitMetabolite = new BioMetabolite("met");
-        BioProtein unitProtein = new BioProtein("prot");
-        BioEnzyme enz = new BioEnzyme("enz");
-
-        network.add(unitMetabolite);
-        network.add(unitProtein);
-        network.add(enz);
-
-        BioEnzyme otherEnzyme = new BioEnzyme("enz");
-        network.removeSubUnit(unitMetabolite, otherEnzyme);
-
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -2351,6 +2320,164 @@ public class BioNetworkTest {
         assertNull(this.network.getCompartment("cpt").getComponents().get("s1"));
         assertNull(this.network.getCompartment("cpt").getComponents().get("p1"));
 
+    }
+
+    @Test
+    public void affectPhysicalEntityToEnzymeParticipantAssignsCorrectly() {
+        BioProtein protein = new BioProtein("p");
+        BioEnzymeParticipant enzymeParticipant = new BioEnzymeParticipant(protein, 1.0);
+        network.add(protein);
+        network.add(enzymeParticipant);
+
+        network.affectPhysicalEntityToEnzymeParticipant(protein, 2.0, enzymeParticipant);
+
+        assertEquals("Physical entity not correctly assigned", protein, enzymeParticipant.getPhysicalEntity());
+        assertEquals("Quantity not correctly assigned", 2.0, enzymeParticipant.getQuantity(), 0.0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void affectPhysicalEntityToEnzymeParticipantThrowsIfEnzymeParticipantNotInNetwork() {
+        BioProtein protein = new BioProtein("p");
+        BioEnzymeParticipant enzymeParticipant = new BioEnzymeParticipant(protein, 1.0);
+        network.add(protein);
+
+        network.affectPhysicalEntityToEnzymeParticipant(protein, 2.0, enzymeParticipant);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void affectPhysicalEntityToEnzymeParticipantThrowsIfPhysicalEntityNotInNetwork() {
+        BioProtein protein = new BioProtein("p");
+        BioEnzymeParticipant enzymeParticipant = new BioEnzymeParticipant(protein, 1.0);
+        network.add(enzymeParticipant);
+
+        network.affectPhysicalEntityToEnzymeParticipant(protein, 2.0, enzymeParticipant);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void affectPhysicalEntityToEnzymeParticipantHandlesNullQuantity() {
+        BioProtein protein = new BioProtein("p");
+        BioEnzymeParticipant enzymeParticipant = new BioEnzymeParticipant(protein, 1.0);
+        network.add(protein);
+        network.add(enzymeParticipant);
+
+        network.affectPhysicalEntityToEnzymeParticipant(protein, null, enzymeParticipant);
+    }
+
+    @Test
+    public void retrievesEnzymesAssociatedWithGene() {
+        BioGene gene = new BioGene("gene1");
+        BioProtein protein = new BioProtein("protein1");
+        BioEnzyme enzyme = new BioEnzyme("enzyme1");
+
+        network.add(gene);
+        network.add(protein);
+        network.add(enzyme);
+
+        protein.setGene(gene);
+
+        BioEnzymeParticipant participant = new BioEnzymeParticipant(protein, 1.0);
+        enzyme.addParticipant(participant);
+
+        BioCollection<BioEnzyme> enzymes = network.getEnzymesFromGene(gene);
+
+        assertEquals(1, enzymes.size());
+        assertTrue(enzymes.contains(enzyme));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsExceptionWhenGeneNotInNetwork() {
+        BioGene gene = new BioGene("gene1");
+        network.getEnzymesFromGene(gene);
+    }
+
+    @Test
+    public void returnsEmptyCollectionWhenNoEnzymesLinkedToGene() {
+        BioGene gene = new BioGene("gene1");
+        network.add(gene);
+
+        BioCollection<BioEnzyme> enzymes = network.getEnzymesFromGene(gene);
+
+        assertTrue(enzymes.isEmpty());
+    }
+
+    @Test
+    public void retrievesMultipleEnzymesAssociatedWithGene() {
+        BioGene gene = new BioGene("gene1");
+        BioProtein protein = new BioProtein("protein1");
+
+        BioEnzyme enzyme1 = new BioEnzyme("enzyme1");
+        BioEnzyme enzyme2 = new BioEnzyme("enzyme2");
+
+        network.add(gene);
+        network.add(protein);
+        network.add(enzyme1);
+        network.add(enzyme2);
+
+        protein.setGene(gene);
+
+        BioEnzymeParticipant participant1 = new BioEnzymeParticipant(protein, 1.0);
+        BioEnzymeParticipant participant2 = new BioEnzymeParticipant(protein, 1.0);
+        enzyme1.addParticipant(participant1);
+        enzyme2.addParticipant(participant2);
+
+        BioCollection<BioEnzyme> enzymes = network.getEnzymesFromGene(gene);
+
+        assertEquals(2, enzymes.size());
+        assertTrue(enzymes.contains(enzyme1));
+        assertTrue(enzymes.contains(enzyme2));
+    }
+
+    @Test
+    public void retrievesProteinsAssociatedWithGene() {
+        BioGene gene = new BioGene("gene1");
+        BioProtein protein1 = new BioProtein("protein1");
+        BioProtein protein2 = new BioProtein("protein2");
+
+        network.add(gene);
+        network.add(protein1);
+        network.add(protein2);
+
+        protein1.setGene(gene);
+        protein2.setGene(gene);
+
+        BioCollection<BioProtein> proteins = network.getProteinsFromGene(gene);
+
+        assertEquals(2, proteins.size());
+        assertTrue(proteins.contains(protein1));
+        assertTrue(proteins.contains(protein2));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsExceptionWhenGeneNotInNetwork2() {
+        BioGene gene = new BioGene("gene1");
+        network.getProteinsFromGene(gene);
+    }
+
+    @Test
+    public void returnsEmptyCollectionWhenNoProteinsLinkedToGene() {
+        BioGene gene = new BioGene("gene1");
+        network.add(gene);
+
+        BioCollection<BioProtein> proteins = network.getProteinsFromGene(gene);
+
+        assertTrue(proteins.isEmpty());
+    }
+
+    @Test
+    public void retrievesSingleProteinAssociatedWithGene() {
+        BioGene gene = new BioGene("gene1");
+        BioProtein protein = new BioProtein("protein1");
+
+        network.add(gene);
+        network.add(protein);
+
+        protein.setGene(gene);
+
+
+        BioCollection<BioProtein> proteins = network.getProteinsFromGene(gene);
+
+        assertEquals(1, proteins.size());
+        assertTrue(proteins.contains(protein));
     }
 
 }

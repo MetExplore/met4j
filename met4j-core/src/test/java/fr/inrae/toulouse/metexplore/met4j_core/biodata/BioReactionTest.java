@@ -86,7 +86,7 @@ public class BioReactionTest {
 		network.affectToCompartment(cpt1, l1, l2);
 		network.affectToCompartment(cpt2, r1, r2);
 
-		network.addReactants(l1Reactant, l2Reactant, r1Reactant, r2Reactant);
+		network.add(l1Reactant, l2Reactant, r1Reactant, r2Reactant);
 
 		network.affectLeft(reaction, l1Reactant, l2Reactant);
 		network.affectRight(reaction, r1Reactant, r2Reactant);
@@ -111,7 +111,7 @@ public class BioReactionTest {
 		BioEnzymeParticipant ep2 = new BioEnzymeParticipant(p2);
 		BioEnzymeParticipant ep3 = new BioEnzymeParticipant(p3);
 
-		network.addEnzymeParticipants(ep1, ep2, ep3);
+		network.add(ep1, ep2, ep3);
 
 		network.affectSubUnit(e1, ep1);
 		network.affectSubUnit(e2, ep2, ep3);

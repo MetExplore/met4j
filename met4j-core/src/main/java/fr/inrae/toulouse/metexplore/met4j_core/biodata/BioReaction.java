@@ -373,6 +373,23 @@ public class BioReaction extends BioEntity {
 	}
 
 	/**
+	 * <p>containsEnzyme.</p>
+	 *
+	 * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme} object.
+	 * @return true if the reaction contains the enzyme
+	 */
+	public Boolean containsEnzyme(@NonNull BioEnzyme e) {
+		return this.enzymes.contains(e);
+	}
+
+	public Boolean containsGene(@NonNull BioGene g) {
+		return this.enzymes.stream().anyMatch(e -> e.getParticipants().stream()
+				.anyMatch(p -> p.getPhysicalEntity() instanceof BioProtein
+						&& ((BioProtein) p.getPhysicalEntity()).getGene() != null
+						&& ((BioProtein) p.getPhysicalEntity()).getGene().equals(g)));
+	}
+
+	/**
 	 * Add an enzyme that catalyses the reaction
 	 *
 	 * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}

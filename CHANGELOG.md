@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Next Release
 
+[met4j-core] Improve BioNetwork methods in terms of performance (memory and speed)
+[met4j-toolbox] NotesToFBC : New Met4J app to create a SBML file with html notes to a SBML file with fbc package
+
+
 ## 2.0.0
 
 [met4j-toolbox] harmonization of the apps' parameters and names (check for compatibility issues)

@@ -50,10 +50,10 @@ import java.util.Objects;
 public abstract class BioParticipant extends BioEntity {
 
 	@Getter
-	private final BioPhysicalEntity physicalEntity;
+	private BioPhysicalEntity physicalEntity;
 	
 	@Getter
-	private final Double quantity;
+	private Double quantity;
 
 	/**
 	 * Constructor
@@ -70,6 +70,20 @@ public abstract class BioParticipant extends BioEntity {
 			throw new IllegalArgumentException("Illegal argument for "+quantity+" "+this.getPhysicalEntity().getId()+": the quantity must be finite and positive");
 		}
 
+		this.quantity = quantity;
+	}
+
+	protected void setPhysicalEntity(BioPhysicalEntity e) {
+		if (e == null) {
+			throw new IllegalArgumentException("Physical entity cannot be null");
+		}
+		this.physicalEntity = e;
+	}
+
+	protected void setQuantity(Double quantity) {
+		if (Double.isNaN(quantity) || Double.isInfinite(quantity) || quantity <= 0) {
+			throw new IllegalArgumentException("Illegal argument for " + quantity + " " + this.getPhysicalEntity().getId() + ": the quantity must be finite and positive");
+		}
 		this.quantity = quantity;
 	}
 

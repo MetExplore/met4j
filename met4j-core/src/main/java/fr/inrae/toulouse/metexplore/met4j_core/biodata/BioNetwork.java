@@ -866,13 +866,12 @@ public class BioNetwork extends BioEntity {
             throw new IllegalArgumentException("Gene " + gene + " not present in the network");
         }
 
-        HashSet<BioEnzyme> enzymeSet = this.enzymes.stream()
+        return this.enzymes.stream()
                 .filter(e -> e.getParticipantsView().stream()
                         .anyMatch(ep -> ep.getPhysicalEntity() instanceof BioProtein
-                                && ((BioProtein) ep.getPhysicalEntity()).getGene().equals(gene)))
-                .collect(Collectors.toCollection(HashSet::new));
+                                && (((BioProtein) ep.getPhysicalEntity()).getGene() != null) && ((BioProtein) ep.getPhysicalEntity()).getGene().equals(gene)))
+                .collect(Collectors.toCollection(BioCollection::new));
 
-        return new BioCollection<>(enzymeSet);
     }
 
     /**
@@ -891,11 +890,10 @@ public class BioNetwork extends BioEntity {
             throw new IllegalArgumentException("Gene " + gene + " not present in the network");
         }
 
-        HashSet<BioProtein> proteinSet = this.proteins.stream()
+        return this.proteins.stream()
                 .filter(p -> p.getGene() != null && p.getGene().equals(gene))
-                .collect(Collectors.toCollection(HashSet::new));
+                .collect(Collectors.toCollection(BioCollection::new));
 
-        return new BioCollection<>(proteinSet);
     }
 
     // ----------------------------------------

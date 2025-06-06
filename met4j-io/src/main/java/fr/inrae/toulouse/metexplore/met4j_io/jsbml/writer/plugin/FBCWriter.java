@@ -288,6 +288,53 @@ public class FBCWriter implements PackageWriter, PrimaryDataTag {
 
     }
 
+    /** Convert a GeneProductAssociation to a COBRA-style GPR string.
+     *
+     * Used for debugging and logging purposes.
+     *
+     * */
+    private static String geneAssocToString(GeneProductAssociation gpa) {
+        if (gpa == null || !gpa.isSetAssociation()) {
+            return "";  // no association
+        }
+        return assocToString(gpa.getAssociation());
+    }
+
+    /** Recursively convert an Association node to a string. */
+    private static String assocToString(Association assoc) {
+        if (assoc instanceof GeneProductRef) {
+            GeneProductRef ref = (GeneProductRef) assoc;
+            // Try to use the gene product name; fallback to its ID if name is missing
+            GeneProduct gp = ref.getGeneProductInstance();
+            String text = null;
+            if (gp != null && gp.isSetName()) {
+                text = gp.getName();
+            }
+            return (text != null ? text : ref.getGeneProduct());
+        }
+        else if (assoc instanceof And) {
+            And and = (And) assoc;
+            List<String> parts = new ArrayList<>();
+            for (Association child : and.getListOfAssociations()) {
+                parts.add(assocToString(child));
+            }
+            // Join with " and " and wrap in parentheses if more than one term
+            String joined = String.join(" and ", parts);
+            return parts.size() > 1 ? "(" + joined + ")" : joined;
+        }
+        else if (assoc instanceof Or) {
+            Or or = (Or) assoc;
+            List<String> parts = new ArrayList<>();
+            for (Association child : or.getListOfAssociations()) {
+                parts.add(assocToString(child));
+            }
+            String joined = String.join(" or ", parts);
+            return parts.size() > 1 ? "(" + joined + ")" : joined;
+        }
+        // If it’s a different kind of node (should not happen in FBC GPR), return empty
+        return "";
+    }
+
     /**
      * get Objective functions
      */

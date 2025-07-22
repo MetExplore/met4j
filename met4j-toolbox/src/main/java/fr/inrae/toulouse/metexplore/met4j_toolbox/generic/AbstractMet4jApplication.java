@@ -70,6 +70,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -247,13 +250,27 @@ public abstract class AbstractMet4jApplication {
         return simplePackageName;
     }
 
-    public void xmlGalaxyWrapper(String outputDirectory, GalaxyPackageType packageType, String version) throws ParserConfigurationException, XmlPullParserException, IOException, IllegalAccessException, TransformerException, SAXException {
+    /**
+     * Generates an XML wrapper for a Galaxy tool
+     *
+     * @param outputDirectory the directory where the XML wrapper will be saved
+     * @param packageType the type of package (Docker, Singularity, or Conda)
+     * @throws ParserConfigurationException if a DocumentBuilder cannot be created
+     * @throws XmlPullParserException if an error occurs while parsing the XML
+     * @throws IOException if an I/O error occurs
+     * @throws IllegalAccessException if the current method does not have access to the definition of the specified class, field, method, or constructor
+     * @throws TransformerException if an error occurs during the transformation process
+     * @throws SAXException if any parse errors occur
+     */
+    public void xmlGalaxyWrapper(String outputDirectory, GalaxyPackageType packageType) throws ParserConfigurationException, IOException, IllegalAccessException, TransformerException, SAXException {
 
-        String packageName = this.getSimplePackageName();
+        String simplePackageName = this.getSimplePackageName();
+
+        String packageName = this.getClass().getPackageName();
 
         String className = this.getClass().getSimpleName();
 
-        File wrapperDirectory = new File(outputDirectory + "/" + packageName + "/" + className);
+        File wrapperDirectory = new File(outputDirectory + "/" + simplePackageName + "/" + className);
 
         if (!wrapperDirectory.exists()) {
             wrapperDirectory.mkdirs();
@@ -291,6 +308,7 @@ public abstract class AbstractMet4jApplication {
                 testExists = true;
             }
 
+
             citationList = doc.getElementsByTagName("citation");
             NodeList citationsTags = doc.getElementsByTagName("citations");
 
@@ -314,38 +332,37 @@ public abstract class AbstractMet4jApplication {
         Element root = document.createElement("tool");
         root.setAttribute("id", "met4j_" + this.getLabel());
         root.setAttribute("name", this.getLabel());
-        root.setAttribute("version", version);
+        root.setAttribute("version", "@TOOL_VERSION@");
 
         Element description = document.createElement("description");
         description.setTextContent(this.getShortDescription());
         root.appendChild(description);
 
-        Element xrefs = document.createElement("xrefs");
-        Element xref = document.createElement("xref");
-        xref.setAttribute("type", "bio.tools");
-        xref.setTextContent("met4j");
-        xrefs.appendChild(xref);
-        root.appendChild(xrefs);
+        Element macros = document.createElement("macros");
+        root.appendChild(macros);
+        Element importElt = document.createElement("import");
+        importElt.setTextContent("macros.xml");
+        macros.appendChild(importElt);
 
-        Element requirements = document.createElement("requirements");
-        root.appendChild(requirements);
-        Element container = document.createElement("container");
+        Element expand1 = document.createElement("expand");
+        expand1.setAttribute("macro", "bio_tools");
+        root.appendChild(expand1);
 
-        if (packageType.equals(GalaxyPackageType.Docker)) {
-            container.setAttribute("type", "docker");
-            container.setTextContent("metexplore/met4j:" + version);
-        } else if (packageType.equals(GalaxyPackageType.Singularity)) {
-            container.setAttribute("type", "singularity");
-            container.setTextContent("oras://registry.forgemia.inra.fr/metexplore/met4j/met4j-singularity:" + version);
-        }
-        requirements.appendChild(container);
+        Element expand2 = document.createElement("expand");
+        expand2.setAttribute("macro", "requirements");
+        root.appendChild(expand2);
 
         Element command = document.createElement("command");
         command.setAttribute("detect_errors", "exit_code");
 
         String commandText = "";
 
-        commandText = "sh /usr/bin/met4j.sh " + packageName + "." + className;
+        if(packageType == GalaxyPackageType.Conda) {
+            commandText = "met4j " + packageName + "." + className;
+        }
+        else {
+            commandText = "sh /usr/bin/met4j.sh " + simplePackageName + "." + className;
+        }
        /* if(packageType.equals(GalaxyPackageType.Docker)) {
             commandText = "sh /usr/bin/met4j.sh " + packageName + "." + className;
         }
@@ -447,7 +464,7 @@ public abstract class AbstractMet4jApplication {
         }
 
         Element help = document.createElement("help");
-        Node cHelp = document.createCDATASection(this.getLongDescription());
+        Node cHelp = document.createCDATASection(this.getLongDescription()+"\n\n@ATTRIBUTION@");
         help.appendChild(cHelp);
         root.appendChild(help);
 
@@ -468,10 +485,20 @@ public abstract class AbstractMet4jApplication {
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+
         DOMSource domSource = new DOMSource(document);
         StreamResult streamResult = new StreamResult(new File(wrapperDirectory.getAbsolutePath() + "/" + className + ".xml"));
 
         transformer.transform(domSource, streamResult);
+
+        // remove empty lines
+        String filePath = wrapperDirectory.getAbsolutePath() + "/" + className + ".xml";
+        List<String> lines = Files.readAllLines(Paths.get(filePath))
+                .stream()
+                .filter(line -> !line.trim().isEmpty())
+                .collect(Collectors.toList());
+
+        Files.write(Paths.get(filePath), lines, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     private Element getParamFromOption(Document document, HashMap<String, String> o) {
@@ -590,7 +617,7 @@ public abstract class AbstractMet4jApplication {
     }
 
     public enum GalaxyPackageType {
-        Docker, Singularity
+        Docker, Singularity, Conda
     }
 
 }

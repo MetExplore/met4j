@@ -47,6 +47,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
+import fr.inrae.toulouse.metexplore.met4j_graph.io.AttributeExporter;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.Bionetwork2BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_mathUtils.matrix.ExportMatrix;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
@@ -62,7 +63,6 @@ import org.kohsuke.args4j.Option;
 import java.util.HashSet;
 import java.util.Set;
 
-import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Tsv;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Txt;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.FBC;
@@ -212,7 +212,7 @@ public class Sbml2CompoundGraph extends AbstractMet4jApplication implements Grap
 
         //export graph
         System.out.print("Exporting...");
-        this.exportGraph(graph, format, output, computeWeight, "weight");
+        this.exportGraph(graph, network, format, output, computeWeight, "weight");
         System.out.println(" Done.");
     }
 
@@ -237,9 +237,19 @@ public class Sbml2CompoundGraph extends AbstractMet4jApplication implements Grap
     }
 
     @Override
+    public AttributeExporter getAttributeExporter(BioNetwork network){
+        AttributeExporter att = new AttributeExporter(network)
+                .exportName().exportType().exportReversible().exportTransportFlag();
+        if(mergingStrat.equals(strategy.no))
+            att = att.exportCompartment();
+        return att;
+    }
+
+    @Override
     public String getShortDescription() {
         return "Advanced creation of a compound graph representation of a SBML file content";
     }
+
 
     @Override
     public Set<Doi> getDois() {

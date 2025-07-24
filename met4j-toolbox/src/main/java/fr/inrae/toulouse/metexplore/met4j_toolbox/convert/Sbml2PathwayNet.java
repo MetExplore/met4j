@@ -100,7 +100,6 @@ public class Sbml2PathwayNet extends AbstractMet4jApplication implements GraphOu
             "Tabulated edge list by default (source id \t edge type \t target id). Other options include GML, JsonGraph, and tabulated node list (label \t node id \t node type).")
     public GraphOutPut.formatEnum format = GraphOutPut.formatEnum.tab;
 
-    private BioNetwork finalNetwork;
 
     public static void main(String[] args) {
 
@@ -154,19 +153,19 @@ public class Sbml2PathwayNet extends AbstractMet4jApplication implements GraphOu
 
         //export graph
         System.out.print("Exporting...");
-        finalNetwork = network;
         if(format != formatEnum.matrix && !onlySourcesAndSinks) EdgeMerger.undirectedMergeEdgesWithOverride(graph,null);
         this.exportGraph(graph, format, outputPath);
         System.out.println(" Done.");
     }
 
     @Override
-    public AttributeExporter getAttributeExporter() {
-        return new AttributeExporter()
+    public AttributeExporter getAttributeExporter(BioNetwork network) {
+        return new AttributeExporter(network)
                 .exportName()
                 .exportType()
                 .exportReversible()
-                .exportNodeAttribute("size", p -> finalNetwork.getMetabolitesFromPathway((BioPathway) p).size());
+                .exportCompartment()
+                .exportNodeAttribute("size", p -> network.getMetabolitesFromPathway((BioPathway) p).size());
     }
 
     @Override

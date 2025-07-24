@@ -70,7 +70,7 @@ public class ExportGraph<V extends BioEntity, E extends Edge<V>, G extends BioGr
 	 */
 	public ExportGraph(G graph) {
 		this.graph=graph;
-		this.att = new AttributeExporter().exportName().exportType().exportReversible();
+		this.att = AttributeExporter.minimal();
 	}
 
 	/**

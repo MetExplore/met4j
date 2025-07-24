@@ -45,7 +45,7 @@ public class TestExportGraph {
     public static BioPathway p1,p2,p3,p4;
 
     /** The compartment */
-    public static BioCompartment comp;
+    public static BioCompartment comp,comp2,comp3;
     /**
      * Inits the graph.
      */
@@ -53,13 +53,15 @@ public class TestExportGraph {
     public static void init(){
         bn = new BioNetwork();
         comp = new BioCompartment("comp"); bn.add(comp);
+        comp2 = new BioCompartment("comp2"); bn.add(comp2);
+        comp3 = new BioCompartment("comp3"); bn.add(comp3);
 
         a = new BioMetabolite("a","1"); bn.add(a);bn.affectToCompartment(comp, a); a.setMolecularWeight(1.1);a.setChemicalFormula("BaCoN");
         b = new BioMetabolite("b","2"); bn.add(b);bn.affectToCompartment(comp, b); b.setMolecularWeight(2.2);b.setChemicalFormula("BaCoN");
         c = new BioMetabolite("c","3"); bn.add(c);bn.affectToCompartment(comp, c); c.setMolecularWeight(3.3);c.setChemicalFormula("BaCoN");
         d = new BioMetabolite("d","4"); bn.add(d);bn.affectToCompartment(comp, d); d.setMolecularWeight(4.4);d.setChemicalFormula("BaCoN");
-        e = new BioMetabolite("e","5"); bn.add(e);bn.affectToCompartment(comp, e); e.setMolecularWeight(5.5);e.setChemicalFormula("BaCoN");
-        f = new BioMetabolite("f","6"); bn.add(f);bn.affectToCompartment(comp, f); f.setMolecularWeight(6.6);f.setChemicalFormula("BaCoN");
+        e = new BioMetabolite("e","5"); bn.add(e);bn.affectToCompartment(comp2, e);bn.affectToCompartment(comp3, e); e.setMolecularWeight(5.5);e.setChemicalFormula("BaCoN");
+        f = new BioMetabolite("f","6"); bn.add(f);bn.affectToCompartment(comp2, f); f.setMolecularWeight(6.6);f.setChemicalFormula("BaCoN");
         h = new BioMetabolite("h","7"); bn.add(h);bn.affectToCompartment(comp, h); h.setMolecularWeight(7.7);h.setChemicalFormula("BaCoN");
 
         p1= new BioPathway("p1"); bn.add(p1);
@@ -81,30 +83,30 @@ public class TestExportGraph {
         r2.setReversible(false); r2.setEcNumber("EC:2");
         bn.affectToPathway(p4, r2);
         r3 = new BioReaction("r3","3");  bn.add(r3);
-        bn.affectLeft(r3, 1.0, comp, e);
+        bn.affectLeft(r3, 1.0, comp3, e);
         bn.affectRight(r3, 1.0, comp, b);
         r3.setReversible(true); r3.setEcNumber("EC:3");
         bn.affectToPathway(p1, r3);
         bn.affectToPathway(p3, r3);
         r4 = new BioReaction("r4","4");  bn.add(r4);
-        bn.affectLeft(r4, 1.0, comp, e);
+        bn.affectLeft(r4, 1.0, comp2, e);
         bn.affectRight(r4, 1.0, comp, c);
-        bn.affectRight(r4, 1.0, comp, f);
+        bn.affectRight(r4, 1.0, comp2, f);
         r4.setReversible(false); r4.setEcNumber("EC:4");
         bn.affectToPathway(p3, r4);
         r5 = new BioReaction("r5","5");  bn.add(r5);
         bn.affectLeft(r5, 1.0, comp, a);
-        bn.affectRight(r5, 1.0, comp, e);
+        bn.affectRight(r5, 1.0, comp2, e);
         r5.setReversible(true); r5.setEcNumber("EC:5");
         bn.affectToPathway(p3, r5);
         r6 = new BioReaction("r6","6");  bn.add(r6);
         bn.affectLeft(r6, 1.0, comp, d);
-        bn.affectRight(r6, 1.0, comp, f);
+        bn.affectRight(r6, 1.0, comp2, f);
         r6.setReversible(false); r6.setEcNumber("EC:6");
         //not in any pathway
         r7 = new BioReaction("r7","7");  bn.add(r7);
         bn.affectLeft(r7, 1.0, comp, d);
-        bn.affectRight(r7, 1.0, comp, f);
+        bn.affectRight(r7, 1.0, comp2, f);
         r7.setReversible(false); r7.setEcNumber("EC:7");
         bn.affectToPathway(p2, r7);
 
@@ -444,13 +446,10 @@ public class TestExportGraph {
     @Test
     public void testGraph2TabAtt() {
         StringWriter w = new StringWriter();
-        AttributeExporter attExport = AttributeExporter.minimal()
-                .exportEC()
-                .exportMass()
-                .exportFormula()
+        AttributeExporter attExport = AttributeExporter.full(bn)
                 .exportEdgeAttribute("test", e -> e.getV1().getId())
                 .exportNodeAttribute("test2", BioEntity::getName);
-        ExportGraph export = new ExportGraph<>(bg, attExport);
+        ExportGraph<BioEntity, BipartiteEdge, BipartiteGraph> export = new ExportGraph<>(bg, attExport);
         export.toTab(w);
         String output = w.toString();
         ArrayList<String> lines = new ArrayList<>(Arrays.asList(output.split("\\n")));
@@ -468,10 +467,7 @@ public class TestExportGraph {
     @Test
     public void testGraph2nodeListAtt() {
         StringWriter w = new StringWriter();
-        AttributeExporter attExport = AttributeExporter.minimal()
-                .exportEC()
-                .exportMass()
-                .exportFormula()
+        AttributeExporter attExport = AttributeExporter.full(bn)
                 .exportEdgeAttribute("Test", e -> e.getV1().getId())
                 .exportNodeAttribute("Test2", BioEntity::getName);
 
@@ -482,20 +478,33 @@ public class TestExportGraph {
         ArrayList<String> lines = new ArrayList<>(Arrays.asList(output.split("\\n")));
 
         String header = lines.remove(0);;
-        assertEquals("wrong Bipartite header","Node_id\tEC\tFormula\tMass\tName\tReversible\tTest2\tType",header);
+        assertEquals("wrong Bipartite header","Node_id\tCompartment\tEC\tFormula\tMass\tName\tReversible\tTest2\tTransport\tType",header);
 
         for(String line : lines){
             String[] column = line.split("\t");
-            assertEquals("wrong number of Bipartite columns",8, column.length);
-            assertEquals(column[6], column[4]);
-            if(column[7].equals("Compound")){
-                assertEquals("wrong Bipartite formula","BaCoN", column[2]);
-                assertEquals("wrong Bipartite mass",column[4]+"."+column[4], column[3]);
-                assertEquals("wrong Bipartite EC number","NA", column[1]);
+            assertEquals("wrong number of Bipartite columns",10, column.length);
+            assertEquals(column[7], column[5]);
+            if(column[9].equals("Compound")){
+                assertEquals("wrong Bipartite formula","BaCoN", column[3]);
+                assertEquals("wrong Bipartite mass",column[5]+"."+column[5], column[4]);
+                assertEquals("wrong Bipartite EC number","NA", column[2]);
+                if(column[0].equals("e")){
+                    assertTrue("wrong Bipartite compartment", column[1].contains("comp2,comp3") || column[1].contains("comp3,comp2"));
+                } else if (column[0].equals("f")) {
+                    assertEquals("wrong Bipartite compartment","comp2", column[1]);
+                }else{
+                    assertEquals("wrong Bipartite compartment","comp", column[1]);
+                }
+
             }else{
-                assertEquals("wrong Bipartite formula","NA", column[2]);
-                assertEquals("wrong Bipartite mass","NA", column[3]);
-                assertEquals("wrong Bipartite EC","EC:"+column[4], column[1]);
+                assertEquals("wrong Bipartite formula","NA", column[3]);
+                assertEquals("wrong Bipartite mass","NA", column[4]);
+                assertEquals("wrong Bipartite EC","EC:"+column[5], column[2]);
+                if (column[0].equals("r3")||column[0].equals("r4")||column[0].equals("r5")||column[0].equals("r6")||column[0].equals("r7")) {
+                    assertEquals("wrong transport assessment","true", column[8]);
+                } else{
+                    assertEquals("wrong transport assessment","false", column[8]);
+                }
             }
         }
 
@@ -507,24 +516,26 @@ public class TestExportGraph {
         lines = new ArrayList<>(Arrays.asList(output.split("\\n")));
 
         header = lines.remove(0);;
-        assertEquals("wrong Reaction header","Node_id\tEC\tName\tReversible\tTest2\tType",header);
+        assertEquals("wrong Reaction header","Node_id\tEC\tName\tReversible\tTest2\tTransport\tType",header);
 
         for(String line : lines){
             String[] column = line.split("\t");
-            assertEquals("wrong number of Reaction columns",6, column.length);
+            assertEquals("wrong number of Reaction columns",7, column.length);
             assertEquals(column[2], column[4]);
-            assertEquals("wrong Reaction type","Reaction",column[5]);
+            assertEquals("wrong Reaction type","Reaction",column[6]);
             assertEquals("wrong Reaction EC","EC:"+column[4], column[1]);
+            if(column[0].equals("r3")||column[0].equals("r4")||column[0].equals("r5")||column[0].equals("r6")||column[0].equals("r7")){
+                assertEquals("wrong Reaction transport","true", column[5]);
+            } else {
+                assertEquals("wrong Reaction transport","false", column[5]);
+            }
         }
     }
 
     @Test
     public void testGraph2gmlAtt() {
         StringWriter w = new StringWriter();
-        AttributeExporter attExport = AttributeExporter.minimal()
-                .exportEC()
-                .exportMass()
-                .exportFormula()
+        AttributeExporter attExport = AttributeExporter.full(bn)
                 .exportEdgeAttribute("Test", e -> e.getV1().getId())
                 .exportNodeAttribute("Test2", BioEntity::getName);
         ExportGraph<BioEntity, BipartiteEdge, BipartiteGraph> export = new ExportGraph<>(bg, attExport);
@@ -540,26 +551,27 @@ public class TestExportGraph {
         Pattern Test2AttRegex = Pattern.compile("Test2\\s+\"\\w\"");
         Pattern TestAttRegex = Pattern.compile("Test\\s+\"[a-z][0-9]?\"");
         Pattern TypeAttRegex = Pattern.compile("Type\\s+\"(Compound|Reaction)\"");
+        Pattern CompAttRegex = Pattern.compile("Compartment\\s+\"comp[2,3]?(,comp[2,3])?\"");
+        Pattern TranspAttRegex = Pattern.compile("Transport\\s+\"(true||false)\"");
 
 
         assertEquals("anomaly in Bipartite EC attributes",7, ECAttRegex.matcher(output).results().count());
         assertEquals("anomaly in Bipartite Formula attributes",7, FormulaAttRegex.matcher(output).results().count());
         assertEquals("anomaly in Bipartite mass attributes",7, MassAttRegex.matcher(output).results().count());
+        assertEquals("anomaly in Bipartite compartment attributes",7, CompAttRegex.matcher(output).results().count());
         assertEquals("anomaly in Bipartite name attributes",14, NameAttRegex.matcher(output).results().count());
         assertEquals("anomaly in Bipartite reversibility attributes",7, ReversibleAttRegex.matcher(output).results().count());
         assertEquals("anomaly in Bipartite test attributes",14, Test2AttRegex.matcher(output).results().count());
         assertEquals("anomaly in Bipartite test attributes",22, TestAttRegex.matcher(output).results().count());
         assertEquals("anomaly in Bipartite type attributes",14, TypeAttRegex.matcher(output).results().count());
+        assertEquals("anomaly in Bipartite transport attributes",7, TranspAttRegex.matcher(output).results().count());
     }
 
 
     @Test
     public void testGraph2jsonAtt() {
         StringWriter w = new StringWriter();
-        AttributeExporter attExport = AttributeExporter.minimal()
-                .exportEC()
-                .exportMass()
-                .exportFormula()
+        AttributeExporter attExport = AttributeExporter.full(bn)
                 .exportEdgeAttribute("Test", e -> e.getV1().getId())
                 .exportNodeAttribute("Test2", BioEntity::getName);
         ExportGraph<BioEntity, BipartiteEdge, BipartiteGraph> export = new ExportGraph<>(bg, attExport);
@@ -576,16 +588,20 @@ public class TestExportGraph {
             Pattern Test2AttRegex = Pattern.compile("\"Test2\":\"\\w\"");
             Pattern TestAttRegex = Pattern.compile("\"Test\":\"[a-z][0-9]?\"");
             Pattern TypeAttRegex = Pattern.compile("\"Type\":\"(Compound|Reaction)\"");
+            Pattern CompAttRegex = Pattern.compile("\"Compartment\":\"comp[2,3]?(,comp[2,3])?\"");
+            Pattern TranspAttRegex = Pattern.compile("Transport\":\"(true||false)\"");
 
 
             assertEquals("anomaly in Bipartite EC attributes",7, ECAttRegex.matcher(output).results().count());
             assertEquals("anomaly in Bipartite Formula attributes",7, FormulaAttRegex.matcher(output).results().count());
             assertEquals("anomaly in Bipartite mass attributes",7, MassAttRegex.matcher(output).results().count());
+            assertEquals("anomaly in Bipartite compartment attributes",7, CompAttRegex.matcher(output).results().count());
             assertEquals("anomaly in Bipartite name attributes",14, NameAttRegex.matcher(output).results().count());
             assertEquals("anomaly in Bipartite reversibility attributes",7, ReversibleAttRegex.matcher(output).results().count());
             assertEquals("anomaly in Bipartite test attributes",14, Test2AttRegex.matcher(output).results().count());
             assertEquals("anomaly in Bipartite test attributes",22, TestAttRegex.matcher(output).results().count());
             assertEquals("anomaly in Bipartite type attributes",14, TypeAttRegex.matcher(output).results().count());
+            assertEquals("anomaly in Bipartite transport attributes",7, TranspAttRegex.matcher(output).results().count());
         } catch (IOException ex) {
            fail("error while exporting to json");
         }

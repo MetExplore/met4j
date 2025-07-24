@@ -166,7 +166,7 @@ public class ExtractSubNetwork extends AbstractMet4jApplication implements Graph
         }
 
         //export sub-network
-        this.exportGraph(subnet, format, output, ((weightFile != null)||(degree)||(chemicalSim)),"weight");
+        this.exportGraph(subnet, network, format, output, ((weightFile != null)||(degree)||(chemicalSim)),"weight");
 
     }
 

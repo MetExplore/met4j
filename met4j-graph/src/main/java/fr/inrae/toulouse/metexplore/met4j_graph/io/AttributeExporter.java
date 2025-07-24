@@ -2,6 +2,7 @@ package fr.inrae.toulouse.metexplore.met4j_graph.io;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteEdge;
@@ -29,8 +30,11 @@ public class AttributeExporter {
     private Boolean exportReversible = false; // Boolean variable to check if the REACTION reversibility is exported
     private Boolean exportName = false; // Boolean variable to check if the name is exported
     private Boolean exportType = false; // Boolean variable to check if the bioentity type is exported
+    private Boolean exportTransport = false; // Boolean variable to check if the REACTION transport flag is exported
+    private Boolean exportCompartment = false; // Boolean variable to check if the COMPARTMENT is exported. Requires original BioNetwork.
     private TreeMap<String,Function<BioEntity,Object>> nodeExtraAtt = new TreeMap<>(); // TreeMap to store the node attributes
     private TreeMap<String,Function<Edge<?extends BioEntity>,Object>> edgeExtraAtt = new TreeMap<>(); // TreeMap to store the edge attributes
+    private BioNetwork network = null; // The BioNetwork from which some attributes are exported
 
     /**
      * Gets the list of node attribute labels
@@ -70,10 +74,17 @@ public class AttributeExporter {
         return this;
     }
     /**
-     *  Exports reactions' EC reversibility
+     *  Exports reactions' reversibility
      */
     public AttributeExporter exportReversible() {
         this.exportReversible = true;
+        return this;
+    }
+    /**
+     *  Exports reactions transport flag
+     */
+    public AttributeExporter exportTransportFlag() {
+        this.exportTransport = true;
         return this;
     }
     /**
@@ -88,6 +99,13 @@ public class AttributeExporter {
      */
     public AttributeExporter exportType() {
         this.exportType = true;
+        return this;
+    }
+    /**
+     *  Exports bio-entities' compartment
+     */
+    public AttributeExporter exportCompartment() {
+        this.exportCompartment = true;
         return this;
     }
 
@@ -110,6 +128,14 @@ public class AttributeExporter {
     public AttributeExporter exportEdgeAttribute(String attributeName, Function<Edge<?extends BioEntity>,Object> values) {
         edgeExtraAtt.put(attributeName, values);
         return this;
+    }
+
+
+    public AttributeExporter() {
+        // Default constructor
+    }
+    public AttributeExporter(BioNetwork network){
+        this.network=network;
     }
 
     /*
@@ -171,6 +197,13 @@ public class AttributeExporter {
         if(exportType) att.put("Type",DefaultAttribute.createAttribute("Compound"));
         if(exportFormula && v.getChemicalFormula()!=null) att.put("Formula", DefaultAttribute.createAttribute(v.getChemicalFormula()));
         if(exportMass && v.getMolecularWeight()!=null) att.put("Mass", DefaultAttribute.createAttribute(v.getMolecularWeight()));
+        if(exportCompartment && network!=null){
+            att.put("Compartment", DefaultAttribute.createAttribute(
+                    network.getCompartmentsOf(v).stream().map(BioEntity::getId).reduce((a,b) -> a + "," + b).orElse("None"))
+            );
+        } else if (exportCompartment) {
+            System.err.println("Warning: Compartment export is enabled but no BioNetwork is provided. Compartment information will not be exported.");
+        }
         return att;
     });
 
@@ -185,6 +218,7 @@ public class AttributeExporter {
         if(exportType) att.put("Type",DefaultAttribute.createAttribute("Reaction"));
         if(exportReversible && v.isReversible()!=null) att.put("Reversible", DefaultAttribute.createAttribute(v.isReversible()));
         if(exportEC && v.getEcNumber()!=null) att.put("EC", DefaultAttribute.createAttribute(v.getEcNumber()));
+        if(exportTransport && v.isTransportReaction()!=null) att.put("Transport", DefaultAttribute.createAttribute(v.isTransportReaction()));
         return att;
     });
 
@@ -293,6 +327,22 @@ public class AttributeExporter {
      */
     public static AttributeExporter minimal(){
         return new AttributeExporter().exportName().exportType().exportReversible();
+    }
+
+    /**
+     * Exports all attributes from model (name, type, reversibility, transport flag, compartment, mass, formula, EC number)
+     * @return an instance of the AttributeExporter
+     */
+    public static AttributeExporter full(BioNetwork network){
+        return new AttributeExporter(network)
+                .exportName()
+                .exportType()
+                .exportReversible()
+                .exportCompartment()
+                .exportEC()
+                .exportFormula()
+                .exportMass()
+                .exportTransportFlag();
     }
 
 }

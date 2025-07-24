@@ -254,15 +254,6 @@ public class BioCollectionTest {
 
 	}
 
-	@Test (expected =  IllegalArgumentException.class)
-	public void testAddEntityWithSameId() {
-
-		BioMetabolite other = new BioMetabolite("m1");
-		collec.add(other);
-
-	}
-
-
 	@Test
 	public void getMapView() {
 

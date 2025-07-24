@@ -36,55 +36,37 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import fr.inrae.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
-import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.FBCWriter;
-import org.sbml.jsbml.ASTNode;
-import org.sbml.jsbml.Compartment;
-import org.sbml.jsbml.KineticLaw;
-import org.sbml.jsbml.LocalParameter;
-import org.sbml.jsbml.Model;
-import org.sbml.jsbml.Parameter;
-import org.sbml.jsbml.Reaction;
-import org.sbml.jsbml.SBMLDocument;
-import org.sbml.jsbml.Species;
-import org.sbml.jsbml.SpeciesReference;
-import org.sbml.jsbml.Unit;
-import org.sbml.jsbml.UnitDefinition;
-import org.sbml.jsbml.ASTNode.Type;
-
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioParticipant;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-
-import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
-
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentAttributes;
+import fr.inrae.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.Flux;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.FluxCollection;
+import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageWriterException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollection;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.UnitSbml;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.FBCWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.PackageWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
-
+import org.sbml.jsbml.*;
+import org.sbml.jsbml.ASTNode.Type;
 import org.sbml.jsbml.Unit.Kind;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
 
 /**
  * Abstract class that defines all the methods used to parse the bioNetwork
  * regardless of the requested output SBML level
  *
  * @author Benjamin
- * @since 3.0
  * @version $Id: $Id
+ * @since 3.0
  */
 public class BionetworkToJsbml {
 
@@ -127,7 +109,7 @@ public class BionetworkToJsbml {
      * <p>Constructor for BionetworkToJsbml.</p>
      *
      * @param level a int.
-     * @param vs a int.
+     * @param vs    a int.
      */
     public BionetworkToJsbml(int level, int vs) {
         this.vs = vs;
@@ -307,9 +289,13 @@ public class BionetworkToJsbml {
             for (BioCompartment cpt : cpts) {
 
                 Compartment comp = model.getCompartment(StringUtils.convertToSID(cpt.getId()));
+                Species metab;
 
-                Species metab = model.createSpecies(StringUtils.convertToSID(bioMetab.getId()), comp);
-
+                if (! model.containsSpecies(StringUtils.convertToSID(bioMetab.getId()))) {
+                    metab = model.createSpecies(StringUtils.convertToSID(bioMetab.getId()), comp);
+                } else {
+                    metab = model.getSpecies(StringUtils.convertToSID(bioMetab.getId()));
+                }
                 metab.setName(bioMetab.getName());
                 metab.setBoundaryCondition(MetaboliteAttributes.getBoundaryCondition(bioMetab));
 
@@ -368,11 +354,7 @@ public class BionetworkToJsbml {
                 reaction.setSBOTerm(ReactionAttributes.getSboTerm(bionetReaction));
             }
 
-            if (bionetReaction.isReversible()) {
-                reaction.setReversible(true);
-            } else {
-                reaction.setReversible(false);
-            }
+            reaction.setReversible(bionetReaction.isReversible());
             // Set the substrates of the reaction
             for (BioParticipant BionetLParticipant : net.getLeftReactants(bionetReaction)) {
                 SpeciesReference specieRef = reaction.createReactant();

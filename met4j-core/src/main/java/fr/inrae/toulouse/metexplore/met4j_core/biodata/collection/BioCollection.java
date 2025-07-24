@@ -35,236 +35,250 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata.collection;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>BioCollection class.</p>
  *
  * @author lcottret
- *
  */
 @SuppressWarnings({"NullableProblems", "SuspiciousMethodCalls"})
 @EqualsAndHashCode
 public class BioCollection<E extends BioEntity> implements Collection<E> {
 
-	final private Map<String, E> entities;
+    final private Map<String, E> entities;
 
-	private BioCollection(Map<String, E> entities) {
-		this.entities = entities;
-	}
+    private BioCollection(Map<String, E> entities) {
+        this.entities = entities;
+    }
 
-	/**
-	 * <p>Constructor for BioCollection.</p>
-	 */
-	public BioCollection() {
-		entities = new HashMap<>();
-	}
+    /**
+     * <p>Constructor for BioCollection.</p>
+     */
+    public BioCollection() {
+        entities = new HashMap<>();
+    }
 
-	/**
-	 * <p>Constructor for BioCollection.</p>
-	 *
-	 * @param set a {@link java.util.Collection} object.
-	 */
-	public BioCollection(Collection<E> set) {
-		entities = new HashMap<>();
-		this.addAll(set);
-	}
+    /**
+     * <p>Constructor for BioCollection.</p>
+     *
+     * @param set a {@link java.util.Collection} object.
+     */
+    public BioCollection(Collection<E> set) {
+        entities = new HashMap<>();
+        this.addAll(set);
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
 
-		String str = this.getClass().getSimpleName() + "(" + entities.values().stream()
-				.map(BioEntity::getId)
-				.collect(Collectors.joining(", "));
+        String str = this.getClass().getSimpleName() + "(" + entities.values().stream()
+                .map(BioEntity::getId)
+                .collect(Collectors.joining(", "));
 
-		return str + ")";
-	}
+        return str + ")";
+    }
 
-	/**
-	 * Check if the collection contains a BioEntity which has a given id
-	 *
-	 * @param id id
-	 * @return {@link java.lang.Boolean}
-	 */
-	public Boolean containsId(@NonNull String id) {
-		return entities.containsKey(id);
-	}
+    /**
+     * Check if the collection contains a BioEntity which has a given id
+     *
+     * @param id id
+     * @return {@link java.lang.Boolean}
+     */
+    public Boolean containsId(@NonNull String id) {
+        return entities.containsKey(id);
+    }
 
-	/**
-	 * Check if the collection contains a BioEntity which has a given name
-	 *
-	 * @param name name
-	 * @return {@link java.lang.Boolean}
-	 */
-	public Boolean containsName(@NonNull String name) {
-		return entities.values().stream().anyMatch(o -> o.getName().equals(name));
-	}
+    /**
+     * Check if the collection contains a BioEntity which has a given name
+     *
+     * @param name name
+     * @return {@link java.lang.Boolean}
+     */
+    public Boolean containsName(@NonNull String name) {
+        return entities.values().stream().anyMatch(o -> o.getName().equals(name));
+    }
 
-	/**
-	 * Get entity with a specific id
-	 *
-	 * @param id id
-	 * @return the entity or null
-	 */
-	public E get(@NonNull String id) {
+    /**
+     * Get entity with a specific id
+     *
+     * @param id id
+     * @return the entity or null
+     */
+    public E get(@NonNull String id) {
 
-		return entities.get(id);
-	}
+        return entities.get(id);
+    }
 
-	/**
-	 * Get the set of the ids of the entities in the collection
-	 *
-	 * @return the {@link java.util.Set} of the entities' ids
-	 */
-	public Set<String> getIds() {
-		return this.entities.keySet();
-	}
+    /**
+     * Get the set of the ids of the entities in the collection
+     *
+     * @return the {@link java.util.Set} of the entities' ids
+     */
+    public Set<String> getIds() {
+        return this.entities.keySet();
+    }
 
-	/**
-	 * Get entities with a specific name
-	 *
-	 * @param name name of the entity
-	 * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection}
-	 */
-	public BioCollection<E> getEntitiesFromName(@NonNull String name) {
+    /**
+     * Get entities with a specific name
+     *
+     * @param name name of the entity
+     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection}
+     */
+    public BioCollection<E> getEntitiesFromName(@NonNull String name) {
 
-		return entities.values().stream().filter(o -> o.getName().equals(name)).collect(Collectors.toCollection( BioCollection<E>::new));
+        return entities.values().stream().filter(o -> o.getName().equals(name)).collect(Collectors.toCollection(BioCollection<E>::new));
 
-	}
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public int size() {
-		return this.entities.size();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int size() {
+        return this.entities.size();
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean isEmpty() {
-		return this.entities.isEmpty();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isEmpty() {
+        return this.entities.isEmpty();
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public Iterator<E> iterator() {
-		return this.entities.values().iterator();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Iterator<E> iterator() {
+        return this.entities.values().iterator();
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public Object[] toArray() {
-		return this.entities.values().toArray();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object[] toArray() {
+        return this.entities.values().toArray();
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public <T> T[] toArray(T[] a) {
-		return this.entities.values().toArray(a);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return this.entities.values().toArray(a);
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean retainAll(Collection<?> c) {
-		return this.entities.values().retainAll(c);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        return this.entities.values().retainAll(c);
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public void clear() {
-		this.entities.clear();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void clear() {
+        this.entities.clear();
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean removeAll(Collection<?> c) {
-		return entities.values().removeAll(c);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        return entities.values().removeAll(c);
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean contains(@NonNull Object o) {
-		return entities.containsValue(o);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean contains(@NonNull Object o) {
+        return entities.containsKey(((BioEntity) o).getId());
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean add(@NonNull E e) {
-		if(entities.containsValue(e)) {
-			return false;
-		}
-		else {
-			if (entities.containsKey(e.getId())) {
-				throw new IllegalArgumentException("An entity with the same id (" + e.getId() + ") is already present in the BioCollection");
-			}
-			entities.put(e.getId(), e);
-		}
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean add(@NonNull E e) {
+        entities.put(e.getId(), e);
+        return true;
+    }
 
-	/**
-	 * add several entities to the collection
-	 *
-	 * @param newEntities : 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
-	 * @return always true
-	 */
-	@SafeVarargs
-	public final boolean add(E... newEntities) {
-		for(E e : newEntities) {
-			entities.put(e.getId(), e);
-		}
-		return true;
-	}
+    /**
+     * add several entities to the collection
+     *
+     * @param newEntities : 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
+     * @return always true
+     */
+    @SafeVarargs
+    public final boolean add(E... newEntities) {
+        for (E e : newEntities) {
+            entities.put(e.getId(), e);
+        }
+        return true;
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean remove(@NonNull Object o) {
-		Object removed =  entities.remove(((BioEntity) o).getId());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean remove(@NonNull Object o) {
+        Object removed = entities.remove(((BioEntity) o).getId());
 
-		return removed != null;
+        return removed != null;
 
-	}
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean containsAll(Collection<?> c) {
-		return entities.values().containsAll(c);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        return entities.values().containsAll(c);
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean addAll(@NonNull Collection<? extends E> c) {
-		for (E e : c) {
-			this.add(e);
-		}
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean addAll(@NonNull Collection<? extends E> c) {
+        for (E e : c) {
+            this.add(e);
+        }
+        return true;
+    }
 
-	/**
-	 * <p>getView.</p>
-	 *
-	 * @return a copy of the {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection}
-	 */
-	public BioCollection<E> getView() {
-		return new BioCollection<>(new HashMap<>(this.entities));
-	}
+    /**
+     * <p>getView.</p>
+     *
+     * @return a copy of the {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection}
+     */
+    public BioCollection<E> getView() {
+        return new BioCollection<>(new HashMap<>(this.entities));
+    }
 
-	/**
-	 * <p>getMapView.</p>
-	 *
-	 * @return the map of entities
-	 */
-	public HashMap<String, E> getMapView() {
-		return new HashMap<>(this.entities);
-	}
+    /**
+     * <p>getMapView.</p>
+     *
+     * @return the map of entities
+     */
+    public HashMap<String, E> getMapView() {
+        return new HashMap<>(this.entities);
+    }
 }

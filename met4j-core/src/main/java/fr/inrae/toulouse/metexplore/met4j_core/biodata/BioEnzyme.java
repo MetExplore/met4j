@@ -38,6 +38,8 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import lombok.NonNull;
 
+import java.util.ArrayList;
+
 /**
  * <p>BioEnzyme class.</p>
  *
@@ -116,13 +118,17 @@ public class BioEnzyme extends BioPhysicalEntity {
      */
     protected void removeParticipant(@NonNull BioPhysicalEntity e) {
 
-        BioCollection<BioEnzymeParticipant> tmp = new BioCollection<>(this.participants);
+        ArrayList<BioEnzymeParticipant> participantsToRemove = new ArrayList<>();
 
-        tmp.forEach(p -> {
+        this.participants.forEach(p -> {
             if (p.getPhysicalEntity().equals(e)) {
-                this.participants.remove(p);
+                participantsToRemove.add(p);
             }
         });
+
+        for (BioEnzymeParticipant p : participantsToRemove) {
+            this.participants.remove(p);
+        }
     }
 
 }

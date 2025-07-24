@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Sbml;
-import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Tsv;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats.Txt;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.InputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
@@ -124,7 +123,7 @@ public class ScopeNetwork extends AbstractMet4jApplication implements GraphOutPu
             if (trace) scopeComp.trace();
             BipartiteGraph scope = scopeComp.getScopeNetwork();
             //export sub-network
-            this.exportGraph(scope, format, output, trace, "step");
+            this.exportGraph(scope, network, format, output, trace, "step");
         }
 
     }

@@ -291,7 +291,7 @@ public class MetaNetworkBuilder implements MultiNetworkBuilder{
     protected void initSharedComp(BioNetwork meta) {
         for (Map.Entry<BioCompartment, Set<MetaBioMetabolite>> compDescriptor : metaCompComposition.entrySet()) {
             BioCompartment sc = compDescriptor.getKey();
-            meta.addCompartment(sc);
+            meta.add(sc);
         }
     }
 

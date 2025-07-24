@@ -90,6 +90,9 @@ public class BioNetwork extends BioEntity {
         super("NA");
     }
 
+    // ----------------------------------------
+    // GETTERS
+    // ----------------------------------------
 
     /**
      * Get a reaction by its id
@@ -102,18 +105,8 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     * Check if a reaction with a specific id already exists in the network
-     *
-     * @param id a String
-     * @return true if there is a {@link BioReaction} with this id exists in the BioNetwork
-     */
-    public boolean containsReaction(@NonNull String id) {
-        return this.reactions.containsId(id);
-    }
-
-
-    /**
      * Get a metabolite by its id
+     *
      * @param id a String
      * @return a {@link BioMetabolite}
      */
@@ -122,17 +115,8 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     * Check if a metabolite with a specific id already exists in the network
-     *
-     * @param id a String
-     * @return true if there is a {@link BioMetabolite} with this id exists in the BioNetwork
-     */
-    public boolean containsMetabolite(@NonNull String id) {
-        return this.metabolites.containsId(id);
-    }
-
-    /**
      * Get a pathway by its id
+     *
      * @param id a String
      * @return a {@link BioPathway}
      */
@@ -141,17 +125,8 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     * Check if a pathway with a specific id already exists in the network
-     *
-     * @param id a String
-     * @return true if there is a {@link BioPathway} with this id exists in the BioNetwork
-     */
-    public boolean containsPathway(@NonNull String id) {
-        return this.pathways.containsId(id);
-    }
-
-    /**
      * Get a protein by its id
+     *
      * @param id a String
      * @return a {@link BioProtein}
      */
@@ -160,18 +135,8 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     * Check if a pathway with a specific id already exists in the network
-     *
-     * @param id a String
-     * @return true if there is a {@link BioPathway} with this id exists in the BioNetwork
-     */
-    public boolean containsProtein(@NonNull String id) {
-        return this.proteins.containsId(id);
-    }
-
-
-    /**
      * Get a gene by its id
+     *
      * @param id a String
      * @return a {@link BioGene}
      */
@@ -180,17 +145,8 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     * Check if a gene with a specific id already exists in the network
-     *
-     * @param id a String
-     * @return true if there is a {@link BioGene} with this id exists in the BioNetwork
-     */
-    public boolean containsGene(String id) {
-        return this.genes.containsId(id);
-    }
-
-    /**
      * Get a compartment by its id
+     *
      * @param id a String
      * @return a {@link BioCompartment}
      */
@@ -199,571 +155,13 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     * Check if a compartment with a specific id already exists in the network
-     *
-     * @param id a String
-     * @return true if there is a {@link BioCompartment} with this id exists in the BioNetwork
-     */
-    public boolean containsCompartment(String id) {
-        return this.compartments.containsId(id);
-    }
-
-    /**
      * Get an enzyme by its id
+     *
      * @param id a String
      * @return a {@link BioEnzyme}
      */
     public BioEnzyme getEnzyme(String id) {
         return this.enzymes.get(id);
-    }
-
-    /**
-     * Check if an enzyme with a specific id already exists in the network
-     *
-     * @param id a String
-     * @return true if there is a {@link BioEnzyme} with this id exists in the BioNetwork
-     */
-    public boolean containsEnzyme(String id) {
-        return this.enzymes.containsId(id);
-    }
-
-
-    /**
-     * Add several entities
-     *
-     * @param bioEntities 0 to several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} instances
-     */
-    public void add(BioEntity... bioEntities) {
-
-        for (BioEntity e : bioEntities) {
-            this.add(e);
-        }
-    }
-
-    /**
-     * Add several entities
-     *
-     * @param bioEntities a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
-     */
-    public void add(@NonNull BioCollection<?> bioEntities) {
-
-        for (BioEntity e : bioEntities) {
-            this.add(e);
-        }
-    }
-
-    /**
-     * Add one entity
-     *
-     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
-     */
-    public void add(@NonNull BioEntity e) {
-        if (e instanceof BioPathway) {
-            this.addPathway((BioPathway) e);
-        } else if (e instanceof BioMetabolite) {
-            this.addMetabolite((BioMetabolite) e);
-        } else if (e instanceof BioProtein) {
-            this.addProtein((BioProtein) e);
-        } else if (e instanceof BioGene) {
-            this.addGene((BioGene) e);
-        } else if (e instanceof BioReaction) {
-            this.addReaction((BioReaction) e);
-        } else if (e instanceof BioCompartment) {
-            this.addCompartment((BioCompartment) e);
-        } else if (e instanceof BioEnzyme) {
-            this.addEnzyme((BioEnzyme) e);
-        } else {
-            throw new IllegalArgumentException(
-                    "BioEntity \"" + e.getClass().getSimpleName() + "\" not supported by BioNetwork");
-        }
-    }
-
-    /**
-     * Adds a pathway in the network
-     * The pathway must not contain reactions
-     *
-     * @param pathway : the {@link BioPathway} to add
-     */
-    public void addPathway(@NonNull BioPathway pathway) {
-        if (pathway.getReactions().size() > 0) {
-            throw new IllegalArgumentException("[addPathway] The pathway must be empty before adding it to a BioNetwork");
-        }
-        this.pathways.add(pathway);
-    }
-
-    /**
-     * Add a Metabolite in the network
-     *
-     * @param metabolite : the {@link BioMetabolite} to add
-     */
-    public void addMetabolite(@NonNull BioMetabolite metabolite) {
-        this.metabolites.add(metabolite);
-    }
-
-    /**
-     * Add a protein in the network
-     * The protein must not be affected to a gene before adding it to a BioNetwork.
-     *
-     * @param protein : the {@link BioProtein} to add
-     */
-    public void addProtein(@NonNull BioProtein protein) {
-        if (protein.getGene() != null) {
-            throw new IllegalArgumentException("[addProtein] The protein must not be affected to a gene before adding it to a BioNetwork");
-        }
-        this.proteins.add(protein);
-    }
-
-    /**
-     * Add a gene in the BioNetwork
-     *
-     * @param gene : the {@link BioGene} to add
-     */
-    public void addGene(@NonNull BioGene gene) {
-        this.genes.add(gene);
-    }
-
-    /**
-     * Add a reaction in a BioNetwork
-     * The reaction must not be linked to reactants nor to enzymes
-     *
-     * @param reaction : the {@link BioReaction} to add
-     */
-    public void addReaction(@NonNull BioReaction reaction) {
-
-        if (reaction.getLeftReactants().size() > 0 || reaction.getRightReactants().size() > 0) {
-            throw new IllegalArgumentException("[addReaction] The reaction must not contain substrates before adding it to a BioNetwork");
-        }
-
-        if (reaction.getEnzymes().size() > 0) {
-            throw new IllegalArgumentException("[addReaction] The reaction must not be affected to a reaction before adding it to a BioNetwork");
-        }
-
-        this.reactions.add(reaction);
-
-    }
-
-    /**
-     * Add a compartment in a BioNetwork
-     * The compartment must be empty
-     *
-     * @param compartment : the {@link BioCompartment} to add
-     */
-    public void addCompartment(@NonNull BioCompartment compartment) {
-
-        if (compartment.getComponents().size() > 0) {
-            throw new IllegalArgumentException("[addCompartment] The compartment must be empty before adding it to a BioNetwork");
-        }
-
-        this.compartments.add(compartment);
-    }
-
-    /**
-     * Add an enzyme in a BioNetwork
-     * The enzyme must not contain participants
-     *
-     * @param enzyme : the {@link BioEnzyme} to add
-     */
-    public void addEnzyme(@NonNull BioEnzyme enzyme) {
-
-        if (enzyme.getParticipants().size() > 0) {
-            throw new IllegalArgumentException("[addEnzyme] The enzyme must not contain participants before adding it to a BioNetwork");
-        }
-
-        this.enzymes.add(enzyme);
-    }
-
-
-    /**
-     * Remove on cascade a BioEntity
-     *
-     * @param e the {@link BioEntity} to remove
-     */
-    private void removeOnCascade(@NonNull BioEntity e) {
-
-        if (e instanceof BioPathway) {
-            this.pathways.remove(e);
-        } else if (e instanceof BioMetabolite) {
-            this.removeMetabolite((BioMetabolite) e);
-        } else if (e instanceof BioProtein) {
-            this.removeProtein((BioProtein) e);
-        } else if (e instanceof BioGene) {
-            this.removeGene((BioGene) e);
-        } else if (e instanceof BioReaction) {
-            this.removeReaction((BioReaction) e);
-        } else if (e instanceof BioCompartment) {
-            this.removeCompartment((BioCompartment) e);
-        } else if (e instanceof BioEnzyme) {
-            this.removeEnzyme((BioEnzyme) e);
-        } else {
-
-            throw new IllegalArgumentException(
-                    "BioEntity \"" + e.getClass().getSimpleName() + "\" not supported by BioNetwork");
-        }
-
-    }
-
-    /**
-     * Remove on cascade an enzyme : remove also the enzymes in the reactions
-     *
-     * @param e enzyme
-     */
-    public void removeEnzyme(@NonNull BioEnzyme e) {
-
-        BioCollection<BioReaction> reactions = this.reactions;
-
-        for (BioReaction r : reactions) {
-            this.removeEnzymeFromReaction(e, r);
-        }
-
-        this.enzymes.remove(e);
-
-    }
-
-    /**
-     * Remove on cascade several entities
-     *
-     * @param entities 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
-     */
-    public void removeOnCascade(@NonNull BioEntity... entities) {
-        for (BioEntity e : entities) {
-            removeOnCascade(e);
-        }
-    }
-
-    /**
-     * Remove on cascade several entities stored in a BioCollection
-     *
-     * @param entities a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
-     */
-    public void removeOnCascade(@NonNull BioCollection<?> entities) {
-        for (BioEntity e : entities) {
-            removeOnCascade(e);
-        }
-    }
-
-
-    /**
-     * Remove protein from the network and from the enzymes and the compartments
-     * where it is involved
-     *
-     * @param protein a {@link BioProtein} instance
-     */
-    private void removeProtein(@NonNull BioProtein protein) {
-
-        this.proteins.remove(protein);
-
-        this.getEnzymesView().forEach(e -> {
-            BioCollection<BioEnzymeParticipant> participants = new BioCollection<>(
-                    e.getParticipants());
-
-            boolean remove = participants.stream().anyMatch(p -> p.getPhysicalEntity().equals(protein));
-
-            if (remove) {
-                this.removeOnCascade(e);
-            }
-        });
-
-        this.compartments.forEach(c -> {
-            BioCollection<BioEntity> components = new BioCollection<>(c.getComponents());
-
-            components.forEach(p -> {
-                if (p.equals(protein)) {
-                    c.getComponents().remove(p);
-                    if (c.getComponents().size() == 0) {
-                        this.removeOnCascade(c);
-                    }
-                }
-            });
-        });
-
-    }
-
-    /**
-     * Remove a metabolite from the network and from the reactions and compartments
-     * where it is involved and from the c
-     *
-     * @param m a {@link BioMetabolite}
-     */
-    private void removeMetabolite(@NonNull BioMetabolite m) {
-
-        BioCollection<BioReaction> reactions = this.getReactionsFromMetabolite(m);
-
-        reactions.forEach(r -> {
-            BioCollection<BioReactant> lefts = new BioCollection<>(r.getLeftReactants());
-
-            for (BioReactant participant : lefts) {
-                if (participant.getPhysicalEntity().equals(m)) {
-                    r.getLeftReactants().remove(participant);
-                }
-            }
-
-            BioCollection<BioReactant> rights = new BioCollection<>(r.getRightReactants());
-            for (BioReactant participant : rights) {
-                if (participant.getPhysicalEntity().equals(m)) {
-                    r.getRightReactants().remove(participant);
-                }
-            }
-
-            if (r.getLeftReactantsView().size() == 0 && r.getRightReactantsView().size() == 0) {
-                this.removeReaction(r);
-            }
-
-        });
-
-        BioCollection<BioCompartment> cpts = this.getCompartmentsOf(m);
-
-        cpts.forEach(c -> {
-            c.getComponents().remove(m);
-            if (c.getComponents().size() == 0) {
-                this.removeOnCascade(c);
-            }
-        });
-
-        BioCollection<BioEnzyme> enzymesCopy = this.getEnzymesView();
-
-        enzymesCopy.forEach(e -> {
-            BioCollection<BioEnzymeParticipant> participants = new BioCollection<>(
-                    e.getParticipants());
-
-            boolean contains = false;
-
-            for (BioEnzymeParticipant p : participants) {
-                if (p.getPhysicalEntity().equals(m)) {
-                    contains = true;
-                    e.getParticipants().remove(p);
-                }
-            }
-
-            if (e.getParticipantsView().size() == 0 && contains) {
-                this.removeOnCascade(e);
-            }
-        });
-
-        this.metabolites.remove(m);
-
-    }
-
-    /**
-     * Remove a gene from the network and remove the link between the gene and
-     * proteins.
-     * If the protein is not linked to a gene anymore, remove the protein
-     *
-     * @param g a {@link BioGene}
-     */
-    private void removeGene(@NonNull BioGene g) {
-
-        this.genes.remove(g);
-
-        BioCollection<BioProtein> proteins = this.getProteinsView();
-        proteins.forEach(p -> {
-            if (p.getGene() != null && p.getGene().equals(g)) {
-                this.removeOnCascade(p);
-            }
-        });
-
-    }
-
-    /**
-     * Remove a reaction from the network and from the pathways where it is involved
-     *
-     * @param r a {@link BioReaction}
-     */
-    private void removeReaction(@NonNull BioReaction r) {
-
-        BioCollection<BioPathway> pathways = this.getPathwaysFromReaction(r);
-
-        pathways.forEach(p -> {
-            p.removeReaction(r);
-            if (p.getReactions().size() == 0) {
-                this.removeOnCascade(p);
-            }
-
-        });
-        this.reactions.remove(r);
-    }
-
-    /**
-     * Remove a compartment and all the reactions that involve reactants in this
-     * compartment
-     *
-     * @param c a BioCompartment
-     */
-    private void removeCompartment(@NonNull BioCompartment c) {
-
-        this.getReactionsView().forEach(r -> {
-            BioCollection<BioReactant> reactants = r.getReactantsView();
-            for (BioReactant reactant : reactants) {
-                if (reactant.getLocation().equals(c)) {
-                    this.removeReaction(r);
-                    break;
-                }
-            }
-        });
-
-        this.compartments.remove(c);
-
-    }
-
-    /**
-     * add a relation reactant-reaction
-     */
-    private void affectLeft(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, @NonNull BioMetabolite substrate) {
-
-        affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.LEFT, substrate);
-
-    }
-
-    /**
-     * Add several left metabolites to a reaction
-     *
-     * @param reaction      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @param stoichiometry the stroichiometric coefficient
-     * @param localisation  the compartment of the substrates
-     * @param substrates    0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
-     */
-    public void affectLeft(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, BioMetabolite... substrates) {
-
-        for (BioMetabolite s : substrates)
-            affectLeft(reaction, stoichiometry, localisation, s);
-
-    }
-
-    /**
-     * Add several left metabolites to a reaction
-     *
-     * @param reaction      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @param stoichiometry the stroichiometric coefficient
-     * @param localisation  the compartment of the substrates
-     * @param substrates    a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
-     */
-    public void affectLeft(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, @NonNull BioCollection<BioMetabolite> substrates) {
-
-        for (BioMetabolite s : substrates)
-            affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.LEFT, s);
-
-    }
-
-    /**
-     * add a relation reactant-reaction
-     */
-    private void affectLeft(@NonNull BioReaction reaction, @NonNull BioReactant reactant) {
-
-        affectSideReaction(reactant, reaction, BioReaction.Side.LEFT);
-
-    }
-
-    /**
-     * Add several left reactants to a reaction
-     *
-     * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @param reactants 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant}
-     */
-    public void affectLeft(@NonNull BioReaction reaction, @NonNull BioReactant... reactants) {
-        for (BioReactant reactant : reactants) {
-            this.affectLeft(reaction, reactant);
-        }
-    }
-
-    /**
-     * Add several left reactants to a reaction
-     *
-     * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @param reactants a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant}
-     */
-    public void affectLeft(@NonNull BioReaction reaction, @NonNull BioCollection<BioReactant> reactants) {
-        this.affectLeft(reaction, reactants.toArray(new BioReactant[0]));
-    }
-
-    /**
-     * Remove a left reactant
-     *
-     * @param e            a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to remove from the left side of the reaction
-     * @param localisation a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-     * @param reaction     a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     */
-    public void removeLeft(@NonNull BioMetabolite e, @NonNull BioCompartment localisation, @NonNull BioReaction reaction) {
-
-        removeSideReaction(e, localisation, reaction, BioReaction.Side.LEFT);
-    }
-
-    /**
-     * Add a relation product-reaction
-     *
-     * @param reaction      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @param stoichiometry the stoichiometric coefficient
-     * @param localisation  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-     * @param product       a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to add to the right side of the reaction
-     */
-    public void affectRight(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, @NonNull BioMetabolite product) {
-
-        affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.RIGHT, product);
-    }
-
-    /**
-     * Add several relation product-reaction
-     *
-     * @param reaction      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @param stoichiometry the stoichiometric coefficient
-     * @param localisation  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-     * @param products      0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to add to the right side of the reaction
-     */
-    public void affectRight(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, @NonNull BioMetabolite... products) {
-        for (BioMetabolite product : products)
-            affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.RIGHT, product);
-    }
-
-    /**
-     * Add several relation product-reaction
-     *
-     * @param reaction      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @param stoichiometry the stoichiometric coefficient
-     * @param localisation  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-     * @param products      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to add to the right side of the reaction
-     */
-    public void affectRight(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, @NonNull BioCollection<BioMetabolite> products) {
-        for (BioMetabolite product : products)
-            affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.RIGHT, product);
-    }
-
-    /**
-     * Add a relation product-reaction
-     */
-    private void affectRight(@NonNull BioReaction reaction, @NonNull BioReactant reactant) {
-        affectSideReaction(reactant, reaction, BioReaction.Side.RIGHT);
-    }
-
-    /**
-     * affect several reactant to the right side of a reaction
-     *
-     * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @param reactants 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant}
-     */
-    public void affectRight(@NonNull BioReaction reaction, @NonNull BioReactant... reactants) {
-        for (BioReactant reactant : reactants) {
-            this.affectRight(reaction, reactant);
-        }
-    }
-
-    /**
-     * affect several reactant to the right side of a reaction
-     *
-     * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @param reactants a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant}
-     */
-    public void affectRight(@NonNull BioReaction reaction, @NonNull BioCollection<BioReactant> reactants) {
-        this.affectRight(reaction, reactants.toArray(new BioReactant[0]));
-    }
-
-    /**
-     * Remove a right reactant
-     *
-     * @param e            a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to remove from the right side of the reaction
-     * @param localisation a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-     * @param reaction     a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     */
-    public void removeRight(@NonNull BioMetabolite e, @NonNull BioCompartment localisation, @NonNull BioReaction reaction) {
-
-        removeSideReaction(e, localisation, reaction, BioReaction.Side.RIGHT);
     }
 
     /**
@@ -783,189 +181,6 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     * @param reaction      a {@link BioReaction}
-     * @param stoichiometry a {@link Double}
-     * @param localisation  a {@link BioCompartment}
-     * @param side          a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction.Side}
-     * @param metabolite    a {@link BioMetabolite}
-     */
-    private void affectSideReaction(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, @NonNull BioReaction.Side side, @NonNull BioMetabolite metabolite) {
-
-        if(Double.isNaN(stoichiometry) || stoichiometry < 0.0) {
-            throw new IllegalArgumentException("Error in stoichiometry for the metabolite "+metabolite.getId()
-                    + " and the reaction "+reaction.getId()+ ", it should be strictly positive");
-        }
-
-        if(stoichiometry == 0.0) {
-            System.err.println("[WARNING] The stoichiometry for the metabolite "+metabolite.getId()
-                    + " and the reaction "+reaction.getId()+ "is null, it won't be added to the reaction");
-            return;
-        }
-
-
-        BioReactant reactant = this.getReactant(metabolite, stoichiometry, localisation);
-
-        if (reactant == null) {
-            reactant = new BioReactant(metabolite, stoichiometry, localisation);
-            this.reactants.add(reactant);
-        }
-
-        this.affectSideReaction(reactant, reaction, side);
-
-    }
-
-    private void addReactant(BioReactant reactant) {
-        this.reactants.add(reactant);
-    }
-
-    /**
-     * Add reactants in the list of reactants
-     *
-     * @param reactants a list of {@link BioReactant}
-     */
-    protected void addReactants(@NonNull BioReactant... reactants) {
-        for (BioReactant r : reactants) {
-            this.addReactant(r);
-        }
-    }
-
-
-    private void affectSideReaction(@NonNull BioReactant reactant, @NonNull BioReaction reaction, @NonNull BioReaction.Side side) {
-
-        BioCompartment localisation = reactant.getLocation();
-
-        if (!this.reactants.contains(reactant)) {
-            throw new IllegalArgumentException("Reactant " + reactant.getId() + " not in the network");
-        }
-
-        // The network must contain the compartment
-        if (!this.compartments.contains(localisation)) {
-            throw new IllegalArgumentException("Compartment " + localisation.getId() + " not in the network");
-        }
-
-        if (!this.metabolites.contains(reactant.getMetabolite())) {
-            throw new IllegalArgumentException(
-                    "Metabolite " + reactant.getMetabolite().getId() + " not in the network");
-        }
-
-        // The metabolite must be connected to the compartment
-        if (!localisation.getComponents().contains(reactant.getMetabolite())) {
-            throw new IllegalArgumentException(
-                    "Metabolite " + reactant.getMetabolite().getId() + " not in the compartment");
-        }
-
-        // The network must contain the reaction
-        if (!this.reactions.contains(reaction)) {
-            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not in the network");
-        }
-
-        if (side.equals(BioReaction.Side.LEFT)) {
-            if (!reaction.getLeftReactants().containsId(reactant.getId())) {
-                reaction.getLeftReactants().add(reactant);
-            }
-        } else {
-            if (!reaction.getRightReactants().containsId(reactant.getId())) {
-                reaction.getRightReactants().add(reactant);
-            }
-        }
-    }
-
-    /**
-     * Remove an entity from a side of reaction
-     */
-    private void removeSideReaction(@NonNull BioMetabolite e, @NonNull BioCompartment localisation, @NonNull BioReaction reaction, @NonNull BioReaction.Side side) {
-
-        // The network must contain the compartment
-        if (!this.compartments.contains(localisation)) {
-            throw new IllegalArgumentException("Compartment " + localisation.getId() + " not in the network");
-        }
-
-        if (!this.metabolites.contains(e)) {
-            throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the network");
-        }
-
-        // The metabolite must be connected to the compartment
-        if (!localisation.getComponents().contains(e)) {
-            throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the compartment");
-        }
-
-        // The network must contain the reaction
-        if (!this.reactions.contains(reaction)) {
-            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not in the network");
-        }
-
-        reaction.removeSide(e, localisation, side);
-
-    }
-
-    /**
-     * Affects an enzyme to a reaction
-     */
-    private void affectEnzyme(@NonNull BioReaction reaction, @NonNull BioEnzyme enzyme) {
-
-        if (!this.contains(enzyme)) {
-            throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
-        }
-
-        if (!this.contains(reaction)) {
-            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not present in the network");
-        }
-
-        reaction.addEnzyme(enzyme);
-
-    }
-
-    /**
-     * Affect several enzymes to a reaction
-     *
-     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @param enzymes  0 or several enzymes
-     */
-    public void affectEnzyme(@NonNull BioReaction reaction, @NonNull BioEnzyme... enzymes) {
-
-        for (BioEnzyme e : enzymes) {
-            affectEnzyme(reaction, e);
-        }
-
-    }
-
-    /**
-     * Affect several enzymes to a reaction
-     *
-     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @param enzymes  a {@link BioCollection of enzymes}
-     */
-    public void affectEnzyme(@NonNull BioReaction reaction, @NonNull BioCollection<BioEnzyme> enzymes) {
-
-        for (BioEnzyme e : enzymes) {
-            affectEnzyme(reaction, e);
-        }
-
-    }
-
-
-    /**
-     * Remove the link between enzyme from a reaction
-     *
-     * @param enzyme   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
-     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @throws java.lang.IllegalArgumentException if the enzyme or the reaction are not present in the network
-     */
-    public void removeEnzymeFromReaction(@NonNull BioEnzyme enzyme, @NonNull BioReaction reaction) {
-
-        if (!this.contains(enzyme)) {
-            throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
-        }
-
-        if (!this.contains(reaction)) {
-            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not present in the network");
-        }
-
-        reaction.removeEnzyme(enzyme);
-
-    }
-
-    /**
      * Get enzyme participant with the same quantity and the same entity
      *
      * @param quantity a {@link Double}
@@ -981,246 +196,6 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
-     * Add a subunit to an enzymes
-     *
-     * @param enzyme   a {@link BioEnzyme}
-     * @param quantity number of units
-     * @param unit     a {@link BioPhysicalEntity}
-     * @throws IllegalArgumentException of the enzyme of the unit is not present in the network
-     */
-    private void affectSubUnit(@NonNull BioEnzyme enzyme, @NonNull Double quantity, @NonNull BioPhysicalEntity unit) {
-
-        if (!(unit instanceof BioMetabolite) && !(unit instanceof BioProtein)) {
-            throw new IllegalArgumentException("A subunit of a BioEnzyme must be a BioProtein or a BioMetabolite");
-        }
-        BioEnzymeParticipant p = this.getEnzymeParticipant(unit, quantity);
-        if (p == null) {
-            p = new BioEnzymeParticipant(unit, quantity);
-            this.enzymeParticipants.add(p);
-        }
-
-        this.affectSubUnit(enzyme, p);
-
-
-    }
-
-    /**
-     * Add a subunit to an enzyme
-     *
-     * @param enzyme a {@link BioEnzyme}
-     * @param unit   a {@link BioEnzymeParticipant}
-     * @throws IllegalArgumentException of the enzyme of the unit is not present in the network
-     */
-    private void affectSubUnit(@NonNull BioEnzyme enzyme, @NonNull BioEnzymeParticipant unit) {
-
-        if (!this.enzymeParticipants.contains(unit)) {
-            throw new IllegalArgumentException("Enzyme participant " + unit.getId() + " not present in the network");
-        }
-
-        if (!this.contains(enzyme)) {
-            throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
-        }
-
-        if (!this.contains(unit.getPhysicalEntity())) {
-            throw new IllegalArgumentException("Physical entity " + unit.getPhysicalEntity().getId() + " not present in the network");
-        }
-
-        if (!enzyme.getParticipants().containsId(unit.getId())) {
-            enzyme.addParticipant(unit);
-        }
-
-    }
-
-    /**
-     * Add a subunit to an enzyme
-     *
-     * @param enzyme a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
-     * @param units  several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant}
-     * @throws java.lang.IllegalArgumentException of the enzyme of the unit is not present in the network
-     */
-    public void affectSubUnit(@NonNull BioEnzyme enzyme, @NonNull BioEnzymeParticipant... units) {
-
-        for (BioEnzymeParticipant u : units) {
-            this.affectSubUnit(enzyme, u);
-        }
-
-    }
-
-    /**
-     * Adds several subunits to an enzyme with the same stoichiometric coefficient
-     *
-     * @param enzyme   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
-     * @param quantity the number of units of each subunit to add
-     * @param units    0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity}
-     */
-    public void affectSubUnit(@NonNull BioEnzyme enzyme, @NonNull Double quantity, @NonNull BioPhysicalEntity... units) {
-
-        for (BioPhysicalEntity unit : units) {
-            affectSubUnit(enzyme, quantity, unit);
-        }
-    }
-
-    /**
-     * Adds several subunits to an enzyme with the same stoichiometric coefficient
-     *
-     * @param enzyme   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
-     * @param quantity the number of units of each subunit to add
-     * @param units    a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity}
-     */
-    public void affectSubUnit(@NonNull BioEnzyme enzyme, @NonNull Double quantity, @NonNull BioCollection<?> units) {
-
-        for (BioEntity unit : units) {
-            affectSubUnit(enzyme, quantity, (BioPhysicalEntity) unit);
-
-        }
-    }
-
-    /**
-     * Adds several subunits to an enzyme
-     *
-     * @param enzyme a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
-     * @param units  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant}
-     */
-    protected void affectSubUnit(@NonNull BioEnzyme enzyme, @NonNull BioCollection<BioEnzymeParticipant> units) {
-
-        for (BioEnzymeParticipant unit : units) {
-            affectSubUnit(enzyme, unit);
-        }
-    }
-
-
-    /**
-     * Remove a subunit from an enzyme
-     *
-     * @param unit   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity} to remove from the enzyme
-     * @param enzyme a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
-     * @throws java.lang.IllegalArgumentException if the enzyme or the entity is not present in the network
-     */
-    public void removeSubUnit(@NonNull BioPhysicalEntity unit, @NonNull BioEnzyme enzyme) {
-
-        if (!this.contains(enzyme)) {
-            throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
-        }
-
-        if (!this.contains(unit)) {
-            throw new IllegalArgumentException("Physical entity " + unit.getId() + " not present in the network");
-        }
-
-        enzyme.removeParticipant(unit);
-
-    }
-
-    /**
-     * Add a relation protein gene
-     *
-     * @param protein a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein} instance
-     * @param gene    a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}
-     * @throws java.lang.IllegalArgumentException if the gene or the protein is not present in the network
-     */
-    public void affectGeneProduct(@NonNull BioProtein protein, @NonNull BioGene gene) {
-
-        if (!this.contains(protein)) {
-            throw new IllegalArgumentException("Protein " + protein.getId() + " not present in the network");
-        }
-
-        if (!this.contains(gene)) {
-            throw new IllegalArgumentException("Gene " + gene.getId() + " not present in the network");
-        }
-
-        protein.setGene(gene);
-
-    }
-
-    /**
-     * Remove a relation between gene and product
-     *
-     * @param protein a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein} instance
-     * @param gene    a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}
-     * @throws java.lang.IllegalArgumentException if the gene or the protein is not present in the network
-     */
-    public void removeGeneProduct(@NonNull BioProtein protein, @NonNull BioGene gene) {
-
-        if (!this.contains(protein)) {
-            throw new IllegalArgumentException("Protein " + protein.getId() + " not present in the network");
-        }
-
-        if (!this.contains(gene)) {
-            throw new IllegalArgumentException("Gene " + gene.getId() + " not present in the network");
-        }
-
-        protein.removeGene();
-
-    }
-
-    /**
-     * Add a reaction to a pathway
-     *
-     * @param pathway  a {@link BioPathway}
-     * @param reaction a {@link BioReaction}
-     * @throws IllegalArgumentException if the pathway or the reaction is not present
-     */
-    private void affectToPathway(@NonNull BioPathway pathway, @NonNull BioReaction reaction) {
-
-        if (!this.contains(pathway)) {
-            throw new IllegalArgumentException("Pathway " + pathway.getId() + " not present in the network");
-        }
-
-        if (!this.contains(reaction)) {
-            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not present in the network");
-        }
-
-        pathway.addReaction(reaction);
-
-    }
-
-
-    /**
-     * Add several reactions to a pathway
-     *
-     * @param pathway   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}
-     * @param reactions 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     */
-    public void affectToPathway(@NonNull BioPathway pathway, @NonNull BioReaction... reactions) {
-
-        for (BioReaction reaction : reactions) {
-            this.affectToPathway(pathway, reaction);
-        }
-    }
-
-    /**
-     * Add several reactions to a pathway
-     *
-     * @param pathway   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}
-     * @param reactions a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     */
-    public void affectToPathway(@NonNull BioPathway pathway, @NonNull BioCollection<BioReaction> reactions) {
-
-        for (BioReaction reaction : reactions) {
-            this.affectToPathway(pathway, reaction);
-        }
-    }
-
-
-    /**
-     * Remove a reaction from a pathway
-     *
-     * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
-     * @param p a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}
-     * @throws java.lang.IllegalArgumentException if the pathway or the reaction is not present
-     */
-    public void removeReactionFromPathway(@NonNull BioReaction r, @NonNull BioPathway p) {
-        if (!this.contains(p)) {
-            throw new IllegalArgumentException("Pathway " + p.getId() + " not present in the network");
-        }
-
-        if (!this.contains(r)) {
-            throw new IllegalArgumentException("Reaction " + r.getId() + " not present in the network");
-        }
-
-        p.removeReaction(r);
-    }
-
-    /**
      * Get metabolites involved in a pathway
      *
      * @param p a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}
@@ -1233,90 +208,6 @@ public class BioNetwork extends BioEntity {
         }
         return p.getMetabolites();
 
-    }
-
-    // relations compartiment - contenu
-    private void affectToCompartment(@NonNull BioCompartment compartment, @NonNull BioEntity entity) {
-
-        if (!contains(compartment)) {
-            throw new IllegalArgumentException("Compartment " + compartment.getId() + " not in the network");
-        }
-
-        if (!contains(entity)) {
-            throw new IllegalArgumentException("Physical entity " + entity.getId() + " not in the network");
-        }
-
-        compartment.addComponent(entity);
-
-    }
-
-    /**
-     * Affect several metabolites to a compartment
-     *
-     * @param compartment a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-     * @param entities    one or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
-     */
-    public void affectToCompartment(@NonNull BioCompartment compartment, @NonNull BioEntity... entities) {
-
-        for (BioEntity ent : entities) {
-            this.affectToCompartment(compartment, ent);
-        }
-
-    }
-
-    /**
-     * Affect several metabolites from a collection to a compartment
-     *
-     * @param compartment a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-     * @param entities    a BioCollection of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
-     */
-    public void affectToCompartment(@NonNull BioCompartment compartment, @NonNull BioCollection<?> entities) {
-        for (BioEntity e : entities) {
-            this.affectToCompartment(compartment, e);
-        }
-    }
-
-    /**
-     * Remove a component from a compartment
-     * @param compartment
-     * @param entities
-     */
-    public void removeFromCompartment(@NonNull BioCompartment compartment, @NonNull BioEntity... entities) {
-        for(BioEntity ent : entities) {
-            compartment.getComponents().remove(ent);
-        }
-    }
-
-    /**
-     * Return true if the entity is in the list of metabolites, reactions, genes,
-     * pathways, proteins, etc...
-     *
-     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
-     * @return true if the network contains the entity
-     * @throws java.lang.NullPointerException     if e is null
-     * @throws java.lang.IllegalArgumentException if e is not an instance of :
-     *                                            {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein}, {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}, {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}, {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme},
-     *                                            {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}, {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}, or {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
-     */
-    public Boolean contains(@NonNull BioEntity e) {
-
-        if (e instanceof BioProtein) {
-            return this.proteins.contains(e);
-        } else if (e instanceof BioMetabolite) {
-            return this.metabolites.contains(e);
-        } else if (e instanceof BioGene) {
-            return this.genes.contains(e);
-        } else if (e instanceof BioEnzyme) {
-            return this.enzymes.contains(e);
-        } else if (e instanceof BioReaction) {
-            return this.reactions.contains(e);
-        } else if (e instanceof BioPathway) {
-            return this.pathways.contains(e);
-        } else if (e instanceof BioCompartment) {
-            return this.compartments.contains(e);
-        }
-
-        throw new IllegalArgumentException("BioEntity " + e + " not handled by BioNetwork");
     }
 
     /**
@@ -1353,8 +244,10 @@ public class BioNetwork extends BioEntity {
      *
      * @return a {@link BioCollection} of {@link BioReaction}
      */
-    private BioCollection<BioReaction> getReactionsFromSubstratesOrProducts(@NonNull BioCollection<BioMetabolite> metabolites,
-                                                                            @NonNull Boolean exact, @NonNull Boolean areSubstrates) {
+    private BioCollection<BioReaction> getReactionsFromSubstratesOrProducts(
+            @NonNull BioCollection<BioMetabolite> metabolites,
+            @NonNull Boolean exact,
+            @NonNull Boolean areSubstrates) {
 
         for (BioMetabolite m : metabolites) {
             if (!this.metabolites.contains(m)) {
@@ -1362,7 +255,9 @@ public class BioNetwork extends BioEntity {
             }
         }
 
-        HashSet<BioReaction> reactionSet = this.reactions.stream().filter(r -> {
+        BioCollection<BioReaction> reactionSet = this.reactions.stream().filter(r -> {
+            BioCollection<BioMetabolite> rightsView = r.getRightsView();
+            BioCollection<BioMetabolite> leftsView = r.getLeftsView();
 
             if (!r.isReversible()) {
 
@@ -1372,13 +267,13 @@ public class BioNetwork extends BioEntity {
 
             } else {
                 return exact
-                        ? r.getRightsView().equals(metabolites) || r.getLeftsView().equals(metabolites)
-                        : r.getRightsView().containsAll(metabolites)
-                        || r.getLeftsView().containsAll(metabolites);
+                        ? rightsView.equals(metabolites) || leftsView.equals(metabolites)
+                        : rightsView.containsAll(metabolites)
+                        || leftsView.containsAll(metabolites);
             }
-        }).collect(Collectors.toCollection(HashSet::new));
+        }).collect(Collectors.toCollection(BioCollection::new));
 
-        return new BioCollection<>(reactionSet);
+        return reactionSet;
     }
 
     /**
@@ -1388,9 +283,7 @@ public class BioNetwork extends BioEntity {
      */
     private BioCollection<BioReaction> getReactionsFromSubstrateOrProduct(@NonNull BioMetabolite m, @NonNull Boolean isSubstrate) {
 
-        BioCollection<BioReaction> reactions = new BioCollection<>();
-
-        this.reactions.forEach(r -> {
+        return this.reactions.stream().filter(r -> {
             boolean flag;
 
             BioCollection<BioMetabolite> lefts = r.getLeftsView();
@@ -1402,13 +295,9 @@ public class BioNetwork extends BioEntity {
                 flag = lefts.contains(m) || rights.contains(m);
             }
 
-            if (flag) {
-                reactions.add(r);
-            }
+            return flag;
 
-        });
-
-        return reactions;
+        }).collect(Collectors.toCollection(BioCollection::new));
 
     }
 
@@ -1448,12 +337,10 @@ public class BioNetwork extends BioEntity {
             }
         }
 
-        HashSet<BioPathway> pathwaySet = this.getPathwaysView().stream().
+        return this.getPathwaysView().stream().
                 filter(p -> all ? p.getMetabolites().containsAll(metabolites)
                         : !Collections.disjoint(metabolites, p.getMetabolites()))
-                .collect(Collectors.toCollection(HashSet::new));
-
-        return new BioCollection<>(pathwaySet);
+                .collect(Collectors.toCollection(BioCollection::new));
 
     }
 
@@ -1474,11 +361,9 @@ public class BioNetwork extends BioEntity {
             }
         }
 
-        HashSet<BioReaction> reactionSet = this.reactions.stream().
+        return this.reactions.stream().
                 filter(o -> all ? o.getGenes().containsAll(genes) : !Collections.disjoint(o.getGenes(), genes))
-                .collect(Collectors.toCollection(HashSet::new));
-
-        return new BioCollection<>(reactionSet);
+                .collect(Collectors.toCollection(BioCollection::new));
 
     }
 
@@ -1494,11 +379,9 @@ public class BioNetwork extends BioEntity {
             throw new IllegalArgumentException("Gene " + gene + " not present in the network");
         }
 
-        HashSet<BioReaction> reactionSet = this.reactions.stream().
-                filter(o -> o.getGenes().contains(gene))
-                .collect(Collectors.toCollection(HashSet::new));
-
-        return new BioCollection<>(reactionSet);
+        return this.reactions.stream().
+                filter(o -> o.containsGene(gene))
+                .collect(Collectors.toCollection(BioCollection::new));
 
     }
 
@@ -1609,7 +492,7 @@ public class BioNetwork extends BioEntity {
      */
     public BioCollection<BioGene> getGenesFromEnzyme(@NonNull BioEnzyme e) {
 
-        if (!this.getEnzymesView().contains(e)) {
+        if (!this.enzymes.contains(e)) {
             throw new IllegalArgumentException("Enzyme " + e.getId() + " not present in the network");
         }
 
@@ -1644,17 +527,16 @@ public class BioNetwork extends BioEntity {
      * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}
      */
     public BioCollection<BioPathway> getPathwaysFromGenes(@NonNull BioCollection<BioGene> genes, Boolean all) {
+
         for (BioGene g : genes) {
             if (!this.genes.contains(g)) {
                 throw new IllegalArgumentException("Gene " + g + " not present in the network");
             }
         }
 
-        HashSet<BioPathway> pathwaySet = this.getPathwaysView().stream().
+        return this.pathways.stream().
                 filter(p -> all ? p.getGenes().containsAll(genes) : !Collections.disjoint(p.getGenes(), genes))
-                .collect(Collectors.toCollection(HashSet::new));
-
-        return new BioCollection<>(pathwaySet);
+                .collect(Collectors.toCollection(BioCollection::new));
 
     }
 
@@ -1673,13 +555,11 @@ public class BioNetwork extends BioEntity {
             }
         }
 
-        HashSet<BioPathway> pathwaySet = this.getPathwaysView().stream().
+        return this.pathways.stream().
                 filter(p -> all
                         ? p.getReactions().containsAll(reactions)
                         : !Collections.disjoint(p.getReactions(), reactions))
-                .collect(Collectors.toCollection(HashSet::new));
-
-        return new BioCollection<>(pathwaySet);
+                .collect(Collectors.toCollection(BioCollection::new));
 
     }
 
@@ -1696,7 +576,7 @@ public class BioNetwork extends BioEntity {
             throw new IllegalArgumentException("Reaction " + r + " not present in the network");
         }
 
-        HashSet<BioPathway> pathwaySet = this.getPathwaysView().stream().filter(p -> {
+        HashSet<BioPathway> pathwaySet = this.pathways.stream().filter(p -> {
 
             Set<String> reactionRefIds = p.getReactions().getIds();
 
@@ -1718,6 +598,7 @@ public class BioNetwork extends BioEntity {
     public BioCollection<BioReaction> getReactionsFromPathways(@NonNull BioCollection<BioPathway> pathways) {
 
         BioCollection<BioReaction> reactions = new BioCollection<>();
+
         for (BioPathway p : pathways) {
             reactions.addAll(this.getReactionsFromPathway(p));
         }
@@ -1736,6 +617,7 @@ public class BioNetwork extends BioEntity {
     public BioCollection<BioReaction> getReactionsFromPathways(@NonNull BioPathway... pathways) {
 
         BioCollection<BioReaction> reactions = new BioCollection<>();
+
         for (BioPathway p : pathways) {
             reactions.addAll(this.getReactionsFromPathway(p));
         }
@@ -1757,6 +639,7 @@ public class BioNetwork extends BioEntity {
         if (!this.pathways.contains(p)) {
             throw new IllegalArgumentException("Pathway " + p + " not present in the network");
         }
+
         return p.getReactions().getView();
     }
 
@@ -1841,10 +724,8 @@ public class BioNetwork extends BioEntity {
             if (!this.contains(reaction)) {
                 throw new IllegalArgumentException("Reaction " + reaction + " not present in the network");
             }
-            if (this.contains(reaction)) {
-                allMetabolites.addAll(this.getLefts(reaction));
-                allMetabolites.addAll(this.getRights(reaction));
-            }
+            allMetabolites.addAll(this.getLefts(reaction));
+            allMetabolites.addAll(this.getRights(reaction));
         }
         return allMetabolites;
 
@@ -1955,6 +836,169 @@ public class BioNetwork extends BioEntity {
     }
 
     /**
+     * Returns the collection of enzyme participants in the network.
+     * <p>
+     * This method provides access to the enzyme participants, which are instances of
+     * {@link BioEnzymeParticipant}. The returned collection is a view of the underlying
+     * data structure, allowing for read-only access to the enzyme participants.
+     * </p>
+     *
+     * @return a {@link BioCollection} of {@link BioEnzymeParticipant} representing the enzyme participants in the network.
+     */
+    public BioCollection<BioEnzymeParticipant> getEnzymeParticipants() {
+        return enzymeParticipants.getView();
+    }
+
+    /**
+     * Retrieves the collection of enzymes associated with a specific gene.
+     * <p>
+     * This method identifies all enzymes in the network that are linked to the given gene
+     * through their associated proteins. It ensures that the provided gene is present in
+     * the network before performing the retrieval.
+     * </p>
+     *
+     * @param gene a {@link BioGene} instance representing the gene for which enzymes are to be retrieved.
+     * @return a {@link BioCollection} of {@link BioEnzyme} containing the enzymes associated with the specified gene.
+     * @throws IllegalArgumentException if the provided gene is not present in the network.
+     */
+    public BioCollection<BioEnzyme> getEnzymesFromGene(BioGene gene) {
+        if (!this.genes.contains(gene)) {
+            throw new IllegalArgumentException("Gene " + gene + " not present in the network");
+        }
+
+        return this.enzymes.stream()
+                .filter(e -> e.getParticipantsView().stream()
+                        .anyMatch(ep -> ep.getPhysicalEntity() instanceof BioProtein
+                                && (((BioProtein) ep.getPhysicalEntity()).getGene() != null) && ((BioProtein) ep.getPhysicalEntity()).getGene().equals(gene)))
+                .collect(Collectors.toCollection(BioCollection::new));
+
+    }
+
+    /**
+     * Retrieves the collection of proteins associated with a specific gene.
+     * <p>
+     * This method identifies all proteins in the network that are linked to the given gene.
+     * It ensures that the provided gene is present in the network before performing the retrieval.
+     * </p>
+     *
+     * @param gene a {@link BioGene} instance representing the gene for which proteins are to be retrieved.
+     * @return a {@link BioCollection} of {@link BioProtein} containing the proteins associated with the specified gene.
+     * @throws IllegalArgumentException if the provided gene is not present in the network.
+     */
+    public BioCollection<BioProtein> getProteinsFromGene(BioGene gene) {
+        if (!this.genes.contains(gene)) {
+            throw new IllegalArgumentException("Gene " + gene + " not present in the network");
+        }
+
+        return this.proteins.stream()
+                .filter(p -> p.getGene() != null && p.getGene().equals(gene))
+                .collect(Collectors.toCollection(BioCollection::new));
+
+    }
+
+    // ----------------------------------------
+    // CONTAINS
+    // ----------------------------------------
+
+    /**
+     * Return true if the entity is in the list of metabolites, reactions, genes,
+     * pathways, proteins, etc...
+     *
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
+     * @return true if the network contains the entity
+     * @throws java.lang.NullPointerException     if e is null
+     * @throws java.lang.IllegalArgumentException if e is not an instance of :
+     *                                            {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein}, {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}, {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}, {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme},
+     *                                            {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}, {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}, or {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
+     */
+    public Boolean contains(@NonNull BioEntity e) {
+
+        if (e instanceof BioProtein) {
+            return this.proteins.contains(e);
+        } else if (e instanceof BioMetabolite) {
+            return this.metabolites.contains(e);
+        } else if (e instanceof BioGene) {
+            return this.genes.contains(e);
+        } else if (e instanceof BioEnzyme) {
+            return this.enzymes.contains(e);
+        } else if (e instanceof BioReaction) {
+            return this.reactions.contains(e);
+        } else if (e instanceof BioPathway) {
+            return this.pathways.contains(e);
+        } else if (e instanceof BioCompartment) {
+            return this.compartments.contains(e);
+        } else if (e instanceof BioEnzymeParticipant) {
+            return this.enzymeParticipants.contains(e);
+        } else if (e instanceof BioReactant) {
+            return this.reactants.contains(e);
+        }
+
+        throw new IllegalArgumentException("BioEntity " + e + " not handled by BioNetwork");
+    }
+
+    /**
+     * Check if a reaction with a specific id already exists in the network
+     *
+     * @param id a String
+     * @return true if there is a {@link BioReaction} with this id exists in the BioNetwork
+     */
+    public boolean containsReaction(@NonNull String id) {
+        return this.reactions.containsId(id);
+    }
+
+    /**
+     * Check if a metabolite with a specific id already exists in the network
+     *
+     * @param id a String
+     * @return true if there is a {@link BioMetabolite} with this id exists in the BioNetwork
+     */
+    public boolean containsMetabolite(@NonNull String id) {
+        return this.metabolites.containsId(id);
+    }
+
+
+    /**
+     * Check if a pathway with a specific id already exists in the network
+     *
+     * @param id a String
+     * @return true if there is a {@link BioPathway} with this id exists in the BioNetwork
+     */
+    public boolean containsPathway(@NonNull String id) {
+        return this.pathways.containsId(id);
+    }
+
+    /**
+     * Check if a gene with a specific id already exists in the network
+     *
+     * @param id a String
+     * @return true if there is a {@link BioGene} with this id exists in the BioNetwork
+     */
+    public boolean containsGene(String id) {
+        return this.genes.containsId(id);
+    }
+
+    /**
+     * Check if a compartment with a specific id already exists in the network
+     *
+     * @param id a String
+     * @return true if there is a {@link BioCompartment} with this id exists in the BioNetwork
+     */
+    public boolean containsCompartment(String id) {
+        return this.compartments.containsId(id);
+    }
+
+
+    /**
+     * Check if an enzyme with a specific id already exists in the network
+     *
+     * @param id a String
+     * @return true if there is a {@link BioEnzyme} with this id exists in the BioNetwork
+     */
+    public boolean containsEnzyme(String id) {
+        return this.enzymes.containsId(id);
+    }
+
+    /**
      * @param e a {@link BioEntity}
      * @return true if the network contains an entity with the same id
      */
@@ -1984,20 +1028,175 @@ public class BioNetwork extends BioEntity {
                     "BioEntity \"" + e.getClass().getSimpleName() + "\" not supported by BioNetwork");
         }
         return flag;
+    }
+
+
+    // ----------------------------------------
+    // ADD
+    // ----------------------------------------
+
+    /**
+     * Add several entities
+     *
+     * @param bioEntities 0 to several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity} instances
+     */
+    public void add(BioEntity... bioEntities) {
+
+        for (BioEntity e : bioEntities) {
+            this.add(e);
+        }
+    }
+
+    /**
+     * Add several entities
+     *
+     * @param bioEntities a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
+     */
+    public void add(@NonNull BioCollection<?> bioEntities) {
+        for (BioEntity e : bioEntities) {
+            this.add(e);
+        }
+    }
+
+    /**
+     * Add one entity
+     *
+     * @param e a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
+     */
+    private void add(@NonNull BioEntity e) {
+        if (e instanceof BioPathway) {
+            this.addPathway((BioPathway) e);
+        } else if (e instanceof BioMetabolite) {
+            this.addMetabolite((BioMetabolite) e);
+        } else if (e instanceof BioProtein) {
+            this.addProtein((BioProtein) e);
+        } else if (e instanceof BioGene) {
+            this.addGene((BioGene) e);
+        } else if (e instanceof BioReaction) {
+            this.addReaction((BioReaction) e);
+        } else if (e instanceof BioCompartment) {
+            this.addCompartment((BioCompartment) e);
+        } else if (e instanceof BioEnzyme) {
+            this.addEnzyme((BioEnzyme) e);
+        } else if (e instanceof BioReactant) {
+            this.addReactant((BioReactant) e);
+        } else if (e instanceof BioEnzymeParticipant) {
+            this.addEnzymeParticipant((BioEnzymeParticipant) e);
+        } else {
+            throw new IllegalArgumentException(
+                    "BioEntity \"" + e.getClass().getSimpleName() + "\" not supported by BioNetwork");
+        }
+    }
+
+
+    /**
+     * Adds a pathway in the network
+     * The pathway must not contain reactions
+     *
+     * @param pathway : the {@link BioPathway} to add
+     */
+    private void addPathway(@NonNull BioPathway pathway) {
+        if (!pathway.getReactions().isEmpty()) {
+            throw new IllegalArgumentException("[addPathway] The pathway must be empty before adding it to a BioNetwork");
+        }
+        this.pathways.add(pathway);
+    }
+
+    /**
+     * Add a Metabolite in the network
+     *
+     * @param metabolite : the {@link BioMetabolite} to add
+     */
+    private void addMetabolite(@NonNull BioMetabolite metabolite) {
+        this.metabolites.add(metabolite);
+    }
+
+    /**
+     * Add a protein in the network
+     * The protein must not be affected to a gene before adding it to a BioNetwork.
+     *
+     * @param protein : the {@link BioProtein} to add
+     */
+    private void addProtein(@NonNull BioProtein protein) {
+        if (protein.getGene() != null) {
+            throw new IllegalArgumentException("[addProtein] The protein must not be affected to a gene before adding it to a BioNetwork");
+        }
+        this.proteins.add(protein);
+    }
+
+    /**
+     * Add a gene in the BioNetwork
+     *
+     * @param gene : the {@link BioGene} to add
+     */
+    private void addGene(@NonNull BioGene gene) {
+        this.genes.add(gene);
+    }
+
+    /**
+     * Add a reaction in a BioNetwork
+     * The reaction must not be linked to reactants nor to enzymes
+     *
+     * @param reaction : the {@link BioReaction} to add
+     */
+    private void addReaction(@NonNull BioReaction reaction) {
+
+        if (!reaction.getLeftReactants().isEmpty() || !reaction.getRightReactants().isEmpty()) {
+            throw new IllegalArgumentException("[addReaction] The reaction must not contain substrates before adding it to a BioNetwork");
+        }
+
+        if (!reaction.getEnzymes().isEmpty()) {
+            throw new IllegalArgumentException("[addReaction] The reaction must not be affected to a reaction before adding it to a BioNetwork");
+        }
+
+        this.reactions.add(reaction);
 
     }
 
     /**
-     * Adds enzymes participants in the network
+     * Add a compartment in a BioNetwork
+     * The compartment must be empty
      *
-     * @param enzymeParticipants a list of {@link BioEnzymeParticipant}
+     * @param compartment : the {@link BioCompartment} to add
      */
-    protected void addEnzymeParticipants(@NonNull BioEnzymeParticipant... enzymeParticipants) {
-        for (BioEnzymeParticipant ep : enzymeParticipants) {
-            this.addEnzymeParticipant(ep);
+    private void addCompartment(@NonNull BioCompartment compartment) {
+
+        if (!compartment.getComponents().isEmpty()) {
+            throw new IllegalArgumentException("[addCompartment] The compartment must be empty before adding it to a BioNetwork");
         }
 
+        this.compartments.add(compartment);
     }
+
+    /**
+     * Add an enzyme in a BioNetwork
+     * The enzyme must not contain participants
+     *
+     * @param enzyme : the {@link BioEnzyme} to add
+     */
+    private void addEnzyme(@NonNull BioEnzyme enzyme) {
+
+        if (!enzyme.getParticipants().isEmpty()) {
+            throw new IllegalArgumentException("[addEnzyme] The enzyme must not contain participants before adding it to a BioNetwork");
+        }
+
+        this.enzymes.add(enzyme);
+    }
+
+    /**
+     * Adds a reactant to the network.
+     * <p>
+     * This method adds the specified {@link BioReactant} to the collection of reactants
+     * in the network. It assumes that the reactant is valid and does not perform any
+     * additional checks.
+     * </p>
+     *
+     * @param reactant a {@link BioReactant} instance to be added to the network.
+     */
+    private void addReactant(BioReactant reactant) {
+        this.reactants.add(reactant);
+    }
+
 
     /**
      * @param ep a {@link BioEnzymeParticipant}
@@ -2005,4 +1204,931 @@ public class BioNetwork extends BioEntity {
     private void addEnzymeParticipant(@NonNull BioEnzymeParticipant ep) {
         this.enzymeParticipants.add(ep);
     }
+
+
+    // ----------------------------------------
+    // REMOVE
+    // ----------------------------------------
+
+    /**
+     * Remove on cascade a BioEntity
+     *
+     * @param e the {@link BioEntity} to remove
+     */
+    private void removeOnCascade(@NonNull BioEntity e) {
+
+        if (e instanceof BioPathway) {
+            this.pathways.remove(e);
+        } else if (e instanceof BioMetabolite) {
+            this.removeMetaboliteOnCascade((BioMetabolite) e);
+        } else if (e instanceof BioProtein) {
+            this.removeProteinOnCascade((BioProtein) e);
+        } else if (e instanceof BioGene) {
+            this.removeGeneOnCascade((BioGene) e);
+        } else if (e instanceof BioReaction) {
+            this.removeReactionOnCascade((BioReaction) e);
+        } else if (e instanceof BioCompartment) {
+            this.removeCompartmentOnCascade((BioCompartment) e);
+        } else if (e instanceof BioEnzyme) {
+            this.removeEnzymeOnCascade((BioEnzyme) e);
+        } else {
+
+            throw new IllegalArgumentException(
+                    "BioEntity \"" + e.getClass().getSimpleName() + "\" not supported by BioNetwork");
+        }
+
+    }
+
+    /**
+     * Remove on cascade several entities
+     *
+     * @param entities 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
+     */
+    public void removeOnCascade(@NonNull BioEntity... entities) {
+        for (BioEntity e : entities) {
+            removeOnCascade(e);
+        }
+    }
+
+    /**
+     * Remove on cascade several entities stored in a BioCollection
+     *
+     * @param entities a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
+     */
+    public void removeOnCascade(@NonNull BioCollection<?> entities) {
+        for (BioEntity e : entities) {
+            removeOnCascade(e);
+        }
+    }
+
+    /**
+     * Remove on cascade an enzyme : remove also the enzymes in the reactions
+     *
+     * @param e enzyme
+     */
+    private void removeEnzymeOnCascade(@NonNull BioEnzyme e) {
+
+        this.reactions.forEach(r -> r.getEnzymes().remove(e));
+
+        this.enzymes.remove(e);
+
+    }
+
+    /**
+     * Remove protein from the network and from the enzymes and the compartments
+     * where it is involved
+     *
+     * @param protein a {@link BioProtein} instance
+     */
+    private void removeProteinOnCascade(@NonNull BioProtein protein) {
+
+        this.proteins.remove(protein);
+
+        Set<BioEnzyme> enzymesToRemove = this.enzymes.stream()
+                .filter(e -> {
+                    BioCollection<BioEnzymeParticipant> participants = new BioCollection<>(
+                            e.getParticipants());
+
+                    return participants.stream().anyMatch(p -> p.getPhysicalEntity().equals(protein));
+
+
+                }).collect(Collectors.toSet());
+
+        enzymesToRemove.forEach(this::removeOnCascade);
+
+
+        Set<BioCompartment> compartmentsToRemove = this.compartments.stream()
+                .filter(c -> c.getComponents().stream()
+                        .anyMatch(p -> p.equals(protein)))
+                .collect(Collectors.toSet());
+
+        compartmentsToRemove.forEach(c -> {
+            c.getComponents().remove(protein);
+            if (c.getComponents().isEmpty())
+                // if the compartment is empty, remove it on cascade
+                this.removeOnCascade(c);
+        });
+
+    }
+
+    /**
+     * Remove a metabolite from the network and from the reactions and compartments
+     * where it is involved and from the c
+     *
+     * @param m a {@link BioMetabolite}
+     */
+    private void removeMetaboliteOnCascade(@NonNull BioMetabolite m) {
+
+        BioCollection<BioReaction> reactions = this.getReactionsFromMetabolite(m);
+
+        reactions.forEach(r -> {
+            BioCollection<BioReactant> lefts = new BioCollection<>(r.getLeftReactants());
+
+            for (BioReactant participant : lefts) {
+                if (participant.getPhysicalEntity().equals(m)) {
+                    r.getLeftReactants().remove(participant);
+                }
+            }
+
+            BioCollection<BioReactant> rights = new BioCollection<>(r.getRightReactants());
+            for (BioReactant participant : rights) {
+                if (participant.getPhysicalEntity().equals(m)) {
+                    r.getRightReactants().remove(participant);
+                }
+            }
+
+            if (r.getLeftReactantsView().isEmpty() && r.getRightReactantsView().isEmpty()) {
+                this.removeReactionOnCascade(r);
+            }
+
+        });
+
+        BioCollection<BioCompartment> cpts = this.getCompartmentsOf(m);
+
+        cpts.forEach(c -> {
+            c.getComponents().remove(m);
+            if (c.getComponents().isEmpty()) {
+                this.removeOnCascade(c);
+            }
+        });
+
+
+        BioCollection<BioEnzyme> enzymesToRemove = new BioCollection<>();
+
+        this.enzymes.forEach(e -> {
+            BioCollection<BioEnzymeParticipant> participants = new BioCollection<>(
+                    e.getParticipants());
+
+            boolean contains = false;
+
+            for (BioEnzymeParticipant p : participants) {
+                if (p.getPhysicalEntity().equals(m)) {
+                    contains = true;
+                    e.getParticipants().remove(p);
+                }
+            }
+
+            if (e.getParticipantsView().isEmpty() && contains) {
+                enzymesToRemove.add(e);
+            }
+        });
+
+        enzymesToRemove.forEach(this::removeOnCascade);
+
+        this.metabolites.remove(m);
+
+    }
+
+    /**
+     * Remove a gene from the network and remove the link between the gene and
+     * proteins.
+     * If the protein is not linked to a gene anymore, remove the protein
+     *
+     * @param g a {@link BioGene}
+     */
+    private void removeGeneOnCascade(@NonNull BioGene g) {
+
+        this.genes.remove(g);
+
+        ArrayList<BioProtein> proteinsToRemove = new ArrayList<>();
+
+        proteins.forEach(p -> {
+            if (p.getGene() != null && p.getGene().equals(g)) {
+                proteinsToRemove.add(p);
+                p.setGene(null); // remove the link between the protein and the gene
+
+            }
+        });
+
+        proteinsToRemove.forEach(this::removeOnCascade);
+
+    }
+
+    /**
+     * Remove a reaction from the network and from the pathways where it is involved
+     *
+     * @param r a {@link BioReaction}
+     */
+    private void removeReactionOnCascade(@NonNull BioReaction r) {
+
+        BioCollection<BioPathway> pathways = this.getPathwaysFromReaction(r);
+
+        pathways.forEach(p -> {
+            p.removeReaction(r);
+            if (p.getReactions().isEmpty()) {
+                this.removeOnCascade(p);
+            }
+
+        });
+        this.reactions.remove(r);
+    }
+
+    /**
+     * Remove a compartment and all the reactions that involve reactants in this
+     * compartment
+     *
+     * @param c a BioCompartment
+     */
+    private void removeCompartmentOnCascade(@NonNull BioCompartment c) {
+
+        BioCollection<BioReaction> reactionsToRemove = new BioCollection<>();
+
+        this.reactions.forEach(r -> {
+            BioCollection<BioReactant> reactants = r.getReactantsView();
+            for (BioReactant reactant : reactants) {
+                if (reactant.getLocation().equals(c)) {
+                    reactionsToRemove.add(r);
+                    break;
+                }
+            }
+        });
+
+        reactionsToRemove.forEach(this::removeReactionOnCascade);
+
+        this.compartments.remove(c);
+
+    }
+
+    /**
+     * Remove a left reactant
+     *
+     * @param e            a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to remove from the left side of the reaction
+     * @param localisation a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
+     * @param reaction     a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     */
+    public void removeLeft(@NonNull BioMetabolite e, @NonNull BioCompartment localisation, @NonNull BioReaction reaction) {
+        removeSideReaction(e, localisation, reaction, BioReaction.Side.LEFT);
+    }
+
+    /**
+     * Remove a right reactant
+     *
+     * @param e            a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to remove from the right side of the reaction
+     * @param localisation a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
+     * @param reaction     a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     */
+    public void removeRight(@NonNull BioMetabolite e, @NonNull BioCompartment localisation, @NonNull BioReaction reaction) {
+        removeSideReaction(e, localisation, reaction, BioReaction.Side.RIGHT);
+    }
+
+    /**
+     * Remove an entity from a side of reaction
+     */
+    private void removeSideReaction(@NonNull BioMetabolite e, @NonNull BioCompartment localisation, @NonNull BioReaction reaction, @NonNull BioReaction.Side side) {
+
+        // The network must contain the compartment
+        if (!this.compartments.contains(localisation)) {
+            throw new IllegalArgumentException("Compartment " + localisation.getId() + " not in the network");
+        }
+
+        if (!this.metabolites.contains(e)) {
+            throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the network");
+        }
+
+        // The metabolite must be connected to the compartment
+        if (!localisation.getComponents().contains(e)) {
+            throw new IllegalArgumentException("Metabolite " + e.getId() + " not in the compartment");
+        }
+
+        // The network must contain the reaction
+        if (!this.reactions.contains(reaction)) {
+            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not in the network");
+        }
+
+        reaction.removeSide(e, localisation, side);
+
+    }
+
+    /**
+     * Remove the link between enzyme from a reaction
+     *
+     * @param enzyme   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
+     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @throws java.lang.IllegalArgumentException if the enzyme or the reaction are not present in the network
+     */
+    public void removeEnzymeFromReaction(@NonNull BioEnzyme enzyme, @NonNull BioReaction reaction) {
+
+        if (!this.contains(enzyme)) {
+            throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
+        }
+
+        if (!this.contains(reaction)) {
+            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not present in the network");
+        }
+
+        reaction.removeEnzyme(enzyme);
+
+    }
+
+    /**
+     * Remove a subunit from an enzyme
+     *
+     * @param unit   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity} to remove from the enzyme
+     * @param enzyme a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
+     * @throws java.lang.IllegalArgumentException if the enzyme  is not present in the network
+     *                                            We do not check if the unit is present in the network because if the enzyme is present in the network, we
+     *                                            can assume that the unit is also present in the network
+     */
+    public void removeSubUnit(@NonNull BioPhysicalEntity unit,
+                              @NonNull BioEnzyme enzyme) {
+
+        if (!this.contains(enzyme)) {
+            throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
+        }
+
+        enzyme.removeParticipant(unit);
+    }
+
+    /**
+     * Remove a relation between gene and product
+     *
+     * @param protein a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein} instance
+     * @param gene    a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}
+     * @throws java.lang.IllegalArgumentException if the gene or the protein is not present in the network
+     */
+    public void removeGeneProduct(@NonNull BioProtein protein, @NonNull BioGene gene) {
+
+        if (!this.contains(protein)) {
+            throw new IllegalArgumentException("Protein " + protein.getId() + " not present in the network");
+        }
+
+        if (!this.contains(gene)) {
+            throw new IllegalArgumentException("Gene " + gene.getId() + " not present in the network");
+        }
+
+        protein.removeGene();
+
+    }
+
+    /**
+     * Remove a reaction from a pathway
+     *
+     * @param r a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param p a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}
+     * @throws java.lang.IllegalArgumentException if the pathway or the reaction is not present
+     */
+    public void removeReactionFromPathway(@NonNull BioReaction r, @NonNull BioPathway p) {
+
+        if (!this.contains(p)) {
+            throw new IllegalArgumentException("Pathway " + p.getId() + " not present in the network");
+        }
+
+        if (!this.contains(r)) {
+            throw new IllegalArgumentException("Reaction " + r.getId() + " not present in the network");
+        }
+
+        p.removeReaction(r);
+    }
+
+    /**
+     * Remove several entities from a compartment
+     *
+     * @param compartment a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
+     * @param entities    one or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
+     */
+    public void removeFromCompartment(@NonNull BioCompartment compartment,
+                                      @NonNull BioEntity... entities) {
+        for (BioEntity ent : entities) {
+            compartment.getComponents().remove(ent);
+        }
+    }
+
+    // ----------------------------------------
+    // AFFECTATIONS
+    // ----------------------------------------
+
+    /**
+     * add a relation reactant-reaction
+     */
+    private void affectLeft(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, @NonNull BioMetabolite substrate) {
+
+        affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.LEFT, substrate);
+
+    }
+
+    /**
+     * Add several left metabolites to a reaction
+     *
+     * @param reaction      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param stoichiometry the stroichiometric coefficient
+     * @param localisation  the compartment of the substrates
+     * @param substrates    0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
+     */
+    public void affectLeft(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, BioMetabolite... substrates) {
+
+        for (BioMetabolite s : substrates)
+            affectLeft(reaction, stoichiometry, localisation, s);
+
+    }
+
+    /**
+     * Add several left metabolites to a reaction
+     *
+     * @param reaction      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param stoichiometry the stroichiometric coefficient
+     * @param localisation  the compartment of the substrates
+     * @param substrates    a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
+     */
+    public void affectLeft(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, @NonNull BioCollection<BioMetabolite> substrates) {
+
+        for (BioMetabolite s : substrates)
+            affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.LEFT, s);
+
+    }
+
+    /**
+     * add a relation reactant-reaction
+     */
+    private void affectLeft(@NonNull BioReaction reaction, @NonNull BioReactant reactant) {
+
+        affectSideReaction(reactant, reaction, BioReaction.Side.LEFT);
+
+    }
+
+    /**
+     * Add several left reactants to a reaction
+     *
+     * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param reactants 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant}
+     */
+    public void affectLeft(@NonNull BioReaction reaction, @NonNull BioReactant... reactants) {
+
+        for (BioReactant reactant : reactants) {
+            this.affectLeft(reaction, reactant);
+        }
+    }
+
+    /**
+     * Add several left reactants to a reaction
+     *
+     * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param reactants a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant}
+     */
+    public void affectLeft(@NonNull BioReaction reaction, @NonNull BioCollection<BioReactant> reactants) {
+        this.affectLeft(reaction, reactants.toArray(new BioReactant[0]));
+    }
+
+
+    /**
+     * Add a relation product-reaction
+     *
+     * @param reaction      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param stoichiometry the stoichiometric coefficient
+     * @param localisation  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
+     * @param product       a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to add to the right side of the reaction
+     */
+    public void affectRight(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, @NonNull BioMetabolite product) {
+
+        affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.RIGHT, product);
+    }
+
+    /**
+     * Add several relation product-reaction
+     *
+     * @param reaction      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param stoichiometry the stoichiometric coefficient
+     * @param localisation  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
+     * @param products      0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to add to the right side of the reaction
+     */
+    public void affectRight(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, @NonNull BioMetabolite... products) {
+        for (BioMetabolite product : products)
+            affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.RIGHT, product);
+    }
+
+    /**
+     * Add several relation product-reaction
+     *
+     * @param reaction      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param stoichiometry the stoichiometric coefficient
+     * @param localisation  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
+     * @param products      a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite} to add to the right side of the reaction
+     */
+    public void affectRight(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, @NonNull BioCollection<BioMetabolite> products) {
+        for (BioMetabolite product : products)
+            affectSideReaction(reaction, stoichiometry, localisation, BioReaction.Side.RIGHT, product);
+    }
+
+    /**
+     * Add a relation product-reaction
+     */
+    private void affectRight(@NonNull BioReaction reaction, @NonNull BioReactant reactant) {
+        affectSideReaction(reactant, reaction, BioReaction.Side.RIGHT);
+    }
+
+    /**
+     * affect several reactant to the right side of a reaction
+     *
+     * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param reactants 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant}
+     */
+    public void affectRight(@NonNull BioReaction reaction, @NonNull BioReactant... reactants) {
+        for (BioReactant reactant : reactants) {
+            this.affectRight(reaction, reactant);
+        }
+    }
+
+    /**
+     * affect several reactant to the right side of a reaction
+     *
+     * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param reactants a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant}
+     */
+    public void affectRight(@NonNull BioReaction reaction, @NonNull BioCollection<BioReactant> reactants) {
+        this.affectRight(reaction, reactants.toArray(new BioReactant[0]));
+    }
+
+
+    /**
+     * @param reaction      a {@link BioReaction}
+     * @param stoichiometry a {@link Double}
+     * @param localisation  a {@link BioCompartment}
+     * @param side          a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction.Side}
+     * @param metabolite    a {@link BioMetabolite}
+     */
+    private void affectSideReaction(@NonNull BioReaction reaction, @NonNull Double stoichiometry, @NonNull BioCompartment localisation, @NonNull BioReaction.Side side, @NonNull BioMetabolite metabolite) {
+
+        if (Double.isNaN(stoichiometry) || stoichiometry < 0.0) {
+            throw new IllegalArgumentException("Error in stoichiometry for the metabolite " + metabolite.getId()
+                    + " and the reaction " + reaction.getId() + ", it should be strictly positive");
+        }
+
+        if (stoichiometry == 0.0) {
+            System.err.println("[WARNING] The stoichiometry for the metabolite " + metabolite.getId()
+                    + " and the reaction " + reaction.getId() + "is null, it won't be added to the reaction");
+            return;
+        }
+
+
+        BioReactant reactant = this.getReactant(metabolite, stoichiometry, localisation);
+
+        if (reactant == null) {
+            reactant = new BioReactant(metabolite, stoichiometry, localisation);
+            this.reactants.add(reactant);
+        }
+
+        this.affectSideReaction(reactant, reaction, side);
+
+    }
+
+
+    /**
+     * Associates a reactant with a reaction on a specified side (left or right).
+     * <p>
+     * This method ensures that the reactant, its associated compartment, and metabolite
+     * are present in the network before adding the reactant to the specified side of the reaction.
+     * It also verifies that the reaction exists in the network.
+     * </p>
+     *
+     * @param reactant a {@link BioReactant} to be associated with the reaction.
+     * @param reaction a {@link BioReaction} to which the reactant will be added.
+     * @param side     a {@link BioReaction.Side} indicating whether the reactant is added to the left or right side of the reaction.
+     * @throws IllegalArgumentException if the reactant, its compartment, metabolite, or the reaction is not present in the network,
+     *                                  or if the metabolite is not connected to the compartment.
+     */
+    private void affectSideReaction(@NonNull BioReactant reactant, @NonNull BioReaction reaction, @NonNull BioReaction.Side side) {
+
+        BioCompartment localisation = reactant.getLocation();
+
+        if (!this.reactants.contains(reactant)) {
+            throw new IllegalArgumentException("Reactant " + reactant.getId() + " not in the network");
+        }
+
+        // The network must contain the compartment
+        if (!this.compartments.contains(localisation)) {
+            throw new IllegalArgumentException("Compartment " + localisation.getId() + " not in the network");
+        }
+
+        if (!this.metabolites.contains(reactant.getMetabolite())) {
+            throw new IllegalArgumentException(
+                    "Metabolite " + reactant.getMetabolite().getId() + " not in the network");
+        }
+
+        // The metabolite must be connected to the compartment
+        if (!localisation.getComponents().contains(reactant.getMetabolite())) {
+            throw new IllegalArgumentException(
+                    "Metabolite " + reactant.getMetabolite().getId() + " not in the compartment");
+        }
+
+        // The network must contain the reaction
+        if (!this.reactions.contains(reaction)) {
+            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not in the network");
+        }
+
+        if (side.equals(BioReaction.Side.LEFT)) {
+            if (!reaction.getLeftReactants().containsId(reactant.getId())) {
+                reaction.getLeftReactants().add(reactant);
+            }
+        } else {
+            if (!reaction.getRightReactants().containsId(reactant.getId())) {
+                reaction.getRightReactants().add(reactant);
+            }
+        }
+    }
+
+
+    /**
+     * Affects an enzyme to a reaction
+     */
+    private void affectEnzyme(@NonNull BioReaction reaction, @NonNull BioEnzyme enzyme) {
+
+        if (!this.contains(enzyme)) {
+            throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
+        }
+
+        if (!this.contains(reaction)) {
+            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not present in the network");
+        }
+
+        reaction.addEnzyme(enzyme);
+
+    }
+
+    /**
+     * Affect several enzymes to a reaction
+     *
+     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param enzymes  0 or several enzymes
+     */
+    public void affectEnzyme(@NonNull BioReaction reaction, @NonNull BioEnzyme... enzymes) {
+
+        for (BioEnzyme e : enzymes) {
+            affectEnzyme(reaction, e);
+        }
+
+    }
+
+    /**
+     * Affect several enzymes to a reaction
+     *
+     * @param reaction a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     * @param enzymes  a {@link BioCollection of enzymes}
+     */
+    public void affectEnzyme(@NonNull BioReaction reaction, @NonNull BioCollection<BioEnzyme> enzymes) {
+
+        for (BioEnzyme e : enzymes) {
+            affectEnzyme(reaction, e);
+        }
+
+    }
+
+    /**
+     * Add a subunit to an enzymes
+     *
+     * @param enzyme   a {@link BioEnzyme}
+     * @param quantity number of units
+     * @param unit     a {@link BioPhysicalEntity}
+     * @throws IllegalArgumentException of the enzyme of the unit is not present in the network
+     */
+    private void affectSubUnit(@NonNull BioEnzyme enzyme, @NonNull Double quantity, @NonNull BioPhysicalEntity unit) {
+
+        if (!(unit instanceof BioMetabolite) && !(unit instanceof BioProtein)) {
+            throw new IllegalArgumentException("A subunit of a BioEnzyme must be a BioProtein or a BioMetabolite");
+        }
+
+        BioEnzymeParticipant p = this.getEnzymeParticipant(unit, quantity);
+        if (p == null) {
+            p = new BioEnzymeParticipant(unit, quantity);
+            this.enzymeParticipants.add(p);
+        }
+
+        this.affectSubUnit(enzyme, p);
+
+
+    }
+
+    /**
+     * Add a subunit to an enzyme
+     *
+     * @param enzyme a {@link BioEnzyme}
+     * @param unit   a {@link BioEnzymeParticipant}
+     * @throws IllegalArgumentException of the enzyme of the unit is not present in the network
+     */
+    private void affectSubUnit(@NonNull BioEnzyme enzyme, @NonNull BioEnzymeParticipant unit) {
+
+        if (!this.contains(unit)) {
+            throw new IllegalArgumentException("Enzyme participant " + unit.getId() + " not present in the network");
+        }
+
+        if (!this.contains(enzyme)) {
+            throw new IllegalArgumentException("Enzyme " + enzyme.getId() + " not present in the network");
+        }
+
+        if (!this.contains(unit.getPhysicalEntity())) {
+            throw new IllegalArgumentException("Physical entity " + unit.getPhysicalEntity().getId() + " not present in the network");
+        }
+
+        if (!enzyme.getParticipants().containsId(unit.getId())) {
+            enzyme.addParticipant(unit);
+        }
+
+    }
+
+    /**
+     * Add a subunit to an enzyme
+     *
+     * @param enzyme a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
+     * @param units  several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant}
+     * @throws java.lang.IllegalArgumentException of the enzyme of the unit is not present in the network
+     */
+    public void affectSubUnit(@NonNull BioEnzyme enzyme,
+                              @NonNull BioEnzymeParticipant... units) {
+
+        for (BioEnzymeParticipant u : units) {
+            this.affectSubUnit(enzyme, u);
+        }
+    }
+
+    /**
+     * Adds several subunits to an enzyme with the same stoichiometric coefficient
+     *
+     * @param enzyme   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
+     * @param quantity the number of units of each subunit to add
+     * @param units    0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity}
+     */
+    public void affectSubUnit(@NonNull BioEnzyme enzyme,
+                              @NonNull Double quantity,
+                              @NonNull BioPhysicalEntity... units) {
+
+        for (BioPhysicalEntity unit : units) {
+            affectSubUnit(enzyme, quantity, unit);
+        }
+    }
+
+    /**
+     * Adds several subunits to an enzyme with the same stoichiometric coefficient
+     *
+     * @param enzyme   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
+     * @param quantity the number of units of each subunit to add
+     * @param units    a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPhysicalEntity}
+     */
+    public void affectSubUnit(@NonNull BioEnzyme enzyme,
+                              @NonNull Double quantity,
+                              @NonNull BioCollection<?> units) {
+
+        for (BioEntity unit : units) {
+            affectSubUnit(enzyme, quantity, (BioPhysicalEntity) unit);
+        }
+    }
+
+    /**
+     * Adds several subunits to an enzyme
+     *
+     * @param enzyme a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme}
+     * @param units  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzymeParticipant}
+     */
+    public void affectSubUnit(@NonNull BioEnzyme enzyme,
+                              @NonNull BioCollection<BioEnzymeParticipant> units) {
+
+        for (BioEnzymeParticipant unit : units) {
+            affectSubUnit(enzyme, unit);
+        }
+    }
+
+
+    /**
+     * Add a relation protein gene
+     *
+     * @param protein a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein} instance
+     * @param gene    a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene}
+     * @throws java.lang.IllegalArgumentException if the gene or the protein is not present in the network
+     */
+    public void affectGeneProduct(@NonNull BioProtein protein,
+                                  @NonNull BioGene gene) {
+
+        if (!this.contains(protein)) {
+            throw new IllegalArgumentException("Protein " + protein.getId() + " not present in the network");
+        }
+
+        if (!this.contains(gene)) {
+            throw new IllegalArgumentException("Gene " + gene.getId() + " not present in the network");
+        }
+
+        protein.setGene(gene);
+
+    }
+
+    /**
+     * Add a reaction to a pathway
+     *
+     * @param pathway  a {@link BioPathway}
+     * @param reaction a {@link BioReaction}
+     * @throws IllegalArgumentException if the pathway or the reaction is not present
+     */
+    private void affectToPathway(@NonNull BioPathway pathway, @NonNull BioReaction reaction) {
+
+        if (!this.contains(pathway)) {
+            throw new IllegalArgumentException("Pathway " + pathway.getId() + " not present in the network");
+        }
+
+        if (!this.contains(reaction)) {
+            throw new IllegalArgumentException("Reaction " + reaction.getId() + " not present in the network");
+        }
+
+        pathway.addReaction(reaction);
+
+    }
+
+    /**
+     * Add several reactions to a pathway
+     *
+     * @param pathway   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}
+     * @param reactions 0 or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     */
+    public void affectToPathway(@NonNull BioPathway pathway,
+                                @NonNull BioReaction... reactions) {
+
+        for (BioReaction reaction : reactions) {
+            this.affectToPathway(pathway, reaction);
+        }
+    }
+
+    /**
+     * Add several reactions to a pathway
+     *
+     * @param pathway   a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}
+     * @param reactions a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
+     */
+    public void affectToPathway(@NonNull BioPathway pathway,
+                                @NonNull BioCollection<BioReaction> reactions) {
+
+        for (BioReaction reaction : reactions) {
+            this.affectToPathway(pathway, reaction);
+        }
+    }
+
+    // relations compartiment - contenu
+    private void affectToCompartment(@NonNull BioCompartment compartment,
+                                     @NonNull BioEntity entity) {
+
+        if (!contains(compartment)) {
+            throw new IllegalArgumentException("Compartment " + compartment.getId() + " not in the network");
+        }
+
+        if (!contains(entity)) {
+            throw new IllegalArgumentException("Physical entity " + entity.getId() + " not in the network");
+        }
+
+        compartment.addComponent(entity);
+
+    }
+
+    /**
+     * Affect several metabolites to a compartment
+     *
+     * @param compartment a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
+     * @param entities    one or several {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
+     */
+    public void affectToCompartment(@NonNull BioCompartment compartment,
+                                    @NonNull BioEntity... entities) {
+
+        for (BioEntity ent : entities) {
+            this.affectToCompartment(compartment, ent);
+        }
+
+    }
+
+    /**
+     * Affect several metabolites from a collection to a compartment
+     *
+     * @param compartment a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment}
+     * @param entities    a BioCollection of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity}
+     */
+    public void affectToCompartment(@NonNull BioCompartment compartment,
+                                    @NonNull BioCollection<?> entities) {
+        for (BioEntity e : entities) {
+            this.affectToCompartment(compartment, e);
+        }
+    }
+
+
+    /**
+     * Assigns a physical entity to an enzyme participant with a specified quantity.
+     * <p>
+     * This method updates the enzyme participant by setting its associated physical entity
+     * and the quantity of the physical entity. It ensures that both the enzyme participant
+     * and the physical entity are present in the network before performing the assignment.
+     * </p>
+     *
+     * @param physicalEntity    a {@link BioPhysicalEntity} to be assigned to the enzyme participant.
+     * @param quantity          a {@link Double} representing the quantity of the physical entity.
+     * @param enzymeParticipant a {@link BioEnzymeParticipant} to which the physical entity will be assigned.
+     * @throws IllegalArgumentException if the enzyme participant or the physical entity is not present in the network.
+     */
+    public void affectPhysicalEntityToEnzymeParticipant(@NonNull BioPhysicalEntity physicalEntity, Double quantity, @NonNull BioEnzymeParticipant enzymeParticipant) {
+
+        // Check if the enzyme participant exists in the network
+        if (!this.contains(enzymeParticipant)) {
+            throw new IllegalArgumentException("Enzyme participant " + enzymeParticipant + " not present in the network");
+        }
+
+        // Check if the physical entity exists in the network
+        if (!this.contains(physicalEntity)) {
+            throw new IllegalArgumentException("Physical entity " + physicalEntity + " not present in the network");
+        }
+
+        // Assign the physical entity and quantity to the enzyme participant
+        enzymeParticipant.setPhysicalEntity(physicalEntity);
+        enzymeParticipant.setQuantity(quantity);
+    }
+
 }

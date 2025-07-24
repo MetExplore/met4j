@@ -349,4 +349,115 @@ public class FBCWriterTest {
 
 	}
 
+	@Test
+	public void testComplexGpr() throws JSBMLPackageWriterException, Met4jSbmlWriterException {
+
+		BioNetwork network = new BioNetwork();
+
+		// Création de la réaction R1
+		BioReaction r1 = new BioReaction("R1");
+		network.add(r1);
+
+		// Création des gènes
+		BioGene g1 = new BioGene("g1");
+		BioGene g2 = new BioGene("g2");
+		BioGene g3 = new BioGene("g3");
+		BioGene g4 = new BioGene("g4");
+
+		network.add(g1);
+		network.add(g2);
+		network.add(g3);
+		network.add(g4);
+
+		// Création des protéines
+		BioProtein p1 = new BioProtein("p1");
+		BioProtein p2 = new BioProtein("p2");
+		BioProtein p3 = new BioProtein("p3");
+		BioProtein p4 = new BioProtein("p4");
+
+		network.add(p1);
+		network.add(p2);
+		network.add(p3);
+		network.add(p4);
+
+		// Affectation des gènes aux protéines
+		network.affectGeneProduct(p1, g1);
+		network.affectGeneProduct(p2, g2);
+		network.affectGeneProduct(p3, g3);
+		network.affectGeneProduct(p4, g4);
+
+		// Création des enzymes et affectation des sous-unités
+		BioEnzyme e1 = new BioEnzyme("e1");
+		network.add(e1);
+		network.affectSubUnit(e1, 1.0, p1);
+
+		BioEnzyme e2 = new BioEnzyme("e2");
+		network.add(e2);
+		network.affectSubUnit(e2, 1.0, p2);
+
+		BioEnzyme e3 = new BioEnzyme("e3");
+		network.add(e3);
+		network.affectSubUnit(e3, 1.0, p3);
+
+		BioEnzyme e4 = new BioEnzyme("e4");
+		network.add(e4);
+		network.affectSubUnit(e4, 1.0, p4);
+
+		BioEnzyme e5 = new BioEnzyme("e5");
+		network.add(e5);
+		network.affectSubUnit(e5, 1.0, p2);
+		network.affectSubUnit(e5, 1.0, p4);
+
+		BioEnzyme e6 = new BioEnzyme("e6");
+		network.add(e6);
+		network.affectSubUnit(e6, 1.0, p3);
+		network.affectSubUnit(e6, 1.0, p2);
+
+		BioEnzyme e7 = new BioEnzyme("e7");
+		network.add(e7);
+		network.affectSubUnit(e7, 1.0, p1);
+		network.affectSubUnit(e7, 1.0, p2);
+
+		BioEnzyme e8 = new BioEnzyme("e8");
+		network.add(e8);
+		network.affectSubUnit(e8, 1.0, p3);
+		network.affectSubUnit(e8, 1.0, p4);
+
+		BioEnzyme e9 = new BioEnzyme("e9");
+		network.add(e9);
+		network.affectSubUnit(e9, 1.0, p1);
+		network.affectSubUnit(e9, 1.0, p4);
+
+		BioEnzyme e10 = new BioEnzyme("e10");
+		network.add(e10);
+		network.affectSubUnit(e10, 1.0, p1);
+		network.affectSubUnit(e10, 1.0, p3);
+
+		// Affectation des enzymes à la réaction R1
+		network.affectEnzyme(r1, e1);
+		network.affectEnzyme(r1, e2);
+		network.affectEnzyme(r1, e3);
+		network.affectEnzyme(r1, e4);
+		network.affectEnzyme(r1, e5);
+		network.affectEnzyme(r1, e6);
+		network.affectEnzyme(r1, e7);
+		network.affectEnzyme(r1, e8);
+		network.affectEnzyme(r1, e9);
+		network.affectEnzyme(r1, e10);
+
+		BionetworkToJsbml converter = new BionetworkToJsbml();
+		writer = new FBCWriter();
+		converter.addPackage(writer);
+
+		model = converter.parseBioNetwork(network);
+
+		Reaction reaction1 = model.getReaction("R1");
+		assertNotNull(reaction1);
+		FBCReactionPlugin rxn1Plugin = (FBCReactionPlugin) reaction1.getPlugin("fbc");
+		assertNotNull(rxn1Plugin.getGeneProductAssociation());
+		assertEquals(Or.class, rxn1Plugin.getGeneProductAssociation().getAssociation().getClass());
+		assertEquals(10, rxn1Plugin.getGeneProductAssociation().getAssociation().getChildCount());
+
+	}
+
 }

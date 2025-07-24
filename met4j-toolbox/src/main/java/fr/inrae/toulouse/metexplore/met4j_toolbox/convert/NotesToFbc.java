@@ -1,5 +1,5 @@
 /*
- * Copyright INRAE (2020)
+ * Copyright INRAE (2025)
  *
  * contact-metexplore@inrae.fr
  *
@@ -39,10 +39,7 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.convert;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.AnnotationWriter;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.GroupPathwayWriter;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.NotesWriter;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.PackageWriter;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.*;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
@@ -60,13 +57,7 @@ import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Enu
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumParameterTypes.OutputFile;
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.*;
 
-/**
- * <p>FbcToNotes class.</p>
- *
- * @author lcottret
- * @version $Id: $Id
- */
-public class FbcToNotes extends AbstractMet4jApplication {
+public class NotesToFbc extends AbstractMet4jApplication {
 
     @Format(name= Sbml)
     @ParameterType(name = InputFile)
@@ -78,17 +69,9 @@ public class FbcToNotes extends AbstractMet4jApplication {
     @Option(name = "-o", usage = "output SBML file", required = true)
     public String outputPath = null;
 
-    /**
-     * <p>main.</p>
-     *
-     * @param args an array of {@link java.lang.String} objects.
-     */
-    public static void main(String[] args)  {
-
-        FbcToNotes f = new FbcToNotes();
-
-        CmdLineParser parser = new CmdLineParser(f);
-
+    public static void main(String[] args) {
+        NotesToFbc app = new NotesToFbc();
+        CmdLineParser parser = new CmdLineParser(app);
         try {
             parser.parseArgument(args);
         } catch (CmdLineException e) {
@@ -97,20 +80,19 @@ public class FbcToNotes extends AbstractMet4jApplication {
             System.exit(1);
         }
 
-        f.run();
-
+        app.run();
     }
 
     private void run() {
 
-        BioNetwork network = IOUtils.readSbml(this.inputPath, FBC, GROUPS, ANNOTATIONS);
+        BioNetwork network = IOUtils.readSbml(this.inputPath, NOTES, GROUPS, ANNOTATIONS);
 
         JsbmlWriter writer = new JsbmlWriter(this.outputPath, network, 3, 1, false );
 
         HashSet<PackageWriter> pkgs = new HashSet<>();
         pkgs.add(new AnnotationWriter());
         pkgs.add(new GroupPathwayWriter());
-        pkgs.add(new NotesWriter(false));
+        pkgs.add(new FBCWriter());
 
         try {
             writer.write(pkgs);
@@ -122,7 +104,6 @@ public class FbcToNotes extends AbstractMet4jApplication {
 
     }
 
-
     /** {@inheritDoc} */
     @Override
     public String getLabel() {
@@ -132,21 +113,21 @@ public class FbcToNotes extends AbstractMet4jApplication {
     /** {@inheritDoc} */
     @Override
     public String getLongDescription() {
-        return this.getShortDescription() + "\n" +
-                "Convert FBC package annotations to sbml html notes." +
-                "Be careful, the app reads only fbc annotations, the existing html notes will be overwritten.\n";
+        return this.getShortDescription() + "" +
+                "\n" +
+                "Some old SBML files have notes in the html format. This application will convert them to fbc package annotations.\n" +
+                "Be careful, the app reads only html notes, the existing fbc annotations will be overwritten.\n";
     }
 
     /** {@inheritDoc} */
     @Override
     public String getShortDescription() {
-        return "Convert FBC package annotations to sbml html notes";
+        return "Convert sbml html notes to fbc package annotations";
     }
 
     @Override
     public Set<Doi> getDois() {
         return Set.of(new Doi("https://doi.org/10.1515/jib-2017-0082"));
     }
-
 
 }

@@ -8,7 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [met4j-core] Improve BioNetwork methods in terms of performance (memory and speed)
 [met4j-toolbox] NotesToFBC : New Met4J app to create a SBML file with html notes to a SBML file with fbc package
+[met4j-graph] Expand attributes exported in graph formats, such as isTransport and Compartments 
 
+[met4j-toolbox] fix bug in SideCompoundScan: percentile degree ignored
+[met4j-toolbox] fix bug in CreateMetaNetwork: id merge conflict with added suffixes
 
 ## 2.0.0
 

@@ -217,7 +217,7 @@ public class Sbml2CarbonSkeletonNet extends AbstractMet4jApplication implements 
 
         //export graph
         System.out.print("Exporting...");
-        this.exportGraph(graph, format, output, computeWeight, "Shared_Carbons");
+        this.exportGraph(graph, network, format, output, computeWeight, "Shared_Carbons");
         System.out.println(" Done.");
     }
 

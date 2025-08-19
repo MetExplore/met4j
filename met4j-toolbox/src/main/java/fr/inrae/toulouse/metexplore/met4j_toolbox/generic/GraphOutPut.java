@@ -1,5 +1,6 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.generic;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_graph.computation.utils.ComputeAdjacencyMatrix;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.io.AttributeExporter;
@@ -28,7 +29,7 @@ public interface GraphOutPut {
      * @param outputPath the path to the output file
      */
     default void exportGraph(BioGraph graph, formatEnum format, String outputPath){
-        exportGraph(graph, format, outputPath, false, null);
+        exportGraph(graph, null, format, outputPath, false, null);
     }
 
     /**
@@ -39,10 +40,10 @@ public interface GraphOutPut {
      * @param weighted whether to export edge weights
      * @param edgeWeightName the name of the edge weight attribute
      */
-    default void exportGraph(BioGraph graph, formatEnum format, String outputPath, Boolean weighted, String edgeWeightName){
+    default void exportGraph(BioGraph graph, BioNetwork network, formatEnum format, String outputPath, Boolean weighted, String edgeWeightName){
         try{
             BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath));
-            AttributeExporter att = getAttributeExporter();
+            AttributeExporter att = getAttributeExporter(network);
             if(weighted) att.exportEdgeAttribute(edgeWeightName, e-> graph.getEdgeWeight(e));
             ExportGraph export = new ExportGraph<>(graph,att);
 
@@ -64,9 +65,9 @@ public interface GraphOutPut {
      * Get the default attribute exporter
      * @return the attribute exporter
      */
-    default AttributeExporter getAttributeExporter(){
-        return new AttributeExporter()
-                .exportName().exportType().exportReversible();
+    default AttributeExporter getAttributeExporter(BioNetwork network){
+        return new AttributeExporter(network)
+                .exportName().exportType().exportReversible().exportTransportFlag();
     }
 
     /**

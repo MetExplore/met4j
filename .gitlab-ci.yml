@@ -153,8 +153,8 @@ deployCentralSnapshot:
   script:
     # Deploy snapshots only, skip release plugin
     - mvn $MAVEN_CLI_OPTS clean deploy -DskipTests -Dmaven.test.skip=true -e -X
-#  only:
-#    - develop
+  only:
+    - develop
   tags:
     - stable
 

@@ -156,8 +156,8 @@ deployCentralSnapshot:
       -DskipTests \
       -Dmaven.test.skip=true \
       -e -X
-  only:
-    - develop
+#  only:
+#    - develop
   tags:
     - stable
 

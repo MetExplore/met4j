@@ -8,13 +8,17 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <artifactId>met4j-mapping</artifactId>
+    <name>met4j-mapping</name>
+    <description>Mapping methods for metabolic networks</description>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
-    <artifactId>met4j-mapping</artifactId>
+
     <dependencies>
         <dependency>
             <groupId>fr.inrae.toulouse.metexplore</groupId>

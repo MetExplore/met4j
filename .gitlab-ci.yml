@@ -152,7 +152,7 @@ deployCentralSnapshot:
   extends: .template_deployCentral
   script:
     # Deploy snapshots only, skip release plugin
-    - mvn $MAVEN_CLI_OPTS clean deploy -DskipTests -Dmaven.test.skip=true -e -X
+    - mvn $MAVEN_CLI_OPTS clean deploy -DskipTests -Dmaven.test.skip=true -e
   only:
     - develop
   tags:
@@ -163,7 +163,7 @@ deployCentral:
   extends: .template_deployCentral
   script:
     - mvn $MAVEN_CLI_OPTS release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true -DscmCommentPrefix="[skip ci]" -DupdateWorkingCopyVersions=false -DpushChanges=false -DskipTests
-    - mvn $MAVEN_CLI_OPTS release:perform -DlocalCheckout=true -DskipTests -Dmaven.test.skip=true -e -X
+    - mvn $MAVEN_CLI_OPTS release:perform -DlocalCheckout=true -DskipTests -Dmaven.test.skip=true
   only:
     - master
   tags:
@@ -172,8 +172,8 @@ deployCentral:
 deployCentralDryRun:
   extends: .template_deployCentral
   script:
-    - mvn $MAVEN_CLI_OPTS release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true -DscmCommentPrefix="[skip ci]" -DupdateWorkingCopyVersions=false -DpushChanges=false -DskipTests -DdryRun
-    - mvn $MAVEN_CLI_OPTS release:perform -DlocalCheckout=true -DskipTests -Dmaven.test.skip=true -DdryRun
+    - mvn $MAVEN_CLI_OPTS release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true -DscmCommentPrefix="[skip ci]" -DupdateWorkingCopyVersions=false -DpushChanges=false -DskipTests -DdryRun -e
+    - mvn $MAVEN_CLI_OPTS release:perform -DlocalCheckout=true -DskipTests -Dmaven.test.skip=true -DdryRun -e
   tags:
     - stable
 

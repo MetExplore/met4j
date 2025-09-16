@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding='UTF-8' ?>
+<sbml fbc:required="false" groups:required="false" level="3" version="1"
+	xmlns="http://www.sbml.org/sbml/level3/version1/core"
+	xmlns:fbc="http://www.sbml.org/sbml/level3/version1/fbc/version2"
+	xmlns:groups="http://www.sbml.org/sbml/level3/version1/groups/version1">
+	<model fbc:strict="true" name="toy model">
+		<listOfUnitDefinitions>
+			<unitDefinition id="mmol_per_gDW_per_hr" name="mmol_per_gDW_per_hr">
+				<listOfUnits>
+					<unit exponent="-1" kind="gram" multiplier="1" scale="0"/>
+					<unit exponent="1" kind="mole" multiplier="1" scale="-3"/>
+					<unit exponent="-1" kind="second" multiplier="0.00027777" scale="0"/>
+				</listOfUnits>
+			</unitDefinition>
+		</listOfUnitDefinitions>
+		<listOfCompartments>
+			<compartment constant="false" id="c" name="Cytosol"/>
+			<compartment constant="false" id="e" name="Extracellular"/>
+		</listOfCompartments>
+		<listOfSpecies>
+			<species boundaryCondition="false" compartment="e" constant="false" fbc:charge="0" hasOnlySubstanceUnits="false" id="A_ext" name="A_ext">
+				<notes>
+					<body xmlns="http://www.w3.org/1999/xhtml">
+						<p>SMILES: C[C@@H](C(=O)O)NC</p>
+					</body>
+				</notes>
+				<annotation>
+					<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+						xmlns:bqbiol="http://biomodels.net/biology-qualifiers/">
+						<rdf:Description rdf:about="#A_ext">
+							<bqbiol:is>
+								<in:inchi xmlns:in="https://biomodels.net/inchi">InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3</in:inchi>
+							</bqbiol:is>
+						</rdf:Description>
+					</rdf:RDF>
+				</annotation>
+
+			</species>
+			<species boundaryCondition="false" compartment="c" constant="false" fbc:charge="0" hasOnlySubstanceUnits="false" id="A" name="A"/>
+			<species boundaryCondition="false" compartment="c" constant="false" fbc:charge="0" hasOnlySubstanceUnits="false" id="B" name="B"/>
+			<species boundaryCondition="false" compartment="c" constant="false" fbc:charge="0" hasOnlySubstanceUnits="false" id="C" name="C"/>
+			<species boundaryCondition="false" compartment="c" constant="false" fbc:charge="0" hasOnlySubstanceUnits="false" id="D" name="D"/>
+			<species boundaryCondition="false" compartment="e" constant="false" fbc:charge="0" hasOnlySubstanceUnits="false" id="D_ext" name="D_ext"/>
+			<species boundaryCondition="false" compartment="e" constant="false" fbc:charge="0" hasOnlySubstanceUnits="false" id="E_ext" name="E_ext"/>
+			<species boundaryCondition="false" compartment="c" constant="false" fbc:charge="0" hasOnlySubstanceUnits="false" id="E" name="E"/>
+		</listOfSpecies>
+		<listOfParameters>
+			<parameter constant="true" id="cobra_default_lb" name="cobra default - lb" sboTerm="SBO:0000626" units="mmol_per_gDW_per_hr" value="-100000.0"/>
+			<parameter constant="true" id="cobra_default_ub" name="cobra default - ub" sboTerm="SBO:0000626" units="mmol_per_gDW_per_hr" value="100000.0"/>
+			<parameter constant="true" id="cobra_0_bound" name="cobra 0 - bound" sboTerm="SBO:0000625" units="mmol_per_gDW_per_hr" value="0.0"/>
+			<parameter constant="true" id="reac1_upper_bound" name="reac1 upper bound" sboTerm="SBO:0000625" units="mmol_per_gDW_per_hr" value="10.0"/>
+			<parameter constant="true" id="reac6_upper_bound" name="reac6 upper bound" sboTerm="SBO:0000625" units="mmol_per_gDW_per_hr" value="3.0"/>
+			<parameter constant="true" id="reac2_upper_bound" name="reac2 upper bound" sboTerm="SBO:0000625" units="mmol_per_gDW_per_hr" value="100000.0"/>
+			<parameter constant="true" id="reac3_upper_bound" name="reac3 upper bound" sboTerm="SBO:0000625" units="mmol_per_gDW_per_hr" value="100000.0"/>
+			<parameter constant="true" id="reac4_upper_bound" name="reac4 upper bound" sboTerm="SBO:0000625" units="mmol_per_gDW_per_hr" value="100000.0"/>
+			<parameter constant="true" id="reac5_upper_bound" name="reac5 upper bound" sboTerm="SBO:0000625" units="mmol_per_gDW_per_hr" value="100000.0"/>
+			<parameter constant="true" id="reac7_upper_bound" name="reac7 upper bound" sboTerm="SBO:0000625" units="mmol_per_gDW_per_hr" value="100000.0"/>
+		</listOfParameters>
+		<listOfReactions>
+			<reaction fast="false" fbc:lowerFluxBound="cobra_0_bound" fbc:upperFluxBound="reac1_upper_bound" id="reac1" name="reac1" reversible="false">
+				<listOfReactants>
+					<speciesReference constant="true" species="A_ext" stoichiometry="1.0"/>
+				</listOfReactants>
+				<listOfProducts>
+					<speciesReference constant="true" species="A" stoichiometry="1.0"/>
+				</listOfProducts>
+			</reaction>
+			<reaction fast="false" fbc:lowerFluxBound="cobra_default_lb" fbc:upperFluxBound="reac2_upper_bound" id="reac2" name="reac2" reversible="true">
+				<listOfReactants>
+					<speciesReference constant="true" species="A" stoichiometry="1.0"/>
+				</listOfReactants>
+				<listOfProducts>
+					<speciesReference constant="true" species="B" stoichiometry="1.0"/>
+				</listOfProducts>
+			</reaction>
+			<reaction fast="false" fbc:lowerFluxBound="cobra_0_bound" fbc:upperFluxBound="reac3_upper_bound" id="reac3" name="reac3" reversible="false">
+				<listOfReactants>
+					<speciesReference constant="true" species="A" stoichiometry="1.0"/>
+				</listOfReactants>
+				<listOfProducts>
+					<speciesReference constant="true" species="C" stoichiometry="1.0"/>
+				</listOfProducts>
+			</reaction>
+			<reaction fast="false" fbc:lowerFluxBound="cobra_0_bound" fbc:upperFluxBound="reac4_upper_bound" id="reac4" name="reac4" reversible="false">
+				<listOfReactants>
+					<speciesReference constant="true" species="B" stoichiometry="1.0"/>
+					<speciesReference constant="true" species="C" stoichiometry="1.0"/>
+				</listOfReactants>
+				<listOfProducts>
+					<speciesReference constant="true" species="D" stoichiometry="1.5"/>
+				</listOfProducts>
+			</reaction>
+			<reaction fast="false" fbc:lowerFluxBound="cobra_0_bound" fbc:upperFluxBound="reac5_upper_bound" id="reac5" name="reac5" reversible="false">
+				<listOfReactants>
+					<speciesReference constant="true" species="D" stoichiometry="1.0"/>
+				</listOfReactants>
+				<listOfProducts>
+					<speciesReference constant="true" species="D_ext" stoichiometry="1.0"/>
+				</listOfProducts>
+			</reaction>
+			<reaction fast="false" fbc:lowerFluxBound="cobra_0_bound" fbc:upperFluxBound="reac6_upper_bound" id="reac6" name="reac6" reversible="false">
+				<listOfReactants>
+					<speciesReference constant="true" species="E_ext" stoichiometry="1.0"/>
+				</listOfReactants>
+				<listOfProducts>
+					<speciesReference constant="true" species="E" stoichiometry="1.0"/>
+				</listOfProducts>
+			</reaction>
+			<reaction fast="false" fbc:lowerFluxBound="cobra_0_bound" fbc:upperFluxBound="reac7_upper_bound" id="reac7" name="reac7" reversible="false">
+				<listOfReactants>
+					<speciesReference constant="true" species="E" stoichiometry="2.0"/>
+				</listOfReactants>
+				<listOfProducts>
+					<speciesReference constant="true" species="D" stoichiometry="1.0"/>
+				</listOfProducts>
+			</reaction>
+		</listOfReactions>
+	</model>
+</sbml>

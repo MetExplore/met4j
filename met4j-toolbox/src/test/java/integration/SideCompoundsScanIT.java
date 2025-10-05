@@ -34,6 +34,10 @@ public class SideCompoundsScanIT {
             "fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis.SideCompoundsScan",
             "-i",
             inputPathFile,
+            "-d",
+            "400",
+            "-dp",
+            "-1",
             "-o",
             actualOutput.toString()
         );
@@ -79,6 +83,10 @@ public class SideCompoundsScanIT {
             "fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis.SideCompoundsScan",
             "-i",
             inputPathFile,
+            "-d",
+            "400",
+            "-dp",
+            "-1",
             "-id",
             "-o",
             actualOutput.toString()

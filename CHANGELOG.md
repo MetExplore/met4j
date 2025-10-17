@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Next Release
 
 [met4j-toolbox] Fix Galaxy compatibility issues with SideCompoundScan, improve logging and criteria for side compound detection
+[met4j-toolbox] Add apps to map entities in sbml from list of masses
+[met4j-toolbox] Add apps to map entities in sbml from list of formulas
+[met4j-toolbox] Add apps to map entities in sbml from list of external identifiers
+
+[met4j-mapping] new AttributeMapper class to retrieve any BioEntity in a BioNetwork from a value of one of its attribute
+[met4j-chemUtils] new MassComputor wrapper class to compute molecular weights from chemical formulas using CDK, and set them in BioMetabolites
 
 ## 2.1.0
 

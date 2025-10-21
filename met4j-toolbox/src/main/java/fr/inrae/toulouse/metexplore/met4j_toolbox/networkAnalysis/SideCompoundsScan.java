@@ -52,11 +52,11 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
     @Option(name = "-id", aliases = {"--onlyIds"}, usage = "do not report values in output, export ids of compounds flagged as side compounds, allowing piping results")
     public boolean noReportValue = false;
 
-    @Option(name = "-d", aliases = {"--degree"}, usage = "flag as side compounds any compound with degree above threshold", forbids = {"-dp"})
-    public int degree = 400;
+    @Option(name = "-d", aliases = {"--degree"}, usage = "flag as side compounds any compound with degree above threshold. Ignored if negative")
+    public int degree = -1;
 
-    @Option(name = "-dp", aliases = {"--degreep"}, usage = "flag as side compounds the top x% of compounds according to their degree", forbids = {"-d"})
-    public double degreePrecentile = Double.NaN;
+    @Option(name = "-dp", aliases = {"--degreep"}, usage = "flag as side compounds the top x% of compounds according to their degree. Ignored if negative")
+    public double degreePrecentile = 2;
 
     @Option(name = "-cc", aliases = {"--noCarbonSkeleton"}, usage = "flag as side compound any compound with less than 2 carbons in formula")
     public Boolean flagInorganic = false;
@@ -64,8 +64,8 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
     @Option(name = "-uf", aliases = {"--undefinedFormula"}, usage = "flag as side compound any compound with no valid chemical formula")
     public Boolean flagNoFormula = false;
 
-    @Option(name = "-nc", aliases = {"--neighborCoupling"}, usage = "flag as side compound any compound with a number of parallel edges shared with a neighbor above the given threshold")
-    public double parallelEdge = Double.NaN;
+    @Option(name = "-nc", aliases = {"--neighborCoupling"}, usage = "flag as side compound any compound with a number of parallel edges shared with a neighbor above the given threshold. Ignored if negative")
+    public double parallelEdge = -1;
     @Option(name = "-m", aliases = {"--merge"}, usage = "degree is shared between compounds in different compartments. " +
             "Use names if consistent and unambiguous across compartments, or identifiers if compartment suffix is present (id in form \"xxx_y\" with xxx as base identifier and y as compartment label).")
     public strategy mergingStrat = strategy.no;
@@ -81,6 +81,18 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
     }
 
     public void run() {
+
+        //check args
+        if( degree < 0 && degreePrecentile < 0 && parallelEdge < 0 && !flagInorganic && !flagNoFormula){
+            System.err.println("Error: at least one criteria should be activated");
+            System.exit(1);
+        }
+        if(degree >=0 && degreePrecentile >=0){
+            System.err.println("Warning: If both degree and degree percentile are set, the least stringent will be ignored");
+        }
+        if( degree < 0 && degreePrecentile < 0 && parallelEdge < 0 && mergingStrat!=strategy.no){
+            System.err.println("Warning: merging compartments has no effect if no degree/neighbourhood criteria is used");
+        }
 
 
         //import network
@@ -120,7 +132,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
         //degree statistics
         DescriptiveStatistics degreeStats = new DescriptiveStatistics();
         double dt = degree;
-        if (!Double.isNaN(degreePrecentile)) {
+        if (!Double.isNaN(degreePrecentile) && degreePrecentile > 0) {
             for (BioMetabolite v : graph.vertexSet()) {
                 if (merge) {
                     degreeStats.addValue(mergedDegree.get(getSharedId.apply(v)));
@@ -138,8 +150,8 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
             Boolean reportValue = (!noReportValue);
             if (reportValue) {
                 StringBuffer l = new StringBuffer("ID\tNAME");
-                l.append("\tDEGREE");
-                if (!Double.isNaN(parallelEdge)) l.append("\tMAX_PARALLEL_EDGES");
+                if (degree > 0 || degreePrecentile > 0) l.append("\tDEGREE");
+                if (!Double.isNaN(parallelEdge) && parallelEdge > 0) l.append("\tMAX_PARALLEL_EDGES");
                 if (flagInorganic) l.append("\tNO_CARBON_BOND");
                 if (flagNoFormula) l.append("\tVALID_CHEMICAL");
                 l.append("\tIS_SIDE\n");
@@ -164,7 +176,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
                 if (reportValue) l.append("\t" + d);
 
                 //check parallel edges
-                if (!Double.isNaN(parallelEdge)) {
+                if (!Double.isNaN(parallelEdge) && parallelEdge > 0) {
                     int maxIpe = 0;
                     for (BioMetabolite n : graph.neighborListOf(v)) {
                         int e = graph.getAllEdges(v, n).size() + graph.getAllEdges(n, v).size();

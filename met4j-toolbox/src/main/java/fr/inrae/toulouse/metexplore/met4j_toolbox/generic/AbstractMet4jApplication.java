@@ -358,7 +358,8 @@ public abstract class AbstractMet4jApplication {
         String commandText = "";
 
         if(packageType == GalaxyPackageType.Conda) {
-            commandText = "met4j " + packageName + "." + className;
+            // remove 'fr.inrae.toulouse.metexplore.met4j_toolbox'
+            commandText = "met4j " + packageName.replace("fr.inrae.toulouse.metexplore.met4j_toolbox.", "") + "." + className;
         }
         else {
             commandText = "sh /usr/bin/met4j.sh " + simplePackageName + "." + className;

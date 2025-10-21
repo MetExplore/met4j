@@ -6,51 +6,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Next Release
 
-[met4j-toolbox] Fix Galaxy compatibility issues with SideCompoundScan, improve logging and criteria for side compound detection
-[met4j-toolbox] Add apps to map entities in sbml from list of masses
-[met4j-toolbox] Add apps to map entities in sbml from list of formulas
-[met4j-toolbox] Add apps to map entities in sbml from list of external identifiers
+[met4j-toolbox] Fix Galaxy compatibility issues with SideCompoundScan, improve logging and criteria for side compound detection  
+[met4j-toolbox] Add apps to map entities in sbml from list of masses  
+[met4j-toolbox] Add apps to map entities in sbml from list of formulas  
+[met4j-toolbox] Add apps to map entities in sbml from list of external identifiers  
+[met4j-toolbox] Add app to groups reactions in SBML by enzyme Class
 
-[met4j-mapping] new AttributeMapper class to retrieve any BioEntity in a BioNetwork from a value of one of its attribute
-[met4j-chemUtils] new MassComputor wrapper class to compute molecular weights from chemical formulas using CDK, and set them in BioMetabolites
+[met4j-mapping] new AttributeMapper class to retrieve any BioEntity in a BioNetwork from a value of one of its attribute  
+[met4j-chemUtils] new MassComputor wrapper class to compute molecular weights from chemical formulas using CDK, and set them in BioMetabolites  
 
 ## 2.1.0
 
-[met4j-core] Improve BioNetwork methods in terms of performance (memory and speed)
-[met4j-toolbox] NotesToFBC : New Met4J app to create a SBML file with html notes to a SBML file with fbc package
-[met4j-graph] Expand attributes exported in graph formats, such as isTransport and Compartments 
+[met4j-core] Improve BioNetwork methods in terms of performance (memory and speed)  
+[met4j-toolbox] NotesToFBC : New Met4J app to create a SBML file with html notes to a SBML file with fbc package  
+[met4j-graph] Expand attributes exported in graph formats, such as isTransport and Compartments   
 
-[met4j-toolbox] fix bug in SideCompoundScan: percentile degree ignored
-[met4j-toolbox] fix bug in CreateMetaNetwork: id merge conflict with added suffixes
+[met4j-toolbox] fix bug in SideCompoundScan: percentile degree ignored  
+[met4j-toolbox] fix bug in CreateMetaNetwork: id merge conflict with added suffixes  
 
 ## 2.0.0
 
-[met4j-toolbox] harmonization of the apps' parameters and names (check for compatibility issues)
-[met4j-toolbox] improved documentation
-[met4j-toolbox] add citation information to apps
-[met4j-toolbox][reconstruction] add a new app to create community networks
+[met4j-toolbox] harmonization of the apps' parameters and names (check for compatibility issues)  
+[met4j-toolbox] improved documentation  
+[met4j-toolbox] add citation information to apps  
+[met4j-toolbox][reconstruction] add a new app to create community networks  
 
 [met4j-core] add support for meta-networks (community networks, holobionts, multi-organ model etc.)
 
-[met4j-graph] Improve graph export:
-    - added a utility class for apps exporting graphs, removing duplicated code
-    - parameterizable export for handling custom attributes
-    - harmonization and support for all graph types
-    - node table export in apps
-    - tabulated as default (check for compatibility issues)
-[met4j-io] Fix protein/gene names in FBC parser
+[met4j-graph] Improve graph export:  
+    - added a utility class for apps exporting graphs, removing duplicated code  
+    - parameterizable export for handling custom attributes  
+    - harmonization and support for all graph types  
+    - node table export in apps  
+    - tabulated as default (check for compatibility issues)  
+[met4j-io] Fix protein/gene names in FBC parser  
 
 
 ## 1.5.0
 
 
-[met4j-graph] Overload getReactionGraph to be able to provide a list of reactions to exclude
-
-[met4j-toolbox] New app to compute the reaction graph distance matrix
-
-[met4j-toolbox] New app to perform topology-based pathway analysis
-
-[met4j-toolbox] New app to perform over-representation based pathway analysis
+[met4j-graph] Overload getReactionGraph to be able to provide a list of reactions to exclude  
+[met4j-toolbox] New app to compute the reaction graph distance matrix  
+[met4j-toolbox] New app to perform topology-based pathway analysis  
+[met4j-toolbox] New app to perform over-representation based pathway analysis  
 
 
 ## 1.4.0

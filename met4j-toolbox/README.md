@@ -214,6 +214,12 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
  -s (--substrates) : Extract substrates only (default: false)
  -sep VAL          : Separator in reaction file (default: 	)
 </code></pre></details></td></tr>
+<tr><td>GroupRxnByEnzymeClass</td><td>Alternative functional grouping of reactions in model : Replace pathways by groups of reactions sharing EC numbers<details><summary><small>more</small></summary>Alternative functional grouping of reactions in model :Replace pathways in model by groups of reactions sharing EC numbers. EC numbers are retrieved from annotation fields, and propagated to their parent class (e.g. EC 1.2.3.4 will be added to groups 1.2.3, 1.2 and 1).<br/>Reactions without EC number are kept in the model but won't have any group assigned.<br/>Original pathway assignments are erased.<br/>EC groups with size out of the range [min-max] are ignored.<br/><br/><pre><code> -h     : prints the help (default: false)
+ -i VAL : input SBML file
+ -max N : maximum size of the EC class to convert as pathway (default: 200)
+ -min N : minimum size of the EC class to convert as pathway (default: 2)
+ -o VAL : output SBML file
+</code></pre></details></td></tr>
 <tr><td>SetCharges</td><td>Set charge to metabolites in a SBML file from a tabulated file containing the metabolite ids and the charges<details><summary><small>more</small></summary>Set charge to metabolites in a SBML file from a tabulated file containing the metabolite ids and the charges<br/>The charge must be a number. The ids must correspond between the tabulated file and the SBML file.<br/>If prefix or suffix is different in the SBML file, use the -p or the -s options.<br/>The charge will be written in the SBML file in two locations:+<br/>- in the reaction notes (e.g. charge: -1)<br/>- as fbc attribute (e.g. fbc:charge="1")<br/><br/>References:<br/><a href="https://doi.org/10.1515/jib-2017-0082">Olivier et al.; SBML Level 3 Package: Flux Balance Constraints version 2; Journal of Integrative Bioinformatics; 2018</a><br/><br/><br/><pre><code> -c VAL   : [#] Comment String in the tabulated file. The lines beginning by
             this string won't be read (default: #)
  -cc N    : [2] number of the column where are the charges (default: 2)
@@ -257,7 +263,7 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
             prefix R_ to reactions (default: false)
  -tab VAL : Input Tabulated file
 </code></pre></details></td></tr>
-<tr><td>SetGprs</td><td>Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way<details><summary><small>more</small></summary>Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way<br/>The ids must correspond between the tabulated file and the SBML file.<br/>If prefix R_ is present in the ids in the SBML file and not in the tabulated file, use the -p option.<br/>GPR must be written in a cobra way in the tabulated file as described in Schellenberger et al 2011 Nature Protocols 6(9):1290-307<br/>(The GPR will be written in the SBML file in two locations:<br/>- in the reaction html notes (GENE_ASSOCIATION: ( XC_0401 ) OR ( XC_3282 ))<br/>- as fbc gene product association (see FBC package specifications: https://doi.org/10.1515/jib-2017-0082)<br/><br/>References:<br/><a href="https://doi.org/10.1515/jib-2017-0082">Olivier et al.; SBML Level 3 Package: Flux Balance Constraints version 2; Journal of Integrative Bioinformatics; 2018</a><br/><a href="https://doi.org/10.1038/nprot.2011.308">Schellenberger et al.; Quantitative prediction of cellular metabolism with constraint-based models: the COBRA Toolbox v2.0; Nature Protocols; 2011</a><br/><br/><br/><pre><code> -c VAL   : [#] Comment String in the tabulated file. The lines beginning by
+<tr><td>SetGprs</td><td>Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way<details><summary><small>more</small></summary>Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way<br/>The ids must correspond between the tabulated file and the SBML file.<br/>If prefix R_ is present in the ids in the SBML file and not in the tabulated file, use the -p option.<br/>GPR must be written in a cobra way in the tabulated file as described in Schellenberger et al 2011 Nature Protocols 6(9):1290-307<br/>(The GPR will be written in the SBML file in two locations:<br/>- in the reaction html notes (GENE_ASSOCIATION: ( XC_0401 ) OR ( XC_3282 ))<br/>- as fbc gene product association (see FBC package specifications: https://doi.org/10.1515/jib-2017-0082)<br/><br/>References:<br/><a href="https://doi.org/10.1038/nprot.2011.308">Schellenberger et al.; Quantitative prediction of cellular metabolism with constraint-based models: the COBRA Toolbox v2.0; Nature Protocols; 2011</a><br/><a href="https://doi.org/10.1515/jib-2017-0082">Olivier et al.; SBML Level 3 Package: Flux Balance Constraints version 2; Journal of Integrative Bioinformatics; 2018</a><br/><br/><br/><pre><code> -c VAL   : [#] Comment String in the tabulated file. The lines beginning by
             this string won't be read (default: #)
  -cgpr N  : [2] number of the column where are the gprs (default: 2)
  -ci N    : [1] number of the column where are the reaction ids (default: 1)
@@ -561,6 +567,34 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
 <table>
 <thead><tr><th colspan="2">Package fr.inrae.toulouse.metexplore.met4j_toolbox.mapping</th></tr></thead>
 <tbody>
+<tr><td>FormulaMapper</td><td><details><summary><small>more</small></summary><br/><br/><pre><code> -f VAL            : input formula file (one per line)
+ -h                : prints the help (default: false)
+ -i VAL            : input SBML file
+ -na               : Output formulas without match in model, with NA value
+                     (default: false)
+ -o (--output) VAL : output mapping file
+</code></pre></details></td></tr>
+<tr><td>IdMapper</td><td>Map external metabolite identifiers (kegg, metanetx, pubchem CID...) to metabolite ids from a SBML file<details><summary><small>more</small></summary>Map external metabolite identifiers (kegg, metanetx, pubchem CID...) to metabolite ids from a SBML file.<br/>The SBML file is expected to contain annotations in MIRIAM format for the selected database:<br/>i.e, <species> entries in the sbml should contain an <annotation> field where there is references to the given database.check identifiers.org for valid database names and associated base URIs.<br/>The input id file should contain one id per line. The output is a tab delimited file with two columns: query id, sbml metabolite id (one line per match)<br/><br/><pre><code> -db VAL           : name of the referenced database annotations to map
+                     against, as listed in identifiers.org base uri
+ -h                : prints the help (default: false)
+ -i VAL            : input SBML file
+ -id VAL           : input external id file (one per line)
+ -na               : Output id without matching annotation in model, with NA
+                     value (default: false)
+ -o (--output) VAL : output mapping file
+</code></pre></details></td></tr>
+<tr><td>MassMapper</td><td><details><summary><small>more</small></summary><br/><br/><pre><code> -comp [no | average | monoisotopic] : Compute mass from formulas for each
+                                       compounds in the model. Use SBML
+                                       attributes if not set (default: no)
+ -h                                  : prints the help (default: false)
+ -i VAL                              : input SBML file
+ -m VAL                              : input mass file (one per line)
+ -na                                 : Output mass without match in model, with
+                                       NA value (default: false)
+ -o (--output) VAL                   : output mapping file
+ -ppm N                              : mass delta tolerance in part per million
+                                       (default: 5.0)
+</code></pre></details></td></tr>
 <tr><td>NameMatcher</td><td>This tool runs edit-distance based fuzzy matching to perform near-similar name matching between a metabolic model and a list of chemical names in a dataset. A harmonization processing is performed on chemical names with substitutions of common patterns among synonyms, in order to create aliases on which classical fuzzy matching can be run efficiently.<details><summary><small>more</small></summary>Metabolic models and Metabolomics Data often refer compounds only by using their common names, which vary greatly according to the source, thus impeding interoperability between models, databases and experimental data. This requires a tedious step of manual mapping. Fuzzy matching is a range of methods which can potentially helps fasten this process, by allowing the search for near-similar names. Fuzzy matching is primarily designed for common language search engines and is frequently based on edit distance, i.e. the number of edits to transform a character string into another, effectively managing typo, case and special character variations, and allowing auto-completion. However, edit-distance based search fall short when mapping chemical names: As an example, alpha-D-Glucose et Glucose would require more edits than between Fructose and Glucose.<br/><br/>This tool runs edit-distance based fuzzy matching to perform near-similar name matching between a metabolic model and a list of chemical names in a dataset. A harmonization processing is performed on chemical names with substitutions of common patterns among synonyms, in order to create aliases on which classical fuzzy matching can be run efficiently.<br/><br/><pre><code> -c VAL        : [#] Comment String in the compound file. The lines beginning
                  by this string won't be read (default: #)
  -col N        : [1] column containing compounds' names (default: 1)
@@ -611,7 +645,7 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
  -u (--undirected)    : Ignore reaction direction (default: false)
  -w (--weights) VAL   : an optional file containing weights for compound pairs
 </code></pre></details></td></tr>
-<tr><td>ChemSimilarityWeighting</td><td>Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity.<details><summary><small>more</small></summary>Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity.Chemical similarity has been proposed as edge weight for finding meaningful paths in metabolic networks, using shortest (lightest) path search.<br/><br/>References:<br/><a href="https://doi.org/10.1093/bioinformatics/btu760">Pertusi et al.; Efficient searching and annotation of metabolic networks using chemical similarity; Bioinformatics; 2015</a><br/><a href="https://doi.org/10.1093/bioinformatics/btg217">McShan et al.; PathMiner: predicting metabolic pathways by heuristic search; Bioinformatics; 2003</a><br/><a href="https://doi.org/10.1093/bioinformatics/bti116">Rahman et al.; Metabolic pathway analysis web service (Pathway Hunter Tool at CUBIC); Bioinformatics; 2005</a><br/><br/><br/><pre><code> -d (--asDist)                          : Use distance rather than similarity
+<tr><td>ChemSimilarityWeighting</td><td>Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity.<details><summary><small>more</small></summary>Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity.Chemical similarity has been proposed as edge weight for finding meaningful paths in metabolic networks, using shortest (lightest) path search.<br/><br/>References:<br/><a href="https://doi.org/10.1093/bioinformatics/btg217">McShan et al.; PathMiner: predicting metabolic pathways by heuristic search; Bioinformatics; 2003</a><br/><a href="https://doi.org/10.1093/bioinformatics/btu760">Pertusi et al.; Efficient searching and annotation of metabolic networks using chemical similarity; Bioinformatics; 2015</a><br/><a href="https://doi.org/10.1093/bioinformatics/bti116">Rahman et al.; Metabolic pathway analysis web service (Pathway Hunter Tool at CUBIC); Bioinformatics; 2005</a><br/><br/><br/><pre><code> -d (--asDist)                          : Use distance rather than similarity
                                           (default: false)
  -f (--fingerprint) [EState | Extended  : The chemical fingerprint to use
  | KlekotaRoth | MACCS | PubChem]         (default: Extended)
@@ -875,10 +909,11 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
                                        less than 2 carbons in formula (default:
                                        false)
  -d (--degree) N                     : flag as side compounds any compound with
-                                       degree above threshold (default: 400)
+                                       degree above threshold. Ignored if
+                                       negative (default: -1)
  -dp (--degreep) N                   : flag as side compounds the top x% of
-                                       compounds according to their degree
-                                       (default: NaN)
+                                       compounds according to their degree.
+                                       Ignored if negative (default: 2.0)
  -h                                  : prints the help (default: false)
  -i VAL                              : input SBML file
  -id (--onlyIds)                     : do not report values in output, export
@@ -895,8 +930,8 @@ Wrappers launch the met4j singularity container, so the server where your Galaxy
                                        no)
  -nc (--neighborCoupling) N          : flag as side compound any compound with
                                        a number of parallel edges shared with a
-                                       neighbor above the given threshold
-                                       (default: NaN)
+                                       neighbor above the given threshold.
+                                       Ignored if negative (default: -1.0)
  -o VAL                              : output file containing the side compounds
  -s (--onlySides)                    : output compounds flagged as side
                                        compounds only (default: false)

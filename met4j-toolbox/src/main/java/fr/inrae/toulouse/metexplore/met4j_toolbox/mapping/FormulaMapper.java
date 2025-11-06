@@ -83,7 +83,7 @@ public class FormulaMapper extends AbstractMet4jApplication {
                 BioNetwork::getMetabolitesView,
                 AttributeMapper.selectByFormula());
         Map<String, List<BioMetabolite>> res = mapper.map(queries);
-        System.out.println("Number of masses mapped: " + res.size());
+        System.out.println("Number of formula mapped: " + res.size());
 
         //write output: export tab delimited file with three columns: query formulas, sbml metabolite formulas, sbml metabolite id (one line per match)
         try (FileWriter fr = new FileWriter(outputPath);
@@ -111,13 +111,15 @@ public class FormulaMapper extends AbstractMet4jApplication {
 
     @Override
     public String getLongDescription() {
-        return "";
+        return "Retrieve metabolites in a SBML file from their chemical formula. \n" +
+                "The SBML file is expected to contain fbc:chemicalFormula attributes for species entries.\n" +
+                "The input formula file should contain one formula per line. The output is a tab delimited file with two columns: query formula, sbml metabolite id (one line per match)";
 
     }
 
     @Override
     public String getShortDescription() {
-        return "";
+        return "Retrieve metabolites in a SBML file from their chemical formula";
     }
 
     @Override

@@ -143,13 +143,15 @@ public class MassMapper extends AbstractMet4jApplication {
 
     @Override
     public String getLongDescription() {
-        return "";
+        return "Retrieve metabolites in a SBML file from their mass.\n" +
+                "The SBML file is expected to contain fbc:chemicalFormula attributes for species entries, in order to compute masses.\n" +
+                "The input mass file should contain one mass per line. The output is a tab delimited file with two columns: query mass, sbml metabolite id (one line per match)";
 
     }
 
     @Override
     public String getShortDescription() {
-        return "";
+        return "Retrieve metabolites in a SBML file from their mass.";
     }
 
     @Override

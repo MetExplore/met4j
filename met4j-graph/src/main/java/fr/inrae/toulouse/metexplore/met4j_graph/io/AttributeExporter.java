@@ -150,7 +150,12 @@ public class AttributeExporter {
             else if(value instanceof Long) return DefaultAttribute.createAttribute((Long)value);
             else return DefaultAttribute.createAttribute(value.toString());
         }else{
-            return DefaultAttribute.createAttribute(value.toString());
+            if (value instanceof Boolean) return DefaultAttribute.createAttribute((Boolean) value);
+            else if (value instanceof Integer) return DefaultAttribute.createAttribute((Integer) value);
+            else if (value instanceof Long) return DefaultAttribute.createAttribute((Long) value);
+            else if (value instanceof Double) return DefaultAttribute.createAttribute((Double) value);
+            else if (value instanceof Float) return DefaultAttribute.createAttribute((Float) value);
+            else return DefaultAttribute.createAttribute(value.toString());
         }
     }
     /*

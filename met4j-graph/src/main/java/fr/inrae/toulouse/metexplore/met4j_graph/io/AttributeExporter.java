@@ -162,7 +162,13 @@ public class AttributeExporter {
      * Initializes the map to store the node attributes
      */
     private Map<String, Attribute> initNodeAtt(BioEntity v){
-        Map<String, Attribute> map = new TreeMap<>();
+        return new TreeMap<>();
+    }
+
+    /*
+     * Initializes user defined attributes
+     */
+    private void addExtraAttributes(Map<String, Attribute> map, BioEntity v){
         for(Map.Entry<String,Function<BioEntity,Object>> entry : nodeExtraAtt.entrySet()){
             try{
                 Object value = entry.getValue().apply(v);
@@ -172,8 +178,7 @@ public class AttributeExporter {
                 e.printStackTrace();
             }
         }
-        return map;
-    }
+    };
     /*
      * Initializes the map to store the edge attributes
      */
@@ -209,6 +214,7 @@ public class AttributeExporter {
         } else if (exportCompartment) {
             System.err.println("Warning: Compartment export is enabled but no BioNetwork is provided. Compartment information will not be exported.");
         }
+        addExtraAttributes(att,v);
         return att;
     });
 
@@ -224,6 +230,7 @@ public class AttributeExporter {
         if(exportReversible && v.isReversible()!=null) att.put("Reversible", DefaultAttribute.createAttribute(v.isReversible()));
         if(exportEC && v.getEcNumber()!=null) att.put("EC", DefaultAttribute.createAttribute(v.getEcNumber()));
         if(exportTransport && v.isTransportReaction()!=null) att.put("Transport", DefaultAttribute.createAttribute(v.isTransportReaction()));
+        addExtraAttributes(att,v);
         return att;
     });
 
@@ -236,6 +243,7 @@ public class AttributeExporter {
         Map<String, Attribute> att = initNodeAtt(v);
         if (v instanceof BioMetabolite) return compoundAttProvider.apply((BioMetabolite) v);
         if (v instanceof BioReaction) return reactionAttProvider.apply((BioReaction) v);
+        addExtraAttributes(att,v);
         return att;
     });
 
@@ -310,6 +318,7 @@ public class AttributeExporter {
             Map<String, Attribute> att = initNodeAtt(v);
             if(v.getName()!=null) att.put("Name", DefaultAttribute.createAttribute(v.getName()));
             att.put("Type", DefaultAttribute.createAttribute(v.getClass().getSimpleName()));
+             addExtraAttributes(att,v);
             return att;
         });
 

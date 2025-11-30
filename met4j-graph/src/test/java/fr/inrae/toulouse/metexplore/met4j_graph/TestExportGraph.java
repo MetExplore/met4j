@@ -576,7 +576,10 @@ public class TestExportGraph {
         StringWriter w = new StringWriter();
         AttributeExporter attExport = AttributeExporter.full(bn)
                 .exportEdgeAttribute("Test", e -> e.getV1().getId())
-                .exportNodeAttribute("Test2", BioEntity::getName);
+                .exportNodeAttribute("Test2", BioEntity::getName)
+                .exportNodeAttribute("Type", (v->{if (v instanceof BioMetabolite) return "Composé"; //override default att
+                    else if (v instanceof BioReaction) return "Reaction";
+                    else return v.getClass().getSimpleName();}));
         ExportGraph<BioEntity, BipartiteEdge, BipartiteGraph> export = new ExportGraph<>(bg, attExport);
         try {
             export.toJSONgraph(w);
@@ -590,7 +593,7 @@ public class TestExportGraph {
             Pattern ReversibleAttRegex = Pattern.compile("\"Reversible\":\"(true|false)\"");
             Pattern Test2AttRegex = Pattern.compile("\"Test2\":\"\\w\"");
             Pattern TestAttRegex = Pattern.compile("\"Test\":\"[a-z][0-9]?\"");
-            Pattern TypeAttRegex = Pattern.compile("\"Type\":\"(Compound|Reaction)\"");
+            Pattern TypeAttRegex = Pattern.compile("\"Type\":\"(Composé|Reaction)\"");
             Pattern CompAttRegex = Pattern.compile("\"Compartment\":\"comp[2,3]?(,comp[2,3])?\"");
             Pattern TranspAttRegex = Pattern.compile("Transport\":\"(true||false)\"");
 

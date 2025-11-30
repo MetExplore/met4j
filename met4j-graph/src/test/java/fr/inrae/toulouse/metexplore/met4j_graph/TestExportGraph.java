@@ -537,7 +537,8 @@ public class TestExportGraph {
         StringWriter w = new StringWriter();
         AttributeExporter attExport = AttributeExporter.full(bn)
                 .exportEdgeAttribute("Test", e -> e.getV1().getId())
-                .exportNodeAttribute("Test2", BioEntity::getName);
+                .exportNodeAttribute("Test2", BioEntity::getName)
+                .exportNodeAttribute("Test3", v->42.0);
         ExportGraph<BioEntity, BipartiteEdge, BipartiteGraph> export = new ExportGraph<>(bg, attExport);
         export.toGml(w);
         String output = w.toString();
@@ -549,6 +550,7 @@ public class TestExportGraph {
         Pattern NameAttRegex = Pattern.compile("Name\\s+\"\\w\"");
         Pattern ReversibleAttRegex = Pattern.compile("Reversible\\s+\"(true|false)\"");
         Pattern Test2AttRegex = Pattern.compile("Test2\\s+\"\\w\"");
+        Pattern Test3AttRegex = Pattern.compile("Test3\\s+42.0");
         Pattern TestAttRegex = Pattern.compile("Test\\s+\"[a-z][0-9]?\"");
         Pattern TypeAttRegex = Pattern.compile("Type\\s+\"(Compound|Reaction)\"");
         Pattern CompAttRegex = Pattern.compile("Compartment\\s+\"comp[2,3]?(,comp[2,3])?\"");
@@ -562,6 +564,7 @@ public class TestExportGraph {
         assertEquals("anomaly in Bipartite name attributes",14, NameAttRegex.matcher(output).results().count());
         assertEquals("anomaly in Bipartite reversibility attributes",7, ReversibleAttRegex.matcher(output).results().count());
         assertEquals("anomaly in Bipartite test attributes",14, Test2AttRegex.matcher(output).results().count());
+        assertEquals("anomaly in Bipartite test attributes",14, Test3AttRegex.matcher(output).results().count());
         assertEquals("anomaly in Bipartite test attributes",22, TestAttRegex.matcher(output).results().count());
         assertEquals("anomaly in Bipartite type attributes",14, TypeAttRegex.matcher(output).results().count());
         assertEquals("anomaly in Bipartite transport attributes",7, TranspAttRegex.matcher(output).results().count());

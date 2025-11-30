@@ -168,7 +168,7 @@ public class AttributeExporter {
     /*
      * Initializes user defined attributes
      */
-    private void addExtraAttributes(Map<String, Attribute> map, BioEntity v){
+    private void addExtraNodeAttributes(Map<String, Attribute> map, BioEntity v){
         for(Map.Entry<String,Function<BioEntity,Object>> entry : nodeExtraAtt.entrySet()){
             try{
                 Object value = entry.getValue().apply(v);
@@ -183,7 +183,13 @@ public class AttributeExporter {
      * Initializes the map to store the edge attributes
      */
     private Map<String, Attribute> initEdgeAtt(Edge<? extends BioEntity> e){
-        Map<String, Attribute> map = new TreeMap<>();
+        return new TreeMap<>();
+    }
+
+    /*
+     * Initializes user defined attributes
+     */
+    private void addExtraEdgeAttributes(Map<String, Attribute> map, Edge<? extends BioEntity> e){
         for(Map.Entry<String,Function<Edge<? extends BioEntity>,Object>> entry : edgeExtraAtt.entrySet()){
             try{
                 Object value = entry.getValue().apply(e);
@@ -193,7 +199,6 @@ public class AttributeExporter {
                 ex.printStackTrace();
             }
         }
-        return map;
     }
 
     /**
@@ -214,7 +219,7 @@ public class AttributeExporter {
         } else if (exportCompartment) {
             System.err.println("Warning: Compartment export is enabled but no BioNetwork is provided. Compartment information will not be exported.");
         }
-        addExtraAttributes(att,v);
+        addExtraNodeAttributes(att,v);
         return att;
     });
 
@@ -230,7 +235,7 @@ public class AttributeExporter {
         if(exportReversible && v.isReversible()!=null) att.put("Reversible", DefaultAttribute.createAttribute(v.isReversible()));
         if(exportEC && v.getEcNumber()!=null) att.put("EC", DefaultAttribute.createAttribute(v.getEcNumber()));
         if(exportTransport && v.isTransportReaction()!=null) att.put("Transport", DefaultAttribute.createAttribute(v.isTransportReaction()));
-        addExtraAttributes(att,v);
+        addExtraNodeAttributes(att,v);
         return att;
     });
 
@@ -243,7 +248,7 @@ public class AttributeExporter {
         Map<String, Attribute> att = initNodeAtt(v);
         if (v instanceof BioMetabolite) return compoundAttProvider.apply((BioMetabolite) v);
         if (v instanceof BioReaction) return reactionAttProvider.apply((BioReaction) v);
-        addExtraAttributes(att,v);
+        addExtraNodeAttributes(att,v);
         return att;
     });
 
@@ -281,6 +286,7 @@ public class AttributeExporter {
         Map<String, Attribute> att  = initEdgeAtt(e);
         att.put("Name", DefaultAttribute.createAttribute(reactionEdgeLabelProvider.apply(e)));
         if(e.getReaction()!=null) att.putAll(reactionAttProvider.apply(e.getReaction()));
+        addExtraEdgeAttributes(att,e);
         return att;
     });
 
@@ -293,6 +299,7 @@ public class AttributeExporter {
         Map<String, Attribute> att = initEdgeAtt(e);
         att.put("Name", DefaultAttribute.createAttribute(compoundEdgeLabelProvider.apply(e)));
         if(e.getCompound()!=null) att.putAll(compoundAttProvider.apply(e.getCompound()));
+        addExtraEdgeAttributes(att,e);
         return att;
     });
 
@@ -304,6 +311,7 @@ public class AttributeExporter {
     public Function<BipartiteEdge, Map<String, Attribute>>bipEdgeAttProvider = (e -> {
         Map<String, Attribute> att = initEdgeAtt(e);
         att.put("Name", DefaultAttribute.createAttribute(bipEdgeLabelProvider.apply(e)));
+        addExtraEdgeAttributes(att,e);
         return att;
     });
 
@@ -318,7 +326,7 @@ public class AttributeExporter {
             Map<String, Attribute> att = initNodeAtt(v);
             if(v.getName()!=null) att.put("Name", DefaultAttribute.createAttribute(v.getName()));
             att.put("Type", DefaultAttribute.createAttribute(v.getClass().getSimpleName()));
-             addExtraAttributes(att,v);
+             addExtraNodeAttributes(att,v);
             return att;
         });
 
@@ -332,6 +340,7 @@ public class AttributeExporter {
         (e -> {
             Map<String, Attribute> att = initEdgeAtt(e);
             att.put("Name", DefaultAttribute.createAttribute(e.toString()));
+            addExtraEdgeAttributes(att,e);
             return att;
         });
 

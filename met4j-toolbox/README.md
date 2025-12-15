@@ -33,6 +33,16 @@ Log4j from jsbml can be very verbose. You can make it silent by adding this comm
 java -Dlog4j.configuration= -cp target/met4j-toolbox-<version>.jar ...
 ```
 
+## From Conda
+
+[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/met4j/README.html)
+
+To install the latest version of Met4J, run this command :
+
+```sh
+conda install met4j -c bioconda -c conda-forge
+```
+
 ## From singularity
 
 You need at least [singularity](https://sylabs.io/guides/3.5/user-guide/quick_start.html) v3.5.

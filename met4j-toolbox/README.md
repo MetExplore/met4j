@@ -43,6 +43,20 @@ To install the latest version of Met4J, run this command :
 conda install met4j -c bioconda -c conda-forge
 ```
 
+### Usage
+
+List all the apps :
+
+```sh
+met4j
+```
+
+Run a specific app (for example Sbml2Graph) :
+
+```sh
+met4j convert.Sbml2Graph -i mySbml.xml -o ./output.txt
+```
+
 ## From singularity
 
 You need at least [singularity](https://sylabs.io/guides/3.5/user-guide/quick_start.html) v3.5.

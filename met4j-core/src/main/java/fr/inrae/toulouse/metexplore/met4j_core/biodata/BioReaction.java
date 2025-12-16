@@ -66,7 +66,6 @@ import lombok.NonNull;
  * unchanged, e.g. glycogen + glucose = glycogen.
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class BioReaction extends BioEntity {
 

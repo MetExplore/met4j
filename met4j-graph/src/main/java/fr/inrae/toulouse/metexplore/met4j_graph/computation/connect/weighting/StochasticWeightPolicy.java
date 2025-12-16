@@ -50,7 +50,6 @@ import java.util.Set;
  * The Stochastic weighting policy based on chemical similarity.
  *
  * @author clement
- * @version $Id: $Id
  */
 public class StochasticWeightPolicy extends SimilarityWeightPolicy {
 	

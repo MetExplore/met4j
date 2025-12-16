@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
  * This kind of measure can be computed relatively to a given set of nodes.
  *
  * @author clement
- * @version $Id: $Id
  */
 public class EigenVectorCentrality<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V ,E>> {
 	

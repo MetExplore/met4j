@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
  * The Class CompoundGraph.
  *
  * @author clement
- * @version $Id: $Id
  */
 public class CompoundGraph extends BioGraph<BioMetabolite, ReactionEdge> {
 

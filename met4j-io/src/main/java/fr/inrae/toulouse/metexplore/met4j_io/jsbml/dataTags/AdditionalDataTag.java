@@ -43,7 +43,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
  * {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork}. It can be launched after the others.
  *
  * @author Benjamin
- * @version $Id: $Id
  */
 public interface AdditionalDataTag {
 

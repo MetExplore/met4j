@@ -45,7 +45,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.GraphFactory;
  * Result can be returned as sub-network or just the size/order of the expected sub-network
  *
  * @author clement
- * @version $Id: $Id
  */
 public class GraphOperation {
 

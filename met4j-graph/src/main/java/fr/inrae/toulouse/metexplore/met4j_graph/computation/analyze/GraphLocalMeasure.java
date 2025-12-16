@@ -51,7 +51,6 @@ import java.util.Set;
  * compute several measures of the proximity or relatedness of two nodes
  *
  * @author clement
- * @version $Id: $Id
  */
 public class GraphLocalMeasure<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> {
 	

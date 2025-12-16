@@ -45,7 +45,6 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
  * <p>Flux class.</p>
  *
  * @author ludo 1 juin 2011
- * @version $Id: $Id
  */
 public class Flux extends BioEntity {
 

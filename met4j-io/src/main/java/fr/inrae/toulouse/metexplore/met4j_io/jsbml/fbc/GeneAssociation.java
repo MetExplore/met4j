@@ -50,7 +50,6 @@ import java.util.stream.Collectors;
  * possible "AND" gene association that can activate a given reaction
  *
  * @author Benjamin mainly modified by LC
- * @version $Id: $Id
  * @since 3.0
  */
 public class GeneAssociation implements Set<GeneSet> {

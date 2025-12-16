@@ -46,7 +46,6 @@ import lombok.Setter;
  * The root class
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public abstract class BioEntity {
 

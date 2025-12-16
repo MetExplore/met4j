@@ -44,7 +44,6 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors;
  *
  * @author Benjamin
  * @since 3.0
- * @version $Id: $Id
  */
 public class JSBMLPackageReaderException extends Exception {
 

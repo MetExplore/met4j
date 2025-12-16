@@ -55,7 +55,6 @@ import java.util.regex.Pattern;
  * <p>Abstract AbstractSetAttributesFromFile class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public abstract class AbstractSetAttributesFromFile {
 

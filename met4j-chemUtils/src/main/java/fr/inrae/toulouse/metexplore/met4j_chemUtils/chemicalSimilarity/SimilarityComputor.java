@@ -42,7 +42,6 @@ import java.util.BitSet;
  * <p>SimilarityComputor class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class SimilarityComputor {
 

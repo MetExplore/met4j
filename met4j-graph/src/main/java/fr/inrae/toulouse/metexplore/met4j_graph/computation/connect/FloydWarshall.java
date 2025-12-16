@@ -55,7 +55,6 @@ import java.util.Map;
  * @param <E> the edge type
  * @param <G> the graph type
  * @author lcottret
- * @version $Id: $Id
  */
 public class FloydWarshall<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> {
 	

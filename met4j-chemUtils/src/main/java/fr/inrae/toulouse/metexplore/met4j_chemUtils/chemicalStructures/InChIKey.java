@@ -42,7 +42,6 @@ package fr.inrae.toulouse.metexplore.met4j_chemUtils.chemicalStructures;
  *
  * @author Benjamin
  * @since 2.0
- * @version $Id: $Id
  */
 public class InChIKey extends ChemicalStructure {
 	/**

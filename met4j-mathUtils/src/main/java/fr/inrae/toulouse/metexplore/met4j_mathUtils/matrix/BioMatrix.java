@@ -46,7 +46,6 @@ import java.util.HashMap;
  * The Interface BioMatrix.
  *
  * @author clement
- * @version $Id: $Id
  */
 public interface BioMatrix {
 	

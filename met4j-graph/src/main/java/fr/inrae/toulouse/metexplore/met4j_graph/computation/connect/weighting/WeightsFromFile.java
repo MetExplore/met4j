@@ -56,7 +56,6 @@ import java.util.function.Function;
  * tab separated
  * source vertex id,target vertex id,edge label,weight
  * @author clement
- * @version $Id: $Id
  */
 public class WeightsFromFile<V extends BioEntity, E extends Edge<V>,G extends BioGraph<V,E>>
 	extends WeightingPolicy<V,E,G> {

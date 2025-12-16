@@ -35,9 +35,7 @@
  */
 
 /**
- * This package holds all the classes required for parsing SBML files
- * @author Benjamin
- * @since 3.0
+ * This package holds all the classes required for reading and writing SBML files
  */
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml;
 

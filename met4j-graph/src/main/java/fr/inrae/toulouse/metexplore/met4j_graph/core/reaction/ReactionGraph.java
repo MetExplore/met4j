@@ -49,7 +49,6 @@ import java.util.UUID;
  * The Class CompoundGraph.
  *
  * @author clement
- * @version $Id: $Id
  */
 public class ReactionGraph extends BioGraph<BioReaction, CompoundEdge> {
 

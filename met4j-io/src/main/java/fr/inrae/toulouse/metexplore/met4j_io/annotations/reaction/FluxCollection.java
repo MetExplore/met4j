@@ -42,7 +42,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
  * <p>FluxCollection class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class FluxCollection extends BioCollection<Flux> {
 	

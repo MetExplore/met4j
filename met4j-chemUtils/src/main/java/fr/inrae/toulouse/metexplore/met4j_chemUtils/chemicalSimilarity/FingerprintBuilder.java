@@ -63,7 +63,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
  * provide static methods to compute chemical fingerprints
  *
  * @author clement
- * @version $Id: $Id
  */
 public class FingerprintBuilder {
 	

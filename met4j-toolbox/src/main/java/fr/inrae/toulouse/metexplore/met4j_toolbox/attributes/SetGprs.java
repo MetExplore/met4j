@@ -50,7 +50,6 @@ import java.util.Set;
  * <p>SbmlSetGprsFromFile class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class SetGprs extends AbstractSbmlSetReaction {
 

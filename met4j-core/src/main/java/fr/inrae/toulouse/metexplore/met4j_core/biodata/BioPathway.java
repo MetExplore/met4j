@@ -44,7 +44,6 @@ import lombok.NonNull;
  * or other reasons.
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class BioPathway extends BioEntity {
 

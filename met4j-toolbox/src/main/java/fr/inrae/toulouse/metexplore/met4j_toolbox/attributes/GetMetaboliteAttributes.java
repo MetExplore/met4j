@@ -58,7 +58,6 @@ import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPacka
  * <p>SbmlToMetaboliteTable class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class GetMetaboliteAttributes extends AbstractMet4jApplication {
 

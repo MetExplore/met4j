@@ -49,7 +49,6 @@ import java.util.function.DoubleFunction;
  * Class used to perform mathematical operation and IO methods on weights in graph
  *
  * @author clement
- * @version $Id: $Id
  */
 public class WeightUtils {
 

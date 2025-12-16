@@ -59,7 +59,6 @@ import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPacka
  * <p>Sbml2Tab class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class Sbml2Tab extends AbstractMet4jApplication {
 

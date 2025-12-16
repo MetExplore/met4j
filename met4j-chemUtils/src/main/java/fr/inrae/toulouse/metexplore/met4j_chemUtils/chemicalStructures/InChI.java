@@ -52,7 +52,6 @@ import java.util.regex.Pattern;
  *
  * @author Benjamin
  * @since 2.0
- * @version $Id: $Id
  */
 public class InChI extends ChemicalStructure {
 

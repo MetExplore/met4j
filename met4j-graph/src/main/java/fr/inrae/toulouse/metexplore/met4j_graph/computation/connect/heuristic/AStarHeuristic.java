@@ -41,7 +41,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
  * The Interface for A* Heuristic.
  *
  * @author clement
- * @version $Id: $Id
  */
 public interface AStarHeuristic<V extends BioEntity> {
 	

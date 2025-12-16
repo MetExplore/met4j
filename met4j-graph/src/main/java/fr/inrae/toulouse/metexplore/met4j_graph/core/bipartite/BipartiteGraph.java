@@ -50,7 +50,6 @@ import java.util.Set;
  * <p>BipartiteGraph class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class BipartiteGraph extends BioGraph<BioEntity, BipartiteEdge> {
 

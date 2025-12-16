@@ -45,7 +45,6 @@ import java.util.Objects;
  * The edge Class linking two {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}, associated with a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
  *
  * @author clement
- * @version $Id: $Id
  */
 public class CompoundEdge extends Edge<BioReaction>{
 	

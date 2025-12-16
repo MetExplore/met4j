@@ -11,7 +11,6 @@ import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
  * A class to compute molecular weights from chemical formulas using CDK, and set them in BioMetabolites
  *
  * @author clement
- * @version $Id: $Id
  */
 public class MassComputor {
 

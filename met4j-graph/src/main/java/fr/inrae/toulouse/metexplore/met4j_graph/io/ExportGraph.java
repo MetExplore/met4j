@@ -58,7 +58,6 @@ import java.util.function.Function;
 /**
  * Export information from graphs generated from {@link Bionetwork2BioGraph} into Cytoscape-readable files
  * @author clement
- * @version $Id: $Id
  */
 public class ExportGraph<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> {
 

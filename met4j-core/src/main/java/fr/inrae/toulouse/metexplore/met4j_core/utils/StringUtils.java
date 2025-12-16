@@ -45,7 +45,6 @@ import java.util.regex.Pattern;
  * <p>StringUtils class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class StringUtils {
 

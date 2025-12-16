@@ -49,7 +49,6 @@ import org.apache.commons.lang3.StringUtils;
  * <p>BioReactionUtils class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class BioReactionUtils {
 

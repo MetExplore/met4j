@@ -54,7 +54,6 @@ import java.util.stream.Collectors;
  * their description if available
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class Main {
 

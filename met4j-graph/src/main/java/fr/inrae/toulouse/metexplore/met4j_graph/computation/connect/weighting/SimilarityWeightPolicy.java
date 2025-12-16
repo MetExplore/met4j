@@ -52,7 +52,6 @@ import java.util.Set;
  * The Chemical Similarity weighting policy.
  *
  * @author clement
- * @version $Id: $Id
  */
 public class SimilarityWeightPolicy extends WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> {
 	

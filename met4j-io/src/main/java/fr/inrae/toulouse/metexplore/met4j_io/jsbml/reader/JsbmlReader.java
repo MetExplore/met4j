@@ -63,7 +63,6 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
  * depending on the SBML level defined in the file
  *
  * @author Benjamin Merlet
- * @version $Id: $Id
  * @since 3.0
  */
 public class JsbmlReader {

@@ -51,7 +51,6 @@ import java.util.regex.Pattern;
  * <p>GPR class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class GPR {
 

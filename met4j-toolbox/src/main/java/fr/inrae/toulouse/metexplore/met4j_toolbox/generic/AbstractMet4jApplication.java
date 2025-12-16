@@ -80,7 +80,6 @@ import java.util.stream.Collectors;
  * <p>Abstract AbstractMet4jApplication class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public abstract class AbstractMet4jApplication {
 

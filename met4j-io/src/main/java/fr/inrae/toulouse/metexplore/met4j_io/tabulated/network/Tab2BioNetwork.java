@@ -63,7 +63,6 @@ import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isDouble
  * <p>Tab2BioNetwork class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class Tab2BioNetwork {
 

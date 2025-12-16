@@ -47,7 +47,6 @@ import java.util.*;
  * @param <V> the vertex type
  * @param <E> the edge type
  * @param <G> the graph type
- * @version $Id: $Id
  */
 public abstract class GraphFactory<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> {
 	/**

@@ -46,7 +46,6 @@ import java.util.*;
 /**
  * Class used to merges parallel edges.
  * @author clement
- * @version $Id: $Id
  */
 public class EdgeMerger {
 	

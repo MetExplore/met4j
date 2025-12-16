@@ -46,7 +46,6 @@ import java.util.HashMap;
  * The A* heuristic using chemical similarity
  *
  * @author clement
- * @version $Id: $Id
  */
 public class ChemicalSimilarityHeuristic implements AStarHeuristic<BioMetabolite> {
 	

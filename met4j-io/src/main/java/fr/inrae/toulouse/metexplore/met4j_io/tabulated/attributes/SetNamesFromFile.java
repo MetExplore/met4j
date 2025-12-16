@@ -45,7 +45,6 @@ import java.io.IOException;
  * <p>SetNamesFromFile class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class SetNamesFromFile extends AbstractSetAttributesFromFile {
 

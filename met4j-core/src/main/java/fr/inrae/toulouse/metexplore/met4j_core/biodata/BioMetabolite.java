@@ -43,7 +43,6 @@ import lombok.Setter;
  * <p>BioMetabolite class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class BioMetabolite extends BioPhysicalEntity {
 

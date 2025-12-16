@@ -41,7 +41,6 @@ import lombok.Getter;
  * <p>BioProtein class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class BioProtein extends BioPhysicalEntity {
 

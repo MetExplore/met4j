@@ -78,7 +78,6 @@ import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
  *
  * @author Benjamin
  * @since 3.0
- * @version $Id: $Id
  */
 public class FBCWriter implements PackageWriter, PrimaryDataTag {
 

@@ -77,7 +77,6 @@ import org.sbml.jsbml.Unit.Kind;
  * Abstract class that defines the different 'ListOf' parsing method.
  *
  * @author bmerlet
- * @version $Id: $Id
  * @since 3.0
  */
 public class JsbmlToBioNetwork {

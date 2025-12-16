@@ -51,7 +51,6 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.attributes.Notes;
  * <p>GenericAttributes class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class GenericAttributes {
 

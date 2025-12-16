@@ -50,7 +50,6 @@ import java.util.TreeMap;
  * <p>BioNetwork2Tab class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class BioNetwork2Tab {
 

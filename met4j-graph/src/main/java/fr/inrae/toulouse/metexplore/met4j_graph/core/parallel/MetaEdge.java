@@ -49,7 +49,6 @@ import java.util.Set;
  * @author clement
  * @param <V> the vertex Type
  * @param <E> the sub-edges Type
- * @version $Id: $Id
  */
 public class MetaEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V> {
 

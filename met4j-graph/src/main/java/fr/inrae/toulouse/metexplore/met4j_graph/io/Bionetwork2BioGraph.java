@@ -59,7 +59,6 @@ import java.util.stream.Collectors;
  * The Class to convert Bionetwork to BioGraph.
  *
  * @author clement
- * @version $Id: $Id
  */
 public class Bionetwork2BioGraph {
 

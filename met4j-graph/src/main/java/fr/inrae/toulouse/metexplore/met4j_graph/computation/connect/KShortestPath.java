@@ -47,7 +47,6 @@ import java.util.*;
  * <p>KShortestPath class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class KShortestPath<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V ,E>>{
 	

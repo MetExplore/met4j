@@ -45,7 +45,6 @@ import java.util.Map.Entry;
  * <p>UnitSbml class.</p>
  *
  * @author ludo
- * @version $Id: $Id
  */
 public class UnitSbml {
 

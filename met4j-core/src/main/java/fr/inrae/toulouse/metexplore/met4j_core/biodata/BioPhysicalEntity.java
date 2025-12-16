@@ -39,7 +39,6 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
  * <p>Abstract BioPhysicalEntity class.</p>
  *
  * @author Ludo Cottret and Clement Frainay
- * @version $Id: $Id
  */
 public abstract class BioPhysicalEntity extends BioEntity {
 

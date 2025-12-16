@@ -47,7 +47,6 @@ import java.util.regex.Pattern;
  * <p>SetEcsFromFile class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class SetEcsFromFile extends AbstractSetAttributesFromFile {
     private final Pattern patternEC;

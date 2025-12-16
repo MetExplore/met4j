@@ -46,7 +46,6 @@ import java.util.Locale;
  * <p>BioEnzymeParticipant class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class BioEnzymeParticipant extends BioParticipant {
 

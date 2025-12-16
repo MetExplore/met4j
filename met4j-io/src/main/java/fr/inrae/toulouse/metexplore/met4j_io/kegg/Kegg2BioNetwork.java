@@ -62,7 +62,6 @@ import org.xml.sax.InputSource;
  * <p>Kegg2BioNetwork class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class Kegg2BioNetwork {
 

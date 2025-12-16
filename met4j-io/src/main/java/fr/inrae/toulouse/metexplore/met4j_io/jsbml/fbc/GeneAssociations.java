@@ -42,7 +42,6 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.GeneSetException;
  * <p>GeneAssociations class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class GeneAssociations {
 

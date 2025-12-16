@@ -62,7 +62,6 @@ import java.util.HashMap;
  * The Class BioGraph2XGMML.
  *
  * @author clement
- * @version $Id: $Id
  */
 public class BioGraph2XGMML{
 	

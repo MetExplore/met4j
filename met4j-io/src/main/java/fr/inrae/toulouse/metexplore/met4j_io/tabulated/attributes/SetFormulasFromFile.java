@@ -45,7 +45,6 @@ import java.io.IOException;
  * <p>SetFormulasFromFile class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class SetFormulasFromFile extends AbstractSetAttributesFromFile {
 

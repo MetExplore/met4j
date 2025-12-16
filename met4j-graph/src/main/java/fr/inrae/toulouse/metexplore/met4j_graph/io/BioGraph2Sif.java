@@ -47,7 +47,6 @@ import java.io.IOException;
  * <p>BioGraph2Sif class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class BioGraph2Sif<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V, E>> {
 	

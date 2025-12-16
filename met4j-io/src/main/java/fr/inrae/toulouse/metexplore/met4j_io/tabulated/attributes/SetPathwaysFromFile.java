@@ -52,7 +52,6 @@ import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
  * <p>SetPathwaysFromFile class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
 

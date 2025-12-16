@@ -42,7 +42,6 @@ import java.net.URL;
  * <p>ResourceURLFilter interface.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public interface ResourceURLFilter {
     /**

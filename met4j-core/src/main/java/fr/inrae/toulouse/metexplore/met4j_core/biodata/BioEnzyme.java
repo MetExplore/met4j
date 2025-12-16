@@ -44,7 +44,6 @@ import java.util.ArrayList;
  * <p>BioEnzyme class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class BioEnzyme extends BioPhysicalEntity {
 

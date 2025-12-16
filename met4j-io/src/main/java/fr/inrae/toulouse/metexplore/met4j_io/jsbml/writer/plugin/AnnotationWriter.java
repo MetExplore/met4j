@@ -65,7 +65,6 @@ import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
  *
  * @author Benjamin
  * @since 3.0
- * @version $Id: $Id
  */
 public class AnnotationWriter implements PackageWriter, AdditionalDataTag {
 

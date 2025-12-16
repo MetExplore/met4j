@@ -54,7 +54,6 @@ import java.util.jar.JarFile;
  * <p>Resources class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class Resources {
     private static void collectURL(ResourceURLFilter f, Set<URL> s, URL u) {

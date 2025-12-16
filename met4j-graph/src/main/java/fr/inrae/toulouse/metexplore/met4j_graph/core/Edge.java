@@ -48,7 +48,6 @@ import java.util.HashMap;
  * <p>Abstract Edge class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public abstract class Edge<T extends BioEntity> extends DefaultWeightedEdge{
 	

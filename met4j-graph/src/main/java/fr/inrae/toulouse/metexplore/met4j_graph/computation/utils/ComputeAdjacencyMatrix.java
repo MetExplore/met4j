@@ -49,7 +49,6 @@ import java.util.function.DoubleBinaryOperator;
  * The adjacency Matrix computor.
  *
  * @author clement
- * @version $Id: $Id
  */
 public class ComputeAdjacencyMatrix<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V, E>> {
 	

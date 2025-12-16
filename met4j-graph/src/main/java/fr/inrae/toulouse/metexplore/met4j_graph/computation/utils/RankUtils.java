@@ -46,7 +46,6 @@ import java.util.*;
  * provide static method to build reaction ranking from graph edges' score, and measure distance/dissimilarity between two ranking
  *
  * @author clement
- * @version $Id: $Id
  */
 public class RankUtils {
 	

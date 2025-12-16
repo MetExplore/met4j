@@ -44,7 +44,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.ReactionEdge;
  * The Class DegreeWeightPolicy which set as edge weight the target node's degree to the power of n.
  *
  * @author clement
- * @version $Id: $Id
  */
 public class DegreeWeightPolicy extends WeightingPolicy<BioMetabolite,ReactionEdge,CompoundGraph> {
 	

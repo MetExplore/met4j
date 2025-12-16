@@ -44,7 +44,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
  * The default Weighting policy (each weight is set to 1.0).
  *
  * @author clement
- * @version $Id: $Id
  */
 public class UnweightedPolicy<V extends BioEntity, E extends Edge<V>,G extends BioGraph<V,E>>
 	extends WeightingPolicy<V,E,G> {

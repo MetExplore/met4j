@@ -48,7 +48,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
  * <p>BioUnitDefinition class.</p>
  *
  * @author ludo
- * @version $Id: $Id
  */
 public class BioUnitDefinition extends BioEntity {
 	

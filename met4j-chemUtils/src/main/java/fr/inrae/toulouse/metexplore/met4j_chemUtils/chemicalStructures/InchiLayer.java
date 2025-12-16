@@ -44,7 +44,6 @@ import java.util.HashMap;
  *
  * @author Benjamin
  * @since 2.0
- * @version $Id: $Id
  */
 public class InchiLayer {
 

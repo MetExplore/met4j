@@ -65,7 +65,6 @@ import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
  * regardless of the requested output SBML level
  *
  * @author Benjamin
- * @version $Id: $Id
  * @since 3.0
  */
 public class BionetworkToJsbml {

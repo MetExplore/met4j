@@ -44,7 +44,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
  * The Class BipartiteEdge.
  *
  * @author clement
- * @version $Id: $Id
  */
 public class BipartiteEdge extends Edge<BioEntity> {
 	

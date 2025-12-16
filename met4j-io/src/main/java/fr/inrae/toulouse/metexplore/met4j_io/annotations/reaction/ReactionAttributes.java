@@ -49,7 +49,6 @@ import fr.inrae.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
  * <p>ReactionAttributes class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class ReactionAttributes extends GenericAttributes {
 

@@ -52,7 +52,6 @@ import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
  *
  * @author Benjamin
  * @since 2.0
- * @version $Id: $Id
  */
 public class Notes {
 

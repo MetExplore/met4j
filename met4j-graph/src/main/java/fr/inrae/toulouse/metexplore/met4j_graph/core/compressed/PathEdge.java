@@ -43,7 +43,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
  * <p>PathEdge class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class PathEdge<V extends BioEntity,E extends Edge<V>> extends Edge<V>{
 

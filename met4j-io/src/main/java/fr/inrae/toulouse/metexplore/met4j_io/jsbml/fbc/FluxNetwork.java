@@ -49,7 +49,6 @@ import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.Flux;
  *
  * @author Benjamin
  * @since 3.0
- * @version $Id: $Id
  */
 public class FluxNetwork {
 	/**

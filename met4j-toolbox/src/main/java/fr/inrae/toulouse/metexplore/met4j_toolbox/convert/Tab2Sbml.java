@@ -56,7 +56,6 @@ import java.util.Set;
  * <p>Tab2Sbml class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class Tab2Sbml extends AbstractMet4jApplication {
 

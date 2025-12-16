@@ -48,7 +48,6 @@ import org.ejml.simple.SimpleMatrix;
  * The Matrix Class from Ejml.
  *
  * @author clement
- * @version $Id: $Id
  */
 public class EjmlMatrix implements BioMatrix{
 	

@@ -43,7 +43,6 @@ import java.util.BitSet;
  * provide static functions to compute similarity or distance between bitsets
  *
  * @author clement
- * @version $Id: $Id
  */
 public class SimilarityComputor {
 

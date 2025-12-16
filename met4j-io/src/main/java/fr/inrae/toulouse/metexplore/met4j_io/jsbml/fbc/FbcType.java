@@ -41,7 +41,6 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc;
  *
  * @author Benjamin
  * @since 3.0
- * @version $Id: $Id
  */
 public enum FbcType {
 	/**

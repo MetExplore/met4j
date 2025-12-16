@@ -65,7 +65,6 @@ import java.util.Set;
  * <p>GetModelProteome class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class GetBiggModelProteome extends AbstractMet4jApplication {
 

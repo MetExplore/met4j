@@ -58,7 +58,6 @@ import java.util.Set;
  * Be careful, network is needed to crete the references from dois
  *
  * @author cfrainay
- * @version $Id: $Id
  */
 public class GenerateDoc {
 

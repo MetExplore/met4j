@@ -44,7 +44,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.WeightingPolicy;
  * The Class ProbabilityWeightPolicy use to set probability as edge weight (resulting in stochastic network)
  *
  * @author clement
- * @version $Id: $Id
  */
 public class ProbabilityWeightPolicy<V extends BioEntity, E extends Edge<V>,G extends BioGraph<V,E>>
 	extends WeightingPolicy<V,E,G> {

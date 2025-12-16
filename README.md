@@ -6,7 +6,6 @@
 [![maven](https://img.shields.io/maven-central/v/fr.inrae.toulouse.metexplore/met4j)](https://img.shields.io/maven-central/v/fr.inrae.toulouse.metexplore/met4j)
 [![version](https://img.shields.io/gitlab/v/tag/metexplore/met4j?gitlab_url=https%3A%2F%2Fforgemia.inra.fr%2F&include_prereleases&label=version)](https://img.shields.io/gitlab/v/tag/metexplore/met4j?gitlab_url=https%3A%2F%2Fforgemia.inra.fr%2F&include_prereleases&label=version)
 [![javadoc](https://javadoc.io/badge2/fr.inrae.toulouse.metexplore/met4j/javadoc.svg)](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j)
-[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/cloudposse.svg?style=social&label=Follow%20%40met4j)](https://twitter.com/met4j)
 
 **Met4J is an open-source Java library dedicated to the structural analysis of metabolic networks. It also came with a toolbox gathering CLI for several analyses relevant to metabolism-related research.**
 

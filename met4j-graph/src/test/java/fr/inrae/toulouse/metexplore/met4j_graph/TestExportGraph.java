@@ -577,6 +577,7 @@ public class TestExportGraph {
         AttributeExporter attExport = AttributeExporter.full(bn)
                 .exportEdgeAttribute("Test", e -> e.getV1().getId())
                 .exportNodeAttribute("Test2", BioEntity::getName)
+                .exportNodeAttribute("Test3", e -> "[\"toto\",\"tata\"]")
                 .exportNodeAttribute("Type", (v->{if (v instanceof BioMetabolite) return "Composé"; //override default att
                     else if (v instanceof BioReaction) return "Reaction";
                     else return v.getClass().getSimpleName();}));
@@ -592,6 +593,7 @@ public class TestExportGraph {
             Pattern NameAttRegex = Pattern.compile("\"Name\":\"\\w\"");
             Pattern ReversibleAttRegex = Pattern.compile("\"Reversible\":\"(true|false)\"");
             Pattern Test2AttRegex = Pattern.compile("\"Test2\":\"\\w\"");
+            Pattern Test3AttRegex = Pattern.compile("\"Test3\":\\[\"toto\",\"tata\"]");
             Pattern TestAttRegex = Pattern.compile("\"Test\":\"[a-z][0-9]?\"");
             Pattern TypeAttRegex = Pattern.compile("\"Type\":\"(Composé|Reaction)\"");
             Pattern CompAttRegex = Pattern.compile("\"Compartment\":\"comp[2,3]?(,comp[2,3])?\"");
@@ -601,6 +603,7 @@ public class TestExportGraph {
             assertEquals("anomaly in Bipartite EC attributes",7, ECAttRegex.matcher(output).results().count());
             assertEquals("anomaly in Bipartite Formula attributes",7, FormulaAttRegex.matcher(output).results().count());
             assertEquals("anomaly in Bipartite mass attributes",7, MassAttRegex.matcher(output).results().count());
+            assertEquals("anomaly in Bipartite list attributes",14, Test3AttRegex.matcher(output).results().count());
             assertEquals("anomaly in Bipartite compartment attributes",7, CompAttRegex.matcher(output).results().count());
             assertEquals("anomaly in Bipartite name attributes",14, NameAttRegex.matcher(output).results().count());
             assertEquals("anomaly in Bipartite reversibility attributes",7, ReversibleAttRegex.matcher(output).results().count());

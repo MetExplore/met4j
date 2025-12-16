@@ -427,7 +427,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
  -o VAL : output SBML file
 </code></pre></details></td></tr>
 <tr><td>Sbml2CarbonSkeletonNet</td><td>Create a carbon skeleton graph representation of a SBML file content, using GSAM atom-mapping file (see https://forgemia.inra.fr/metexplore/gsam)<details><summary><small>more</small></summary>Metabolic networks used for quantitative analysis often contain links that are irrelevant for graph-based structural analysis. For example, inclusion of side compounds or modelling artifacts such as 'biomass' nodes. Focusing on links between compounds that share parts of their carbon skeleton allows to avoid many transitions involving side compounds, and removes entities without defined chemical structure. This app produces a Carbon Skeleton Network relevant for graph-based analysis of metabolism, in GML or matrix format, from a SBML and an GSAM atom mapping file. GSAM (see https://forgemia.inra.fr/metexplore/gsam) performs atom mapping at genome-scale level using the Reaction Decoder Tool (https://github.com/asad/ReactionDecoder) and allows to compute the number of conserved atoms of a given type between reactants.This app also enables Markov-chain based analysis of metabolic networks by computing reaction-normalized transition probabilities on the Carbon Skeleton Network.<br/><br/><pre><code> -f (--format) [gml | tab | nodeList |  : Format of the exported graphTabulated
- json | matrix]                           edge list by default (source id 	
+ json | matrix | jsonviz]                 edge list by default (source id 	
                                           edge type 	 target id). Other options
                                           include GML, JsonGraph, and tabulated
                                           node list (label 	 node id 	 node
@@ -462,7 +462,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
                                           degree square weighting (default:
                                           false)
  -f (--format) [gml | tab | nodeList |  : Format of the exported graphTabulated
- json | matrix]                           edge list by default (source id 	
+ json | matrix | jsonviz]                 edge list by default (source id 	
                                           edge type 	 target id). Other options
                                           include GML, JsonGraph, and tabulated
                                           node list (label 	 node id 	 node
@@ -492,7 +492,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
                                           false)
  -c (--compound)                        : create compound graph (default: true)
  -f (--format) [gml | tab | nodeList |  : Format of the exported graphTabulated
- json | matrix]                           edge list by default (source id 	
+ json | matrix | jsonviz]                 edge list by default (source id 	
                                           edge type 	 target id). Other options
                                           include GML, JsonGraph, and tabulated
                                           node list (label 	 node id 	 node
@@ -507,7 +507,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
 <tr><td>Sbml2PathwayNet</td><td>Creation of a Pathway Network representation of a SBML file content<details><summary><small>more</small></summary>Creation of a Pathway Network representation of a SBML file content<br/>Genome-scale metabolic networks are often partitioned into metabolic pathways. Pathways are frequently considered independently despite frequent coupling in their activity due to shared metabolites. In order to decipher the interconnections linking overlapping pathways, this app proposes the creation of "Pathway Network", where two pathways are linked if they share compounds.<br/><br/><pre><code> -cw (--customWeights) VAL              : an optional file containing weights
                                           for pathway pairs
  -f (--format) [gml | tab | nodeList |  : Format of the exported graphTabulated
- json | matrix]                           edge list by default (source id 	
+ json | matrix | jsonviz]                 edge list by default (source id 	
                                           edge type 	 target id). Other options
                                           include GML, JsonGraph, and tabulated
                                           node list (label 	 node id 	 node
@@ -593,7 +593,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
 <table>
 <thead><tr><th colspan="2">Package fr.inrae.toulouse.metexplore.met4j_toolbox.mapping</th></tr></thead>
 <tbody>
-<tr><td>FormulaMapper</td><td><details><summary><small>more</small></summary><br/><br/><pre><code> -f VAL            : input formula file (one per line)
+<tr><td>FormulaMapper</td><td>Retrieve metabolites in a SBML file from their chemical formula<details><summary><small>more</small></summary>Retrieve metabolites in a SBML file from their chemical formula. <br/>The SBML file is expected to contain fbc:chemicalFormula attributes for species entries.<br/>The input formula file should contain one formula per line. The output is a tab delimited file with two columns: query formula, sbml metabolite id (one line per match)<br/><br/><pre><code> -f VAL            : input formula file (one per line)
  -h                : prints the help (default: false)
  -i VAL            : input SBML file
  -na               : Output formulas without match in model, with NA value
@@ -609,19 +609,18 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
                      value (default: false)
  -o (--output) VAL : output mapping file
 </code></pre></details></td></tr>
-<tr><td>MassMapper</td><td><details><summary><small>more</small></summary><br/><br/><pre><code> -comp [no | average | monoisotopic] : Compute mass from formulas for each
-                                       compounds in the model. Use SBML
-                                       attributes if not set (default: no)
- -h                                  : prints the help (default: false)
- -i VAL                              : input SBML file
- -m VAL                              : input mass file (one per line)
- -na                                 : Output mass without match in model, with
-                                       NA value (default: false)
- -o (--output) VAL                   : output mapping file
- -ppm N                              : mass delta tolerance in part per million
-                                       (default: 5.0)
+<tr><td>MassMapper</td><td>Retrieve metabolites in a SBML file from their mass.<details><summary><small>more</small></summary>Retrieve metabolites in a SBML file from their mass.<br/>The SBML file is expected to contain fbc:chemicalFormula attributes for species entries, in order to compute masses.<br/>The input mass file should contain one mass per line. The output is a tab delimited file with two columns: query mass, sbml metabolite id (one line per match)<br/><br/><pre><code> -comp [average | monoisotopic] : Method for computing mass from formulas
+                                  (default: average)
+ -h                             : prints the help (default: false)
+ -i VAL                         : input SBML file
+ -m VAL                         : input mass file (one per line)
+ -na                            : Output mass without match in model, with NA
+                                  value (default: false)
+ -o (--output) VAL              : output mapping file
+ -ppm N                         : mass delta tolerance in part per million
+                                  (default: 5.0)
 </code></pre></details></td></tr>
-<tr><td>NameMatcher</td><td>This tool runs edit-distance based fuzzy matching to perform near-similar name matching between a metabolic model and a list of chemical names in a dataset. A harmonization processing is performed on chemical names with substitutions of common patterns among synonyms, in order to create aliases on which classical fuzzy matching can be run efficiently.<details><summary><small>more</small></summary>Metabolic models and Metabolomics Data often refer compounds only by using their common names, which vary greatly according to the source, thus impeding interoperability between models, databases and experimental data. This requires a tedious step of manual mapping. Fuzzy matching is a range of methods which can potentially helps fasten this process, by allowing the search for near-similar names. Fuzzy matching is primarily designed for common language search engines and is frequently based on edit distance, i.e. the number of edits to transform a character string into another, effectively managing typo, case and special character variations, and allowing auto-completion. However, edit-distance based search fall short when mapping chemical names: As an example, alpha-D-Glucose et Glucose would require more edits than between Fructose and Glucose.<br/><br/>This tool runs edit-distance based fuzzy matching to perform near-similar name matching between a metabolic model and a list of chemical names in a dataset. A harmonization processing is performed on chemical names with substitutions of common patterns among synonyms, in order to create aliases on which classical fuzzy matching can be run efficiently.<br/><br/><pre><code> -c VAL        : [#] Comment String in the compound file. The lines beginning
+<tr><td>NameMatcher</td><td>From a list of compound names, find the best matching metabolites in a SBML model using fuzzy name matching on harmonized aliases.<details><summary><small>more</small></summary>Metabolic models and Metabolomics Data often refer compounds only by using their common names, which vary greatly according to the source, thus impeding interoperability between models, databases and experimental data. This requires a tedious step of manual mapping. Fuzzy matching is a range of methods which can potentially helps fasten this process, by allowing the search for near-similar names. Fuzzy matching is primarily designed for common language search engines and is frequently based on edit distance, i.e. the number of edits to transform a character string into another, effectively managing typo, case and special character variations, and allowing auto-completion. However, edit-distance based search fall short when mapping chemical names: As an example, alpha-D-Glucose et Glucose would require more edits than between Fructose and Glucose.<br/><br/>This tool runs edit-distance based fuzzy matching to perform near-similar name matching between a metabolic model and a list of chemical names in a dataset. A harmonization processing is performed on chemical names with substitutions of common patterns among synonyms, in order to create aliases on which classical fuzzy matching can be run efficiently.<br/><br/><pre><code> -c VAL        : [#] Comment String in the compound file. The lines beginning
                  by this string won't be read (default: #)
  -col N        : [1] column containing compounds' names (default: 1)
  -compound VAL : Compound file containing one column with compound names to
@@ -751,7 +750,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
  -cw (--customWeights) VAL              : an optional file containing weights
                                           for reactions pairs
  -f (--format) [gml | tab | nodeList |  : Format of the exported graphTabulated
- json | matrix]                           edge list by default (source id 	
+ json | matrix | jsonviz]                 edge list by default (source id 	
                                           edge type 	 target id). Other options
                                           include GML, JsonGraph, and tabulated
                                           node list (label 	 node id 	 node
@@ -770,13 +769,13 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
  -u (--undirected)                      : Ignore reaction direction (default:
                                           false)
 </code></pre></details></td></tr>
-<tr><td>ExtractSubNetwork</td><td>Create a subnetwork from a metabolic network in SBML format, and two files containing lists of compounds of interests ids, one per row.<details><summary><small>more</small></summary>Create a subnetwork from a metabolic network in SBML format, and two files containing lists of compounds of interests ids, one per row.<br/>The subnetwork corresponds to the part of the network that connects compounds from the first list to compounds from the second list.<br/>Sources and targets list can have elements in common. The connecting part can be defined as the union of shortest or k-shortest paths between sources and targets, or the Steiner tree connecting them. The relevance of considered path can be increased by weighting the edges using degree squared, chemical similarity (require InChI or SMILES annotations) or any provided weighting.<br/><br/>See previous works on subnetwork extraction for parameters recommendations.<br/><br/>References:<br/><a href="https://doi.org/10.1093/nar/gki437">Croes et al.; Metabolic PathFinding: inferring relevant pathways in biochemical networks; Nucleic Acids Research; 2005</a><br/><a href="https://doi.org/10.1093/bib/bbv115">Frainay et al.; Computational methods to identify metabolic sub-networks based on metabolomic profiles; Briefings in Bioinformatics; 2017</a><br/><a href="https://doi.org/10.1016/j.jmb.2005.09.079">Croes et al.; Inferring Meaningful Pathways in Weighted Metabolic Networks; Journal of Molecular Biology; 2006</a><br/><a href="https://doi.org/10.1093/bioinformatics/bti116">Rahman et al.; Metabolic pathway analysis web service (Pathway Hunter Tool at CUBIC); Bioinformatics; 2005</a><br/><a href="https://doi.org/10.1093/bioinformatics/btu760">Pertusi et al.; Efficient searching and annotation of metabolic networks using chemical similarity; Bioinformatics; 2015</a><br/><a href="https://doi.org/10.1016/j.biosystems.2011.05.004">Faust et al.; Prediction of metabolic pathways from genome-scale metabolic networks; Biosystems; 2011</a><br/><a href="https://doi.org/10.1093/bioinformatics/btg217">McShan et al.; PathMiner: predicting metabolic pathways by heuristic search; Bioinformatics; 2003</a><br/><br/><br/><pre><code> -cw (--customWeights) VAL              : an optional file containing weights
+<tr><td>ExtractSubNetwork</td><td>Create a subnetwork from a metabolic network in SBML format, and two files containing lists of compounds of interests ids, one per row.<details><summary><small>more</small></summary>Create a subnetwork from a metabolic network in SBML format, and two files containing lists of compounds of interests ids, one per row.<br/>The subnetwork corresponds to the part of the network that connects compounds from the first list to compounds from the second list.<br/>Sources and targets list can have elements in common. The connecting part can be defined as the union of shortest or k-shortest paths between sources and targets, or the Steiner tree connecting them. The relevance of considered path can be increased by weighting the edges using degree squared, chemical similarity (require InChI or SMILES annotations) or any provided weighting.<br/><br/>See previous works on subnetwork extraction for parameters recommendations.<br/><br/>References:<br/><a href="https://doi.org/10.1093/bioinformatics/btu760">Pertusi et al.; Efficient searching and annotation of metabolic networks using chemical similarity; Bioinformatics; 2015</a><br/><a href="https://doi.org/10.1093/bib/bbv115">Frainay et al.; Computational methods to identify metabolic sub-networks based on metabolomic profiles; Briefings in Bioinformatics; 2017</a><br/><a href="https://doi.org/10.1016/j.biosystems.2011.05.004">Faust et al.; Prediction of metabolic pathways from genome-scale metabolic networks; Biosystems; 2011</a><br/><a href="https://doi.org/10.1093/bioinformatics/bti116">Rahman et al.; Metabolic pathway analysis web service (Pathway Hunter Tool at CUBIC); Bioinformatics; 2005</a><br/><a href="https://doi.org/10.1016/j.jmb.2005.09.079">Croes et al.; Inferring Meaningful Pathways in Weighted Metabolic Networks; Journal of Molecular Biology; 2006</a><br/><a href="https://doi.org/10.1093/nar/gki437">Croes et al.; Metabolic PathFinding: inferring relevant pathways in biochemical networks; Nucleic Acids Research; 2005</a><br/><a href="https://doi.org/10.1093/bioinformatics/btg217">McShan et al.; PathMiner: predicting metabolic pathways by heuristic search; Bioinformatics; 2003</a><br/><br/><br/><pre><code> -cw (--customWeights) VAL              : an optional file containing weights
                                           for compound pairs
  -dw (--degreeWeights)                  : penalize traversal of hubs by using
                                           degree square weighting (default:
                                           false)
  -f (--format) [gml | tab | nodeList |  : Format of the exported graphTabulated
- json | matrix]                           edge list by default (source id 	
+ json | matrix | jsonviz]                 edge list by default (source id 	
                                           edge type 	 target id). Other options
                                           include GML, JsonGraph, and tabulated
                                           node list (label 	 node id 	 node
@@ -801,7 +800,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
 <tr><td>ExtractSubReactionNetwork</td><td>Create a subnetwork from a metabolic network in SBML format, and two files containing lists of reactions of interests ids, one per row, plus one file of the same format containing side compounds ids.<details><summary><small>more</small></summary>Create a subnetwork from a metabolic network in SBML format, and two files containing lists of reactions of interests ids, one per row, plus one file of the same format containing side compounds ids.<br/>The subnetwork corresponds to the part of the network that connects reactions from the first list to reactions from the second list.<br/>Sources and targets list can have elements in common. The connecting part can be defined as the union of shortest or k-shortest paths between sources and targets, or the Steiner tree connecting them. Contrary to compound graph, reaction graph often lacks weighting policy for edge relevance. In order to ensure appropriate network density, a list of side compounds to ignore for linking reactions must be provided. An optional edge weight file, if available, can also be used.<br/><br/><pre><code> -cw (--customWeights) VAL              : an optional file containing weights
                                           for reactions pairs
  -f (--format) [gml | tab | nodeList |  : Format of the exported graphTabulated
- json | matrix]                           edge list by default (source id 	
+ json | matrix | jsonviz]                 edge list by default (source id 	
                                           edge type 	 target id). Other options
                                           include GML, JsonGraph, and tabulated
                                           node list (label 	 node id 	 node
@@ -852,7 +851,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
                     (default: false)
 </code></pre></details></td></tr>
 <tr><td>PrecursorNetwork</td><td>Perform a network expansion from a set of compound targets to create a precursor network.<details><summary><small>more</small></summary>Perform a network expansion from a set of compound targets to create a precursor network.<br/>The precursor network of a set of compounds (targets) refer to the sub-part of a metabolic network from which a target can be reachedThe network expansion process consist of adding a reaction to the network if any of its products are either a targets or a substrate of a previously added reaction<br/><br/><pre><code> -f (--format) [gml | tab | nodeList |  : Format of the exported graphTabulated
- json | matrix]                           edge list by default (source id 	
+ json | matrix | jsonviz]                 edge list by default (source id 	
                                           edge type 	 target id). Other options
                                           include GML, JsonGraph, and tabulated
                                           node list (label 	 node id 	 node
@@ -886,7 +885,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
  -w (--weights) VAL   : an optional file containing weights for compound pairs
 </code></pre></details></td></tr>
 <tr><td>ScopeNetwork</td><td>Perform a network expansion from a set of compound seeds to create a scope network<details><summary><small>more</small></summary>Perform a network expansion from a set of compound seeds to create a scope network<br/>The scope of a set of compounds (seed) refer to the maximal metabolic network that can be extended from them,where the extension process consist of adding a reaction to the network if and only if all of its substrates are either a seed or a product of a previously added reaction<br/><br/>References:<br/><a href="https://doi.org/10.1007/s00239-005-0027-1">Handorf et al.; Expanding Metabolic Networks: Scopes of Compounds, Robustness, and Evolution; Journal of Molecular Evolution; 2005</a><br/><br/><br/><pre><code> -f (--format) [gml | tab | nodeList |  : Format of the exported graphTabulated
- json | matrix]                           edge list by default (source id 	
+ json | matrix | jsonviz]                 edge list by default (source id 	
                                           edge type 	 target id). Other options
                                           include GML, JsonGraph, and tabulated
                                           node list (label 	 node id 	 node

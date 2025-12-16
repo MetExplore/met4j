@@ -42,6 +42,7 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.bipartite.BipartiteGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.compound.CompoundGraph;
 import fr.inrae.toulouse.metexplore.met4j_graph.core.reaction.ReactionGraph;
 import org.jgrapht.nio.Attribute;
+import org.jgrapht.nio.AttributeType;
 import org.jgrapht.nio.gml.GmlExporter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -300,46 +301,78 @@ public class ExportGraph<V extends BioEntity, E extends Edge<V>, G extends BioGr
 	 * @throws IOException if unable to create output file
 	 */
 	public static <V extends BioEntity, E extends Edge<V>> void toJSONgraph(BioGraph<V,E> graph, Writer output, Function<V, Map<String, Attribute>> vertexAttProvider,  Function<E, Map<String, Attribute>> edgeAttProvider) throws IOException {
-		JSONObject jo = new JSONObject();
-			JSONObject jgraph = new JSONObject();
-			jgraph.put("directed",true);
-			jgraph.put("label","Met4J generated "+graph.getClass().getSimpleName());
-			JSONObject jnodes = new JSONObject();
-				for(V node : graph.vertexSet()){
-					JSONObject jnodeAtt = new JSONObject();
-						jnodeAtt.put("label", node.getName());
-						JSONObject jnodeMetadata = new JSONObject();
-							if(vertexAttProvider!=null){
-								for(Map.Entry<String,Attribute> entry : vertexAttProvider.apply(node).entrySet()){
-									jnodeMetadata.put(entry.getKey(),entry.getValue().getValue());
-								}
-							}else{
-								jnodeMetadata.put("type",node.getClass().getSimpleName());
-							}
-						jnodeAtt.put("metadata",jnodeMetadata);
-					jnodes.put(node.getId(),jnodeAtt);
-				}
-			jgraph.put("nodes",jnodes);
-			JSONArray jedges = new JSONArray();
-				for(E edge : graph.edgeSet()){
-					JSONObject jedge = new JSONObject();
-					jedge.put("source",edge.getV1().getId());
-					jedge.put("target",edge.getV2().getId());
-					jedge.put("label",edge.toString());
-					if(vertexAttProvider!=null){
-						JSONObject jnodeMetadata = new JSONObject();
-						for(Map.Entry<String,Attribute> entry : edgeAttProvider.apply(edge).entrySet()){
-							jnodeMetadata.put(entry.getKey(),entry.getValue().getValue());
-						}
-						jedge.put("metadata",jnodeMetadata);
-					}
-					jedges.add(jedge);
-				}
-			jgraph.put("edges",jedges);
-		jo.put("graph", jgraph);
-
+        JSONObject jo = createJSONgraph(graph, vertexAttProvider, edgeAttProvider);
 		output.write(jo.toJSONString());
 		output.close();
 	}
-	
+
+
+    public static <V extends BioEntity, E extends Edge<V>> JSONObject createJSONgraph(BioGraph<V,E> graph, Function<V, Map<String, Attribute>> vertexAttProvider,  Function<E, Map<String, Attribute>> edgeAttProvider){
+        JSONObject jo = new JSONObject();
+        JSONObject jgraph = new JSONObject();
+        jgraph.put("directed",true);
+        jgraph.put("label","Met4J generated "+graph.getClass().getSimpleName());
+        JSONObject jnodes = new JSONObject();
+        for(V node : graph.vertexSet()){
+            JSONObject jnodeAtt = new JSONObject();
+            jnodeAtt.put("label", node.getName());
+            JSONObject jnodeMetadata = new JSONObject();
+            if(vertexAttProvider!=null){
+                for(Map.Entry<String,Attribute> entry : vertexAttProvider.apply(node).entrySet()){
+                    if(entry.getValue().getType().equals(AttributeType.STRING)
+                            && entry.getValue().getValue().startsWith("[")
+                            && entry.getValue().getValue().endsWith("]")){
+                        //try to parse as JSONArray
+                        try{
+                            JSONArray jarray = (JSONArray) org.json.simple.JSONValue.parse(entry.getValue().getValue());
+                            jnodeMetadata.put(entry.getKey(),jarray);
+                            continue;
+                        }catch(Exception e) {
+                            //not a JSONArray
+                            jnodeMetadata.put(entry.getKey(),entry.getValue().getValue());
+                        }
+                    }else{
+                        jnodeMetadata.put(entry.getKey(),entry.getValue().getValue());
+                    }
+                }
+            }else{
+                jnodeMetadata.put("type",node.getClass().getSimpleName());
+            }
+            jnodeAtt.put("metadata",jnodeMetadata);
+            jnodes.put(node.getId(),jnodeAtt);
+        }
+        jgraph.put("nodes",jnodes);
+        JSONArray jedges = new JSONArray();
+        for(E edge : graph.edgeSet()){
+            JSONObject jedge = new JSONObject();
+            jedge.put("source",edge.getV1().getId());
+            jedge.put("target",edge.getV2().getId());
+            jedge.put("label",edge.toString());
+            if(vertexAttProvider!=null){
+                JSONObject jedgeMetadata = new JSONObject();
+                for(Map.Entry<String,Attribute> entry : edgeAttProvider.apply(edge).entrySet()){
+                    if(entry.getValue().getType().equals(AttributeType.STRING)
+                            && entry.getValue().getValue().startsWith("[")
+                            && entry.getValue().getValue().endsWith("]")){
+                        //try to parse as JSONArray
+                        try{
+                            JSONArray jarray = (JSONArray) org.json.simple.JSONValue.parse(entry.getValue().getValue());
+                            jedgeMetadata.put(entry.getKey(),jarray);
+                            continue;
+                        }catch(Exception e) {
+                            //not a JSONArray
+                            jedgeMetadata.put(entry.getKey(),entry.getValue().getValue());
+                        }
+                    }else{
+                        jedgeMetadata.put(entry.getKey(),entry.getValue().getValue());
+                    }
+                }
+                jedge.put("metadata",jedgeMetadata);
+            }
+            jedges.add(jedge);
+        }
+        jgraph.put("edges",jedges);
+        jo.put("graph", jgraph);
+        return jo;
+    }
 }

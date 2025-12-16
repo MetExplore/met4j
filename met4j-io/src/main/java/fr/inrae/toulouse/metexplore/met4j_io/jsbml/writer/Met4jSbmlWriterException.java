@@ -40,7 +40,6 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer;
  * <p>Met4jSbmlWriterException class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class Met4jSbmlWriterException extends Exception {
 

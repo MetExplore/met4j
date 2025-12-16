@@ -52,7 +52,6 @@ import java.util.List;
  * Graph Filtering utils.
  *
  * @author clement
- * @version $Id: $Id
  */
 public class GraphFilter {
 

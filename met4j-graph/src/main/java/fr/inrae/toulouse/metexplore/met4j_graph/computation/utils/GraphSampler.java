@@ -51,7 +51,6 @@ import java.util.Set;
  * also provide method to build random transition matrix, keeping graph structure
  *
  * @author clement
- * @version $Id: $Id
  */
 public class GraphSampler<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V, E>> {
 	

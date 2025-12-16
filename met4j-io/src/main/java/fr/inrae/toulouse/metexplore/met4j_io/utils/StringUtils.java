@@ -50,7 +50,6 @@ import org.apache.xerces.util.XMLChar;
  * <p>StringUtils class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class StringUtils {
 	

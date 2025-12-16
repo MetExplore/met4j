@@ -40,7 +40,6 @@ package fr.inrae.toulouse.metexplore.met4j_io.annotations;
  * <p>AnnotatorComment class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class AnnotatorComment {
 	

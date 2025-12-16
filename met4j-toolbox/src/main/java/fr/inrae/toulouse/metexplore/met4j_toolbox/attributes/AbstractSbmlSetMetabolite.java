@@ -42,7 +42,6 @@ import org.kohsuke.args4j.Option;
  * <p>Abstract AbstractSbmlSetMetabolite class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public abstract class AbstractSbmlSetMetabolite  extends AbstractSbmlSet{
 

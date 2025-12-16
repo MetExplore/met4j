@@ -46,7 +46,6 @@ import java.util.*;
  * A utility class used to filter list of paths, according to various criterion such as length, weight, presence/absence of a given vertex or edges ...
  *
  * @author clement
- * @version $Id: $Id
  */
 public class BioPathUtils {
 	/** The "EQUALITY" operator. */

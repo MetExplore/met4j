@@ -49,7 +49,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.BioGraph;
  * Side compounds have to be defined to avoid erroneous connections.
  *
  * @author clement
- * @version $Id: $Id
  */
 public class PathwayGraph extends BioGraph<BioPathway,PathwayGraphEdge> {
 

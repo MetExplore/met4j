@@ -48,7 +48,6 @@ import java.util.Map.Entry;
  * provide method to export Matrix to CSV file
  *
  * @author clement
- * @version $Id: $Id
  */
 public final class ExportMatrix {
 

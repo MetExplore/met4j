@@ -49,7 +49,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
  *
  * @author Benjamin
  * @since 3.0
- * @version $Id: $Id
  */
 public interface PackageParser {
 	

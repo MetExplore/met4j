@@ -49,7 +49,6 @@ import java.util.Set;
  * <p>SbmlSetPathwaysFromFile class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class SetPathways extends AbstractSbmlSetReaction {
 

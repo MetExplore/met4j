@@ -52,7 +52,6 @@ import java.util.Set;
  * See : Syed Asad Rahman, Dietmar Schomburg; Observing local and global properties of metabolic pathways: ‘load points’ and ‘choke points’ in the metabolic networks. Bioinformatics 2006; 22 (14): 1767-1774. doi: 10.1093/bioinformatics/btl181
  *
  * @author clement
- * @version $Id: $Id
  */
 public class LoadPoint<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V, E>> {
 	

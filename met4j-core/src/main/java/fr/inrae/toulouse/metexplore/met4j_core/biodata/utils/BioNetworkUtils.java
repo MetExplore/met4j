@@ -47,7 +47,6 @@ import java.util.HashMap;
  * <p>BioNetworkUtils class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class BioNetworkUtils {
 

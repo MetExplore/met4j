@@ -47,7 +47,6 @@ import java.io.IOException;
  * <p>SetGprsFromFile class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class SetGprsFromFile extends AbstractSetAttributesFromFile {
 

@@ -44,7 +44,6 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
  * <p>CompartmentAttributes class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class CompartmentAttributes extends GenericAttributes {
 

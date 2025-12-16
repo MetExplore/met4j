@@ -50,7 +50,6 @@ import java.util.Objects;
  * The Class used to store path
  *
  * @author clement
- * @version $Id: $Id
  */
 public class BioPath<V extends BioEntity,E extends Edge<V>> extends GraphWalk<V,E> implements Comparable<BioPath<V,E>>, Iterable<E>{
 	

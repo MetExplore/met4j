@@ -44,7 +44,6 @@ import java.io.IOException;
  * <p>SetChargesFromFile class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class SetChargesFromFile extends AbstractSetAttributesFromFile {
 

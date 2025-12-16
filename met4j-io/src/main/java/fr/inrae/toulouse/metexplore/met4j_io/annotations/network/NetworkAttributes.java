@@ -46,7 +46,6 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinitionCollec
  * <p>NetworkAttributes class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class NetworkAttributes extends GenericAttributes {
 

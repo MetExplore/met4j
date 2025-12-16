@@ -40,7 +40,6 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.bigg;
  * <p>Sequence class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class Sequence {
 

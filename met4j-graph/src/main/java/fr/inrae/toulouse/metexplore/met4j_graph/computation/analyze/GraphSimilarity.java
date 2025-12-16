@@ -45,7 +45,6 @@ import fr.inrae.toulouse.metexplore.met4j_graph.core.Edge;
  * Compute similarity measure for two graph.
  *
  * @author clement
- * @version $Id: $Id
  */
 public class GraphSimilarity<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V, E>> {
 	

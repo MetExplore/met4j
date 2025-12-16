@@ -51,7 +51,6 @@ import org.sbml.jsbml.ext.groups.Member;
  * <p>GroupPathwayWriter class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class GroupPathwayWriter implements PackageWriter, PrimaryDataTag {
 

@@ -49,7 +49,6 @@ import java.util.Set;
  * <p>SbmlSetFormulasFromFile class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class SetChemicalFormulas extends AbstractSbmlSetMetabolite {
 

@@ -48,7 +48,6 @@ import java.util.*;
  * An heuristic function using chemical similarity is available in ChemicalSimilarityHeuristic class
  *
  * @author clement
- * @version $Id: $Id
  */
 public class AStar<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V ,E>>{
 	

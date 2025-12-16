@@ -53,7 +53,6 @@ import java.util.Map;
  * Custom reaction probabilities can be used by setting reactions weights.
  *
  * @author clement
- * @version $Id: $Id
  */
 public class ReactionProbabilityWeight extends ProbabilityWeightPolicy<BioMetabolite, ReactionEdge, CompoundGraph>{
 	

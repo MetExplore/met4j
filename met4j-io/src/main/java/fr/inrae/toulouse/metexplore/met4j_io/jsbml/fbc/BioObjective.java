@@ -51,7 +51,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
  *
  * @author Benjamin
  * @since 3.0
- * @version $Id: $Id
  */
 public class BioObjective extends BioEntity {
 	/**

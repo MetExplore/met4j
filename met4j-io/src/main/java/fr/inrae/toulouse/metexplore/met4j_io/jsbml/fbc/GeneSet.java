@@ -53,7 +53,6 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.GeneSetException;
  * this association to be active
  *
  * @author Benjamin mainly modified by LC
- * @version $Id: $Id
  * @since 3.0
  */
 public class GeneSet {

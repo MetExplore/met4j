@@ -44,7 +44,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
  * @author clement
  * @param <V>
  * @param <E>
- * @version $Id: $Id
  */
 public abstract class WeightingPolicy<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> {
 	

@@ -7,7 +7,6 @@ import java.util.Arrays;
  * <p>IdentifiersOrg class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class IdentifiersOrg {
 

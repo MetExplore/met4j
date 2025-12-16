@@ -54,7 +54,6 @@ import java.util.Set;
  * @param <V> the vertex type
  * @param <E> the edge type
  * @param <G> the graph type
- * @version $Id: $Id
  */
 public class PathBasedCentrality<V extends BioEntity,E extends Edge<V>, G extends BioGraph<V, E>> {
 

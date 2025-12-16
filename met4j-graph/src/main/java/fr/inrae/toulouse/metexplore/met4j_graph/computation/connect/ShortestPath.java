@@ -54,7 +54,6 @@ import java.util.*;
  * Class to use the shortest paths in a graph
  *
  * @author clement
- * @version $Id: $Id
  */
 public class ShortestPath<V extends BioEntity,E extends Edge<V>, G extends BioGraph<V ,E>>{
 

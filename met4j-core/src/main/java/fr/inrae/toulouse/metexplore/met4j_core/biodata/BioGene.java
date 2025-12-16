@@ -39,7 +39,6 @@ package fr.inrae.toulouse.metexplore.met4j_core.biodata;
  * <p>BioGene class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class BioGene extends BioEntity {
 

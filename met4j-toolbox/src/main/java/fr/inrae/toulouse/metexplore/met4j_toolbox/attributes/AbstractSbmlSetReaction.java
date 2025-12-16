@@ -44,7 +44,6 @@ import org.kohsuke.args4j.Option;
  * <p>Abstract AbstractSbmlSetReaction class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public abstract class AbstractSbmlSetReaction extends AbstractSbmlSet {
 

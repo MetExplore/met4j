@@ -48,7 +48,6 @@ import java.util.Objects;
  * <p>BioReactant class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class BioReactant extends BioParticipant {
 

@@ -72,7 +72,6 @@ import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
  * extract information contained in the Notes of their SBMLs
  *
  * @author Benjamin
- * @version $Id: $Id
  * @since 3.0
  */
 public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML1Compatible, ReaderSBML2Compatible,

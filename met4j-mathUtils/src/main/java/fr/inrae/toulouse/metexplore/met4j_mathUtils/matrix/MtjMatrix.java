@@ -52,7 +52,6 @@ import no.uib.cipr.matrix.NotConvergedException;
  * The Matrix Class from Mtj.
  *
  * @author clement
- * @version $Id: $Id
  */
 public class MtjMatrix implements BioMatrix{
 	

@@ -42,7 +42,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
  * <p>BioEdge class.</p>
  *
  * @author clement
- * @version $Id: $Id
  */
 public class BioEdge<T extends BioEntity,M  extends BioEntity> extends Edge<T> {
 

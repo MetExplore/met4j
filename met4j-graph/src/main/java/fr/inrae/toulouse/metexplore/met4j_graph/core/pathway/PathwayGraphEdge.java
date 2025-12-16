@@ -46,7 +46,6 @@ import java.util.stream.Collectors;
  * The edge Class linking two {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway}, linked by {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
  *
  * @author clement
- * @version $Id: $Id
  */
 public class PathwayGraphEdge extends Edge<BioPathway>{
 	

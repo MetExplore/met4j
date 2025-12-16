@@ -49,7 +49,6 @@ import java.util.Set;
  * <p>SbmlSetRefsFromFile class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class SetReferences extends AbstractSbmlSetAny {
 

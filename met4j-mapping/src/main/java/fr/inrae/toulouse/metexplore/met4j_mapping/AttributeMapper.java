@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
  * @param <A> a type of attribute to map
  *
  * @author clement
- * @version $Id: $Id
  */
 public class AttributeMapper<E extends BioEntity,A>{
 

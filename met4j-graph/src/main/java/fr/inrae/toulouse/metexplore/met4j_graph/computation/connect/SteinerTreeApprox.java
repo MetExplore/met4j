@@ -50,7 +50,6 @@ import java.util.*;
  * Class to compute approximation of Steiner Tree (minimum cost tree between nodes of interest), using minimum spanning tree
  *
  * @author clement
- * @version $Id: $Id
  */
 public class SteinerTreeApprox<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V ,E>>{
 

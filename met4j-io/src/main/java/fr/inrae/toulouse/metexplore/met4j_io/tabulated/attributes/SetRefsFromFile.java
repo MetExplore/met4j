@@ -47,7 +47,6 @@ import java.io.IOException;
  * <p>SetRefsFromFile class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class SetRefsFromFile extends AbstractSetAttributesFromFile {
 

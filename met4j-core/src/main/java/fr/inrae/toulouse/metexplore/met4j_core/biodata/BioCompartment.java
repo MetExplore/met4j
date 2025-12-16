@@ -42,7 +42,6 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
  * Biological cellular compartment, e.g. mitochondria, cytoplasm
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class BioCompartment extends BioPhysicalEntity {
 

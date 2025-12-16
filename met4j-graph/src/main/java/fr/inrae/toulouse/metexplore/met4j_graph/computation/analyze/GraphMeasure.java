@@ -54,7 +54,6 @@ import java.util.stream.Collectors;
  * @author clement
  * @param <V>
  * @param <E>
- * @version $Id: $Id
  */
 public class GraphMeasure<V extends BioEntity, E extends Edge<V>> {
 

@@ -49,7 +49,6 @@ import java.util.ArrayList;
  * <p>CompressedGraph class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class CompressedGraph<V extends BioEntity, E extends Edge<V>, G extends BioGraph<V,E>> extends BioGraph<V,PathEdge<V,E>> {
 

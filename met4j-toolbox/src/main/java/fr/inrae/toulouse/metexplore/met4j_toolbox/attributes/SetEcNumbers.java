@@ -49,7 +49,6 @@ import java.util.Set;
  * <p>SbmlSetEcsFromFile class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class SetEcNumbers extends AbstractSbmlSetReaction {
 

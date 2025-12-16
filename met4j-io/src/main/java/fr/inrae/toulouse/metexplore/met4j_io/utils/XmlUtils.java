@@ -46,7 +46,6 @@ import org.xml.sax.SAXException;
  * <p>XmlUtils class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class XmlUtils {
 	// feature ids

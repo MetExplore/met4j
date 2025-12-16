@@ -53,7 +53,6 @@ import java.util.*;
  * Consequently, the bipartite graph structure should not conflict with reactions informations.
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class ScopeCompounds{ 
    

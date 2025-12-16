@@ -53,7 +53,6 @@ import java.util.Set;
  * compute Pathway enrichment statistic using one-tailed exact Fisher Test
  *
  * @author clement
- * @version $Id: $Id
  */
 public class PathwayEnrichment {
 

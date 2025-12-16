@@ -43,7 +43,6 @@ import fr.inrae.toulouse.metexplore.met4j_io.annotations.GenericAttributes;
  * <p>MetaboliteAttributes class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class MetaboliteAttributes extends GenericAttributes {
 

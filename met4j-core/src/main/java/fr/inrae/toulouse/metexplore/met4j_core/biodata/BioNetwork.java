@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
  * pathways, genes, proteins, enzymes, compartments)
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class BioNetwork extends BioEntity {
 

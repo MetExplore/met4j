@@ -47,7 +47,6 @@ import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Enu
  * <p>Abstract AbstractSbmlSetAny class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public abstract class AbstractSbmlSetAny extends AbstractSbmlSet {
 

@@ -64,7 +64,6 @@ import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPacka
  * <p>FbcToNotes class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class FbcToNotes extends AbstractMet4jApplication {
 

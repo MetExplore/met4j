@@ -49,7 +49,6 @@ import java.util.Set;
  * <p>SbmlSetChargesFromFile class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class SetCharges extends AbstractSbmlSetMetabolite {
 

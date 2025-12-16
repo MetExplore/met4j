@@ -55,7 +55,6 @@ import java.util.stream.Collectors;
  * associations
  *
  * @author Benjamin
- * @version $Id: $Id
  * @since 3.0
  */
 public class FluxReaction extends BioEntity {

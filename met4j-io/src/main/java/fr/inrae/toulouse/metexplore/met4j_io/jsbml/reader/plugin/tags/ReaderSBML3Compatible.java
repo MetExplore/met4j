@@ -42,7 +42,6 @@ package fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.tags;
  *
  * @author Benjamin
  * 
- * @version $Id: $Id
  */
 public interface ReaderSBML3Compatible {
 

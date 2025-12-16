@@ -45,7 +45,6 @@ import java.util.Objects;
  * <p>Abstract BioParticipant class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public abstract class BioParticipant extends BioEntity {
 

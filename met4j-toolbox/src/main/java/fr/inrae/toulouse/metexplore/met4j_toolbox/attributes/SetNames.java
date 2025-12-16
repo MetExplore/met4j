@@ -49,7 +49,6 @@ import java.util.Set;
  * <p>SbmlSetNamesFromFile class.</p>
  *
  * @author lcottret
- * @version $Id: $Id
  */
 public class SetNames extends AbstractSbmlSetAny {
 

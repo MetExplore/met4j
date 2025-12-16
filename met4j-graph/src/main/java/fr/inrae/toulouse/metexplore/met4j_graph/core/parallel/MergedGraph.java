@@ -52,7 +52,6 @@ import java.util.HashSet;
  * @param <V> the value type
  * @param <E> the element type
  * @author lcottret
- * @version $Id: $Id
  */
 public class MergedGraph<V extends BioEntity, E extends Edge<V>> extends BioGraph<V,MetaEdge<V,E>> {
 

@@ -45,7 +45,6 @@ import java.util.*;
  * The Class BioGraph.
  *
  * @author clement
- * @version $Id: $Id
  */
 public abstract class BioGraph<V extends BioEntity, E extends Edge<V>> extends DirectedWeightedMultigraph<V, E>{
 	

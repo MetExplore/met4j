@@ -52,7 +52,6 @@ import java.util.*;
  * @author clement
  * @param <V>
  * @param <E>
- * @version $Id: $Id
  */
 public class GraphPruning<V extends BioEntity, E extends Edge<V>> {
 

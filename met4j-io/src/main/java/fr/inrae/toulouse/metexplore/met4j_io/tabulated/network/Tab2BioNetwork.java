@@ -337,7 +337,6 @@ public class Tab2BioNetwork {
                 String occurence = matcher.group(1);
 
                 compartmentId = matcher.group(2);
-
                 formula = formula.replace(occurence, "");
             }
 
@@ -420,12 +419,13 @@ public class Tab2BioNetwork {
         boolean addCompartment = false;
 
         if (matcherCpd.matches()) {
-            cpdId = cpdId.replace(matcherCpd.group(1), "_" + matcherCpd.group(2));
+            cpdId = cpdId.replace(matcherCpd.group(1),"");
+            if(!cpdId.endsWith("_"+matcherCpd.group(2))) cpdId = cpdId+"_"+matcherCpd.group(2);
             addCompartment = true;
         } else {
             if (!compartmentId.equals("")) {
                 addCompartment = true;
-                cpdId = cpdId + "_" + compartmentId;
+                if(!cpdId.endsWith("_"+compartmentId)) cpdId = cpdId + "_" + compartmentId;
             }
         }
 

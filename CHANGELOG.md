@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Next Release
 [met4j-toolbox] New graph export format compatible with MetExploreViz
 
+[met4j-io] fix duplicated compartment suffix in Tab2Sbml and Tab2BioNetwork
+
 ## 2.2.0
 
 [met4j-toolbox] Fix Galaxy compatibility issues with SideCompoundScan, improve logging and criteria for side compound detection  

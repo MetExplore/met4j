@@ -99,6 +99,13 @@ public class ScopeNetwork extends AbstractMet4jApplication implements GraphOutPu
             bootstraps = (sideCompoundFile == null) ? new BioCollection<>() : mapper.map(sideCompoundFile).stream()
                     .map(BioMetabolite.class::cast)
                     .collect(BioCollection::new, BioCollection::add, BioCollection::addAll);
+
+            for(BioMetabolite bootstrap : bootstraps){
+                if(seeds.contains(bootstrap)) System.err.println("Warning: bootstrap compound "+bootstrap.getId()+" is also listed as a seed." +
+                        " It will be ignored from the bootstrap list.");
+            }
+            bootstraps.removeAll(seeds);
+
         } catch (IOException e) {
             System.err.println("Error while reading the side compound file");
             System.err.println(e.getMessage());

@@ -36,40 +36,26 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml;
 
-import static org.junit.Assert.*;
-
-import java.util.Set;
-
-import fr.inrae.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
-import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
-import org.junit.Before;
-import org.junit.Test;
-import org.sbml.jsbml.Compartment;
-import org.sbml.jsbml.KineticLaw;
-import org.sbml.jsbml.Model;
-import org.sbml.jsbml.Reaction;
-import org.sbml.jsbml.SBMLDocument;
-import org.sbml.jsbml.Species;
-import org.sbml.jsbml.Unit;
-import org.sbml.jsbml.UnitDefinition;
-
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEnzyme;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioGene;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioPathway;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.compartment.CompartmentAttributes;
+import fr.inrae.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.network.NetworkAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.Flux;
+import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.JSBMLPackageWriterException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.BioUnitDefinition;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.UnitSbml;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.BionetworkToJsbml;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.NotesWriter;
+import org.junit.Before;
+import org.junit.Test;
+import org.sbml.jsbml.*;
+
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class BionetworkToJsbmlTest {
 
@@ -281,6 +267,70 @@ public class BionetworkToJsbmlTest {
         assertEquals(Double.NaN, s2.getInitialAmount(), 0.0);
         assertEquals(MetaboliteAttributes.getInitialConcentration(m2), s2.getInitialConcentration(), 0.0);
 
+    }
+
+    @Test
+    public void testMultiLocSpecies() throws Met4jSbmlWriterException {
+
+        network.affectToCompartment(c2, m1);
+        network.removeLeft(m1,c1,r1);
+        network.affectLeft(r1, 2.0, c2, m1);
+
+        BionetworkToJsbml converter = new BionetworkToJsbml().addCompartmentInMetaboliteIds();
+
+        Model model2 = converter.parseBioNetwork(network);
+
+        assertEquals(network.getMetabolitesView().size()+1, model2.getSpeciesCount());
+
+        Species s1 = model2.getSpecies("m1_c2");
+        Species s2 = model2.getSpecies("m2_c2");
+
+        assertEquals(MetaboliteAttributes.getConstant(m1), s1.getConstant());
+        assertEquals(MetaboliteAttributes.getConstant(m2), s2.getConstant());
+        assertEquals(1234567, s1.getSBOTerm());
+
+        assertEquals(MetaboliteAttributes.getHasOnlySubstanceUnits(m1), s1.getHasOnlySubstanceUnits());
+        assertEquals(MetaboliteAttributes.getHasOnlySubstanceUnits(m2), s2.getHasOnlySubstanceUnits());
+        assertEquals(Double.NaN, s1.getInitialConcentration(), 0.0);
+        assertEquals(MetaboliteAttributes.getInitialAmount(m1), s1.getInitialAmount(), 0.0);
+        assertEquals(Double.NaN, s2.getInitialAmount(), 0.0);
+        assertEquals(MetaboliteAttributes.getInitialConcentration(m2), s2.getInitialConcentration(), 0.0);
+
+        assertEquals(network.getReactionsView().size(), model2.getReactionCount());
+
+        Reaction r1Test = model2.getReaction("r1");
+        Reaction r2Test = model2.getReaction("r2");
+
+        assertEquals(1234567, r1Test.getSBOTerm());
+
+        assertEquals(r1.isReversible(), r1Test.isReversible());
+        assertEquals(r2.isReversible(), r2Test.isReversible());
+
+        assertEquals(network.getLeftReactants(r1).size(), r1Test.getListOfReactants().size());
+        assertEquals(network.getLeftReactants(r2).size(), r2Test.getListOfReactants().size());
+
+        assertEquals(network.getRightReactants(r1).size(), r1Test.getListOfProducts().size());
+        assertEquals(network.getRightReactants(r2).size(), r2Test.getListOfProducts().size());
+
+        assertEquals("m1_c2", r1Test.getReactant(0).getSpecies());
+        assertEquals("m2_c2", r1Test.getProduct(0).getSpecies());
+
+        assertEquals(2.0, r1Test.getReactant(0).getStoichiometry(), 0.0);
+        assertEquals(3.0, r1Test.getProduct(0).getStoichiometry(), 0.0);
+
+        KineticLaw law = r1Test.getKineticLaw();
+
+        assertEquals(ReactionAttributes.getLowerBound(r1).value, law.getLocalParameter("LOWER_BOUND").getValue(), 0.0);
+        assertEquals(ReactionAttributes.getUpperBound(r1).value, law.getLocalParameter("UPPER_BOUND").getValue(), 0.0);
+        assertEquals(ReactionAttributes.getLowerBound(r1).unitDefinition.getId(),
+                law.getLocalParameter("LOWER_BOUND").getUnits());
+        assertEquals(ReactionAttributes.getUpperBound(r1).unitDefinition.getId(),
+                law.getLocalParameter("UPPER_BOUND").getUnits());
+
+        //cleanup
+        network.removeLeft(m1,c2,r1);
+        network.affectLeft(r1, 2.0, c1, m1);
+        network.removeFromCompartment(c2, m1);
     }
 
     @Test

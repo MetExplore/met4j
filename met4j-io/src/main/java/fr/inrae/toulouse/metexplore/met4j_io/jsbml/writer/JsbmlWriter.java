@@ -36,6 +36,20 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.*;
+import nu.xom.Builder;
+import nu.xom.ParsingException;
+import nu.xom.Serializer;
+import nu.xom.ValidityException;
+import org.apache.commons.io.FileUtils;
+import org.sbml.jsbml.*;
+import org.sbml.jsbml.SBMLError.SEVERITY;
+import org.sbml.jsbml.validator.SBMLValidator;
+
+import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -43,27 +57,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-
-import javax.xml.stream.XMLStreamException;
-
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.*;
-import nu.xom.Builder;
-import nu.xom.ParsingException;
-import nu.xom.Serializer;
-import nu.xom.ValidityException;
-
-import org.apache.commons.io.FileUtils;
-import org.sbml.jsbml.Model;
-import org.sbml.jsbml.SBMLDocument;
-import org.sbml.jsbml.SBMLError;
-import org.sbml.jsbml.SBMLError.SEVERITY;
-import org.sbml.jsbml.SBMLException;
-import org.sbml.jsbml.SBMLWriter;
-import org.sbml.jsbml.validator.SBMLValidator;
-
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
 
 
 /**
@@ -222,20 +215,26 @@ public class JsbmlWriter {
     }
 
     /**
-     * Create the converter that fit the user defined SBML level
+     * Create the converter that fit the user defined SBML level, if none has been set
      *
      * @param verifiedPkgs The list of plugins that will be applied to the converter
      */
     protected void createConverter(ArrayList<PackageWriter> verifiedPkgs) {
-        BionetworkToJsbml converter = new BionetworkToJsbml(this.getModel().getLevel(), this.getModel().getVersion());
+        if(this.converter==null) this.converter = new BionetworkToJsbml(this.getModel().getLevel(), this.getModel().getVersion());
+
         try {
-            converter.setPackages(verifiedPkgs);
+            this.converter.setPackages(verifiedPkgs);
         } catch (Exception e1) {
             e1.printStackTrace();
         }
 
-        this.setConverter(converter);
+    }
 
+    /**
+     * Resets the converter so that a new one is created at next write
+     */
+    public void resetConverter() {
+        this.converter = null;
     }
 
     /**

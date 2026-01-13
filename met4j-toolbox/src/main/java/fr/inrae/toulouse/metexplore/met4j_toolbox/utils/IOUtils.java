@@ -42,6 +42,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.Met4jSbmlReaderException;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.*;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.BionetworkToJsbml;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
 import fr.inrae.toulouse.metexplore.met4j_mapping.Mapper;
 
@@ -108,6 +109,32 @@ public class IOUtils {
     public static void writeSbml(BioNetwork network, String pathOut) {
         JsbmlWriter writer = new JsbmlWriter(pathOut, network);
 
+        try {
+            writer.write();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error in writing the sbml file");
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Writes a BioNetwork object to an SBML file. Add compartment identifiers suffix to metabolite ids in case of multiple locations.
+     * Prefer this method to write SBML files when using non-sbml source to build the network.
+     *
+     * @param network the BioNetwork object to be written
+     * @param pathOut the path to the output SBML file
+     */
+    public static void writeSbmlWithMulitLocCheck(BioNetwork network, String pathOut) {
+        JsbmlWriter writer = new JsbmlWriter(pathOut, network);
+        for(BioMetabolite m : network.getMetabolitesView()){
+            if(network.getCompartmentsOf(m).size()>1){
+                System.err.println("Warning: some metabolites have multiple compartment locations. " +
+                        "Metabolites identifiers will be changed into metaboliteId_compartmentId to comply with SBML standards.");
+                writer.setConverter(new BionetworkToJsbml(3,2).addCompartmentInMetaboliteIds());
+                break;
+            }
+        }
         try {
             writer.write();
         } catch (Exception e) {

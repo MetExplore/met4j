@@ -51,12 +51,14 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.units.UnitSbml;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.FBCWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.plugin.PackageWriter;
 import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
+import lombok.Setter;
 import org.sbml.jsbml.*;
 import org.sbml.jsbml.ASTNode.Type;
 import org.sbml.jsbml.Unit.Kind;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
 
@@ -94,6 +96,34 @@ public class BionetworkToJsbml {
     public List<PackageWriter> setOfPackage = new ArrayList<PackageWriter>();
 
     /**
+     * Function that defines how to create valid SBML Ids for metabolites
+     */
+    @Setter
+    public BiFunction<BioMetabolite,BioCompartment,String> metaboliteIdFunction;
+
+    /**
+     * Default function that defines how to create valid SBML Ids in case of multi-localized metabolites
+     */
+    private final BiFunction<BioMetabolite,BioCompartment,String> defaultMultiLocMetabIdFunction = (m,c) -> {;
+        return StringUtils.convertToSID(m.getId() + "_" + c.getId());
+    };
+
+    /**
+     * Default function that defines how to create valid SBML Ids in case of multi-localized metabolites
+     */
+    private final BiFunction<BioMetabolite,BioCompartment,String> defaultMetabIdFunction = (m,c) -> {;
+        return StringUtils.convertToSID(m.getId());
+    };
+
+    /**
+     * Handle metabolites with multiple locations by adding the compartment id as a suffix to the metabolite id, with underscore separator.
+     */
+    public BionetworkToJsbml addCompartmentInMetaboliteIds() {
+        this.metaboliteIdFunction = defaultMultiLocMetabIdFunction;
+        return this;
+    }
+
+    /**
      * <p>Constructor for BionetworkToJsbml.</p>
      *
      * @param doc a {@link org.sbml.jsbml.SBMLDocument} object.
@@ -102,6 +132,7 @@ public class BionetworkToJsbml {
         this.doc = doc;
         this.level = doc.getLevel();
         this.vs = doc.getVersion();
+        this.metaboliteIdFunction = defaultMetabIdFunction;
     }
 
     /**
@@ -114,6 +145,7 @@ public class BionetworkToJsbml {
         this.vs = vs;
         this.level = level;
         this.doc = new SBMLDocument(level, vs);
+        this.metaboliteIdFunction = defaultMetabIdFunction;
     }
 
     /**
@@ -123,6 +155,7 @@ public class BionetworkToJsbml {
         this.level = 3;
         this.vs = 2;
         this.doc = new SBMLDocument(this.level, this.vs);
+        this.metaboliteIdFunction = defaultMetabIdFunction;
     }
 
     /**
@@ -284,17 +317,17 @@ public class BionetworkToJsbml {
                         ", please check the list of compartments and the compartment of the metabolite");
             }
 
-            // TODO : to check : if the metabolite has several compartments, it will fail
+            if(cpts.size()>1 && metaboliteIdFunction.equals(defaultMetabIdFunction)) throw new IllegalArgumentException(
+                    "Metabolite "+bioMetab.getId()+" has multiple compartment locations and no unique identification has been set, please use `addCompartmentInMetaboliteIds()` or define custom identification using `setMetaboliteIdFunction` to handle multi-localized metabolites."
+            );
             for (BioCompartment cpt : cpts) {
 
                 Compartment comp = model.getCompartment(StringUtils.convertToSID(cpt.getId()));
-                Species metab;
 
-                if (! model.containsSpecies(StringUtils.convertToSID(bioMetab.getId()))) {
-                    metab = model.createSpecies(StringUtils.convertToSID(bioMetab.getId()), comp);
-                } else {
-                    metab = model.getSpecies(StringUtils.convertToSID(bioMetab.getId()));
-                }
+                String metId = metaboliteIdFunction.apply(bioMetab, cpt);
+
+                Species metab = model.createSpecies(metId, comp);
+
                 metab.setName(bioMetab.getName());
                 metab.setBoundaryCondition(MetaboliteAttributes.getBoundaryCondition(bioMetab));
 
@@ -355,16 +388,18 @@ public class BionetworkToJsbml {
 
             reaction.setReversible(bionetReaction.isReversible());
             // Set the substrates of the reaction
-            for (BioParticipant BionetLParticipant : net.getLeftReactants(bionetReaction)) {
+            for (BioReactant BionetLParticipant : net.getLeftReactants(bionetReaction)) {
                 SpeciesReference specieRef = reaction.createReactant();
-                specieRef.setSpecies(StringUtils.convertToSID(BionetLParticipant.getPhysicalEntity().getId()));
+                specieRef.setSpecies(metaboliteIdFunction.apply(BionetLParticipant.getMetabolite(),
+                        BionetLParticipant.getLocation()));
                 specieRef.setStoichiometry(BionetLParticipant.getQuantity());
 
             }
             // set the products of the reaction
-            for (BioParticipant BionetRParticipant : net.getRightReactants(bionetReaction)) {
+            for (BioReactant BionetRParticipant : net.getRightReactants(bionetReaction)) {
                 SpeciesReference specieRef = reaction.createProduct();
-                specieRef.setSpecies(StringUtils.convertToSID(BionetRParticipant.getPhysicalEntity().getId()));
+                specieRef.setSpecies(metaboliteIdFunction.apply(BionetRParticipant.getMetabolite(),
+                        BionetRParticipant.getLocation()));
                 specieRef.setStoichiometry(BionetRParticipant.getQuantity());
 
             }

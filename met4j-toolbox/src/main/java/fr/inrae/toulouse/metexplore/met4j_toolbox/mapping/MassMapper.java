@@ -51,9 +51,9 @@ public class MassMapper extends AbstractMet4jApplication {
     @Option(name = "-na", usage = "Output mass without match in model, with NA value", required = false)
     public Boolean na = false;
 
-    public enum strategy {no, average, monoisotopic}
-    @Option(name = "-comp", usage = "Compute mass from formulas for each compounds in the model. Use SBML attributes if not set", required = false)
-    public strategy compute = strategy.no;
+    public enum strategy {average, monoisotopic}
+    @Option(name = "-comp", usage = "Method for computing mass from formulas", required = false)
+    public strategy compute = strategy.average;
 
     public static void main(String[] args) {
         MassMapper app = new MassMapper();
@@ -89,24 +89,22 @@ public class MassMapper extends AbstractMet4jApplication {
 
         //read smbl
         BioNetwork bn = IOUtils.readSbml(this.sbmlPath, ALL);
-        if(compute!=strategy.no) {
-            System.out.println("Computing masses from formulas using "+compute+" mass");
-            fr.inrae.toulouse.metexplore.met4j_chemUtils.MassComputor mc = new fr.inrae.toulouse.metexplore.met4j_chemUtils.MassComputor();
-            if (compute == strategy.average) mc.useAverageMass();
-            else if (compute == strategy.monoisotopic) mc.useMonoIsotopicMass();
-            mc.setMolecularWeights(bn);
-        }else {
-            boolean check = false;
-            for (BioMetabolite m : bn.getMetabolitesView()) {
-                if (m.getMolecularWeight() != null) {
-                    check = true;
-                    break;
-                }
+        System.out.println("Computing masses from formulas using "+compute+" mass");
+        fr.inrae.toulouse.metexplore.met4j_chemUtils.MassComputor mc = new fr.inrae.toulouse.metexplore.met4j_chemUtils.MassComputor();
+        if (compute == strategy.average) mc.useAverageMass();
+        else if (compute == strategy.monoisotopic) mc.useMonoIsotopicMass();
+        mc.setMolecularWeights(bn);
+
+        boolean check = false;
+        for (BioMetabolite m : bn.getMetabolitesView()) {
+            if (m.getMolecularWeight() != null) {
+                check = true;
+                break;
             }
-            if (!check) {
-                System.err.println("No metabolite with mass found in the model, please check the input file or use the -comp option");
-                System.exit(1);
-            }
+        }
+        if (!check) {
+            System.err.println("No metabolite with mass found in the model, please check the input file or use the -comp option");
+            System.exit(1);
         }
 
         //map masses
@@ -143,13 +141,15 @@ public class MassMapper extends AbstractMet4jApplication {
 
     @Override
     public String getLongDescription() {
-        return "";
+        return "Retrieve metabolites in a SBML file from their mass.\n" +
+                "The SBML file is expected to contain fbc:chemicalFormula attributes for species entries, in order to compute masses.\n" +
+                "The input mass file should contain one mass per line. The output is a tab delimited file with two columns: query mass, sbml metabolite id (one line per match)";
 
     }
 
     @Override
     public String getShortDescription() {
-        return "";
+        return "Retrieve metabolites in a SBML file from their mass.";
     }
 
     @Override

@@ -154,7 +154,7 @@ public class Sbml2PathwayNet extends AbstractMet4jApplication implements GraphOu
         //export graph
         System.out.print("Exporting...");
         if(format != formatEnum.matrix && !onlySourcesAndSinks) EdgeMerger.undirectedMergeEdgesWithOverride(graph,null);
-        this.exportGraph(graph, format, outputPath);
+        this.exportGraph(graph, network, format, outputPath, (weightFile!=null)||connectors, "weight");
         System.out.println(" Done.");
     }
 

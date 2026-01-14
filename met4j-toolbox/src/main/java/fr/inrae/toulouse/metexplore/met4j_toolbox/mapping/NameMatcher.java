@@ -162,10 +162,7 @@ public class NameMatcher extends AbstractMet4jApplication {
 
     @Override
     public String getShortDescription() {
-        return "This tool runs edit-distance based fuzzy matching to perform near-similar name matching between a metabolic model " +
-                "and a list of chemical names in a dataset. A harmonization processing is performed on chemical names with " +
-                "substitutions of common patterns among synonyms, in order to create aliases on which classical fuzzy " +
-                "matching can be run efficiently.";
+        return "From a list of compound names, find the best matching metabolites in a SBML model using fuzzy name matching on harmonized aliases.";
     }
 
     @Override

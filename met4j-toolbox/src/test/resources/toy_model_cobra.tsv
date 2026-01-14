@@ -1,0 +1,8 @@
+#Id	FormulaIds	FormulaNames	EC	pathways	gpr	lb	ub
+R_reac1	M_A_e --> M_A_c	A_e --> A_c	NA			0.0	10.0
+R_reac2	M_A_c <==> M_B_c	A_c <==> B_c	NA			-100000.0	100000.0
+R_reac3	M_A_c --> M_C_c	A_c --> C_c	NA			0.0	100000.0
+R_reac4	M_B_c + M_C_c --> 1.5 M_D_c	B_c + C_c --> 1.5 D_c	NA			0.0	100000.0
+R_reac5	M_D_c --> M_D_e	D_c --> D_e	NA			0.0	100000.0
+R_reac6	M_E_e --> M_E_c	E_e --> E_c	NA			0.0	3.0
+R_reac7	2.0 M_E_c --> M_D_c	2.0 E_c --> D_c	NA			0.0	100000.0

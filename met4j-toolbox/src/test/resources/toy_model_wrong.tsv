@@ -1,0 +1,15 @@
+#Id	FormulaIds	FormulaNames	EC	pathways	gpr	lb	ub
+reac1	A_ext[e] --> A[c]	A_ext[e] --> A[c]	NA			0.0	10.0
+reac1x	A_ext[e] --> A[x]	A_ext[e] --> A[x]	NA			0.0	10.0
+reac2	A[c] <==> B[c]	A[c] <==> B[c]	NA			-100000.0	100000.0
+reac3	A[c] --> C[c]	A[c] --> C[c]	NA			0.0	100000.0
+reac4	B[c] + C[c] --> 1.5 D[c]	B[c] + C[c] --> 1.5 D[c]	NA			0.0	100000.0
+reac5	D[c] --> D_ext[e]	D[c] --> D_ext[e]	NA			0.0	100000.0
+reac6	E_ext[e] --> E[c]	E_ext[e] --> E[c]	NA			0.0	3.0
+reac7	2.0 E[c] --> D[c]	2.0 E[c] --> D[c]	NA			0.0	100000.0
+reac8	E_ext[e] -> E[c]	E_ext[e] -> E[c]	NA			0.0	3.0
+reac9	 <==>	none	NA			-100000.0	100000.0
+reac11  A[c] <==> B[c]
+reac6	<==> B[c]	<==> B[c]	NA			-100000.0	100000.0
+ex1    D_ext[e] --> 	D_ext[e] --> 	NA			0.0	10.0
+ex2    --> A_ext[e]	--> A_ext[e]	NA			0.0	10.0

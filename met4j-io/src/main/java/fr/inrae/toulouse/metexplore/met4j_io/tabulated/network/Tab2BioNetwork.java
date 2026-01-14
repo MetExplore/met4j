@@ -41,22 +41,15 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inrae.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
-import fr.inrae.toulouse.metexplore.met4j_io.utils.StringUtils;
+import fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils;
+import lombok.Setter;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.io.Reader;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isDouble;
 
 
 /**
@@ -66,513 +59,318 @@ import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isDouble
  */
 public class Tab2BioNetwork {
 
+    @Setter
     public int colId = 0;
+    @Setter
     public int colFormula = 1;
-    public Boolean formatReactionCobra = true;
-    public Boolean formatMetaboliteCobra = true;
-    public String flagExternal = "_b";
+    @Setter
+    public String networkId = "TabConvertedNetwork";
+    @Setter
     public String irrReaction = "-->";
+    @Setter
     public String revReaction = "<==>";
-    public Boolean addCompartmentFromMetaboliteSuffix = false;
+    @Setter
     public String defaultCompartmentId = "c";
+    @Setter
     public int nSkip = 0;
+    @Setter
+    public errorHandling parsingFailure = errorHandling.THROWERROR;
 
-    private BioNetwork bioNetwork;
+    //match reactant formula parts, with or without coeff and location, like: "2.5 glc__D[c]" and "g6p"
+    //will extract if present: coeff (group 1), metabolite id (group 2), compartment id (group 4), giving 2.5, glc__D, c
+    //use default values if coeff and location not present, metabolite id is mandatory
+    protected Pattern reactantRegex = Pattern.compile("^(\\d+\\.?\\d*)?\\s*(\\w+)(\\[(\\S+)\\])?$");
+    protected int regexCoeffIndex = 1;
+    protected int regexMetabIndex = 2;
+    protected int regexCompIndex = 4;
 
     private BioCompartment defaultCompartment;
-    private HashSet<String> reactions;
 
-    // To transform metabolite id like this cpd[c] in cpd_c
-    private Pattern cpdWithBracketsPattern = Pattern.compile("^.*(\\[([^\\]]*)\\])$");
+    public enum errorHandling{
+        THROWERROR,
+        SKIP
+    }
 
+
+    /**
+     * Define how to extract reactant information (compound id, stoichiometric coefficient and compartment) from reaction formula using regex groups.
+     *
+     * @param regex        the regex as {@link String}
+     * @param coeffIndex  the regex group index for coefficient (set to 1 if no coefficient in formula)
+     * @param metabIndex  the regex group index for metabolite id
+     * @param compIndex   the regex group index for compartment id (set to default compartment if no compartment in formula)
+     */
+    public void setReactantParsing(String regex, int coeffIndex, int metabIndex, int compIndex){
+        this.reactantRegex = Pattern.compile(regex);
+        this.regexCoeffIndex = coeffIndex;
+        this.regexMetabIndex = metabIndex;
+        this.regexCompIndex = compIndex;
+    }
 
     /**
      * <p>Constructor for Tab2BioNetwork.</p>
      *
-     * @param networkId                          a {@link java.lang.String} object.
+     * @param networkId                         a {@link String} object.
      * @param colId                              a int.
      * @param colFormula                         a int.
-     * @param formatReactionCobra                a {@link java.lang.Boolean} object.
-     * @param formatMetaboliteCobra              a {@link java.lang.Boolean} object.
-     * @param flagExternal                       a {@link java.lang.String} object.
-     * @param irrReaction                        a {@link java.lang.String} object.
-     * @param revReaction                        a {@link java.lang.String} object.
-     * @param addCompartmentFromMetaboliteSuffix a {@link java.lang.Boolean} object.
-     * @param defaultCompartment                 a {@link java.lang.String} object.
+     * @param irrReaction                        a {@link String} object.
+     * @param revReaction                        a {@link String} object.
+     * @param defaultCompartment                 a {@link String} object.
      * @param nSkip                              a int.
      */
-    public Tab2BioNetwork(String networkId, int colId, int colFormula, Boolean formatReactionCobra, Boolean formatMetaboliteCobra,
-                          String flagExternal, String irrReaction, String revReaction,
-                          Boolean addCompartmentFromMetaboliteSuffix, String defaultCompartment, int nSkip) {
-
-        this.bioNetwork = new BioNetwork(networkId);
-
+    public Tab2BioNetwork(String networkId, int colId, int colFormula, String irrReaction, String revReaction, BioCompartment defaultCompartment, int nSkip) {
+        this.networkId=networkId;
         this.colId = colId;
         this.colFormula = colFormula;
-        this.formatReactionCobra = formatReactionCobra;
-        this.formatMetaboliteCobra = formatMetaboliteCobra;
-        this.flagExternal = flagExternal;
         this.irrReaction = irrReaction;
         this.revReaction = revReaction;
-        this.addCompartmentFromMetaboliteSuffix = addCompartmentFromMetaboliteSuffix;
-        this.defaultCompartmentId = defaultCompartment;
+        if(defaultCompartment!=null){
+            this.defaultCompartment = defaultCompartment;
+        }else{
+            this.defaultCompartment = new BioCompartment(this.defaultCompartmentId, this.defaultCompartmentId);
+        }
         this.nSkip = nSkip;
-
-        this.defaultCompartment = new BioCompartment(this.defaultCompartmentId, this.defaultCompartmentId);
-
-        reactions = new HashSet<>();
-
     }
 
-    /**
-     * Test the input file
-     *
-     * @param fileIn a {@link java.lang.String} object.
-     * @return a {@link java.lang.Boolean} object.
-     * @throws java.io.IOException if any.
-     */
-    public Boolean testFile(String fileIn) throws IOException {
-
-        Boolean flag = true;
-
-        FileInputStream in;
-        BufferedReader br;
-        try {
-            in = new FileInputStream(fileIn);
-            InputStreamReader ipsr = new InputStreamReader(in);
-            br = new BufferedReader(ipsr);
-        } catch (Exception e) {
-            System.err.println("Impossible to read the input file " + fileIn);
-            return false;
+    //Initialize the default compartment if not set
+    private void initDefaultCompartment(){
+        if(this.defaultCompartment==null){
+            this.defaultCompartment = new BioCompartment(this.defaultCompartmentId, this.defaultCompartmentId);
         }
+    }
 
+    //Read the tabulated file
+    private Map<String,String> readFile(Reader fr){
+        Map<String,String> res = new HashMap<>(); //a map with reaction id as key, reaction formula as value
+        BufferedReader br = new BufferedReader(fr);
         String line;
-
         int nLines = 0;
-
-        reactions.clear();
-
-        while ((line = br.readLine()) != null) {
-            nLines++;
-
-            try {
-                Boolean flagLine = this.testLine(line, nLines);
-
-                if (!flagLine) {
-                    flag = false;
-                }
-            } catch (Exception error) {
-                System.err.println("Unexpected error line " + nLines);
-                flag = false;
-            }
-        }
-
-        if (flag == false) {
-            System.err.println("Input file badly formatted");
-        } else {
-            System.out.println("The input file looks good and contains " + reactions.size() + " reactions");
-        }
-
-        in.close();
-
-        return flag;
-    }
-
-
-    /**
-     * Check if the line is correct
-     *
-     * @param line
-     * @param nLines
-     * @return
-     */
-    protected Boolean testLine(String line, int nLines) {
-
-        Boolean flag = true;
-
-        if (nLines > this.nSkip && !line.startsWith("#")) {
-
-            String[] tab = line.split("\\t");
-
-            Pattern pattern = Pattern.compile("\\t");
-            Matcher matcherTabulation = pattern.matcher(line);
-            long nbColumns = matcherTabulation.results().count() + 1;
-
-            if (nbColumns <= this.colId || nbColumns <= this.colFormula) {
-                System.err.println("Bad number of columns line " + nLines);
-                flag = false;
-            } else {
-                String id = tab[this.colId];
-                String formula = tab[this.colFormula];
-
-                // remove spaces
-                id = id.trim();
-                if (id.equals("")) {
-                    System.err.println("Reaction id empty line " + nLines);
-                    flag = false;
-                }
-
-                if (reactions.contains(id)) {
-                    System.err.println("Duplicated reaction id : " + id + " line " + nLines);
-                    flag = false;
-                } else {
-                    reactions.add(id);
-                }
-
-                if (!formula.contains(this.irrReaction) && !formula.contains(this.revReaction)) {
-                    System.err.println("Reaction formula badly formatted line " + nLines + " : " + formula);
-                    flag = false;
-                }
-
-                // in some palsson files, the compartment is specified at the beginning of the formula :
-                // [c] : g3p + nad + pi <==> 13dpg + h + nadh
-                Pattern compartment_Pattern = Pattern.compile("^(\\[.+\\]\\s*:\\s*).*$");
-                Matcher matcher = compartment_Pattern.matcher(formula);
-
-                if (matcher.matches()) {
-                    String occurence = matcher.group(1);
-
-                    formula = formula.replace(occurence, "");
-                }
-
-                String[] tabFormula;
-                if (formula.contains(this.revReaction)) {
-                    tabFormula = formula.split(this.revReaction);
-                } else {
-                    tabFormula = formula.split(this.irrReaction);
-                }
-
-                String leftString = tabFormula[0].trim();
-
-                String[] lefts = {};
-
-                if (!leftString.equals("")) {
-                    lefts = leftString.split(" \\+ ");
-                }
-
-                String rightString;
-
-                if (tabFormula.length == 2) {
-                    rightString = tabFormula[1].trim();
-                } else {
-                    rightString = "";
-                }
-
-
-                String[] rights = {};
-                if (!rightString.equals("")) {
-                    rights = rightString.split(" \\+ ");
-                }
-
-                if (lefts.length == 0 && rights.length == 0) {
-                    System.err.println("Error line " + nLines + " : reaction must have hat least one reactant (" + formula + ")");
-                    flag = false;
-                }
-
-                for (String cpdId : lefts) {
-
-                    cpdId = cpdId.trim();
-
-                    String[] t = cpdId.split(" ");
-
-                    if (t.length > 2) {
-                        System.err.println("Some extra spaces present in metabolite " + cpdId + " line " + nLines + " : " + formula);
-                        flag = false;
-                    }
-                }
-
-                for (String cpdId : rights) {
-
-                    cpdId = cpdId.trim();
-
-                    String[] t = cpdId.split(" ");
-
-                    if (t.length > 2) {
-                        System.err.println("Some extra spaces present in metabolite " + cpdId + " line " + nLines + " : " + formula);
-                        flag = false;
-                    }
-                }
-            }
-        }
-        return flag;
-    }
-
-    /**
-     * Parses a line and create entities
-     *
-     * @param line
-     * @param nLines
-     * @return true if everything ok
-     */
-    protected Boolean parseLine(String line, int nLines) {
-
-        Boolean flag = true;
-
-        if (nLines > this.nSkip && !line.startsWith("#")) {
-
-            String[] tab = line.split("\\t");
-
-            String id = tab[this.colId].trim();
-
-            String formula = tab[this.colFormula];
-
-            BioReaction reaction;
-
-            String reactionId = id;
-            if (this.formatReactionCobra) {
-                reactionId = StringUtils.formatReactionIdCobra(id);
-            }
-
-            reaction = new BioReaction(reactionId);
-
-
-            // in some palsson files, the compartment is specified at the beginning of the formula :
-            // [c] : g3p + nad + pi <==> 13dpg + h + nadh
-            Pattern compartment_Pattern = Pattern.compile("^(\\[(.+)\\]\\s*:\\s*).*$");
-            Matcher matcher = compartment_Pattern.matcher(formula);
-
-            String compartmentId = "";
-
-            if (matcher.matches()) {
-                String occurence = matcher.group(1);
-
-                compartmentId = matcher.group(2);
-                formula = formula.replace(occurence, "");
-            }
-
-
-            String[] tabFormula;
-            if (formula.contains(this.revReaction)) {
-                reaction.setReversible(true);
-                tabFormula = formula.split(this.revReaction);
-            } else {
-                reaction.setReversible(false);
-                tabFormula = formula.split(this.irrReaction);
-            }
-
-            String leftString = tabFormula[0].trim();
-
-            List<String> lefts = new ArrayList<>();
-            List<String> rights = new ArrayList<>();
-
-            if (!leftString.isEmpty()) {
-
-                if (!leftString.equals("")) {
-                    lefts = Arrays.asList(leftString.split(" \\+"));
-                }
-            }
-
-            if (tabFormula.length > 1) {
-
-                String rightString = tabFormula[1].trim();
-
-                if (!rightString.isEmpty()) {
-
-                    if (!rightString.equals("")) {
-                        rights = Arrays.asList(rightString.split(" \\+ "));
-                    }
-                }
-            }
-
-            if (lefts.size() == 0 && rights.size() == 0) {
-                System.err.println("Error line " + nLines + " : the reaction must have at least one reactant");
-                return false;
-            }
-
-            this.bioNetwork.add(reaction);
-
-            for (String cpdId : lefts) {
-                parseReactant(reaction, compartmentId, cpdId, false);
-            }
-
-            for (String cpdId : rights) {
-                parseReactant(reaction, compartmentId, cpdId, true);
-            }
-
-        }
-        return flag;
-    }
-
-    /**
-     * Parse
-     *
-     * @param reaction
-     * @param compartmentId
-     * @param cpdId
-     * @param rightSide
-     */
-    private void parseReactant(BioReaction reaction, String compartmentId, String cpdId, Boolean rightSide) {
-        cpdId = cpdId.trim();
-
-        String sto = "1";
-
-        String[] t = cpdId.split(" ");
-
-        if (t.length == 2) {
-            sto = t[0];
-            sto = sto.replace("(", "").replace(")", "").trim();
-            cpdId = t[1].trim();
-        }
-
-        Matcher matcherCpd = cpdWithBracketsPattern.matcher(cpdId);
-
-        boolean addCompartment = false;
-
-        if (matcherCpd.matches()) {
-            cpdId = cpdId.replace(matcherCpd.group(1),"");
-            if(!cpdId.endsWith("_"+matcherCpd.group(2))) cpdId = cpdId+"_"+matcherCpd.group(2);
-            addCompartment = true;
-        } else {
-            if (!compartmentId.equals("")) {
-                addCompartment = true;
-                if(!cpdId.endsWith("_"+compartmentId)) cpdId = cpdId + "_" + compartmentId;
-            }
-        }
-
-        Double stoDouble = 1.0;
-        if (isDouble(sto)) {
-            stoDouble = Double.parseDouble(sto);
-        }
-
-        this.initReactant(reaction, cpdId, stoDouble, rightSide, addCompartment);
-    }
-
-
-    /**
-     * Fill the network from formulas in the file
-     *
-     * @param fileIn a {@link java.lang.String} object.
-     * @return a {@link java.lang.Boolean} object.
-     * @throws java.io.IOException if any.
-     */
-    public Boolean createReactionsFromFile(String fileIn) throws IOException {
-
-        Boolean flag;
-
         try {
-            flag = this.testFile(fileIn);
+            while ((line = br.readLine()) != null) {
+                nLines++;
+                if (nLines > this.nSkip && !line.startsWith("#")) {
+                    String[] tab = line.split("\\t");
+                    //check number of columns
+                    if(tab.length<=Math.max(this.colId,this.colFormula)){
+                        System.err.println("[Warning] line "+nLines+": wrong number of columns.");
+                        if(this.parsingFailure==errorHandling.THROWERROR) throw new IllegalArgumentException("[Error] parsing error.");
+                        continue;
+                    }
+                    String id = tab[this.colId].trim();
+                    String formula = tab[this.colFormula];
+                    //check duplicated id
+                    if(res.containsKey(id)){
+                        System.err.println("[Warning] Duplicated reaction id "+id+" found at line "+nLines+".");
+                        if(this.parsingFailure==errorHandling.THROWERROR) throw new IllegalArgumentException("[Error] parsing error.");
+                        continue;
+                    }
+                    //check formula format
+                    if(checkFormula(formula)){
+                        res.put(id,formula);
+                    }else{
+                        System.err.print("[Warning] line "+nLines+": wrong format.");
+                        if(this.parsingFailure==errorHandling.THROWERROR) throw new IllegalArgumentException("[Error] parsing error.");
+                        continue;
+                    }
+                }
+            }
+            br.close();
         } catch (IOException e) {
+            System.err.println("[Error] Error while reading the reaction file");
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
+        System.err.println("[Info] "+res.size()+" reactions read from file.");
+        return res;
+    }
+
+    /**
+     * Check reaction formula format
+     * @param formula a {@link String} object.
+     * @return a boolean: true if formula is valid, false otherwise
+     */
+    public boolean checkFormula(String formula){
+        //check contains reaction arrow
+        if(!formula.contains(this.irrReaction) && !formula.contains(this.revReaction)){
+            System.err.println("Error in reaction formula, no side separator ("+this.irrReaction+" or "+this.revReaction+") : "+formula);
             return false;
         }
-
-        if (!flag) {
+        //check contains no multiple reaction arrow
+        String[] parts = formula.split(this.irrReaction);
+        if(parts.length!=2){
+            parts = formula.split(this.revReaction);
+        }
+        if(parts.length>2){
+            System.err.println("Error while parsing reaction formula, more than one side separator: "+formula);
             return false;
         }
-
-        FileInputStream in = new FileInputStream(fileIn);
-        InputStreamReader ipsr = new InputStreamReader(in);
-        BufferedReader br = new BufferedReader(ipsr);
-        String line;
-
-        int nLines = 0;
-
-
-        if (!this.addCompartmentFromMetaboliteSuffix) {
-            this.bioNetwork.add(defaultCompartment);
+        //check contains at least one reactant on each side
+        if(parts.length<2 || parts[0].trim().isEmpty() && parts[1].trim().isEmpty()){
+            System.err.println("Error while parsing reaction formula, both side are empty: "+formula);
+            return false;
         }
-
-        reactions.clear();
-
-        while ((line = br.readLine()) != null) {
-
-            nLines++;
-
-            try {
-                Boolean flagLine = this.parseLine(line, nLines);
-
-                if (!flagLine) {
-                    flag = false;
+        parts = String.join(" + ", parts).split("\\s*\\+\\s*");
+        //check reactant format
+        for(String part : parts){
+            if(!part.trim().isEmpty()){
+                Matcher m = this.reactantRegex.matcher(part.trim());
+                if(!m.matches()){
+                    System.err.println("Error while parsing reaction formula, one or more reactant is malformed: "+formula);
+                    return false;
                 }
-            } catch (Exception e) {
-                System.err.println("Unexpected error line " + nLines + " (" + e.getMessage() + ")");
-                flag = false;
             }
         }
-
-        br.close();
-
-        System.out.println(bioNetwork.getReactionsView().size() + " reactions, " + bioNetwork.getMetabolitesView().size() + " metabolites and " + this.bioNetwork.getCompartmentsView().size() + " compartments created");
-
-        return flag;
-    }
-
-
-    /**
-     * Inits a BioMetabolite with the specified options
-     *
-     * @param cpdId
-     * @return
-     */
-    private void initReactant(BioReaction reaction, String cpdId, Double coeff, Boolean rightSide, Boolean addCompartment) {
-
-        if (coeff <= 0.0) {
-            System.err.println("[WARNING] The coefficient for " + cpdId + " in the reaction " + reaction.getId() + " is not valid, it should be strictly positive. It has not been added to the reaction.");
-            return;
-        }
-
-        BioCompartment compartment = defaultCompartment;
-
-        if (this.addCompartmentFromMetaboliteSuffix || addCompartment) {
-            String[] t = cpdId.split("_");
-
-            String compartmentId = this.defaultCompartment.getId();
-
-            if (t.length > 1) {
-                compartmentId = t[t.length - 1];
-            }
-
-            BioCollection<BioCompartment> compartmentsView = this.bioNetwork.getCompartmentsView();
-
-            if (compartmentsView.containsId(compartmentId)) {
-                compartment = compartmentsView.get(compartmentId);
-            } else {
-                compartment = new BioCompartment(compartmentId, compartmentId);
-                this.bioNetwork.add(compartment);
-            }
-        } else {
-            if (!this.bioNetwork.contains(compartment)) {
-                this.bioNetwork.add(compartment);
-            }
-        }
-
-
-        if (this.formatMetaboliteCobra) {
-            cpdId = StringUtils.formatMetaboliteIdCobra(cpdId, compartment.getId());
-        }
-
-        BioMetabolite cpd;
-        BioCollection<BioMetabolite> metabolitesView = this.bioNetwork.getMetabolitesView();
-
-        if (metabolitesView.containsId(cpdId)) {
-            cpd = metabolitesView.get(cpdId);
-        } else {
-            cpd = new BioMetabolite(cpdId);
-            this.bioNetwork.add(cpd);
-        }
-        this.bioNetwork.affectToCompartment(compartment, cpd);
-
-        if (cpd.getId().endsWith(this.flagExternal)) {
-            MetaboliteAttributes.setBoundaryCondition(cpd, true);
-        } else {
-            MetaboliteAttributes.setBoundaryCondition(cpd, false);
-        }
-
-        if (!rightSide) {
-            this.bioNetwork.affectLeft(reaction, coeff, compartment, cpd);
-        } else {
-            this.bioNetwork.affectRight(reaction, coeff, compartment, cpd);
-        }
-
-        return;
-
+        //All good, proceed;
+        return true;
     }
 
     /**
-     * <p>Getter for the field <code>bioNetwork</code>.</p>
-     *
-     * @return a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork} object.
+     * Convert a tabulated file to a BioNetwork
+     * @param tabfile a {@link Reader} object.
+     * @return a {@link BioNetwork} object.
      */
-    public BioNetwork getBioNetwork() {
-        return bioNetwork;
+    public BioNetwork convert(Reader tabfile){
+        return convert(readFile(tabfile));
     }
+
+    /**
+     * Convert a collection of reaction formulas with unique identifiers to a BioNetwork
+     * @param reactionFormulas a {@link java.util.Map} object, reaction ids as key, reaction formulas as values.
+     * @return a {@link BioNetwork} object.
+     */
+    public BioNetwork convert(Map<String,String> reactionFormulas){
+        BioNetwork bn = new BioNetwork(this.networkId);
+        for(Map.Entry<String,String> rxnEntry : reactionFormulas.entrySet()){
+            String rxnId = rxnEntry.getKey();
+            //check empty id
+            if(StringUtils.isVoid(rxnId)){
+                System.err.println("[Warning] Reaction with empty id skipped.");
+                if(this.parsingFailure==errorHandling.THROWERROR) throw new IllegalArgumentException("[Error] parsing error.");
+                continue;
+            }
+            //create reaction
+            BioReaction rxn = new BioReaction(rxnId);
+            String rxnFormula = rxnEntry.getValue();
+            //set reversibility
+            if(rxnEntry.getValue().contains(revReaction)){
+                rxn.setReversible(true);
+                rxnFormula=rxnFormula.replace(revReaction,irrReaction);
+            }else{
+                rxn.setReversible(false);
+            }
+            //get reactant info
+            Collection<FormulaPart> parsedFormula = parseRxnFormula(rxnFormula);
+            if(parsedFormula.isEmpty()){
+                if(this.parsingFailure==errorHandling.THROWERROR) throw new IllegalArgumentException("[Error] parsing error.");
+                System.err.println("[Warning] Reaction "+rxn.getId()+" skipped due to parsing error.");
+                continue;
+            }
+
+            bn.add(rxn);
+            //create and affect metabolites and compartments from reactant info
+            for(FormulaPart parsedReactant: parsedFormula){
+                BioMetabolite metab = bn.getMetabolite(parsedReactant.metabId);
+                BioCompartment comp = bn.getCompartment(parsedReactant.compId);
+                //create compartment if not exists
+                if(comp==null) {
+                    if (parsedReactant.compId.equals(defaultCompartmentId)) {
+                        if(this.defaultCompartment==null) initDefaultCompartment();
+                        comp = this.defaultCompartment;
+                    } else {
+                        comp = new BioCompartment(parsedReactant.compId, parsedReactant.compId);
+                    }
+                    bn.add(comp);
+                }
+                //create metabolite if not exists
+                if(metab==null){
+                    metab = new BioMetabolite(parsedReactant.metabId,parsedReactant.compId);
+                    bn.add(metab);
+                }
+                //affect metabolite to compartment if not already done
+                if(!comp.getComponentsView().contains(metab)){
+                    bn.affectToCompartment(comp,metab);
+                }
+                //affect metabolites to reaction
+                if(parsedReactant.left){
+                    bn.affectLeft(rxn,parsedReactant.coeff,comp,metab);
+                }else{
+                    bn.affectRight(rxn,parsedReactant.coeff,comp,metab);
+                }
+            }
+        }
+        return bn;
+    }
+
+    //Parse reaction formula using regex
+    private Collection<FormulaPart> parseRxnFormula(String formula){
+        Boolean flag = false; //track if regex matched
+        String[] splitFormula = formula.trim().split(irrReaction);
+        String[] left = new String[0];
+        String[] right = new String[0];
+        //define reaction sides. Should be 2 parts (left and right) except for exchange reactions
+        if(splitFormula.length==0){
+            System.err.println("[Warning] Error reacton is empty: "+formula);
+            return new ArrayList<>(); //return empty list on error
+        }
+        if(splitFormula.length==1){//exchange reaction case
+            if(formula.matches("^\\s*"+irrReaction+"\\s*.+$")){//import: empty left
+                right = splitFormula[0].split("\\s*\\+\\s*");
+            }else if(formula.matches("^.+\\s*"+irrReaction+"\\s*$")){//export: empty right
+                left = splitFormula[0].split("\\s*\\+\\s*");
+            }else{
+                if(!checkFormula(formula)) System.err.print("Error while parsing reaction formula: "+formula);
+                return new ArrayList<>(); //return empty list on error
+            }
+        }else if(StringUtils.isVoid(splitFormula[0])){
+            right = splitFormula[1].split("\\s*\\+\\s*");
+        }else if(StringUtils.isVoid(splitFormula[1])){
+            left = splitFormula[0].split("\\s*\\+\\s*");
+        }else{
+            left = splitFormula[0].split("\\s*\\+\\s*");
+            right = splitFormula[1].split("\\s*\\+\\s*");
+        }
+
+        //define reactants
+        List<FormulaPart> res = new ArrayList<>();
+        ArrayList<String> formulaParts = new ArrayList<String>(List.of(left));
+        formulaParts.addAll(List.of(right));
+        int i = -1;
+        for(String subString : formulaParts){
+            i++;
+            Matcher m = this.reactantRegex.matcher(subString.trim());
+            if(m.matches()){
+                //get coefficient
+                String coeffStr = m.group(regexCoeffIndex);
+                double coeff;
+                if (coeffStr == null || coeffStr.isEmpty()) {
+                    coeff = 1.0; //default coefficient
+                } else {
+                    try {
+                        coeff = Double.parseDouble(coeffStr);
+                    } catch (NumberFormatException e) {
+                        System.err.println("[Warning] Error while parsing coefficients in reaction formula, will be set to 1: " + subString);
+                        coeff = 1.0; //default coefficient if not a valid number
+                    }
+                }
+                //get compartment
+                String compId = m.group(regexCompIndex);
+                if(compId==null || compId.isEmpty()){
+                    compId = this.defaultCompartmentId; //default compartment
+                    System.err.println("[Warning] No compartment define in formula, will be set to "+defaultCompartmentId+": " + subString);
+                }
+                res.add(new FormulaPart(m.group(regexMetabIndex),coeff,i<left.length,compId));
+            }else{
+                flag=true;//something went wrong
+                break;
+            }
+        }
+        if(flag){
+            if(!checkFormula(formula)) System.err.print("Error while parsing reaction formula: "+formula);
+            res=new ArrayList<>(); //return empty list on error
+        }
+        return res;
+    }
+
+    //Helper record to store parsed reactant info
+    private record FormulaPart(String metabId, Double coeff, Boolean left, String compId){};
 }

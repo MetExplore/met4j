@@ -567,26 +567,31 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
                                           reactions to remove from the
                                           metabolic network
 </code></pre></details></td></tr>
-<tr><td>Tab2Sbml</td><td>Create a Sbml File from a tabulated file that contains the reaction ids and the formulas<details><summary><small>more</small></summary>Create a Sbml File from a tabulated file that contains the reaction ids and the formulas<br/><br/><pre><code> -cf N     : [2] number of the column where are the reaction formulas (default:
-             2)
- -ci N     : [1] number of the column where are the reaction ids (default: 1)
- -cpt      : [deactivated] Create compartment from metabolite suffixes. If this
-             option is deactivated, only one compartment (the default
-             compartment) will be created (default: false)
- -dcpt VAL : [c] Default compartment (default: c)
- -e VAL    : [_b] flag to assign metabolite as external (default: _b)
- -h        : prints the help (default: false)
- -i VAL    : Tabulated file
- -id VAL   : [NA] Model id written in the SBML file (default: NA)
- -irr VAL  : [-->] String for irreversible reaction (default: -->)
- -mp       : [deactivated] format the metabolite ids in a Palsson way (M_***_c)
-             (default: false)
- -n N      : [0] Number of lines to skip at the beginning of the tabulated file
-             (default: 0)
- -o VAL    : [out.sbml] Out sbml file (default: out.sbml)
- -rev VAL  : [<==>] String for reversible reaction (default: <==>)
- -rp       : [deactivated] format the reaction ids in a Palsson way (R_***)
-             (default: false)
+<tr><td>Tab2Sbml</td><td>Create a Sbml File from a tabulated file that contains the reaction ids and the formulas<details><summary><small>more</small></summary>Create a Sbml File from a tabulated file that contains the reaction ids and the formulas<br/><br/><pre><code> -M_c                        : [false] Use Palsson et al. convention:
+                               compartment suffix in metabolite ids with _
+                               separator (default: false)
+ -b (--boundary) VAL         : set a compartment as the system boundary. All
+                               metabolites in this compartment will have the
+                               attribute `boundaryCondition` set to true in the
+                               sbml.
+ -cf N                       : [2] number of the column where are the reaction
+                               formulas (default: 2)
+ -ci N                       : [1] number of the column where are the reaction
+                               ids (default: 1)
+ -dcpt VAL                   : [c] Default compartment (default: c)
+ -h                          : prints the help (default: false)
+ -i VAL                      : Tabulated file
+ -id VAL                     : [NA] Model id written in the SBML file (default:
+                               NA)
+ -ign (--ignore-failed-read) : skip lines with parsing errors instead of
+                               stopping the process (default: false)
+ -irr VAL                    : [-->] String for irreversible reaction (default:
+                               -->)
+ -n N                        : [0] Number of lines to skip at the beginning of
+                               the tabulated file (default: 0)
+ -o VAL                      : [out.sbml] Out sbml file (default: out.sbml)
+ -rev VAL                    : [<==>] String for reversible reaction (default:
+                               <==>)
 </code></pre></details></td></tr>
 </tbody>
 </table>

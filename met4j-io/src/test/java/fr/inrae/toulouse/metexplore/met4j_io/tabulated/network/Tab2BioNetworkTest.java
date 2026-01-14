@@ -36,24 +36,31 @@
 
 package fr.inrae.toulouse.metexplore.met4j_io.tabulated.network;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReactant;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 public class Tab2BioNetworkTest {
 
     private Tab2BioNetwork app;
+    private BioCompartment c;
+    private Map<String,String> input;
 
     @Before
     public void init() {
+        c = new BioCompartment("c", "cytosol");
         app = new Tab2BioNetwork("test", 0, 1,
-                false, false, "_b",
-                "->", "<->", false,
-                "c", 0);
+                "->", "<->",
+                c, 0);
+        app.setParsingFailure(Tab2BioNetwork.errorHandling.SKIP);
     }
 
 
@@ -62,28 +69,21 @@ public class Tab2BioNetworkTest {
 
         String line = "r\tm1 + 2 m2 -> m3 + m4";
 
-        assertTrue(app.testLine(line, 1));
-    }
-
-    @Test
-    public void testLineIdEmpty() {
-        String line = "  \tm1 + 2 m2 -> m3 + m4\n";
-
-        assertFalse(app.testLine(line, 1));
+        assertTrue(app.checkFormula(line.split("\t")[1]));
     }
 
     @Test
     public void testBadFormulaLeft() {
         String line = "r\tm1 + 2 a m2 -> m3 + m4\n";
 
-        assertFalse(app.testLine(line, 1));
+        assertFalse(app.checkFormula(line.split("\t")[1]));
     }
 
     @Test
     public void testBadFormulaRight() {
         String line = "r\tm1 + 2 m2 -> m3  m4\n";
 
-        assertFalse(app.testLine(line, 1));
+        assertFalse(app.checkFormula(line.split("\t")[1]));
     }
 
     @Test
@@ -91,7 +91,7 @@ public class Tab2BioNetworkTest {
         // Must accept empty right (exchange reaction)
         String line = "r\tm1 + 2 m2 ->\n";
 
-        assertTrue(app.testLine(line, 1));
+        assertTrue(app.checkFormula(line.split("\t")[1]));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class Tab2BioNetworkTest {
         // Must accept empty right (exchange reaction)
         String line = "r\t-> m1 + 2 m2\n";
 
-        assertTrue(app.testLine(line, 1));
+        assertTrue(app.checkFormula(line.split("\t")[1]));
     }
 
     @Test
@@ -107,54 +107,29 @@ public class Tab2BioNetworkTest {
         // Must have at least one reactant
         String line = "r\t-> \n";
 
-        assertFalse(app.testLine(line, 1));
+        assertFalse(app.checkFormula(line.split("\t")[1]));
     }
 
     @Test
     public void testEmptyFormula() {
         String line = "r\t\ttruc\n";
 
-        assertFalse(app.testLine(line, 1));
+        assertFalse(app.checkFormula(line.split("\t")[1]));
     }
 
     @Test
     public void testFormulaWithoutArrow() {
         String line = "r\ttruc + machin\n";
 
-        assertFalse(app.testLine(line, 1));
-    }
-
-    @Test
-    public void testBadNumberOfColumns() {
-
-        String line = "r\n";
-
-        assertFalse(app.testLine(line, 1));
-
-    }
-
-    @Test
-    public void testDuplicated() {
-
-        String line = "r\tm1 + 2 m2 <-> m3 + m4";
-        assertTrue(app.testLine(line, 1));
-        assertFalse(app.testLine(line, 1));
-
-    }
-
-    @Test
-    public void testFormulaWithCompartment() {
-        String line = "r\t[c] : m1 + 2 m2 <-> m3 + m4";
-        assertTrue(app.testLine(line, 1));
+        assertFalse(app.checkFormula(line.split("\t")[1]));
     }
 
     @Test
     public void parseLine() {
-        String line = "r\tm1 + 2 m2 -> m3 + 3 m4";
+        input = new HashMap<>();
+        input.put("r","m1 + 2 m2 -> m3 + 3 m4");
 
-        app.parseLine(line, 1);
-
-        BioNetwork network = app.getBioNetwork();
+        BioNetwork network = app.convert(input);
 
         assertEquals(1, network.getReactionsView().size());
         assertEquals(4, network.getMetabolitesView().size());
@@ -184,81 +159,91 @@ public class Tab2BioNetworkTest {
 
     @Test
     public void parseLineReversible() {
-        String line = "r\tm1 + 2 m2 <-> m3 + 3 m4";
+        input = new HashMap<>();
+        input.put("r","m1 + 2 m2 <-> m3 + 3 m4");
 
-        app.parseLine(line, 1);
-
-        BioNetwork network = app.getBioNetwork();
+        BioNetwork network = app.convert(input);
         BioReaction reaction = network.getReaction("r");
         assertTrue(reaction.isReversible());
     }
-
     @Test
-    public void parseLineEmptySides() {
-        String line = "r\t <-> ";
+    public void parseLineIdEmpty() {
+        input = new HashMap<>();
+        input.put(" ","m1 + 2 m2 -> m3 + m4");
 
-        Boolean flag = app.parseLine(line, 1);
-
-        assertFalse(flag);
-
-        BioNetwork network = app.getBioNetwork();
+        BioNetwork network = app.convert(input);
         assertEquals(0, network.getReactionsView().size());
         assertEquals(0, network.getMetabolitesView().size());
     }
 
     @Test
+    public void parseLineEmptySides() {
+        input = new HashMap<>();
+        input.put("r"," <-> ");
+
+        BioNetwork network = app.convert(input);
+        assertEquals(0, network.getReactionsView().size());
+        assertEquals(0, network.getMetabolitesView().size());
+    }
+
+    @Test
+    public void parseLineIdEmptyFail() {
+        app.setParsingFailure(Tab2BioNetwork.errorHandling.THROWERROR);
+        input = new HashMap<>();
+        input.put(" ","m1 + 2 m2 -> m3 + m4");
+
+        try {
+            app.convert(input);
+            fail("Expected an exception to be thrown");
+        } catch (IllegalArgumentException ignored) {
+        }
+        app.setParsingFailure(Tab2BioNetwork.errorHandling.SKIP);
+    }
+
+    @Test
+    public void parseLineEmptySidesFail() {
+        app.setParsingFailure(Tab2BioNetwork.errorHandling.THROWERROR);
+        input = new HashMap<>();
+        input.put("r"," <-> ");
+
+        try {
+            app.convert(input);
+            fail("Expected an exception to be thrown");
+        } catch (IllegalArgumentException ignored) {
+        }
+        app.setParsingFailure(Tab2BioNetwork.errorHandling.SKIP);
+    }
+
+    @Test
     public void parseLineEmptyLeftSide() {
-        String line = "r\t <-> s2";
+        input = new HashMap<>();
+        input.put("r"," <-> s2");
 
-        Boolean flag = app.parseLine(line, 1);
-
-        assertTrue(flag);
-
-        BioNetwork network = app.getBioNetwork();
+        BioNetwork network = app.convert(input);
         assertEquals(1, network.getReactionsView().size());
         assertEquals(1, network.getMetabolitesView().size());
     }
 
     @Test
     public void parseLineEmptyRightSide() {
-        String line = "r\tm1 <->";
+        input = new HashMap<>();
+        input.put("r","m1 <->");
 
-        Boolean flag = app.parseLine(line, 1);
-
-        assertTrue(flag);
-
-        BioNetwork network = app.getBioNetwork();
+        BioNetwork network = app.convert(input);
         assertEquals(1, network.getReactionsView().size());
         assertEquals(1, network.getMetabolitesView().size());
     }
 
     @Test
-    public void parseLineWithCompartment() {
-        String line = "r\t[p] : m1 + 2 m2 -> m3 + 3 m4";
-
-        app.parseLine(line, 1);
-
-        BioNetwork network = app.getBioNetwork();
-
-        assertEquals(1, network.getReactionsView().size());
-        assertEquals(4, network.getMetabolitesView().size());
-        assertEquals(1, network.getCompartmentsView().size());
-        assertTrue(network.containsCompartment("p"));
-
-    }
-
-    @Test
     public void parseLineWithCompartments() {
-        String line = "r\tm1_c + 2 m2[p] -> m3_x + 3 m4_r";
+        input = new HashMap<>();
+        input.put("r","m1[c] + 2 m2[p] -> m3[x] + 3 m4[r]");
 
         app = new Tab2BioNetwork("test", 0, 1,
-                false, false, "_b",
-                "->", "<->", true,
-                "c", 0);
+                "->", "<->",
+                c, 0);
 
-        app.parseLine(line, 1);
-
-        BioNetwork network = app.getBioNetwork();
+        BioNetwork network = app.convert(input);
 
         assertEquals(1, network.getReactionsView().size());
         assertEquals(4, network.getMetabolitesView().size());
@@ -271,54 +256,13 @@ public class Tab2BioNetworkTest {
     }
 
     @Test
-    public void parseLineWithFormatMetaboliteCobra() {
-        String line = "r\tm1_c + 2 m2[p] -> m3_x + 3 m4_r";
-
-        app = new Tab2BioNetwork("test", 0, 1,
-                false, true, "_b",
-                "->", "<->", true,
-                "c", 0);
-
-        app.parseLine(line, 1);
-
-        BioNetwork network = app.getBioNetwork();
-
-        assertEquals(4, network.getMetabolitesView().size());
-        assertTrue(network.containsMetabolite("M_m1_c"));
-        assertTrue(network.containsMetabolite("M_m2_p"));
-        assertTrue(network.containsMetabolite("M_m3_x"));
-        assertTrue(network.containsMetabolite("M_m4_r"));
-    }
-
-    @Test
-    public void parseLineWithFormatReactionCobra() {
-        String line = "r\tm1_c + 2 m2[p] -> m3_x + 3 m4_r";
-
-        app = new Tab2BioNetwork("test", 0, 1,
-                true, true, "_b",
-                "->", "<->", true,
-                "c", 0);
-
-        app.parseLine(line, 1);
-
-        BioNetwork network = app.getBioNetwork();
-        assertEquals(1, network.getReactionsView().size());
-
-        assertTrue(network.containsReaction("R_r"));
-    }
-
-    @Test
     public void parseSeveralLines() {
 
-        String line = "r\tm1 + 2 m2 <-> m3 + 3 m4";
+        input = new HashMap<>();
+        input.put("r","m1 + 2 m2 <-> m3 + 3 m4");
+        input.put("r2","m1 + 2 m2 <-> m3 + 3 m5");
 
-        app.parseLine(line, 1);
-
-        line = "r2\tm1 + 2 m2 <-> m3 + 3 m5";
-
-        app.parseLine(line, 1);
-
-        BioNetwork network = app.getBioNetwork();
+        BioNetwork network =  app.convert(input);
         assertEquals(2, network.getReactionsView().size());
         assertEquals(5, network.getMetabolitesView().size());
 

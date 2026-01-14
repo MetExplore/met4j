@@ -36,8 +36,11 @@
 
 package fr.inrae.toulouse.metexplore.met4j_toolbox.convert;
 
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioCompartment;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioEntity;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
-import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.JsbmlWriter;
+import fr.inrae.toulouse.metexplore.met4j_io.annotations.metabolite.MetaboliteAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import fr.inrae.toulouse.metexplore.met4j_io.tabulated.network.Tab2BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
@@ -49,6 +52,8 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Set;
 
@@ -66,15 +71,6 @@ public class Tab2Sbml extends AbstractMet4jApplication {
     @ParameterType(name = EnumParameterTypes.Integer)
     @Option(name = "-cf", usage = "[2] number of the column where are the reaction formulas")
     public int colformula = 2;
-
-    @Option(name = "-rp", usage = "[deactivated] format the reaction ids in a Palsson way (R_***)")
-    public Boolean rp = false;
-
-    @Option(name = "-mp", usage = "[deactivated] format the metabolite ids in a Palsson way (M_***_c)")
-    public Boolean mp = false;
-
-    @Option(name = "-e", usage = "[_b] flag to assign metabolite as external")
-    public String e = "_b";
 
     @Option(name = "-irr", usage = "[-->] String for irreversible reaction")
     public String i = "-->";
@@ -95,16 +91,22 @@ public class Tab2Sbml extends AbstractMet4jApplication {
     @Option(name = "-id", usage = "[NA] Model id written in the SBML file")
     public String id = "NA";
 
-    @Option(name = "-cpt", usage = "[deactivated] Create compartment from metabolite suffixes. If this option is deactivated, only one compartment (the default compartment) will be created")
-    public Boolean createCompartment = false;
-
     @Option(name = "-dcpt", usage = "[c] Default compartment")
     public String defaultCompartment = "c";
 
+    @Option(name = "-M_c", usage = "[false] Use Palsson et al. convention: compartment suffix in metabolite ids with _ separator")
+    public Boolean usePalssonConvention = false;
+
+
+    @Option(name = "-b", aliases = {"--boundary"}, usage = "set a compartment as the system boundary. All metabolites in this compartment will have the attribute `boundaryCondition` set to true in the sbml.")
+    public String boundaryCompartment = null;
 
     @ParameterType(name = EnumParameterTypes.Integer)
     @Option(name = "-n", usage = "[0] Number of lines to skip at the beginning of the tabulated file")
     public int nSkip = 0;
+
+    @Option(name = "-ign", aliases = {"--ignore-failed-read"}, usage = "skip lines with parsing errors instead of stopping the process")
+    public boolean keepGoing = false;
 
     /**
      * {@inheritDoc}
@@ -138,9 +140,9 @@ public class Tab2Sbml extends AbstractMet4jApplication {
     /**
      * <p>main.</p>
      *
-     * @param args an array of {@link java.lang.String} objects.
-     * @throws java.io.IOException
-     * @throws fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException if any.
+     * @param args an array of {@link String} objects.
+     * @throws IOException
+     * @throws Met4jSbmlWriterException if any.
      */
     public static void main(String[] args) throws IOException, Met4jSbmlWriterException {
 
@@ -154,32 +156,45 @@ public class Tab2Sbml extends AbstractMet4jApplication {
 
     private void run() {
 
+
         Tab2BioNetwork tb = new Tab2BioNetwork(this.id, this.colid - 1,
                 this.colformula - 1,
-                this.rp, this.mp, this.e, this.i, this.r, this.createCompartment,
-                this.defaultCompartment, this.nSkip);
-
+                 this.i, this.r, null, this.nSkip);
+        tb.defaultCompartmentId=this.defaultCompartment;
+        if(usePalssonConvention){
+            // match reactant formula parts like "2 M_glc__D_c" or "M_atp_m". The first capturing group is the stoichiometric coefficient (optional),
+            // the second is the metabolite id with compartment suffix (mandatory), the third is the compartment id (mandatory)
+            tb.setReactantParsing("^(\\d+\\.?\\d*)?\\s*(M_\\w+_([^_]+))$",1,2,3);
+        }
+        if(this.keepGoing){
+            tb.setParsingFailure(Tab2BioNetwork.errorHandling.SKIP);
+        }
 
         String fileIn = this.in;
         String sbmlFile = this.sbml;
 
-        Boolean flag = true;
+        BioNetwork bn = new BioNetwork();
         try {
-            flag = tb.createReactionsFromFile(fileIn);
+            bn = tb.convert(new BufferedReader(new FileReader(fileIn)));
+            if(this.boundaryCompartment!=null){
+                BioCompartment compartment = bn.getCompartment(this.boundaryCompartment);
+                if(compartment==null){
+                    System.err.println("Warning: compartment "+this.boundaryCompartment+" not found in the network. No boundary condition set.");
+                } else {
+                   for(BioEntity m : compartment.getComponentsView()){
+                       if(m instanceof BioMetabolite){
+                           MetaboliteAttributes.setBoundaryCondition((BioMetabolite) m, true);
+                       }
+                   }
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error in creating the network from " + fileIn);
             System.exit(1);
         }
 
-        if (!flag) {
-            System.err.println("Error in creating the network from " + fileIn);
-            System.exit(1);
-        }
-
-        BioNetwork bn = tb.getBioNetwork();
-
-        IOUtils.writeSbml(bn, sbmlFile);
+        IOUtils.writeSbmlWithMulitLocCheck(bn, sbmlFile);
 
         return;
 

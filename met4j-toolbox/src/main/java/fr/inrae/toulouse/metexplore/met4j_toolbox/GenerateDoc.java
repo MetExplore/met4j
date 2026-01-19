@@ -39,6 +39,8 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplicati
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.ResourceURLFilter;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Resources;
+
+import org.apache.jena.sparql.pfunction.library.version;
 import org.kohsuke.args4j.CmdLineParser;
 
 import java.io.BufferedWriter;
@@ -94,6 +96,30 @@ public class GenerateDoc {
             "\n" +
             "```console\n" +
             "java -Dlog4j.configuration= -cp target/met4j-toolbox-<version>.jar ...\n" +
+            "```\n" +
+            "\n" +
+            "## From Conda\n" +
+            "\n" +
+            "[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/met4j/README.html)\n"+
+            "\n" +
+            "To install the latest version of Met4J, run this command :\n"+
+            "\n" +
+            "```sh\n"+
+            "conda install met4j -c bioconda -c conda-forge\n"+
+            "```\n"+
+            "\n" +
+            "### Usage\n"+
+            "\n" +
+            "List all the apps :\n"+
+            "\n" +
+            "```sh\n"+
+            "met4j\n"+
+            "```\n"+
+            "\n" +
+            "Run a specific app (for example Sbml2Graph) :\n"+
+            "\n" +
+            "```sh\n"+
+            "met4j convert.Sbml2Graph -i mySbml.xml -o ./output.txt\n"+
             "```\n" +
             "\n" +
             "## From singularity\n" +
@@ -203,10 +229,12 @@ public class GenerateDoc {
             " -in toy_model.xml -out toy_model.tsv\n" +
             "```\n" +
             "\n" +
-            "### Galaxy instance\n" +
+            "## Galaxy instance\n" +
             "\n" +
             "[Galaxy](https://galaxyproject.org/) wrappers for met4j-toolbox apps are available in the [Galaxy toolshed](https://toolshed.g2.bx.psu.edu/) (master version) and in the [Galaxy test toolsdhed](https://testtoolshed.g2.bx.psu.edu/) (develop version).\n" +
-            "Wrappers launch the met4j singularity container, so the server where your Galaxy instance is hosted must have Singularity installed.\n";
+            "Wrappers launch the met4j conda package.\n" +
+            "\n" +
+            "An instance of Met4J is available on the [French Galaxy server](https://usegalaxy.fr/) which is maintained by the [French Institute of Bioinformatics](https://www.ifb-elixir.fr/).\n";
 
     private static StringBuffer getHeader(){
         StringBuffer sb = new StringBuffer();

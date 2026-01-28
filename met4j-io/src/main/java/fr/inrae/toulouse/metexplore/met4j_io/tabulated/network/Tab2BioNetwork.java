@@ -283,7 +283,7 @@ public class Tab2BioNetwork {
                 }
                 //create metabolite if not exists
                 if(metab==null){
-                    metab = new BioMetabolite(parsedReactant.metabId,parsedReactant.compId);
+                    metab = new BioMetabolite(parsedReactant.metabId);
                     bn.add(metab);
                 }
                 //affect metabolite to compartment if not already done

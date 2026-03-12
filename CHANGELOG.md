@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Next Release
 
+[met4j-toolbox] fix wrong status and column number in SideCompoundScan output when degree and percentile are both ignored
+
 ## 2.2.1
 [met4j-toolbox] New graph export format compatible with MetExploreViz
 

@@ -140,7 +140,12 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
                     degreeStats.addValue(graph.degreeOf(v));
                 }
             }
-            dt = degreeStats.getPercentile(100-degreePrecentile);
+            double dp =  degreeStats.getPercentile(100-degreePrecentile);
+            if(degree<0){
+                dt = dp;
+            }else{
+                dt = Math.min(degree, dp);
+            }
         }
 
         //open file
@@ -150,7 +155,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
             Boolean reportValue = (!noReportValue);
             if (reportValue) {
                 StringBuffer l = new StringBuffer("ID\tNAME");
-                if (degree > 0 || degreePrecentile > 0) l.append("\tDEGREE");
+                if (degree >= 0 || degreePrecentile >= 0) l.append("\tDEGREE");
                 if (!Double.isNaN(parallelEdge) && parallelEdge > 0) l.append("\tMAX_PARALLEL_EDGES");
                 if (flagInorganic) l.append("\tNO_CARBON_BOND");
                 if (flagNoFormula) l.append("\tVALID_CHEMICAL");
@@ -170,10 +175,12 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
                 StringBuffer l = new StringBuffer(v.getId());
                 if (reportValue) l.append("\t" + v.getName());
 
-                int d = merge ? mergedDegree.get(getSharedId.apply(v)) : graph.degreeOf(v);
-                boolean sideFromDegree = (d >= dt);
-                if (sideFromDegree) side = true;
-                if (reportValue) l.append("\t" + d);
+                if (degree >= 0 || degreePrecentile >= 0) {
+                    int d = merge ? mergedDegree.get(getSharedId.apply(v)) : graph.degreeOf(v);
+                    boolean sideFromDegree = (d >= dt);
+                    if (sideFromDegree) side = true;
+                    if (reportValue) l.append("\t" + d);
+                }
 
                 //check parallel edges
                 if (!Double.isNaN(parallelEdge) && parallelEdge > 0) {

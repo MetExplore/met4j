@@ -35,10 +35,10 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
-import java.util.HashSet;
-
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import lombok.NonNull;
+
+import java.util.HashSet;
 
 /**
  * A conversion interaction in which one or more entities (substrates) undergo
@@ -197,15 +197,21 @@ public class BioReaction extends BioEntity {
 	 *         as a transport reaction Ex : A_a + C_b -&gt; D_a + B_b
 	 */
 	public Boolean isTransportReaction() {
+		return this.getCompartments().size() > 1;
+	}
 
-		HashSet<BioCompartment> compartments = new HashSet<>();
+	/**
+	 * <p>getCompartments.</p>
+	 *
+	 * @return the collection of compartments in which the reaction occur
+	 */
+	public BioCollection<BioCompartment> getCompartments() {
+		BioCollection<BioCompartment> compartments = new BioCollection<>();
 
 		for (BioReactant s : this.getReactantsView()) {
 			compartments.add(s.getLocation());
 		}
-
-		return compartments.size() > 1;
-
+		return compartments;
 	}
 
 	/**

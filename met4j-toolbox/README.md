@@ -203,10 +203,22 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
                                           are referenced for the same entity
                                           (default: false)
 </code></pre></details></td></tr>
-<tr><td>ExtractPathways</td><td>Extract pathway(s) from a SBML file and create a sub-network SBML file<details><summary><small>more</small></summary>Extract pathway(s) from a SBML file and create a sub-network SBML file<br/><br/><pre><code> -h     : prints the help (default: false)
- -i VAL : input SBML file
- -o VAL : output SBML file
- -p VAL : pathway identifiers, separated by "+" sign if more than one
+<tr><td>ExtractCompartments</td><td>Extract compartment(s) from a SBML file and create a sub-network SBML file<details><summary><small>more</small></summary>Extract compartment(s) from a SBML file and create a sub-network SBML file. The sub-network will retain all reactions where **all** of their participants belong in one of the user-defined compartments.If an exclusion is performed, all reaction where **any** of their participants belong in one of the user-defined compartments will be removed.<br/><br/><pre><code> -h      : prints the help (default: false)
+ -i VAL  : input SBML file
+ -id VAL : identifiers of compartments to keep, separated by "+" sign if more
+           than one; if start with "-" minus sign: keep all compartments but
+           the following ones
+ -o VAL  : output SBML file
+ -tr     : allows to truncate reactions if they involves reactants from both
+           selected and non-selected compartment (Transport reactions will
+           yield empty-sided exchange reactions) (default: false)
+</code></pre></details></td></tr>
+<tr><td>ExtractPathways</td><td>Extract pathway(s) from a SBML file and create a sub-network SBML file<details><summary><small>more</small></summary>Extract pathway(s) from a SBML file and create a sub-network SBML file<br/><br/><pre><code> -h      : prints the help (default: false)
+ -i VAL  : input SBML file
+ -id VAL : identifiers of pathways to keep, separated by "+" sign if more than
+           one; if start with "-" minus sign: keep all pathways but the
+           following ones
+ -o VAL  : output SBML file
 </code></pre></details></td></tr>
 <tr><td>GetEntities</td><td>Parse a SBML file to return a list of entities composing the network: metabolites, reactions, genes and others.<details><summary><small>more</small></summary>Parse a SBML file to return a list of entities composing the network: metabolites, reactions, genes and others.The output file is a tabulated file with two columns, one with entity identifiers, and one with the entity type. If no entity type is selected, all of them are returned by default. Only identifiers are written, attributes can be extracted from dedicated apps or from the Sbml2Tab app.<br/><br/><pre><code> -c (--compartments) : Extract Compartments (default: false)
  -g (--genes)        : Extract Genes (default: false)

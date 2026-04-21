@@ -93,11 +93,13 @@ public class GetMetaboliteAttributes extends AbstractMet4jApplication {
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(this.outputFile, false))) {
 
-            writer.println("id\tname\tformula\tcharge\tsmiles\tinchi");
+            writer.println("id\tname\tformula\tcharge\tsmiles\tinchi\tcompartment");
 
             for (BioMetabolite metabolite : network.getMetabolitesView()) {
                 writer.println(metabolite.getId() + "\t" + metabolite.getName() + "\t"
-                        +metabolite.getChemicalFormula() + "\t"+metabolite.getCharge()+"\t"+metabolite.getSmiles()+"\t"+metabolite.getInchi());
+                        +metabolite.getChemicalFormula() + "\t"+metabolite.getCharge()
+                        +"\t"+metabolite.getSmiles()+"\t"+metabolite.getInchi()+
+                        "\t"+String.join(",", network.getCompartmentsOf(metabolite).getIds()));
             }
 
         } catch (IOException e) {

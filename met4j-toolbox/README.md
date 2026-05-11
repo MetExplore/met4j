@@ -203,10 +203,22 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
                                           are referenced for the same entity
                                           (default: false)
 </code></pre></details></td></tr>
-<tr><td>ExtractPathways</td><td>Extract pathway(s) from a SBML file and create a sub-network SBML file<details><summary><small>more</small></summary>Extract pathway(s) from a SBML file and create a sub-network SBML file<br/><br/><pre><code> -h     : prints the help (default: false)
- -i VAL : input SBML file
- -o VAL : output SBML file
- -p VAL : pathway identifiers, separated by "+" sign if more than one
+<tr><td>ExtractCompartments</td><td>Extract compartment(s) from a SBML file and create a sub-network SBML file<details><summary><small>more</small></summary>Extract compartment(s) from a SBML file and create a sub-network SBML file. The sub-network will retain all reactions where **all** of their participants belong in one of the user-defined compartments.If an exclusion is performed, all reaction where **any** of their participants belong in one of the user-defined compartments will be removed.<br/><br/><pre><code> -h      : prints the help (default: false)
+ -i VAL  : input SBML file
+ -id VAL : identifiers of compartments to keep, separated by "+" sign if more
+           than one; if start with "-" minus sign: keep all compartments but
+           the following ones
+ -o VAL  : output SBML file
+ -tr     : allows to truncate reactions if they involves reactants from both
+           selected and non-selected compartment (Transport reactions will
+           yield empty-sided exchange reactions) (default: false)
+</code></pre></details></td></tr>
+<tr><td>ExtractPathways</td><td>Extract pathway(s) from a SBML file and create a sub-network SBML file<details><summary><small>more</small></summary>Extract pathway(s) from a SBML file and create a sub-network SBML file<br/><br/><pre><code> -h      : prints the help (default: false)
+ -i VAL  : input SBML file
+ -id VAL : identifiers of pathways to keep, separated by "+" sign if more than
+           one; if start with "-" minus sign: keep all pathways but the
+           following ones
+ -o VAL  : output SBML file
 </code></pre></details></td></tr>
 <tr><td>GetEntities</td><td>Parse a SBML file to return a list of entities composing the network: metabolites, reactions, genes and others.<details><summary><small>more</small></summary>Parse a SBML file to return a list of entities composing the network: metabolites, reactions, genes and others.The output file is a tabulated file with two columns, one with entity identifiers, and one with the entity type. If no entity type is selected, all of them are returned by default. Only identifiers are written, attributes can be extracted from dedicated apps or from the Sbml2Tab app.<br/><br/><pre><code> -c (--compartments) : Extract Compartments (default: false)
  -g (--genes)        : Extract Genes (default: false)
@@ -289,7 +301,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
             prefix R_ to reactions (default: false)
  -tab VAL : Input Tabulated file
 </code></pre></details></td></tr>
-<tr><td>SetGprs</td><td>Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way<details><summary><small>more</small></summary>Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way<br/>The ids must correspond between the tabulated file and the SBML file.<br/>If prefix R_ is present in the ids in the SBML file and not in the tabulated file, use the -p option.<br/>GPR must be written in a cobra way in the tabulated file as described in Schellenberger et al 2011 Nature Protocols 6(9):1290-307<br/>(The GPR will be written in the SBML file in two locations:<br/>- in the reaction html notes (GENE_ASSOCIATION: ( XC_0401 ) OR ( XC_3282 ))<br/>- as fbc gene product association (see FBC package specifications: https://doi.org/10.1515/jib-2017-0082)<br/><br/>References:<br/><a href="https://doi.org/10.1515/jib-2017-0082">Olivier et al.; SBML Level 3 Package: Flux Balance Constraints version 2; Journal of Integrative Bioinformatics; 2018</a><br/><a href="https://doi.org/10.1038/nprot.2011.308">Schellenberger et al.; Quantitative prediction of cellular metabolism with constraint-based models: the COBRA Toolbox v2.0; Nature Protocols; 2011</a><br/><br/><br/><pre><code> -c VAL   : [#] Comment String in the tabulated file. The lines beginning by
+<tr><td>SetGprs</td><td>Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way<details><summary><small>more</small></summary>Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way<br/>The ids must correspond between the tabulated file and the SBML file.<br/>If prefix R_ is present in the ids in the SBML file and not in the tabulated file, use the -p option.<br/>GPR must be written in a cobra way in the tabulated file as described in Schellenberger et al 2011 Nature Protocols 6(9):1290-307<br/>(The GPR will be written in the SBML file in two locations:<br/>- in the reaction html notes (GENE_ASSOCIATION: ( XC_0401 ) OR ( XC_3282 ))<br/>- as fbc gene product association (see FBC package specifications: https://doi.org/10.1515/jib-2017-0082)<br/><br/>References:<br/><a href="https://doi.org/10.1038/nprot.2011.308">Schellenberger et al.; Quantitative prediction of cellular metabolism with constraint-based models: the COBRA Toolbox v2.0; Nature Protocols; 2011</a><br/><a href="https://doi.org/10.1515/jib-2017-0082">Olivier et al.; SBML Level 3 Package: Flux Balance Constraints version 2; Journal of Integrative Bioinformatics; 2018</a><br/><br/><br/><pre><code> -c VAL   : [#] Comment String in the tabulated file. The lines beginning by
             this string won't be read (default: #)
  -cgpr N  : [2] number of the column where are the gprs (default: 2)
  -ci N    : [1] number of the column where are the reaction ids (default: 1)
@@ -530,7 +542,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
  -o VAL   : [out.tsv] Tabulated file (default: out.tsv)
  -rev VAL : [<==>] String for reversible reaction (default: <==>)
 </code></pre></details></td></tr>
-<tr><td>SbmlWizard</td><td>General SBML model processing<details><summary><small>more</small></summary>General SBML model processing including compound removal (such as side compounds or isolated compounds), reaction removal (ex. blocked or exchange reaction), and compartment merging<br/><br/><pre><code> -h                                     : prints the help (default: false)
+<tr><td>SbmlWizard</td><td>General SBML model processing<details><summary><small>more</small></summary>General SBML model processing including compound filtering (side compounds, isolated compounds, whitelist/blacklist), reaction filtering (blocked, duplicated, paired reactants, exchange reactions, whitelist/blacklist), and compartment merging.<br/><br/><pre><code> -h                                     : prints the help (default: false)
  -i VAL                                 : input SBML file
  -kc (--retainC) VAL                    : file containing identifiers of
                                           compounds to keep from the metabolic
@@ -563,6 +575,20 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
  -ric (--noIsolated)                    : remove isolated compounds (not
                                           involved in any reaction) (default:
                                           false)
+ -rp (--removePaired) VAL               : tabulated file containing 2 columns,
+                                          each column is a collection of
+                                          metabolite identifiers, separated by
+                                          commas. Iterates over all reactions
+                                          in the network and, for each reaction
+                                          where the first collection matches
+                                          one side (left or right) and the
+                                          second column matches the other side,
+                                          removes the corresponding reactants
+                                          from their respective sides. If one
+                                          of the two sides of the pair is
+                                          empty, the metabolites of the other
+                                          side will still be removed from the
+                                          reactions where they (co-)appear.
  -rr (--removeR) VAL                    : file containing identifiers of
                                           reactions to remove from the
                                           metabolic network
@@ -675,7 +701,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
  -u (--undirected)    : Ignore reaction direction (default: false)
  -w (--weights) VAL   : an optional file containing weights for compound pairs
 </code></pre></details></td></tr>
-<tr><td>ChemSimilarityWeighting</td><td>Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity.<details><summary><small>more</small></summary>Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity.Chemical similarity has been proposed as edge weight for finding meaningful paths in metabolic networks, using shortest (lightest) path search.<br/><br/>References:<br/><a href="https://doi.org/10.1093/bioinformatics/btg217">McShan et al.; PathMiner: predicting metabolic pathways by heuristic search; Bioinformatics; 2003</a><br/><a href="https://doi.org/10.1093/bioinformatics/bti116">Rahman et al.; Metabolic pathway analysis web service (Pathway Hunter Tool at CUBIC); Bioinformatics; 2005</a><br/><a href="https://doi.org/10.1093/bioinformatics/btu760">Pertusi et al.; Efficient searching and annotation of metabolic networks using chemical similarity; Bioinformatics; 2015</a><br/><br/><br/><pre><code> -d (--asDist)                          : Use distance rather than similarity
+<tr><td>ChemSimilarityWeighting</td><td>Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity.<details><summary><small>more</small></summary>Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity.Chemical similarity has been proposed as edge weight for finding meaningful paths in metabolic networks, using shortest (lightest) path search.<br/><br/>References:<br/><a href="https://doi.org/10.1093/bioinformatics/bti116">Rahman et al.; Metabolic pathway analysis web service (Pathway Hunter Tool at CUBIC); Bioinformatics; 2005</a><br/><a href="https://doi.org/10.1093/bioinformatics/btu760">Pertusi et al.; Efficient searching and annotation of metabolic networks using chemical similarity; Bioinformatics; 2015</a><br/><a href="https://doi.org/10.1093/bioinformatics/btg217">McShan et al.; PathMiner: predicting metabolic pathways by heuristic search; Bioinformatics; 2003</a><br/><br/><br/><pre><code> -d (--asDist)                          : Use distance rather than similarity
                                           (default: false)
  -f (--fingerprint) [EState | Extended  : The chemical fingerprint to use
  | KlekotaRoth | MACCS | PubChem]         (default: Extended)
@@ -774,7 +800,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
  -u (--undirected)                      : Ignore reaction direction (default:
                                           false)
 </code></pre></details></td></tr>
-<tr><td>ExtractSubNetwork</td><td>Create a subnetwork from a metabolic network in SBML format, and two files containing lists of compounds of interests ids, one per row.<details><summary><small>more</small></summary>Create a subnetwork from a metabolic network in SBML format, and two files containing lists of compounds of interests ids, one per row.<br/>The subnetwork corresponds to the part of the network that connects compounds from the first list to compounds from the second list.<br/>Sources and targets list can have elements in common. The connecting part can be defined as the union of shortest or k-shortest paths between sources and targets, or the Steiner tree connecting them. The relevance of considered path can be increased by weighting the edges using degree squared, chemical similarity (require InChI or SMILES annotations) or any provided weighting.<br/><br/>See previous works on subnetwork extraction for parameters recommendations.<br/><br/>References:<br/><a href="https://doi.org/10.1093/nar/gki437">Croes et al.; Metabolic PathFinding: inferring relevant pathways in biochemical networks; Nucleic Acids Research; 2005</a><br/><a href="https://doi.org/10.1016/j.jmb.2005.09.079">Croes et al.; Inferring Meaningful Pathways in Weighted Metabolic Networks; Journal of Molecular Biology; 2006</a><br/><a href="https://doi.org/10.1016/j.biosystems.2011.05.004">Faust et al.; Prediction of metabolic pathways from genome-scale metabolic networks; Biosystems; 2011</a><br/><a href="https://doi.org/10.1093/bib/bbv115">Frainay et al.; Computational methods to identify metabolic sub-networks based on metabolomic profiles; Briefings in Bioinformatics; 2017</a><br/><a href="https://doi.org/10.1093/bioinformatics/bti116">Rahman et al.; Metabolic pathway analysis web service (Pathway Hunter Tool at CUBIC); Bioinformatics; 2005</a><br/><a href="https://doi.org/10.1093/bioinformatics/btg217">McShan et al.; PathMiner: predicting metabolic pathways by heuristic search; Bioinformatics; 2003</a><br/><a href="https://doi.org/10.1093/bioinformatics/btu760">Pertusi et al.; Efficient searching and annotation of metabolic networks using chemical similarity; Bioinformatics; 2015</a><br/><br/><br/><pre><code> -cw (--customWeights) VAL              : an optional file containing weights
+<tr><td>ExtractSubNetwork</td><td>Create a subnetwork from a metabolic network in SBML format, and two files containing lists of compounds of interests ids, one per row.<details><summary><small>more</small></summary>Create a subnetwork from a metabolic network in SBML format, and two files containing lists of compounds of interests ids, one per row.<br/>The subnetwork corresponds to the part of the network that connects compounds from the first list to compounds from the second list.<br/>Sources and targets list can have elements in common. The connecting part can be defined as the union of shortest or k-shortest paths between sources and targets, or the Steiner tree connecting them. The relevance of considered path can be increased by weighting the edges using degree squared, chemical similarity (require InChI or SMILES annotations) or any provided weighting.<br/><br/>See previous works on subnetwork extraction for parameters recommendations.<br/><br/>References:<br/><a href="https://doi.org/10.1093/nar/gki437">Croes et al.; Metabolic PathFinding: inferring relevant pathways in biochemical networks; Nucleic Acids Research; 2005</a><br/><a href="https://doi.org/10.1093/bioinformatics/btg217">McShan et al.; PathMiner: predicting metabolic pathways by heuristic search; Bioinformatics; 2003</a><br/><a href="https://doi.org/10.1016/j.biosystems.2011.05.004">Faust et al.; Prediction of metabolic pathways from genome-scale metabolic networks; Biosystems; 2011</a><br/><a href="https://doi.org/10.1093/bioinformatics/bti116">Rahman et al.; Metabolic pathway analysis web service (Pathway Hunter Tool at CUBIC); Bioinformatics; 2005</a><br/><a href="https://doi.org/10.1093/bib/bbv115">Frainay et al.; Computational methods to identify metabolic sub-networks based on metabolomic profiles; Briefings in Bioinformatics; 2017</a><br/><a href="https://doi.org/10.1016/j.jmb.2005.09.079">Croes et al.; Inferring Meaningful Pathways in Weighted Metabolic Networks; Journal of Molecular Biology; 2006</a><br/><a href="https://doi.org/10.1093/bioinformatics/btu760">Pertusi et al.; Efficient searching and annotation of metabolic networks using chemical similarity; Bioinformatics; 2015</a><br/><br/><br/><pre><code> -cw (--customWeights) VAL              : an optional file containing weights
                                           for compound pairs
  -dw (--degreeWeights)                  : penalize traversal of hubs by using
                                           degree square weighting (default:
@@ -845,6 +871,13 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
  -t N    : convergence tolerance (default: 0.001)
  -w VAL  : input edge weight file: (recommended) path to file containing edges'
            weights. Will be normalized as transition probabilities
+</code></pre></details></td></tr>
+<tr><td>MetaboliteSetCooccurence</td><td>Detect co-occurring metabolite sets across reaction sides and export a tabulated file.<details><summary><small>more</small></summary>Detect co-occurring metabolite sets across reaction sides and export a tabulated file.<br/>Each output row contains two metabolite sets observed on opposite sides of reactions and the number of reactions where this pattern is found.<br/><br/><pre><code> -h                        : prints the help (default: false)
+ -i VAL                    : input SBML file
+ -max (--maxSubsetSize) N  : maximum subset size for each side (default: 2)
+                             (default: 2)
+ -min (--minOccurrences) N : minimum number of co-occurrences to report (>=1)
+ -o VAL                    : output TSV file
 </code></pre></details></td></tr>
 <tr><td>NetworkSummary</td><td>Create a report summarizing several graph measures characterising the structure of a metabolic network.<details><summary><small>more</small></summary>Create a report summarizing several graph measures characterising the structure of a metabolic network.<br/>Use a metabolic network in SBML file and an optional list of side compounds, and produce a report summarizing several graph measures characterising the structure of the network.This includes (non-exhaustive list): size and order, connectivity, density, degree distribution, shortest paths length, top centrality nodes...<br/><br/><pre><code> -d (--directed)  : use reaction direction for distances (default: false)
  -h               : prints the help (default: false)

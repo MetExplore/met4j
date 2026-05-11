@@ -1,19 +1,18 @@
 package integration;
 
+import org.junit.Assert;
 import org.junit.Test;
 import utils.IThelper;
-import org.junit.Assert;
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.regex.Pattern;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class GetMetaboliteAttributesIT {
 
@@ -48,22 +47,26 @@ public class GetMetaboliteAttributesIT {
         int ncol = 0;
         Pattern pattern0 = Pattern.compile(".*1S/C2H6O/c1-2-3/h3H,2H2,1H3.*");
         Pattern pattern1 = Pattern.compile(".*C.*NC.*");
+        Pattern pattern2 = Pattern.compile(".*\te$");
         int nbMatch0 = 0;
         int nbMatch1 = 0;
+        int nbMatch2 = 0;
         while (line != null) {
             int l = line.split(sep).length;
             if (l>ncol) ncol=l;
             nbLines++;
             if(pattern0.matcher(line).matches()) nbMatch0++;
             if(pattern1.matcher(line).matches()) nbMatch1++;
+            if(pattern2.matcher(line).matches()) nbMatch2++;
             line = reader.readLine();
         }
         reader.close();
         assertEquals(9,nbLines);
-        assertEquals(6,ncol);
+        assertEquals(7,ncol);
         assertEquals(1,nbMatch0);
         assertEquals(1,nbMatch1);
-    
+        assertEquals(3,nbMatch2);
+
 
         assertEquals(0, result.exitCode());
         assertTrue(Files.exists(actualOutput));

@@ -4,6 +4,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.utils.BioNetworkUtils;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.utils.CompartmentMerger;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.utils.MetabolitesCoOccurence;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import fr.inrae.toulouse.metexplore.met4j_mapping.Mapper;
@@ -16,7 +17,10 @@ import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils;
 import org.kohsuke.args4j.Option;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 import static fr.inrae.toulouse.metexplore.met4j_toolbox.utils.IOUtils.SbmlPackage.ALL;
@@ -72,6 +76,14 @@ public class SbmlWizard extends AbstractMet4jApplication {
 
     @Option(name = "-rEX", aliases = {"--removeExchange"}, usage = "remove exchange reactions and species from given exchange compartment identifier")
     public String exchangeCompToRemove;
+
+    @ParameterType(name = EnumParameterTypes.InputFile)
+    @Format(name = EnumFormats.Txt)
+    @Option(name = "-rp", aliases = {"--removePaired"}, usage = "tabulated file containing 2 columns, each column is a collection of metabolite identifiers, separated by commas. " +
+            "Iterates over all reactions in the network and, for each reaction where the first collection matches one side (left or right) " +
+            "and the second column matches the other side, removes the corresponding reactants from their respective sides. " +
+            "If one of the two sides of the pair is empty, the metabolites of the other side will still be removed from the reactions where they (co-)appear.")
+    public String inputPaired = null;
 
     public static void main(String[] args) throws Met4jSbmlWriterException, IOException {
 
@@ -214,9 +226,59 @@ public class SbmlWizard extends AbstractMet4jApplication {
         }
 
 
+        //remove paired reactants from matching reactions
+        if (inputPaired != null) {
+            System.out.println("removing paired reactants from matching reactions...");
+            int pairsToRemove = 0;
+            try (BufferedReader br = new BufferedReader(new FileReader(inputPaired))) {
+                String line;
+                int lineNumber = 0;
+                List<MetabolitesCoOccurence.ReactantPattern> patterns = new java.util.ArrayList<>();
+                while ((line = br.readLine()) != null) {
+                    lineNumber++;
+                    if (line.startsWith("#") || line.trim().isEmpty()) continue;
+                    String[] columns = line.split("\t");
+                    if (columns.length < 2) {
+                        System.err.println("[WARNING] line " + lineNumber + ": expected 2 columns, skipping.");
+                        continue;
+                    }
+                    BioCollection<BioMetabolite> coll1 = new BioCollection<>();
+                    BioCollection<BioMetabolite> coll2 = new BioCollection<>();
+                    boolean skip = false;
+                    for (String id : columns[0].split(",")) {
+                        if(id.trim().isEmpty()) continue;
+                        BioMetabolite m = network.getMetabolite(id.trim());
+                        if (m == null) {
+                            System.err.println("[WARNING] line " + lineNumber + ": metabolite '" + id.trim() + "' not found in network, skipping row.");
+                            skip = true;
+                            break;
+                        }
+                        coll1.add(m);
+                    }
+                    if (skip) continue;
+                    for (String id : columns[1].split(",")) {
+                        if(id.trim().isEmpty()) continue;
+                        BioMetabolite m = network.getMetabolite(id.trim());
+                        if (m == null) {
+                            System.err.println("[WARNING] line " + lineNumber + ": metabolite '" + id.trim() + "' not found in network, skipping row.");
+                            skip = true;
+                            break;
+                        }
+                        coll2.add(m);
+                    }
+                    if (skip) continue;
+                    patterns.add(new MetabolitesCoOccurence.ReactantPattern(coll1,coll2));
+                    pairsToRemove++;
+                }
+                MetabolitesCoOccurence.removeCoupledReactants(network,patterns);
+                        System.err.println("[INFO] " + pairsToRemove + " pairs of metabolite collections to remove from matching reactions.");
+            } catch (IOException e) {
+                System.err.println("[ERROR] Could not read paired reactants file: " + e.getMessage());
+            }
+        }
+
         //remove compounds not in any reactions
         if(removeIsolated){
-            System.out.println("removing isolated compounds...");
             int n = network.getMetabolitesView().size();
             BioNetworkUtils.removeNotConnectedMetabolites(network);
             System.out.println((n-network.getMetabolitesView().size())+" isolated compounds removed from network.");
@@ -270,7 +332,7 @@ public class SbmlWizard extends AbstractMet4jApplication {
 
     @Override
     public String getLongDescription() {
-        return "General SBML model processing including compound removal (such as side compounds or isolated compounds), reaction removal (ex. blocked or exchange reaction), and compartment merging";
+        return "General SBML model processing including compound filtering (side compounds, isolated compounds, whitelist/blacklist), reaction filtering (blocked, duplicated, paired reactants, exchange reactions, whitelist/blacklist), and compartment merging.";
     }
 
     @Override

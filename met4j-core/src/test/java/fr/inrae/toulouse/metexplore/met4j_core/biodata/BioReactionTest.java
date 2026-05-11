@@ -35,13 +35,12 @@
  */
 package fr.inrae.toulouse.metexplore.met4j_core.biodata;
 
-import static org.junit.Assert.*;
-
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.internal.ArrayComparisonFailure;
 
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
+import static org.junit.Assert.*;
 
 /**
  * @author lcottret
@@ -147,6 +146,21 @@ public class BioReactionTest {
 
 
 		assertFalse("Must not be a transport reaction", reaction2.isTransportReaction());
+	}
+
+	/**
+	 * Test method for
+	 * {@link BioReaction#getCompartments()}.
+	 */
+	@Test
+	public void testGetCompartments() {
+
+		assertEquals("Wrong Number of compartment",2, reaction.getCompartments().size());
+		assertTrue("Missing compartment", reaction.getCompartments().contains(cpt1));
+		assertTrue("Missing compartment", reaction.getCompartments().contains(cpt2));
+
+		assertEquals("Wrong Number of compartment", 1, reaction2.getCompartments().size());
+		assertTrue("Missing compartment", reaction2.getCompartments().contains(cpt1));
 	}
 
 	/**

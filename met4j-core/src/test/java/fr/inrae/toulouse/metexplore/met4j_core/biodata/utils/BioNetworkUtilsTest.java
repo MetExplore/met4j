@@ -43,6 +43,14 @@ import org.junit.Test;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class BioNetworkUtilsTest {
 
     BioReaction r1;
@@ -300,5 +308,7 @@ public class BioNetworkUtilsTest {
 
 
     }
+
+
 
 }

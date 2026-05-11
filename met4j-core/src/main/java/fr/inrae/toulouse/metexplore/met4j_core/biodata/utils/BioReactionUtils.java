@@ -246,6 +246,27 @@ public class BioReactionUtils {
     }
 
     /**
+     * Checks whether one collection of metabolites matches the left reactants
+     * and the other matches the right reactants of a given reaction.
+     *
+     * @param reaction  a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
+     * @param coll1     a first {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
+     * @param coll2     a second {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection} of {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite}
+     * @return true if coll1 matches the left reactants and coll2 matches the right reactants,
+     *         or coll1 matches the right reactants and coll2 matches the left reactants.
+     */
+    public static boolean containsLeftAndRightMetabolites(@NonNull BioReaction reaction,
+                                                          @NonNull BioCollection<BioMetabolite> coll1,
+                                                          @NonNull BioCollection<BioMetabolite> coll2) {
+
+        BioCollection<BioMetabolite> lefts = reaction.getLeftsView();
+        BioCollection<BioMetabolite> rights = reaction.getRightsView();
+
+        return (lefts.containsAll(coll1) && rights.containsAll(coll2))
+                || (lefts.containsAll(coll2) && rights.containsAll(coll1));
+    }
+
+    /**
      * <p>getPathwaysString.</p>
      *
      * @param r        a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction} object.
@@ -262,4 +283,6 @@ public class BioReactionUtils {
 
         return String.join(delim, stringArrayList);
     }
+
+
 }

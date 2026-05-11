@@ -333,4 +333,97 @@ public class BioReactionUtilsTest {
 		assertEquals("pathway1++pathway2", pathwaysString);
 
 	}
+
+	/**
+	 * Test method for
+	 * {@link BioReactionUtils#containsLeftAndRightMetabolites(BioReaction,
+	 * fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection,
+	 * fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection)}.
+	 */
+
+	// r1 : m1 --> m2 + m3  (irreversible, defined in @Before)
+
+	@Test
+	public void testContainsLeftAndRightMetabolitesDirectMatch() {
+		fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<BioMetabolite> lefts =
+				new fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<>();
+		lefts.add(m1);
+
+		fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<BioMetabolite> rights =
+				new fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<>();
+		rights.add(m2);
+		rights.add(m3);
+
+		assertTrue("coll1=left, coll2=right should return true",
+				BioReactionUtils.containsLeftAndRightMetabolites(r1, lefts, rights));
+	}
+
+	@Test
+	public void testContainsLeftAndRightMetabolitesSwappedIrreversible() {
+		// Even for an irreversible reaction, swapped order should return true
+		// since the method does not filter on reversibility
+		fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<BioMetabolite> lefts =
+				new fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<>();
+		lefts.add(m1);
+
+		fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<BioMetabolite> rights =
+				new fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<>();
+		rights.add(m2);
+		rights.add(m3);
+
+		assertTrue("coll1=right, coll2=left (swapped) should return true",
+				BioReactionUtils.containsLeftAndRightMetabolites(r1, rights, lefts));
+	}
+
+	@Test
+	public void testContainsLeftAndRightMetabolitesBadMatch() {
+		// m1 and m2 on the same side: does not match left/right
+		fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<BioMetabolite> coll1 =
+				new fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<>();
+		coll1.add(m1);
+		coll1.add(m2);
+
+		fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<BioMetabolite> coll2 =
+				new fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<>();
+		coll2.add(m3);
+
+		assertFalse("Collections not matching left/right should return false",
+				BioReactionUtils.containsLeftAndRightMetabolites(r1, coll1, coll2));
+	}
+
+	@Test
+	public void testContainsLeftAndRightMetabolitesPartialRight() {
+		// coll1 = {m1} (exact left), coll2 = {m2} (subset of right) -> should return true
+		fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<BioMetabolite> coll1 =
+				new fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<>();
+		coll1.add(m1);
+
+		fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<BioMetabolite> coll2 =
+				new fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<>();
+		coll2.add(m2); // m3 missing, but inclusion is enough
+
+		assertTrue("A partial subset of right metabolites should return true",
+				BioReactionUtils.containsLeftAndRightMetabolites(r1, coll1, coll2));
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testContainsLeftAndRightMetabolitesNullReaction() {
+		fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<BioMetabolite> coll =
+				new fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<>();
+		BioReactionUtils.containsLeftAndRightMetabolites(null, coll, coll);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testContainsLeftAndRightMetabolitesNullColl1() {
+		fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<BioMetabolite> coll =
+				new fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<>();
+		BioReactionUtils.containsLeftAndRightMetabolites(r1, null, coll);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testContainsLeftAndRightMetabolitesNullColl2() {
+		fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<BioMetabolite> coll =
+				new fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection<>();
+		BioReactionUtils.containsLeftAndRightMetabolites(r1, coll, null);
+	}
 }

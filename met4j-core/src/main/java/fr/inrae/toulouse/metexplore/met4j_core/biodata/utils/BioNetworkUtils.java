@@ -124,9 +124,6 @@ public class BioNetworkUtils {
         network.removeOnCascade(toRemove);
     }
 
-    public static void deepCopy(BioNetwork networkIn, BioNetwork networkOut) {
-        deepCopy(networkIn, networkOut, true, false);
-    }
 
     /**
      * <p>deepCopy.</p>
@@ -341,4 +338,11 @@ public class BioNetworkUtils {
             }
         }
     }
+
+    public static void deepCopy(BioNetwork networkIn, BioNetwork networkOut) {
+        deepCopy(networkIn, networkOut, true, false);
+    }
+
+
+
 }

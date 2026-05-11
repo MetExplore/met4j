@@ -1,5 +1,3 @@
-
-
 stages:
   - build
   - test
@@ -86,6 +84,17 @@ test:
     - mvn $MAVEN_OPTS clean test
     - cat coverage/target/site/jacoco-aggregate/index.html | grep -o '<tfoot>.*</tfoot>'
   coverage: '/Total.*?([0-9]{1,3})%/'
+  tags:
+    - stable
+
+
+integration_test:
+  image: eclipse-temurin:17.0.12_7-jdk
+  stage: test
+  before_script:
+    - apt-get update && apt-get install -y maven
+  script:
+    - mvn $MAVEN_OPTS clean verify -Dsurefire.skip=true
   tags:
     - stable
 

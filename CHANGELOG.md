@@ -6,19 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Next Release
 
+
+[met4j-toolbox] **new app** : MetaboliteSetCooccurence : a toolbox app to detect co-occurring metabolites patterns across reactions, allowing to identify potential side transistion such as ATP -> ADP + Pi.  
+[met4j-toolbox] Support for pattern-based filtering in SBMLWizard as an alternative to side compounds definition.  
+[met4j-core] Added MetabolitesCoOccurence class to enumerate reactant patterns.  
+[met4j-toolbox] **new app** : ExtractCompartments : a toolbox app similar to ExtractPathways but using compartment input, allowing to extract a sub-network with only a selection of compartments.  
+[met4j-toolbox] Added support for negative selection in ExtractPathways  
+[met4j-toolbox] Added compartment info in GetMetaboliteAttributes output  
+[met4j-core] list of compartments of reactants can be directly accessed from a BioReaction using BioReaction.getCompartments method. 
+
 [met4j-toolbox] fix wrong status and column number in SideCompoundScan output when degree and percentile are both ignored
-Added Features
-[met4j-toolbox] **new app** : ExtractCompartments : a toolbox app similar to ExtractPathways but using compartment input, allowing to extract a sub-network with only a selection of compartments.
-[met4j-toolbox] Added support for negative selection in ExtractPathways
-[met4j-toolbox] Added compartment info in GetMetaboliteAttributes output
-[met4j-core] list of compartments of reactants can be directly accessed from a BioReaction using BioReaction.getCompartments method.
+Added Features  
 
 ## 2.2.2
-[met4j-toolbox] New graph export format compatible with MetExploreViz
+[met4j-toolbox] New graph export format compatible with MetExploreViz  
 
-[met4j-io] fix duplicated compartment suffix in Tab2Sbml and Tab2BioNetwork
-[met4j-io] handle sbml export of bionetworks with compounds in multiple compartments
-[met4j-toolbox] remove deprecated options in Tab2Sbml, avoid reliance on identifiers convention such as compartment suffix
+[met4j-io] fix duplicated compartment suffix in Tab2Sbml and Tab2BioNetwork  
+[met4j-io] handle sbml export of bionetworks with compounds in multiple compartments  
+[met4j-toolbox] remove deprecated options in Tab2Sbml, avoid reliance on identifiers convention such as compartment suffix  
 
 ## 2.2.0
 

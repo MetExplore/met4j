@@ -45,7 +45,7 @@ import lombok.NonNull;
 
 import java.util.*;
 
-public class MetabolitesCoOccurence
+public class MetabolitesCoOccurrence
 {
 
     public record ReactantPattern(BioCollection<BioMetabolite> left, BioCollection<BioMetabolite> right){};
@@ -55,10 +55,8 @@ public class MetabolitesCoOccurence
         for(BioReaction r : bn.getReactionsView()){
             newReactants.put(r, new ReactantPattern(new BioCollection<>(r.getLeftsView()), new BioCollection<>(r.getRightsView())));
             for(ReactantPattern p : patterns){
-                if(r.getLeftsView().containsAll(p.left) && r.getRightsView().containsAll(p.right)){
-                    newReactants.get(r).left().removeAll(p.left);
-                    newReactants.get(r).right().removeAll(p.right);
-                }
+                removePatternFromReaction(r, p, newReactants.get(r), false);
+                if(r.isReversible()) removePatternFromReaction(r, p, newReactants.get(r), true);
             }
             if(newReactants.get(r).right().size()==r.getRightsView().size()
                     && newReactants.get(r).left().size()==r.getLeftsView().size()){
@@ -77,6 +75,23 @@ public class MetabolitesCoOccurence
                         bn.removeRight(reactant.getMetabolite(), reactant.getLocation(), r);
                     }
                 }
+            }
+        }
+    }
+
+    private static void removePatternFromReaction(BioReaction reaction,
+                                                  ReactantPattern pattern,
+                                                  ReactantPattern remainingReactants,
+                                                  boolean swapped) {
+        BioCollection<BioMetabolite> reactionLeft = swapped ? reaction.getRightsView() : reaction.getLeftsView();
+        BioCollection<BioMetabolite> reactionRight = swapped ? reaction.getLeftsView() : reaction.getRightsView();
+        if (reactionLeft.containsAll(pattern.left) && reactionRight.containsAll(pattern.right)) {
+            if (swapped) {
+                remainingReactants.left().removeAll(pattern.right);
+                remainingReactants.right().removeAll(pattern.left);
+            } else {
+                remainingReactants.left().removeAll(pattern.left);
+                remainingReactants.right().removeAll(pattern.right);
             }
         }
     }
@@ -177,7 +192,7 @@ public class MetabolitesCoOccurence
         for (Map.Entry<ReactantPattern, Integer> entry : patternsWithCounts.entrySet()) {
             patternsByCount.computeIfAbsent(entry.getValue(), k -> new ArrayList<>()).add(entry.getKey());
         }
-        //for patterns with same count, 
+        //for patterns with same count,
         for (Map.Entry<Integer, List<ReactantPattern>> grouped : patternsByCount.entrySet()) {
             List<ReactantPattern> groupPatterns = grouped.getValue();
             //(above the min size)
@@ -245,3 +260,4 @@ public class MetabolitesCoOccurence
         }
     }
 }
+

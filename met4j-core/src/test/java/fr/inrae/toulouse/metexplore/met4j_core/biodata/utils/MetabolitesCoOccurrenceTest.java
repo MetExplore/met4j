@@ -46,7 +46,7 @@ import static org.junit.Assert.*;
 
 
 
-public class MetabolitesCoOccurenceTest {
+public class MetabolitesCoOccurrenceTest {
 
     BioReaction r1;
     BioReaction r2;
@@ -63,7 +63,7 @@ public class MetabolitesCoOccurenceTest {
 
     /**
      * Test method for
-     * {@link MetabolitesCoOccurence#removeCoupledReactants(BioNetwork, List<MetabolitesCoOccurence.ReactantPattern>)} 
+     * {@link MetabolitesCoOccurrence#removeCoupledReactants(BioNetwork, List<MetabolitesCoOccurrence.ReactantPattern>)}
      */
 
     private BioNetwork miniNetwork() {
@@ -111,7 +111,7 @@ public class MetabolitesCoOccurenceTest {
         BioCollection<BioMetabolite> coll2 = new BioCollection<>();
         coll2.add(m2);
 
-        MetabolitesCoOccurence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurence.ReactantPattern(coll1, coll2)));
+        MetabolitesCoOccurrence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurrence.ReactantPattern(coll1, coll2)));
 
         assertEquals("M1 should NOT be removed from left of r1 because side would be empty", 1, network.getReaction("R1").getLeftReactantsView().size());
         assertEquals("M2 should NOT be removed from right of r1 because side would be empty", 1, network.getReaction("R1").getRightReactantsView().size());
@@ -121,21 +121,53 @@ public class MetabolitesCoOccurenceTest {
     }
 
     @Test
-    public void testRemoveCoupledReactantsSwapped() {
-        // coll1={M2}, coll2={M1} -> matches r1 in reversed order
-        // BUT removing them would empty the reaction, so NOTHING should be removed.
+    public void testRemoveCoupledReactantsSwappedReversibleRemoves() {
         BioNetwork network = miniNetwork();
+        BioReaction reaction = network.getReaction("R1");
+        reaction.setReversible(true);
+
+        BioMetabolite m5 = new BioMetabolite("M5");
+        BioMetabolite m6 = new BioMetabolite("M6");
+        network.add(m5, m6);
+        network.affectToCompartment(c1, m5, m6);
+        network.affectLeft(reaction, 1.0, c1, m5);
+        network.affectRight(reaction, 1.0, c1, m6);
 
         BioCollection<BioMetabolite> coll1 = new BioCollection<>();
         coll1.add(m2);
-
         BioCollection<BioMetabolite> coll2 = new BioCollection<>();
         coll2.add(m1);
 
-        MetabolitesCoOccurence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurence.ReactantPattern(coll1, coll2)));
+        MetabolitesCoOccurrence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurrence.ReactantPattern(coll1, coll2)));
 
-        assertEquals("M1 should NOT be removed from left of r1 (swapped)", 1, network.getReaction("R1").getLeftReactantsView().size());
-        assertEquals("M2 should NOT be removed from right of r1 (swapped)", 1, network.getReaction("R1").getRightReactantsView().size());
+        assertFalse("M1 should be removed from left of r1 in swapped mode when reversible", reaction.getLeftsView().contains(m1));
+        assertFalse("M2 should be removed from right of r1 in swapped mode when reversible", reaction.getRightsView().contains(m2));
+        assertTrue("M5 should remain on left", reaction.getLeftsView().contains(m5));
+        assertTrue("M6 should remain on right", reaction.getRightsView().contains(m6));
+    }
+
+    @Test
+    public void testRemoveCoupledReactantsSwappedIrreversibleNoRemoval() {
+        BioNetwork network = miniNetwork();
+        BioReaction reaction = network.getReaction("R1");
+        reaction.setReversible(false);
+
+        BioMetabolite m5 = new BioMetabolite("M5");
+        BioMetabolite m6 = new BioMetabolite("M6");
+        network.add(m5, m6);
+        network.affectToCompartment(c1, m5, m6);
+        network.affectLeft(reaction, 1.0, c1, m5);
+        network.affectRight(reaction, 1.0, c1, m6);
+
+        BioCollection<BioMetabolite> coll1 = new BioCollection<>();
+        coll1.add(m2);
+        BioCollection<BioMetabolite> coll2 = new BioCollection<>();
+        coll2.add(m1);
+
+        MetabolitesCoOccurrence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurrence.ReactantPattern(coll1, coll2)));
+
+        assertTrue("M1 should stay on left when swapped mode is not allowed", reaction.getLeftsView().contains(m1));
+        assertTrue("M2 should stay on right when swapped mode is not allowed", reaction.getRightsView().contains(m2));
     }
 
     @Test
@@ -149,7 +181,7 @@ public class MetabolitesCoOccurenceTest {
         BioCollection<BioMetabolite> coll2 = new BioCollection<>();
         coll2.add(m3);
 
-        MetabolitesCoOccurence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurence.ReactantPattern(coll1, coll2)));
+        MetabolitesCoOccurrence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurrence.ReactantPattern(coll1, coll2)));
 
         assertEquals("r1 left should not be modified", 1, network.getReaction("R1").getLeftReactantsView().size());
         assertEquals("r1 right should not be modified", 1, network.getReaction("R1").getRightReactantsView().size());
@@ -169,7 +201,7 @@ public class MetabolitesCoOccurenceTest {
         BioCollection<BioMetabolite> coll2 = new BioCollection<>();
         coll2.add(m4);
 
-        MetabolitesCoOccurence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurence.ReactantPattern(coll1, coll2)));
+        MetabolitesCoOccurrence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurrence.ReactantPattern(coll1, coll2)));
 
         assertEquals("r1 left should not be modified", 1, network.getReaction("R1").getLeftReactantsView().size());
         assertEquals("r1 right should not be modified", 1, network.getReaction("R1").getRightReactantsView().size());
@@ -196,7 +228,7 @@ public class MetabolitesCoOccurenceTest {
         BioCollection<BioMetabolite> coll2 = new BioCollection<>();
         coll2.add(m2);
 
-        MetabolitesCoOccurence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurence.ReactantPattern(coll1, coll2)));
+        MetabolitesCoOccurrence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurrence.ReactantPattern(coll1, coll2)));
 
         assertEquals("M1 should be removed", 1, network.getReaction("R1").getLeftReactantsView().size());
         assertTrue("M5 should remain", network.getReaction("R1").getLeftsView().contains(m5));
@@ -240,15 +272,15 @@ public class MetabolitesCoOccurenceTest {
         BioCollection<BioMetabolite> supersetRight = new BioCollection<>();
         supersetRight.add(atp);
 
-        List<MetabolitesCoOccurence.ReactantPattern> pattern = List.of(
-                new MetabolitesCoOccurence.ReactantPattern(subsetLeft, subsetRight),
-                new MetabolitesCoOccurence.ReactantPattern(supersetLeft, supersetRight)
+        List<MetabolitesCoOccurrence.ReactantPattern> pattern = List.of(
+                new MetabolitesCoOccurrence.ReactantPattern(subsetLeft, subsetRight),
+                new MetabolitesCoOccurrence.ReactantPattern(supersetLeft, supersetRight)
         );
 
         // Intentionally call subset first, then superset.
         // The API should remain robust to this ordering.
-        MetabolitesCoOccurence.removeCoupledReactants(network,pattern);
-        
+        MetabolitesCoOccurrence.removeCoupledReactants(network,pattern);
+
         BioCollection<BioMetabolite> leftAfter = network.getReaction("R1").getLeftsView();
         BioCollection<BioMetabolite> rightAfter = network.getReaction("R1").getRightsView();
 
@@ -263,21 +295,21 @@ public class MetabolitesCoOccurenceTest {
     @Test(expected = NullPointerException.class)
     public void testRemoveCoupledReactantsNullNetwork() {
         BioCollection<BioMetabolite> coll = new BioCollection<>();
-        MetabolitesCoOccurence.removeCoupledReactants(null, List.of(new MetabolitesCoOccurence.ReactantPattern(coll, coll)));
+        MetabolitesCoOccurrence.removeCoupledReactants(null, List.of(new MetabolitesCoOccurrence.ReactantPattern(coll, coll)));
     }
 
     @Test(expected = NullPointerException.class)
     public void testRemoveCoupledReactantsNullColl1() {
         BioNetwork network = miniNetwork();
         BioCollection<BioMetabolite> coll = new BioCollection<>();
-        MetabolitesCoOccurence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurence.ReactantPattern(null, coll)));
+        MetabolitesCoOccurrence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurrence.ReactantPattern(null, coll)));
     }
 
     @Test(expected = NullPointerException.class)
     public void testRemoveCoupledReactantsNullColl2() {
         BioNetwork network = miniNetwork();
         BioCollection<BioMetabolite> coll = new BioCollection<>();
-        MetabolitesCoOccurence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurence.ReactantPattern(coll, null)));
+        MetabolitesCoOccurrence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurrence.ReactantPattern(coll, null)));
     }
 
     // =====================================================================
@@ -322,14 +354,14 @@ public class MetabolitesCoOccurenceTest {
     }
 
     /** Returns true if the result contains a pattern (regardless of canonical ordering). */
-    private boolean containsPattern(Map<MetabolitesCoOccurence.ReactantPattern, Integer> result, Set<String> s1, Set<String> s2) {
+    private boolean containsPattern(Map<MetabolitesCoOccurrence.ReactantPattern, Integer> result, Set<String> s1, Set<String> s2) {
         return result.keySet().stream().anyMatch(pattern ->
                 (pattern.left().getIds().equals(s1) && pattern.right().getIds().equals(s2)) ||
                         (pattern.left().getIds().equals(s2) && pattern.right().getIds().equals(s1)));
     }
 
     /** Returns the occurrence count of a pattern, or 0 if absent. */
-    private int getPatternCount(Map<MetabolitesCoOccurence.ReactantPattern, Integer> result, Set<String> s1, Set<String> s2) {
+    private int getPatternCount(Map<MetabolitesCoOccurrence.ReactantPattern, Integer> result, Set<String> s1, Set<String> s2) {
         return result.entrySet().stream()
                 .filter(e -> (e.getKey().left().getIds().equals(s1) && e.getKey().right().getIds().equals(s2)) ||
                         (e.getKey().left().getIds().equals(s2) && e.getKey().right().getIds().equals(s1)))
@@ -346,8 +378,8 @@ public class MetabolitesCoOccurenceTest {
     public void testCoOccGetBasicPatternCount() {
         BioNetwork network = coOccurrenceNetwork();
 
-        Map<MetabolitesCoOccurence.ReactantPattern, Integer> result =
-                MetabolitesCoOccurence.getCoOccurringMetaboliteSets(network, 2, 2);
+        Map<MetabolitesCoOccurrence.ReactantPattern, Integer> result =
+                MetabolitesCoOccurrence.getCoOccurringMetaboliteSets(network, 2, 2);
 
 
         Set<String> setATP   = new HashSet<>(List.of("ATP"));
@@ -371,8 +403,8 @@ public class MetabolitesCoOccurenceTest {
     public void testCoOccPatternAppearingOnceFilteredOut() {
         BioNetwork network = coOccurrenceNetwork();
 
-        Map<MetabolitesCoOccurence.ReactantPattern, Integer> result =
-                MetabolitesCoOccurence.getCoOccurringMetaboliteSets(network, 2, 2);
+        Map<MetabolitesCoOccurrence.ReactantPattern, Integer> result =
+                MetabolitesCoOccurrence.getCoOccurringMetaboliteSets(network, 2, 2);
 
         Set<String> setC = new HashSet<>(Arrays.asList("C"));
         Set<String> setD = new HashSet<>(Arrays.asList("D"));
@@ -388,8 +420,8 @@ public class MetabolitesCoOccurenceTest {
     public void testCoOccThresholdTooHighReturnsEmpty() {
         BioNetwork network = coOccurrenceNetwork();
 
-        Map<MetabolitesCoOccurence.ReactantPattern, Integer> result =
-                MetabolitesCoOccurence.getCoOccurringMetaboliteSets(network, 3, 2);
+        Map<MetabolitesCoOccurrence.ReactantPattern, Integer> result =
+                MetabolitesCoOccurrence.getCoOccurringMetaboliteSets(network, 3, 2);
 
         assertTrue("No pattern reaches 3 occurrences, result must be empty", result.isEmpty());
     }
@@ -427,8 +459,8 @@ public class MetabolitesCoOccurenceTest {
         network.affectLeft(r3, 1.0, c, mA);
         network.affectRight(r3, 1.0, c, mB);
 
-        Map<MetabolitesCoOccurence.ReactantPattern, Integer> result =
-                MetabolitesCoOccurence.getCoOccurringMetaboliteSets(network, 2, 2);
+        Map<MetabolitesCoOccurrence.ReactantPattern, Integer> result =
+                MetabolitesCoOccurrence.getCoOccurringMetaboliteSets(network, 2, 2);
 
         Set<String> setA = new HashSet<>(Arrays.asList("A"));
         Set<String> setB = new HashSet<>(Arrays.asList("B"));
@@ -450,11 +482,11 @@ public class MetabolitesCoOccurenceTest {
     public void testCoOccMaxSubsetSizeOneOnlySingletons() {
         BioNetwork network = coOccurrenceNetwork();
 
-        Map<MetabolitesCoOccurence.ReactantPattern, Integer> result =
-                MetabolitesCoOccurence.getCoOccurringMetaboliteSets(network, 2, 1);
+        Map<MetabolitesCoOccurrence.ReactantPattern, Integer> result =
+                MetabolitesCoOccurrence.getCoOccurringMetaboliteSets(network, 2, 1);
 
         // All sets in every pattern must be singletons
-        for (MetabolitesCoOccurence.ReactantPattern pattern : result.keySet()) {
+        for (MetabolitesCoOccurrence.ReactantPattern pattern : result.keySet()) {
             assertEquals("First set must be a singleton with maxSubsetSize=1",
                     1, pattern.left().size());
             assertEquals("Second set must be a singleton with maxSubsetSize=1",
@@ -490,15 +522,15 @@ public class MetabolitesCoOccurenceTest {
     public void testCoOccResultPatternsHaveSizeTwoAndNoDuplicates() {
         BioNetwork network = coOccurrenceNetwork();
 
-        Map<MetabolitesCoOccurence.ReactantPattern, Integer> result =
-                MetabolitesCoOccurence.getCoOccurringMetaboliteSets(network, 1, 2);
+        Map<MetabolitesCoOccurrence.ReactantPattern, Integer> result =
+                MetabolitesCoOccurrence.getCoOccurringMetaboliteSets(network, 1, 2);
 
         // Verify no pattern appears in both (s1,s2) and (s2,s1) forms
-        List<MetabolitesCoOccurence.ReactantPattern> keys = new ArrayList<>(result.keySet());
+        List<MetabolitesCoOccurrence.ReactantPattern> keys = new ArrayList<>(result.keySet());
         for (int i = 0; i < keys.size(); i++) {
             for (int j = i + 1; j < keys.size(); j++) {
-                MetabolitesCoOccurence.ReactantPattern pi = keys.get(i);
-                MetabolitesCoOccurence.ReactantPattern pj = keys.get(j);
+                MetabolitesCoOccurrence.ReactantPattern pi = keys.get(i);
+                MetabolitesCoOccurrence.ReactantPattern pj = keys.get(j);
                 boolean reversed = pi.left().equals(pj.right()) && pi.right().equals(pj.left());
                 assertFalse("No pattern should appear twice in reversed order", reversed);
             }
@@ -520,8 +552,8 @@ public class MetabolitesCoOccurenceTest {
         network.add(r);
         network.affectRight(r, 1.0, c, m1); // no left side
 
-        Map<MetabolitesCoOccurence.ReactantPattern, Integer> result =
-                MetabolitesCoOccurence.getCoOccurringMetaboliteSets(network, 1, 1);
+        Map<MetabolitesCoOccurrence.ReactantPattern, Integer> result =
+                MetabolitesCoOccurrence.getCoOccurringMetaboliteSets(network, 1, 1);
 
         assertTrue("Reaction with no left side must be skipped → empty result", result.isEmpty());
     }
@@ -533,8 +565,8 @@ public class MetabolitesCoOccurenceTest {
     public void testCoOccEmptyNetworkReturnsEmptyMap() {
         BioNetwork network = new BioNetwork("empty");
 
-        Map<MetabolitesCoOccurence.ReactantPattern, Integer> result =
-                MetabolitesCoOccurence.getCoOccurringMetaboliteSets(network, 1, 1);
+        Map<MetabolitesCoOccurrence.ReactantPattern, Integer> result =
+                MetabolitesCoOccurrence.getCoOccurringMetaboliteSets(network, 1, 1);
 
         assertTrue("Empty network must produce an empty result", result.isEmpty());
     }
@@ -572,8 +604,8 @@ public class MetabolitesCoOccurenceTest {
         network.affectLeft(r3,  1.0, c, mB); network.affectLeft(r3, 1.0, c, mZ);
         network.affectRight(r3, 1.0, c, mA); network.affectRight(r3, 1.0, c, mX);
 
-        Map<MetabolitesCoOccurence.ReactantPattern, Integer> result =
-                MetabolitesCoOccurence.getCoOccurringMetaboliteSets(network, 3, 1);
+        Map<MetabolitesCoOccurrence.ReactantPattern, Integer> result =
+                MetabolitesCoOccurrence.getCoOccurringMetaboliteSets(network, 3, 1);
 
         Set<String> setA = new HashSet<>(Arrays.asList("A"));
         Set<String> setB = new HashSet<>(Arrays.asList("B"));
@@ -586,17 +618,17 @@ public class MetabolitesCoOccurenceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testCoOccInvalidMaxSubsetSize() {
-        MetabolitesCoOccurence.getCoOccurringMetaboliteSets(coOccurrenceNetwork(), 1, 0);
+        MetabolitesCoOccurrence.getCoOccurringMetaboliteSets(coOccurrenceNetwork(), 1, 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testCoOccInvalidMinOccurrences() {
-        MetabolitesCoOccurence.getCoOccurringMetaboliteSets(coOccurrenceNetwork(), 0, 1);
+        MetabolitesCoOccurrence.getCoOccurringMetaboliteSets(coOccurrenceNetwork(), 0, 1);
     }
 
     @Test(expected = NullPointerException.class)
     public void testCoOccNullNetwork() {
-        MetabolitesCoOccurence.getCoOccurringMetaboliteSets(null, 1, 1);
+        MetabolitesCoOccurrence.getCoOccurringMetaboliteSets(null, 1, 1);
     }
 
     @Test
@@ -622,7 +654,7 @@ public class MetabolitesCoOccurenceTest {
         collToRem.add(m1);
 
         // Matches: Left matches Empty, Right matches collToRem.
-        MetabolitesCoOccurence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurence.ReactantPattern(collEmpty, collToRem)));
+        MetabolitesCoOccurrence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurrence.ReactantPattern(collEmpty, collToRem)));
 
         // We expect m1 to be removed from r1.
         assertFalse("m1 should be removed from r1 rights", network.getRightReactants(r1).contains(m1));
@@ -652,10 +684,11 @@ public class MetabolitesCoOccurenceTest {
         BioCollection<BioMetabolite> collEmpty = new BioCollection<>();
 
         // Matches: Left matches collToRem, Right matches Empty.
-        MetabolitesCoOccurence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurence.ReactantPattern(collToRem, collEmpty)));
+        MetabolitesCoOccurrence.removeCoupledReactants(network, List.of(new MetabolitesCoOccurrence.ReactantPattern(collToRem, collEmpty)));
 
         // We expect m1 to be removed from r2.
         assertFalse("m1 should be removed from r2 lefts", network.getLeftReactants(r2).contains(m1));
         assertEquals("r2 should have 1 substrate left", 1, network.getLeftReactants(r2).size());
     }
 }
+

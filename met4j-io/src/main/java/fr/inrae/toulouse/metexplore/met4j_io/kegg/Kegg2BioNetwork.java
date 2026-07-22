@@ -384,7 +384,8 @@ public class Kegg2BioNetwork {
         String[] data = info.split("\\n");
 
         String firstLine = data[0];
-        String[] fields = firstLine.split("\\s{2,}");
+        String[] fields = firstLine.split("\\t");
+
         if (fields.length != 2) {
             throw new Exception("[met4j-io][Kegg2BioNetwork] Impossible to get organism name for " + this.keggOrgId +
                     " : info badly formatted (" + firstLine + ")");

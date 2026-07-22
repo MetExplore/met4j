@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 2.3.1
 
+[met4j-io] fix Kegg conversion
 [met4j-core] fix: take into account the reversibility of reactions when removing co-occurring metabolite sets
 
 ## 2.3.0

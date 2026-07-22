@@ -39,7 +39,7 @@ package fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioMetabolite;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.utils.MetabolitesCoOccurence;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.utils.MetabolitesCoOccurrence;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.AbstractMet4jApplication;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
@@ -59,7 +59,7 @@ import static fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Enu
 /**
  * Export co-occurring metabolite sets observed on opposite sides of reactions.
  */
-public class MetaboliteSetCooccurence extends AbstractMet4jApplication {
+public class MetaboliteSetCooccurrence extends AbstractMet4jApplication {
 
     @Format(name = Sbml)
     @ParameterType(name = InputFile)
@@ -78,7 +78,7 @@ public class MetaboliteSetCooccurence extends AbstractMet4jApplication {
     public int maxSubsetSize = 2;
 
     public static void main(String[] args) {
-        MetaboliteSetCooccurence app = new MetaboliteSetCooccurence();
+        MetaboliteSetCooccurrence app = new MetaboliteSetCooccurrence();
         app.parseArguments(args);
         app.run();
     }
@@ -97,18 +97,18 @@ public class MetaboliteSetCooccurence extends AbstractMet4jApplication {
         BioNetwork network = IOUtils.readSbml(this.inputPath);
 
         System.out.println("computing metabolite set co-occurrences...");
-        Map<MetabolitesCoOccurence.ReactantPattern, Integer> coOccurrences =
-                MetabolitesCoOccurence.getCoOccurringMetaboliteSets(network, minOccurrences, maxSubsetSize);
+        Map<MetabolitesCoOccurrence.ReactantPattern, Integer> coOccurrences =
+                MetabolitesCoOccurrence.getCoOccurringMetaboliteSets(network, minOccurrences, maxSubsetSize);
 
         // Stabilize output order to keep deterministic files.
-        ArrayList<Map.Entry<MetabolitesCoOccurence.ReactantPattern, Integer>> entries = new ArrayList<>(coOccurrences.entrySet());
+        ArrayList<Map.Entry<MetabolitesCoOccurrence.ReactantPattern, Integer>> entries = new ArrayList<>(coOccurrences.entrySet());
         entries.sort(
-                Comparator.<Map.Entry<MetabolitesCoOccurence.ReactantPattern, Integer>>comparingInt(Map.Entry::getValue)
+                Comparator.<Map.Entry<MetabolitesCoOccurrence.ReactantPattern, Integer>>comparingInt(Map.Entry::getValue)
                         .reversed()
                         // For equal co-occurrences, list larger patterns first (supersets before subsets).
-                        .thenComparing(Comparator.comparingInt((Map.Entry<MetabolitesCoOccurence.ReactantPattern, Integer> e) ->
+                        .thenComparing(Comparator.comparingInt((Map.Entry<MetabolitesCoOccurrence.ReactantPattern, Integer> e) ->
                                 getTotalSetSize(e.getKey())).reversed())
-                        .thenComparing(Comparator.comparingInt((Map.Entry<MetabolitesCoOccurence.ReactantPattern, Integer> e) ->
+                        .thenComparing(Comparator.comparingInt((Map.Entry<MetabolitesCoOccurrence.ReactantPattern, Integer> e) ->
                                 getLargestSideSize(e.getKey())).reversed())
                         .thenComparing(e -> toCsv(e.getKey().left()))
                         .thenComparing(e -> toCsv(e.getKey().right()))
@@ -116,8 +116,8 @@ public class MetaboliteSetCooccurence extends AbstractMet4jApplication {
 
         System.out.println("writing output...");
         try (FileWriter fw = new FileWriter(outputPath)) {
-            for (Map.Entry<MetabolitesCoOccurence.ReactantPattern, Integer> entry : entries) {
-                MetabolitesCoOccurence.ReactantPattern pattern = entry.getKey();
+            for (Map.Entry<MetabolitesCoOccurrence.ReactantPattern, Integer> entry : entries) {
+                MetabolitesCoOccurrence.ReactantPattern pattern = entry.getKey();
                 fw.write(toCsv(pattern.left()) + "\t" + toCsv(pattern.right()) + "\t" + entry.getValue() + "\n");
             }
         } catch (IOException e) {
@@ -135,11 +135,11 @@ public class MetaboliteSetCooccurence extends AbstractMet4jApplication {
         return String.join(",", sorted);
     }
 
-    private static int getTotalSetSize(MetabolitesCoOccurence.ReactantPattern pattern) {
+    private static int getTotalSetSize(MetabolitesCoOccurrence.ReactantPattern pattern) {
         return pattern.left().size() + pattern.right().size();
     }
 
-    private static int getLargestSideSize(MetabolitesCoOccurence.ReactantPattern pattern) {
+    private static int getLargestSideSize(MetabolitesCoOccurrence.ReactantPattern pattern) {
         return Math.max(pattern.left().size(), pattern.right().size());
     }
 
@@ -165,4 +165,3 @@ public class MetaboliteSetCooccurence extends AbstractMet4jApplication {
         return new HashSet<>();
     }
 }
-

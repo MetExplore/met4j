@@ -49,16 +49,16 @@ import java.nio.file.Path;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class MetaboliteSetCooccurenceIT {
+public class MetaboliteSetCooccurrenceIT {
 
     @Test
-    public void testMetaboliteSetCooccurenceBasicOutput() throws Exception {
+    public void testMetaboliteSetCooccurrenceBasicOutput() throws Exception {
 
         Path actualOutput;
         Path tmpDir;
         try {
-            actualOutput = Files.createTempFile("test-output-MetaboliteSetCooccurence", ".tsv");
-            tmpDir = Files.createTempDirectory("test-input-MetaboliteSetCooccurence");
+            actualOutput = Files.createTempFile("test-output-MetaboliteSetCooccurrence", ".tsv");
+            tmpDir = Files.createTempDirectory("test-input-MetaboliteSetCooccurrence");
             tmpDir.toFile().deleteOnExit();
         } catch (IOException e1) {
             e1.printStackTrace();
@@ -70,7 +70,7 @@ public class MetaboliteSetCooccurenceIT {
 
         int min = 50;
         IThelper.ProcessResult result = IThelper.runCli(
-                "fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis.MetaboliteSetCooccurence",
+                "fr.inrae.toulouse.metexplore.met4j_toolbox.networkAnalysis.MetaboliteSetCooccurrence",
                 "-i", inputPathFile,
                 "-o", actualOutput.toString(),
                 "-min", String.valueOf(min)
@@ -95,4 +95,3 @@ public class MetaboliteSetCooccurenceIT {
         assertTrue("Output should contain at least one row", lineCount > 0);
     }
 }
-

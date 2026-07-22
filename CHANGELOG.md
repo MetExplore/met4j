@@ -5,9 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## 2.3.0
-[met4j-toolbox] **new app** : MetaboliteSetCooccurence : a toolbox app to detect co-occurring metabolites patterns across reactions, allowing to identify potential side transistion such as ATP -> ADP + Pi.  
+[met4j-toolbox] **new app** : MetaboliteSetCooccurrence : a toolbox app to detect co-occurring metabolites patterns across reactions, allowing to identify potential side transistion such as ATP -> ADP + Pi.  
 [met4j-toolbox] Support for pattern-based filtering in SBMLWizard as an alternative to side compounds definition.  
-[met4j-core] Added MetabolitesCoOccurence class to enumerate reactant patterns.  
+[met4j-core] Added MetabolitesCoOccurrence class to enumerate reactant patterns.  
 [met4j-toolbox] **new app** : ExtractCompartments : a toolbox app similar to ExtractPathways but using compartment input, allowing to extract a sub-network with only a selection of compartments.  
 [met4j-toolbox] Added support for negative selection in ExtractPathways  
 [met4j-toolbox] Added compartment info in GetMetaboliteAttributes output  

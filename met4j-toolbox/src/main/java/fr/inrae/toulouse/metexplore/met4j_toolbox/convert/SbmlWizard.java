@@ -4,7 +4,7 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.*;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.utils.BioNetworkUtils;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.utils.CompartmentMerger;
-import fr.inrae.toulouse.metexplore.met4j_core.biodata.utils.MetabolitesCoOccurence;
+import fr.inrae.toulouse.metexplore.met4j_core.biodata.utils.MetabolitesCoOccurrence;
 import fr.inrae.toulouse.metexplore.met4j_io.annotations.reaction.ReactionAttributes;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.writer.Met4jSbmlWriterException;
 import fr.inrae.toulouse.metexplore.met4j_mapping.Mapper;
@@ -233,7 +233,7 @@ public class SbmlWizard extends AbstractMet4jApplication {
             try (BufferedReader br = new BufferedReader(new FileReader(inputPaired))) {
                 String line;
                 int lineNumber = 0;
-                List<MetabolitesCoOccurence.ReactantPattern> patterns = new java.util.ArrayList<>();
+                List<MetabolitesCoOccurrence.ReactantPattern> patterns = new java.util.ArrayList<>();
                 while ((line = br.readLine()) != null) {
                     lineNumber++;
                     if (line.startsWith("#") || line.trim().isEmpty()) continue;
@@ -267,10 +267,10 @@ public class SbmlWizard extends AbstractMet4jApplication {
                         coll2.add(m);
                     }
                     if (skip) continue;
-                    patterns.add(new MetabolitesCoOccurence.ReactantPattern(coll1,coll2));
+                    patterns.add(new MetabolitesCoOccurrence.ReactantPattern(coll1,coll2));
                     pairsToRemove++;
                 }
-                MetabolitesCoOccurence.removeCoupledReactants(network,patterns);
+                MetabolitesCoOccurrence.removeCoupledReactants(network,patterns);
                         System.err.println("[INFO] " + pairsToRemove + " pairs of metabolite collections to remove from matching reactions.");
             } catch (IOException e) {
                 System.err.println("[ERROR] Could not read paired reactants file: " + e.getMessage());

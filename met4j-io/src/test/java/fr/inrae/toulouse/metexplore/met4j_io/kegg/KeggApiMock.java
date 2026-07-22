@@ -39,7 +39,7 @@ public class KeggApiMock {
 
     public static String errorResult = "ERROR";
 
-    public static String orgInfo = "T00820           Buchnera aphidicola 5A (Acyrthosiphon pisum) KEGG Genes Database\n" +
+    public static String orgInfo = "T00820\tBuchnera aphidicola 5A (Acyrthosiphon pisum) KEGG Genes Database\n" +
             "bap              Release 100.0+/12-16, Dec 21\n" +
             "                 Kanehisa Laboratories\n" +
             "                 599 entries\n" +

@@ -79,7 +79,7 @@ public class KeggServices {
             throw new IllegalArgumentException("[met4j-io][KeggServices] Length of the organism id must contain only 3 letters");
         }
 
-        return this.webResource.path("link").path("ec").path(orgId.toLowerCase()).get(String.class);
+        return this.webResource.path("link").path(orgId.toLowerCase()).path("ec").get(String.class);
     }
 
     /**

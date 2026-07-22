@@ -872,7 +872,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
  -w VAL  : input edge weight file: (recommended) path to file containing edges'
            weights. Will be normalized as transition probabilities
 </code></pre></details></td></tr>
-<tr><td>MetaboliteSetCooccurence</td><td>Detect co-occurring metabolite sets across reaction sides and export a tabulated file.<details><summary><small>more</small></summary>Detect co-occurring metabolite sets across reaction sides and export a tabulated file.<br/>Each output row contains two metabolite sets observed on opposite sides of reactions and the number of reactions where this pattern is found.<br/><br/><pre><code> -h                        : prints the help (default: false)
+<tr><td>MetaboliteSetCooccurrence</td><td>Detect co-occurring metabolite sets across reaction sides and export a tabulated file.<details><summary><small>more</small></summary>Detect co-occurring metabolite sets across reaction sides and export a tabulated file.<br/>Each output row contains two metabolite sets observed on opposite sides of reactions and the number of reactions where this pattern is found.<br/><br/><pre><code> -h                        : prints the help (default: false)
  -i VAL                    : input SBML file
  -max (--maxSubsetSize) N  : maximum subset size for each side (default: 2)
                              (default: 2)

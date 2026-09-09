@@ -61,7 +61,6 @@ public class SetBoundsFromFileTest {
         r1 = new BioReaction("r1");
         network.add(r1);
 
-
     }
 
     @Test

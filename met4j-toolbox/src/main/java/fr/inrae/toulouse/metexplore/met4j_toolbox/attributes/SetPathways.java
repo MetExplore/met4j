@@ -56,8 +56,8 @@ public class SetPathways extends AbstractSbmlSetReaction {
     @Option(name="-cp", usage="[2] number of the column where are the pathways")
     public int colp=2;
 
-    @Option(name="-sep", usage="[|] Separator of pathways in the tabulated file")
-    public String sep = "|";
+    @Option(name="-sep", usage="Separator of pathways ids in the tabulated file. If none is set, multiple assignments is done by assuming that a reaction may appear in multiple lines.")
+    public String sep;
 
 
     /** {@inheritDoc} */
@@ -106,8 +106,14 @@ public class SetPathways extends AbstractSbmlSetReaction {
 
         BioNetwork bn = this.readSbml();
 
-        SetPathwaysFromFile sgff = new SetPathwaysFromFile(this.colid-1, this.colp-1, bn, this.tab,
-                this.c, this.nSkip, this.p, false, this.sep);
+        SetPathwaysFromFile sgff;
+        if(sep!=null){
+            sgff = new SetPathwaysFromFile(this.colid-1, this.colp-1, bn, this.tab,
+                    this.c, this.nSkip, this.p, false, this.sep);
+        }else{
+            sgff = new SetPathwaysFromFile(this.colid-1, this.colp-1, bn, this.tab,
+                    this.c, this.nSkip, this.p, false);
+        }
 
         Boolean flag;
 

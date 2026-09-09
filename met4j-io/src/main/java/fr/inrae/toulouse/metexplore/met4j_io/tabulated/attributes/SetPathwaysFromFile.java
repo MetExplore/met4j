@@ -53,10 +53,10 @@ import static fr.inrae.toulouse.metexplore.met4j_core.utils.StringUtils.isVoid;
  *
  * @author lcottret
  */
-public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
+public class SetPathwaysFromFile extends AbstractSetMultiAttributesFromFile {
 
     private String sep = "|";
-
+    private boolean multiAssignementPerLine = false;
 
     /**
      * <p>Constructor for SetPathwaysFromFile.</p>
@@ -82,8 +82,33 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
     public SetPathwaysFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s, String sep) {
 
         super(colId, colAttr, bn, fileIn, c, nSkip, EntityType.REACTION, p, s);
-
         this.sep = sep;
+        multiAssignementPerLine=true;
+        allowDuplicates=false;
+    }
+
+    /**
+     * <p>Constructor for SetPathwaysFromFile.</p>
+     *
+     * @param colId
+     *            number of the column where are the reaction ids
+     * @param colAttr
+     *            number of the column where are the pathways
+     * @param bn
+     *            BioNetwork
+     * @param fileIn
+     *            tabulated file
+     * @param c
+     *            comment string
+     * @param nSkip
+     *            number of lines to skip at the beginning of the file
+     * @param p
+     *            if true, to match the reactions in the sbml file, the reaction
+     *            ids in the tabulated file are formatted in the palsson way
+     * @param s a {@link java.lang.Boolean} object
+     */
+    public SetPathwaysFromFile(int colId, int colAttr, BioNetwork bn, String fileIn, String c, int nSkip, Boolean p, Boolean s) {
+        super(colId, colAttr, bn, fileIn, c, nSkip, EntityType.REACTION, p, s);
     }
 
     /**
@@ -120,44 +145,58 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
         for (String id : this.getIdAttributeMap().keySet()) {
 
             n++;
-
-            String pathwayIdsStr = this.getIdAttributeMap().get(id).trim();
-
-            if(pathwayIdsStr.equals(""))
-            {
-                pathwayIdsStr = "No pathway";
-            }
-
-            // Pathways can be separated by "|";
-
-            String[] pathwayIds = pathwayIdsStr.split(Pattern.quote(sep));
-
             BioReaction rxn = this.bn.getReaction(id);
 
             BioCollection<BioPathway> oldPathways = this.bn.getPathwaysFromReaction(rxn);
-
             for(BioPathway p : oldPathways) {
                 this.bn.removeReactionFromPathway(rxn, p);
             }
 
-            for (int i = 0; i < pathwayIds.length; i++) {
+            for(String pathwayIdsStr : this.getIdMultiAttributeMap().get(id)){
 
-                String pathwayId = pathwayIds[i];
+                if(pathwayIdsStr.equals(""))
+                {
+                    pathwayIdsStr = "No pathway";
+                }
 
-                // Replace the not alphanumeric characters by "_"
-                pathwayId = StringUtils.convertToSID(pathwayId.trim().
-                        replaceAll("[^A-Za-z0-9]+", "_")).toLowerCase();
 
-                if(! isVoid(pathwayId) && ! isNa(pathwayId)) {
+                // Pathways can be separated by "|";
+                if(multiAssignementPerLine) {
+                    String[] pathwayIds = pathwayIdsStr.split(Pattern.quote(sep));
+                    for (int i = 0; i < pathwayIds.length; i++) {
+                        String pathwayId = pathwayIds[i];
+                        // Replace the not alphanumeric characters by "_"
+                        pathwayId = StringUtils.convertToSID(pathwayId.trim().
+                                replaceAll("[^A-Za-z0-9]+", "_")).toLowerCase();
 
-                    BioPathway pathway;
-                    if (this.bn.containsPathway(pathwayId)) {
-                        pathway = this.bn.getPathway(pathwayId);
-                    } else {
-                        pathway = new BioPathway(pathwayId);
-                        this.bn.add(pathway);
+                        if (!isVoid(pathwayId) && !isNa(pathwayId)) {
+
+                            BioPathway pathway;
+                            if (this.bn.containsPathway(pathwayId)) {
+                                pathway = this.bn.getPathway(pathwayId);
+                            } else {
+                                pathway = new BioPathway(pathwayId);
+                                this.bn.add(pathway);
+                            }
+                            this.bn.affectToPathway(pathway, rxn);
+                        }
                     }
-                    this.bn.affectToPathway(pathway, rxn);
+                }else{
+                    // Replace the not alphanumeric characters by "_"
+                    pathwayIdsStr = StringUtils.convertToSID(pathwayIdsStr.trim().
+                            replaceAll("[^A-Za-z0-9]+", "_")).toLowerCase();
+
+                    if(! isVoid(pathwayIdsStr) && ! isNa(pathwayIdsStr)) {
+
+                        BioPathway pathway;
+                        if (this.bn.containsPathway(pathwayIdsStr)) {
+                            pathway = this.bn.getPathway(pathwayIdsStr);
+                        } else {
+                            pathway = new BioPathway(pathwayIdsStr);
+                            this.bn.add(pathway);
+                        }
+                        this.bn.affectToPathway(pathway, rxn);
+                    }
                 }
             }
         }
@@ -174,4 +213,11 @@ public class SetPathwaysFromFile extends AbstractSetAttributesFromFile {
 
     }
 
+    public boolean isMultiAssignementPerLine() {
+        return multiAssignementPerLine;
+    }
+
+    public void setMultiAssignementPerLine(boolean multiAssignementPerLine) {
+        this.multiAssignementPerLine = multiAssignementPerLine;
+    }
 }

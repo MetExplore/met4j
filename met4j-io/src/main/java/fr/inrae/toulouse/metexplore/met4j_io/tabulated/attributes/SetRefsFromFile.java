@@ -48,7 +48,7 @@ import java.io.IOException;
  *
  * @author lcottret
  */
-public class SetRefsFromFile extends AbstractSetAttributesFromFile {
+public class SetRefsFromFile extends AbstractSetMultiAttributesFromFile {
 
     private String ref = "";
 
@@ -99,6 +99,7 @@ public class SetRefsFromFile extends AbstractSetAttributesFromFile {
         }
 
         int n = 0;
+        int n2 = 0;
 
         if(! IdentifiersOrg.validIdentifiers.contains(ref.toLowerCase())) {
             System.err.println("Warning : the identifier "+ref+" is not a valid id in identifiers.org");
@@ -140,10 +141,13 @@ public class SetRefsFromFile extends AbstractSetAttributesFromFile {
                 }
             }
 
-            object.addRef(new BioRef("attributesTable", this.ref, this.getIdAttributeMap().get(id), 1));
+            for(String refId : this.getIdMultiAttributeMap().get(id)){
+                object.addRef(new BioRef("attributesTable", this.ref, refId, 1));
+                n2++;
+            }
         }
 
-        System.out.println(n+" attributions");
+        System.out.println(n2+" attributions for "+n+" entities");
 
         return flag;
 

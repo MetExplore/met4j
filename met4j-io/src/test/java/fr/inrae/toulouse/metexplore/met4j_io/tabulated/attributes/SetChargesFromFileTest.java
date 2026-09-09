@@ -46,6 +46,7 @@ import org.mockito.Mockito;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 public class SetChargesFromFileTest {
 
@@ -181,6 +182,28 @@ public class SetChargesFromFileTest {
         assertTrue(flag);
 
         assertEquals(2, m_cpd_c.getCharge(), 0.0);
+
+    }
+
+    @Test
+    public void allowDuplicates() throws IOException {
+
+
+        SetChargesFromFile app = new SetChargesFromFile(0, 1, network, "", "#", 0, false, false);
+
+        String line = "cpd[c]\t2\n";
+        String line2 = "m\t2\n";
+        Boolean flag = app.parseLine(line, 1);
+        assertTrue(flag);
+        flag = app.parseLine(line, 2);
+        assertFalse(flag);
+
+        app.allowDuplicates();
+
+        flag = app.parseLine(line2, 3);
+        assertTrue(flag);
+        flag = app.parseLine(line2, 4);
+        assertTrue(flag);
 
     }
 

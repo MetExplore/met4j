@@ -79,10 +79,7 @@ public class SbmlWizard extends AbstractMet4jApplication {
 
     @ParameterType(name = EnumParameterTypes.InputFile)
     @Format(name = EnumFormats.Txt)
-    @Option(name = "-rp", aliases = {"--removePaired"}, usage = "tabulated file containing 2 columns, each column is a collection of metabolite identifiers, separated by commas. " +
-            "Iterates over all reactions in the network and, for each reaction where the first collection matches one side (left or right) " +
-            "and the second column matches the other side, removes the corresponding reactants from their respective sides. " +
-            "If one of the two sides of the pair is empty, the metabolites of the other side will still be removed from the reactions where they (co-)appear.")
+    @Option(name = "-rp", aliases = {"--removePaired"}, usage = "remove reactant pairs (such as ATP->ADP), from a list of ordered pairs (substrate-products) in a two-columns tabulated file")
     public String inputPaired = null;
 
     public static void main(String[] args) throws Met4jSbmlWriterException, IOException {
@@ -332,7 +329,11 @@ public class SbmlWizard extends AbstractMet4jApplication {
 
     @Override
     public String getLongDescription() {
-        return "General SBML model processing including compound filtering (side compounds, isolated compounds, whitelist/blacklist), reaction filtering (blocked, duplicated, paired reactants, exchange reactions, whitelist/blacklist), and compartment merging.";
+        return "General SBML model processing including compound filtering (side compounds, isolated compounds, whitelist/blacklist), reaction filtering (blocked, duplicated, paired reactants, exchange reactions, whitelist/blacklist), and compartment merging.\n" +
+                "Paired reactants filtering is an alternative to side compounds filtering, allowing to remove overrepresented transitions (like ATP->ADP), it use tabulated file containing 2 columns, each column is a collection of metabolite identifiers, separated by commas. \" +\n" +
+                "            \"It iterates over all reactions in the network and, for each reaction where the first collection matches one side (left or right) \" +\n" +
+                "            \"and the second column matches the other side, removes the corresponding reactants from their respective sides. \" +\n" +
+                "            \"If one of the two sides of the pair is empty, the metabolites of the other side will still be removed from the reactions where they (co-)appear.";
     }
 
     @Override

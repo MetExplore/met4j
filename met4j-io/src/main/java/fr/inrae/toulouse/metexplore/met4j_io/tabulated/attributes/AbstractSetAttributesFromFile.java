@@ -67,6 +67,11 @@ public abstract class AbstractSetAttributesFromFile {
     protected EntityType entityType = EntityType.REACTION;
     protected Boolean addPrefix = false;
     protected Boolean addSuffix = false;
+    protected Boolean allowDuplicates = false;
+
+    public void allowDuplicates() {
+        this.allowDuplicates = true;
+    }
 
     protected Set<String> ids;
 
@@ -172,7 +177,7 @@ public abstract class AbstractSetAttributesFromFile {
 
             nLines++;
 
-            flag = parseLine(ligne, nLines);
+            if(!parseLine(ligne, nLines)) flag = false;
         }
         return flag;
     }
@@ -260,14 +265,14 @@ public abstract class AbstractSetAttributesFromFile {
                         // }
 
                         if (this.bn.containsMetabolite(metaboliteId)) {
-                            this.getIdAttributeMap().put(metaboliteId, attribute);
+                            this.addValue(metaboliteId, attribute);
                             presence = true;
                         }
                     }
 
                     if (presence && ids.contains(id)) {
-                        System.err.println("[Warning] Duplicated id : " + id + " line " + nLines);
-                        flag = false;
+                        System.err.println("["+(allowDuplicates ? "Warning" : "Error")+"] Duplicated id : " + id + " line " + nLines);
+                        if(!allowDuplicates) flag = false;
                     }
 
                     if (presence) {
@@ -297,15 +302,16 @@ public abstract class AbstractSetAttributesFromFile {
                     }
 
                     if (ids.contains(id)) {
-                        System.err.println("[Warning] Duplicated id : " + id + " line " + nLines);
-                        flag = false;
-                    } else {
+                        System.err.println("["+(allowDuplicates ? "Warning" : "Error")+"] Duplicated id : " + id + " line " + nLines);
+                        if(!allowDuplicates) flag = false;
+                    }
+                    if(allowDuplicates || !ids.contains(id)) {
                         if (!this.objectIds.contains(id)) {
                             System.err
                                     .println("[Warning] " + id + " not present in the network line " + nLines);
                             // flag = false;
                         } else {
-                            this.getIdAttributeMap().put(id, attribute);
+                            this.addValue(id, attribute);
                             ids.add(id);
                         }
                     }
@@ -313,6 +319,10 @@ public abstract class AbstractSetAttributesFromFile {
             }
         }
         return flag;
+    }
+
+    protected void addValue(String id, String attribute){
+        this.getIdAttributeMap().put(id, attribute);
     }
 
     /**

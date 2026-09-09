@@ -1,19 +1,19 @@
 package integration;
 
+import org.junit.Assert;
 import org.junit.Test;
 import utils.IThelper;
-import org.junit.Assert;
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SetReferencesIT {
 
@@ -50,17 +50,19 @@ public class SetReferencesIT {
         
         BufferedReader reader = new BufferedReader(new FileReader(actualOutput.toFile()));
         String line = reader.readLine();
-        Pattern pattern0 = Pattern.compile(".*C2H6O.*");
-        Pattern pattern1 = Pattern.compile(".*C6H8O6.*");
+        Pattern pattern0 = Pattern.compile("C2H6O");
+        Pattern pattern1 = Pattern.compile("C6H8O6");
         int nbMatch0 = 0;
         int nbMatch1 = 0;
         while (line != null) {
-            if(pattern0.matcher(line).matches()) nbMatch0++;
-            if(pattern1.matcher(line).matches()) nbMatch1++;
+            Matcher m0 = pattern0.matcher(line);
+            Matcher m1 = pattern1.matcher(line);
+            while(m0.find()) nbMatch0++;
+            while(m1.find()) nbMatch1++;
             line = reader.readLine();
         }
         reader.close();
-        assertEquals(3,nbMatch0);
+        assertEquals(4,nbMatch0);
         assertEquals(1,nbMatch1);
         assertTrue(IThelper.isValidXml(actualOutput.toFile()));
     

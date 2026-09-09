@@ -79,7 +79,7 @@ public class GetBiggModelProteome extends AbstractMet4jApplication {
     public String outputFile = "proteome.fas";
 
 
-    private String baseUrl = "http://bigg.ucsd.edu/api/v2/models/";
+    private String baseUrl = "https://bigg.ucsd.edu/api/v2/models/";
 
     /**
      * <p>main.</p>
@@ -199,7 +199,6 @@ public class GetBiggModelProteome extends AbstractMet4jApplication {
             conn.connect();
 
             int responseCode = conn.getResponseCode();
-
             if (responseCode != 200) {
                 System.err.println("Problem of connection");
                 return false;

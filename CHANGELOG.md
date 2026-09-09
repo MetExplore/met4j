@@ -4,9 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.4.0
+[met4j-toolbox] New app to extract pathways assignments for metabolites, reactions and genes
+[met4j-toolbox] Improve SetReferences app by allowing mutltiple references to be set for a single entity
 
-## 2.3.3
-
+[met4j-bigg] fix BiGG API connection issues
 [met4j-io] fix Kegg conversion
 [met4j-core] fix: take into account the reversibility of reactions when removing co-occurring metabolite sets
 

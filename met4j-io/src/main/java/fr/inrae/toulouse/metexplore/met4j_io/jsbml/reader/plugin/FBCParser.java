@@ -138,12 +138,7 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
         if (parseGenes) {
             this.parseListOfGeneProducts();
         }
-        try {
-            this.parseFluxReactions();
-        } catch (GeneSetException | Met4jSbmlReaderException e) {
-            e.printStackTrace();
-            throw new Met4jSbmlReaderException(e.getMessage());
-        }
+        this.parseFluxReactions();
 
         /**
          * Same Methods as FBC1 parser.
@@ -234,7 +229,7 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
      * <li>fbc:GeneProductAssociation
      * </ul>
      */
-    private void parseFluxReactions() throws Met4jSbmlReaderException, GeneSetException {
+    private void parseFluxReactions() throws Met4jSbmlReaderException {
 
         for (Reaction rxn : this.getFbcModel().getParent().getListOfReactions()) {
 
@@ -247,11 +242,18 @@ public class FBCParser implements PackageParser, PrimaryDataTag, ReaderSBML3Comp
 
             // System.err.println(rxn.getId());
             if (parseGenes && rxnPlugin.isSetGeneProductAssociation()) {
-                geneAssociation = this.computeGeneAssocations(rxnPlugin.getGeneProductAssociation().getAssociation());
+                try {
+                    geneAssociation = this.computeGeneAssocations(rxnPlugin.getGeneProductAssociation().getAssociation());
+                    flxReaction.setReactionGeneAssociation(geneAssociation);
+                    flxReaction.convertGeneAssociationstoComplexes(flxNet.getUnderlyingBionet());
+                } catch (GeneSetException e) {
+                    System.err.println("[Warning] Gene association skipped for reaction " + rxn.getId() + ": " + e.getMessage());
+                    flxReaction.setReactionGeneAssociation(new GeneAssociation());
+                }
+            } else {
+                // System.err.println("out of recursion");
+                flxReaction.setReactionGeneAssociation(geneAssociation);
             }
-            // System.err.println("out of recursion");
-            flxReaction.setReactionGeneAssociation(geneAssociation);
-            flxReaction.convertGeneAssociationstoComplexes(flxNet.getUnderlyingBionet());
 
             ReactionAttributes.setLowerBound(reaction,
                     this.flxNet.getListOfFluxBounds().get(rxnPlugin.getLowerFluxBound()));

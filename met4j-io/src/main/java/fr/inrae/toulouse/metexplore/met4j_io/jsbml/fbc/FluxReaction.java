@@ -45,6 +45,8 @@ import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioProtein;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.collection.BioCollection;
 
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -70,6 +72,14 @@ public class FluxReaction extends BioEntity {
      * @see GeneAssociation
      */
     private GeneAssociation reactionGeneAssociation;
+
+    /**
+     * Maximum length of an enzyme identifier built by joining gene ids with
+     * "_AND_". Beyond this, a deterministic hash-based id is used instead, since
+     * a complex with a large number of subunits can otherwise produce an
+     * identifier several thousand characters long.
+     */
+    private static final int MAX_JOINED_ENZYME_ID_LENGTH = 250;
 
     /**
      * Constructor using a {@link fr.inrae.toulouse.metexplore.met4j_core.biodata.BioReaction}
@@ -112,7 +122,14 @@ public class FluxReaction extends BioEntity {
             if (sga.size() == 1) {
                 enzymeId = sga.iterator().next();
             } else {
-                enzymeId = sga.stream().sorted().collect(Collectors.joining("_AND_"));
+                String joinedId = sga.stream().sorted().collect(Collectors.joining("_AND_"));
+                if (joinedId.length() <= MAX_JOINED_ENZYME_ID_LENGTH) {
+                    enzymeId = joinedId;
+                } else {
+                    // Deterministic hash of the gene set so that identical complexes
+                    // still map to the same enzyme id across reactions.
+                    enzymeId = "cplx_" + UUID.nameUUIDFromBytes(joinedId.getBytes(StandardCharsets.UTF_8));
+                }
             }
 
             affectEnzyme(bn, rxn, sga, enzymeId);

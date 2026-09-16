@@ -133,17 +133,7 @@ public class SbmlWizard extends AbstractMet4jApplication {
             System.out.println(toKeep.size() + " compounds retained in network.");
         }
 
-        //side compound removal [optional]
-        if (inputSide != null) {
-            System.out.println("removing side compounds...");
 
-            BioCollection<BioMetabolite> sideCpds = getMetabolitesFromFile(inputSide, network, "side compounds");
-
-            for(BioMetabolite sc : sideCpds){
-                network.removeOnCascade(sc);
-            }
-            System.out.println(sideCpds.size() + " side compounds removed from network.");
-        }
 
         //retain reactions
         if(toKeepR != null){
@@ -272,6 +262,18 @@ public class SbmlWizard extends AbstractMet4jApplication {
             } catch (IOException e) {
                 System.err.println("[ERROR] Could not read paired reactants file: " + e.getMessage());
             }
+        }
+
+        //side compound removal [optional]
+        if (inputSide != null) {
+            System.out.println("removing side compounds...");
+
+            BioCollection<BioMetabolite> sideCpds = getMetabolitesFromFile(inputSide, network, "side compounds");
+
+            for(BioMetabolite sc : sideCpds){
+                network.removeOnCascade(sc);
+            }
+            System.out.println(sideCpds.size() + " side compounds removed from network.");
         }
 
         //remove compounds not in any reactions

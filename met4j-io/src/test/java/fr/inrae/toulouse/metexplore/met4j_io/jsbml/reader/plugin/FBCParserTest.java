@@ -324,6 +324,62 @@ public class FBCParserTest {
 	}
 
 	@Test
+	public void testComputeGeneAssociationsTooComplexWarnsAndContinues() throws SBMLException, XMLStreamException, Met4jSbmlReaderException {
+
+		plugin = (FBCModelPlugin) model.getPlugin(PackageNamespace);
+		plugin.setStrict(true);
+
+		rxn1Plugin = (FBCReactionPlugin) rSbml1.getPlugin("fbc");
+		rxn2Plugin = (FBCReactionPlugin) rSbml2.getPlugin("fbc");
+
+		// Build (gA0 OR gA1 OR ... ) AND (gB0 OR gB1 OR ...) with enough terms on
+		// each side that the resulting number of complexes exceeds the guard in
+		// GeneAssociations.merge, without actually needing to build them.
+		int n = 1000;
+		Or or1 = new Or();
+		Or or2 = new Or();
+		for (int i = 0; i < n; i++) {
+			GeneProduct gpA = new GeneProduct("gA" + i);
+			GeneProduct gpB = new GeneProduct("gB" + i);
+			plugin.addGeneProduct(gpA);
+			plugin.addGeneProduct(gpB);
+
+			GeneProductRef refA = new GeneProductRef("gA" + i + "ref");
+			refA.setGeneProduct("gA" + i);
+			GeneProductRef refB = new GeneProductRef("gB" + i + "ref");
+			refB.setGeneProduct("gB" + i);
+
+			or1.addAssociation(refA);
+			or2.addAssociation(refB);
+		}
+		And tooComplex = new And();
+		tooComplex.addAssociation(or1);
+		tooComplex.addAssociation(or2);
+
+		GeneProductAssociation GPA1 = rxn1Plugin.createGeneProductAssociation();
+		GPA1.setAssociation(tooComplex);
+
+		GeneProduct g2 = new GeneProduct("g2");
+		plugin.addGeneProduct(g2);
+		GeneProductRef p2 = new GeneProductRef("g2ref");
+		p2.setGeneProduct("g2");
+		GeneProductAssociation GPA2 = rxn2Plugin.createGeneProductAssociation();
+		GPA2.setAssociation(p2);
+
+		parser.setFbcModel(plugin);
+
+		// Must not throw nor OOM: the too complex GPR on r1 is skipped with a
+		// warning, and the rest of the import (including r2's valid GPR) proceeds.
+		parser.parseModel(model, network);
+
+		String ga1 = BioReactionUtils.getGPR(network, r1, false);
+		assertEquals("", ga1);
+
+		String ga2 = BioReactionUtils.getGPR(network, r2, false);
+		assertEquals("g2", ga2);
+	}
+
+	@Test
 	public void testParseFluxSpecies() throws Met4jSbmlReaderException {
 
 		plugin = (FBCModelPlugin) model.getPlugin(PackageNamespace);

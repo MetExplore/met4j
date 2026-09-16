@@ -46,6 +46,19 @@ import fr.inrae.toulouse.metexplore.met4j_io.jsbml.errors.GeneSetException;
 public class GeneAssociations {
 
     /**
+     * Maximum number of gene sets ("AND" complexes) a single merge is allowed to
+     * produce. Merging is a distributive expansion (each "AND" combines every
+     * term of one side with every term of the other), so a GPR chaining several
+     * "OR" clauses through "AND" operators grows combinatorially. Without this
+     * guard, a sufficiently complex GPR exhausts the heap instead of failing
+     * with a clear, catchable error.
+     * <p>
+     * Defaults to 500,000 but can be overridden, e.g. through
+     * {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader#setMaxGeneSets(long)}.
+     */
+    public static long MAX_GENE_SETS = 500_000L;
+
+    /**
      * Merge two gene associations (AND relation)
      *
      * @param ga1 a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} object.
@@ -53,6 +66,14 @@ public class GeneAssociations {
      * @return a {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociation} object.
      */
     public static GeneAssociation merge(GeneAssociation ga1, GeneAssociation ga2) throws GeneSetException {
+
+        long expectedSize = (long) ga1.size() * (long) ga2.size();
+        if (expectedSize > MAX_GENE_SETS) {
+            throw new GeneSetException("Gene association too complex to be resolved: combining " + ga1.size()
+                    + " and " + ga2.size() + " alternative complexes would produce " + expectedSize
+                    + " enzymes, above the limit of " + MAX_GENE_SETS + ". Please simplify the GPR expression.");
+        }
+
         GeneAssociation newGa = new GeneAssociation();
         for(GeneSet gs1 : ga1)
         {

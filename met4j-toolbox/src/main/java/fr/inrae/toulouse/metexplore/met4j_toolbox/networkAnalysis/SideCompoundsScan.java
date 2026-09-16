@@ -49,7 +49,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
     @Option(name = "-s", aliases = {"--onlySides"}, usage = "output compounds flagged as side compounds only")
     public boolean sideOnly = false;
 
-    @Option(name = "-id", aliases = {"--onlyIds"}, usage = "do not report values in output, export ids of compounds flagged as side compounds, allowing piping results")
+    @Option(name = "-id", aliases = {"--onlyIds"}, usage = "output only the identifiers of compounds flagged as side compounds, one per line, with no header or other columns ; suited for piping into other commands")
     public boolean noReportValue = false;
 
     @Option(name = "-d", aliases = {"--degree"}, usage = "flag as side compounds any compound with degree above threshold. Ignored if negative")
@@ -66,8 +66,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
 
     @Option(name = "-nc", aliases = {"--neighborCoupling"}, usage = "flag as side compound any compound with a number of parallel edges shared with a neighbor above the given threshold. Ignored if negative")
     public double parallelEdge = -1;
-    @Option(name = "-m", aliases = {"--merge"}, usage = "degree is shared between compounds in different compartments. " +
-            "Use names if consistent and unambiguous across compartments, or identifiers if compartment suffix is present (id in form \"xxx_y\" with xxx as base identifier and y as compartment label).")
+    @Option(name = "-m", aliases = {"--merge"}, usage = "share compound degree across compartments before applying degree-based criteria: no (default): no sharing, by_name: group by metabolite name, by_id: group by base id (strip \"_y\" compartment suffix)")
     public strategy mergingStrat = strategy.no;
 
     public static void main(String[] args) {
@@ -266,7 +265,11 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
                 " such as methane usually considered as organic.  " +
                 "- *Chemical Formula*: Metabolic network often contains 'artifacts' that serve modelling purpose (to define a composite objective function for example). " +
                 "Such entities can be considered as 'side entities'. Since they are not actual chemical compounds, they can be detected by their lack of valid chemical formula. " +
-                "However, this can also flag main compounds with erroneous or missing annotation.";
+                "However, this can also flag main compounds with erroneous or missing annotation.\n" +
+                "- *Merge strategy (-m/--merge)*: compounds present in several compartments (e.g. a cytosolic and a mitochondrial pyruvate) are otherwise counted as distinct nodes, " +
+                "each with its own degree. This option sums their degree together before applying the degree-based criteria (-d/-dp), so that a compound's ubiquity is assessed " +
+                "network-wide rather than per compartment. \"by_name\" groups compounds sharing the same name, and is suited when names are consistent and unambiguous across compartments. " +
+                "\"by_id\" groups compounds by stripping the compartment suffix from their identifier, expected in the form \"xxx_y\" (xxx: base identifier, y: compartment label).";
     }
 
     @Override

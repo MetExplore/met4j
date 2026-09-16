@@ -183,4 +183,26 @@ public class GeneAssociationsTest {
         assertEquals(refMerge, testMerge);
 
     }
+
+    @Test(expected = GeneSetException.class)
+    public void testMergeTooComplexThrowsException() throws GeneSetException {
+
+        // Two associations whose product of sizes exceeds MAX_GENE_SETS: merging
+        // them must fail fast with a clear exception instead of building the
+        // whole (huge) combination in memory.
+        GeneAssociation big1 = buildAssociationOfSingletons("A", 1000);
+        GeneAssociation big2 = buildAssociationOfSingletons("B", 1000);
+
+        GeneAssociations.merge(big1, big2);
+    }
+
+    private GeneAssociation buildAssociationOfSingletons(String prefix, int n) throws GeneSetException {
+        GeneAssociation ga = new GeneAssociation();
+        for (int i = 0; i < n; i++) {
+            GeneSet gs = new GeneSet();
+            gs.add(prefix + i);
+            ga.add(gs);
+        }
+        return ga;
+    }
 }

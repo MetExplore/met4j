@@ -41,4 +41,8 @@ public class GeneSetException extends Exception {
         super("Not possible to transform gene set since it has been added in a gene association");
     }
 
+    public GeneSetException(String message) {
+        super(message);
+    }
+
 }

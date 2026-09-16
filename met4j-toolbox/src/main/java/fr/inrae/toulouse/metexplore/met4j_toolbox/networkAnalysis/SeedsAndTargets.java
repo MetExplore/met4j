@@ -62,7 +62,7 @@ public class SeedsAndTargets extends AbstractMet4jApplication {
     public boolean notsink = false;
 
     @ParameterType(name = EnumParameterTypes.Boolean)
-    @Option(name = "-is", aliases = {"--keepIsolated"}, usage = "do not ignore isolated nodes, consider isolated both seeds and targets")
+    @Option(name = "-is", aliases = {"--keepIsolated"}, usage = "include isolated nodes (no in- or out-edges) in the output, counting each of them as both a seed and a target; by default they are ignored")
     public boolean keepIsolated = false;
 
     @ParameterType(name = EnumParameterTypes.Boolean)

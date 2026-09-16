@@ -49,7 +49,7 @@ public class SideCompoundsScan extends AbstractMet4jApplication {
     @Option(name = "-s", aliases = {"--onlySides"}, usage = "output compounds flagged as side compounds only")
     public boolean sideOnly = false;
 
-    @Option(name = "-id", aliases = {"--onlyIds"}, usage = "do not report values in output, export ids of compounds flagged as side compounds, allowing piping results")
+    @Option(name = "-id", aliases = {"--onlyIds"}, usage = "output only the identifiers of compounds flagged as side compounds, one per line, with no header or other columns ; suited for piping into other commands")
     public boolean noReportValue = false;
 
     @Option(name = "-d", aliases = {"--degree"}, usage = "flag as side compounds any compound with degree above threshold. Ignored if negative")

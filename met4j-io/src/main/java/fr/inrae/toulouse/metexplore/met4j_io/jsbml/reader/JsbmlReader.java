@@ -52,6 +52,7 @@ import org.sbml.jsbml.SBMLReader;
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.AdditionalDataTag;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.dataTags.PrimaryDataTag;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociations;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.AnnotationParser;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBCParser;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.GroupPathwayParser;
@@ -95,6 +96,29 @@ public class JsbmlReader {
      */
     public JsbmlReader(String filename) {
         this.filename = filename;
+    }
+
+    /**
+     * Set the maximum number of gene sets ("AND" complexes) a GPR is allowed to
+     * expand into when converting it to enzymes (see
+     * {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociations#MAX_GENE_SETS}).
+     * A GPR that would exceed this limit is skipped with a warning instead of
+     * exhausting the heap. Defaults to 500,000 if never called.
+     *
+     * @param maxGeneSets the new maximum number of gene sets
+     */
+    public void setMaxGeneSets(long maxGeneSets) {
+        GeneAssociations.MAX_GENE_SETS = maxGeneSets;
+    }
+
+    /**
+     * Get the maximum number of gene sets ("AND" complexes) a GPR is allowed to
+     * expand into.
+     *
+     * @return the current limit
+     */
+    public long getMaxGeneSets() {
+        return GeneAssociations.MAX_GENE_SETS;
     }
 
     /**

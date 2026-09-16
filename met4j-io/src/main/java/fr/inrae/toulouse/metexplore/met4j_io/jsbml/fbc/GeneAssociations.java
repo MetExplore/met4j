@@ -52,8 +52,11 @@ public class GeneAssociations {
      * "OR" clauses through "AND" operators grows combinatorially. Without this
      * guard, a sufficiently complex GPR exhausts the heap instead of failing
      * with a clear, catchable error.
+     * <p>
+     * Defaults to 500,000 but can be overridden, e.g. through
+     * {@link fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.JsbmlReader#setMaxGeneSets(long)}.
      */
-    public static final long MAX_GENE_SETS = 500_000L;
+    public static long MAX_GENE_SETS = 500_000L;
 
     /**
      * Merge two gene associations (AND relation)

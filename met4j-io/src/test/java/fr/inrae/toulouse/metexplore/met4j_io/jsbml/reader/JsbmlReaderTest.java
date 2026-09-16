@@ -37,6 +37,7 @@
 package fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader;
 
 import fr.inrae.toulouse.metexplore.met4j_core.biodata.BioNetwork;
+import fr.inrae.toulouse.metexplore.met4j_io.jsbml.fbc.GeneAssociations;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.FBCParser;
 import fr.inrae.toulouse.metexplore.met4j_io.jsbml.reader.plugin.PackageParser;
 import org.junit.Test;
@@ -94,6 +95,24 @@ public class JsbmlReaderTest {
         assertEquals(0, network.getGenesView().size());
 
 
+    }
+
+    @Test
+    public void setMaxGeneSets() {
+
+        JsbmlReader reader = new JsbmlReader("test");
+
+        long original = GeneAssociations.MAX_GENE_SETS;
+        try {
+            assertEquals(500_000L, reader.getMaxGeneSets());
+
+            reader.setMaxGeneSets(2_000_000L);
+
+            assertEquals(2_000_000L, reader.getMaxGeneSets());
+            assertEquals(2_000_000L, GeneAssociations.MAX_GENE_SETS);
+        } finally {
+            GeneAssociations.MAX_GENE_SETS = original;
+        }
     }
 
     @Test

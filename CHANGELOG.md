@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [met4j-io] fix SBML import: avoid huge enzyme identifiers for gene complexes with many subunits
 [met4j-io] fix GPR parsing: skip and warn instead of an OutOfMemoryError when a gene association is too complex to be resolved, import continues for other reactions
+[met4j-io] JsbmlReader.setMaxGeneSets(long) allows overriding the gene association complexity limit (default 500000)
 
 ## 2.4.0
 [met4j-toolbox] New app to extract pathways assignments for metabolites, reactions and genes

@@ -6,177 +6,177 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 2.4.2
 
-[met4j-toolbox] Fix generation of galaxy wrappers: take into account the conditional output graph format
-[met4j-core] Add BioNetwork.containsProtein method
-[met4j-io][NotesParser] Add a warning when a reaction has a too complex GPR
-[CI] CI-friendly versioning (version given by the git tag), publication to Maven Central, GitLab packages, Docker and Singularity only on X.Y.Z tags, GitLab release created from the changelog
+- [met4j-toolbox] Fix generation of galaxy wrappers: take into account the conditional output graph format
+- [met4j-core] Add BioNetwork.containsProtein method
+- [met4j-io][NotesParser] Add a warning when a reaction has a too complex GPR
+- [CI] CI-friendly versioning (version given by the git tag), publication to Maven Central, GitLab packages, Docker and Singularity only on X.Y.Z tags, GitLab release created from the changelog
 
 ## 2.4.1
 
-[met4j-toolbox] fix SbmlWizard: remove paired reactants before side compounds
+- [met4j-toolbox] fix SbmlWizard: remove paired reactants before side compounds
 
-[met4j-io] fix SBML import: avoid huge enzyme identifiers for gene complexes with many subunits
-[met4j-io] fix GPR parsing: skip and warn instead of an OutOfMemoryError when a gene association is too complex to be resolved, import continues for other reactions
-[met4j-io] JsbmlReader.setMaxGeneSets(long) allows overriding the gene association complexity limit (default 500000)
+- [met4j-io] fix SBML import: avoid huge enzyme identifiers for gene complexes with many subunits
+- [met4j-io] fix GPR parsing: skip and warn instead of an OutOfMemoryError when a gene association is too complex to be resolved, import continues for other reactions
+- [met4j-io] JsbmlReader.setMaxGeneSets(long) allows overriding the gene association complexity limit (default 500000)
 
 ## 2.4.0
-[met4j-toolbox] New app to extract pathways assignments for metabolites, reactions and genes
-[met4j-toolbox] Improve SetReferences app by allowing mutltiple references to be set for a single entity
+- [met4j-toolbox] New app to extract pathways assignments for metabolites, reactions and genes
+- [met4j-toolbox] Improve SetReferences app by allowing mutltiple references to be set for a single entity
 
-[met4j-bigg] fix BiGG API connection issues
-[met4j-io] fix Kegg conversion
-[met4j-core] fix: take into account the reversibility of reactions when removing co-occurring metabolite sets
+- [met4j-bigg] fix BiGG API connection issues
+- [met4j-io] fix Kegg conversion
+- [met4j-core] fix: take into account the reversibility of reactions when removing co-occurring metabolite sets
 
 ## 2.3.0
-[met4j-toolbox] **new app** : MetaboliteSetCooccurrence : a toolbox app to detect co-occurring metabolites patterns across reactions, allowing to identify potential side transistion such as ATP -> ADP + Pi.  
-[met4j-toolbox] Support for pattern-based filtering in SBMLWizard as an alternative to side compounds definition.  
-[met4j-core] Added MetabolitesCoOccurrence class to enumerate reactant patterns.  
-[met4j-toolbox] **new app** : ExtractCompartments : a toolbox app similar to ExtractPathways but using compartment input, allowing to extract a sub-network with only a selection of compartments.  
-[met4j-toolbox] Added support for negative selection in ExtractPathways  
-[met4j-toolbox] Added compartment info in GetMetaboliteAttributes output  
-[met4j-core] list of compartments of reactants can be directly accessed from a BioReaction using BioReaction.getCompartments method. 
+- [met4j-toolbox] **new app** : MetaboliteSetCooccurrence : a toolbox app to detect co-occurring metabolites patterns across reactions, allowing to identify potential side transistion such as ATP -> ADP + Pi.  
+- [met4j-toolbox] Support for pattern-based filtering in SBMLWizard as an alternative to side compounds definition.  
+- [met4j-core] Added MetabolitesCoOccurrence class to enumerate reactant patterns.  
+- [met4j-toolbox] **new app** : ExtractCompartments : a toolbox app similar to ExtractPathways but using compartment input, allowing to extract a sub-network with only a selection of compartments.  
+- [met4j-toolbox] Added support for negative selection in ExtractPathways  
+- [met4j-toolbox] Added compartment info in GetMetaboliteAttributes output  
+- [met4j-core] list of compartments of reactants can be directly accessed from a BioReaction using BioReaction.getCompartments method. 
 
-[met4j-toolbox] fix wrong status and column number in SideCompoundScan output when degree and percentile are both ignored
+- [met4j-toolbox] fix wrong status and column number in SideCompoundScan output when degree and percentile are both ignored
 Added Features  
 
 ## 2.2.2
-[met4j-toolbox] New graph export format compatible with MetExploreViz  
+- [met4j-toolbox] New graph export format compatible with MetExploreViz  
 
-[met4j-io] fix duplicated compartment suffix in Tab2Sbml and Tab2BioNetwork  
-[met4j-io] handle sbml export of bionetworks with compounds in multiple compartments  
-[met4j-toolbox] remove deprecated options in Tab2Sbml, avoid reliance on identifiers convention such as compartment suffix  
+- [met4j-io] fix duplicated compartment suffix in Tab2Sbml and Tab2BioNetwork  
+- [met4j-io] handle sbml export of bionetworks with compounds in multiple compartments  
+- [met4j-toolbox] remove deprecated options in Tab2Sbml, avoid reliance on identifiers convention such as compartment suffix  
 
 ## 2.2.0
 
-[met4j-toolbox] Fix Galaxy compatibility issues with SideCompoundScan, improve logging and criteria for side compound detection  
-[met4j-toolbox] Add apps to map entities in sbml from list of masses  
-[met4j-toolbox] Add apps to map entities in sbml from list of formulas  
-[met4j-toolbox] Add apps to map entities in sbml from list of external identifiers  
-[met4j-toolbox] Add app to groups reactions in SBML by enzyme Class
+- [met4j-toolbox] Fix Galaxy compatibility issues with SideCompoundScan, improve logging and criteria for side compound detection  
+- [met4j-toolbox] Add apps to map entities in sbml from list of masses  
+- [met4j-toolbox] Add apps to map entities in sbml from list of formulas  
+- [met4j-toolbox] Add apps to map entities in sbml from list of external identifiers  
+- [met4j-toolbox] Add app to groups reactions in SBML by enzyme Class
 
-[met4j-mapping] new AttributeMapper class to retrieve any BioEntity in a BioNetwork from a value of one of its attribute  
-[met4j-chemUtils] new MassComputor wrapper class to compute molecular weights from chemical formulas using CDK, and set them in BioMetabolites  
+- [met4j-mapping] new AttributeMapper class to retrieve any BioEntity in a BioNetwork from a value of one of its attribute  
+- [met4j-chemUtils] new MassComputor wrapper class to compute molecular weights from chemical formulas using CDK, and set them in BioMetabolites  
 
 ## 2.1.0
 
-[met4j-core] Improve BioNetwork methods in terms of performance (memory and speed)  
-[met4j-toolbox] NotesToFBC : New Met4J app to create a SBML file with html notes to a SBML file with fbc package  
-[met4j-graph] Expand attributes exported in graph formats, such as isTransport and Compartments   
+- [met4j-core] Improve BioNetwork methods in terms of performance (memory and speed)  
+- [met4j-toolbox] NotesToFBC : New Met4J app to create a SBML file with html notes to a SBML file with fbc package  
+- [met4j-graph] Expand attributes exported in graph formats, such as isTransport and Compartments   
 
-[met4j-toolbox] fix bug in SideCompoundScan: percentile degree ignored  
-[met4j-toolbox] fix bug in CreateMetaNetwork: id merge conflict with added suffixes  
+- [met4j-toolbox] fix bug in SideCompoundScan: percentile degree ignored  
+- [met4j-toolbox] fix bug in CreateMetaNetwork: id merge conflict with added suffixes  
 
 ## 2.0.0
 
-[met4j-toolbox] harmonization of the apps' parameters and names (check for compatibility issues)  
-[met4j-toolbox] improved documentation  
-[met4j-toolbox] add citation information to apps  
-[met4j-toolbox][reconstruction] add a new app to create community networks  
+- [met4j-toolbox] harmonization of the apps' parameters and names (check for compatibility issues)  
+- [met4j-toolbox] improved documentation  
+- [met4j-toolbox] add citation information to apps  
+- [met4j-toolbox][reconstruction] add a new app to create community networks  
 
-[met4j-core] add support for meta-networks (community networks, holobionts, multi-organ model etc.)
+- [met4j-core] add support for meta-networks (community networks, holobionts, multi-organ model etc.)
 
-[met4j-graph] Improve graph export:  
+- [met4j-graph] Improve graph export:  
     - added a utility class for apps exporting graphs, removing duplicated code  
     - parameterizable export for handling custom attributes  
     - harmonization and support for all graph types  
     - node table export in apps  
     - tabulated as default (check for compatibility issues)  
-[met4j-io] Fix protein/gene names in FBC parser  
+- [met4j-io] Fix protein/gene names in FBC parser  
 
 
 ## 1.5.0
 
 
-[met4j-graph] Overload getReactionGraph to be able to provide a list of reactions to exclude  
-[met4j-toolbox] New app to compute the reaction graph distance matrix  
-[met4j-toolbox] New app to perform topology-based pathway analysis  
-[met4j-toolbox] New app to perform over-representation based pathway analysis  
+- [met4j-graph] Overload getReactionGraph to be able to provide a list of reactions to exclude  
+- [met4j-toolbox] New app to compute the reaction graph distance matrix  
+- [met4j-toolbox] New app to perform topology-based pathway analysis  
+- [met4j-toolbox] New app to perform over-representation based pathway analysis  
 
 
 ## 1.4.0
 
-[met4j-toolbox] New app for general SBML model processing including compound removal (such as side compounds or isolated compounds), reaction removal (ex. blocked or exchange reaction), and compartment merging  
+- [met4j-toolbox] New app for general SBML model processing including compound removal (such as side compounds or isolated compounds), reaction removal (ex. blocked or exchange reaction), and compartment merging  
 
-[met4j-core] Added a class to create, from a network with multiple compartments, a new network with a single compartment, avoiding duplicated compounds.  
+- [met4j-core] Added a class to create, from a network with multiple compartments, a new network with a single compartment, avoiding duplicated compounds.  
 
-[met4j-core] Added utility method to remove duplicated reactions  
+- [met4j-core] Added utility method to remove duplicated reactions  
 
 ## 1.3.1
 
-[met4j-io] Fix Kegg import
+- [met4j-io] Fix Kegg import
 
-[met4j-graph] Fix Steiner tree approximation
+- [met4j-graph] Fix Steiner tree approximation
 
-[ci] Fix docker & singularity image generation
+- [ci] Fix docker & singularity image generation
 
 ## 1.3.0
 
 ### Features
 
-[met4j-toolbox] New app for pathway-networks creation (compound overlap or source/sink intersection)
+- [met4j-toolbox] New app for pathway-networks creation (compound overlap or source/sink intersection)
 
-[met4j-graph] Added undirected graph simplification method for export
+- [met4j-graph] Added undirected graph simplification method for export
 
 ### Fix
 
-[met4j-graph] expand handled attributes for gml export
+- [met4j-graph] expand handled attributes for gml export
 
-[met4j-graph] fix steiner Tree aproximation, add pruning step to avoid cycles
+- [met4j-graph] fix steiner Tree aproximation, add pruning step to avoid cycles
 
-[met4j-io] Fix Tab2Sbml : allows empty side in reactions
+- [met4j-io] Fix Tab2Sbml : allows empty side in reactions
 
 ## 1.2.2
 
 ### Fix
 
-[met4j-io] Fix Kegg2BioNetwork: change http to https 
+- [met4j-io] Fix Kegg2BioNetwork: change http to https 
 
 ## 1.2.1
 
 ### Features
 
-[met4j-toolbox] Add App to perform chemical names fuzzy mapping between datasets and models
+- [met4j-toolbox] Add App to perform chemical names fuzzy mapping between datasets and models
 
-[met4j-mapping] Add classes for edit-distance based fuzzy search
+- [met4j-mapping] Add classes for edit-distance based fuzzy search
 
-[met4j-graph] Add utilities to get distance matrix from paths
+- [met4j-graph] Add utilities to get distance matrix from paths
 
-[met4j-graph] More flexible weighting policy definition using lambdas
+- [met4j-graph] More flexible weighting policy definition using lambdas
 
-[met4j-toolbox] Add app to calculate the distance matrix on bipartite graphs
+- [met4j-toolbox] Add app to calculate the distance matrix on bipartite graphs
 
 ### Fix
 
-[met4j-graph] Improve Shortest Paths union computing efficiency
+- [met4j-graph] Improve Shortest Paths union computing efficiency
 
-[met4j-graph] Fix use of weighted graphs as undirected. Reversed edges now bear same weight as their origin
+- [met4j-graph] Fix use of weighted graphs as undirected. Reversed edges now bear same weight as their origin
 
-[met4j-io] Fix SetIdsFromFile : do not throw an exception when a new id is found twice
+- [met4j-io] Fix SetIdsFromFile : do not throw an exception when a new id is found twice
 
 
 ## 1.2.0
 
 ### Features
 
-[met4j-toolbox] Add Apps to compute compound graph's classical weights (degree/chemical similarity)
+- [met4j-toolbox] Add Apps to compute compound graph's classical weights (degree/chemical similarity)
 
-[met4j-toolbox] Add App to identify model seeds and targets
+- [met4j-toolbox] Add App to identify model seeds and targets
 
-[met4j-toolbox] Add App to set new ids to metabolic entities in a SBML file
+- [met4j-toolbox] Add App to set new ids to metabolic entities in a SBML file
 
-[met4j-graph] Add method to create RPAIRs-like tags on compound graph's edges
+- [met4j-graph] Add method to create RPAIRs-like tags on compound graph's edges
 
 ## 1.1.1
 
 ### Hotfix
 
-[met4j-io] Fix Met4JSbmlReaderException. Error messages will be more explicit.
+- [met4j-io] Fix Met4JSbmlReaderException. Error messages will be more explicit.
 
 ## 1.1.0
 
 ### Features
 
-[met4j-toolbox] Improve Met4J usability for Galaxy Workflow by adding utilities apps that exploit bioNetworks functions
+- [met4j-toolbox] Improve Met4J usability for Galaxy Workflow by adding utilities apps that exploit bioNetworks functions
 
 - decomposeSBML to get bioentities in sbml as list of ids
 - GetReactantsFromReactions to get list of metabolites from sbml + list of reactions
@@ -186,92 +186,92 @@ Added Features
 
 ### Fixed
 
-[met4j-toolbox] Better error handling
+- [met4j-toolbox] Better error handling
 
-[met4j-toolbox][SbmlSetPathways] Format pathway id to avoid redundancies
+- [met4j-toolbox][SbmlSetPathways] Format pathway id to avoid redundancies
 
-[met4j-graph] DefaultWeightPolicy class renamed UnweightedPolicy. Use weights option removed from shortest paths computation,
+- [met4j-graph] DefaultWeightPolicy class renamed UnweightedPolicy. Use weights option removed from shortest paths computation,
 now handled directly from graph to avoid conflict
 
 ## 1.0
 
 ### Features
 
-[met4j-toolbox] Executable jar in the [met4j gitlab registry](https://forgemia.inra.fr/metexplore/met4j/-/packages)
+- [met4j-toolbox] Executable jar in the [met4j gitlab registry](https://forgemia.inra.fr/metexplore/met4j/-/packages)
 
 ### Documentation
 
-[met4j-core] Improve documentation in README.md
+- [met4j-core] Improve documentation in README.md
 
 ## 0.12.0
 
 ### Features
 
-[met4j-toolbox] Subnetwork Extraction Improvement : 
+- [met4j-toolbox] Subnetwork Extraction Improvement : 
 - bipartite graph compatibility
 - export as table
 - allows undirected case for paths and steiner tree computation 
 
 ### Fixed
-[met4j-graph] shortest paths union and steiner tree optimization
+- [met4j-graph] shortest paths union and steiner tree optimization
 
-[met4j-graph] fix error in gml export causing import in igraph and cytoscape to fail
+- [met4j-graph] fix error in gml export causing import in igraph and cytoscape to fail
 
-[met4j-mathUtils] fix sub-matrix creation not retaining rows&columns labels
+- [met4j-mathUtils] fix sub-matrix creation not retaining rows&columns labels
 
-[met4j-toolbox] Improvements of GenerateGalaxyFiles and GenerateJson
+- [met4j-toolbox] Improvements of GenerateGalaxyFiles and GenerateJson
 
 ## 0.11.0
 
 ### Features
 
-[met4j-toolbox] New app : GenerateGalaxyFiles to generate automatically wrappers for Galaxy
+- [met4j-toolbox] New app : GenerateGalaxyFiles to generate automatically wrappers for Galaxy
 
-[met4j-toolbox] New app : GenerateJson to generate a json describing the apps
+- [met4j-toolbox] New app : GenerateJson to generate a json describing the apps
 
-[devops] Automatic generation of the singularity and docker images for the develop & master versions.
+- [devops] Automatic generation of the singularity and docker images for the develop & master versions.
 
 ## 0.10.0
 
 ### Features
 
-[met4j-toolbox] New app: networkAnalysis.CompoundNet: Advanced compound graph building
+- [met4j-toolbox] New app: networkAnalysis.CompoundNet: Advanced compound graph building
 
-[met4j-toolbox] New app: attributes.ExtractPathways: SBML sub network creation from a list of pathways
+- [met4j-toolbox] New app: attributes.ExtractPathways: SBML sub network creation from a list of pathways
 
-[met4j-toolbox] New app: attributes.ExtractSbmlAnnot: Extract sbml annotations 
+- [met4j-toolbox] New app: attributes.ExtractSbmlAnnot: Extract sbml annotations 
 
-[met4j-toolbox] App improvements: networkAnalysis.SideCompoundsScan: Handle multiple compartments
+- [met4j-toolbox] App improvements: networkAnalysis.SideCompoundsScan: Handle multiple compartments
 
 ## 0.9.1
 
 ### Fixed
 
-[met4j-io] Great speed improvements to read gene reaction associations
+- [met4j-io] Great speed improvements to read gene reaction associations
 
 ## 0.9.0
 
 ### Features
 
-[met4j-toolbox] ExtractSubReactionNetwork app
+- [met4j-toolbox] ExtractSubReactionNetwork app
 
 ## 0.8.3 
 
 ### Fixed
 
-[met4j-io] Debug Tab2BioNetwork
+- [met4j-io] Debug Tab2BioNetwork
 
 ## 0.8.2
 
 ### Fixed
 
-[met4j-io] Deals better when a reactant has a stoichiometry equals to 0. Before, there was an Exception, now the reactant is simply not taken into account.
+- [met4j-io] Deals better when a reactant has a stoichiometry equals to 0. Before, there was an Exception, now the reactant is simply not taken into account.
 
 ## 0.8.1
 
 ### Fixed
 
-[met4j-io] New stable version of JSBML (1.6.1 that corrects log4j vulnerabilities)
+- [met4j-io] New stable version of JSBML (1.6.1 that corrects log4j vulnerabilities)
 
 ## 0.8.0
 
@@ -284,31 +284,31 @@ App Kegg2Sbml
 
 ### Fixed
 
-[met4j-io] Accepts stoichiometric coefficient equals to 0
+- [met4j-io] Accepts stoichiometric coefficient equals to 0
 
 ## 0.7.5
 
 ### Fixed
 
-[met4j-core] debug remove(gene)
+- [met4j-core] debug remove(gene)
 
 ## 0.7.4
 
 ### Fixed
 
-[met4j-io] replace negative coefficients by positive coefficients
+- [met4j-io] replace negative coefficients by positive coefficients
 
 ## 0.7.3
 
 ### Fixed
 
-[maven]: Change rule of deploy
+- [maven]: Change rule of deploy
 
 ## 0.7.2
 
 ### Fixed
 
-[met4j-io]: Check that pathways are not created before note parsing
+- [met4j-io]: Check that pathways are not created before note parsing
 
 ## 0.7.1
 

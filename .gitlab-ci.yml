@@ -1,234 +1,195 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    # Avoid duplicated pipelines (branch + merge request)
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    # New version: the git tag gives the maven version
+    - if: $CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/
+      variables:
+        REVISION: $CI_COMMIT_TAG
+    # Other tags (e.g. changeVersion2_4_1) do not trigger any pipeline
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_COMMIT_BRANCH
+
 stages:
-  - build
   - test
   - package
   - deploy
   - build-containers
+  - release
 
-.template_docker:
-  stage: build-containers
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - if [ "$CI_COMMIT_BRANCH" = "master" ]; then docker build -t "$DOCKER_IMAGE:latest" .; fi
-    - if [ "$CI_COMMIT_BRANCH" = "master" ]; then docker push "$DOCKER_IMAGE:latest"; fi
-    - if [ "$CI_COMMIT_BRANCH" = "develop" -o "$CI_COMMIT_BRANCH" = "master" ]; then docker build -t "$DOCKER_IMAGE:$VERSION" .; fi
-    # version in lower case
-    - if [ "$CI_COMMIT_BRANCH" = "develop" -o "$CI_COMMIT_BRANCH" = "master" -a "$VERSION" != "$LOWER_CASE_VERSION" ]; then docker build -t "$DOCKER_IMAGE:$LOWER_CASE_VERSION" .; fi
-    - if [ "$CI_COMMIT_BRANCH" = "develop" -o "$CI_COMMIT_BRANCH" = "master" -a "$VERSION" != "$LOWER_CASE_VERSION" ]; then docker push "$DOCKER_IMAGE:$LOWER_CASE_VERSION"; fi
-    - docker build -t "$DOCKER_IMAGE:$FORMATTED_COMMIT_BRANCH" .
-    - docker push "$DOCKER_IMAGE:$FORMATTED_COMMIT_BRANCH"
-    # branch in lower case
-    - docker build -t "$DOCKER_IMAGE:$LOWER_CASE_COMMIT_BRANCH" .
-    - docker push "$DOCKER_IMAGE:$LOWER_CASE_COMMIT_BRANCH"
-  rules:
-    - if: $CI_COMMIT_BRANCH == "master"
-      when: always
-    - if: $CI_COMMIT_BRANCH == "develop"
-      when: always
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: never
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-      when: manual
-  needs:
-    - build
-    - package
+default:
   tags:
     - stable
 
 variables:
-  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  REVISION: "0-SNAPSHOT"
+  MAVEN_IMAGE: "maven:3.9-eclipse-temurin-17"
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode -Drevision=$REVISION"
+  TOOLBOX_JAR: "met4j-toolbox/target/met4j-toolbox-$REVISION.jar"
+  PACKAGE_URL: "$CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/generic/met4j-toolbox/$CI_COMMIT_TAG/met4j-toolbox.jar"
 
-cache:
-  paths:
-    - .m2/repository/
-
-build:
-  image: eclipse-temurin:17.0.12_7-jdk
-  stage: build
-  before_script:
-    - apt-get update && apt-get install -y maven
-  script:
-    - mvn $MAVEN_OPTS compile
-    - TRUEVERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-    - VERSION=$TRUEVERSION
-    - if [ "$CI_COMMIT_BRANCH" = "master" ]; then VERSION=${VERSION%"-SNAPSHOT"}; fi
-    - LOWER_CASE_VERSION=${VERSION,,}
-    # Replace / by _ in the name of the commit
-    - FORMATTED_COMMIT_BRANCH=${CI_COMMIT_BRANCH//\//_}
-    - LOWER_CASE_COMMIT_BRANCH=${FORMATTED_COMMIT_BRANCH,,}
-    - echo "VERSION=$VERSION" >> build.env
-    - echo "TRUEVERSION=$TRUEVERSION" >> build.env
-    - echo "FORMATTED_COMMIT_BRANCH=$FORMATTED_COMMIT_BRANCH" >> build.env
-    - echo "LOWER_CASE_VERSION=$LOWER_CASE_VERSION" >> build.env
-    - echo "LOWER_CASE_COMMIT_BRANCH=$LOWER_CASE_COMMIT_BRANCH" >> build.env
-  artifacts:
-    expire_in: 60 min
+.maven:
+  image: $MAVEN_IMAGE
+  cache:
+    key:
+      files:
+        - pom.xml
     paths:
-      - target/
-      - "*/target"
-    reports:
-      dotenv: build.env
-  tags:
-    - stable
+      - .m2/repository/
+
+# Jobs publishing a new version: only on X.Y.Z tags
+.release_rules:
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^\d+\.\d+\.\d+$/
+
+.release_needs:
+  needs:
+    - package
+    - test
+    - integration_test
 
 test:
-  image: eclipse-temurin:17.0.12_7-jdk
+  extends: .maven
   stage: test
-  before_script:
-    - apt-get update && apt-get install -y maven
   script:
-    - find . -name "*.class" -exec touch {} \+
-    - mvn $MAVEN_OPTS clean test
-    - cat coverage/target/site/jacoco-aggregate/index.html | grep -o '<tfoot>.*</tfoot>'
+    - mvn $MAVEN_CLI_OPTS clean test
+    - grep -o '<tfoot>.*</tfoot>' coverage/target/site/jacoco-aggregate/index.html
   coverage: '/Total.*?([0-9]{1,3})%/'
-  tags:
-    - stable
-
+  artifacts:
+    when: always
+    expire_in: 1 week
+    reports:
+      junit: "**/target/surefire-reports/TEST-*.xml"
+      coverage_report:
+        coverage_format: jacoco
+        path: coverage/target/site/jacoco-aggregate/jacoco.xml
 
 integration_test:
-  image: eclipse-temurin:17.0.12_7-jdk
+  extends: .maven
   stage: test
-  before_script:
-    - apt-get update && apt-get install -y maven
   script:
-    - mvn $MAVEN_OPTS clean verify -Dsurefire.skip=true
-  tags:
-    - stable
-
+    - mvn $MAVEN_CLI_OPTS clean verify -DskipUTs=true
+  artifacts:
+    when: always
+    expire_in: 1 week
+    reports:
+      junit: "**/target/failsafe-reports/TEST-*.xml"
 
 package:
-  image: eclipse-temurin:17.0.12_7-jdk
+  extends: .maven
   stage: package
-  before_script:
-    - apt-get update && apt-get install -y maven
   script:
-    - mvn $MAVEN_OPTS clean install -DskipTests=true
-    - cd met4j-toolbox
-    - mvn $MAVEN_OPTS package -DskipTests=true
-    - cd ..
+    - mvn $MAVEN_CLI_OPTS clean install -DskipTests
   artifacts:
-    expire_in: 60 min
+    expire_in: 1 day
     paths:
-      - "met4j-toolbox/target/met4j-toolbox*.jar"
-  tags:
-    - stable
+      - $TOOLBOX_JAR
+
+# Checks that the release profile (javadoc, sources) builds before tagging
+verifyRelease:
+  extends: .maven
+  stage: package
+  script:
+    - mvn $MAVEN_CLI_OPTS -Prelease -Dgpg.skip -DskipTests clean verify
+  rules:
+    - if: $CI_COMMIT_BRANCH =~ /^(release|hotfix)\//
 
 deployJar:
+  extends:
+    - .release_rules
+    - .release_needs
   stage: deploy
-  image: curlimages/curl:latest
+  image: curlimages/curl:8.10.1
+  cache: []
   script:
-    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file "met4j-toolbox/target/met4j-toolbox-$TRUEVERSION.jar" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/met4j-toolbox/$VERSION/met4j-toolbox.jar"'
-  rules:
-    - if: $CI_COMMIT_BRANCH == "master"
-      when: always
-    - if: $CI_COMMIT_BRANCH == "develop"
-      when: always
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: never
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-      when: manual
-  needs:
-    - build
-    - package
-  tags:
-    - stable
-
-.template_deployCentral:
-  image: eclipse-temurin:17.0.12_7-jdk
-  stage: deploy
-  before_script:
-    - apt-get update && apt-get install -y maven git
-    - 'which ssh-agent || ( apt-get update -qy && apt-get install openssh-client -qqy )'
-    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
-    - eval $(ssh-agent -s)
-    - echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-    - 'which gpg || ( apt-get update -qy && apt-get install gnupg -qqy )'
-    - export GPG_TTY=$(tty)
-    - gpg -v --batch --import <(echo "${GPG_PRIVATE_KEY}")
-    - git config --global user.email "$GITLAB_USER_EMAIL"
-    - git config --global user.name "$GITLAB_USER_NAME"
-    - git checkout -B "$CI_COMMIT_REF_NAME"
-  tags:
-    - stable
-
-deployCentralSnapshot:
-  extends: .template_deployCentral
-  script:
-    # Deploy snapshots only, skip release plugin
-    - mvn $MAVEN_CLI_OPTS clean deploy -DskipTests -Dmaven.test.skip=true -e
-  only:
-    - develop
-  tags:
-    - stable
-
+    - 'curl --fail --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file "$TOOLBOX_JAR" "$PACKAGE_URL"'
 
 deployCentral:
-  extends: .template_deployCentral
+  extends:
+    - .maven
+    - .release_rules
+  stage: deploy
+  needs:
+    - test
+    - integration_test
+  before_script:
+    - which gpg || (apt-get update -qy && apt-get install -qqy gnupg)
+    - export GPG_TTY=$(tty)
+    - gpg --batch --import <(echo "$GPG_PRIVATE_KEY")
   script:
-    - mvn $MAVEN_CLI_OPTS release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true -DscmCommentPrefix="[skip ci]" -DupdateWorkingCopyVersions=false -DpushChanges=false -DskipTests
-    - mvn $MAVEN_CLI_OPTS release:perform -DlocalCheckout=true -DskipTests -Dmaven.test.skip=true
-  only:
-    - master
-  tags:
-    - stable
-
-deployCentralDryRun:
-  extends: .template_deployCentral
-  script:
-    - mvn $MAVEN_CLI_OPTS release:prepare -DautoVersionSubmodules=true -Dmaven.test.skip=true -DscmCommentPrefix="[skip ci]" -DupdateWorkingCopyVersions=false -DpushChanges=false -DskipTests -DdryRun -e
-    - mvn $MAVEN_CLI_OPTS release:perform -DlocalCheckout=true -DskipTests -Dmaven.test.skip=true -DdryRun -e
-  tags:
-    - stable
-
+    - mvn $MAVEN_CLI_OPTS -Prelease clean deploy -DskipTests
 
 buildSingularity:
+  extends:
+    - .release_rules
+    - .release_needs
   stage: build-containers
   image:
     name: quay.io/singularity/singularity:v3.11.5-slim
     entrypoint: [ "" ]
+  cache: []
+  variables:
+    SINGULARITY_DOCKER_USERNAME: $CI_REGISTRY_USER
+    SINGULARITY_DOCKER_PASSWORD: $CI_REGISTRY_PASSWORD
+    SINGULARITY_IMAGE: "oras://$CI_REGISTRY_IMAGE/met4j-singularity"
   script:
     - singularity build met4j-toolbox.sif met4j.singularity
-    - if [ "$CI_COMMIT_BRANCH" = "master" ]; then singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"latest"; fi
-    - if [ "$CI_COMMIT_BRANCH" = "develop" -o "$CI_COMMIT_BRANCH" = "master" ]; then singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"$VERSION"; fi
-    # version in lower case
-    - if [ "$CI_COMMIT_BRANCH" = "develop" -o "$CI_COMMIT_BRANCH" = "master" -a "$VERSION" != "$LOWER_CASE_VERSION"]; then singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"$LOWER_CASE_VERSION"; fi
-    - singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"$FORMATTED_COMMIT_BRANCH"
-    # branch in lower case
-    - singularity push --docker-username "${CI_REGISTRY_USER}" --docker-password "${CI_REGISTRY_PASSWORD}" met4j-toolbox.sif oras://"$CI_REGISTRY_IMAGE"/met4j-singularity:"$LOWER_CASE_COMMIT_BRANCH"
-  rules:
-    - if: $CI_COMMIT_BRANCH == "master"
-      when: always
-    - if: $CI_COMMIT_BRANCH == "develop"
-      when: always
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: never
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-      when: manual
-  needs:
-    - build
-    - package
-  tags:
-    - stable
+    - singularity push met4j-toolbox.sif "$SINGULARITY_IMAGE:$CI_COMMIT_TAG"
+    - singularity push met4j-toolbox.sif "$SINGULARITY_IMAGE:latest"
+
+.template_docker:
+  extends:
+    - .release_rules
+    - .release_needs
+  stage: build-containers
+  image: docker:28
+  services:
+    - docker:28-dind
+  cache: []
+  script:
+    - docker build -t "$DOCKER_IMAGE:$CI_COMMIT_TAG" -t "$DOCKER_IMAGE:latest" .
+    - docker push "$DOCKER_IMAGE:$CI_COMMIT_TAG"
+    - docker push "$DOCKER_IMAGE:latest"
 
 buildDockerProdGitlab:
   extends: .template_docker
+  variables:
+    DOCKER_IMAGE: "$CI_REGISTRY/metexplore/met4j/met4j-docker"
   before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - DOCKER_IMAGE="$CI_REGISTRY/metexplore/met4j/met4j-docker"
-  tags:
-    - stable
-
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
 
 buildDockerProdDockerhub:
   extends: .template_docker
+  variables:
+    DOCKER_IMAGE: $DOCKERHUB_IMAGE
   before_script:
-    - docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_PASSWORD" $DOCKERHUB_REGISTRY
-    - DOCKER_IMAGE=$DOCKERHUB_IMAGE
-  tags:
-    - stable
+    - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USER" --password-stdin $DOCKERHUB_REGISTRY
+
+release:
+  extends: .release_rules
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  cache: []
+  needs:
+    - deployJar
+    - deployCentral
+  script:
+    # Release notes: the CHANGELOG.md section of this version
+    - awk -v v="## $CI_COMMIT_TAG" '$0 == v {f=1; next} /^## / {f=0} f' CHANGELOG.md > release_notes.md
+    - cat release_notes.md
+  release:
+    tag_name: $CI_COMMIT_TAG
+    name: "met4j $CI_COMMIT_TAG"
+    description: release_notes.md
+    assets:
+      links:
+        - name: "met4j-toolbox.jar"
+          url: $PACKAGE_URL
+          link_type: package
+        - name: "Docker and Singularity images"
+          url: "$CI_PROJECT_URL/container_registry"
+          link_type: image

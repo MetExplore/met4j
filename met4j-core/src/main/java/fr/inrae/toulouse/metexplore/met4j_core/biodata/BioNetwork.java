@@ -997,6 +997,16 @@ public class BioNetwork extends BioEntity {
         return this.enzymes.containsId(id);
     }
 
+
+    /**
+     * Check if a protein with a specific id already exists in the network
+     * @param id a String
+     * @return true if there is a {@link BioProtein} with this id exists in the BioNetwork
+     */
+    public Boolean containsProtein(String id) {
+        return this.proteins.containsId(id);
+    }
+
     /**
      * @param e a {@link BioEntity}
      * @return true if the network contains an entity with the same id

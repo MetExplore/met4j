@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: eclipse-temurin:17-jdk-alpine
+From: eclipse-temurin:17-jre-alpine
 
 %runscript
     if [ $# -lt 1 ] 
@@ -24,7 +24,7 @@ mvn package
     Maintainer Ludovic.Cottret@inrae.fr
     
 %post
-    apk update && apk add maven
+    apk add --no-cache bash
     cd /usr/bin && ln -s /opt/bin/met4j.sh
 
 %environment

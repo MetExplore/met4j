@@ -442,6 +442,10 @@ public abstract class AbstractMet4jApplication {
         for (HashMap<String, String> o : outputOptions) {
 
             Element param = getParamFromOption(document, o);
+            if (this instanceof GraphOutPut) {
+                // the output format depends on the value of the format parameter
+                addGraphChangeFormat(document, param);
+            }
             outputElements.appendChild(param);
             commandText += " " + o.get("argument") + " " + "\"$" + o.get("name") + "\"\n";
         }
@@ -499,6 +503,35 @@ public abstract class AbstractMet4jApplication {
                 .collect(Collectors.toList());
 
         Files.write(Paths.get(filePath), lines, StandardOpenOption.TRUNCATE_EXISTING);
+    }
+
+    /**
+     * Sets the galaxy format of a graph output file according to the value of the format parameter
+     * (tsv by default for tab and nodeList)
+     *
+     * @param document the wrapper xml document
+     * @param data     the output data element
+     */
+    private void addGraphChangeFormat(Document document, Element data) {
+
+        data.setAttribute("format", "tsv");
+
+        Element changeFormat = document.createElement("change_format");
+        // unknown datatype gml -> txt
+        String[][] formats = {
+                {GraphOutPut.formatEnum.gml.name(), "txt"},
+                {GraphOutPut.formatEnum.json.name(), "json"},
+                {GraphOutPut.formatEnum.matrix.name(), "csv"},
+                {GraphOutPut.formatEnum.jsonviz.name(), "json"}
+        };
+        for (String[] format : formats) {
+            Element when = document.createElement("when");
+            when.setAttribute("input", "format");
+            when.setAttribute("value", format[0]);
+            when.setAttribute("format", format[1]);
+            changeFormat.appendChild(when);
+        }
+        data.appendChild(changeFormat);
     }
 
     private Element getParamFromOption(Document document, HashMap<String, String> o) {

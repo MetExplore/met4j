@@ -22,3 +22,6 @@ dependency-reduced-pom.xml
 *.sif
 
 *.versionsBackup
+
+.flattened-pom.xml
+out/

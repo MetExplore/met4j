@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.4.2
+
+[met4j-toolbox] Fix generation of galaxy wrappers: take into account the conditional output graph format
+[met4j-core] Add BioNetwork.containsProtein method
+[met4j-io][NotesParser] Add a warning when a reaction has a too complex GPR
+[CI] CI-friendly versioning (version given by the git tag), publication to Maven Central, GitLab packages, Docker and Singularity only on X.Y.Z tags, GitLab release created from the changelog
+
 ## 2.4.1
 
 [met4j-toolbox] fix SbmlWizard: remove paired reactants before side compounds

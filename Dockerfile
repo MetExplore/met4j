@@ -1,6 +1,6 @@
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:17-jre-alpine
 
-RUN apk update && apk add bash
+RUN apk add --no-cache bash
 
 RUN mkdir /opt/bin
 

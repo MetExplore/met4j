@@ -529,8 +529,11 @@ public class NotesParser implements PackageParser, AdditionalDataTag, ReaderSBML
                     && (m = Pattern.compile(this.getGPRPattern()).matcher(reactionNotes)).find()) {
                 try {
                     GPR.createGPRfromString(this.network, reaction, m.group(1));
-                } catch (MalformedGeneAssociationStringException | GeneSetException e) {
-                    NotesParser.errorsAndWarnings.add(e.getLocalizedMessage());
+                } catch (MalformedGeneAssociationStringException e) {
+                    NotesParser.errorsAndWarnings.add("[Warning] "+"Reaction " + reaction.getId() + " has a malformed GPR string: " + e.getLocalizedMessage());
+                } catch  (GeneSetException e) {
+
+                    NotesParser.errorsAndWarnings.add("[Warning] "+"Reaction " + reaction.getId() + " has a problem with its GPR string: " + e.getLocalizedMessage());
                 }
 
             }

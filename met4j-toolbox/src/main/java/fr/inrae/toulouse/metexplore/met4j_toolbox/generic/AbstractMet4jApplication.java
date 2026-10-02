@@ -37,6 +37,7 @@
 package fr.inrae.toulouse.metexplore.met4j_toolbox.generic;
 
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.Format;
+import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.EnumFormats;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.generic.annotations.ParameterType;
 import fr.inrae.toulouse.metexplore.met4j_toolbox.utils.Doi;
 import org.apache.maven.model.Model;
@@ -401,7 +402,7 @@ public abstract class AbstractMet4jApplication {
                 if (o.get("type").startsWith("input")) {
                     param.setAttribute("type", "data");
                     if (o.containsKey("format"))
-                        param.setAttribute("format", o.get("format"));
+                        param.setAttribute("format", getGalaxyFormat(o.get("format")));
                     else
                         param.setAttribute("format", "txt");
                 } else {
@@ -534,13 +535,27 @@ public abstract class AbstractMet4jApplication {
         data.appendChild(changeFormat);
     }
 
+    /**
+     * Returns the galaxy datatype corresponding to a met4j format
+     *
+     * @param format the met4j format (lower case name of {@link EnumFormats})
+     * @return the galaxy datatype
+     */
+    private String getGalaxyFormat(String format) {
+        // unknown datatype gsam -> txt
+        if (EnumFormats.Gsam.name().equalsIgnoreCase(format)) {
+            return "txt";
+        }
+        return format;
+    }
+
     private Element getParamFromOption(Document document, HashMap<String, String> o) {
 
         Element param;
         if (o.get("type").equals("outputfile")) {
             param = document.createElement("data");
             param.setAttribute("name", o.get("name"));
-            param.setAttribute("format", o.get("format"));
+            param.setAttribute("format", getGalaxyFormat(o.get("format")));
         } else {
             param = document.createElement("param");
             param.setAttribute("name", o.get("name"));

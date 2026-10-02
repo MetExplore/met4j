@@ -424,15 +424,6 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
 </tbody>
 </table>
 <table>
-<thead><tr><th colspan="2">Package fr.inrae.toulouse.metexplore.met4j_toolbox.bigg</th></tr></thead>
-<tbody>
-<tr><td>GetBiggModelProteome</td><td>Get proteome in fasta format of a model present in the BIGG database<details><summary><small>more</small></summary>Get proteome in fasta format of a model present in the BIGG database<br/><br/>References:<br/><a href="https://doi.org/10.1093/nar/gkv1049">King et al.; BiGG Models: A platform for integrating, standardizing and sharing genome-scale models; Nucleic Acids Research; 2016</a><br/><br/><br/><pre><code> -h     : prints the help (default: false)
- -m VAL : [ex: iMM904] id of the BIGG model
- -o VAL : [proteome.fas] path of the output file (default: proteome.fas)
-</code></pre></details></td></tr>
-</tbody>
-</table>
-<table>
 <thead><tr><th colspan="2">Package fr.inrae.toulouse.metexplore.met4j_toolbox.convert</th></tr></thead>
 <tbody>
 <tr><td>FbcToNotes</td><td>Convert FBC package annotations to sbml html notes<details><summary><small>more</small></summary>Convert FBC package annotations to sbml html notes<br/>Convert FBC package annotations to sbml html notes.Be careful, the app reads only fbc annotations, the existing html notes will be overwritten.<br/><br/><br/>References:<br/><a href="https://doi.org/10.1515/jib-2017-0082">Olivier et al.; SBML Level 3 Package: Flux Balance Constraints version 2; Journal of Integrative Bioinformatics; 2018</a><br/><br/><br/><pre><code> -h     : prints the help (default: false)

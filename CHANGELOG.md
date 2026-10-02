@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 2.4.4
 
-- [met4j-toolbox] Remove GetBiggModelProteome app, now maintained as a standalone project
+- [met4j-toolbox] Remove GetBiggModelProteome app, now maintained as a standalone project (https://forge.inrae.fr/metexplore/tools/getbiggmodelproteome)
 - [met4j-toolbox] Galaxy wrappers: use `txt` instead of `gsam` format (#100)
 - [build] Fix install with Java 27
 - [CI] Automate release on GitHub

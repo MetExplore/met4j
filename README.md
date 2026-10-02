@@ -2,11 +2,14 @@
 # Met4J : the Java library for metabolic networks
 
 [![MetaboHUB Logo](https://forge.inrae.fr/metabohub/e-tools/template-readme-mth/-/raw/main/logos/metabohub_logo-20x20.png?ref_type=heads)![MetaboHUB title](https://img.shields.io/badge/MetaboHub-Software-0066cc?style=flat-square)](https://www.metabohub.fr)
+[![MetExplore Logo](doc/images/metexplore-platform-20x20.png)![MetExplore title](https://img.shields.io/badge/MetExplore_Platform-Software-0066cc?style=flat-square)](https://metexplore.toulouse.inrae.fr)
 [![pipeline status](https://forge.inrae.fr/metexplore/met4j/badges/master/pipeline.svg)](https://forge.inrae.fr/metexplore/met4j/-/commits/master)
 [![coverage report](https://forge.inrae.fr/metexplore/met4j/badges/master/coverage.svg)](https://forge.inrae.fr/metexplore/met4j/-/commits/master)
 [![maven](https://img.shields.io/maven-central/v/fr.inrae.toulouse.metexplore/met4j)](https://img.shields.io/maven-central/v/fr.inrae.toulouse.metexplore/met4j)
 [![version](https://img.shields.io/gitlab/v/tag/metexplore/met4j?gitlab_url=https%3A%2F%2Fforge.inrae.fr%2F&include_prereleases&label=version)](https://img.shields.io/gitlab/v/tag/metexplore/met4j?gitlab_url=https%3A%2F%2Fforge.inrae.fr%2F&include_prereleases&label=version)
 [![javadoc](https://javadoc.io/badge2/fr.inrae.toulouse.metexplore/met4j/javadoc.svg)](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j)
+[![bioconda](https://img.shields.io/conda/vn/bioconda/met4j?label=bioconda)](https://bioconda.github.io/recipes/met4j/README.html)
+[![Galaxy](https://img.shields.io/badge/Galaxy-met4j-ffd200?labelColor=2c3143)](https://met4j.usegalaxy.fr/)
 
 ## Metadata
 
@@ -16,7 +19,7 @@
 
 ## Description
 
-**Met4J is an open-source Java library dedicated to the structural analysis of metabolic networks. It also came with a toolbox gathering CLI for several analyses relevant to metabolism-related research.**
+**Met4J is an open-source Java library dedicated to the structural analysis of metabolic networks. Met4J also offers many features to edit, convert and parse SBML files. It also came with a toolbox gathering CLI for several analyses relevant to metabolism-related research.**
 
 
 Met4j is composed by three main modules:
@@ -27,6 +30,10 @@ formats (SBML, KEGG, TSV)
 - [met4j-graph](met4j-graph/README.md): for performing graph-based topological analysis of metabolic networks.  
 
 The package [met4j-toolbox](met4j-toolbox/README.md) contains high-level apps that can be run in command line by using either jar file or Singularity or Docker containers.
+
+The met4j-toolbox apps are also available without any installation on a dedicated [Galaxy instance](https://met4j.usegalaxy.fr/).
+
+Met4J is developed and maintained by the [MetExplore platform](https://metexplore.toulouse.inrae.fr).
 
 ## Features
 
@@ -110,7 +117,7 @@ cd met4j;
 mvn clean install 
 ```
 
-Read [met4j-toolbox](met4j-toolbox/README.md) to see how to get jar, conda, Docker or Singularity packages containing all the met4-toolbox apps.
+Read [met4j-toolbox](met4j-toolbox/README.md) to see how to get jar, [conda](https://bioconda.github.io/recipes/met4j/README.html), Docker or Singularity packages containing all the met4-toolbox apps.
 
 #### Running tests
 

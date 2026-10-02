@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.4.4
+
+- [met4j-toolbox] Remove GetBiggModelProteome app, now maintained as a standalone project
+- [met4j-toolbox] Galaxy wrappers: use `txt` instead of `gsam` format (#100)
+- [build] Fix install with Java 27
+- [CI] Automate release on GitHub
+- [doc] Complete README, add CONTRIBUTING file
+
+## 2.4.3
+
+- [CI] Fix Singularity deployment and changelog format for GitLab release
+
 ## 2.4.2
 
 - [met4j-toolbox] Fix generation of galaxy wrappers: take into account the conditional output graph format

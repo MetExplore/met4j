@@ -97,6 +97,8 @@ verifyRelease:
     - mvn $MAVEN_CLI_OPTS -Prelease -Dgpg.skip -DskipTests clean verify
   rules:
     - if: $CI_COMMIT_BRANCH =~ /^(release|hotfix)\//
+    # Branch pipelines are replaced by merge request pipelines when a MR is open
+    - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^(release|hotfix)\//
 
 deployJar:
   extends:

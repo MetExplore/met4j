@@ -91,12 +91,12 @@ To use Met4J as a library or to build it from source, you need:
 
 #### From Maven
 
-Install all modules :  
+Install all modules (check the Maven badge above for the latest version):  
 ```
 <dependency>
 <groupId>fr.inrae.toulouse.metexplore</groupId>
 <artifactId>met4j-toolbox</artifactId>
-<version>1.4.0</version>
+<version>2.4.3</version>
 </dependency>
 ```
 
@@ -105,7 +105,7 @@ or a specific module (example : met4j-core ):
 <dependency>
 <groupId>fr.inrae.toulouse.metexplore</groupId>
 <artifactId>met4j-core</artifactId>
-<version>1.4.0</version>
+<version>2.4.3</version>
 </dependency>
 ```
 
@@ -121,16 +121,12 @@ Read [met4j-toolbox](met4j-toolbox/README.md) to see how to get jar, [conda](htt
 
 #### Running tests
 
-Unit tests:
 ```
-mvn clean test
+mvn clean test                     # unit tests
+mvn clean verify -DskipUTs=true    # integration tests
 ```
 
-Integration tests:
-```
-mvn clean install -DskipTests
-mvn  verify
-```
+See [CONTRIBUTING.md](CONTRIBUTING.md#running-tests) for more details.
 
 
 #### Usage
@@ -144,6 +140,8 @@ Javadoc can be found at [https://javadoc.io/doc/fr.inrae.toulouse.metexplore](ht
 Pull requests are welcome **on the gitlab repo** ([https://forge.inrae.fr/metexplore/met4j](https://forge.inrae.fr/metexplore/met4j)). For major changes, please open an issue first to discuss what you would like to change.  
 
 Please make sure to update tests as appropriate.  
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the development setup, how to run tests, the branching workflow and the CI/CD pipeline.
 
 ## Issues
 
@@ -159,7 +157,7 @@ For the versions available, see the [releases on this repository](https://forge.
 
 ## Support &amp; External resources
 
-- Bug reports: [INRAE Forge issues](https://forge.inrae.fr/metabohub/e-tools/template-readme-mth/-/issues) or contact us by email: <contact-metexplore@inrae.fr>.
+- Bug reports: [GitHub issues](https://github.com/MetExplore/met4j/issues) or contact us by email: <contact-metexplore@inrae.fr>.
 
 
 ## License

@@ -75,61 +75,13 @@ The [met4j-toolbox module](met4j-toolbox/README.md) is collection of command-lin
 *   **Network Analysis**: examples: `ChokePoint`, `LoadPoint`, `ScopeNetwork`, `MetaboRank`.
 *   **Reconstruction**: examples: `SbmlCheckBalance` and `CreateMetaNetwork`
 
-## Getting Started
+## Installation
 
-### Prerequisites
+Met4J can be used as a Java library (from Maven Central or built from source),
+or through its command-line toolbox (executable jar, Conda, Singularity, Docker or Galaxy).
+See [INSTALL.md](INSTALL.md).
 
-To use Met4J as a library or to build it from source, you need:
-
-*   **Java Development Kit (JDK)**: version 17 or higher
-*   **Apache Maven**: version 3.x or higher
-
-
-### Installing
-
-
-
-#### From Maven
-
-Install all modules (check the Maven badge above for the latest version):  
-```
-<dependency>
-<groupId>fr.inrae.toulouse.metexplore</groupId>
-<artifactId>met4j-toolbox</artifactId>
-<version>2.4.3</version>
-</dependency>
-```
-
-or a specific module (example : met4j-core ):  
-```
-<dependency>
-<groupId>fr.inrae.toulouse.metexplore</groupId>
-<artifactId>met4j-core</artifactId>
-<version>2.4.3</version>
-</dependency>
-```
-
-#### From Source
-
-```
-git clone https://forge.inrae.fr/metexplore/met4j.git;
-cd met4j;
-mvn clean install 
-```
-
-Read [met4j-toolbox](met4j-toolbox/README.md) to see how to get jar, [conda](https://bioconda.github.io/recipes/met4j/README.html), Docker or Singularity packages containing all the met4-toolbox apps.
-
-#### Running tests
-
-```
-mvn clean test                     # unit tests
-mvn clean verify -DskipUTs=true    # integration tests
-```
-
-See [CONTRIBUTING.md](CONTRIBUTING.md#running-tests) for more details.
-
-
-#### Usage
+## Usage
 
 User documentation for the library modules can be found in each module's own README.  
 Detailed code examples can be found at [here](https://forge.inrae.fr/metexplore/tutorialmet4j).

@@ -4,28 +4,7 @@
 
 ### Installation
 
-``` 
-cd met4j-graph;
-mvn clean install;
-```
-
-### Using met4j-graph in a maven project
-
-Put this in the pom.xml file of your project:
-```
-<dependencies>
-...
-		<dependency>
-			<groupId>fr.inrae.toulouse.metexplore</groupId>
-			<artifactId>met4j-graph</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-...
-</dependencies>
-```
-
-The version number will vary in the future.
-
+See [INSTALL.md](../INSTALL.md#java-library) (artifactId `met4j-graph`).
 
 ### Documentation
 

@@ -3,7 +3,6 @@
 - [met4j-io](#met4j-io)
   - [Met4j module for reading and writing metabolic networks](#met4j-module-for-reading-and-writing-metabolic-networks)
     - [Installation](#installation)
-    - [Using met4j-io in a maven project](#using-met4j-io-in-a-maven-project)
     - [Documentation](#documentation)
       - [Read a SBML](#read-a-sbml)
         - [Default imports](#default-imports)
@@ -25,28 +24,7 @@
 
 ### Installation
 
-```console
-cd met4j-io;
-mvn clean install;
-```
-
-### Using met4j-io in a maven project
-
-Put this in the pom.xml file of your project:
-
-```xml
-<dependencies>
-...
-  <dependency>
-   <groupId>fr.inrae.toulouse.metexplore</groupId>
-   <artifactId>met4j-io</artifactId>
-   <version>1.0.1</version>
-  </dependency>
-...
-</dependencies>
-```
-
-Adapt the version number if needed.
+See [INSTALL.md](../INSTALL.md#java-library) (artifactId `met4j-io`).
 
 ### Documentation
 

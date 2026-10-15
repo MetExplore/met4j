@@ -91,17 +91,18 @@ The pipeline is defined in [.gitlab-ci.yml](.gitlab-ci.yml). What runs depends o
 - **test**: unit tests and coverage (shown in the merge request and in the badge).
 - **integration_test**: integration tests of the toolbox apps.
 - **package**: builds the toolbox jar (kept 1 day as an artifact).
-- **verifyRelease**: dry run of deployCentral (javadoc, sources, no signature, no upload), to catch errors before tagging.
+- **verifyRelease**: dry run of deployCentral (javadoc, sources, no signature, no upload) and pages, to catch errors before tagging.
   It does not run on tags, where deployCentral performs the real build.
 
 On a `X.Y.Z` tag, the version is set to the tag (`-Drevision=X.Y.Z`) and, if the tests pass:
 
 1. **deployCentral**: signs and publishes all modules on [Maven Central](https://central.sonatype.com/namespace/fr.inrae.toulouse.metexplore);
 2. **deployJar**: uploads the toolbox jar to the GitLab package registry;
-3. **buildDocker\***, **buildSingularity**: build and push the `X.Y.Z` and `latest` images
+3. **pages**: publishes the aggregated javadoc of all modules on [GitLab Pages](https://metexplore.pages.forge.inrae.fr/met4j/);
+4. **buildDocker\***, **buildSingularity**: build and push the `X.Y.Z` and `latest` images
    to the GitLab container registry and to Docker Hub;
-4. **release**: creates the GitLab release, with the `## X.Y.Z` section of the changelog as release notes;
-5. **releaseGithub**: creates the same release on the GitHub mirror, with the toolbox jar attached.
+5. **release**: creates the GitLab release, with the `## X.Y.Z` section of the changelog as release notes;
+6. **releaseGithub**: creates the same release on the GitHub mirror, with the toolbox jar attached.
 
 The bioconda recipe and the Galaxy instance are updated outside of this pipeline.
 

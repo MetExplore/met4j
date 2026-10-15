@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>met4j API</title>
+</head>
+<body>
+<p>Met4J is an open-source Java library dedicated to the structural analysis of metabolic networks.
+    It also offers many features to edit, convert and parse SBML files, and comes with a toolbox
+    gathering command-line applications for several analyses relevant to metabolism-related research.</p>
+
+<h2>Modules</h2>
+<dl>
+    <dt><a href="fr/inrae/toulouse/metexplore/met4j_core/package-summary.html">met4j-core</a></dt>
+    <dd>The key module, with the core classes and data structures for handling metabolic networks
+        (networks, metabolites, reactions, genes, proteins, enzymes, pathways, compartments).</dd>
+
+    <dt><a href="fr/inrae/toulouse/metexplore/met4j_io/package-summary.html">met4j-io</a></dt>
+    <dd>Reading and writing metabolic networks in several formats: SBML, with its FBC, Groups, Miriam
+        annotation and Notes plugins, KEGG, tabulated files and matrices.</dd>
+
+    <dt><a href="fr/inrae/toulouse/metexplore/met4j_graph/package-summary.html">met4j-graph</a></dt>
+    <dd>Graph-based topological analysis of metabolic networks: compound, reaction and bipartite graphs,
+        load points, choke points, scope and precursor networks, edge weighting (degree, chemical similarity)
+        and export to Cytoscape (GML, XGMML).</dd>
+
+    <dt><a href="fr/inrae/toulouse/metexplore/met4j_chemUtils/package-summary.html">met4j-chemUtils</a></dt>
+    <dd>Chemical information associated with metabolites: chemical formula parsing, molecular mass computation,
+        InChI handling and chemical similarity based on molecular fingerprints.</dd>
+
+    <dt><a href="fr/inrae/toulouse/metexplore/met4j_mapping/package-summary.html">met4j-mapping</a></dt>
+    <dd>Mapping of omics data and attributes onto metabolic networks, fuzzy matching of entity names,
+        and statistical tools for pathway enrichment analysis.</dd>
+
+    <dt><a href="fr/inrae/toulouse/metexplore/met4j_mathUtils/package-summary.html">met4j-mathUtils</a></dt>
+    <dd>Mathematical utilities: a generic matrix interface with EJML and MTJ implementations, matrix export
+        and similarity computations.</dd>
+
+    <dt><a href="fr/inrae/toulouse/metexplore/met4j_reconstruction/check/balance/package-summary.html">met4j-reconstruction</a></dt>
+    <dd>Helpers for metabolic network reconstruction, such as checking the mass balance of reactions
+        from the chemical formulas of their metabolites.</dd>
+
+    <dt><a href="fr/inrae/toulouse/metexplore/met4j_toolbox/package-summary.html">met4j-toolbox</a></dt>
+    <dd>High-level command-line applications making the library's features accessible without coding:
+        converters (e.g. Sbml2Graph, Tab2Sbml, Kegg2Sbml), network analysis (e.g. ChokePoint, LoadPoint,
+        ScopeNetwork, MetaboRank) and reconstruction (e.g. SbmlCheckBalance, CreateMetaNetwork).</dd>
+</dl>
+
+<p>Source code, user documentation and examples:
+    <a href="https://forge.inrae.fr/metexplore/met4j">https://forge.inrae.fr/metexplore/met4j</a></p>
+</body>
+</html>

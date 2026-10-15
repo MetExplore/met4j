@@ -7,7 +7,7 @@
 [![coverage report](https://forge.inrae.fr/metexplore/met4j/badges/master/coverage.svg)](https://forge.inrae.fr/metexplore/met4j/-/commits/master)
 [![maven](https://img.shields.io/maven-central/v/fr.inrae.toulouse.metexplore/met4j)](https://img.shields.io/maven-central/v/fr.inrae.toulouse.metexplore/met4j)
 [![version](https://img.shields.io/gitlab/v/tag/metexplore/met4j?gitlab_url=https%3A%2F%2Fforge.inrae.fr%2F&include_prereleases&label=version)](https://img.shields.io/gitlab/v/tag/metexplore/met4j?gitlab_url=https%3A%2F%2Fforge.inrae.fr%2F&include_prereleases&label=version)
-[![javadoc](https://javadoc.io/badge2/fr.inrae.toulouse.metexplore/met4j/javadoc.svg)](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j)
+[![javadoc](https://img.shields.io/badge/javadoc-GitLab%20Pages-blue)](https://metexplore.pages.forge.inrae.fr/met4j/)
 [![bioconda](https://img.shields.io/conda/vn/bioconda/met4j?label=bioconda)](https://bioconda.github.io/recipes/met4j/README.html)
 [![Galaxy](https://img.shields.io/badge/Galaxy-met4j-ffd200?labelColor=2c3143)](https://met4j.usegalaxy.fr/)
 
@@ -133,7 +133,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md#running-tests) for more details.
 
 User documentation for the library modules can be found in each module's own README.  
 Detailed code examples can be found at [here](https://forge.inrae.fr/metexplore/tutorialmet4j).
-Javadoc can be found at [https://javadoc.io/doc/fr.inrae.toulouse.metexplore](https://javadoc.io/doc/fr.inrae.toulouse.metexplore)
+Javadoc can be found at [https://metexplore.pages.forge.inrae.fr/met4j/](https://metexplore.pages.forge.inrae.fr/met4j/)
 
 ## Contributing
 

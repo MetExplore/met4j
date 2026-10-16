@@ -49,6 +49,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -179,7 +180,10 @@ public class GenerateDoc {
                             if (dois.size() > 0) {
 
                                 lp += "<br/><br/>References:<br/>";
-                                for (Doi doiInfo : dois) {
+                                // sorted so that the generated doc is stable between runs
+                                for (Doi doiInfo : dois.stream()
+                                        .sorted(Comparator.comparing(Doi::getAbbreviatedReference))
+                                        .toList()) {
                                     lp += "<a href=\"https://doi.org/" + doiInfo.getDoi() + "\">" + doiInfo.getAbbreviatedReference() + "</a><br/>";
                                 }
                             }

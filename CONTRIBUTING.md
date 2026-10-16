@@ -23,6 +23,11 @@ The version is not written in the poms: it is given by the `revision` property (
 and set by the CI from the git tag. **Never edit the version in the poms.**
 To build a given version locally: `mvn clean install -Drevision=2.5.0`.
 
+Enable the git hooks once per clone: `git config core.hooksPath .githooks`.
+The `pre-commit` hook regenerates `met4j-toolbox/README.md` (with `GenerateDoc`) and adds it to the commit
+whenever toolbox sources are committed (skip it with `git commit --no-verify`).
+To regenerate it manually: `mvn -Pgenerate-doc -pl met4j-toolbox -am process-classes`.
+
 ## Running tests
 
 | Tests             | Location                                            | Plugin   | Command                              |

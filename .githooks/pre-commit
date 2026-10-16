@@ -1,9 +1,16 @@
 #!/bin/sh
+root=$(git rev-parse --show-toplevel)
+
+# Check the structure of CHANGELOG.md when it is committed
+if git diff --cached --name-only -- CHANGELOG.md | grep -q .; then
+  sh "$root/.githooks/check-changelog.sh" || exit 1
+fi
+
 # Regenerate met4j-toolbox/README.md when met4j-toolbox sources are committed
 changed=$(git diff --cached --name-only -- met4j-toolbox/src/main met4j-toolbox/pom.xml)
-[ -z "$changed" ] && exit 0
-echo "pre-commit: regenerating met4j-toolbox/README.md..."
-root=$(git rev-parse --show-toplevel)
-mvn -q -f "$root/pom.xml" -Pgenerate-doc -pl met4j-toolbox -am process-classes || {
-  echo "pre-commit: doc generation failed (bypass with git commit --no-verify)"; exit 1; }
-git add "$root/met4j-toolbox/README.md"
+if [ -n "$changed" ]; then
+  echo "pre-commit: regenerating met4j-toolbox/README.md..."
+  mvn -q -f "$root/pom.xml" -Pgenerate-doc -pl met4j-toolbox -am process-classes || {
+    echo "pre-commit: doc generation failed (bypass with git commit --no-verify)"; exit 1; }
+  git add "$root/met4j-toolbox/README.md"
+fi

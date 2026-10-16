@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.4.5
+
+- [CI] Generate javadoc in gitlab pages
+- [doc] INSTALL.md file
+- [doc] pre-commit hook to generate met4j-toolbox
+- [doc] pre-commit hook to check the structure of CHANGELOG.md
+
 ## 2.4.4
 
 - [met4j-toolbox] Remove GetBiggModelProteome app, now maintained as a standalone project (https://forge.inrae.fr/metexplore/tools/getbiggmodelproteome)
@@ -267,7 +274,7 @@ now handled directly from graph to avoid conflict
 
 - [met4j-toolbox] ExtractSubReactionNetwork app
 
-## 0.8.3 
+## 0.8.3
 
 ### Fixed
 

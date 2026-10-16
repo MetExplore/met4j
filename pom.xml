@@ -66,6 +66,71 @@
     </properties>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <!-- Shared by the javadoc jars (release profile) and the aggregated
+                     javadoc published on GitLab Pages (javadoc:aggregate) -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.7.0</version>
+                    <configuration>
+                        <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                        <doclint>none</doclint>
+                        <!-- Classpath only: otherwise javadoc:aggregate fails with
+                             "Aggregator report contains named and unnamed modules" -->
+                        <legacyMode>true</legacyMode>
+                        <doctitle>met4j ${project.version}</doctitle>
+                        <windowtitle>met4j ${project.version}</windowtitle>
+                        <!-- One tab per module on the overview page -->
+                        <groups>
+                            <group>
+                                <title>met4j-core</title>
+                                <packages>fr.inrae.toulouse.metexplore.met4j_core*</packages>
+                            </group>
+                            <group>
+                                <title>met4j-io</title>
+                                <packages>fr.inrae.toulouse.metexplore.met4j_io*</packages>
+                            </group>
+                            <group>
+                                <title>met4j-chemUtils</title>
+                                <packages>fr.inrae.toulouse.metexplore.met4j_chemUtils*</packages>
+                            </group>
+                            <group>
+                                <title>met4j-mathUtils</title>
+                                <packages>fr.inrae.toulouse.metexplore.met4j_mathUtils*</packages>
+                            </group>
+                            <group>
+                                <title>met4j-graph</title>
+                                <packages>fr.inrae.toulouse.metexplore.met4j_graph*</packages>
+                            </group>
+                            <group>
+                                <title>met4j-mapping</title>
+                                <packages>fr.inrae.toulouse.metexplore.met4j_mapping*</packages>
+                            </group>
+                            <group>
+                                <title>met4j-reconstruction</title>
+                                <packages>fr.inrae.toulouse.metexplore.met4j_reconstruction*</packages>
+                            </group>
+                            <group>
+                                <title>met4j-toolbox</title>
+                                <packages>fr.inrae.toulouse.metexplore.met4j_toolbox*</packages>
+                            </group>
+                        </groups>
+                    </configuration>
+                    <executions>
+                        <!-- Command line goals only (javadoc:aggregate for GitLab Pages):
+                             overview page listing the modules -->
+                        <execution>
+                            <id>default-cli</id>
+                            <configuration>
+                                <overview>${maven.multiModuleProjectDirectory}/doc/javadoc/overview.html</overview>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -158,7 +223,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.7.0</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -167,11 +231,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                        <configuration>
-                            <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
-                            <doclint>none</doclint>
-                        </configuration>
-
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

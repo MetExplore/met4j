@@ -89,12 +89,12 @@ package:
     paths:
       - $TOOLBOX_JAR
 
-# Checks that the release profile (javadoc, sources) builds before tagging
+# Checks that the release profile (javadoc, sources) and the Pages javadoc build before tagging
 verifyRelease:
   extends: .maven
   stage: package
   script:
-    - mvn $MAVEN_CLI_OPTS -Prelease -Dgpg.skip -DskipTests clean verify
+    - mvn $MAVEN_CLI_OPTS -Prelease -Dgpg.skip -DskipTests clean verify javadoc:aggregate
   rules:
     - if: $CI_COMMIT_BRANCH =~ /^(release|hotfix)\//
     # Branch pipelines are replaced by merge request pipelines when a MR is open
@@ -124,6 +124,22 @@ deployCentral:
     - gpg --batch --import <(echo "$GPG_PRIVATE_KEY")
   script:
     - mvn $MAVEN_CLI_OPTS -Prelease clean deploy -DskipTests
+
+# Aggregated javadoc of all modules, published on GitLab Pages
+pages:
+  extends:
+    - .maven
+    - .release_rules
+  stage: deploy
+  needs:
+    - test
+    - integration_test
+  script:
+    - mvn $MAVEN_CLI_OPTS -DskipTests clean package javadoc:aggregate
+    - mv target/site/apidocs public
+  artifacts:
+    paths:
+      - public
 
 buildSingularity:
   extends:

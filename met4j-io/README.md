@@ -3,7 +3,6 @@
 - [met4j-io](#met4j-io)
   - [Met4j module for reading and writing metabolic networks](#met4j-module-for-reading-and-writing-metabolic-networks)
     - [Installation](#installation)
-    - [Using met4j-io in a maven project](#using-met4j-io-in-a-maven-project)
     - [Documentation](#documentation)
       - [Read a SBML](#read-a-sbml)
         - [Default imports](#default-imports)
@@ -25,28 +24,7 @@
 
 ### Installation
 
-```console
-cd met4j-io;
-mvn clean install;
-```
-
-### Using met4j-io in a maven project
-
-Put this in the pom.xml file of your project:
-
-```xml
-<dependencies>
-...
-  <dependency>
-   <groupId>fr.inrae.toulouse.metexplore</groupId>
-   <artifactId>met4j-io</artifactId>
-   <version>1.0.1</version>
-  </dependency>
-...
-</dependencies>
-```
-
-Adapt the version number if needed.
+See [INSTALL.md](../INSTALL.md#java-library) (artifactId `met4j-io`).
 
 ### Documentation
 
@@ -63,13 +41,13 @@ JsbmlReader reader = new JsbmlReader(pathOfYourSbmlFile);
 BioNetwork network = reader.read();
 ```
 
-The read method of the [JsbmlReader](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/JsbmlReader.html) imports all the metabolic entities and data in a BioNetwork instance.
+The read method of the [JsbmlReader](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/JsbmlReader.html) imports all the metabolic entities and data in a BioNetwork instance.
 It also optimises the reading of a SBML file by using all the known plugins used to create and describe the metabolic entities.
 
-- [FBC](https://sbml.org/documents/specifications/level-3/version-1/fbc/) : [FBCParser](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/FBCParser.html)
-- [groups for pathways](https://sbml.org/documents/specifications/level-3/version-1/groups/) :[GroupPathwayParser](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/GroupPathwayParser.html)
-- [Miriam annotation](https://co.mbine.org/standards/miriam) : [AnnotationParser](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/AnnotationParser.html)
-- Html notes : [NotesParser](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/NotesParser.html)
+- [FBC](https://sbml.org/documents/specifications/level-3/version-1/fbc/) : [FBCParser](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/FBCParser.html)
+- [groups for pathways](https://sbml.org/documents/specifications/level-3/version-1/groups/) :[GroupPathwayParser](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/GroupPathwayParser.html)
+- [Miriam annotation](https://co.mbine.org/standards/miriam) : [AnnotationParser](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/AnnotationParser.html)
+- Html notes : [NotesParser](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/NotesParser.html)
 
 If you want to enable only some plugins, you have to specify them.
 For instance, here, only FBC and GroupPathway plugins will be used.
@@ -84,11 +62,11 @@ BioNetwork network = reader.read(pkgs);
 Without any package, the read method imports:
 
 - Id and name of the BioNetwork
-- Unit definitions for parameters (e.g. flux parameters). Can be retrieved with the method getUnitDefinitions of the [NetworkAttributes](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/annotations/network/NetworkAttributes.html) class.
+- Unit definitions for parameters (e.g. flux parameters). Can be retrieved with the method getUnitDefinitions of the [NetworkAttributes](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/annotations/network/NetworkAttributes.html) class.
 - Compartments
 - Metabolites
 - Reactions and reactants
-- [SBO](https://github.com/EBI-BioModels/SBO) terms (can be retrieved with the method getSboTerm of the [GenericAttributes](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/annotations/GenericAttributes.html) class)
+- [SBO](https://github.com/EBI-BioModels/SBO) terms (can be retrieved with the method getSboTerm of the [GenericAttributes](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/annotations/GenericAttributes.html) class)
 - Flux bounds in the kinetic law tag if the FBC plugin is not activated
 
 Example:
@@ -125,8 +103,8 @@ Example:
 
 ##### FBC plugin
 
-This plugin is used to read charge, chemical formula, flux bounds and FBA objectives. Please read the [package documentation](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/FBCParser.html) for the specifications.
-The corresponding class in met4j-io is [FBCParser](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/FBCParser.html).
+This plugin is used to read charge, chemical formula, flux bounds and FBA objectives. Please read the [package documentation](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/FBCParser.html) for the specifications.
+The corresponding class in met4j-io is [FBCParser](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/FBCParser.html).
 
 ###### Metabolites : charge and chemical formula
 
@@ -186,7 +164,7 @@ Example:
 ```
 
 To get lower and upper bounds of a reaction in a network,
-use the methods getLowerBound and getUpperBound of the class [ReactionAttributes](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/annotations/reaction/ReactionAttributes.html).
+use the methods getLowerBound and getUpperBound of the class [ReactionAttributes](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/annotations/reaction/ReactionAttributes.html).
 
 ###### Flux objectives for flux modelling
 
@@ -202,13 +180,13 @@ Example:
 </fbc:listOfObjectives>
 ```
 
-To get the list of the objectives set for a network, use the method getObjectives of the class [NetworkAttributes](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/annotations/network/NetworkAttributes.html).
+To get the list of the objectives set for a network, use the method getObjectives of the class [NetworkAttributes](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/annotations/network/NetworkAttributes.html).
 
 ##### Group pathway plugin
 
-This plugin gets information about the metabolic pathways and the reactions involved in them. Please read the [package documentation](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/GroupPathwayParser.html) for specifications.
+This plugin gets information about the metabolic pathways and the reactions involved in them. Please read the [package documentation](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/GroupPathwayParser.html) for specifications.
 
-The corresponding class in met4j-io is [GroupPathwayParser](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/GroupPathwayParser.html).
+The corresponding class in met4j-io is [GroupPathwayParser](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/GroupPathwayParser.html).
 
 Example:
 
@@ -230,14 +208,14 @@ Example:
 ```
 
 Get the list of pathways of a network with the method getPathwaysView
-of the [BioNetwork](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-core/latest/fr/inrae/toulouse/metexplore/met4j_core/biodata/BioNetwork.html) class.
+of the [BioNetwork](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_core/biodata/BioNetwork.html) class.
 
 ##### Miriam annotation Plugin
 
 The Minimum information requested in the annotation of biochemical models ([MIRIAM](https://www.nature.com/articles/nbt1156)) define rules for annotating biological models and especially cross references.
-The corresponding class in met4j-io is [AnnotationParser](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/AnnotationParser.html).
+The corresponding class in met4j-io is [AnnotationParser](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/AnnotationParser.html).
 
-By default, you must note that all the cross references must follow the pattern ```https://identifiers.org/*/*```. You can change the pattern by specifying it when you create a new instance of the [AnnotationParser](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/AnnotationParser.html) class.
+By default, you must note that all the cross references must follow the pattern ```https://identifiers.org/*/*```. You can change the pattern by specifying it when you create a new instance of the [AnnotationParser](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/AnnotationParser.html) class.
 
 Example:
 
@@ -261,7 +239,7 @@ Example:
 </reaction>
 ```
 
-You can retrieve the annotations using the method getRefs of any [BioEntity](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-core/latest/fr/inrae/toulouse/metexplore/met4j_core/biodata/BioEntity.html). Example:
+You can retrieve the annotations using the method getRefs of any [BioEntity](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_core/biodata/BioEntity.html). Example:
 
 ```java
 Set<BioRef> refs = reaction.getRefs("SBML");
@@ -289,7 +267,7 @@ The inchi of a BioMetabolite is also set if an annotation follows this format (e
 This plugin aims to read all the HTML notes found in SBML elements.
 These notes are often found in old SBML and correspond to ad-hoc rules or [COBRA rules](https://europepmc.org/article/MED/21886097). We have tried to consider all the cases we have encountered but it is certain that we could not be exhaustive.
 
-The corresponding class in met4j-io is [NotesParser](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/NotesParser.html).
+The corresponding class in met4j-io is [NotesParser](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/NotesParser.html).
 
 All the recognized patterns can be changed by changing the corresponding fields in the NotesParser instance.
 
@@ -311,9 +289,9 @@ Example:
 ```
 
 Formula and charge can be retrieved by the methods getChemicalFormula and getCharge of the
-[BioMetabolite](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-core/latest/fr/inrae/toulouse/metexplore/met4j_core/biodata/BioMetabolite.html) class.
+[BioMetabolite](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_core/biodata/BioMetabolite.html) class.
 
-Inchi and smiles can be retrieved by the dedicated methods of the [MetaboliteAttributes](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/annotations/metabolite/MetaboliteAttributes.html) class.
+Inchi and smiles can be retrieved by the dedicated methods of the [MetaboliteAttributes](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/annotations/metabolite/MetaboliteAttributes.html) class.
 
 ###### Reaction EC number, score, status, comment and PMID
 
@@ -335,10 +313,10 @@ Example:
 
 ```
 
-EC number can be retrieved thanks to the method getEcNumber of the [BioReaction](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-core/latest/fr/inrae/toulouse/metexplore/met4j_core/biodata/BioReaction.html) class.
+EC number can be retrieved thanks to the method getEcNumber of the [BioReaction](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_core/biodata/BioReaction.html) class.
 
 PMID, score, status, and comments can be retrieved thanks to the corresponding methods
-of the [ReactionAttributes](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/annotations/reaction/ReactionAttributes.html) class.
+of the [ReactionAttributes](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/annotations/reaction/ReactionAttributes.html) class.
 
 ###### Gene-Reaction associations
 
@@ -378,7 +356,7 @@ Example:
 </reaction>
 ```
 
-Here the pathways are separated by " || " but this separator can be changed if you change the pathwaySep field in [NotesParser](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/NotesParser.html).
+Here the pathways are separated by " || " but this separator can be changed if you change the pathwaySep field in [NotesParser](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/reader/plugin/NotesParser.html).
 
 Two pathways will be created and both will contain the R1 reaction.
 
@@ -397,10 +375,10 @@ writer.write();
 
 The write method uses similar plugins than the [read method](#read-a-sbml). By default, all the plugins are activated.
 
-- [FBC](https://sbml.org/documents/specifications/level-3/version-1/fbc/) : [FBCWriter](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/writer/plugin/FBCWriter.html)
-- [groups for pathways](https://sbml.org/documents/specifications/level-3/version-1/groups/) :[GroupPathwayWriter](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/writer/plugin/GroupPathwayWriter.html)
-- [Miriam annotation](https://co.mbine.org/standards/miriam) : [AnnotationWriter](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/writer/plugin/AnnotationWriter.html)
-- Html notes : [NotesWriter](https://javadoc.io/doc/fr.inrae.toulouse.metexplore/met4j-io/latest/fr/inrae/toulouse/metexplore/met4j_io/jsbml/writer/plugin/NotesWriter.html).
+- [FBC](https://sbml.org/documents/specifications/level-3/version-1/fbc/) : [FBCWriter](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/writer/plugin/FBCWriter.html)
+- [groups for pathways](https://sbml.org/documents/specifications/level-3/version-1/groups/) :[GroupPathwayWriter](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/writer/plugin/GroupPathwayWriter.html)
+- [Miriam annotation](https://co.mbine.org/standards/miriam) : [AnnotationWriter](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/writer/plugin/AnnotationWriter.html)
+- Html notes : [NotesWriter](https://metexplore.pages.forge.inrae.fr/met4j/fr/inrae/toulouse/metexplore/met4j_io/jsbml/writer/plugin/NotesWriter.html).
 
 If you don't want all the plugin data to be written in the SBML file, you can specify the plugins to be activated.
 

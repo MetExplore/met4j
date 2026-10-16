@@ -166,7 +166,7 @@
                 <configuration>
                     <mainClass>fr.inrae.toulouse.metexplore.met4j_toolbox.GenerateDoc</mainClass>
                     <arguments>
-                        <argument>README.md</argument>
+                        <argument>${project.basedir}/README.md</argument>
                     </arguments>
                 </configuration>
             </plugin>
@@ -191,5 +191,30 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!-- Regenerates README.md after compilation: mvn -Pgenerate-doc -pl met4j-toolbox -am process-classes
+             (used by the .githooks/pre-commit hook) -->
+        <profile>
+            <id>generate-doc</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>generate-doc</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

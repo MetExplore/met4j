@@ -1,175 +1,11 @@
 # met4j-toolbox
 **Met4j command-line toolbox for metabolic networks**
 
-## Installation from source
-```
-git clone https://forgemia.inra.fr/metexplore/met4j.git;
-cd met4j;
-mvn clean install 
+## Installation
 
-cd met4j-toolbox
-mvn clean package
-```
-
-## Download executable jar from gitlab registry
-
-The executable jar is downloadable in the [met4j gitlab registry](https://forgemia.inra.fr/metexplore/met4j/-/packages).
-
-
-## Usage
-The toolbox can be launched using
-```
-java -jar target/met4j-toolbox-<version>.jar
-```
-which will list all the contained applications that can be called using
-
-```
-java -cp target/met4j-toolbox-<version>.jar <Package>.<App name> -h
-```
-
-Log4j from jsbml can be very verbose. You can make it silent by adding this command :
-
-```console
-java -Dlog4j.configuration= -cp target/met4j-toolbox-<version>.jar ...
-```
-
-## From Conda
-
-[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/met4j/README.html)
-
-To install the latest version of Met4J, run this command :
-
-```sh
-conda install met4j -c bioconda -c conda-forge
-```
-
-### Usage
-
-List all the apps :
-
-```sh
-met4j
-```
-
-Run a specific app (for example Sbml2Graph) :
-
-```sh
-met4j convert.Sbml2Graph -i mySbml.xml -o ./output.txt
-```
-
-## From singularity
-
-You need at least [singularity](https://sylabs.io/guides/3.5/user-guide/quick_start.html) v3.5.
-
-```console
-singularity pull met4j-toolbox.sif oras://registry.forgemia.inra.fr/metexplore/met4j/met4j-singularity:latest
-```
-
-If you want a specific version:
-
-```console
-singularity pull met4j-toolbox.sif oras://registry.forgemia.inra.fr/metexplore/met4j/met4j-singularity:x.y.z
-```
-
-If you want the last develop version:
-
-```console
-singularity pull met4j-toolbox.sif oras://registry.forgemia.inra.fr/metexplore/met4j/met4j-singularity:develop
-```
-
-If you want to build by yourself the singularity image:
-
-```console
-cd met4j-toolbox
-mvn package
-cd ../
-singularity build met4j-toolbox.sif met4j.singularity
-```
-
-
-This will download a singularity container met4j-toolbox.sif that you can directly launch.
-
-To list all the apps.
-```console
-met4j-toolbox.sif 
-```
-
-To launch a specific app, prefix its name with the last component of its package name. For instance:
-
-```console
-met4j-toolbox.sif convert.Tab2Sbml -h -in fic.tsv -sbml fic.sbml
-```
-
-By default, singularity does not see the directories that are not descendants of your home directory. To get the directories outside your home directory, you have to specify the SINGULARITY_BIND environment variable.
-At least, to get the data in the default reference directory, you have to specify:
-In bash:
-```console
-export SINGULARITY_BIND=/db
-```
-In csh or in tcsh
-```console
-setenv SINGULARITY_BIND /db
-```
-
-## From docker
-
-First install [Docker](https://www.docker.com/).
-
-Pull the latest met4j image:
-
-```console
-sudo docker pull metexplore/met4j:latest
-```
-
-If you want a specific version:
-
-```console
-sudo docker pull metexplore/met4j:x.y.z
-```
-
-If you want the develop version:
-```console
-sudo docker pull metexplore/met4j:develop
-```
-
-If you want to build by yourself the docker image:
-
-```console
-cd met4j-toolbox
-mvn package
-cd ../
-sudo docker build -t metexplore/met4j:myversion .
-```
-
-
-To list all the apps:
-```console
-sudo docker run metexplore/met4j:latest met4j.sh
-```
-
-Don't forget to map volumes when you want to process local files.
-Example:
-
-```console
-sudo docker run -v /home/lcottret/work:/work \
- metexplore/met4j:latest met4j.sh convert.Sbml2Tab \
- -in /work/toy_model.xml -out /work/toy_model.tsv
-```
-
-If you change the working directory, you have to specify "sh /usr/bin/met4j.sh":
-
-```console
-sudo docker run -w /work -v /home/lcottret/work:/work \
- metexplore/met4j:latest sh /usr/bin/met4j.sh convert.Sbml2Tab \
- -in toy_model.xml -out toy_model.tsv
-```
-
-## Galaxy instance
-
-[Galaxy](https://galaxyproject.org/) wrappers for met4j-toolbox apps are available in the [Galaxy toolshed](https://toolshed.g2.bx.psu.edu/) (master version) and in the [Galaxy test toolsdhed](https://testtoolshed.g2.bx.psu.edu/) (develop version).
-Wrappers launch the met4j conda package.
-
-An instance of Met4J is available on the [French Galaxy server](https://usegalaxy.fr/) which is maintained by the [French Institute of Bioinformatics](https://www.ifb-elixir.fr/).
+The toolbox is available as an executable jar, a Conda package, Singularity and Docker images,
+and on Galaxy. See [INSTALL.md](../INSTALL.md#command-line-toolbox-met4j-toolbox)
+for the installation and the usage of each of them.
 
 ## Features
 <table>
@@ -308,7 +144,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
             prefix R_ to reactions (default: false)
  -tab VAL : Input Tabulated file
 </code></pre></details></td></tr>
-<tr><td>SetGprs</td><td>Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way<details><summary><small>more</small></summary>Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way<br/>The ids must correspond between the tabulated file and the SBML file.<br/>If prefix R_ is present in the ids in the SBML file and not in the tabulated file, use the -p option.<br/>GPR must be written in a cobra way in the tabulated file as described in Schellenberger et al 2011 Nature Protocols 6(9):1290-307<br/>(The GPR will be written in the SBML file in two locations:<br/>- in the reaction html notes (GENE_ASSOCIATION: ( XC_0401 ) OR ( XC_3282 ))<br/>- as fbc gene product association (see FBC package specifications: https://doi.org/10.1515/jib-2017-0082)<br/><br/>References:<br/><a href="https://doi.org/10.1038/nprot.2011.308">Schellenberger et al.; Quantitative prediction of cellular metabolism with constraint-based models: the COBRA Toolbox v2.0; Nature Protocols; 2011</a><br/><a href="https://doi.org/10.1515/jib-2017-0082">Olivier et al.; SBML Level 3 Package: Flux Balance Constraints version 2; Journal of Integrative Bioinformatics; 2018</a><br/><br/><br/><pre><code> -c VAL   : [#] Comment String in the tabulated file. The lines beginning by
+<tr><td>SetGprs</td><td>Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way<details><summary><small>more</small></summary>Create a new SBML file from an original sbml file and a tabulated file containing reaction ids and Gene association written in a cobra way<br/>The ids must correspond between the tabulated file and the SBML file.<br/>If prefix R_ is present in the ids in the SBML file and not in the tabulated file, use the -p option.<br/>GPR must be written in a cobra way in the tabulated file as described in Schellenberger et al 2011 Nature Protocols 6(9):1290-307<br/>(The GPR will be written in the SBML file in two locations:<br/>- in the reaction html notes (GENE_ASSOCIATION: ( XC_0401 ) OR ( XC_3282 ))<br/>- as fbc gene product association (see FBC package specifications: https://doi.org/10.1515/jib-2017-0082)<br/><br/>References:<br/><a href="https://doi.org/10.1515/jib-2017-0082">Olivier et al.; SBML Level 3 Package: Flux Balance Constraints version 2; Journal of Integrative Bioinformatics; 2018</a><br/><a href="https://doi.org/10.1038/nprot.2011.308">Schellenberger et al.; Quantitative prediction of cellular metabolism with constraint-based models: the COBRA Toolbox v2.0; Nature Protocols; 2011</a><br/><br/><br/><pre><code> -c VAL   : [#] Comment String in the tabulated file. The lines beginning by
             this string won't be read (default: #)
  -cgpr N  : [2] number of the column where are the gprs (default: 2)
  -ci N    : [1] number of the column where are the reaction ids (default: 1)
@@ -691,7 +527,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
  -u (--undirected)    : Ignore reaction direction (default: false)
  -w (--weights) VAL   : an optional file containing weights for compound pairs
 </code></pre></details></td></tr>
-<tr><td>ChemSimilarityWeighting</td><td>Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity.<details><summary><small>more</small></summary>Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity.Chemical similarity has been proposed as edge weight for finding meaningful paths in metabolic networks, using shortest (lightest) path search.<br/><br/>References:<br/><a href="https://doi.org/10.1093/bioinformatics/btu760">Pertusi et al.; Efficient searching and annotation of metabolic networks using chemical similarity; Bioinformatics; 2015</a><br/><a href="https://doi.org/10.1093/bioinformatics/btg217">McShan et al.; PathMiner: predicting metabolic pathways by heuristic search; Bioinformatics; 2003</a><br/><a href="https://doi.org/10.1093/bioinformatics/bti116">Rahman et al.; Metabolic pathway analysis web service (Pathway Hunter Tool at CUBIC); Bioinformatics; 2005</a><br/><br/><br/><pre><code> -d (--asDist)                          : Use distance rather than similarity
+<tr><td>ChemSimilarityWeighting</td><td>Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity.<details><summary><small>more</small></summary>Provides tabulated compound graph edge list, with one column with reactant pair's chemical similarity.Chemical similarity has been proposed as edge weight for finding meaningful paths in metabolic networks, using shortest (lightest) path search.<br/><br/>References:<br/><a href="https://doi.org/10.1093/bioinformatics/btg217">McShan et al.; PathMiner: predicting metabolic pathways by heuristic search; Bioinformatics; 2003</a><br/><a href="https://doi.org/10.1093/bioinformatics/btu760">Pertusi et al.; Efficient searching and annotation of metabolic networks using chemical similarity; Bioinformatics; 2015</a><br/><a href="https://doi.org/10.1093/bioinformatics/bti116">Rahman et al.; Metabolic pathway analysis web service (Pathway Hunter Tool at CUBIC); Bioinformatics; 2005</a><br/><br/><br/><pre><code> -d (--asDist)                          : Use distance rather than similarity
                                           (default: false)
  -f (--fingerprint) [EState | Extended  : The chemical fingerprint to use
  | KlekotaRoth | MACCS | PubChem]         (default: Extended)
@@ -790,7 +626,7 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
  -u (--undirected)                      : Ignore reaction direction (default:
                                           false)
 </code></pre></details></td></tr>
-<tr><td>ExtractSubNetwork</td><td>Create a subnetwork from a metabolic network in SBML format, and two files containing lists of compounds of interests ids, one per row.<details><summary><small>more</small></summary>Create a subnetwork from a metabolic network in SBML format, and two files containing lists of compounds of interests ids, one per row.<br/>The subnetwork corresponds to the part of the network that connects compounds from the first list to compounds from the second list.<br/>Sources and targets list can have elements in common. The connecting part can be defined as the union of shortest or k-shortest paths between sources and targets, or the Steiner tree connecting them. The relevance of considered path can be increased by weighting the edges using degree squared, chemical similarity (require InChI or SMILES annotations) or any provided weighting.<br/><br/>See previous works on subnetwork extraction for parameters recommendations.<br/><br/>References:<br/><a href="https://doi.org/10.1093/bioinformatics/btu760">Pertusi et al.; Efficient searching and annotation of metabolic networks using chemical similarity; Bioinformatics; 2015</a><br/><a href="https://doi.org/10.1016/j.biosystems.2011.05.004">Faust et al.; Prediction of metabolic pathways from genome-scale metabolic networks; Biosystems; 2011</a><br/><a href="https://doi.org/10.1093/nar/gki437">Croes et al.; Metabolic PathFinding: inferring relevant pathways in biochemical networks; Nucleic Acids Research; 2005</a><br/><a href="https://doi.org/10.1093/bib/bbv115">Frainay et al.; Computational methods to identify metabolic sub-networks based on metabolomic profiles; Briefings in Bioinformatics; 2017</a><br/><a href="https://doi.org/10.1093/bioinformatics/btg217">McShan et al.; PathMiner: predicting metabolic pathways by heuristic search; Bioinformatics; 2003</a><br/><a href="https://doi.org/10.1093/bioinformatics/bti116">Rahman et al.; Metabolic pathway analysis web service (Pathway Hunter Tool at CUBIC); Bioinformatics; 2005</a><br/><a href="https://doi.org/10.1016/j.jmb.2005.09.079">Croes et al.; Inferring Meaningful Pathways in Weighted Metabolic Networks; Journal of Molecular Biology; 2006</a><br/><br/><br/><pre><code> -cw (--customWeights) VAL              : an optional file containing weights
+<tr><td>ExtractSubNetwork</td><td>Create a subnetwork from a metabolic network in SBML format, and two files containing lists of compounds of interests ids, one per row.<details><summary><small>more</small></summary>Create a subnetwork from a metabolic network in SBML format, and two files containing lists of compounds of interests ids, one per row.<br/>The subnetwork corresponds to the part of the network that connects compounds from the first list to compounds from the second list.<br/>Sources and targets list can have elements in common. The connecting part can be defined as the union of shortest or k-shortest paths between sources and targets, or the Steiner tree connecting them. The relevance of considered path can be increased by weighting the edges using degree squared, chemical similarity (require InChI or SMILES annotations) or any provided weighting.<br/><br/>See previous works on subnetwork extraction for parameters recommendations.<br/><br/>References:<br/><a href="https://doi.org/10.1016/j.jmb.2005.09.079">Croes et al.; Inferring Meaningful Pathways in Weighted Metabolic Networks; Journal of Molecular Biology; 2006</a><br/><a href="https://doi.org/10.1093/nar/gki437">Croes et al.; Metabolic PathFinding: inferring relevant pathways in biochemical networks; Nucleic Acids Research; 2005</a><br/><a href="https://doi.org/10.1016/j.biosystems.2011.05.004">Faust et al.; Prediction of metabolic pathways from genome-scale metabolic networks; Biosystems; 2011</a><br/><a href="https://doi.org/10.1093/bib/bbv115">Frainay et al.; Computational methods to identify metabolic sub-networks based on metabolomic profiles; Briefings in Bioinformatics; 2017</a><br/><a href="https://doi.org/10.1093/bioinformatics/btg217">McShan et al.; PathMiner: predicting metabolic pathways by heuristic search; Bioinformatics; 2003</a><br/><a href="https://doi.org/10.1093/bioinformatics/btu760">Pertusi et al.; Efficient searching and annotation of metabolic networks using chemical similarity; Bioinformatics; 2015</a><br/><a href="https://doi.org/10.1093/bioinformatics/bti116">Rahman et al.; Metabolic pathway analysis web service (Pathway Hunter Tool at CUBIC); Bioinformatics; 2005</a><br/><br/><br/><pre><code> -cw (--customWeights) VAL              : an optional file containing weights
                                           for compound pairs
  -dw (--degreeWeights)                  : penalize traversal of hubs by using
                                           degree square weighting (default:
@@ -951,14 +787,15 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
  -i (--inputSBML) VAL    : input SBML file
  -in (--internal)        : if an external compartment is defined, adjust degree
                            by considering internal counterpart (default: false)
- -is (--keepIsolated)    : do not ignore isolated nodes, consider isolated both
-                           seeds and targets (default: false)
+ -is (--keepIsolated)    : include isolated nodes (no in- or out-edges) in the
+                           output, counting each of them as both a seed and a
+                           target; by default they are ignored (default: false)
  -o (--output) VAL       : output seeds file
  -s (--seeds)            : export seeds (default: false)
  -sc (--sideFile) VAL    : input side compound file
  -t (--targets)          : export targets (default: false)
 </code></pre></details></td></tr>
-<tr><td>SideCompoundsScan</td><td>Scan a network to identify side compounds.<details><summary><small>more</small></summary>Scan a network to identify side compounds.<br/>Side compounds are metabolites of small relevance for topological analysis. Their definition can be quite subjective and varies between sources.<br/>Side compounds tend to be ubiquitous and not specific to a particular biochemical or physiological process.Compounds usually considered as side compounds include water, atp or carbon dioxide. By being involved in many reactions and thus connected to many compounds, they tend to significantly lower the average shortest path distances beyond expected metabolic relatedness.<br/>This tool attempts to propose a list of side compounds according to specific criteria:  <br/>- *Degree*: Compounds with an uncommonly high number of neighbors can betray a lack of process specificity.  <br/>High degree compounds typically include water and most main cofactors (CoA, ATP, NADPH...) but can also include central compounds such as pyruvate or acetyl-CoA  <br/>- *Neighbor Coupling*: Similar to degree, this criteria assume that side compounds are involved in many reactions, but in pairs with other side compounds.<br/>Therefore, the transition from ATP to ADP will appear multiple times in the network, creating redundant 'parallel edges' between these two neighbors.<br/>Being tightly coupled to another compound through a high number of redundant edges, can point out cofactors while keeping converging pathways' products with high degree like pyruvate aside.  <br/>- *Carbon Count*: Metabolic "waste", or degradation end-product such as ammonia or carbon dioxide are usually considered as side compounds.<br/>Most of them are inorganic compound, another ill-defined concept, sometimes defined as compound lacking C-C or C-H bonds. Since chemical structure is rarely available in SBML model beyond chemical formula, we use a less restrictive criterion by flagging compound with one or no carbons. This cover most inorganic compounds, but include few compounds such as methane usually considered as organic.  - *Chemical Formula*: Metabolic network often contains 'artifacts' that serve modelling purpose (to define a composite objective function for example). Such entities can be considered as 'side entities'. Since they are not actual chemical compounds, they can be detected by their lack of valid chemical formula. However, this can also flag main compounds with erroneous or missing annotation.<br/><br/><pre><code> -cc (--noCarbonSkeleton)            : flag as side compound any compound with
+<tr><td>SideCompoundsScan</td><td>Scan a network to identify side compounds.<details><summary><small>more</small></summary>Scan a network to identify side compounds.<br/>Side compounds are metabolites of small relevance for topological analysis. Their definition can be quite subjective and varies between sources.<br/>Side compounds tend to be ubiquitous and not specific to a particular biochemical or physiological process.Compounds usually considered as side compounds include water, atp or carbon dioxide. By being involved in many reactions and thus connected to many compounds, they tend to significantly lower the average shortest path distances beyond expected metabolic relatedness.<br/>This tool attempts to propose a list of side compounds according to specific criteria:  <br/>- *Degree*: Compounds with an uncommonly high number of neighbors can betray a lack of process specificity.  <br/>High degree compounds typically include water and most main cofactors (CoA, ATP, NADPH...) but can also include central compounds such as pyruvate or acetyl-CoA  <br/>- *Neighbor Coupling*: Similar to degree, this criteria assume that side compounds are involved in many reactions, but in pairs with other side compounds.<br/>Therefore, the transition from ATP to ADP will appear multiple times in the network, creating redundant 'parallel edges' between these two neighbors.<br/>Being tightly coupled to another compound through a high number of redundant edges, can point out cofactors while keeping converging pathways' products with high degree like pyruvate aside.  <br/>- *Carbon Count*: Metabolic "waste", or degradation end-product such as ammonia or carbon dioxide are usually considered as side compounds.<br/>Most of them are inorganic compound, another ill-defined concept, sometimes defined as compound lacking C-C or C-H bonds. Since chemical structure is rarely available in SBML model beyond chemical formula, we use a less restrictive criterion by flagging compound with one or no carbons. This cover most inorganic compounds, but include few compounds such as methane usually considered as organic.  - *Chemical Formula*: Metabolic network often contains 'artifacts' that serve modelling purpose (to define a composite objective function for example). Such entities can be considered as 'side entities'. Since they are not actual chemical compounds, they can be detected by their lack of valid chemical formula. However, this can also flag main compounds with erroneous or missing annotation.<br/>- *Merge strategy (-m/--merge)*: compounds present in several compartments (e.g. a cytosolic and a mitochondrial pyruvate) are otherwise counted as distinct nodes, each with its own degree. This option sums their degree together before applying the degree-based criteria (-d/-dp), so that a compound's ubiquity is assessed network-wide rather than per compartment. "by_name" groups compounds sharing the same name, and is suited when names are consistent and unambiguous across compartments. "by_id" groups compounds by stripping the compartment suffix from their identifier, expected in the form "xxx_y" (xxx: base identifier, y: compartment label).<br/><br/><pre><code> -cc (--noCarbonSkeleton)            : flag as side compound any compound with
                                        less than 2 carbons in formula (default:
                                        false)
  -d (--degree) N                     : flag as side compounds any compound with
@@ -969,18 +806,17 @@ An instance of Met4J is available on the [French Galaxy server](https://usegalax
                                        Ignored if negative (default: 2.0)
  -h                                  : prints the help (default: false)
  -i VAL                              : input SBML file
- -id (--onlyIds)                     : do not report values in output, export
-                                       ids of compounds flagged as side
-                                       compounds, allowing piping results
-                                       (default: false)
- -m (--merge) [no | by_name | by_id] : degree is shared between compounds in
-                                       different compartments. Use names if
-                                       consistent and unambiguous across
-                                       compartments, or identifiers if
-                                       compartment suffix is present (id in
-                                       form "xxx_y" with xxx as base identifier
-                                       and y as compartment label). (default:
-                                       no)
+ -id (--onlyIds)                     : output only the identifiers of compounds
+                                       flagged as side compounds, one per line,
+                                       with no header or other columns ; suited
+                                       for piping into other commands (default:
+                                       false)
+ -m (--merge) [no | by_name | by_id] : share compound degree across
+                                       compartments before applying
+                                       degree-based criteria: no (default): no
+                                       sharing, by_name: group by metabolite
+                                       name, by_id: group by base id (strip
+                                       "_y" compartment suffix) (default: no)
  -nc (--neighborCoupling) N          : flag as side compound any compound with
                                        a number of parallel edges shared with a
                                        neighbor above the given threshold.

@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.4.6
+
+- [build] Publish the thin met4j-toolbox jar on Maven Central instead of the shaded jar (~80 MB), to stay within the Central release size limits. The executable jar is still distributed by the GitLab package, the GitHub release, Docker and Singularity
+- [CI] 2.4.5 could not be published on Maven Central: use 2.4.6 as a Maven dependency
+
 ## 2.4.5
 
 - [CI] Generate javadoc in gitlab pages

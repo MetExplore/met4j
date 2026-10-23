@@ -94,6 +94,7 @@
                 <version>3.2.4</version>
                 <executions>
                     <execution>
+                        <id>shade-toolbox</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
@@ -209,6 +210,26 @@
                                 <goals>
                                     <goal>java</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Maven Central receives the thin jar (dependencies declared in the pom), not the ~80 MB
+             shaded jar, to stay within the Central release size limits. The executable jar is
+             distributed by the GitLab package, the GitHub release and the containers. -->
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>shade-toolbox</id>
+                                <phase>none</phase>
                             </execution>
                         </executions>
                     </plugin>
